@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/10 14:54:23 $
- * Version: $Revision: 1.1129 $
+ * Date   : $Date: 2009/09/11 15:24:49 $
+ * Version: $Revision: 1.1130 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ OpenCms 7.5.1 - month day, 2009
 ! Added support for servlet container Sun GlassFish Enterprise Server v2.1
 ! Added support for servlet container GlassFish/v3 (preview release, builds later than 25-Aug-2009)
 ! Added feature #1636: SMPT ports are now configurable 
+! Added detection of email addresses in editor link dialog
 * Fixed issue #1759: XSS Security
 * Fixed issue with OU users being unable to work after OU resource has been renamed 
 * Fixed issue with pointer targets being stored in XML contents (instead of the uri to pointers) when selecting them from link gallery
