@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/09/11 15:29:14 $
+ * Version: $Revision: 1.29.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.log4j.helpers.Loader;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.29.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,8 +143,8 @@ public final class CmsLog {
 
         if (obj instanceof String) {
             return LogFactory.getLog((String)obj);
-        } else if (obj instanceof Class) {
-            return LogFactory.getLog((Class)obj);
+        } else if (obj instanceof Class<?>) {
+            return LogFactory.getLog((Class<?>)obj);
         } else {
             return LogFactory.getLog(obj.getClass());
         }

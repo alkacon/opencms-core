@@ -42,12 +42,12 @@ import java.util.Locale;
 /**
  * A multi exception is a container for several exception messages that may be caused by an internal operation.<p>
  * 
- * This is provided so that the user can see a full picuture of all the issues that have been caused in an operation,
+ * This is provided so that the user can see a full picture of all the issues that have been caused in an operation,
  * rather then only one (usually the first) issue.
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 2.0.0 
  */
@@ -57,7 +57,7 @@ public class CmsMultiException extends CmsException {
     private static final long serialVersionUID = 1197300254684159700L;
 
     /** The list of internal exceptions. */
-    protected List m_exceptions;
+    protected List<CmsException> m_exceptions;
 
     /** Indicates if the message has been set as individual message. */
     protected boolean m_individualMessage;
@@ -78,7 +78,7 @@ public class CmsMultiException extends CmsException {
     public CmsMultiException(CmsMessageContainer message) {
 
         super(message);
-        m_exceptions = new ArrayList();
+        m_exceptions = new ArrayList<CmsException>();
         setMessage(message);
     }
 
@@ -87,7 +87,7 @@ public class CmsMultiException extends CmsException {
      * 
      * @param exceptions a list of <code>{@link CmsException}</code> instances
      */
-    public CmsMultiException(List exceptions) {
+    public CmsMultiException(List<CmsException> exceptions) {
 
         this();
         setExceptions(exceptions);
@@ -109,7 +109,7 @@ public class CmsMultiException extends CmsException {
      * 
      * @param exceptions the Exceptions to add
      */
-    public void addExceptions(List exceptions) {
+    public void addExceptions(List<CmsException> exceptions) {
 
         m_exceptions.addAll(exceptions);
         updateMessage();
@@ -118,6 +118,7 @@ public class CmsMultiException extends CmsException {
     /** 
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
+    @Override
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         if (cause instanceof CmsMultiException) {
@@ -129,11 +130,11 @@ public class CmsMultiException extends CmsException {
     }
 
     /**
-     * Returns the (unmodifiable) List of exceptions that are tored in this multi exception.<p>
+     * Returns the (unmodifiable) List of exceptions that are stored in this multi exception.<p>
      * 
-     * @return the (unmodifiable) List of exceptions that are tored in this multi exception
+     * @return the (unmodifiable) List of exceptions that are stored in this multi exception
      */
-    public List getExceptions() {
+    public List<CmsException> getExceptions() {
 
         return Collections.unmodifiableList(m_exceptions);
     }
@@ -143,15 +144,16 @@ public class CmsMultiException extends CmsException {
      * 
      * @see java.lang.Throwable#getLocalizedMessage()
      */
+    @Override
     public String getLocalizedMessage() {
 
         if (m_exceptions.isEmpty()) {
             return null;
         }
         StringBuffer result = new StringBuffer(128);
-        Iterator it = m_exceptions.iterator();
+        Iterator<CmsException> it = m_exceptions.iterator();
         while (it.hasNext()) {
-            CmsException ex = (CmsException)it.next();
+            CmsException ex = it.next();
             result.append(ex.getLocalizedMessage());
             if (it.hasNext()) {
                 result.append('\n');
@@ -165,15 +167,16 @@ public class CmsMultiException extends CmsException {
      *  
      * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage(java.util.Locale)
      */
+    @Override
     public String getLocalizedMessage(Locale locale) {
 
         if (m_exceptions.isEmpty()) {
             return null;
         }
         StringBuffer result = new StringBuffer(128);
-        Iterator it = m_exceptions.iterator();
+        Iterator<CmsException> it = m_exceptions.iterator();
         while (it.hasNext()) {
-            CmsException ex = (CmsException)it.next();
+            CmsException ex = it.next();
             result.append(ex.getLocalizedMessage(locale));
             if (it.hasNext()) {
                 result.append('\n');
@@ -246,9 +249,9 @@ public class CmsMultiException extends CmsException {
      * 
      * @param exceptions the exceptions to use (will replace the current exception list)
      */
-    protected void setExceptions(List exceptions) {
+    protected void setExceptions(List<CmsException> exceptions) {
 
-        m_exceptions = new ArrayList(exceptions);
+        m_exceptions = new ArrayList<CmsException>(exceptions);
         updateMessage();
     }
 

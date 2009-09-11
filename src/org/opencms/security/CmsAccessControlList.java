@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/09/11 15:29:14 $
+ * Version: $Revision: 1.25.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.security;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
 
@@ -39,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An access control list contains the permission sets of all principals for a distinct resource
@@ -57,7 +59,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.25.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,7 +68,7 @@ public class CmsAccessControlList {
     /**
      * Collected permissions of a principal on this resource .
      */
-    private HashMap m_permissions;
+    private Map<CmsUUID, CmsPermissionSetCustom> m_permissions;
 
     /**
      * Constructor to create an empty access control list for a given resource.<p>
@@ -74,7 +76,7 @@ public class CmsAccessControlList {
      */
     public CmsAccessControlList() {
 
-        m_permissions = new HashMap();
+        m_permissions = new HashMap<CmsUUID, CmsPermissionSetCustom>();
     }
 
     /**
@@ -84,7 +86,7 @@ public class CmsAccessControlList {
      */
     public void add(CmsAccessControlEntry entry) {
 
-        CmsPermissionSetCustom p = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
+        CmsPermissionSetCustom p = m_permissions.get(entry.getPrincipal());
         if (p == null) {
             p = new CmsPermissionSetCustom();
             m_permissions.put(entry.getPrincipal(), p);
@@ -97,13 +99,14 @@ public class CmsAccessControlList {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         CmsAccessControlList acl = new CmsAccessControlList();
-        Iterator i = m_permissions.keySet().iterator();
+        Iterator<CmsUUID> i = m_permissions.keySet().iterator();
         while (i.hasNext()) {
-            Object key = i.next();
-            acl.m_permissions.put(key, ((CmsPermissionSetCustom)m_permissions.get(key)).clone());
+            CmsUUID id = i.next();
+            acl.m_permissions.put(id, (CmsPermissionSetCustom)(m_permissions.get(id)).clone());
         }
         return acl;
     }
@@ -113,7 +116,7 @@ public class CmsAccessControlList {
      * 
      * @return permission map
      */
-    public HashMap getPermissionMap() {
+    public Map<CmsUUID, CmsPermissionSetCustom> getPermissionMap() {
 
         return m_permissions;
     }
@@ -127,11 +130,11 @@ public class CmsAccessControlList {
      * 
      * @return the summarized permission set of the user
      */
-    public CmsPermissionSetCustom getPermissions(CmsUser user, List groups, List roles) {
+    public CmsPermissionSetCustom getPermissions(CmsUser user, List<CmsGroup> groups, List<CmsRole> roles) {
 
         CmsPermissionSetCustom sum = new CmsPermissionSetCustom();
         boolean hasPermissions = false;
-        CmsPermissionSet p = (CmsPermissionSet)m_permissions.get(user.getId());
+        CmsPermissionSet p = m_permissions.get(user.getId());
         if (p != null) {
             sum.addPermissions(p);
             hasPermissions = true;
@@ -139,8 +142,8 @@ public class CmsAccessControlList {
         if (groups != null) {
             int size = groups.size();
             for (int i = 0; i < size; i++) {
-                I_CmsPrincipal principal = (I_CmsPrincipal)groups.get(i);
-                p = (CmsPermissionSet)m_permissions.get(principal.getId());
+                I_CmsPrincipal principal = groups.get(i);
+                p = m_permissions.get(principal.getId());
                 if (p != null) {
                     sum.addPermissions(p);
                     hasPermissions = true;
@@ -150,8 +153,8 @@ public class CmsAccessControlList {
         if (roles != null) {
             int size = roles.size();
             for (int i = 0; i < size; i++) {
-                CmsRole role = (CmsRole)roles.get(i);
-                p = (CmsPermissionSet)m_permissions.get(role.getId());
+                CmsRole role = roles.get(i);
+                p = m_permissions.get(role.getId());
                 if (p != null) {
                     sum.addPermissions(p);
                     hasPermissions = true;
@@ -160,7 +163,7 @@ public class CmsAccessControlList {
         }
         if (!hasPermissions) {
             // if no applicable entry is found check the 'all others' entry
-            p = (CmsPermissionSet)m_permissions.get(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID);
+            p = m_permissions.get(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID);
             if (p != null) {
                 sum.addPermissions(p);
             }
@@ -177,7 +180,7 @@ public class CmsAccessControlList {
      */
     public CmsPermissionSetCustom getPermissions(CmsUUID principalId) {
 
-        return (CmsPermissionSetCustom)m_permissions.get(principalId);
+        return m_permissions.get(principalId);
     }
 
     /**
@@ -190,7 +193,7 @@ public class CmsAccessControlList {
      * 
      * @return a string that displays the permissions
      */
-    public String getPermissionString(CmsUser user, List groups, List roles) {
+    public String getPermissionString(CmsUser user, List<CmsGroup> groups, List<CmsRole> roles) {
 
         return getPermissions(user, groups, roles).getPermissionString();
     }
@@ -200,9 +203,9 @@ public class CmsAccessControlList {
      * 
      * @return enumeration of principals (each group or user)
      */
-    public List getPrincipals() {
+    public List<CmsUUID> getPrincipals() {
 
-        List principals = new ArrayList(m_permissions.keySet());
+        List<CmsUUID> principals = new ArrayList<CmsUUID>(m_permissions.keySet());
         Collections.sort(principals, CmsAccessControlEntry.COMPARATOR_PRINCIPALS);
         return principals;
     }
@@ -215,7 +218,7 @@ public class CmsAccessControlList {
      */
     public void setAllowedPermissions(CmsAccessControlEntry entry) {
 
-        CmsPermissionSetCustom p = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
+        CmsPermissionSetCustom p = m_permissions.get(entry.getPrincipal());
         if (p == null) {
             p = new CmsPermissionSetCustom();
             m_permissions.put(entry.getPrincipal(), p);
@@ -231,7 +234,7 @@ public class CmsAccessControlList {
      */
     public void setDeniedPermissions(CmsAccessControlEntry entry) {
 
-        CmsPermissionSetCustom p = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
+        CmsPermissionSetCustom p = m_permissions.get(entry.getPrincipal());
         if (p == null) {
             p = new CmsPermissionSetCustom();
             m_permissions.put(entry.getPrincipal(), p);

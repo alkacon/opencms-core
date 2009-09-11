@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2009/09/07 12:41:50 $
- * Version: $Revision: 1.109.2.1 $
+ * Date   : $Date: 2009/09/11 15:29:16 $
+ * Version: $Revision: 1.109.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.109.2.1 $
+ * @version $Revision: 1.109.2.2 $
  * 
  * @since 6.0.0
  */
@@ -3290,8 +3290,8 @@ public class OpenCmsTestCase extends TestCase {
 
         HashMap result = new HashMap();
 
-        HashMap destinationMap = target.getPermissionMap();
-        HashMap sourceMap = source.getPermissionMap();
+        Map destinationMap = target.getPermissionMap();
+        Map sourceMap = source.getPermissionMap();
 
         Iterator i = sourceMap.entrySet().iterator();
         while (i.hasNext()) {

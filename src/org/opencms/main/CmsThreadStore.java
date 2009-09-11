@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2009/06/04 14:29:38 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/09/11 15:29:15 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.20.2.1 $
  * 
  * @since 6.0.0
  */
@@ -76,7 +76,7 @@ public final class CmsThreadStore extends Thread {
     private CmsSecurityManager m_securityManager;
 
     /** A map to store all system Threads in. */
-    private Map m_threads;
+    private Map<CmsUUID, A_CmsReportThread> m_threads;
 
     /**
      * Hides the public constructor.<p>
@@ -89,7 +89,7 @@ public final class CmsThreadStore extends Thread {
         super(new ThreadGroup("OpenCms Thread Store"), "OpenCms: Grim Reaper");
         setDaemon(true);
         // Hashtable is still the most efficient form of a synchronized HashMap
-        m_threads = new Hashtable();
+        m_threads = new Hashtable<CmsUUID, A_CmsReportThread>();
         m_alive = true;
         m_securityManager = securityManager;
         start();
@@ -119,12 +119,13 @@ public final class CmsThreadStore extends Thread {
         if (LOG.isDebugEnabled()) {
             dumpThreads();
         }
-        return (A_CmsReportThread)m_threads.get(key);
+        return m_threads.get(key);
     }
 
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         int m_minutesForSessionUpdate = 0;
@@ -138,13 +139,13 @@ public final class CmsThreadStore extends Thread {
                 // let's go on reaping...
             }
             try {
-                Iterator i;
+                Iterator<CmsUUID> i;
                 i = m_threads.keySet().iterator();
-                Set doomed = new HashSet();
+                Set<CmsUUID> doomed = new HashSet<CmsUUID>();
                 // first collect all doomed Threads
                 while (i.hasNext()) {
-                    CmsUUID key = (CmsUUID)i.next();
-                    A_CmsReportThread thread = (A_CmsReportThread)m_threads.get(key);
+                    CmsUUID key = i.next();
+                    A_CmsReportThread thread = m_threads.get(key);
                     if (thread.isDoomed()) {
                         doomed.add(key);
                         if (LOG.isDebugEnabled()) {
@@ -201,19 +202,19 @@ public final class CmsThreadStore extends Thread {
                 minutesForPublishEngineCheck = 0;
 
                 try {
-                    
+
                     // get the current publish job
                     CmsPublishJobRunning publishJob = OpenCms.getPublishManager().getCurrentPublishJob();
                     if (publishJob != null) {
-                        
+
                         // get the thread id of the current publish job
                         CmsUUID uid = publishJob.getThreadUUID();
                         if ((uid != null) && (!uid.isNullUUID())) {
-                            
+
                             // find the thread
-                            A_CmsReportThread thread = (A_CmsReportThread)m_threads.get(uid);
+                            A_CmsReportThread thread = m_threads.get(uid);
                             if (thread != null) {
-                                
+
                                 // check if the report still has output and so is active
                                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(thread.getReportUpdate())) {
 
@@ -227,7 +228,7 @@ public final class CmsThreadStore extends Thread {
 
                                     // interrupt/kill thread
                                     thread.interrupt();
-                                    
+
                                     // clean up the interrupted thread
                                     OpenCms.getPublishManager().checkCurrentPublishJobThread();
                                 }
@@ -257,10 +258,10 @@ public final class CmsThreadStore extends Thread {
 
         if (LOG.isDebugEnabled()) {
             StringBuffer b = new StringBuffer(512);
-            Iterator i = m_threads.keySet().iterator();
+            Iterator<CmsUUID> i = m_threads.keySet().iterator();
             while (i.hasNext()) {
-                CmsUUID key = (CmsUUID)i.next();
-                A_CmsReportThread thread = (A_CmsReportThread)m_threads.get(key);
+                CmsUUID key = i.next();
+                A_CmsReportThread thread = m_threads.get(key);
                 b.append(thread.getName());
                 b.append(" - ");
                 b.append(thread.getUUID());

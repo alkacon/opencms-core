@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/09/11 15:29:13 $
+ * Version: $Revision: 1.28.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.security;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,7 +47,7 @@ import java.util.Set;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.28.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +95,7 @@ public class CmsPermissionSet {
     public static final int PERMISSION_WRITE = 2;
 
     /** HashMap of all available permissions. */
-    private static HashMap m_permissions;
+    private static Map<String, Integer> m_permissions;
 
     /** The set of allowed permissions. */
     protected int m_allowed;
@@ -138,7 +139,7 @@ public class CmsPermissionSet {
      * 
      * @return Enumeration of message keys
      */
-    public static Set getPermissionKeys() {
+    public static Set<String> getPermissionKeys() {
 
         return permissions().keySet();
     }
@@ -151,7 +152,7 @@ public class CmsPermissionSet {
      */
     public static int getPermissionValue(String key) {
 
-        return ((Integer)permissions().get(key)).intValue();
+        return (permissions().get(key)).intValue();
     }
 
     /**
@@ -159,10 +160,10 @@ public class CmsPermissionSet {
      * 
      * @return hastable with permission keys and values
      */
-    private static HashMap permissions() {
+    private static Map<String, Integer> permissions() {
 
         if (m_permissions == null) {
-            m_permissions = new HashMap();
+            m_permissions = new HashMap<String, Integer>();
             m_permissions.put("GUI_PERMISSION_TYPE_READ_0", new Integer(CmsPermissionSet.PERMISSION_READ));
             m_permissions.put("GUI_PERMISSION_TYPE_WRITE_0", new Integer(CmsPermissionSet.PERMISSION_WRITE));
             m_permissions.put("GUI_PERMISSION_TYPE_VIEW_0", new Integer(CmsPermissionSet.PERMISSION_VIEW));
@@ -176,6 +177,7 @@ public class CmsPermissionSet {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -264,6 +266,7 @@ public class CmsPermissionSet {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_allowed * m_denied;
@@ -324,6 +327,7 @@ public class CmsPermissionSet {
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return "[PermissionSet:] " + getPermissionString();

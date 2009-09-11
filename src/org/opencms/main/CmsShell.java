@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2009/06/04 14:29:38 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2009/09/11 15:29:15 $
+ * Version: $Revision: 1.56.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.56.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -96,7 +96,7 @@ public class CmsShell {
     private class CmsCommandObject {
 
         /** The list of methods. */
-        private Map m_methods;
+        private Map<String, List<Method>> m_methods;
 
         /** The object to execute the methods on. */
         private Object m_object;
@@ -122,7 +122,7 @@ public class CmsShell {
          * @param parameters the parameters entered by the user in the shell
          * @return true if a method was executed, false otherwise
          */
-        protected boolean executeMethod(String command, List parameters) {
+        protected boolean executeMethod(String command, List<String> parameters) {
 
             // TODO: ensure that publishmanager, oumanager and rolemanager methods are accessible
             int todo;
@@ -131,7 +131,7 @@ public class CmsShell {
             String lookup = buildMethodLookup(command, parameters.size());
 
             // try to look up the methods of this command object
-            List possibleMethods = (List)m_methods.get(lookup);
+            List<Method> possibleMethods = m_methods.get(lookup);
             if (possibleMethods == null) {
                 return false;
             }
@@ -140,13 +140,13 @@ public class CmsShell {
             Method onlyStringMethod = null;
             Method foundMethod = null;
             Object[] params = null;
-            Iterator i;
+            Iterator<Method> i;
 
             // first check if there is one method with only has String parameters, make this the fall back
             i = possibleMethods.iterator();
             while (i.hasNext()) {
-                Method method = (Method)i.next();
-                Class[] clazz = method.getParameterTypes();
+                Method method = i.next();
+                Class<?>[] clazz = method.getParameterTypes();
                 boolean onlyString = true;
                 for (int j = 0; j < clazz.length; j++) {
                     if (!(clazz[j].equals(String.class))) {
@@ -164,17 +164,17 @@ public class CmsShell {
             // if so, use this method, else continue searching
             i = possibleMethods.iterator();
             while (i.hasNext()) {
-                Method method = (Method)i.next();
+                Method method = i.next();
                 if (method == onlyStringMethod) {
                     // skip the String only signature because this would always match
                     continue;
                 }
                 // now try to convert the parameters to the required types
-                Class[] clazz = method.getParameterTypes();
+                Class<?>[] clazz = method.getParameterTypes();
                 Object[] converted = new Object[clazz.length];
                 boolean match = true;
                 for (int j = 0; j < clazz.length; j++) {
-                    String value = (String)parameters.get(j);
+                    String value = parameters.get(j);
                     try {
                         converted[j] = CmsDataTypeUtil.parse(value, clazz[j]);
                     } catch (Throwable t) {
@@ -206,19 +206,19 @@ public class CmsShell {
             try {
                 Object result = foundMethod.invoke(m_object, params);
                 if (result != null) {
-                    if (result instanceof Collection) {
-                        Collection c = (Collection)result;
+                    if (result instanceof Collection<?>) {
+                        Collection<?> c = (Collection<?>)result;
                         System.out.println(c.getClass().getName() + " (size: " + c.size() + ")");
                         int count = 0;
-                        if (result instanceof Map) {
-                            Map m = (Map)result;
-                            Iterator j = m.entrySet().iterator();
+                        if (result instanceof Map<?, ?>) {
+                            Map<?, ?> m = (Map<?, ?>)result;
+                            Iterator<?> j = m.entrySet().iterator();
                             while (j.hasNext()) {
-                                Map.Entry entry = (Map.Entry)j.next();
+                                Map.Entry<?, ?> entry = (Map.Entry<?, ?>)j.next();
                                 System.out.println(count++ + ": " + entry.getKey() + "= " + entry.getValue());
                             }
                         } else {
-                            Iterator j = c.iterator();
+                            Iterator<?> j = c.iterator();
                             while (j.hasNext()) {
                                 System.out.println(count++ + ": " + j.next());
                             }
@@ -254,18 +254,18 @@ public class CmsShell {
         protected String getMethodHelp(String searchString) {
 
             StringBuffer buf = new StringBuffer(512);
-            Iterator i = m_methods.keySet().iterator();
+            Iterator<String> i = m_methods.keySet().iterator();
             while (i.hasNext()) {
-                List l = (List)m_methods.get(i.next());
-                Iterator j = l.iterator();
+                List<Method> l = m_methods.get(i.next());
+                Iterator<Method> j = l.iterator();
                 while (j.hasNext()) {
-                    Method method = (Method)j.next();
+                    Method method = j.next();
                     if ((searchString == null)
                         || (method.getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)) {
                         buf.append("* ");
                         buf.append(method.getName());
                         buf.append("(");
-                        Class[] params = method.getParameterTypes();
+                        Class<?>[] params = method.getParameterTypes();
                         for (int k = 0; k < params.length; k++) {
                             String par = params[k].getName();
                             par = par.substring(par.lastIndexOf('.') + 1);
@@ -314,7 +314,7 @@ public class CmsShell {
          */
         private void initShellMethods() {
 
-            Map result = new TreeMap();
+            Map<String, List<Method>> result = new TreeMap<String, List<Method>>();
 
             Method[] methods = m_object.getClass().getMethods();
             for (int i = 0; i < methods.length; i++) {
@@ -324,7 +324,7 @@ public class CmsShell {
 
                     // check if the method signature only uses primitive data types
                     boolean onlyPrimitive = true;
-                    Class[] clazz = methods[i].getParameterTypes();
+                    Class<?>[] clazz = methods[i].getParameterTypes();
                     for (int j = 0; j < clazz.length; j++) {
                         if (!CmsDataTypeUtil.isParseable(clazz[j])) {
                             // complex data type methods can not be called from the shell
@@ -336,11 +336,11 @@ public class CmsShell {
                     if (onlyPrimitive) {
                         // add this method to the set of methods that can be called from the shell
                         String lookup = buildMethodLookup(methods[i].getName(), methods[i].getParameterTypes().length);
-                        List l;
+                        List<Method> l;
                         if (result.containsKey(lookup)) {
-                            l = (List)result.get(lookup);
+                            l = result.get(lookup);
                         } else {
-                            l = new ArrayList(1);
+                            l = new ArrayList<Method>(1);
                         }
                         l.add(methods[i]);
                         result.put(lookup, l);
@@ -370,7 +370,7 @@ public class CmsShell {
     private I_CmsShellCommands m_additionaShellCommands;
 
     /** All shell callable objects. */
-    private List m_commandObjects;
+    private List<CmsCommandObject> m_commandObjects;
 
     /** If set to true, all commands are echoed. */
     private boolean m_echo;
@@ -470,7 +470,7 @@ public class CmsShell {
                 m_shellCommands.shellStart();
             }
 
-            m_commandObjects = new ArrayList();
+            m_commandObjects = new ArrayList<CmsCommandObject>();
             if (m_additionaShellCommands != null) {
                 // get all shell callable methods from the additional shell command object
                 m_commandObjects.add(new CmsCommandObject(m_additionaShellCommands));
@@ -665,9 +665,9 @@ public class CmsShell {
         boolean foundSomething = false;
         System.out.println();
 
-        Iterator i = m_commandObjects.iterator();
+        Iterator<CmsCommandObject> i = m_commandObjects.iterator();
         while (i.hasNext()) {
-            CmsCommandObject cmdObj = (CmsCommandObject)i.next();
+            CmsCommandObject cmdObj = i.next();
             commandList = cmdObj.getMethodHelp(searchString);
             if (!CmsStringUtil.isEmpty(commandList)) {
                 System.out.println(m_messages.key(
@@ -732,7 +732,7 @@ public class CmsShell {
      * @param command the command to execute
      * @param parameters the list of parameters for the command
      */
-    private void executeCommand(String command, List parameters) {
+    private void executeCommand(String command, List<String> parameters) {
 
         if (m_echo) {
             // echo the command to STDOUT
@@ -745,9 +745,9 @@ public class CmsShell {
 
         // prepare to lookup a method in CmsObject or CmsShellCommands
         boolean executed = false;
-        Iterator i = m_commandObjects.iterator();
+        Iterator<CmsCommandObject> i = m_commandObjects.iterator();
         while (!executed && i.hasNext()) {
-            CmsCommandObject cmdObj = (CmsCommandObject)i.next();
+            CmsCommandObject cmdObj = i.next();
             executed = cmdObj.executeMethod(command, parameters);
         }
 
@@ -799,7 +799,7 @@ public class CmsShell {
                 st.eolIsSignificant(true);
 
                 // put all tokens into a List
-                List parameters = new ArrayList();
+                List<String> parameters = new ArrayList<String>();
                 while (st.nextToken() != StreamTokenizer.TT_EOF) {
                     if (st.ttype == StreamTokenizer.TT_NUMBER) {
                         parameters.add(Integer.toString(new Double(st.nval).intValue()));
@@ -816,7 +816,7 @@ public class CmsShell {
                     }
                     continue;
                 }
-                String command = (String)parameters.get(0);
+                String command = parameters.get(0);
                 parameters = parameters.subList(1, parameters.size());
 
                 // execute the command

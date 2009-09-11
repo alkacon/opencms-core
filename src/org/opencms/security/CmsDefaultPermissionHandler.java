@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPermissionHandler.java,v $
- * Date   : $Date: 2009/06/19 16:59:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/09/11 15:29:14 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  * 
  * @since 7.0.2
  */
@@ -94,7 +94,8 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
         // checking the filter is less cost intensive then checking the cache,
         // this is why basic filter results are not cached
         String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(
-            filter.requireVisible() && checkLock ? "11" : (!filter.requireVisible() && checkLock ? "01"
+            filter.requireVisible() && checkLock ? "11" : (!filter.requireVisible() && checkLock
+            ? "01"
             : (filter.requireVisible() && !checkLock ? "10" : "00")),
             dbc,
             resource,
@@ -180,12 +181,12 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
                 // if not, check the manageable projects
                 if (!canIgnorePublishPermission) {
                     CmsUser user = dbc.currentUser();
-                    Iterator itProjects = m_driverManager.getAllManageableProjects(
+                    Iterator<CmsProject> itProjects = m_driverManager.getAllManageableProjects(
                         dbc,
                         m_driverManager.readOrganizationalUnit(dbc, user.getOuFqn()),
                         true).iterator();
                     while (itProjects.hasNext()) {
-                        CmsProject project = (CmsProject)itProjects.next();
+                        CmsProject project = itProjects.next();
                         if (CmsProject.isInsideProject(m_driverManager.readProjectResources(dbc, project), resource)) {
                             canIgnorePublishPermission = true;
                             break;

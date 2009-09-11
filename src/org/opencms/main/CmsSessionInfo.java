@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/09/11 15:29:16 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,11 +54,11 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSessionInfo implements Comparable, Serializable {
+public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable {
 
     /** Name of the http session attribute the OpenCms session id is stored in. */
     public static final String ATTRIBUTE_SESSION_ID = "__org.opencms.main.CmsSessionInfo#m_sessionId";
@@ -117,20 +117,18 @@ public class CmsSessionInfo implements Comparable, Serializable {
      * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsSessionInfo obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsSessionInfo) {
-            return m_userId.compareTo(((CmsSessionInfo)obj).getUserId());
-        }
-        return 0;
+        return m_userId.compareTo(obj.getUserId());
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -257,6 +255,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_userId.hashCode();
@@ -276,6 +275,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer str = new StringBuffer(64);

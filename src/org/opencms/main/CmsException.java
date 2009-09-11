@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2009/06/04 14:29:39 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2009/09/11 15:29:15 $
+ * Version: $Revision: 1.40.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * @author Michael Moossen 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.40.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,9 +124,9 @@ public class CmsException extends Exception implements I_CmsThrowable {
         e.printStackTrace(printWriter);
         if (e instanceof CmsMultiException) {
             CmsMultiException me = (CmsMultiException)e;
-            Iterator it = me.getExceptions().iterator();
+            Iterator<CmsException> it = me.getExceptions().iterator();
             while (it.hasNext()) {
-                Throwable t = (Throwable)it.next();
+                Throwable t = it.next();
                 t.printStackTrace(printWriter);
             }
         }
@@ -149,6 +149,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
     /**
      * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage()
      */
+    @Override
     public String getLocalizedMessage() {
 
         if (m_message == null) {
@@ -168,6 +169,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
     /**
      * @see java.lang.Throwable#getMessage()
      */
+    @Override
     public String getMessage() {
 
         return getLocalizedMessage();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/09/11 15:29:13 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.2.1 $
  * 
  * @since 6.5.6 
  */
@@ -169,6 +169,7 @@ public class CmsOrganizationalUnit {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         return new CmsOrganizationalUnit(m_id, m_name, m_description, m_flags, m_projectId);
@@ -177,6 +178,7 @@ public class CmsOrganizationalUnit {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -337,6 +339,7 @@ public class CmsOrganizationalUnit {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_id != null) {
@@ -393,6 +396,7 @@ public class CmsOrganizationalUnit {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

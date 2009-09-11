@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/A_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/11 15:29:15 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Carsten Weinholz
  *
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.5.4 
  */
@@ -56,10 +56,10 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
 
     /** The static log object for this class. */
     protected static final Log LOG = CmsLog.getLog(A_CmsAuthorizationHandler.class);
-    
+
     /** Additional parameters. */
-    protected Map m_parameters;
-    
+    protected Map<String, String> m_parameters;
+
     /**
      * Initializes a new cms object from the session data of the request.<p>
      * 
@@ -105,12 +105,12 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
         // return the updated cms object
         return cms;
     }
-    
+
     /**
      * @see org.opencms.security.I_CmsAuthorizationHandler#setParameters(java.util.Map)
      */
-    public void setParameters(Map parameters) {
-        
+    public void setParameters(Map<String, String> parameters) {
+
         m_parameters = parameters;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/09/11 15:29:13 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  *
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +71,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     private static SecureRandom m_secureRandom;
 
     /** The configuration of the password handler. */
-    private SortedMap m_configuration;
+    private SortedMap<String, String> m_configuration;
 
     /** The digest type used. */
     private String m_digestType = DIGEST_TYPE_MD5;
@@ -84,7 +84,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public CmsDefaultPasswordHandler() {
 
-        m_configuration = new TreeMap();
+        m_configuration = new TreeMap<String, String>();
     }
 
     /**
@@ -170,7 +170,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         return m_configuration;
     }

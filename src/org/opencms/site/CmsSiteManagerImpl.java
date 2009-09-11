@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2009/09/08 12:52:23 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2009/09/11 15:29:17 $
+ * Version: $Revision: 1.11.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.2.1 $ 
+ * @version $Revision: 1.11.2.2 $ 
  * 
  * @since 7.0.2
  */
@@ -80,13 +80,13 @@ public final class CmsSiteManagerImpl {
     /** The length of the "/sites/" folder plus 1. */
     private static final int SITES_FOLDER_POS = SITES_FOLDER.length() + 1;
 
-    /** A list of additional site roots, that is site roots that are not belows the "/sites/" folder. */
-    private List m_additionalSiteRoots;
+    /** A list of additional site roots, that is site roots that are not below the "/sites/" folder. */
+    private List<String> m_additionalSiteRoots;
 
     /** 
      * The list of aliases for the site that is configured at the moment, 
      * needed for the sites added during configuration. */
-    private List m_aliases;
+    private List<CmsSiteMatcher> m_aliases;
 
     /** The default site root. */
     private CmsSite m_defaultSite;
@@ -98,16 +98,16 @@ public final class CmsSiteManagerImpl {
     private boolean m_frozen;
 
     /** List to access the time offsets. */
-    private List m_matchers;
+    private List<CmsSiteMatcher> m_matchers;
 
     /** Maps site matchers to sites. */
     private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
 
     /** The set of all configured site root paths (as String). */
-    private Set m_siteRoots;
+    private Set<String> m_siteRoots;
 
     /** Maps site roots to sites. */
-    private Map m_siteRootSites;
+    private Map<String, CmsSite> m_siteRootSites;
 
     /** The workplace server. */
     private String m_workplaceServer;
@@ -121,11 +121,11 @@ public final class CmsSiteManagerImpl {
      */
     public CmsSiteManagerImpl() {
 
-        m_siteMatcherSites = new HashMap();
-        m_siteRootSites = new HashMap();
-        m_aliases = new ArrayList();
-        m_matchers = new ArrayList();
-        m_additionalSiteRoots = new ArrayList();
+        m_siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>();
+        m_siteRootSites = new HashMap<String, CmsSite>();
+        m_aliases = new ArrayList<CmsSiteMatcher>();
+        m_matchers = new ArrayList<CmsSiteMatcher>();
+        m_additionalSiteRoots = new ArrayList<String>();
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SITE_CONFIG_0));
@@ -186,12 +186,12 @@ public final class CmsSiteManagerImpl {
         // note that Digester first calls the addAliasToConfigSite method.
         // therefore, the aliases are already set
         site.setAliases(m_aliases);
-        Iterator i = m_aliases.iterator();
+        Iterator<CmsSiteMatcher> i = m_aliases.iterator();
         while (i.hasNext()) {
-            matcher = (CmsSiteMatcher)i.next();
+            matcher = i.next();
             addServer(matcher, site);
         }
-        m_aliases = new ArrayList();
+        m_aliases = new ArrayList<CmsSiteMatcher>();
         m_siteRootSites.put(site.getSiteRoot(), site);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SITE_ROOT_ADDED_1, site.toString()));
@@ -207,7 +207,7 @@ public final class CmsSiteManagerImpl {
      * 
      * @return a list of all site available for the current user
      */
-    public List getAvailableSites(CmsObject cms, boolean workplaceMode) {
+    public List<CmsSite> getAvailableSites(CmsObject cms, boolean workplaceMode) {
 
         return getAvailableSites(cms, workplaceMode, cms.getRequestContext().getOuFqn());
     }
@@ -222,13 +222,13 @@ public final class CmsSiteManagerImpl {
      * 
      * @return a list of all site available for the current user
      */
-    public List getAvailableSites(CmsObject cms, boolean workplaceMode, String ouFqn) {
+    public List<CmsSite> getAvailableSites(CmsObject cms, boolean workplaceMode, String ouFqn) {
 
-        List siteroots = new ArrayList(m_siteMatcherSites.size() + 1);
-        Map siteServers = new HashMap(m_siteMatcherSites.size() + 1);
-        List result = new ArrayList(m_siteMatcherSites.size() + 1);
+        List<String> siteroots = new ArrayList<String>(m_siteMatcherSites.size() + 1);
+        Map<String, CmsSiteMatcher> siteServers = new HashMap<String, CmsSiteMatcher>(m_siteMatcherSites.size() + 1);
+        List<CmsSite> result = new ArrayList<CmsSite>(m_siteMatcherSites.size() + 1);
 
-        Iterator i;
+        Iterator<CmsSiteMatcher> i;
         // add site list
         i = m_siteMatcherSites.keySet().iterator();
         while (i.hasNext()) {
@@ -259,21 +259,21 @@ public final class CmsSiteManagerImpl {
                     siteroots.add(storedSiteRoot + "/");
                 }
             }
-            List resources;
+            List<CmsResource> resources;
             try {
                 resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ouFqn);
             } catch (CmsException e) {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
 
             Collections.sort(siteroots); // sort by resource name
-            i = siteroots.iterator();
-            while (i.hasNext()) {
-                String folder = (String)i.next();
+            Iterator<String> roots = siteroots.iterator();
+            while (roots.hasNext()) {
+                String folder = roots.next();
                 boolean compatible = false;
-                Iterator itResources = resources.iterator();
+                Iterator<CmsResource> itResources = resources.iterator();
                 while (itResources.hasNext()) {
-                    CmsResource resource = (CmsResource)itResources.next();
+                    CmsResource resource = itResources.next();
                     if (resource.getRootPath().startsWith(folder) || folder.startsWith(resource.getRootPath())) {
                         compatible = true;
                         break;
@@ -298,7 +298,7 @@ public final class CmsSiteManagerImpl {
                                 folder,
                                 res.getStructureId(),
                                 title,
-                                (CmsSiteMatcher)siteServers.get(folder),
+                                siteServers.get(folder),
                                 position));
                         }
                     } catch (CmsException e) {
@@ -351,28 +351,6 @@ public final class CmsSiteManagerImpl {
     public String getDefaultUri() {
 
         return m_defaultUri;
-    }
-
-    /**
-     * Returns the site with has the provided site root, 
-     * or <code>null</code> if no configured site has that site root.<p>
-     * 
-     * The site root must have the form:
-     * <code>/sites/default</code>.<br>
-     * That means there must be a leading, but no trailing slash.<p>
-     * 
-     * @param siteRoot the site root to look up the site for
-     * 
-     * @return the site with has the provided site root, 
-     *      or <code>null</code> if no configured site has that site root
-     *      
-     * @deprecated use {@link #getSiteForSiteRoot(String)} instead
-     * 
-     * @see #getSiteForSiteRoot(String)
-     */
-    public CmsSite getSite(String siteRoot) {
-
-        return (CmsSite)m_siteRootSites.get(siteRoot);
     }
 
     /**
@@ -451,7 +429,7 @@ public final class CmsSiteManagerImpl {
      */
     public CmsSite getSiteForSiteRoot(String siteRoot) {
 
-        return (CmsSite)m_siteRootSites.get(siteRoot);
+        return m_siteRootSites.get(siteRoot);
     }
 
     /**
@@ -485,7 +463,7 @@ public final class CmsSiteManagerImpl {
      *  
      * @return an unmodifiable set of all configured site roots (Strings)
      */
-    public Set getSiteRoots() {
+    public Set<String> getSiteRoots() {
 
         return m_siteRoots;
     }
@@ -536,9 +514,9 @@ public final class CmsSiteManagerImpl {
         }
 
         // check the presence of sites in VFS
-        Iterator i = m_siteMatcherSites.values().iterator();
+        Iterator<CmsSite> i = m_siteMatcherSites.values().iterator();
         while (i.hasNext()) {
-            CmsSite site = (CmsSite)i.next();
+            CmsSite site = i.next();
             if (site != null) {
                 try {
                     cms.readResource(site.getSiteRoot());
@@ -590,9 +568,9 @@ public final class CmsSiteManagerImpl {
         m_siteRoots = Collections.unmodifiableSet(m_siteRootSites.keySet());
 
         // store additional site roots to optimize lookups later
-        Iterator j = m_siteRoots.iterator();
+        Iterator<String> j = m_siteRoots.iterator();
         while (j.hasNext()) {
-            String root = (String)j.next();
+            String root = j.next();
             if (!root.startsWith(SITES_FOLDER)) {
                 m_additionalSiteRoots.add(root);
             }
@@ -774,7 +752,7 @@ public final class CmsSiteManagerImpl {
         if (index < 0) {
             return matcher;
         }
-        return (CmsSiteMatcher)m_matchers.get(index);
+        return m_matchers.get(index);
     }
 
     /**
@@ -787,7 +765,7 @@ public final class CmsSiteManagerImpl {
     private String lookupAdditionalSite(String rootPath) {
 
         for (int i = 0, size = m_additionalSiteRoots.size(); i < size; i++) {
-            String siteRoot = (String)m_additionalSiteRoots.get(i);
+            String siteRoot = m_additionalSiteRoots.get(i);
             if (rootPath.startsWith(siteRoot)) {
                 return siteRoot;
             }
@@ -810,7 +788,7 @@ public final class CmsSiteManagerImpl {
         if (pos > 0) {
             // this assumes that the root path may likely start with something like "/sites/default/" 
             // just cut the first 2 directories from the root path and do a direct lookup in the internal map
-            return (CmsSite)m_siteRootSites.get(rootPath.substring(0, pos));
+            return m_siteRootSites.get(rootPath.substring(0, pos));
         }
         return null;
     }

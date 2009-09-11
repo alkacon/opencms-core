@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/09/11 15:29:13 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Michael Moossen
  * @author Carsten Weinholz
  *
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.5.4 
  */
@@ -58,12 +58,14 @@ public interface I_CmsAuthorizationHandler {
      * Class providing the privileged login action.<p>
      */
     interface I_PrivilegedLoginAction {
+
         /**
          * Used to provide an initial cms object.<p>
          * 
          * @param cms an initial cms object
          */
         void setCmsObject(CmsObject cms);
+
         /**
          * Performs a privileged login action and returns a cms object initialized for the principal.<p>
          * 
@@ -75,7 +77,7 @@ public interface I_CmsAuthorizationHandler {
          */
         CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException;
     }
-    
+
     /**
      * Returns the full URL used to call a login form with additional parameters and a callbackURL.<p> 
      * 
@@ -85,8 +87,8 @@ public interface I_CmsAuthorizationHandler {
      * 
      * @return the full URL used to call a login form
      */
-    String getLoginFormURL (String loginFormURL, String params, String callbackURL);
-    
+    String getLoginFormURL(String loginFormURL, String params, String callbackURL);
+
     /**
      * Creates a new cms object from the given request object.<p>
      * 
@@ -111,7 +113,7 @@ public interface I_CmsAuthorizationHandler {
      * @return the cms context object associated to the current session
      */
     CmsObject initCmsObject(HttpServletRequest request, I_PrivilegedLoginAction loginAction);
-    
+
     /**
      * Authenticates the current request with additional user information.<p>
      * 
@@ -126,7 +128,7 @@ public interface I_CmsAuthorizationHandler {
      * @throws CmsException if something goes wrong 
      */
     CmsObject initCmsObject(HttpServletRequest request, String userName, String pwd) throws CmsException;
-    
+
     /**
      * This method sends a request to the client to display a login form,
      * it is needed for HTTP-Authentication.<p>
@@ -138,11 +140,11 @@ public interface I_CmsAuthorizationHandler {
      * @throws IOException if something goes wrong
      */
     void requestAuthorization(HttpServletRequest req, HttpServletResponse res, String loginFormURL) throws IOException;
-    
+
     /**
      * Sets parameters which can be configured additionally for an authorization handler.<p>
      * 
      * @param parameters the map of parameters
      */
-    void setParameters(Map parameters);
+    void setParameters(Map<String, String> parameters);
 }

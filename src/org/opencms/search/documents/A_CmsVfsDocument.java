@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2009/09/07 12:41:56 $
- * Version: $Revision: 1.23.2.1 $
+ * Date   : $Date: 2009/09/11 15:29:16 $
+ * Version: $Revision: 1.23.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -63,46 +64,11 @@ import org.apache.lucene.document.Fieldable;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23.2.1 $ 
+ * @version $Revision: 1.23.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
-
-    /** 
-     * Value for "high" search priority.
-     * 
-     * @deprecated use {@link org.opencms.search.fields.CmsSearchFieldConfiguration#SEARCH_PRIORITY_HIGH_VALUE} instead
-     */
-    public static final String SEARCH_PRIORITY_HIGH_VALUE = "high";
-
-    /** 
-     * Value for "low" search priority. 
-     * 
-     * @deprecated use {@link org.opencms.search.fields.CmsSearchFieldConfiguration#SEARCH_PRIORITY_LOW_VALUE} instead
-     */
-    public static final String SEARCH_PRIORITY_LOW_VALUE = "low";
-
-    /**
-     * Value for "maximum" search priority. 
-     * 
-     * @deprecated use {@link org.opencms.search.fields.CmsSearchFieldConfiguration#SEARCH_PRIORITY_MAX_VALUE} instead
-     */
-    public static final String SEARCH_PRIORITY_MAX_VALUE = "max";
-
-    /** 
-     * Value for "normal" search priority.
-     *  
-     * @deprecated use {@link org.opencms.search.fields.CmsSearchFieldConfiguration#SEARCH_PRIORITY_NORMAL_VALUE} instead
-     */
-    public static final String SEARCH_PRIORITY_NORMAL_VALUE = "normal";
-
-    /** 
-     * The VFS prefix for document keys.
-     *  
-     * @deprecated use {@link org.opencms.search.fields.CmsSearchFieldConfiguration#VFS_DOCUMENT_KEY_PREFIX} instead
-     */
-    public static final String VFS_DOCUMENT_KEY_PREFIX = "VFS";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsVfsDocument.class);
@@ -139,7 +105,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     public static String getDocumentKey(String type, String mimeType) {
 
         StringBuffer result = new StringBuffer(16);
-        result.append(A_CmsVfsDocument.VFS_DOCUMENT_KEY_PREFIX);
+        result.append(CmsSearchFieldConfiguration.VFS_DOCUMENT_KEY_PREFIX);
         result.append('_');
         result.append(type);
         if (mimeType != null) {

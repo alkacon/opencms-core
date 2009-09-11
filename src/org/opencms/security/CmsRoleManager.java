@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2009/09/09 15:54:54 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2009/09/11 15:29:13 $
+ * Version: $Revision: 1.8.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.2.1 $
+ * @version $Revision: 1.8.2.2 $
  * 
  * @since 6.5.6
  */
@@ -132,10 +132,13 @@ public class CmsRoleManager {
      */
     public List<CmsGroup> getManageableGroups(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
 
-        List groups = new ArrayList();
-        Iterator it = getOrgUnitsForRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn), includeSubOus).iterator();
+        List<CmsGroup> groups = new ArrayList<CmsGroup>();
+        Iterator<CmsOrganizationalUnit> it = getOrgUnitsForRole(
+            cms,
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn),
+            includeSubOus).iterator();
         while (it.hasNext()) {
-            CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
+            CmsOrganizationalUnit orgUnit = it.next();
             groups.addAll(OpenCms.getOrgUnitManager().getGroups(cms, orgUnit.getName(), false));
         }
         return groups;
@@ -152,7 +155,7 @@ public class CmsRoleManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getManageableResources(CmsObject cms, CmsRole role) throws CmsException {
+    public List<CmsResource> getManageableResources(CmsObject cms, CmsRole role) throws CmsException {
 
         return m_securityManager.getManageableResources(cms.getRequestContext(), role);
     }
@@ -190,10 +193,13 @@ public class CmsRoleManager {
     public List<CmsUser> getManageableUsers(CmsObject cms, String ouFqn, boolean includeSubOus, boolean includeWebusers)
     throws CmsException {
 
-        List users = new ArrayList();
-        Iterator it = getOrgUnitsForRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn), includeSubOus).iterator();
+        List<CmsUser> users = new ArrayList<CmsUser>();
+        Iterator<CmsOrganizationalUnit> it = getOrgUnitsForRole(
+            cms,
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn),
+            includeSubOus).iterator();
         while (it.hasNext()) {
-            CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
+            CmsOrganizationalUnit orgUnit = it.next();
             if (!includeWebusers && orgUnit.hasFlagWebuser()) {
                 // webuser are never manageable
                 continue;
@@ -214,7 +220,8 @@ public class CmsRoleManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getOrgUnitsForRole(CmsObject cms, CmsRole role, boolean includeSubOus) throws CmsException {
+    public List<CmsOrganizationalUnit> getOrgUnitsForRole(CmsObject cms, CmsRole role, boolean includeSubOus)
+    throws CmsException {
 
         return m_securityManager.getOrgUnitsForRole(cms.getRequestContext(), role, includeSubOus);
     }
@@ -226,18 +233,18 @@ public class CmsRoleManager {
      * @param ouFqn the fully qualified name of the organizational unit of the role
      * @param includeSubOus include roles of child organizational units
      * 
-     * @return a list of all <code>{@link org.opencms.file.CmsGroup}</code> objects
+     * @return a list of all <code>{@link CmsRole}</code> objects
      *
      * @throws CmsException if operation was not successful
      */
-    public List getRoles(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
+    public List<CmsRole> getRoles(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
 
         CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ouFqn);
-        List groups = m_securityManager.getGroups(cms.getRequestContext(), ou, includeSubOus, true);
-        List roles = new ArrayList(groups.size());
-        Iterator itGroups = groups.iterator();
+        List<CmsGroup> groups = m_securityManager.getGroups(cms.getRequestContext(), ou, includeSubOus, true);
+        List<CmsRole> roles = new ArrayList<CmsRole>(groups.size());
+        Iterator<CmsGroup> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
-            CmsGroup group = (CmsGroup)itGroups.next();
+            CmsGroup group = itGroups.next();
             roles.add(CmsRole.valueOf(group));
         }
         return roles;
@@ -254,7 +261,7 @@ public class CmsRoleManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getRolesForResource(CmsObject cms, String userFqn, String resourceName) throws CmsException {
+    public List<CmsRole> getRolesForResource(CmsObject cms, String userFqn, String resourceName) throws CmsException {
 
         CmsUser user = cms.readUser(userFqn);
         CmsResource resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
@@ -275,7 +282,7 @@ public class CmsRoleManager {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getRolesOfUser(
+    public List<CmsRole> getRolesOfUser(
         CmsObject cms,
         String username,
         String ouFqn,
@@ -283,7 +290,7 @@ public class CmsRoleManager {
         boolean directRolesOnly,
         boolean recursive) throws CmsException {
 
-        List groups;
+        List<CmsGroup> groups;
         ouFqn = CmsOrganizationalUnit.removeLeadingSeparator(ouFqn);
         if (!recursive) {
             groups = m_securityManager.getGroupsOfUser(
@@ -295,8 +302,8 @@ public class CmsRoleManager {
                 directRolesOnly,
                 cms.getRequestContext().getRemoteAddress());
         } else {
-            groups = new ArrayList();
-            Iterator itAllGroups = m_securityManager.getGroupsOfUser(
+            groups = new ArrayList<CmsGroup>();
+            Iterator<CmsGroup> itAllGroups = m_securityManager.getGroupsOfUser(
                 cms.getRequestContext(),
                 username,
                 "",
@@ -305,7 +312,7 @@ public class CmsRoleManager {
                 directRolesOnly,
                 cms.getRequestContext().getRemoteAddress()).iterator();
             while (itAllGroups.hasNext()) {
-                CmsGroup role = (CmsGroup)itAllGroups.next();
+                CmsGroup role = itAllGroups.next();
                 if (!includeChildOus && role.getOuFqn().equals(ouFqn)) {
                     groups.add(role);
                 }
@@ -314,10 +321,10 @@ public class CmsRoleManager {
                 }
             }
         }
-        List roles = new ArrayList(groups.size());
-        Iterator itGroups = groups.iterator();
+        List<CmsRole> roles = new ArrayList<CmsRole>(groups.size());
+        Iterator<CmsGroup> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
-            CmsGroup group = (CmsGroup)itGroups.next();
+            CmsGroup group = itGroups.next();
             roles.add(CmsRole.valueOf(group));
         }
         return roles;
@@ -338,8 +345,11 @@ public class CmsRoleManager {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getUsersOfRole(CmsObject cms, CmsRole role, boolean includeOtherOuUsers, boolean directUsersOnly)
-    throws CmsException {
+    public List<CmsUser> getUsersOfRole(
+        CmsObject cms,
+        CmsRole role,
+        boolean includeOtherOuUsers,
+        boolean directUsersOnly) throws CmsException {
 
         return m_securityManager.getUsersOfGroup(
             cms.getRequestContext(),

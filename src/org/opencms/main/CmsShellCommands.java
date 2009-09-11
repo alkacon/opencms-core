@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2009/06/04 14:29:38 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2009/09/11 15:29:15 $
+ * Version: $Revision: 1.95.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,6 @@ import org.opencms.workplace.CmsWorkplace;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -81,7 +80,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.95 $ 
+ * @version $Revision: 1.95.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,7 +156,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void clearCaches() throws Exception {
 
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>()));
     }
 
     /**
@@ -259,7 +258,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public CmsUser createUser(String name, String password, String description) throws Exception {
 
-        return m_cms.createUser(name, password, description, new Hashtable());
+        return m_cms.createUser(name, password, description, new Hashtable<String, Object>());
     }
 
     /**
@@ -285,28 +284,12 @@ class CmsShellCommands implements I_CmsShellCommands {
         String lastname,
         String email) throws Exception {
 
-        CmsUser user = m_cms.createUser(name, password, description, new Hashtable());
+        CmsUser user = m_cms.createUser(name, password, description, new Hashtable<String, Object>());
         user.setEmail(email);
         user.setFirstname(firstname);
         user.setLastname(lastname);
         m_cms.writeUser(user);
         return user;
-    }
-
-    /**
-     * Deletes the versions from the backup tables that are older then the given number of versions.<p>
-     * 
-     * @param versionsToKeep number of versions to keep
-     * 
-     * @throws Exception if something goes wrong
-     * 
-     * @see CmsObject#deleteHistoricalVersions(int, int, long, I_CmsReport)
-     * 
-     * @deprecated Use {@link #deleteHistoricalVersions(int, int, long)} instead
-     */
-    public void deleteBackups(int versionsToKeep) throws Exception {
-
-        deleteHistoricalVersions(versionsToKeep, versionsToKeep, -1);
     }
 
     /**
@@ -404,7 +387,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void exportAllResources(String exportFile) throws Exception {
 
-        List exportPaths = new ArrayList(1);
+        List<String> exportPaths = new ArrayList<String>(1);
         exportPaths.add("/");
 
         CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
@@ -481,7 +464,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void exportResources(String exportFile, String pathList) throws Exception {
 
         StringTokenizer tok = new StringTokenizer(pathList, ";");
-        List exportPaths = new ArrayList();
+        List<String> exportPaths = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
             exportPaths.add(tok.nextToken());
         }
@@ -524,7 +507,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void exportResourcesAndUserdata(String exportFile, String pathList) throws Exception {
 
         StringTokenizer tok = new StringTokenizer(pathList, ";");
-        List exportPaths = new ArrayList();
+        List<String> exportPaths = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
             exportPaths.add(tok.nextToken());
         }
@@ -567,9 +550,9 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void getAcl(String resourceName) throws Exception {
 
         CmsAccessControlList acList = m_cms.getAccessControlList(resourceName);
-        Iterator principals = acList.getPrincipals().iterator();
+        Iterator<CmsUUID> principals = acList.getPrincipals().iterator();
         while (principals.hasNext()) {
-            I_CmsPrincipal p = m_cms.lookupPrincipal((CmsUUID)principals.next());
+            I_CmsPrincipal p = m_cms.lookupPrincipal(principals.next());
             System.out.println(p.getName() + ": " + acList.getPermissions(p.getId()).getPermissionString());
         }
     }
@@ -738,11 +721,11 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void listModules() throws Exception {
 
-        Set modules = OpenCms.getModuleManager().getModuleNames();
+        Set<String> modules = OpenCms.getModuleManager().getModuleNames();
         System.out.println("\n" + getMessages().key(Messages.GUI_SHELL_LIST_MODULES_1, new Integer(modules.size())));
-        Iterator i = modules.iterator();
+        Iterator<String> i = modules.iterator();
         while (i.hasNext()) {
-            String moduleName = (String)i.next();
+            String moduleName = i.next();
             System.out.println(moduleName);
         }
         System.out.println();
@@ -781,11 +764,11 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void ls() throws Exception {
 
         String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
-        List resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
+        List<CmsResource> resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
         System.out.println("\n" + getMessages().key(Messages.GUI_SHELL_LS_2, folder, new Integer(resources.size())));
-        Iterator i = resources.iterator();
+        Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
-            CmsResource r = (CmsResource)i.next();
+            CmsResource r = i.next();
             System.out.println(m_cms.getSitePath(r));
         }
         System.out.println();
@@ -799,9 +782,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void lsacc(String resourceName) throws Exception {
 
-        List acList = m_cms.getAccessControlEntries(resourceName);
+        List<CmsAccessControlEntry> acList = m_cms.getAccessControlEntries(resourceName);
         for (int i = 0; i < acList.size(); i++) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.get(i);
+            CmsAccessControlEntry ace = acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
             String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
             System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
@@ -818,9 +801,9 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void lsacc(String resourceName, String principalName) throws Exception {
 
         I_CmsPrincipal principal = m_cms.lookupPrincipal(principalName);
-        List acList = m_cms.getAccessControlEntries(resourceName);
+        List<CmsAccessControlEntry> acList = m_cms.getAccessControlEntries(resourceName);
         for (int i = 0; i < acList.size(); i++) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.get(i);
+            CmsAccessControlEntry ace = acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
             if (principal.equals(acePrincipal)) {
                 String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
@@ -842,7 +825,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             m_cms.getRequestContext().setSiteRoot("/");
             Random random = new Random();
             // create a resource filter to get the resources with
-            List testResources = m_cms.readResources("/", CmsResourceFilter.ALL);
+            List<CmsResource> testResources = m_cms.readResources("/", CmsResourceFilter.ALL);
             int resourceCount = testResources.size();
             System.out.println("#Resources:\t" + resourceCount);
             long start, time;
@@ -852,7 +835,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             System.out.print("readFileHeader:\t");
             for (int i = maxTests; i > 0; --i) {
                 int index = random.nextInt(resourceCount);
-                CmsResource resource = (CmsResource)testResources.get(index);
+                CmsResource resource = testResources.get(index);
                 start = System.currentTimeMillis();
                 m_cms.readResource(m_cms.getSitePath(resource), CmsResourceFilter.ALL);
                 time = System.currentTimeMillis() - start;
@@ -911,7 +894,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void purgeJspRepository() throws Exception {
 
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, new HashMap(0)));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
+            new HashMap<String, Object>()));
     }
 
     /**

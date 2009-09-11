@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2009/09/11 15:29:16 $
+ * Version: $Revision: 1.66.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.66.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -121,6 +121,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      * 
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
         // check to OpenCms runlevel
@@ -159,6 +160,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      * 
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
         doGet(req, res);
@@ -225,6 +227,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     /**
      * @see javax.servlet.Servlet#init(javax.servlet.ServletConfig)
      */
+    @Override
     public synchronized void init(ServletConfig config) throws ServletException {
 
         super.init(config);
