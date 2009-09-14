@@ -30,14 +30,8 @@
    var moveEnd = cms.move.moveEnd = function(event) {
       var handleDiv = $(this).closest('.cms-handle');
       if (handleDiv) {
-         handleDiv.hover(function() {
-            cms.move.hoverIn($(this).closest('.cms-element'), 2);
-            cms.toolbar.startHoverTimeout(handleDiv, cms.toolbar.timer.adeMode);
-         }, function() {
-            cms.toolbar.stopHover();
-         });
+         cms.toolbar.initHandleDiv(handleDiv, $(this).closest('.cms-element'), cms.toolbar.timer.adeMode);
       }
-      
       if ('move' != cms.toolbar.timer.adeMode) {
          $(this).hide();
          handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
@@ -328,12 +322,7 @@
                
                // reset handles
                var handleDiv = $('div.cms-handle', helper);
-               handleDiv.hover(function() {
-                  cms.move.hoverIn(helper, 2);
-                  cms.toolbar.startHoverTimeout(handleDiv, cms.toolbar.timer.adeMode);
-               }, function() {
-                  cms.toolbar.stopHover();
-               });
+               cms.toolbar.initHandleDiv(handleDiv, helper, cms.toolbar.timer.adeMode);
                if ('move' != cms.toolbar.timer.adeMode) {
                   handleDiv.children('.cms-move').hide();
                   handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
@@ -381,9 +370,8 @@
       
       var data = cms.data.elements[ui.self.cmsResource_id];
       if (data.status == cms.data.STATUS_NEWCONFIG) {
-         $(currentItem).addClass('cms-new-element');
          hoverOutFilter(currentItem, '.' + HOVER_NEW);
-         hoverInWithClass(currentItem, 4, HOVER_NEW);
+         hoverInWithClass(currentItem, 2, HOVER_NEW);
       }
    }
    
@@ -488,7 +476,7 @@
    
    var hoverIn = cms.move.hoverIn = function(elem, hOff) {
       hoverInWithClass(elem, hOff, HOVER_NORMAL);
-      hoverOutFilter(elem, '.' + HOVER_NEW);
+      //   hoverOutFilter(elem, '.' + HOVER_NEW);
    }
    
    
@@ -502,7 +490,7 @@
     * @param {Object} additionalClass the class which should be given to the elements of the border
     */
    var hoverInWithClass = cms.move.hoverInWithClass = function(elem, hOff, additionalClass) {
-   
+      elem = $(elem);
       var tHeight = elem.outerHeight();
       var tWidth = elem.outerWidth();
       var hWidth = 2;
@@ -550,7 +538,7 @@
    
    /**
     * Generalized version of hoverInner.<p>
-    *
+    *-
     *  This functions adds a given CSS class to the elements of the border.
     *
     * @param {Object} elem the element for
@@ -559,7 +547,7 @@
     * @param {Object} additionalClass the CSS class for the border elements
     */
    var hoverInnerWithClass = cms.move.hoverInnerWithClass = function(elem, hOff, showBackground, additionalClass) {
-   
+      elem = $(elem);
       var dimension = cms.util.getInnerDimensions(elem, 25);
       var elemPos = cms.util.getElementPosition(elem);
       var hWidth = 2;
@@ -626,14 +614,22 @@
    };
    
    
-   
    var hoverOut = cms.move.hoverOut = function(context) {
       hoverOutFilter(context, '.' + HOVER_NORMAL);
-      $('.cms-new-element').each(function() {
-         hoverInWithClass($(this), 4, HOVER_NEW);
-      })
    }
    
+   
+   /**
+    * Redraws all borders for new elements.<p>
+    *
+    *
+    */
+   var resetNewElementBorders = cms.move.resetNewElementBorders = function() {
+      $('.' + HOVER_NEW).remove();
+      $('.cms-new-element').each(function() {
+         hoverInWithClass(this, 2, HOVER_NEW);
+      })
+   }
    
    var setHelper = cms.move.setHelper = function(sortable, id) {
       sortable.helper.css('display', 'none');

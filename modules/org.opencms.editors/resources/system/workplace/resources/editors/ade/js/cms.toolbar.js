@@ -257,6 +257,30 @@
       }
    }
    
+   /**
+    * Initializes the hover event handler for a handle div.
+    * 
+    * @param {Object} handleDiv the handle div
+    * @param {Object} elem the element which the handle div belongs to
+    * @param {String} adeMode the current mode 
+    */
+   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/adeMode) {
+      handleDiv.hover(function() {
+         cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
+         cms.move.hoverIn(elem, 2);
+         //cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
+         startHoverTimeout(handleDiv, adeMode);
+         $('body').children('.'+cms.move.HOVER_NEW).remove();
+      }, function() {
+         stopHover();
+         if ($(elem).find('.' + cms.move.HOVER_NEW).size() == 0 && $(elem).hasClass('cms-new-element')) {
+            cms.move.hoverInWithClass(elem, 2, cms.move.HOVER_NEW);
+         }
+         $('body').children('.'+cms.move.HOVER_NEW).remove();
+      });
+      $('body').children('.'+cms.move.HOVER_NEW).remove();
+   }
+   
    var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
       var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem);
       
@@ -277,12 +301,7 @@
             handles['move'].css('display', 'block');
          }
       } else {
-         handleDiv.hover(function() {
-            cms.move.hoverIn(elem, 2);
-            startHoverTimeout(handleDiv, adeMode);
-         }, function() {
-            stopHover();
-         });
+          initHandleDiv(handleDiv, elem, adeMode);
       }
       handleDiv.css({
          'right': '0px',
