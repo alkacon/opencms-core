@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsSelectWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/09/14 14:43:06 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -179,7 +179,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
      * 
      * @return the list of select options
      */
-    protected List getSelectOptions() {
+    protected List<CmsSelectWidgetOption> getSelectOptions() {
 
         return m_selectOptions;
     }

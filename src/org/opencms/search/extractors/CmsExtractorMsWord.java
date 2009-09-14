@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsWord.java,v $
- * Date   : $Date: 2009/09/07 12:41:37 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2009/09/14 14:43:05 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,11 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.main.CmsLog;
+
 import java.io.InputStream;
 
+import org.apache.commons.logging.Log;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 
 import org.textmining.text.extraction.WordExtractor;
@@ -42,7 +45,7 @@ import org.textmining.text.extraction.WordExtractor;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,6 +53,9 @@ public final class CmsExtractorMsWord extends A_CmsTextExtractorMsOfficeBase {
 
     /** Static member instance of the extractor. */
     private static final CmsExtractorMsWord INSTANCE = new CmsExtractorMsWord();
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExtractorMsWord.class);
 
     /**
      * Hide the public constructor.<p> 
@@ -75,16 +81,22 @@ public final class CmsExtractorMsWord extends A_CmsTextExtractorMsOfficeBase {
     @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
-        // first extract the text using the text abstraction libary
-        WordExtractor wordExtractor = new WordExtractor();
-        String rawContent = wordExtractor.extractText(getStreamCopy(in));
-        rawContent = removeControlChars(rawContent);
+        String rawContent = "";
+        try {
+            // first extract the text using the text abstraction libary
+            WordExtractor wordExtractor = new WordExtractor();
+            rawContent = wordExtractor.extractText(getStreamCopy(in));
+            rawContent = removeControlChars(rawContent);
 
-        // now extract the meta information using POI 
-        POIFSReader reader = new POIFSReader();
-        reader.registerListener(this);
-        reader.read(getStreamCopy(in));
-
+            // now extract the meta information using POI 
+            POIFSReader reader = new POIFSReader();
+            reader.registerListener(this);
+            reader.read(getStreamCopy(in));
+        } catch (Exception e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().container(Messages.LOG_EXTRACT_TEXT_ERROR_0), e);
+            }
+        }
         // combine the meta information with the content and create the result
         return createExtractionResult(rawContent);
     }
