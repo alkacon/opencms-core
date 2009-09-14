@@ -2,10 +2,17 @@
    var $ = jQuery;
    var over = null;
    var cancel = false;
+   
+   /* class for normal move-related hover borders*/
+   var HOVER_NORMAL = cms.move.HOVER_NORMAL = 'cms-hover-normal';
+   // class for hover borders for new items
+   var HOVER_NEW = cms.move.HOVER_NEW = 'cms-hover-new';
+   
    cms.move.zIndexMap = {};
    
    var isMenuContainer = cms.move.isMenuContainer = function(id) {
-      return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId;
+      //#
+      return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId || id == cms.html.favoriteDropListId;
    }
    
    var movePreparation = cms.move.movePreparation = function(event) {
@@ -139,35 +146,20 @@
       sortable.cmsHoverList += ', #' + sortable.cmsStartContainerId;
       cms.util.fixZIndex(sortable.cmsStartContainerId, cms.move.zIndexMap);
       // show drop zone for new favorites
-      var list_item = '<li class="cms-item"  rel="' +
-      sortable.cmsResource_id +
-      '"><div class=" ui-widget-content"><div class="cms-head ui-state-hover"><div class="cms-navtext"><a class="left ui-icon ui-icon-triangle-1-e"></a>' +
-      sortable.cmsItem.navText +
-      '</div><span class="cms-title">' +
-      sortable.cmsItem.title +
-      '</span><span class="cms-file-icon"></span><a class="cms-handle cms-move"></a></div><div class="cms-additional"><div alt="File: ' +
-      sortable.cmsItem.file +
-      '"><span class="left">File:</span>' +
-      sortable.cmsItem.file +
-      '</div><div alt="Date: ' +
-      sortable.cmsItem.date +
-      '"><span class="left">Date:</span>' +
-      sortable.cmsItem.date +
-      '</div><div alt="User: ' +
-      sortable.cmsItem.user +
-      '"><span class="left">User:</span>' +
-      sortable.cmsItem.user +
-      '</div><div alt="Type: ' +
-      sortable.cmsItem.type +
-      '"><span class="left">Type:</span>' +
-      sortable.cmsItem.type +
-      '</div></div></div></li>';
-      sortable.cmsHelpers[cms.html.favoriteListId] = $(list_item).appendTo('#' + cms.html.favoriteListId).css({
+      var list_item = cms.html.formatFavListItem(sortable.cmsItem);
+      
+      // shouldn't be able to drag new items to favorites before a resource is created 
+      if (sortable.cmsItem.status == cms.data.STATUS_NEWCONFIG) {
+         return;
+      }
+      //#
+      sortable.cmsHelpers[cms.html.favoriteDropListId] = $(list_item).appendTo('#' + cms.html.favoriteDropListId).css({
          'display': 'none',
          'position': 'absolute',
          'zIndex': sortable.options.zIndex
       }).addClass('ui-sortable-helper');
-      $('#' + cms.html.favoriteMenuId).css('visibility', 'visible');
+      //#
+      $('#' + cms.html.favoriteDropMenuId).css('visibility', 'visible');
    }
    
    
@@ -303,7 +295,8 @@
             
             // add item to endContainer
          } else {
-            if (endContainer == cms.html.favoriteListId) {
+            //#
+            if (endContainer == cms.html.favoriteDropListId) {
                cms.util.addUnique(cms.toolbar.favorites, ui.self.cmsResource_id);
                cms.data.persistFavorites(function(ok) {
                   if (!ok) {
@@ -315,7 +308,8 @@
             orgPlaceholder.remove();
             // add item to endContainer
          }
-         if (endContainer != cms.html.favoriteListId && startContainer != cms.html.newListId) {
+         //#
+         if (endContainer != cms.html.favoriteDropListId && startContainer != cms.html.newListId) {
             cms.toolbar.addToRecent(ui.self.cmsResource_id);
          }
       }
@@ -323,8 +317,9 @@
          if (container_name != endContainer &&
          !(startContainer == container_name && isMenuContainer(container_name))) {
             var helper = helpers[container_name];
+            //#
             if (container_name == startContainer &&
-            endContainer == cms.html.favoriteListId) {
+            endContainer == cms.html.favoriteDropListId) {
                var helperStyle = helper.get(0).style;
                helper.removeClass('ui-sortable-helper cms-helper-border cms-helper-background');
                // reset position (?) of helper that was dragged to favorites,
@@ -375,8 +370,20 @@
       //      }
       updateContainer(startContainer);
       updateContainer(endContainer);
-      if (endContainer != cms.html.favoriteListId) {
+      //#
+      if (endContainer != cms.html.favoriteDropListId) {
          cms.toolbar.setPageChanged(true);
+      }
+      
+      if (!cancel && startContainer == cms.html.newListId) {
+         $('button[name="Edit"]').trigger('click');
+      }
+      
+      var data = cms.data.elements[ui.self.cmsResource_id];
+      if (data.status == cms.data.STATUS_NEWCONFIG) {
+         $(currentItem).addClass('cms-new-element');
+         hoverOutFilter(currentItem, '.' + HOVER_NEW);
+         hoverInWithClass(currentItem, 4, HOVER_NEW);
       }
    }
    
@@ -390,11 +397,11 @@
     *            ui
     */
    var overAdd = cms.move.overAdd = function(event, ui) {
-   
       var elem = event.target ? event.target : event.srcElement;
       var elemId = $(elem).attr('id');
       var reDoHover = !ui.self.cmsOver;
       if (ui.self.cmsStartContainerId != elemId &&
+      //#
       ui.self.cmsStartContainerId != cms.html.favoriteListId &&
       ui.self.cmsStartContainerId != cms.html.recentListId) {
          // show pacelholder in start container if dragging over a different
@@ -439,7 +446,8 @@
          ui.placeholder.css('display', 'none');
          ui.self.cmsOver = false;
       }
-      if (elemId == cms.html.favoriteListId &&
+      //#
+      if (elemId == cms.html.favoriteDropListId &&
       ui.placeholder.parent().attr('id') != elemId) 
          ui.placeholder.appendTo(elem);
       
@@ -462,6 +470,7 @@
             setHelper(ui.self, ui.self.cmsCurrentContainerId);
          }
          ui.placeholder.css('display', 'none');
+         //#
          if (ui.self.cmsStartContainerId != cms.html.favoriteListId) {
             ui.self.cmsOrgPlaceholder.css({
                'display': 'block',
@@ -478,12 +487,30 @@
    }
    
    var hoverIn = cms.move.hoverIn = function(elem, hOff) {
+      hoverInWithClass(elem, hOff, HOVER_NORMAL);
+      hoverOutFilter(elem, '.' + HOVER_NEW);
+   }
+   
+   
+   /**
+    * Generalized version of hoverIn which draws animated borders around an element.<p>
+    *
+    * The elements constituting the border are given a CSS class.
+    *
+    * @param {Object} elem the element for which a border should be displayed
+    * @param {Object} hOff the offset of the border
+    * @param {Object} additionalClass the class which should be given to the elements of the border
+    */
+   var hoverInWithClass = cms.move.hoverInWithClass = function(elem, hOff, additionalClass) {
    
       var tHeight = elem.outerHeight();
       var tWidth = elem.outerWidth();
       var hWidth = 2;
       var lrHeight = tHeight + 2 * (hOff + hWidth);
       var btWidth = tWidth + 2 * (hOff + hWidth);
+      if (!additionalClass) {
+         additionalClass = '';
+      }
       
       
       if (elem.css('position') == 'relative') {
@@ -491,32 +518,47 @@
          var tlrTop = -(hOff + hWidth);
          var tblLeft = -(hOff + hWidth);
          // top
-         $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(btWidth).css('top', tlrTop).css('left', tblLeft).appendTo(elem);
+         $('<div class="cms-hovering cms-hovering-top"></div>').addClass(additionalClass).height(hWidth).width(btWidth).css('top', tlrTop).css('left', tblLeft).appendTo(elem);
          
          // right
-         $('<div class="cms-hovering cms-hovering-right"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tWidth + hOff).appendTo(elem);
+         $('<div class="cms-hovering cms-hovering-right"></div>').addClass(additionalClass).height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tWidth + hOff).appendTo(elem);
          // left
-         $('<div class="cms-hovering cms-hovering-left"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tblLeft).appendTo(elem);
+         $('<div class="cms-hovering cms-hovering-left"></div>').addClass(additionalClass).height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tblLeft).appendTo(elem);
          // bottom
-         $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(btWidth).css('top', tHeight + hOff).css('left', tblLeft).appendTo(elem);
+         $('<div class="cms-hovering cms-hovering-bottom"></div>').addClass(additionalClass).height(hWidth).width(btWidth).css('top', tHeight + hOff).css('left', tblLeft).appendTo(elem);
       } else {
          // if position not relative highlighting div's are appended to the body element
          var position = cms.util.getElementPosition(elem);
          var tlrTop = position.top - (hOff + hWidth);
          var tblLeft = position.left - (hOff + hWidth);
          // top
-         $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(btWidth).css('top', tlrTop).css('left', tblLeft).appendTo(document.body);
+         $('<div class="cms-hovering cms-hovering-top"></div>').addClass(additionalClass).height(hWidth).width(btWidth).css('top', tlrTop).css('left', tblLeft).appendTo(document.body);
          
          // right
-         $('<div class="cms-hovering cms-hovering-right"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', position.left + tWidth + hOff).appendTo(document.body);
+         $('<div class="cms-hovering cms-hovering-right"></div>').addClass(additionalClass).height(lrHeight).width(hWidth).css('top', tlrTop).css('left', position.left + tWidth + hOff).appendTo(document.body);
          // left
-         $('<div class="cms-hovering cms-hovering-left"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tblLeft).appendTo(document.body);
+         $('<div class="cms-hovering cms-hovering-left"></div>').addClass(additionalClass).height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tblLeft).appendTo(document.body);
          // bottom
-         $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(btWidth).css('top', position.top + tHeight + hOff).css('left', tblLeft).appendTo(document.body);
+         $('<div class="cms-hovering cms-hovering-bottom"></div>').addClass(additionalClass).height(hWidth).width(btWidth).css('top', position.top + tHeight + hOff).css('left', tblLeft).appendTo(document.body);
+      }
+      
+      // sometimes the filter property stays set and somehow prevents the hover images from showing
+      if ($.browser.msie) {
+         elem.css('filter', '');
       }
    }
    
-   var hoverInner = cms.move.hoverInner = function(elem, hOff, showBackground) {
+   /**
+    * Generalized version of hoverInner.<p>
+    *
+    *  This functions adds a given CSS class to the elements of the border.
+    *
+    * @param {Object} elem the element for
+    * @param {Object} hOff
+    * @param {Object} showBackground
+    * @param {Object} additionalClass the CSS class for the border elements
+    */
+   var hoverInnerWithClass = cms.move.hoverInnerWithClass = function(elem, hOff, showBackground, additionalClass) {
    
       var dimension = cms.util.getInnerDimensions(elem, 25);
       var elemPos = cms.util.getElementPosition(elem);
@@ -538,36 +580,61 @@
          inner.height +
          'px; width: ' +
          inner.width +
-         'px;"></div>').prependTo(elem);
+         'px;"></div>').addClass(additionalClass).prependTo(elem);
       }
       
       if (elem.css('position') == 'relative') {
          // top
-         $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
+         $('<div class="cms-hovering cms-hovering-top"></div>').addClass(additionalClass).height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
          // right
-         $('<div class="cms-hovering cms-hovering-right"></div>').height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left + inner.width + hOff).appendTo(elem);
+         $('<div class="cms-hovering cms-hovering-right"></div>').addClass(additionalClass).height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left + inner.width + hOff).appendTo(elem);
          // left
-         $('<div class="cms-hovering cms-hovering-left"></div>').height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
+         $('<div class="cms-hovering cms-hovering-left"></div>').addClass(additionalClass).height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
          // bottom
-         $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top + inner.height).css('left', inner.left - hWidth).appendTo(elem);
+         $('<div class="cms-hovering cms-hovering-bottom"></div>').addClass(additionalClass).height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top + inner.height).css('left', inner.left - hWidth).appendTo(elem);
       } else {
          // top
-         $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(dimension.width + 2 * (hOff + hWidth)).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
+         $('<div class="cms-hovering cms-hovering-top"></div>').addClass(additionalClass).height(hWidth).width(dimension.width + 2 * (hOff + hWidth)).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
          // right
-         $('<div class="cms-hovering cms-hovering-right"></div>').height(dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left + dimension.width + hOff).appendTo(document.body);
+         $('<div class="cms-hovering cms-hovering-right"></div>').addClass(additionalClass).height(dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left + dimension.width + hOff).appendTo(document.body);
          // left
-         $('<div class="cms-hovering cms-hovering-left"></div>').height(dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
+         $('<div class="cms-hovering cms-hovering-left"></div>').addClass(additionalClass).height(dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
          // bottom
-         $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(dimension.width + 2 * (hOff + hWidth)).css('top', dimension.top + dimension.height + hOff).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
+         $('<div class="cms-hovering cms-hovering-bottom"></div>').addClass(additionalClass).height(hWidth).width(dimension.width + 2 * (hOff + hWidth)).css('top', dimension.top + dimension.height + hOff).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
       }
    }
-   var hoverOut = cms.move.hoverOut = function(context) {
-      if (context) {
-         $('div.cms-hovering, div.cms-highlight-container', context).remove();
-      } else {
-         $('div.cms-hovering, div.cms-highlight-container').remove();
+   
+   var hoverInner = cms.move.hoverInner = function(elem, hOff, showBackground) {
+      hoverInnerWithClass(elem, hOff, showBackground, HOVER_NORMAL);
+   }
+   
+   /**
+    * Generalized version of hoverOut which filters the border elements with a given filter expression.
+    *
+    * @param {Object} context the parent element from which the border elements should be removed
+    * @param {Object} filterString the JQuery filter string which the items to be removed should match
+    */
+   var hoverOutFilter = cms.move.hoverOutFilter = function(context, filterString) {
+      if (!context) {
+         context = $('body');
       }
+      var $toRemove = $('div.cms-hovering, div.cms-highlight-container', context);
+      if (filterString) {
+         $toRemove = $toRemove.filter(filterString);
+      }
+      $toRemove.remove();
    };
+   
+   
+   
+   var hoverOut = cms.move.hoverOut = function(context) {
+      hoverOutFilter(context, '.' + HOVER_NORMAL);
+      $('.cms-new-element').each(function() {
+         hoverInWithClass($(this), 4, HOVER_NEW);
+      })
+   }
+   
+   
    var setHelper = cms.move.setHelper = function(sortable, id) {
       sortable.helper.css('display', 'none');
       sortable.helper = sortable.cmsHelpers[id].css('display', 'block');
@@ -588,6 +655,5 @@
       sortable._adjustOffsetFromHelper(sortable.options.cursorAt);
       sortable.refreshPositions(true);
    };
-   
    
 })(cms);

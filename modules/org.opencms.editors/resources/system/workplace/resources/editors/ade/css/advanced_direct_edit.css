@@ -1,4 +1,4 @@
-/** General **/
+﻿/** General **/
 .cms-left {
 	float: left;
 }
@@ -241,9 +241,22 @@ div.cms-highlight-container {
 		!important;
 }
 
+.cms-hovering-top.cms-hover-new {
+	 
+	background: transparent url(images/ocms_de_t_blue.gif) repeat scroll 0
+		50% !important;
+}
+
 .cms-hovering-right,.hovering-right {
 	background: transparent url(images/ocms_de_r.gif) repeat scroll 0 50%
 		!important;
+}
+
+
+.cms-hovering-right.cms-hover-new {
+	background: transparent url(images/ocms_de_r_blue.gif) repeat scroll 0
+		50% !important;
+	width: 2px;
 }
 
 .cms-hovering-left,.hovering-left {
@@ -251,9 +264,19 @@ div.cms-highlight-container {
 		!important;
 }
 
+.cms-hovering-left.cms-hover-new {
+	background: transparent url(images/ocms_de_l_blue.gif) repeat scroll 0
+		50% !important;
+}
+
 .cms-hovering-bottom,.hovering-bottom {
 	background: transparent url(images/ocms_de_b.gif) repeat scroll 0 50%
 		!important;
+}
+
+.cms-hovering-bottom.cms-hover-new {
+	background: transparent url(images/ocms_de_b_blue.gif) repeat scroll 0
+		50% !important;
 }
 
 .hovered,#still-in-use {
@@ -456,6 +479,7 @@ div.cms-dialog {
 	padding-bottom: 1px;
 }
 
+/*
 .cms-item-list label,.cms-publish-options label {
 	float: left;
 	padding: 7px 0 3px 5px;
@@ -470,7 +494,7 @@ ul.cms-item-list,ul.cms-publish-options {
 .cms-item-list ul.options,.cms-dialog ul.cms-publish-options {
 	border-top: solid 1px #999999
 }
-
+*/
 .cms-menu .ui-widget-content,.cms-item .ui-widget-content {
 	position: relative;
 	width: 290px;
@@ -539,7 +563,7 @@ div.cms-menu div.ui-widget-content div.ui-widget-content {
 }
 
 div.cms-menu div.ui-corner-bottom {
-	width: 315px;
+	width: 351px;
 }
 
 div.cms-menu div.cms-menu-connect {
@@ -556,7 +580,7 @@ div.cms-menu div.cms-menu-connect {
 div.cms-menu button.cms-edit-favorites {
 	margin-left: 10px;
 	margin-bottom: 10px;
-	width: 290px;
+	width: 329px;
 }
 
 div.ui-widget-overlay {
@@ -639,30 +663,37 @@ li.jTreePlacement, li.jTreePlaceholder {
 }
 
 .cms-scrolling {
-	height: 200px;
+	max-height: 300px;
 	overflow: auto;
 	width: 332px;
 	position: relative;
-	/*border: 1px solid;*/
+	
 	background-color: #6e9ce0;
 	margin-left: 8px;
 }
 
 .cms-search-button {
-	margin-left: 30px;
-	margin-right: 30px;
-	margin-top: 10px;
-	margin-bottom: 5px;
-	width: 80%;
+	margin-left: 10px;
+/*	margin-right: 30px;*/
+	margin-top: 1em;
+	margin-bottom: 10px;
+	width: 329px;
 }
 
 #cms-search-list {
 	margin-left: 3px;
 }
 
+
+
 #cms-search div.ui-corner-bottom {
 	width: 350px;
 }
+
+.cms-menu div.ui-corner-bottom {
+	width: 350px;
+}
+
 
 /*
 #fav-dialog {
@@ -681,12 +712,25 @@ li.jTreePlacement, li.jTreePlaceholder {
 	white-space: nowrap;
 }
 
+.cms-menu .connect {
+	background: #AACCFF;
+	position: absolute;
+    right: -3px;
+    top: -35px;
+    width: 99px;
+    height: 36px;
+    z-index: 1;
+    border: 1px solid #aaaaaa;
+    border-bottom: 0px;
+}
+
 /*
 #recentlist {
     display: none;
     padding: 0px;
     position: absolute;
 }
+
 
 #recentlist div.ui-widget-content, #recentlist div.connect, #recentlist div.cms-menu-connect {
     background: #AACCFF;
@@ -788,6 +832,62 @@ ol.ade-forms fieldset {
 	z-index: 10;
 }
 
+.cms-new {
+	border-width: 10px;
+	border-left: 1px dashed #ff0000 !important;
+	border-right: 1px dashed #ff0000 !important;
+	border-bottom: 1px dashed #ff0000 !important;
+	border-top: 1px dashed #ff00000 !important;
+}
+
+#cms-new-list .cms-item .ui-widget-content, #cms-appendbox .cms-item .ui-widget-content {
+	border: 1px solid #333333;
+}
+	
+
 #fav-dialog .cms-subcontainer-item { /*border: none !important;*/
 	
+}
+
+.cms-type-fields {
+	max-height: 300px;
+	overflow-y: scroll;
+}
+
+#cms-new-list .ui-state-hover,#cms-new-list .ui-widget-content .ui-state-hover,#cms-new-list .ui-state-focus,#cms-new-list .ui-widget-content .ui-state-focus 
+	{
+	background: #E6E6E6 url(images/new_item_background.png) repeat-x scroll
+		50% 50% !important;
+}
+
+
+#cms-search-dialog.cms-not-firefox fieldset {
+	max-height: 300px;
+	overflow-y: scroll;
+	position: relative;
+}
+
+#cms-search-dialog.cms-not-firefox {
+	overflow: hidden;
+}
+
+#favorite-drop {
+	left: 88px;
+}
+
+#favorite-drop .connect {
+	right: -1px !important;
+}
+
+
+.cms-search-type-list {
+	max-height: 150px;
+	overflow: auto;
+	border: 1px solid;
+	position: relative;
+	width: 250px;
+}
+
+#cms-search-dialog {
+	overflow: hidden;
 }

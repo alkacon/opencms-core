@@ -151,7 +151,7 @@
       if (timer.id) {
          clearTimeout(timer.id);
       }
-      timer.id = setTimeout("cms.toolbar.showAddButtons()", 1000);
+      timer.id = setTimeout(cms.toolbar.showAddButtons, 1000);
       timer.handleDiv = handleDiv;
       timer.adeMode = adeMode;
    }
@@ -159,13 +159,33 @@
    var showAddButtons = cms.toolbar.showAddButtons = function() {
       timer.id = null;
       var right = '-48px';
+      var showMoveLeft = true;
+      var setRightToZero = false;
+      var inwardsHandle = false;
       if ($.browser.msie) {
-         right = '0px';
+         showMoveLeft = false;
+         setRightToZero = true;
       }
       timer.handleDiv.addClass('ui-widget-header').css({
          'width': '72px',
          'right': right
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
+      
+      
+      if (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width()) {
+         showMoveLeft = false;
+         // can't set the css property here directly, since changing the orientation changes the handle box
+         setRightToZero = true;
+      }
+      
+      if (showMoveLeft) {
+         setModePositionLeft(timer.handleDiv);
+      } else {
+         setModePositionRight(timer.handleDiv);
+      }
+      if (setRightToZero) {
+         timer.handleDiv.css('right', '0px');
+      }
    }
    
    var stopHover = cms.toolbar.stopHover = function() {
@@ -224,6 +244,18 @@
          button.addClass('ui-state-active');
       }
    };
+   
+   var setModePositionLeft = function(handle) {
+      if ($(handle).children('*:last').hasClass('cms-' + timer.adeMode)) {
+         cms.util.reverse(handle, '*');
+      }
+   }
+   
+   var setModePositionRight = function(handle) {
+      if (!$(handle).children('*:last').hasClass('cms-' + timer.adeMode)) {
+         cms.util.reverse(handle, '*');
+      }
+   }
    
    var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
       var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem);
@@ -288,8 +320,12 @@
       }
    };
    
+   
+   
    var openEditDialog = cms.toolbar.openEditDialog = function() {
-      var elemId = $(this).closest('.cms-element').attr('rel');
+      var $domElement = $(this).closest('.cms-element');
+      var elemId = $domElement.attr('rel');
+      
       if (elemId && cms.data.elements[elemId]) {
          if (cms.data.elements[elemId].allowEdit) {
             var element = cms.data.elements[elemId];
@@ -351,6 +387,7 @@
                      // TODO
                      return;
                   }
+                  cms.move.hoverOutFilter($domElement, '.' + cms.move.HOVER_NEW);
                   var elem = cms.data.elements[elemId];
                   delete cms.data.elements[elemId];
                   cms.data.elements[id] = elem;
@@ -467,6 +504,8 @@
       var offsetLeft = bodyEl.offset().left;
       bodyEl.append(cms.html.toolbar);
       bodyEl.append(cms.html.createMenu(cms.html.favoriteMenuId));
+      bodyEl.append(cms.html.createFavDrop());
+      
       bodyEl.append(cms.html.createMenu(cms.html.newMenuId));
       bodyEl.append(cms.html.searchMenu);
       searchLoadingSign = cms.toolbar.searchLoadingSign = new LoadingSign(".cms-loading", 500, showLoading, hideLoading);
@@ -483,8 +522,6 @@
       bodyEl.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
       $('#show-button').click(toggleToolbar);
       $('#toolbar button[name="Edit"], #toolbar button[name="Move"], #toolbar button[name="Delete"]').click(toggleMode);
-      //      $('#toolbar button[name="Move"]').click(toggleMode);
-      //      $('#toolbar button[name="Delete"]').click(toggleMode);
       $('#toolbar button[name="Publish"]').click(showPublishList);
       $('#toolbar button[name="Favorites"]').click(function() {
          toggleList(this, cms.html.favoriteMenuId);
@@ -522,7 +559,22 @@
       }, 200);
       
       initFavDialog();
+      initLinks();
+      
+      $(window).resize(fixMenuAlignment);
+      
    };
+   
+   var fixMenuAlignment = function() {
+      $('.cms-menu').each(function() {
+         var $elem = $(this);
+         if ($elem.offset().left < 0) {
+            cms.util.setLeft($elem, 0);
+         }
+      });
+   }
+   
+   
    
    /**
     * Show the 'LOADING' text for the search menu.
@@ -538,11 +590,15 @@
       return $('#cms-search-list').children().size();
    }
    
+   var getTotalNumberOfSearchResults = function() {
+      return cms.data.searchParams.totalResults;
+   }
+   
    /**
     * Hide the LOADING text for the search menu and display the number of search results loaded instead.
     */
    var hideLoading = function() {
-      $('.cms-loading').text(getNumberOfSearchResults() + " results loaded");
+      $('.cms-loading').text(getNumberOfSearchResults() + " of ~" + getTotalNumberOfSearchResults() + " results loaded");
    }
    
    /**
@@ -552,15 +608,27 @@
       var bodyEl = $(document.body);
       // scroll bar may not be at the top after reloading the page,  
       // which could cause multiple search result pages to be reloaded 
-      $('.cms-scrolling').scrollTop(0);
+      $('#cms-search-list').closest('.cms-scrolling').scrollTop(0);
       
-      bodyEl.append(cms.html.searchDialog(cms.data.newTypes));
+      
+      //hack
+      var nt = cms.data.newTypes;
+      
+      for (var i = 0; i < 50; i++) {
+         var t = cms.util.deepCopy(nt[0]);
+         t.type = t.type + i;
+         nt.push(t);
+      }
+      
+      bodyEl.append(cms.html.searchDialog(nt));
       
       $('#cms-search-dialog').dialog({
          autoOpen: false,
          modal: true,
          zIndex: 99999,
+         width: 340,
          title: 'Search',
+         resizable: false,
          buttons: {
             'Search': function() {
                if (!cms.util.validateForm($('form', $('#cms-search-dialog')))) {
@@ -569,6 +637,7 @@
                $(this).dialog('close');
                var /**Object*/ sp = {};
                saveSearchInput(sp);
+               searchLoadingSign.start();
                cms.data.startNewSearch(sp.query, sp.types, sp.path);
                saveSearchInput(cms.data.searchParams);
             },
@@ -598,8 +667,8 @@
    var initSearchScrollHandler = cms.toolbar.initSearchScrollHandler = function() {
       loading = searchLoadingSign;
       var i = 0;
-      var $inner = $("#cms-search-list");
-      var $scrolling = $(".cms-scrolling");
+      var $inner = $('#cms-search-list');
+      var $scrolling = $('#cms-search-list').closest('.cms-scrolling');
       $scrolling.scroll(function() {
          var delta = $inner.height() - $scrolling.height() - $scrolling.scrollTop();
          if (delta < 64 && !loading.isLoading && cms.data.searchParams.hasMore) {
@@ -612,28 +681,43 @@
    var destroyMove = function() {
    
       var containerSelector = cms.util.getContainerSelector();
-      $(containerSelector + ', #' + cms.html.favoriteListId).sortable('destroy');
-      var list = $('#' + cms.html.favoriteMenuId);
+      // replace ids
+      $(containerSelector + ', #' + cms.html.favoriteDropListId).sortable('destroy');
+      var list = $('#' + cms.html.favoriteDropMenuId);
       $('li.cms-item, button', list).css('display', 'block');
-      list.css('display', 'none');
-      list.get(0).style.visibility = '';
-      $('#' + cms.html.favoriteListId).get(0).style.height = '';
+      //list.css('display', 'none');
+      //list.get(0).style.visibility = '';
+      
+      // replace ids
+      //$('#' + cms.html.favoriteDropListId).get(0).style.height = '';
       resetFavList();
       //      $('a.cms-move').remove();
    };
    
    var initMove = function() {
       var containerSelector = cms.util.getContainerSelector();
-      var list = $('#' + cms.html.favoriteMenuId);
+      
+      // replace id
+      var list = $('#' + cms.html.favoriteDropMenuId);
       var favbutton = $('button[name="Favorites"]');
+      
+      //unnecessary
       $('li.cms-item, button', list).css('display', 'none');
+      
+      //stays
+      var left = 88;
+      if ($.browser.msie) {
+         left = 88;
+      }
       list.appendTo('#toolbar_content').css({
          top: 35,
-         left: favbutton.position().left - 217,
+         left: left,
          display: 'block',
          visibility: 'hidden'
       });
-      $('#' + cms.html.favoriteListId).css('height', '40px');
+      
+      // replace id
+      $('#' + cms.html.favoriteDropListId).css('height', '40px');
       $('div.ui-widget-shadow', list).css({
          top: 0,
          left: -4,
@@ -644,8 +728,12 @@
       });
       
       $(containerSelector).css('position', 'relative');
-      $(containerSelector + ', #' + cms.html.favoriteListId).sortable({
-         connectWith: containerSelector + ', #' + cms.html.favoriteListId,
+      
+      // replace id
+      var sortSelector = containerSelector + ', #' + cms.html.favoriteDropListId;
+      var $lists = $(sortSelector);
+      $lists.sortable({
+         connectWith: containerSelector + ', #' + cms.html.favoriteDropListId,
          placeholder: 'cms-placeholder',
          dropOnEmpty: true,
          start: cms.move.startAdd,
@@ -667,9 +755,10 @@
          handle: 'a.cms-move',
          items: '.cms-element',
          revert: true,
+         // replace ids
          deactivate: function(event, ui) {
-            $('#' + cms.html.favoriteListId + ' li').hide(200);
-            $('#' + cms.html.favoriteMenuId).css('visibility', 'hidden');
+            $('#' + cms.html.favoriteDropListId + ' li').hide(200);
+            $('#' + cms.html.favoriteDropMenuId).css('visibility', 'hidden');
             $('.cms-handle').show();
             if ($.browser.msie) {
                setTimeout("$('.cms-element').css('display','block')", 50);
@@ -678,96 +767,96 @@
       });
    }
    
-   var toggleMove = cms.toolbar.toggleMove = function(el) {
-      var button = $(this);
-      var containerSelector = cms.util.getContainerSelector();
-      if (button.hasClass('ui-state-active')) {
-         // disabling move-mode
-         $(containerSelector + ', #' + cms.html.favoriteListId).sortable('destroy');
-         var list = $('#' + cms.html.favoriteMenuId);
-         $('li.cms-item, button', list).css('display', 'block');
-         list.css('display', 'none');
-         list.get(0).style.visibility = '';
-         $('#' + cms.html.favoriteListId).get(0).style.height = '';
-         resetFavList();
-         $('a.cms-move').remove();
-         button.removeClass('ui-state-active');
-      } else {
-         $('button.ui-state-active').trigger('click');
-         // enabling move mode
-         $(containerSelector).children('.cms-element:visible').each(function() {
-            var elem = $(this).css('position', 'relative');
-            if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
-               var pos = cms.util.getElementPosition(elem);
-               var dimensions = cms.util.getInnerDimensions(elem, 1);
-               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
-                  cms.move.hoverInner(elem, 2, false);
-               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd).css('left', dimensions.left - pos.left + dimensions.width - 20);
-            } else {
-               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
-                  if (elem.hasClass('cms-subcontainer')) {
-                     cms.move.hoverInner(elem, 2, false);
-                  } else {
-                     cms.move.hoverIn(elem, 2);
-                  }
-               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd);
-            }
-            
-         });
-         
-         var list = $('#' + cms.html.favoriteMenuId);
-         var favbutton = $('button[name="Favorites"]');
-         $('li.cms-item, button', list).css('display', 'none');
-         list.appendTo('#toolbar_content').css({
-            top: 35,
-            left: favbutton.position().left - 217,
-            display: 'block',
-            visibility: 'hidden'
-         });
-         $('#' + cms.html.favoriteListId).css('height', '40px');
-         $('div.ui-widget-shadow', list).css({
-            top: 0,
-            left: -4,
-            width: list.outerWidth() + 8,
-            height: list.outerHeight() + 2,
-            border: '0px solid',
-            opacity: 0.6
-         });
-         
-         $(containerSelector).children('.cms-element:visible').css('position', 'relative');
-         $(containerSelector + ', #' + cms.html.favoriteListId).sortable({
-            connectWith: containerSelector + ', #' + cms.html.favoriteListId,
-            placeholder: 'cms-placeholder',
-            dropOnEmpty: true,
-            start: cms.move.startAdd,
-            beforeStop: cms.move.beforeStopFunction,
-            over: cms.move.overAdd,
-            out: cms.move.outAdd,
-            tolerance: 'pointer',
-            opacity: 0.7,
-            stop: cms.move.stopAdd,
-            cursorAt: {
-               right: 10,
-               top: 10
-            },
-            zIndex: 20000,
-            handle: 'a.cms-move',
-            items: '.cms-element',
-            revert: true,
-            deactivate: function(event, ui) {
-               $('#' + cms.html.favoriteListId + ' li').hide(200);
-               $('#' + cms.html.favoriteMenuId).css('visibility', 'hidden');
-               $('a.cms-move').show();
-               if ($.browser.msie) {
-                  setTimeout("$('.cms-element').css('display','block')", 10);
-               }
-            }
-         });
-         // list.css('display', 'none');
-         
-         button.addClass('ui-state-active');
-      }
-   };
+   //   var toggleMove = cms.toolbar.toggleMove = function(el) {
+   //      var button = $(this);
+   //      var containerSelector = cms.util.getContainerSelector();
+   //      if (button.hasClass('ui-state-active')) {
+   //         // disabling move-mode
+   //         $(containerSelector + ', #' + cms.html.favoriteListId).sortable('destroy');
+   //         var list = $('#' + cms.html.favoriteMenuId);
+   //         $('li.cms-item, button', list).css('display', 'block');
+   //         list.css('display', 'none');
+   //         list.get(0).style.visibility = '';
+   //         $('#' + cms.html.favoriteListId).get(0).style.height = '';
+   //         resetFavList();
+   //         $('a.cms-move').remove();
+   //         button.removeClass('ui-state-active');
+   //      } else {
+   //         $('button.ui-state-active').trigger('click');
+   //         // enabling move mode
+   //         $(containerSelector).children('.cms-element:visible').each(function() {
+   //            var elem = $(this).css('position', 'relative');
+   //            if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
+   //               var pos = cms.util.getElementPosition(elem);
+   //               var dimensions = cms.util.getInnerDimensions(elem, 1);
+   //               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
+   //                  cms.move.hoverInner(elem, 2, false);
+   //               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd).css('left', dimensions.left - pos.left + dimensions.width - 20);
+   //            } else {
+   //               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
+   //                  if (elem.hasClass('cms-subcontainer')) {
+   //                     cms.move.hoverInner(elem, 2, false);
+   //                  } else {
+   //                     cms.move.hoverIn(elem, 2);
+   //                  }
+   //               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd);
+   //            }
+   //            
+   //         });
+   //         
+   //         var list = $('#' + cms.html.favoriteMenuId);
+   //         var favbutton = $('button[name="Favorites"]');
+   //         $('li.cms-item, button', list).css('display', 'none');
+   //         list.appendTo('#toolbar_content').css({
+   //            top: 35,
+   //            left: favbutton.position().left - 217,
+   //            display: 'block',
+   //            visibility: 'hidden'
+   //         });
+   //         $('#' + cms.html.favoriteListId).css('height', '40px');
+   //         $('div.ui-widget-shadow', list).css({
+   //            top: 0,
+   //            left: -4,
+   //            width: list.outerWidth() + 8,
+   //            height: list.outerHeight() + 2,
+   //            border: '0px solid',
+   //            opacity: 0.6
+   //         });
+   //         
+   //         $(containerSelector).children('.cms-element:visible').css('position', 'relative');
+   //         $(containerSelector + ', #' + cms.html.favoriteListId).sortable({
+   //            connectWith: containerSelector + ', #' + cms.html.favoriteListId,
+   //            placeholder: 'cms-placeholder',
+   //            dropOnEmpty: true,
+   //            start: cms.move.startAdd,
+   //            beforeStop: cms.move.beforeStopFunction,
+   //            over: cms.move.overAdd,
+   //            out: cms.move.outAdd,
+   //            tolerance: 'pointer',
+   //            opacity: 0.7,
+   //            stop: cms.move.stopAdd,
+   //            cursorAt: {
+   //               right: 10,
+   //               top: 10
+   //            },
+   //            zIndex: 20000,
+   //            handle: 'a.cms-move',
+   //            items: '.cms-element',
+   //            revert: true,
+   //            deactivate: function(event, ui) {
+   //               $('#' + cms.html.favoriteListId + ' li').hide(200);
+   //               $('#' + cms.html.favoriteMenuId).css('visibility', 'hidden');
+   //               $('a.cms-move').show();
+   //               if ($.browser.msie) {
+   //                  setTimeout("$('.cms-element').css('display','block')", 10);
+   //               }
+   //            }
+   //         });
+   //         // list.css('display', 'none');
+   //         
+   //         button.addClass('ui-state-active');
+   //      }
+   //   };
    
    var toggleList = cms.toolbar.toggleList = function(buttonElem, newMenu) {
       var button = $(buttonElem);
@@ -835,7 +924,7 @@
                $('<a class="cms-handle cms-move"></a>').appendTo(elem);
             });
             var leftOffset = -217;
-            if (buttonElem.name == 'Add') {
+            if (true || buttonElem.name == 'Add') {
                leftOffset -= 36;
             }
             list.appendTo('#toolbar_content').css({
@@ -853,6 +942,7 @@
                });
             });
             $(cms.util.getContainerSelector()).css('position', 'relative').children('*:visible').css('position', 'relative');
+            fixMenuAlignment();
             // * current menu
             $(cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems).sortable({
                // * current menu
@@ -1100,12 +1190,15 @@
       }
    }
    
-   var savePage = cms.toolbar.savePage = function() {
+   var savePage = cms.toolbar.savePage = function(callback) {
    
       cms.data.persistContainers(function(ok) {
          $('#cms-save-dialog').dialog('close');
          if (ok) {
             setPageChanged(false);
+         }
+         if (callback) {
+            callback(ok);
          }
       });
    }
@@ -1143,6 +1236,52 @@
             }
          }
       }
+   }
+   
+   /**
+    * Initializes the link click handlers for links in elements.<p>
+    *
+    * If the user clicks on a link, the handler will ask the user whether
+    * they really want to leave the page, and if they want to save before this.
+    *
+    */
+   var initLinks = cms.toolbar.initLinks = function() {
+      $('<div id="cms-leave-dialog" style="display: none;">Do you really want to leave the page?</div>').appendTo('body');
+      $('.cms-element a:not(.cms-move, .cms-delete, .cms-edit)').live('click', function() {
+         var $link = $(this);
+         var target = $link.attr('href');
+         var buttons = {};
+         
+         buttons['Save and Leave'] = function() {
+            $(this).dialog('destroy');
+            savePage(function(ok) {
+               if (ok) {
+                  window.location.href = target;
+               }
+            });
+         };
+         
+         buttons['Leave'] = function() {
+            $(this).dialog('destroy');
+            setPageChanged(false);
+            window.location.href = target;
+         };
+         
+         buttons['Cancel'] = function() {
+            $(this).dialog('destroy');
+         };
+         
+         $('#cms-leave-dialog').dialog({
+            autoOpen: true,
+            modal: true,
+            zIndex: 9999,
+            buttons: buttons,
+            close: function() {
+               $(this).dialog('destroy');
+            }
+         });
+         return false;
+      });
    }
    
    //===========================================================================================================

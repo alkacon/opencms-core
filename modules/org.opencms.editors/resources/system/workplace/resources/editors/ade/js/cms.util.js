@@ -27,10 +27,12 @@
    var addToList = cms.util.addToList = function(resource_id, list, max_size) {
       var newList = [resource_id];
       for (var i = 0; i < list.length; i++) {
-         if (resource_id != list[i]) 
+         if (resource_id != list[i]) {
             newList.push(list[i]);
-         if (max_size && newList.length >= max_size) 
+         }
+         if (max_size && newList.length >= max_size) {
             break;
+         }
       }
       return newList;
    }
@@ -112,8 +114,9 @@
    //}
    
    var fixZIndex = cms.util.fixZIndex = function(currentId, zmap) {
-      if (!$.browser.msie) 
+      if (!$.browser.msie) {
          return;
+      }
       var z;
       for (var key in zmap) {
          if (key == currentId) {
@@ -232,6 +235,7 @@
       return $jquery.appendTo("<div></div>").parent().html();
    }
    
+   
    var validateForm = cms.util.validateForm = function($form) {
    
       $('span.ade-error', $form).remove();
@@ -258,4 +262,62 @@
       });
       return (!hasError);
    };
+   
+   /**
+    * Aligns the element's left side with a given coordinate
+    */
+   var setLeft = cms.util.setLeft = function(element, x) {
+      var $elem = $(element);
+      if ($elem.css('left')) {
+         $elem.css('left', x);
+      } else {
+         $elem.css('right', x + $elem.width());
+      }
+   }
+   
+//   var setRight = cms.util.setRight = function(element, x) {
+//      var $elem = $(element);
+//      if ($elem.css('right')) {
+//         $elem.css('right', x);
+//      } else {
+//         $elem.css('left', x - $elem.width());
+//      }
+//   }
+//   
+//   var getRight = function(element) {
+//      var $element = $(element);
+//      return $element.offset().left + $element.width();
+//   }
+//   
+//   var getRightWindowOverhang = function(element) {
+//      var $element = $(element);
+//      var d = getRight(element) - getRight(window);
+//      return Math.max(d, 0);
+//   }
+//   
+//   var fixRightSideOverhang = cms.util.fixRightSideOverhang = function(element) {
+//      $(element).animate({
+//         'right': '-=' + getRightWindowOverhang(element)
+//      }, 5000)
+//   }
+   
+   /**
+    * Reverses the order of children of a given element
+    * @param {Object} context
+    * @param {Object} parentSelector
+    * @param {Object} childSelector
+    */
+   var reverse = cms.util.reverse = function(elem, childSelector) {
+      var $parent = $(elem);
+      var $children = $(elem).children(childSelector);
+      var childrenArray = $children.get();
+      $children.remove();
+      childrenArray.reverse();
+      $.each(childrenArray, function(k, v) {
+         $parent.append(v);
+      });
+      
+   }
+   
+   
 })(cms);

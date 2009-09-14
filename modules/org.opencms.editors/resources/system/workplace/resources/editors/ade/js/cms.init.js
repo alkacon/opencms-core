@@ -53,12 +53,12 @@ $.extend($.ui.sortable.prototype, {
    },
    _intersectsWithPointer: function(item) {
    
-		var isOverElementHeight = $.ui.isOverAxis(this.positionAbs.top + this.offset.click.top, item.top, item.height),
-			isOverElementWidth = $.ui.isOverAxis(this.positionAbs.left + this.offset.click.left, item.left, item.width),
-			isOverElement = isOverElementHeight && isOverElementWidth;
+      var isOverElementHeight = $.ui.isOverAxis(this.positionAbs.top + this.offset.click.top, item.top, item.height), isOverElementWidth = $.ui.isOverAxis(this.positionAbs.left + this.offset.click.left, item.left, item.width), isOverElement = isOverElementHeight && isOverElementWidth;
       
       /* cms-addition:
        *  verify if item parent matches the container the pointer intersect with */
+      var isOverElementOld = isOverElement;
+      
       if (isOverElement) {
          isOverElement = false;
          for (var i = this.containers.length - 1; i >= 0; i--) {
@@ -70,22 +70,24 @@ $.extend($.ui.sortable.prototype, {
             }
          }
       }
+      
       if (!isOverElement) 
          return false;
       
-		var verticalDirection = this._getDragVerticalDirection(),
-			horizontalDirection = this._getDragHorizontalDirection();
+      var verticalDirection = this._getDragVerticalDirection(), horizontalDirection = this._getDragHorizontalDirection();
       
-		return this.floating ?
-			( ((horizontalDirection && horizontalDirection == "right") || verticalDirection == "down") ? 2 : 1 )
-			: ( verticalDirection && (verticalDirection == "down" ? 2 : 1) );
+      return this.floating ? (((horizontalDirection && horizontalDirection == "right") || verticalDirection == "down") ? 2 : 1) : (verticalDirection && (verticalDirection == "down" ? 2 : 1));
       
    }
 })
+
+
 /**
  * Application entry point.
  */
 $('document').ready(function() {
+
+
    // TODO: may be it is better to load the toolbar after successfully loading the data
    $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
    cms.toolbar.addToolbar();
@@ -97,11 +99,31 @@ $('document').ready(function() {
       opacity: 0.8,
       live: true
    });
+   
    cms.data.loadAllData(function(ok) {
       if (ok) {
          cms.data.fillContainers();
          cms.toolbar.resetNewList();
+         if (!cms.data.allowEdit) {
+            if (cms.data.lockedBy) {
+               alert('You can\'t edit this page. It is locked by the user "' + cms.data.lockedBy + '"');
+            } else {
+               alert('You do not have the necessary permissions to edit this page.');
+            }
+            var $buttons = $(cms.util.makeCombinedSelector(['Move', 'Delete', 'Add', 'New', 'Favorites', 'Recent'], 'button[name="%"]'));
+            $buttons.unbind('click').unbind('mouseover').css('color', '#aaaaaa');
+            if (cms.data.lockedBy) {
+               $buttons.attr('alt', 'Page locked by ' + cms.data.lockedBy);
+               $buttons.jHelperTip({
+                  trigger: "hover",
+                  source: "attribute",
+                  attrName: "alt",
+                  autoClose: true
+               });
+            }
+         }
          $(document).trigger("cms-data-loaded");
+         
       } else {
             // TODO
       }

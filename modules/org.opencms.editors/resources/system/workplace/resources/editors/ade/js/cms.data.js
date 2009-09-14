@@ -111,7 +111,8 @@
       'query': '',
       'path': '',
       'types': null,
-      'hasMore': false
+      'hasMore': false,
+      'totalResults': 0
    };
    
    /** Search result list. */
@@ -379,7 +380,7 @@
          'elem': JSON.stringify(ids)
       }, function(ok, data) {
          if (ok) {
-            for (var id in ids) {
+            for (var id in data.elements) {
                cms.data.elements[id] = data.elements[id];
             }
          }
@@ -540,6 +541,9 @@
                html = $(elem.contents[containers[containerName].type]);
             }
             html.attr('rel', elem.id).addClass('cms-element');
+            if (elem.status == STATUS_NEW || elem.status == STATUS_NEWCONFIG) {
+               cms.move.hoverInWithClass(html, 4, cms.move.HOVER_NEW);
+            }
             $('#' + containerName).append(html);
             if (isSubcontainer) {
             
@@ -561,6 +565,7 @@
             }
          }
       }
+      
    }
    
    
@@ -571,6 +576,7 @@
     * @param {Object} data the JSON data from the AJAX response.
     */
    var handleSearchResults = cms.data.handleSearchResults = function(ok, data) {
+   
    
       if (!ok) {
          cms.toolbar.searchLoadingSign.stop();
@@ -586,6 +592,7 @@
             addSearchResult(result);
          }
          cms.data.searchParams.hasMore = data.hasmore;
+         cms.data.searchParams.totalResults = data.count;
          cms.toolbar.searchLoadingSign.stop();
       });
    }
@@ -616,6 +623,7 @@
       var $inner = $('#cms-search-list');
       $('.cms-head', $content).append('<a class="cms-handle cms-move"></a>');
       $inner.append($content);
+      $('#cms-search .ui-widget-shadow').css('height', $('#cms-search').outerHeight() + 2);
    }
    
    /**
@@ -626,6 +634,7 @@
       cms.data.searchResultList.length = 0;
       var $inner = $('#cms-search-list');
       $inner.empty();
+      $('#cms-search .ui-widget-shadow').css('height', $('#cms-search').outerHeight() + 2);
    }
    
    /**
@@ -658,6 +667,7 @@
                addSearchResult(result);
             }
             cms.data.searchParams.hasMore = data.hasmore;
+            cms.data.searchParams.totalResults = data.count;
             cms.toolbar.searchLoadingSign.stop();
          });
       }
@@ -756,9 +766,10 @@
    
    var getElementsToLoad = /*Array*/ function(/*Array*/ids) {
    
-      return $.grep(ids, function(id) {
+      var result = $.grep(ids, function(id) {
          return !(cms.data.elements[id]) && id.match(/^ade_/);
       });
+      return result;
    }
    
    
@@ -832,7 +843,5 @@
    }
    
    
-   
-   
-   
 })(cms);
+

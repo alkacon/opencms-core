@@ -4,6 +4,10 @@
    var recentListId = cms.html.recentListId = 'recent_list_items';
    var favoriteMenuId = cms.html.favoriteMenuId = 'favoritelist';
    var favoriteListId = cms.html.favoriteListId = 'favorite_list_items';
+   
+   var favoriteDropMenuId = cms.html.favoriteDropMenuId = 'favorite-drop';
+   var favoriteDropListId = cms.html.favoriteDropListId = 'favorite-drop-list';
+   
    var favoriteDialogId = cms.html.favoriteDialogId = 'fav-dialog';
    var publishDialogId = cms.html.publishDialogId = 'publishlist';
    var toolbarId = cms.html.toolbarId = 'toolbar';
@@ -87,6 +91,27 @@
 	    </ul>\
 	</form></div>';
    
+   
+   /**
+    * Creates the drop zone for favorites.
+    *
+    */
+   var createFavDrop = cms.html.createFavDrop = function() {
+      var menuId = cms.html.favoriteDropMenuId;
+      var listId = cms.html.favoriteDropListId;
+      
+      var html = ['<div id="', menuId, '" class="cms-menu" style="display:none">\
+    	<div class="connect ui-corner-top"></div>\
+    	<div class="ui-widget-shadow ui-corner-all"></div>\
+    	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
+    	    <ul id="', listId, '" class="cms-item-list"></ul>\
+    	</div></div>'];
+      
+      return html.join('');
+   }
+   
+   
+   
    var createMenu = cms.html.createMenu = function(menuId) {
       var listId = '';
       var addMenuItem = '';
@@ -99,15 +124,22 @@
          listId = menuId + "-list";
       }
       
-      var html = ['<div id="', menuId, '" class="cms-menu" style="display:none">\
+      var html = ['<div id="', menuId, '" class="cms-menu" style="width: 350px; display:none">\
     	<div class="connect ui-corner-top"></div>\
-    	<div class="ui-widget-shadow ui-corner-all"></div>\
+    	<div class="ui-widget-shadow ui-corner-all" style="width: 345px"></div>\
     	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
-    	    <ul id="', listId, '" class="cms-item-list">', addMenuItem, '</ul>\
+            <div><span style="opacity:0;color:#aaccff;">.</span></div>\
+            ', addMenuItem, '\
+            <div class="cms-scrolling">\
+                <ul id="', listId, '" class="cms-scrolling-inner cms-item-list">\
+                </ul>\
+            </div>\
+            <div><span style="opacity:0">.</span></div>\
     	</div></div>'];
       
       return html.join('');
    }
+   
    
    var searchMenu = cms.html.searchMenu = '\
       <div id="cms-search" class="cms-menu" style="width: 350px; display:none">\
@@ -122,6 +154,7 @@
               <div class="cms-loading"><span style="opacity:0">.</span></div>\
           </div>\
       </div>';
+   
    
    
    var favoriteDialog = cms.html.favoriteDialog = '<div id="' + favoriteDialogId + '" class="cms-dialog"><ul class="cms-item-list"></ul></div>';
@@ -147,18 +180,7 @@
     */
    var createItemFavListHtml = cms.html.createItemFavListHtml = function(id) {
       var/**Object*/ elem = cms.data.elements[id];
-      if (!elem) {
-         // in case the element is not found reload it
-         cms.data.reloadElement(id, function(ok) {
-            return formatFavListItem(cms.data.elements[id]);
-            if (!ok) {
-               // TODO
-               alert("Error!");
-            }
-         });
-      } else {
-         return formatFavListItem(elem);
-      }
+      return formatFavListItem(elem);
    }
    
    /**
@@ -194,20 +216,46 @@
             <button name="Favorites" title="Favorites" class="cms-left cms-button-wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-favorites" /><span class="cms-button-text">Favorites</span></button>\
             <button name="Recent" title="Recent" class="cms-left cms-button-wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-recent" /><span class="cms-button-text">Recent</span></button>\
             <button name="Save" title="Save"  class="cms-right ui-state-default ui-corner-all cms-deactivated"><span class="ui-icon cms-icon-save"/>&nbsp;</button>\
-            <button name="Sitemap" title="Sitemap" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-sitemap"/>&nbsp;</button>\
-            <button name="Publish" title="Publish" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button>\
         </div>\
      </div></div>';
    
+   
+   
+   
    var searchDialog = cms.html.searchDialog = function(/**Array*/types) {
-      var/**String*/ code = '<div id="' + searchDialogId + '"><form><ol class="ade-forms">';
-      code += '<li><label for="cms-search-path">Path </label><input type="text" name="cms-search-path" class="cms-search-path" id="cms-search-path"></input></li>';
-      code += '<li class="ade-required"><label for="cms-search-query">Query <span class="ade-required">*</span></label><input type="text" name="cms-search-query" class="cms-search-query" id="cms-search-query"></input></li>';
-      code += '<li class="ade-required ade-grouping"><fieldset><legend>Resource Types <span class="ade-required">*</span></legend>';
+      var/**String*/ html = ['<div id="', searchDialogId, '">\
+          <form>\
+              <ol class="ade-forms">\
+                   <li class="ade-required">\
+                       <label for="cms-search-query">Query <span class="ade-required">*</span></label>\
+                       <input type="text" name="cms-search-query" class="cms-search-query" id="cms-search-query"></input>\
+                   </li>\
+                   <li>\
+                      <label for="cms-search-path">Path</label>\
+                      <input type="text" name="cms-search-path" class="cms-search-path" id="cms-search-path"></input>\
+                   </li>\
+                   <br>\
+                   <li><b>Resource Types</b><span class="ade-required">*</span></li>\
+                   <li class="ade-required ade-grouping">\
+                       <div class="cms-search-type-list">'];
+      
       $.each(types, function() {
-         code += '<input type="checkbox" name="cms-search-type" class="cms-search-type" id="' + searchTypePrefix + this.type + '" value="' + this.type + '" checked="checked"/><label for="cms-type-' + this.type + '">' + this.name + '</label>';
+         html.push('<input type="checkbox" name="cms-search-type" class="cms-search-type" id="' + searchTypePrefix + this.type + '" value="' + this.type + '" checked="checked"/>');
+         html.push('<label for="cms-type-' + this.type + '">' + this.name + '</label>');
       });
-      code += '</fieldset></li></ol></form></div>';
-      return code;
+      
+      html.push('</div></li></ol></form></div>');
+      return html.join('');
    }
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
 })(cms);
