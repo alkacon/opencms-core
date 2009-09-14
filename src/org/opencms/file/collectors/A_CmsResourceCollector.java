@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2009/09/10 16:26:22 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2009/09/14 11:45:32 $
+ * Version: $Revision: 1.16.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.2.1 $
+ * @version $Revision: 1.16.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -102,6 +102,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -158,7 +159,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject)
      */
-    public List getResults(CmsObject cms) throws CmsDataAccessException, CmsException {
+    public List<CmsResource> getResults(CmsObject cms) throws CmsDataAccessException, CmsException {
 
         checkParams();
         return getResults(cms, getDefaultCollectorName(), getDefaultCollectorParam());
@@ -167,6 +168,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_hashcode;
@@ -229,12 +231,12 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         // must check ALL resources in folder because name doesn't care for type
-        List resources = cms.readResources(foldername, CmsResourceFilter.ALL, false);
+        List<CmsResource> resources = cms.readResources(foldername, CmsResourceFilter.ALL, false);
 
         // now create a list of all resources that just contains the file names
-        List result = new ArrayList(resources.size());
+        List<String> result = new ArrayList<String>(resources.size());
         for (int i = 0; i < resources.size(); i++) {
-            CmsResource resource = (CmsResource)resources.get(i);
+            CmsResource resource = resources.get(i);
             result.add(resource.getRootPath());
         }
 
@@ -276,9 +278,9 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      * @param result a List
      * @param maxSize the maximum size of the List
      * 
-     * @return the shrinked list
+     * @return the reduced list
      */
-    protected List shrinkToFit(List result, int maxSize) {
+    protected List<CmsResource> shrinkToFit(List<CmsResource> result, int maxSize) {
 
         if ((maxSize > 0) && (result.size() > maxSize)) {
             // cut off all items > count

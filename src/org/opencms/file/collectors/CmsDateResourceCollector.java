@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDateResourceCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/09/14 11:45:33 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.2.1 $
  * 
  * @since 7.0.2
  */
@@ -60,12 +60,12 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
         "allInSubTreeDateAsc"};
 
     /** Array list for fast collector name lookup. */
-    private static final List COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
+    private static final List<String> COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
         return COLLECTORS_LIST;
     }
@@ -130,7 +130,7 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getResults(CmsObject cms, String collectorName, String param)
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsDataAccessException, CmsException {
 
         // if action is not set use default
@@ -172,15 +172,16 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List allInFolderDate(CmsObject cms, String param, boolean tree, boolean asc) throws CmsException {
+    protected List<CmsResource> allInFolderDate(CmsObject cms, String param, boolean tree, boolean asc)
+    throws CmsException {
 
         CmsExtendedCollectorData data = new CmsExtendedCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
-        List dateIdentifiers = data.getAdditionalParams();
+        List<String> dateIdentifiers = data.getAdditionalParams();
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
-        List result = cms.readResources(foldername, filter, tree);
+        List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
         // a special date comparator is used to sort the resources
         CmsDateResourceComparator comparator = new CmsDateResourceComparator(cms, dateIdentifiers, asc);

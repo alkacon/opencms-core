@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperSystemFolder.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/09/14 11:45:31 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  * 
  * @since 6.5.6
  */
@@ -56,7 +56,9 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
      */
-    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
+    @Override
+    public List<CmsResource> addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter)
+    throws CmsException {
 
         if (!resourcename.endsWith("/")) {
             resourcename += "/";
@@ -65,7 +67,7 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
         // if this is the root folder of a target site, add the system folder
         if (resourcename.equals("/")) {
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot())) {
-                List ret = new ArrayList();
+                List<CmsResource> ret = new ArrayList<CmsResource>();
                 ret.add(readResource(cms, CmsWorkplace.VFS_PATH_SYSTEM, filter));
                 return ret;
             }
@@ -100,6 +102,7 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#readResource(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
      */
+    @Override
     public CmsResource readResource(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         // only valid if site root is a target site

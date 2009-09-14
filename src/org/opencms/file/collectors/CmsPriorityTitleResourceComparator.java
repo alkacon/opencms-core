@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityTitleResourceComparator.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/09/14 11:45:32 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 import java.text.Collator;
@@ -53,11 +54,11 @@ import java.util.Map;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.19.2.1 $
  * 
  * @since 6.0.0 
  */
-public class CmsPriorityTitleResourceComparator implements Serializable, Comparator {
+public class CmsPriorityTitleResourceComparator implements Serializable, Comparator<CmsResource> {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -6815638350803584422L;
@@ -65,8 +66,8 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
     /** The current OpenCms user context. */
     private transient CmsObject m_cms;
 
-    /** The interal map of comparator keys. */
-    private Map m_keys;
+    /** The internal map of comparator keys. */
+    private Map<CmsUUID, CmsPriorityTitleResourceComparator> m_keys;
 
     /** The priority of this comparator key. */
     private int m_priority;
@@ -82,7 +83,7 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
     public CmsPriorityTitleResourceComparator(CmsObject cms) {
 
         m_cms = cms;
-        m_keys = new HashMap();
+        m_keys = new HashMap<CmsUUID, CmsPriorityTitleResourceComparator>();
     }
 
     /**
@@ -91,7 +92,7 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
      * @param resource the resource to create the key for
      * @param cms the current OpenCms user context
      * 
-     * @return a new instance of this comparatoy key
+     * @return a new instance of this comparator key
      */
     private static CmsPriorityTitleResourceComparator create(CmsResource resource, CmsObject cms) {
 
@@ -103,17 +104,14 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare(Object arg0, Object arg1) {
+    public int compare(CmsResource res0, CmsResource res1) {
 
-        if ((arg0 == arg1) || !(arg0 instanceof CmsResource) || !(arg1 instanceof CmsResource)) {
+        if (res0 == res1) {
             return 0;
         }
 
-        CmsResource res0 = (CmsResource)arg0;
-        CmsResource res1 = (CmsResource)arg1;
-
-        CmsPriorityTitleResourceComparator key0 = (CmsPriorityTitleResourceComparator)m_keys.get(res0.getStructureId());
-        CmsPriorityTitleResourceComparator key1 = (CmsPriorityTitleResourceComparator)m_keys.get(res1.getStructureId());
+        CmsPriorityTitleResourceComparator key0 = m_keys.get(res0.getStructureId());
+        CmsPriorityTitleResourceComparator key1 = m_keys.get(res1.getStructureId());
 
         if (key0 == null) {
             // initialize key if null
@@ -167,7 +165,7 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
      */
     private void init(CmsResource resource, CmsObject cms) {
 
-        List properties;
+        List<CmsProperty> properties;
 
         try {
             properties = cms.readPropertyObjects(resource, false);

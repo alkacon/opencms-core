@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2009/09/07 12:41:49 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2009/09/14 11:45:33 $
+ * Version: $Revision: 1.20.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,19 +47,19 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20.2.1 $ 
+ * @version $Revision: 1.20.2.2 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.jsp.CmsJspNavBuilder
  */
-public class CmsJspNavElement implements Comparable {
+public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
     private String m_fileName;
     private Boolean m_hasNav;
     private int m_navTreeLevel = Integer.MIN_VALUE;
     private float m_position;
-    private Map m_properties;
+    private Map<String, String> m_properties;
     private String m_resource;
     private String m_text;
 
@@ -90,7 +90,7 @@ public class CmsJspNavElement implements Comparable {
      * 
      * @see #init(String, Map)
      */
-    public CmsJspNavElement(String resource, Map properties) {
+    public CmsJspNavElement(String resource, Map<String, String> properties) {
 
         init(resource, properties, -1);
     }
@@ -105,7 +105,7 @@ public class CmsJspNavElement implements Comparable {
      * 
      * @see #init(String, Map, int)
      */
-    public CmsJspNavElement(String resource, Map properties, int navTreeLevel) {
+    public CmsJspNavElement(String resource, Map<String, String> properties, int navTreeLevel) {
 
         init(resource, properties, navTreeLevel);
     }
@@ -113,25 +113,23 @@ public class CmsJspNavElement implements Comparable {
     /**
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsJspNavElement obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsJspNavElement) {
-            float pos = ((CmsJspNavElement)obj).getNavPosition();
-            // please note: can't just subtract and cast to int here because of float precision loss
-            if (m_position == pos) {
-                return 0;
-            }
-            return (m_position < pos) ? -1 : 1;
+        float pos = obj.getNavPosition();
+        // please note: can't just subtract and cast to int here because of float precision loss
+        if (m_position == pos) {
+            return 0;
         }
-        return 0;
+        return (m_position < pos) ? -1 : 1;
     }
 
     /**
      * @see java.lang.Object#equals(Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -152,7 +150,7 @@ public class CmsJspNavElement implements Comparable {
      */
     public String getDescription() {
 
-        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION);
+        return m_properties.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION);
     }
 
     /**
@@ -185,7 +183,7 @@ public class CmsJspNavElement implements Comparable {
      */
     public String getInfo() {
 
-        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVINFO);
+        return m_properties.get(CmsPropertyDefinition.PROPERTY_NAVINFO);
     }
 
     /**
@@ -196,7 +194,7 @@ public class CmsJspNavElement implements Comparable {
      */
     public String getLocale() {
 
-        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_LOCALE);
+        return m_properties.get(CmsPropertyDefinition.PROPERTY_LOCALE);
     }
 
     /**
@@ -207,7 +205,7 @@ public class CmsJspNavElement implements Comparable {
      */
     public String getNavImage() {
 
-        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVIMAGE);
+        return m_properties.get(CmsPropertyDefinition.PROPERTY_NAVIMAGE);
     }
 
     /**
@@ -237,7 +235,7 @@ public class CmsJspNavElement implements Comparable {
 
         if (m_text == null) {
             // use "lazy initializing"
-            m_text = (String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+            m_text = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             if (m_text == null) {
                 m_text = CmsMessages.formatUnknownKey(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             }
@@ -279,7 +277,7 @@ public class CmsJspNavElement implements Comparable {
      * @return the original map of all file properties of the resource that
      *          the navigation element belongs to
      */
-    public Map getProperties() {
+    public Map<String, String> getProperties() {
 
         return m_properties;
     }
@@ -296,7 +294,7 @@ public class CmsJspNavElement implements Comparable {
      */
     public String getProperty(String key) {
 
-        return (String)m_properties.get(key);
+        return m_properties.get(key);
     }
 
     /**
@@ -318,12 +316,13 @@ public class CmsJspNavElement implements Comparable {
      */
     public String getTitle() {
 
-        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_TITLE);
+        return m_properties.get(CmsPropertyDefinition.PROPERTY_TITLE);
     }
 
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return super.hashCode();
@@ -337,7 +336,7 @@ public class CmsJspNavElement implements Comparable {
      *     information from
      * @param properties the properties of the resource read from the vfs
      */
-    public void init(String resource, Map properties) {
+    public void init(String resource, Map<String, String> properties) {
 
         init(resource, properties, -1);
     }
@@ -363,7 +362,7 @@ public class CmsJspNavElement implements Comparable {
      * 
      * @see CmsJspNavBuilder#getNavigationForResource()
      */
-    public void init(String resource, Map properties, int navTreeLevel) {
+    public void init(String resource, Map<String, String> properties, int navTreeLevel) {
 
         m_resource = resource;
         m_properties = properties;
@@ -371,7 +370,7 @@ public class CmsJspNavElement implements Comparable {
         // init the position value
         m_position = Float.MAX_VALUE;
         try {
-            m_position = Float.parseFloat((String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS));
+            m_position = Float.parseFloat(m_properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS));
         } catch (Exception e) {
             // m_position will have Float.MAX_VALUE, so navigation element will 
             // appear last in navigation

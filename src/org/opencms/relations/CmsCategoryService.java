@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/09/14 11:45:33 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.2.1 $ 
  * 
  * @since 6.9.2
  * 
@@ -598,7 +598,7 @@ public class CmsCategoryService {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readResourceCategories(CmsObject cms, String resourceName) throws CmsException {
+    public List<CmsCategory> readResourceCategories(CmsObject cms, String resourceName) throws CmsException {
 
         return internalReadResourceCategories(cms, cms.readResource(resourceName), false);
     }

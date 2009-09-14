@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceExtensionWrapperXmlContent.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/14 11:45:31 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.main.OpenCms;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.2.1 $
  * 
  * @since 6.5.6
  */
@@ -54,6 +54,7 @@ public class CmsResourceExtensionWrapperXmlContent extends A_CmsResourceExtensio
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceExtensionWrapper#checkTypeId(int)
      */
+    @Override
     protected boolean checkTypeId(int typeId) {
 
         try {
@@ -71,9 +72,9 @@ public class CmsResourceExtensionWrapperXmlContent extends A_CmsResourceExtensio
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceExtensionWrapper#getExtension()
      */
+    @Override
     protected String getExtension() {
 
         return RESOURCE_TYPE_EXTENSION;
     }
-
 }

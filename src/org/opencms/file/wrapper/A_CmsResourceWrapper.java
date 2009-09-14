@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/A_CmsResourceWrapper.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/09/14 11:45:31 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.file.wrapper;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
@@ -54,7 +55,7 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  * 
  * @since 6.5.6
  */
@@ -66,7 +67,8 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.I_CmsResourceWrapper#addResourcesToFolder(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
      */
-    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List<CmsResource> addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter)
+    throws CmsException {
 
         if (m_isWrappedResource) {
             return cms.getResourcesInFolder(resourcename, filter);
@@ -91,8 +93,12 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.I_CmsResourceWrapper#createResource(org.opencms.file.CmsObject, java.lang.String, int, byte[], java.util.List)
      */
-    public CmsResource createResource(CmsObject cms, String resourcename, int type, byte[] content, List properties)
-    throws CmsException, CmsIllegalArgumentException {
+    public CmsResource createResource(
+        CmsObject cms,
+        String resourcename,
+        int type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
 
         if (m_isWrappedResource) {
             return cms.createResource(resourcename, type, content, properties);

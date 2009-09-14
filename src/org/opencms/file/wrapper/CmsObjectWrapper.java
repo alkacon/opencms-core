@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/09/14 11:45:31 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.I_CmsResource;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.types.CmsResourceTypeJsp;
@@ -81,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.12.2.1 $
  * 
  * @since 6.2.4
  */
@@ -97,7 +98,7 @@ public class CmsObjectWrapper {
     private CmsObject m_cms;
 
     /** The list with the configured wrappers (entries of type {@link I_CmsResourceWrapper}). */
-    private List m_wrappers;
+    private List<I_CmsResourceWrapper> m_wrappers;
 
     /**
      * Constructor with the CmsObject to wrap and the resource wrappers to use.<p>
@@ -105,7 +106,7 @@ public class CmsObjectWrapper {
      * @param cms the initialized CmsObject
      * @param wrappers the configured wrappers to use (entries of type {@link I_CmsResourceWrapper})
      */
-    public CmsObjectWrapper(CmsObject cms, List wrappers) {
+    public CmsObjectWrapper(CmsObject cms, List<I_CmsResourceWrapper> wrappers) {
 
         m_cms = cms;
         m_wrappers = wrappers;
@@ -132,10 +133,10 @@ public class CmsObjectWrapper {
         boolean exec = false;
 
         // iterate through all wrappers and call "copyResource" till one does not return null
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             exec = wrapper.copyResource(m_cms, source, destination, siblingMode);
             if (exec) {
                 break;
@@ -164,7 +165,7 @@ public class CmsObjectWrapper {
      */
     public CmsResource createResource(String resourcename, int type) throws CmsException, CmsIllegalArgumentException {
 
-        return createResource(resourcename, type, new byte[0], Collections.EMPTY_LIST);
+        return createResource(resourcename, type, new byte[0], new ArrayList<CmsProperty>(0));
     }
 
     /**
@@ -185,16 +186,16 @@ public class CmsObjectWrapper {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
      */
-    public CmsResource createResource(String resourcename, int type, byte[] content, List properties)
+    public CmsResource createResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
     throws CmsException, CmsIllegalArgumentException {
 
         CmsResource res = null;
 
         // iterate through all wrappers and call "createResource" till one does not return null
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             res = wrapper.createResource(m_cms, resourcename, type, content, properties);
             if (res != null) {
                 break;
@@ -227,10 +228,10 @@ public class CmsObjectWrapper {
         boolean exec = false;
 
         // iterate through all wrappers and call "deleteResource" till one does not return false
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             exec = wrapper.deleteResource(m_cms, resourcename, siblingMode);
             if (exec) {
                 break;
@@ -265,10 +266,10 @@ public class CmsObjectWrapper {
         // if not exists, ask the resource type wrappers
         if (!ret) {
 
-            List wrappers = getWrappers();
-            Iterator iter = wrappers.iterator();
+            List<I_CmsResourceWrapper> wrappers = getWrappers();
+            Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
             while (iter.hasNext()) {
-                I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+                I_CmsResourceWrapper wrapper = iter.next();
                 try {
                     CmsResource res = wrapper.readResource(m_cms, resourcename, CmsResourceFilter.DEFAULT);
                     if (res != null) {
@@ -304,10 +305,10 @@ public class CmsObjectWrapper {
         CmsLock lock = null;
 
         // iterate through all wrappers and call "getLock" till one does not return null
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             lock = wrapper.getLock(m_cms, resource);
             if (lock != null) {
                 break;
@@ -355,9 +356,9 @@ public class CmsObjectWrapper {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List<CmsResource> getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        List list = new ArrayList();
+        List<CmsResource> list = new ArrayList<CmsResource>();
 
         // read children existing in the VFS
         try {
@@ -367,23 +368,23 @@ public class CmsObjectWrapper {
         }
 
         // iterate through all wrappers and call "addResourcesToFolder" and add the results to the list
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
-        while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
-            List added = wrapper.addResourcesToFolder(m_cms, resourcename, filter);
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter1 = wrappers.iterator();
+        while (iter1.hasNext()) {
+            I_CmsResourceWrapper wrapper = iter1.next();
+            List<CmsResource> added = wrapper.addResourcesToFolder(m_cms, resourcename, filter);
             if (added != null) {
                 list.addAll(added);
             }
         }
 
         // create a new list to add all resources
-        ArrayList wrapped = new ArrayList();
+        ArrayList<CmsResource> wrapped = new ArrayList<CmsResource>();
 
         // eventually wrap the found resources
-        iter = list.iterator();
-        while (iter.hasNext()) {
-            CmsResource res = (CmsResource)iter.next();
+        Iterator<CmsResource> iter2 = list.iterator();
+        while (iter2.hasNext()) {
+            CmsResource res = iter2.next();
 
             // correct the length of the content if an UTF-8 marker would be added later
             if (needUtf8Marker(res)) {
@@ -408,7 +409,7 @@ public class CmsObjectWrapper {
         }
 
         // sort the wrapped list correctly
-        Collections.sort(wrapped, CmsResource.COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST);
+        Collections.sort(wrapped, I_CmsResource.COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST);
 
         return wrapped;
     }
@@ -434,7 +435,7 @@ public class CmsObjectWrapper {
      *
      * @return the configured resource wrappers for this instance
      */
-    public List getWrappers() {
+    public List<I_CmsResourceWrapper> getWrappers() {
 
         return m_wrappers;
     }
@@ -456,10 +457,10 @@ public class CmsObjectWrapper {
         boolean exec = false;
 
         // iterate through all wrappers and call "lockResource" till one does not return false
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             exec = wrapper.lockResource(m_cms, resourcename);
             if (exec) {
                 break;
@@ -490,10 +491,10 @@ public class CmsObjectWrapper {
         boolean exec = false;
 
         // iterate through all wrappers and call "moveResource" till one does not return false
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             exec = wrapper.moveResource(m_cms, source, destination);
             if (exec) {
                 break;
@@ -531,10 +532,10 @@ public class CmsObjectWrapper {
         CmsFile res = null;
 
         // iterate through all wrappers and call "readFile" till one does not return null
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             res = wrapper.readFile(m_cms, resourcename, filter);
             if (res != null) {
                 break;
@@ -617,10 +618,10 @@ public class CmsObjectWrapper {
         CmsResource res = null;
 
         // iterate through all wrappers and call "readResource" till one does not return null
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             res = wrapper.readResource(m_cms, resourcename, filter);
             if (res != null) {
                 break;
@@ -684,10 +685,10 @@ public class CmsObjectWrapper {
         String ret = null;
 
         // iterate through all wrappers and call "restoreLink" till one does not return null
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             ret = wrapper.restoreLink(m_cms, m_cms.getRequestContext().removeSiteRoot(path));
             if (ret != null) {
                 return ret;
@@ -729,10 +730,10 @@ public class CmsObjectWrapper {
                 String ret = null;
 
                 // iterate through all wrappers and call "rewriteLink" till one does not return null
-                List wrappers = getWrappers();
-                Iterator iter = wrappers.iterator();
+                List<I_CmsResourceWrapper> wrappers = getWrappers();
+                Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
                 while (iter.hasNext()) {
-                    I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+                    I_CmsResourceWrapper wrapper = iter.next();
                     ret = wrapper.rewriteLink(m_cms, res);
                     if (ret != null) {
                         return ret;
@@ -763,10 +764,10 @@ public class CmsObjectWrapper {
         boolean exec = false;
 
         // iterate through all wrappers and call "lockResource" till one does not return false
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
             exec = wrapper.unlockResource(m_cms, resourcename);
             if (exec) {
                 break;
@@ -806,10 +807,10 @@ public class CmsObjectWrapper {
         if (!m_cms.existsResource(resourcename)) {
 
             // iterate through all wrappers and call "writeFile" till one does not return null
-            List wrappers = getWrappers();
-            Iterator iter = wrappers.iterator();
+            List<I_CmsResourceWrapper> wrappers = getWrappers();
+            Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
             while (iter.hasNext()) {
-                I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+                I_CmsResourceWrapper wrapper = iter.next();
                 res = wrapper.writeFile(m_cms, resource);
                 if (res != null) {
                     break;
@@ -842,9 +843,9 @@ public class CmsObjectWrapper {
      */
     private I_CmsResourceWrapper getResourceTypeWrapper(CmsResource res) {
 
-        Iterator iter = getWrappers().iterator();
+        Iterator<I_CmsResourceWrapper> iter = getWrappers().iterator();
         while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            I_CmsResourceWrapper wrapper = iter.next();
 
             if (wrapper.isWrappedResource(m_cms, res)) {
                 return wrapper;

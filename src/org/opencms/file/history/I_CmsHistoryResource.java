@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/I_CmsHistoryResource.java,v $
- * Date   : $Date: 2009/09/09 14:26:32 $
- * Version: $Revision: 1.5.2.2 $
+ * Date   : $Date: 2009/09/14 11:45:33 $
+ * Version: $Revision: 1.5.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.file.history;
 
-import org.opencms.db.CmsResourceState;
 import org.opencms.file.I_CmsResource;
 import org.opencms.util.CmsUUID;
 
@@ -52,35 +51,11 @@ import java.io.Serializable;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5.2.2 $
+ * @version $Revision: 1.5.2.3 $
  * 
  * @since 6.9.1
  */
 public interface I_CmsHistoryResource extends I_CmsResource, Cloneable, Serializable, Comparable<I_CmsResource> {
-
-    /**
-     * Returns the flags of this resource.<p>
-     *
-     * @return the flags of this resource
-     */
-    int getFlags();
-
-    /**
-     * Returns the length of the resource.<p>
-     *
-     * If the resource is a file, then this is the byte size of the file content.
-     * If the resource is a folder, then the size is always -1.<p>
-     *
-     * @return the length of the content
-     */
-    int getLength();
-
-    /**
-     * Returns the name of this resource, e.g. <code>index.html</code>.<p>
-     *
-     * @return the name of this resource
-     */
-    String getName();
 
     /**
      * Returns the structure id of the parent resource.<p>
@@ -90,25 +65,11 @@ public interface I_CmsHistoryResource extends I_CmsResource, Cloneable, Serializ
     CmsUUID getParentId();
 
     /**
-     * Returns the id of the project where the resource has been last modified.<p>
-     *
-     * @return the id of the project where the resource has been last modified, or <code>null</code>
-     */
-    CmsUUID getProjectLastModified();
-
-    /**
      * Returns the publish tag of this historical resource.<p>
      *
      * @return the publish tag of this historical resource
      */
     int getPublishTag();
-
-    /**
-     * Returns the id of the resource database entry of this resource.<p>
-     *
-     * @return the id of the resource database entry
-     */
-    CmsUUID getResourceId();
 
     /**
      * Returns the version number of the resource part for this historical resource.<p>
@@ -118,30 +79,6 @@ public interface I_CmsHistoryResource extends I_CmsResource, Cloneable, Serializ
     int getResourceVersion();
 
     /**
-     * Returns the number of siblings of the resource, also counting this resource.<p>
-     * 
-     * If a resource has no sibling, the total sibling count for this resource is <code>1</code>, 
-     * if a resource has <code>n</code> siblings, the sibling count is <code>n + 1</code>.<p> 
-     * 
-     * @return the number of siblings
-     */
-    int getSiblingCount();
-
-    /**
-     * Returns the state of this resource.<p>
-     *
-     * @return the state of this resource
-     */
-    CmsResourceState getState();
-
-    /**
-     * Returns the id of the structure record of this resource.<p>
-     * 
-     * @return the id of the structure record of this resource
-     */
-    CmsUUID getStructureId();
-
-    /**
      * Returns the version number of the structure part for this historical resource.<p>
      *
      * @return the version number of the structure part for this historical resource
@@ -149,110 +86,9 @@ public interface I_CmsHistoryResource extends I_CmsResource, Cloneable, Serializ
     int getStructureVersion();
 
     /**
-     * Returns the resource type id for this resource.<p>
-     *
-     * @return the resource type id of this resource
-     */
-    int getTypeId();
-
-    /**
-     * Returns the user id of the user who created this resource.<p>
-     * 
-     * @return the user id
-     */
-    CmsUUID getUserCreated();
-
-    /**
-     * Returns the user id of the user who made the last change on this resource.<p>
-     *
-     * @return the user id of the user who made the last change<p>
-     */
-    CmsUUID getUserLastModified();
-
-    /**
      * Returns the version number of this historical resource.<p>
      *
      * @return the version number of this historical resource
      */
     int getVersion();
-
-    /** 
-     * Returns <code>true</code> if this resource is expired at the given time according to the 
-     * information stored in {@link #getDateExpired()}.<p>
-     * 
-     * @param time the time to check the expiration date against
-     * 
-     * @return <code>true</code> if this resource is expired at the given time
-     *      
-     * @see #isReleased(long)
-     * @see #isReleasedAndNotExpired(long)
-     */
-    boolean isExpired(long time);
-
-    /**
-     * Returns <code>true</code> if the resource is a file, i.e. can have no sub-resources.<p>
-     *
-     * @return true if this resource is a file, false otherwise
-     */
-    boolean isFile();
-
-    /**
-     * Returns <code>true</code> if the resource is a folder, i.e. can have sub-resources.<p>
-     *
-     * @return true if this resource is a folder, false otherwise
-     */
-    boolean isFolder();
-
-    /**
-     * Checks if the resource is internal.<p>
-     * 
-     * This state is stored as bit 1 in the resource flags.<p>
-     * 
-     * @return true if the resource is internal, otherwise false
-     */
-    boolean isInternal();
-
-    /**
-     * Checks if the link has to be labeled with a special icon in the explorer view.<p>
-     *
-     * This state is stored as bit 2 in the resource flags.<p>
-     * 
-     * @return true if a link to the resource has to be labeled, otherwise false
-     */
-    boolean isLabeled();
-
-    /** 
-     * Returns <code>true</code> if this resource is released at the given time according to the 
-     * information stored in {@link #getDateReleased()}.<p>
-     * 
-     * @param time the time to check the release date against
-     * 
-     * @return <code>true</code> if this resource is released at the given time
-     *      
-     * @see #isExpired(long)
-     * @see #isReleasedAndNotExpired(long)
-     */
-    boolean isReleased(long time);
-
-    /** 
-     * Returns <code>true</code> if this resource is valid at the given time according to the 
-     * information stored in {@link #getDateReleased()} and {@link #getDateExpired()}.<p>
-     * 
-     * A resource is valid if it is released and not yet expired.<p>
-     * 
-     * @param time the time to check the release and expiration date against
-     * 
-     * @return <code>true</code> if this resource is valid at the given time
-     *      
-     * @see #isExpired(long)
-     * @see #isReleased(long)
-     */
-    boolean isReleasedAndNotExpired(long time);
-
-    /**
-     * Returns true if this resource was touched.<p>
-     * 
-     * @return boolean true if this resource was touched
-     */
-    boolean isTouched();
 }

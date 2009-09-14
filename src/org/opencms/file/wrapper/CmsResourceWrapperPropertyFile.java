@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperPropertyFile.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/14 11:45:31 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.file.wrapper;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
@@ -44,7 +45,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -67,7 +67,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.2.1 $
  * 
  * @since 6.5.6
  */
@@ -83,12 +83,14 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     private static final int TIME_DELAY = 60;
 
     /** Table with the states of the virtual files. */
-    private static final Hashtable TMP_FILE_TABLE = new Hashtable();
+    private static final List<String> TMP_FILE_TABLE = new ArrayList<String>();
 
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
      */
-    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
+    @Override
+    public List<CmsResource> addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter)
+    throws CmsException {
 
         String path = resourcename;
         if (!path.endsWith("/")) {
@@ -98,13 +100,13 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
         if (path.endsWith(PROPERTY_DIR + "/")) {
 
             String parent = CmsResource.getParentFolder(path);
-            List ret = new ArrayList();
+            List<CmsResource> ret = new ArrayList<CmsResource>();
 
             // Iterate through all existing resources
-            List resources = cms.getResourcesInFolder(parent, filter);
-            Iterator iter = resources.iterator();
+            List<CmsResource> resources = cms.getResourcesInFolder(parent, filter);
+            Iterator<CmsResource> iter = resources.iterator();
             while (iter.hasNext()) {
-                CmsResource res = (CmsResource)iter.next();
+                CmsResource res = iter.next();
 
                 // check "existance" of resource
                 if (existsResource(res)) {
@@ -126,7 +128,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
                         // check "existance" of folder
                         if (existsResource(folder)) {
-                            List ret = new ArrayList();
+                            List<CmsResource> ret = new ArrayList<CmsResource>();
 
                             CmsWrappedResource wrap = new CmsWrappedResource(folder);
                             wrap.setRootPath(folder.getRootPath() + PROPERTY_DIR + "/");
@@ -147,8 +149,13 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#createResource(org.opencms.file.CmsObject, java.lang.String, int, byte[], java.util.List)
      */
-    public CmsResource createResource(CmsObject cms, String resourcename, int type, byte[] content, List properties)
-    throws CmsException, CmsIllegalArgumentException {
+    @Override
+    public CmsResource createResource(
+        CmsObject cms,
+        String resourcename,
+        int type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
 
         CmsResource res = getResource(cms, resourcename, CmsResourceFilter.DEFAULT);
         if (res != null) {
@@ -167,9 +174,9 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
             }
 
             // mark file as created in tmp file table
-            TMP_FILE_TABLE.put(res.getRootPath(), new Integer(1));
+            TMP_FILE_TABLE.add(res.getRootPath());
 
-            // lock the resource because this is the expected behaviour
+            // lock the resource because this is the expected behavior
             cms.lockResource(cms.getRequestContext().removeSiteRoot(res.getRootPath()));
 
             if (resourcename.endsWith(PROPERTY_DIR)) {
@@ -195,6 +202,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#deleteResource(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResource.CmsResourceDeleteMode)
      */
+    @Override
     public boolean deleteResource(CmsObject cms, String resourcename, CmsResourceDeleteMode siblingMode)
     throws CmsException {
 
@@ -210,6 +218,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getLock(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
+    @Override
     public CmsLock getLock(CmsObject cms, CmsResource resource) throws CmsException {
 
         CmsResource org = cms.readResource(resource.getStructureId());
@@ -242,6 +251,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#lockResource(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public boolean lockResource(CmsObject cms, String resourcename) throws CmsException {
 
         CmsResource res = getResource(cms, resourcename, CmsResourceFilter.DEFAULT);
@@ -256,6 +266,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#readFile(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
      */
+    @Override
     public CmsFile readFile(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         if (!resourcename.endsWith(PROPERTY_DIR)) {
@@ -282,6 +293,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#readResource(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
      */
+    @Override
     public CmsResource readResource(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         CmsResource res = getResource(cms, resourcename, filter);
@@ -320,6 +332,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#restoreLink(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public String restoreLink(CmsObject cms, String uri) {
 
         try {
@@ -337,6 +350,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#unlockResource(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public boolean unlockResource(CmsObject cms, String resourcename) throws CmsException {
 
         CmsResource res = getResource(cms, resourcename, CmsResourceFilter.DEFAULT);
@@ -351,6 +365,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsFile resource) throws CmsException {
 
         CmsResource res = cms.readResource(resource.getStructureId());
@@ -391,7 +406,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
         if (diff <= TIME_DELAY) {
 
             // check tmp file table
-            if (TMP_FILE_TABLE.containsKey(res.getRootPath())) {
+            if (TMP_FILE_TABLE.contains(res.getRootPath())) {
                 return true;
             }
 
@@ -458,7 +473,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
         if (path == null) {
             return null;
         }
-        
+
         // the parent path
         String parent = CmsResource.getParentFolder(path);
 

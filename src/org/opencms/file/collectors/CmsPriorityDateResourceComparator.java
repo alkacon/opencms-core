@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityDateResourceComparator.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/09/14 11:45:32 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -51,11 +52,11 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.2.1 $
  * 
  * @since 6.0.0 
  */
-public class CmsPriorityDateResourceComparator implements Serializable, Comparator {
+public class CmsPriorityDateResourceComparator implements Serializable, Comparator<CmsResource> {
 
     /** The name of the date property to read. */
     public static final String PROPERTY_DATE = "collector.date";
@@ -72,8 +73,8 @@ public class CmsPriorityDateResourceComparator implements Serializable, Comparat
     /** The date of this comparator key. */
     private long m_date;
 
-    /** The interal map of comparator keys. */
-    private Map m_keys;
+    /** The internal map of comparator keys. */
+    private Map<CmsUUID, CmsPriorityDateResourceComparator> m_keys;
 
     /** The priority of this comparator key. */
     private int m_priority;
@@ -88,7 +89,7 @@ public class CmsPriorityDateResourceComparator implements Serializable, Comparat
 
         m_cms = cms;
         m_asc = asc;
-        m_keys = new HashMap();
+        m_keys = new HashMap<CmsUUID, CmsPriorityDateResourceComparator>();
     }
 
     /**
@@ -97,7 +98,7 @@ public class CmsPriorityDateResourceComparator implements Serializable, Comparat
      * @param resource the resource to create the key for
      * @param cms the current OpenCms user context
      * 
-     * @return a new instance of this comparatoy key
+     * @return a new instance of this comparator key
      */
     private static CmsPriorityDateResourceComparator create(CmsResource resource, CmsObject cms) {
 
@@ -109,17 +110,14 @@ public class CmsPriorityDateResourceComparator implements Serializable, Comparat
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare(Object arg0, Object arg1) {
+    public int compare(CmsResource res0, CmsResource res1) {
 
-        if ((arg0 == arg1) || !(arg0 instanceof CmsResource) || !(arg1 instanceof CmsResource)) {
+        if (res0 == res1) {
             return 0;
         }
 
-        CmsResource res0 = (CmsResource)arg0;
-        CmsResource res1 = (CmsResource)arg1;
-
-        CmsPriorityDateResourceComparator key0 = (CmsPriorityDateResourceComparator)m_keys.get(res0.getStructureId());
-        CmsPriorityDateResourceComparator key1 = (CmsPriorityDateResourceComparator)m_keys.get(res1.getStructureId());
+        CmsPriorityDateResourceComparator key0 = m_keys.get(res0.getStructureId());
+        CmsPriorityDateResourceComparator key1 = m_keys.get(res1.getStructureId());
 
         if (key0 == null) {
             // initialize key if null
@@ -190,7 +188,7 @@ public class CmsPriorityDateResourceComparator implements Serializable, Comparat
      */
     private void init(CmsResource resource, CmsObject cms) {
 
-        List properties;
+        List<CmsProperty> properties;
 
         try {
             properties = cms.readPropertyObjects(resource, false);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsExtendedCollectorData.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/09/14 11:45:32 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.2.1 $
  * 
  * @since 7.0.2
  * 
@@ -69,7 +69,7 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
     private static final Log LOG = CmsLog.getLog(CmsExtendedCollectorData.class);
 
     /** The list of additional parameters. */
-    private List m_additionalParams;
+    private List<String> m_additionalParams;
 
     /**
      * Required constructor for subclasses.<p>
@@ -93,14 +93,14 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
         if (data == null) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_COLLECTOR_PARAM_EMPTY_0));
         }
-        List args = CmsStringUtil.splitAsList(data, '|', true);
+        List<String> args = CmsStringUtil.splitAsList(data, '|', true);
         if (args.size() < 3) {
             // we need at least 2 arguments: VFS URI and Resource Type
             throw new CmsIllegalArgumentException(
                 Messages.get().container(Messages.ERR_COLLECTOR_PARAM_INVALID_1, data));
         }
-        setFileName((String)args.get(0));
-        String type = (String)args.get(1);
+        setFileName(args.get(0));
+        String type = args.get(1);
         try {
             // try to look up the resource type
             I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(type);
@@ -129,7 +129,7 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
         }
         setCount(5);
         if (args.size() > 2) {
-            String count = (String)args.get(2);
+            String count = args.get(2);
             if (CmsStringUtil.isNotEmpty(count)) {
                 try {
                     setCount(Integer.parseInt(count));
@@ -151,7 +151,7 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
      *
      * @return the List of additional parameters (String objects)
      */
-    public List getAdditionalParams() {
+    public List<String> getAdditionalParams() {
 
         return m_additionalParams;
     }
@@ -161,7 +161,7 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
      *
      * @param additionalParams the List of additional parameters (String objects) to set
      */
-    protected void setAdditionalParams(List additionalParams) {
+    protected void setAdditionalParams(List<String> additionalParams) {
 
         m_additionalParams = additionalParams;
     }

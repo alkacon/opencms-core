@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/ComparatorInverter.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/09/14 11:45:32 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,8 @@
  */
 
 package org.opencms.file.collectors;
+
+import org.opencms.file.I_CmsResource;
 
 import java.util.Comparator;
 
@@ -65,9 +67,9 @@ import java.util.Comparator;
  * @since 7.0.3
  * 
  */
-public final class ComparatorInverter implements Comparator {
+public final class ComparatorInverter implements Comparator<I_CmsResource> {
 
-    private Comparator m_delegate;
+    private Comparator<I_CmsResource> m_delegate;
 
     /**
      * Creates a comparator that will invert the result of the given comparator.
@@ -75,7 +77,7 @@ public final class ComparatorInverter implements Comparator {
      * 
      * @param toInvert the comparator to invert results of
      */
-    public ComparatorInverter(Comparator toInvert) {
+    public ComparatorInverter(Comparator<I_CmsResource> toInvert) {
 
         this.m_delegate = toInvert;
     }
@@ -83,10 +85,9 @@ public final class ComparatorInverter implements Comparator {
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare(Object o1, Object o2) {
+    public int compare(I_CmsResource o1, I_CmsResource o2) {
 
         int result = this.m_delegate.compare(o1, o2);
         return -result;
     }
-
 }

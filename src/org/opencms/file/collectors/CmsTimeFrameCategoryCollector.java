@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/09/14 11:45:32 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.I_CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -149,7 +150,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.2.1 $
  * 
  * @since 7.0.3
  *
@@ -252,19 +253,13 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         public static final String PARAM_KEY_TIMEFRAME_START = "timeStart";
 
         /** The List &lt;String&gt; containing the categories to allow. */
-        private List m_categories = Collections.EMPTY_LIST;
+        private List<String> m_categories = Collections.emptyList();
 
         /** The display count. */
         private int m_count;
 
         /** The resource path (folder / file). */
         private String m_fileName;
-
-        /** 
-         * The <code>{@link org.opencms.file.CmsProperty}</code> instances that work as a filter 
-         * (they have to exist on the resource and have the value set like in these).
-         */
-        private CmsProperty[] m_filterProperties;
 
         /** The property to look for a pipe separated list of category strings in.*/
         private CmsProperty m_propertyCategories = new CmsProperty();
@@ -311,7 +306,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
          *
          * @return The List &lt;String&gt; containing the categories to allow.
          */
-        public List getCategories() {
+        public List<String> getCategories() {
 
             return m_categories;
         }
@@ -322,6 +317,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
          * 
          * @return the count
          */
+        @Override
         public int getCount() {
 
             return m_count;
@@ -332,32 +328,10 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
          * 
          * @return the file name
          */
+        @Override
         public String getFileName() {
 
             return m_fileName;
-        }
-
-        /** 
-         * Returns the <code>{@link org.opencms.file.CmsProperty}</code> instances that work as a filter 
-         * (they have to exist on the resource and have the value set like in these).
-         * <p>
-         * 
-         * Note that the properties returned from this instance are never read from VFS but from a collector parameter
-         * like:
-         * 
-         * <nobr> &lt;cms:contentload collector=&quot;allMappedToUriPriorityDateDesc&quot;
-         * param=&quot;folder|xmlcontent|100|propertySort=title|locale=de&quot;&gt; </nobr>
-         * 
-         * and therefore should not be written to the VFS. They are only used as a data structure to let the
-         * corresponding collector compare properties to that have been read from resources.
-         * <p>
-         * 
-         * @return the <code>{@link org.opencms.file.CmsProperty}</code> instances that work as a filter 
-         *      (they have to exist on the resource and have the value set like in these).
-         */
-        public CmsProperty[] getFilterProperties() {
-
-            return m_filterProperties;
         }
 
         /**
@@ -415,6 +389,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
          * 
          * @return the type
          */
+        @Override
         public int getType() {
 
             return m_type.getTypeId();
@@ -445,14 +420,14 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
          */
         private void parseParam(final String param) throws CmsLoaderException, ParseException {
 
-            List keyValuePairs = CmsStringUtil.splitAsList(param, '|');
+            List<String> keyValuePairs = CmsStringUtil.splitAsList(param, '|');
             String[] keyValuePair;
-            Iterator itKeyValuePairs = keyValuePairs.iterator();
+            Iterator<String> itKeyValuePairs = keyValuePairs.iterator();
             String keyValuePairStr;
             String key;
             String value;
             while (itKeyValuePairs.hasNext()) {
-                keyValuePairStr = (String)itKeyValuePairs.next();
+                keyValuePairStr = itKeyValuePairs.next();
                 keyValuePair = CmsStringUtil.splitAsArray(keyValuePairStr, '=');
                 if (keyValuePair.length != 2) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
@@ -494,7 +469,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
     private static final String COLLECTOR_NAME = "timeFrameAndCategories";
 
     /** Sorted set for fast collector name lookup. */
-    private static final List COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(new String[] {COLLECTOR_NAME}));
+    private static final List<String> COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(new String[] {COLLECTOR_NAME}));
 
     /** SQL Standard date format: "yyyy-MM-dd HH:mm:ss".*/
     public static final DateFormat DATEFORMAT_SQL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -510,14 +485,15 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
-        return new ArrayList(COLLECTORS_LIST);
+        return new ArrayList<String>(COLLECTORS_LIST);
     }
 
     /**
      * @see org.opencms.file.collectors.A_CmsResourceCollector#getCreateInFolder(org.opencms.file.CmsObject, org.opencms.file.collectors.CmsCollectorData)
      */
+    @Override
     protected String getCreateInFolder(CmsObject cms, CmsCollectorData data) throws CmsException {
 
         return super.getCreateInFolder(cms, data);
@@ -553,7 +529,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getResults(CmsObject cms, String collectorName, String param)
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsDataAccessException, CmsException {
 
         // if action is not set use default
@@ -571,9 +547,9 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         }
     }
 
-    private List getTimeFrameAndCategories(CmsObject cms, String param) throws CmsException {
+    private List<CmsResource> getTimeFrameAndCategories(CmsObject cms, String param) throws CmsException {
 
-        List result = null;
+        List<CmsResource> result = null;
         CollectorDataPropertyBased data = new CollectorDataPropertyBased(param);
 
         // Step 1: Read from DB, expiration is respected.
@@ -587,11 +563,11 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         long start = data.getTimeFrameStart();
         long end = data.getTimeFrameEnd();
         long resTime;
-        Iterator itResults = result.iterator();
+        Iterator<CmsResource> itResults = result.iterator();
         CmsProperty prop;
         CmsResource res;
         while (itResults.hasNext()) {
-            res = (CmsResource)itResults.next();
+            res = itResults.next();
             prop = cms.readPropertyObject(res, timeProperty, true);
             if (!prop.isNullProperty()) {
                 resTime = Long.parseLong(prop.getValue());
@@ -602,13 +578,13 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         }
 
         // Step 3: Category filtering
-        List categories = data.getCategories();
+        List<String> categories = data.getCategories();
         if ((categories != null) && !categories.isEmpty()) {
             itResults = result.iterator();
             String categoriesProperty = data.getPropertyCategories().getName();
-            List categoriesFound;
+            List<String> categoriesFound;
             while (itResults.hasNext()) {
-                res = (CmsResource)itResults.next();
+                res = itResults.next();
                 prop = cms.readPropertyObject(res, categoriesProperty, true);
                 if (prop.isNullProperty()) {
                     // disallow contents with empty category property: 
@@ -619,11 +595,11 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
                     categoriesFound = CmsStringUtil.splitAsList(prop.getValue(), '|');
 
                     // filter: resource has to be at least in one category
-                    Iterator itCategories = categories.iterator();
+                    Iterator<String> itCategories = categories.iterator();
                     String category;
                     boolean contained = false;
                     while (itCategories.hasNext()) {
-                        category = (String)itCategories.next();
+                        category = itCategories.next();
                         if (categoriesFound.contains(category)) {
                             contained = true;
                             break;
@@ -638,9 +614,9 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
 
         // Step 4: Sorting
         if (data.isSortDescending()) {
-            Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
+            Collections.sort(result, I_CmsResource.COMPARE_DATE_RELEASED);
         } else {
-            Collections.sort(result, new ComparatorInverter(CmsResource.COMPARE_DATE_RELEASED));
+            Collections.sort(result, new ComparatorInverter(I_CmsResource.COMPARE_DATE_RELEASED));
         }
 
         // Step 5: result limit

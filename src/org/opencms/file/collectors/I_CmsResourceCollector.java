@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/I_CmsResourceCollector.java,v $
- * Date   : $Date: 2009/09/10 16:26:22 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2009/09/14 11:45:32 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.file.collectors;
 
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
 import java.util.List;
@@ -42,7 +43,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.1 $
+ * @version $Revision: 1.13.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -169,7 +170,7 @@ public interface I_CmsResourceCollector extends Comparable<I_CmsResourceCollecto
      * @throws CmsException if something goes wrong
      * @throws CmsDataAccessException if the parameter attribute of the corresponding collector tag is invalid
      */
-    List getResults(CmsObject cms) throws CmsDataAccessException, CmsException;
+    List<CmsResource> getResults(CmsObject cms) throws CmsDataAccessException, CmsException;
 
     /** 
      * Returns a list of {@link org.opencms.file.CmsResource} Objects that are 
@@ -184,7 +185,8 @@ public interface I_CmsResourceCollector extends Comparable<I_CmsResourceCollecto
      * @throws CmsException if something goes wrong
      * @throws CmsDataAccessException if the parameter attribute of the corresponding collector tag is invalid
      */
-    List getResults(CmsObject cms, String collectorName, String param) throws CmsDataAccessException, CmsException;
+    List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
+    throws CmsDataAccessException, CmsException;
 
     /**
      * Sets the default collector name to use for collecting resources.<p>

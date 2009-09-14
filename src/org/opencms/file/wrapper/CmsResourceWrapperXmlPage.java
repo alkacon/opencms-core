@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/09/14 11:45:31 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,6 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -73,7 +72,7 @@ import java.util.Locale;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.11.2.1 $
  * 
  * @since 6.5.6
  */
@@ -86,19 +85,21 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     private static final String NAME_ELEMENT_CONTROLCODE = "controlcode.xml";
 
     /** Table with the states of the virtual files. */
-    private static final Hashtable TMP_FILE_TABLE = new Hashtable();
+    private static final List<String> TMP_FILE_TABLE = new ArrayList<String>();
 
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
      */
-    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
+    @Override
+    public List<CmsResource> addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter)
+    throws CmsException {
 
         CmsResource xmlPage = findXmlPage(cms, resourcename);
         if (xmlPage != null) {
             String path = getSubPath(cms, xmlPage, resourcename);
             String rootPath = cms.getRequestContext().removeSiteRoot(xmlPage.getRootPath());
 
-            ArrayList ret = new ArrayList();
+            ArrayList<CmsResource> ret = new ArrayList<CmsResource>();
 
             CmsFile file = cms.readFile(xmlPage);
             CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
@@ -110,22 +111,21 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                     return ret;
                 }
 
-                List locales = xml.getLocales();
-                Iterator iter = locales.iterator();
-                while (iter.hasNext()) {
-                    Locale locale = (Locale)iter.next();
+                List<Locale> locales = xml.getLocales();
+                Iterator<Locale> iter1 = locales.iterator();
+                while (iter1.hasNext()) {
+                    Locale locale = iter1.next();
                     ret.add(getResourceForLocale(xmlPage, locale));
                 }
 
                 // check temp file table to add virtual file
-                iter = getVirtualFiles().iterator();
-                while (iter.hasNext()) {
+                Iterator<String> iter2 = getVirtualFiles().iterator();
+                while (iter2.hasNext()) {
 
-                    String virtualFileName = (String)iter.next();
+                    String virtualFileName = iter2.next();
                     String virtualFilePath = rootPath + "/" + virtualFileName;
 
-                    if ((!TMP_FILE_TABLE.containsKey(virtualFilePath))
-                        || (!TMP_FILE_TABLE.get(virtualFilePath).equals(new Integer(0)))) {
+                    if (!TMP_FILE_TABLE.contains(virtualFilePath)) {
 
                         // read the control code resource
                         if (virtualFileName.equals(NAME_ELEMENT_CONTROLCODE)) {
@@ -145,10 +145,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                 // sub path is a locale -> return all elements for this locale
                 Locale locale = new Locale(path);
-                List names = xml.getNames(locale);
-                Iterator iter = names.iterator();
+                List<String> names = xml.getNames(locale);
+                Iterator<String> iter = names.iterator();
                 while (iter.hasNext()) {
-                    String name = (String)iter.next();
+                    String name = iter.next();
                     String content = xml.getStringValue(cms, name, locale);
                     String fullPath = xmlPage.getRootPath() + "/" + path + "/" + name + "." + EXTENSION_ELEMENT;
                     content = prepareContent(content, cms, xmlPage, fullPath);
@@ -174,6 +174,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.file.CmsResource.CmsResourceCopyMode)
      */
+    @Override
     public boolean copyResource(CmsObject cms, String source, String destination, CmsResourceCopyMode siblingMode)
     throws CmsException, CmsIllegalArgumentException {
 
@@ -241,8 +242,13 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#createResource(org.opencms.file.CmsObject, java.lang.String, int, byte[], java.util.List)
      */
-    public CmsResource createResource(CmsObject cms, String resourcename, int type, byte[] content, List properties)
-    throws CmsException, CmsIllegalArgumentException {
+    @Override
+    public CmsResource createResource(
+        CmsObject cms,
+        String resourcename,
+        int type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
 
         // cut off trailing slash
         if (resourcename.endsWith("/")) {
@@ -253,9 +259,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         if ((type == CmsResourceTypeFolder.getStaticTypeId()) && resourcename.endsWith(".html")) {
 
             // mark in temp file table that the visual files does not exist yet
-            Iterator iter = getVirtualFiles().iterator();
+            Iterator<String> iter = getVirtualFiles().iterator();
             while (iter.hasNext()) {
-                TMP_FILE_TABLE.put(resourcename + "/" + (String)iter.next(), new Integer(0));
+                TMP_FILE_TABLE.add(resourcename + "/" + iter.next());
             }
 
             return cms.createResource(resourcename, CmsResourceTypeXmlPage.getStaticTypeId());
@@ -291,9 +297,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                 // workaround: empty xmlpages always have the default locale "en" set
                 if (file.getLength() == 0) {
-                    Iterator iter = xml.getLocales().iterator();
+                    Iterator<Locale> iter = xml.getLocales().iterator();
                     while (iter.hasNext()) {
-                        xml.removeLocale((Locale)iter.next());
+                        xml.removeLocale(iter.next());
                     }
                 }
 
@@ -341,6 +347,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#deleteResource(CmsObject, String, org.opencms.file.CmsResource.CmsResourceDeleteMode)
      */
+    @Override
     public boolean deleteResource(CmsObject cms, String resourcename, CmsResourceDeleteMode siblingMode)
     throws CmsException {
 
@@ -363,9 +370,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 cms.deleteResource(resourcename, siblingMode);
 
                 // remove all virtual files for this resource
-                Iterator iter = getVirtualFiles().iterator();
+                Iterator<String> iter = getVirtualFiles().iterator();
                 while (iter.hasNext()) {
-                    TMP_FILE_TABLE.remove(resourcename + "/" + (String)iter.next());
+                    TMP_FILE_TABLE.remove(resourcename + "/" + iter.next());
                 }
 
                 return true;
@@ -381,7 +388,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 if (getVirtualFiles().contains(tokens[0])) {
 
                     // mark the virtual file in the temp file table as deleted
-                    TMP_FILE_TABLE.put(resourcename, new Integer(0));
+                    TMP_FILE_TABLE.add(resourcename);
                 } else {
 
                     // delete locale
@@ -416,6 +423,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getLock(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
+    @Override
     public CmsLock getLock(CmsObject cms, CmsResource resource) throws CmsException {
 
         CmsResource xmlPage = cms.readResource(resource.getStructureId());
@@ -451,6 +459,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#lockResource(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public boolean lockResource(CmsObject cms, String resourcename) throws CmsException {
 
         CmsResource res = findXmlPage(cms, resourcename);
@@ -465,6 +474,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#moveResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
+    @Override
     public boolean moveResource(CmsObject cms, String source, String destination)
     throws CmsException, CmsIllegalArgumentException {
 
@@ -526,6 +536,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#readFile(CmsObject, String, CmsResourceFilter)
      */
+    @Override
     public CmsFile readFile(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         // find the xml page this is for
@@ -546,8 +557,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 CmsFile file = cms.readFile(xmlPage);
 
                 // check temp file table to remove deleted virtual files
-                if ((TMP_FILE_TABLE.containsKey(resourcename))
-                    && (TMP_FILE_TABLE.get(resourcename).equals(new Integer(0)))) {
+                if (TMP_FILE_TABLE.contains(resourcename)) {
                     return null;
                 }
 
@@ -600,6 +610,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#readResource(CmsObject, String, CmsResourceFilter)
      */
+    @Override
     public CmsResource readResource(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         try {
@@ -633,8 +644,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 if (tokens.length == 1) {
 
                     // check temp file table to remove deleted virtual files
-                    if ((TMP_FILE_TABLE.containsKey(resourcename))
-                        && (TMP_FILE_TABLE.get(resourcename).equals(new Integer(0)))) {
+                    if (TMP_FILE_TABLE.contains(resourcename)) {
                         return null;
                     }
 
@@ -691,6 +701,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#restoreLink(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public String restoreLink(CmsObject cms, String uri) {
 
         CmsResource res = findXmlPage(cms, uri);
@@ -704,6 +715,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#rewriteLink(CmsObject, CmsResource)
      */
+    @Override
     public String rewriteLink(CmsObject cms, CmsResource res) {
 
         if (isWrappedResource(cms, res)) {
@@ -721,6 +733,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#unlockResource(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public boolean unlockResource(CmsObject cms, String resourcename) throws CmsException {
 
         CmsResource res = findXmlPage(cms, resourcename);
@@ -735,6 +748,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#wrapResource(CmsObject, CmsResource)
      */
+    @Override
     public CmsResource wrapResource(CmsObject cms, CmsResource res) {
 
         CmsWrappedResource wrap = new CmsWrappedResource(res);
@@ -745,6 +759,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsFile resource) throws CmsException {
 
         CmsResource xmlPage = cms.readResource(resource.getStructureId());
@@ -1057,12 +1072,11 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
      * 
      * @return a list containing strings with the names of the virtual files
      */
-    private List getVirtualFiles() {
+    private List<String> getVirtualFiles() {
 
-        ArrayList list = new ArrayList();
+        ArrayList<String> list = new ArrayList<String>();
         list.add(NAME_ELEMENT_CONTROLCODE);
 
         return list;
     }
-
 }

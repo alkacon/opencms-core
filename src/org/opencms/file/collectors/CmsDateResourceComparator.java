@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDateResourceComparator.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/09/14 11:45:33 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,11 +73,11 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.2.1 $
  * 
  * @since 6.0.0 
  */
-public class CmsDateResourceComparator implements Comparator {
+public class CmsDateResourceComparator implements Comparator<CmsResource> {
 
     /** Possible keywords to read dates from the resource attributes. */
     private static final String[] DATE_ATTRIBUTES = {
@@ -87,7 +88,7 @@ public class CmsDateResourceComparator implements Comparator {
         "dateExpired"};
 
     /**  Possible keywords to read dates from the resource attributes in a List. */
-    public static final List DATE_ATTRIBUTES_LIST = Arrays.asList(DATE_ATTRIBUTES);
+    public static final List<String> DATE_ATTRIBUTES_LIST = Arrays.asList(DATE_ATTRIBUTES);
 
     /** The date sort order. */
     private boolean m_asc;
@@ -99,10 +100,10 @@ public class CmsDateResourceComparator implements Comparator {
     private long m_date;
 
     /** The list that describes the dates to check, in the order they should be checked. */
-    private List m_dateIdentifiers;
+    private List<String> m_dateIdentifiers;
 
     /** The internal map of comparator keys. */
-    private Map m_keys;
+    private Map<CmsUUID, CmsDateResourceComparator> m_keys;
 
     /**
      * Creates a new instance of this comparator key.<p>
@@ -111,15 +112,15 @@ public class CmsDateResourceComparator implements Comparator {
      * @param dateIdentifiers the names of the dates to check
      * @param asc if true, the date sort order is ascending, otherwise descending
      */
-    public CmsDateResourceComparator(CmsObject cms, List dateIdentifiers, boolean asc) {
+    public CmsDateResourceComparator(CmsObject cms, List<String> dateIdentifiers, boolean asc) {
 
         m_cms = cms;
         m_asc = asc;
         m_dateIdentifiers = dateIdentifiers;
         if (m_dateIdentifiers == null) {
-            m_dateIdentifiers = Collections.EMPTY_LIST;
+            m_dateIdentifiers = Collections.emptyList();
         }
-        m_keys = new HashMap();
+        m_keys = new HashMap<CmsUUID, CmsDateResourceComparator>();
     }
 
     /**
@@ -142,13 +143,17 @@ public class CmsDateResourceComparator implements Comparator {
      * 
      * @see CmsDateResourceComparator for a description about how the date identifieres are used
      */
-    public static long calculateDate(CmsObject cms, CmsResource resource, List dateIdentifiers, long defaultValue) {
+    public static long calculateDate(
+        CmsObject cms,
+        CmsResource resource,
+        List<String> dateIdentifiers,
+        long defaultValue) {
 
         long result = 0;
-        List properties = null;
+        List<CmsProperty> properties = null;
         for (int i = 0, size = dateIdentifiers.size(); i < size; i++) {
             // check all configured comparisons
-            String date = (String)dateIdentifiers.get(i);
+            String date = dateIdentifiers.get(i);
             int pos = DATE_ATTRIBUTES_LIST.indexOf(date);
             switch (pos) {
                 case 0: // "dateCreated"
@@ -186,7 +191,7 @@ public class CmsDateResourceComparator implements Comparator {
                             properties = cms.readPropertyObjects(resource, false);
                         } catch (CmsException e) {
                             // use empty list in case of an error, to avoid further re-read tries
-                            properties = Collections.EMPTY_LIST;
+                            properties = Collections.emptyList();
                         }
                     }
                     String propValue = CmsProperty.get(date, properties).getValue();
@@ -220,7 +225,7 @@ public class CmsDateResourceComparator implements Comparator {
      * 
      * @return a new instance of this comparator key
      */
-    private static CmsDateResourceComparator create(CmsObject cms, CmsResource resource, List dateIdentifiers) {
+    private static CmsDateResourceComparator create(CmsObject cms, CmsResource resource, List<String> dateIdentifiers) {
 
         CmsDateResourceComparator result = new CmsDateResourceComparator();
         result.m_date = calculateDate(cms, resource, dateIdentifiers, resource.getDateCreated());
@@ -230,17 +235,14 @@ public class CmsDateResourceComparator implements Comparator {
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare(Object arg0, Object arg1) {
+    public int compare(CmsResource res0, CmsResource res1) {
 
-        if ((arg0 == arg1) || !(arg0 instanceof CmsResource) || !(arg1 instanceof CmsResource)) {
+        if (res0 == res1) {
             return 0;
         }
 
-        CmsResource res0 = (CmsResource)arg0;
-        CmsResource res1 = (CmsResource)arg1;
-
-        CmsDateResourceComparator key0 = (CmsDateResourceComparator)m_keys.get(res0.getStructureId());
-        CmsDateResourceComparator key1 = (CmsDateResourceComparator)m_keys.get(res1.getStructureId());
+        CmsDateResourceComparator key0 = m_keys.get(res0.getStructureId());
+        CmsDateResourceComparator key1 = m_keys.get(res1.getStructureId());
 
         if (key0 == null) {
             // initialize key if null

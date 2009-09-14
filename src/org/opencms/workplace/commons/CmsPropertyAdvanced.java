@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2009/07/08 09:27:11 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2009/09/14 11:45:33 $
+ * Version: $Revision: 1.37.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.37.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -235,9 +235,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * @param list a list of CmsProperty objects
      * @return a map with CmsPropery object values keyed by property keys
      */
-    public static Map getPropertyMap(List list) {
+    public static Map<String, CmsProperty> getPropertyMap(List<CmsProperty> list) {
 
-        Map result = null;
+        Map<String, CmsProperty> result = null;
         String key = null;
         CmsProperty property = null;
 
@@ -250,7 +250,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         // choose the fastest method to iterate the list
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
-                property = (CmsProperty)list.get(i);
+                property = list.get(i);
                 key = property.getName();
                 result.put(key, property);
             }

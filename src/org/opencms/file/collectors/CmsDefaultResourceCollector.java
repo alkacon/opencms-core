@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/09/14 11:45:32 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.I_CmsResource;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.17.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -73,7 +74,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         "allInSubTreeNavPos"};
 
     /** Array list for fast collector name lookup. */
-    private static final List COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
+    private static final List<String> COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultResourceCollector.class);
@@ -81,7 +82,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
         return COLLECTORS_LIST;
     }
@@ -160,7 +161,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getResults(CmsObject cms, String collectorName, String param)
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsDataAccessException, CmsException {
 
         // if action is not set use default
@@ -210,16 +211,17 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List allInFolderDateReleasedDesc(CmsObject cms, String param, boolean tree) throws CmsException {
+    protected List<CmsResource> allInFolderDateReleasedDesc(CmsObject cms, String param, boolean tree)
+    throws CmsException {
 
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
-        List result = cms.readResources(foldername, filter, tree);
+        List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
-        Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
+        Collections.sort(result, I_CmsResource.COMPARE_DATE_RELEASED);
 
         return shrinkToFit(result, data.getCount());
     }
@@ -234,21 +236,21 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * @throws CmsException if something goes wrong
      * 
      */
-    protected List allInFolderNavPos(CmsObject cms, String param, boolean readSubTree) throws CmsException {
+    protected List<CmsResource> allInFolderNavPos(CmsObject cms, String param, boolean readSubTree) throws CmsException {
 
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
-        List foundResources = cms.readResources(foldername, filter, readSubTree);
+        List<CmsResource> foundResources = cms.readResources(foldername, filter, readSubTree);
 
         // the Cms resources are saved in a map keyed by their nav elements
         // to save time sorting the resources by the value of their NavPos property        
-        Map navElementMap = new HashMap();
+        Map<CmsJspNavElement, CmsResource> navElementMap = new HashMap<CmsJspNavElement, CmsResource>();
         for (int i = 0, n = foundResources.size(); i < n; i++) {
 
-            CmsResource resource = (CmsResource)foundResources.get(i);
+            CmsResource resource = foundResources.get(i);
             CmsJspNavElement navElement = CmsJspNavBuilder.getNavigationForResource(cms, cms.getSitePath(resource));
 
             // check if the resource has the NavPos property set or not
@@ -263,25 +265,25 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
             }
         }
 
-        List result = null;
+        List<CmsResource> result = null;
         if (navElementMap.size() == foundResources.size()) {
             // all found resources have the NavPos property set
             // sort the nav. elements, and pull the found Cms resources
             // from the map in the correct order into a list
-            List navElementList = new ArrayList(navElementMap.keySet());
-            result = new ArrayList();
+            List<CmsJspNavElement> navElementList = new ArrayList<CmsJspNavElement>(navElementMap.keySet());
+            result = new ArrayList<CmsResource>();
 
             Collections.sort(navElementList);
             for (int i = 0, n = navElementList.size(); i < n; i++) {
 
-                CmsJspNavElement navElement = (CmsJspNavElement)navElementList.get(i);
+                CmsJspNavElement navElement = navElementList.get(i);
                 result.add(navElementMap.get(navElement));
             }
         } else {
             // not all found resources have the NavPos property set
             // sort the resources by release date as usual
             result = foundResources;
-            Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
+            Collections.sort(result, I_CmsResource.COMPARE_DATE_RELEASED);
         }
 
         return shrinkToFit(result, data.getCount());
@@ -300,7 +302,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * @throws CmsIllegalArgumentException if the given param argument is not a link to a single file
      * 
      */
-    protected List getAllInFolder(CmsObject cms, String param, boolean tree)
+    protected List<CmsResource> getAllInFolder(CmsObject cms, String param, boolean tree)
     throws CmsException, CmsIllegalArgumentException {
 
         CmsCollectorData data = new CmsCollectorData(param);
@@ -308,9 +310,9 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
-        List result = cms.readResources(foldername, filter, tree);
+        List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
-        Collections.sort(result, CmsResource.COMPARE_ROOT_PATH);
+        Collections.sort(result, I_CmsResource.COMPARE_ROOT_PATH);
         Collections.reverse(result);
 
         return shrinkToFit(result, data.getCount());
@@ -326,14 +328,14 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List getSingleFile(CmsObject cms, String param) throws CmsException {
+    protected List<CmsResource> getSingleFile(CmsObject cms, String param) throws CmsException {
 
         if ((param == null) || (cms == null)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_COLLECTOR_PARAM_SINGLE_FILE_0));
         }
 
         // create a list and return it
-        ArrayList result = new ArrayList(1);
+        List<CmsResource> result = new ArrayList<CmsResource>(1);
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
             result.add(cms.readFile(param));
         } else {

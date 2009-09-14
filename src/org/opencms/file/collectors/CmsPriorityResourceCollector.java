@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/09/14 11:45:32 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.17.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -80,12 +80,12 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         "allMappedToUriPriorityDateDesc"};
 
     /** Array list for fast collector name lookup. */
-    private static final List COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
+    private static final List<String> COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
         return COLLECTORS_LIST;
     }
@@ -155,7 +155,7 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getResults(CmsObject cms, String collectorName, String param)
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsException, CmsDataAccessException {
 
         // if action is not set use default
@@ -209,14 +209,15 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List allInFolderPriorityDate(CmsObject cms, String param, boolean tree, boolean asc) throws CmsException {
+    protected List<CmsResource> allInFolderPriorityDate(CmsObject cms, String param, boolean tree, boolean asc)
+    throws CmsException {
 
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
-        List result = cms.readResources(foldername, filter, tree);
+        List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
         // create priority comparator to use to sort the resources
         CmsPriorityDateResourceComparator comparator = new CmsPriorityDateResourceComparator(cms, asc);
@@ -236,14 +237,14 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List allInFolderPriorityTitle(CmsObject cms, String param, boolean tree) throws CmsException {
+    protected List<CmsResource> allInFolderPriorityTitle(CmsObject cms, String param, boolean tree) throws CmsException {
 
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
-        List result = cms.readResources(foldername, filter, tree);
+        List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
         // create priority comparator to use to sort the resources
         CmsPriorityTitleResourceComparator comparator = new CmsPriorityTitleResourceComparator(cms);
@@ -264,7 +265,8 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List allMappedToUriPriorityDate(CmsObject cms, String param, boolean asc) throws CmsException {
+    protected List<CmsResource> allMappedToUriPriorityDate(CmsObject cms, String param, boolean asc)
+    throws CmsException {
 
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
@@ -272,13 +274,13 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
 
-        List result = cms.readResources(foldername, filter, true);
-        List mapped = new ArrayList();
+        List<CmsResource> result = cms.readResources(foldername, filter, true);
+        List<CmsResource> mapped = new ArrayList<CmsResource>();
 
         // sort out the resources mapped to the current page
-        Iterator i = result.iterator();
+        Iterator<CmsResource> i = result.iterator();
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             // read all properties - reason: comparator will do this later anyway, so we just prefill the cache
             CmsProperty prop = cms.readPropertyObject(res, PROPERTY_CHANNEL, false);
             if (!prop.isNullProperty()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperUtils.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/14 11:45:31 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * 
  * @since 6.2.4
  */
@@ -188,16 +188,18 @@ public final class CmsResourceWrapperUtils {
         content.append("# ${property_name}.i : individual property\n");
         content.append("# ${property_name}.s :     shared property\n\n");
 
-        List propertyDef = cms.readAllPropertyDefinitions();
-        Map activeProperties = CmsPropertyAdvanced.getPropertyMap(cms.readPropertyObjects(res, false));
+        List<CmsPropertyDefinition> propertyDef = cms.readAllPropertyDefinitions();
+        Map<String, CmsProperty> activeProperties = CmsPropertyAdvanced.getPropertyMap(cms.readPropertyObjects(
+            res,
+            false));
 
         // iterate over all possible properties for the resource
-        Iterator i = propertyDef.iterator();
+        Iterator<CmsPropertyDefinition> i = propertyDef.iterator();
         while (i.hasNext()) {
-            CmsPropertyDefinition currentPropertyDef = (CmsPropertyDefinition)i.next();
+            CmsPropertyDefinition currentPropertyDef = i.next();
 
             String propName = currentPropertyDef.getName();
-            CmsProperty currentProperty = (CmsProperty)activeProperties.get(propName);
+            CmsProperty currentProperty = activeProperties.get(propName);
             if (currentProperty == null) {
                 currentProperty = new CmsProperty();
             }
@@ -365,10 +367,10 @@ public final class CmsResourceWrapperUtils {
 
             properties.load(new ByteArrayInputStream(modContent));
 
-            List propList = new ArrayList();
-            Iterator it = properties.entrySet().iterator();
+            List<CmsProperty> propList = new ArrayList<CmsProperty>();
+            Iterator<Map.Entry<Object, Object>> it = properties.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry e = (Map.Entry)it.next();
+                Map.Entry<Object, Object> e = it.next();
                 String key = (String)e.getKey();
                 String value = (String)e.getValue();
 
@@ -406,7 +408,7 @@ public final class CmsResourceWrapperUtils {
      */
     private static String escapeString(String value) {
 
-        Map substitutions = new HashMap();
+        Map<String, String> substitutions = new HashMap<String, String>();
         substitutions.put("\n", "\\n");
         substitutions.put("\t", "\\t");
         substitutions.put("\r", "\\r");

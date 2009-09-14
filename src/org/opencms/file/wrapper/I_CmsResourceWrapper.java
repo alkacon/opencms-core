@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/I_CmsResourceWrapper.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/09/14 11:45:30 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.file.wrapper;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
@@ -60,7 +61,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  * 
  * @since 6.2.4
  */
@@ -80,7 +81,8 @@ public interface I_CmsResourceWrapper {
      * 
      * @throws CmsException if something goes wrong
      */
-    List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException;
+    List<CmsResource> addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter)
+    throws CmsException;
 
     /**
      * Copies a resource.<p>
@@ -131,8 +133,12 @@ public interface I_CmsResourceWrapper {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>source</code> argument is null or of length 0
      */
-    CmsResource createResource(CmsObject cms, String resourcename, int type, byte[] content, List properties)
-    throws CmsException, CmsIllegalArgumentException;
+    CmsResource createResource(
+        CmsObject cms,
+        String resourcename,
+        int type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Deletes a resource given its name.<p>
