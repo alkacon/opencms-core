@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2009/08/26 08:16:17 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2009/09/14 09:35:41 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  */
@@ -489,7 +490,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @return the best matching locale name or null if no name matches
      */
-    public Locale getBestMatchingLocale(Locale requestedLocale, List<Locale> defaults, List<Locale> available) {
+    public Locale getBestMatchingLocale(Locale requestedLocale, List<Locale> defaults, Collection<Locale> available) {
 
         if ((available == null) || available.isEmpty()) {
             // no locales are available at all
@@ -684,7 +685,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @return the first precise or simplified match, or <code>null</code> in case no match is found
      */
-    public Locale getFirstMatchingLocale(List<Locale> locales, List<Locale> available) {
+    public Locale getFirstMatchingLocale(List<Locale> locales, Collection<Locale> available) {
 
         Iterator<Locale> i;
         // first try a precise match
