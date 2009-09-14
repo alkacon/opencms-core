@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/A_CmsXmlDocumentLoader.java,v $
- * Date   : $Date: 2009/09/10 16:26:20 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2009/09/14 08:04:41 $
+ * Version: $Revision: 1.7.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.7.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -145,7 +145,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
                         cms,
                         cms.getSitePath(resource)))}));
         }
-        // resturn the appropriate content
+        // return the appropriate content
         return doc.getStringValue(cms, element, locale);
     }
 
