@@ -11,10 +11,11 @@
     <script type="text/javascript">
       var cms = {
         data:{
-          "EDITOR_URL"     : "%(editorUri)",
-          "SERVER_GET_URL" : "%(serverGetUri)",
-          "SERVER_SET_URL" : "%(serverSetUri)",
-          "CURRENT_URI"    : "%(currentUri)"
+          "EDITOR_URL"      : "%(editorUri)",
+          "SERVER_GET_URL"  : "%(serverGetUri)",
+          "SERVER_SET_URL"  : "%(serverSetUri)",
+          "CURRENT_CNT_PAGE": "%(currentContainerPage)",
+          "CURRENT_URI"     : "%(currentUri)"
         }, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}};
     </script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.data.js"></script>

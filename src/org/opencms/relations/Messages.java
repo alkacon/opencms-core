@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/14 13:59:34 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.3.0 
  */
@@ -92,6 +92,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATION_TYPE_XML_WEAK_0 = "GUI_RELATION_TYPE_XML_WEAK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATION_TYPE_XSD_0 = "GUI_RELATION_TYPE_XSD_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATIONS_VALIDATION_DEFAULT_SUBJECT_0 = "GUI_RELATIONS_VALIDATION_DEFAULT_SUBJECT_0";

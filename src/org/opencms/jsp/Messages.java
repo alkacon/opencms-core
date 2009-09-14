@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2009/08/13 10:47:31 $
- * Version: $Revision: 1.26.2.1 $
+ * Date   : $Date: 2009/09/14 13:59:36 $
+ * Version: $Revision: 1.26.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.26.2.1 $
+ * @version $Revision: 1.26.2.2 $
  * 
  * @since 6.0.0
  */
@@ -80,6 +80,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COLLECTOR_NOT_FOUND_1 = "ERR_COLLECTOR_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONTAINER_PAGE_NO_TYPE_3 = "ERR_CONTAINER_PAGE_NO_TYPE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONTAINER_PAGE_NOT_FOUND_3 = "ERR_CONTAINER_PAGE_NOT_FOUND_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DIRECT_EDIT_PROVIDER_1 = "ERR_DIRECT_EDIT_PROVIDER_1";
@@ -113,6 +119,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_DOCUMENT_UNMARSHAL_1 = "ERR_XML_DOCUMENT_UNMARSHAL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_XSD_NO_TEMPLATE_FORMATTER_3 = "ERR_XSD_NO_TEMPLATE_FORMATTER_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_ACTIONELEM_NOT_INIT_0 = "GUI_ERR_ACTIONELEM_NOT_INIT_0";

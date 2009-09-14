@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2009/08/27 14:46:19 $
- * Version: $Revision: 1.22.2.2 $
+ * Date   : $Date: 2009/09/14 13:59:37 $
+ * Version: $Revision: 1.22.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.22.2.2 $ 
+ * @version $Revision: 1.22.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,6 +239,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UPDATED_JSP_2 = "LOG_UPDATED_JSP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_WRONG_TEMPLATE_3 = "LOG_WARN_WRONG_TEMPLATE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITING_JSP_1 = "LOG_WRITING_JSP_1";

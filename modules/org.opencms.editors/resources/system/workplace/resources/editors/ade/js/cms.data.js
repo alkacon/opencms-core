@@ -18,41 +18,47 @@
    /** Timeout in ms for ajax requests. */
    var /** long */ AJAX_TIMEOUT = 5000;
    
-   /** Parameter 'obj' value 'all' constant. */
-   var /** String */ OBJ_ALL = 'all';
+   /** Parameter 'action' value 'all' constant. */
+   var /** String */ ACTION_ALL = 'all';
    
-   /** Parameter 'obj' value 'rec' constant. */
-   var /** String */ OBJ_REC = 'rec';
+   /** Parameter 'action' value 'rec' constant. */
+   var /** String */ ACTION_REC = 'rec';
    
-   /** Parameter 'obj' value 'fav' constant. */
-   var /** String */ OBJ_FAV = 'fav';
+   /** Parameter 'action' value 'fav' constant. */
+   var /** String */ ACTION_FAV = 'fav';
    
-   /** Parameter 'obj' value 'cnt' constant. */
-   var /** String */ OBJ_CNT = 'cnt';
+   /** Parameter 'action' value 'cnt' constant. */
+   var /** String */ ACTION_CNT = 'cnt';
    
-   /** Parameter 'obj' value 'elem' constant. */
-   var /** String */ OBJ_ELEM = 'elem';
+   /** Parameter 'action' value 'elem' constant. */
+   var /** String */ ACTION_ELEM = 'elem';
    
-   /** Parameter 'obj' value 'new' constant. */
-   var /** String */ OBJ_NEW = 'new';
+   /** Parameter 'action' value 'new' constant. */
+   var /** String */ ACTION_NEW = 'new';
    
-   /** Parameter 'obj' value 'del' constant. */
-   var /** String */ OBJ_DEL = 'del';
+   /** Parameter 'action' value 'del' constant. */
+   var /** String */ ACTION_DEL = 'del';
    
-   /** Parameter 'obj' value 'search' constant. */
-   var /** String */ OBJ_SEARCH = 'search';
+   /** Parameter 'action' value 'search' constant. */
+   var /** String */ ACTION_SEARCH = 'search';
    
-   /** Parameter 'obj' value 'ls' constant. */
-   var /** String */ OBJ_LS = 'ls';
+   /** Parameter 'action' value 'ls' constant. */
+   var /** String */ ACTION_LS = 'ls';
    
    /** Editors back link uri. */
    var /** String */ BACKLINK_URL = cms.data.BACKLINK_URL = '/system/workplace/resources/editors/ade/backlink.html';
    
    /**  
-    * The current container page uri.
+    * The current page uri.
     * @see /system/workplace/editors/ade/include.txt
     */
    var /** String */ CURRENT_URI = cms.data.CURRENT_URI;
+   
+   /**  
+    * The current container page uri.
+    * @see /system/workplace/editors/ade/include.txt
+    */
+   var /** String */ CURRENT_CNT_PAGE = cms.data.CURRENT_CNT_PAGE;
    
    /**  
     * The xml content editor url.
@@ -164,8 +170,9 @@
       $.ajax({
          'url': SERVER_GET_URL,
          'data': {
-            'obj': OBJ_ALL,
-            'url': CURRENT_URI
+            'action': ACTION_ALL,
+            'cntpage': CURRENT_CNT_PAGE,
+            'uri': CURRENT_URI
          },
          'timeout': AJAX_TIMEOUT,
          'error': function(xhr, status, error) {
@@ -240,7 +247,8 @@
    var loadJSON = cms.data.loadJSON = /** void */ function(/** Object */data, /** void Function(boolean, Object) */ afterLoad) {
    
       $.extend(data, {
-         'url': CURRENT_URI
+         'cntpage': CURRENT_CNT_PAGE,
+         'uri': CURRENT_URI
       });
       $.ajax({
          'url': SERVER_GET_URL,
@@ -271,17 +279,18 @@
    /**
     * .<p>
     *
-    * @param {String} obj
+    * @param {String} action
     * @param {Object} data
     * @param {Function} afterPost
     */
-   var postJSON = cms.data.postJSON = /** void */ function(/** String */obj, /** Object */ data, /** void Function(boolean, Object) */ afterPost) {
+   var postJSON = cms.data.postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost) {
    
       $.ajax({
          'url': SERVER_SET_URL,
          'data': {
-            'url': CURRENT_URI,
-            'obj': obj,
+            'cntpage': CURRENT_CNT_PAGE,
+            'uri': CURRENT_URI,
+            'action': action,
             'data': JSON.stringify(data)
          },
          'type': 'POST',
@@ -319,7 +328,7 @@
    var createResource = cms.data.createResource = /** void */ function(/** String */type, /** void Function(boolean, String, String) */ afterCreate) {
    
       loadJSON({
-         'obj': OBJ_NEW,
+         'action': ACTION_NEW,
          'data': type
       }, function(ok, data) {
          afterCreate(ok, data.id, data.uri);
@@ -334,7 +343,7 @@
     */
    var deleteResources = cms.data.deleteResources = /** void */ function(/** Array */ids, /** void Function(boolean) */ afterDelete) {
    
-      postJSON(OBJ_DEL, ids, function(ok) {
+      postJSON(ACTION_DEL, ids, function(ok) {
          afterDelete(ok);
       });
    }
@@ -352,7 +361,7 @@
          restoreState = true;
       }
       loadJSON({
-         'obj': OBJ_ELEM,
+         'action': ACTION_ELEM,
          'elem': id
       }, function(ok, data) {
          if (ok) {
@@ -376,7 +385,7 @@
    var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, Object) */ afterLoad) {
    
       loadJSON({
-         'obj': OBJ_ELEM,
+         'action': ACTION_ELEM,
          'elem': JSON.stringify(ids)
       }, function(ok, data) {
          if (ok) {
@@ -396,7 +405,7 @@
    var loadFavorites = cms.data.loadFavorites = /** void */ function(/** void Function(boolean, Object) */afterFavoritesLoad) {
    
       loadJSON({
-         obj: OBJ_FAV
+         'action': ACTION_FAV
       }, function(ok, data) {
          if (ok) {
             cms.toolbar.favorites = data.favorites;
@@ -408,16 +417,16 @@
                   $.each(cms.data.elements, function(key, val) {
                      var pos = $.inArray(key, idsToLoad);
                      if (pos >= 0) {
-                         idsToLoad.splice(pos, 1);
-                     } 
-                  }); 
+                        idsToLoad.splice(pos, 1);
+                     }
+                  });
                   // remove the missing elements from the favlist
                   $.each(idsToLoad, function(key, val) {
                      var pos = $.inArray(key, cms.toolbar.favorites);
                      if (pos >= 0) {
-                         cms.toolbar.favorites.splice(pos, 1);
-                     } 
-                  }); 
+                        cms.toolbar.favorites.splice(pos, 1);
+                     }
+                  });
                   if (ok2) {
                      loadNecessarySubcontainerElements(cms.data.elements, function(ok3, data3) {
                         afterFavoritesLoad(ok2, data)
@@ -437,7 +446,7 @@
    var loadRecent = cms.data.loadRecent = /** void */ function(/** void Function(boolean, Object) */afterRecentLoad) {
    
       loadJSON({
-         obj: OBJ_REC
+         'action': ACTION_REC
       }, function(ok, data) {
          if (ok) {
             cms.toolbar.recent = data.recent;
@@ -492,7 +501,7 @@
          });
       });
       // send the data
-      postJSON(OBJ_CNT, data, afterSave);
+      postJSON(ACTION_CNT, data, afterSave);
    }
    
    
@@ -503,7 +512,7 @@
     */
    var persistFavorites = cms.data.persistFavorites = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
-      postJSON(OBJ_FAV, cms.toolbar.favorites, afterSave);
+      postJSON(ACTION_FAV, cms.toolbar.favorites, afterSave);
    }
    
    /**
@@ -513,7 +522,7 @@
     */
    var persistRecent = cms.data.persistRecent = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
-      postJSON(OBJ_REC, cms.toolbar.recent, afterSave);
+      postJSON(ACTION_REC, cms.toolbar.recent, afterSave);
    }
    
    /**
@@ -689,11 +698,11 @@
       cms.data.searchParams.query = query;
       clearSearchResults();
       loadJSON({
-         obj: OBJ_SEARCH,
-         text: query,
-         type: _stringifySearchTypes(types),
-         location: path,
-         page: 0
+         'action': ACTION_SEARCH,
+         'text': query,
+         'type': _stringifySearchTypes(types),
+         'location': path,
+         'page': 0
       }, cms.data.handleNewSearchResults);
    }
    
@@ -703,11 +712,11 @@
    var continueSearch = cms.data.continueSearch = function() {
    
       loadJSON({
-         obj: OBJ_SEARCH,
-         text: cms.data.searchParams.query,
-         type: _stringifySearchTypes(cms.data.searchParams.types),
-         location: cms.data.searchParams.path,
-         page: cms.data.searchParams.page
+         'action': ACTION_SEARCH,
+         'text': cms.data.searchParams.query,
+         'type': _stringifySearchTypes(cms.data.searchParams.types),
+         'location': cms.data.searchParams.path,
+         'page': cms.data.searchParams.page
       }, cms.data.handleSearchResults);
    }
    
@@ -738,11 +747,11 @@
    var checkLastSearch = cms.data.checkLastSearch = function(/**Function(boolean,Object)*/callback) {
    
       loadJSON({
-         obj: OBJ_LS,
-         text: cms.data.searchParams.query,
-         type: _stringifySearchTypes(cms.data.searchParams.types),
-         location: cms.data.searchParams.path,
-         page: 0
+         'action': ACTION_LS,
+         'text': cms.data.searchParams.query,
+         'type': _stringifySearchTypes(cms.data.searchParams.types),
+         'location': cms.data.searchParams.path,
+         'page': 0
       }, function(ok, data) {
          cms.data.handleLastSearch(ok, data);
          callback(ok, data);

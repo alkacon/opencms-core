@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/09/07 12:41:49 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/09/14 13:59:36 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
@@ -45,8 +46,10 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
+import org.opencms.workplace.editors.ade.CmsContainerPageBean;
 
 import java.io.IOException;
 
@@ -60,7 +63,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
@@ -86,7 +89,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
         ServletRequest req = context.getRequest();
         if (CmsHistoryResourceHandler.isHistoryRequest(req)) {
-            // don't display direct edit buttons on an historical resource
+            // don't display advanced direct edit buttons on an historical resource
             return;
         }
 
@@ -94,17 +97,17 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         CmsObject cms = controller.getCmsObject();
 
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            // direct edit is never enabled in the online project
+            // advanced direct edit is never enabled in the online project
             return;
         }
 
         if (CmsResource.isTemporaryFileName(cms.getRequestContext().getUri())) {
-            // don't display direct edit buttons if a temporary file is displayed
+            // don't display advanced direct edit buttons if a temporary file is displayed
             return;
         }
 
         // insert ade header HTML
-        String code = getAdeIncludes(cms);
+        String code = getAdeIncludes(cms, req);
         try {
             context.getOut().print(code);
         } catch (IOException e) {
@@ -116,29 +119,30 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
      * Returns the ade include HTML to insert in the page beginning.<p>
      * 
      * @param cms the current cms context
+     * @param req the current request
      *  
      * @return the ade include HTML to insert in the page beginning
      */
-    protected static String getAdeIncludes(CmsObject cms) {
+    protected static String getAdeIncludes(CmsObject cms, ServletRequest req) {
 
         // check if the selected include file is available in the cache
         CmsMemoryObjectCache cache = CmsMemoryObjectCache.getInstance();
-        String headerInclude = (String)cache.getCachedObject(CmsJspTagEnableAde.class, INCLUDE_FILE_JQUERY);
+        CmsLinkManager linkMan = OpenCms.getLinkManager();
 
+        String headerInclude = (String)cache.getCachedObject(CmsJspTagEnableAde.class, INCLUDE_FILE_JQUERY);
         if (headerInclude == null) {
             // the file is not available in the cache
             try {
                 CmsFile file = cms.readFile(INCLUDE_FILE_JQUERY);
                 // get the encoding for the resource
-                CmsProperty p = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true);
-                String e = p.getValue();
-                if (e == null) {
-                    e = OpenCms.getSystemInfo().getDefaultEncoding();
-                }
+                CmsProperty property = cms.readPropertyObject(
+                    file,
+                    CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                    true);
+                String encoding = property.getValue(OpenCms.getSystemInfo().getDefaultEncoding());
                 // create a String with the right encoding
-                headerInclude = CmsEncoder.createString(file.getContents(), e);
+                headerInclude = CmsEncoder.createString(file.getContents(), encoding);
 
-                CmsLinkManager linkMan = OpenCms.getLinkManager();
                 // resolve macros in include header
                 CmsMacroResolver resolver = CmsMacroResolver.newInstance();
                 resolver.setKeepEmptyMacros(true); // be sure request macros stay there
@@ -148,7 +152,6 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 resolver.addMacro("serverGetUri", serverGetUri);
                 String serverSetUri = linkMan.substituteLink(cms, "/system/workplace/editors/ade/set.jsp");
                 resolver.addMacro("serverSetUri", serverSetUri);
-
                 String skinUri = CmsWorkplace.getSkinUri();
                 resolver.addMacro("skinUri", skinUri);
 
@@ -166,7 +169,32 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
         // these macros are request specific
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
-        resolver.addMacro("currentUri", cms.getRequestContext().getUri());
+        try {
+            CmsResource containerPage = cms.readResource(cms.getRequestContext().getUri());
+            if (containerPage.getTypeId() != CmsResourceTypeContainerPage.getStaticTypeId()) {
+                resolver.addMacro("currentUri", cms.getRequestContext().getUri());
+                // container page is used as template
+                String cntPagePath = cms.readPropertyObject(
+                    containerPage,
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                    true).getValue("");
+                try {
+                    containerPage = cms.readResource(cntPagePath);
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            } else if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
+                CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
+                resolver.addMacro("currentUri", cms.getSitePath(cms.readResource(id)));
+            } else {
+                resolver.addMacro("currentUri", cms.getRequestContext().getUri());
+            }
+            String containerPageUri = cms.getSitePath(containerPage);
+            resolver.addMacro("currentContainerPage", containerPageUri);
+        } catch (Exception e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+
         headerInclude = resolver.resolveMacros(headerInclude);
 
         return headerInclude;
@@ -179,6 +207,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
      * 
      * @throws JspException in case something goes wrong
      */
+    @Override
     public int doEndTag() throws JspException {
 
         // only execute action for the first "ade" tag on the page (include file)
@@ -198,6 +227,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
      * 
      * @return {@link #EVAL_BODY_INCLUDE}
      */
+    @Override
     public int doStartTag() {
 
         return EVAL_BODY_INCLUDE;
@@ -206,6 +236,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
     /**
      * Releases any resources we may have (or inherit).<p>
      */
+    @Override
     public void release() {
 
         super.release();

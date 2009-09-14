@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsContainerPageLoader.java,v $
- * Date   : $Date: 2009/09/10 16:26:20 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/09/14 13:59:36 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.ServletRequest;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.6
  */
@@ -101,6 +101,15 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
     public String getResourceLoaderInfo() {
 
         return Messages.get().getBundle().key(Messages.GUI_LOADER_CONTAINERPAGE_DEFAULT_DESC_0);
+    }
+
+    /**
+     * @see org.opencms.loader.A_CmsXmlDocumentLoader#isUsableForTemplates()
+     */
+    @Override
+    public boolean isUsableForTemplates() {
+
+        return true;
     }
 
     /**

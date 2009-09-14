@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/09/09 16:03:10 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/09/14 13:59:35 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.6 
  */
@@ -143,12 +143,13 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
                 cms,
                 cntPageRes,
                 cms.getRequestContext().getLocale());
-            if (cntPage.getResTypeConfig() == null) {
-                // missing configuration file
-                m_resTypeConfig = new CmsTypeConfigurationItem("", "", "");
-            } else {
+            if (cntPage.getResTypeConfig() != null) {
                 CmsElementCreator ec = new CmsElementCreator(cms, cntPage.getResTypeConfig());
                 m_resTypeConfig = ec.getConfiguration().get(getType());
+            }
+            if (m_resTypeConfig == null) {
+                // missing configuration file
+                m_resTypeConfig = new CmsTypeConfigurationItem("", "", "");
             }
         }
         return m_resTypeConfig;

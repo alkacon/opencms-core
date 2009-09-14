@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/09/11 11:13:35 $
- * Version: $Revision: 1.64.2.5 $
+ * Date   : $Date: 2009/09/14 13:59:37 $
+ * Version: $Revision: 1.64.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
@@ -93,7 +94,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64.2.5 $ 
+ * @version $Revision: 1.64.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -235,6 +236,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Macro for resolving the preview URI. */
     public static final String MACRO_PREVIEW_TEMPFILE = "previewtempfile";
+
+    /** Default formatter path. */
+    protected static final String DEFAULT_FORMATTER = "/system/workplace/editors/ade/default-formatter.jsp";
 
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
@@ -698,6 +702,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         removeEmptyMappings(cms, content);
         // write categories (if there is a category widget present)
         file = writeCategories(cms, file, content);
+        // write special relation to the xsd
+        cms.deleteRelationsFromResource(
+            cms.getSitePath(file),
+            CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
+        String schema = content.getContentDefinition().getSchemaLocation();
+        if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
+            schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
+        }
+        cms.addRelationToResource(cms.getSitePath(file), schema, CmsRelationType.XSD.getName());
         // return the result
         return file;
     }
@@ -1348,6 +1361,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_modelFolder = null;
         m_tabs = new ArrayList<CmsXmlContentTab>();
         m_formatters = new HashMap<String, String>();
+        m_formatters.put(DEFAULT_FORMATTER_TYPE, DEFAULT_FORMATTER);
     }
 
     /**
@@ -1386,7 +1400,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         // add the default formatter
         String defFormatter = root.attributeValue(APPINFO_ATTR_DEFAULT);
-        m_formatters.put(DEFAULT_FORMATTER_TYPE, defFormatter);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(defFormatter)) {
+            m_formatters.put(DEFAULT_FORMATTER_TYPE, defFormatter);
+        }
 
         Iterator<Element> itFormatter = CmsXmlGenericWrapper.elementIterator(root, APPINFO_FORMATTER);
         while (itFormatter.hasNext()) {

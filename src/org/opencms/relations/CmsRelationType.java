@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/14 13:59:34 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.2.1 $
  * 
  * @since 6.3.0
  */
@@ -90,13 +90,13 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the category of an <code>OpenCmsVfsFile</code>. */
     public static final CmsRelationType CATEGORY = new CmsRelationType(9, "CATEGORY", false, false);
 
-    /** Constant for the <code>&ltimg src=''&gt</code> tag in a html page/element. */
+    /** Constant for the <code>&lt;img src=''&gt;</code> tag in a html page/element. */
     public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType(2, "IMG", true, true);
 
-    /** Constant for the <code>&ltembed src=''&gt</code> tag in a html page/element. */
+    /** Constant for the <code>&lt;embed src=''&gt;</code> tag in a html page/element. */
     public static final CmsRelationType EMBEDDED_OBJECT = new CmsRelationType(7, "OBJECT", true, true);
 
-    /** Constant for the <code>&lta href=''&gt</code> tag in a html page/element. */
+    /** Constant for the <code>&lt;a href=''&gt;</code> tag in a html page/element. */
     public static final CmsRelationType HYPERLINK = new CmsRelationType(1, "A", false, true);
 
     /** Constant for the all types of links in a jsp file using the <code>link.strong</code> macro. */
@@ -114,6 +114,9 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'weak' links. */
     public static final CmsRelationType XML_WEAK = new CmsRelationType(4, PREFIX_XML + VALUE_WEAK, false, true);
 
+    /** Constant for the weak links from xmlcontent to the used xsd. */
+    public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", false, false);
+
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;
 
@@ -130,7 +133,8 @@ public final class CmsRelationType implements Serializable {
         JSP_WEAK,
         EMBEDDED_OBJECT,
         OU_RESOURCE,
-        CATEGORY};
+        CATEGORY,
+        XSD};
 
     /** Flag to indicate if the relations of this type are parsed from the content or not. */
     private final boolean m_defInContent;
@@ -524,18 +528,6 @@ public final class CmsRelationType implements Serializable {
     /**
      * Returns a localized name for the given relation type.<p>
      * 
-     * @param locale the locale
-     * 
-     * @return a localized name
-     */
-    public String getLocalizedName(Locale locale) {
-
-        return getLocalizedName(Messages.get().getBundle(locale));
-    }
-
-    /**
-     * Returns a localized name for the given relation type.<p>
-     * 
      * @param messages the message bundle to use to resolve the name
      * 
      * @return a localized name
@@ -544,6 +536,18 @@ public final class CmsRelationType implements Serializable {
 
         String nameKey = "GUI_RELATION_TYPE_" + getName() + "_0";
         return messages.key(nameKey);
+    }
+
+    /**
+     * Returns a localized name for the given relation type.<p>
+     * 
+     * @param locale the locale
+     * 
+     * @return a localized name
+     */
+    public String getLocalizedName(Locale locale) {
+
+        return getLocalizedName(Messages.get().getBundle(locale));
     }
 
     /**

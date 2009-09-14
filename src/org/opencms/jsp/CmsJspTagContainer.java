@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/09/09 16:03:10 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2009/09/14 13:59:36 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,20 +32,29 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.ade.CmsContainerBean;
 import org.opencms.workplace.editors.ade.CmsContainerElementBean;
 import org.opencms.workplace.editors.ade.CmsContainerPageBean;
 import org.opencms.workplace.editors.ade.CmsContainerPageCache;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletRequest;
@@ -61,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 7.6 
  */
@@ -105,9 +114,36 @@ public class CmsJspTagContainer extends TagSupport {
 
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
+        boolean actAsTemplate = false;
 
         // get the container page itself
         CmsResource containerPage = cms.readResource(cms.getRequestContext().getUri());
+        if (containerPage.getTypeId() != CmsResourceTypeContainerPage.getStaticTypeId()) {
+            // container page is used as template
+            String cntPagePath = cms.readPropertyObject(
+                containerPage,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                true).getValue("");
+            try {
+                containerPage = cms.readResource(cntPagePath);
+            } catch (CmsException e) {
+                throw new CmsIllegalStateException(Messages.get().container(
+                    Messages.ERR_CONTAINER_PAGE_NOT_FOUND_3,
+                    cms.getRequestContext().getUri(),
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                    cntPagePath), e);
+            }
+            if (containerPage.getTypeId() != CmsResourceTypeContainerPage.getStaticTypeId()) {
+                throw new CmsIllegalStateException(Messages.get().container(
+                    Messages.ERR_CONTAINER_PAGE_NOT_FOUND_3,
+                    cms.getRequestContext().getUri(),
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                    cntPagePath));
+            }
+            actAsTemplate = true;
+        } else if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
+            actAsTemplate = true;
+        }
         CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
             cms,
             containerPage,
@@ -116,20 +152,19 @@ public class CmsJspTagContainer extends TagSupport {
 
         // get the container
         if (!cntPage.getContainers().containsKey(containerName)) {
-            LOG.warn(Messages.get().container(
+            throw new CmsIllegalStateException(Messages.get().container(
                 Messages.LOG_CONTAINER_NOT_FOUND_3,
                 cms.getSitePath(containerPage),
                 locale,
-                containerName).key());
-            return;
+                containerName));
         }
         CmsContainerBean container = cntPage.getContainers().get(containerName);
 
         // validate the type
         if (!containerType.equals(container.getType())) {
-            LOG.warn(Messages.get().container(
+            throw new CmsIllegalStateException(Messages.get().container(
                 Messages.LOG_WRONG_CONTAINER_TYPE_4,
-                new Object[] {cms.getSitePath(containerPage), locale, containerName, containerType}).key());
+                new Object[] {cms.getSitePath(containerPage), locale, containerName, containerType}));
         }
 
         // get the maximal number of elements
@@ -138,18 +173,73 @@ public class CmsJspTagContainer extends TagSupport {
             try {
                 maxElements = Integer.parseInt(containerMaxElements);
             } catch (NumberFormatException e) {
-                LOG.warn(Messages.get().container(
+                throw new CmsIllegalStateException(Messages.get().container(
                     Messages.LOG_WRONG_CONTAINER_MAXELEMENTS_4,
-                    new Object[] {cms.getSitePath(containerPage), locale, containerName, containerMaxElements}).key());
+                    new Object[] {cms.getSitePath(containerPage), locale, containerName, containerMaxElements}), e);
             }
             // actualize the cache
             container.setMaxElements(maxElements);
         }
+        CmsXmlEntityResolver entityResolver = new CmsXmlEntityResolver(cms);
 
         // get the actual number of elements to render
         int renderElems = container.getElements().size();
         if ((maxElements > -1) && (renderElems > maxElements)) {
             renderElems = maxElements;
+        }
+        if (actAsTemplate) {
+            if (!cntPage.getTypes().contains(CmsContainerPageBean.TYPE_TEMPLATE)) {
+                throw new CmsIllegalStateException(Messages.get().container(
+                    Messages.ERR_CONTAINER_PAGE_NO_TYPE_3,
+                    cms.getRequestContext().getUri(),
+                    cms.getSitePath(containerPage),
+                    CmsContainerPageBean.TYPE_TEMPLATE));
+            }
+            if (containerType.equals(CmsContainerPageBean.TYPE_TEMPLATE)) {
+                // render template element
+                renderElems--;
+                CmsResource resUri;
+                if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
+                    CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
+                    resUri = cms.readResource(id);
+                } else {
+                    resUri = cms.readResource(cms.getRequestContext().getUri());
+                }
+
+                // get the content definition
+                List<CmsRelation> relations = cms.getRelationsForResource(
+                    resUri,
+                    CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
+                CmsXmlContentDefinition contentDef = null;
+                if ((relations != null) && !relations.isEmpty()) {
+                    String xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
+                    contentDef = entityResolver.getCachedContentDefinition(xsd);
+                }
+                if (contentDef == null) {
+                    CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resUri));
+                    contentDef = content.getContentDefinition();
+                }
+
+                String elementFormatter = contentDef.getContentHandler().getFormatters().get(containerType);
+
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormatter)) {
+                    throw new CmsIllegalStateException(Messages.get().container(
+                        Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                        cms.getRequestContext().getUri(),
+                        contentDef.getSchemaLocation(),
+                        CmsContainerPageBean.TYPE_TEMPLATE));
+                }
+                // HACK: we use the __element param for the element uri
+                // execute the formatter jsp for the given element uri
+                CmsJspTagInclude.includeTagAction(
+                    pageContext,
+                    elementFormatter,
+                    cms.getSitePath(resUri),
+                    false,
+                    null,
+                    req,
+                    res);
+            }
         }
 
         // iterate the elements
@@ -171,13 +261,32 @@ public class CmsJspTagContainer extends TagSupport {
                 // iterate the subelements
                 for (CmsContainerElementBean subelement : subcontainer.getElements()) {
                     String subelementUri = cms.getSitePath(subelement.getElement());
+                    // get the content definition
+                    List<CmsRelation> relations = cms.getRelationsForResource(
+                        subelement.getElement(),
+                        CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
+                    CmsXmlContentDefinition contentDef = null;
+                    if ((relations != null) && !relations.isEmpty()) {
+                        String xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
+                        contentDef = entityResolver.getCachedContentDefinition(xsd);
+                    }
+                    if (contentDef == null) {
+                        CmsXmlContent content = CmsXmlContentFactory.unmarshal(
+                            cms,
+                            cms.readFile(subelement.getElement()));
+                        contentDef = content.getContentDefinition();
+                    }
                     //String subelementFormatter = cms.getSitePath(subelement.getFormatter());
-                    // TODO: this is not performing well!! any way to access the content handler without reading the file content??
-                    CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(subelementUri));
-                    CmsXmlContentDefinition contentDef = content.getContentDefinition();
                     String subelementFormatter = contentDef.getContentHandler().getFormatters().get(containerType);
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter)) {
                         subelementFormatter = cms.getSitePath(subelement.getFormatter());
+                    }
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter)) {
+                        throw new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                            subelementUri,
+                            contentDef.getSchemaLocation(),
+                            containerType));
                     }
 
                     // HACK: we use the __element param for the element uri

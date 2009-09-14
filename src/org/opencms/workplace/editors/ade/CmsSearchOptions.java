@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsSearchOptions.java,v $
- * Date   : $Date: 2009/09/03 11:17:23 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/09/14 13:59:35 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.6 
  */
@@ -70,12 +70,12 @@ public class CmsSearchOptions {
      **/
     public CmsSearchOptions(HttpServletRequest request) {
 
-        String location = request.getParameter(CmsADEServer.PARAMETER_LOCATION);
-        String text = request.getParameter(CmsADEServer.PARAMETER_TEXT);
-        String type = request.getParameter(CmsADEServer.PARAMETER_TYPE);
+        String location = request.getParameter(CmsADEManager.PARAMETER_LOCATION);
+        String text = request.getParameter(CmsADEManager.PARAMETER_TEXT);
+        String type = request.getParameter(CmsADEManager.PARAMETER_TYPE);
         int page = 0;
         try {
-            page = Integer.parseInt(request.getParameter(CmsADEServer.PARAMETER_PAGE));
+            page = Integer.parseInt(request.getParameter(CmsADEManager.PARAMETER_PAGE));
         } catch (Throwable e) {
             // ignore
         }

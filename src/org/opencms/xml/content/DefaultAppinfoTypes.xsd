@@ -125,7 +125,7 @@
 		<xsd:sequence>
 			<xsd:element name="formatter" type="OpenCmsDefaultAppinfoFormatter" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
-		<xsd:attribute name="default" type="xsd:string" use="required" />
+		<xsd:attribute name="default" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoFormatter">

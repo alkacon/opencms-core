@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/09/09 16:03:10 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/09/14 13:59:35 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,9 +34,9 @@ package org.opencms.workplace.editors.ade;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -45,15 +45,21 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -67,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 7.6
  */
@@ -82,6 +88,9 @@ public final class CmsElementUtil {
     /** The cms context. */
     private CmsObject m_cms;
 
+    /** The entity resolver. */
+    private CmsXmlEntityResolver m_entityResolver;
+
     /** The http request. */
     private HttpServletRequest m_req;
 
@@ -90,9 +99,6 @@ public final class CmsElementUtil {
 
     /** The actual container page uri. */
     private String m_uri;
-
-    /** The entity resolver. */
-    private CmsXmlEntityResolver m_entityResolver;
 
     /**
      * Creates a new instance.<p>
@@ -199,30 +205,30 @@ public final class CmsElementUtil {
 
         // create new json object for the element
         JSONObject resElement = new JSONObject();
-        resElement.put(CmsADEServer.P_ID, CmsElementUtil.ADE_ID_PREFIX + resource.getStructureId().toString());
-        resElement.put(CmsADEServer.P_FILE, m_cms.getSitePath(resource));
-        resElement.put(CmsADEServer.P_DATE, resource.getDateLastModified());
-        resElement.put(CmsADEServer.P_USER, m_cms.readUser(resource.getUserLastModified()).getName());
-        resElement.put(CmsADEServer.P_NAVTEXT, m_cms.readPropertyObject(
+        resElement.put(CmsADEManager.P_ID, CmsElementUtil.ADE_ID_PREFIX + resource.getStructureId().toString());
+        resElement.put(CmsADEManager.P_FILE, m_cms.getSitePath(resource));
+        resElement.put(CmsADEManager.P_DATE, resource.getDateLastModified());
+        resElement.put(CmsADEManager.P_USER, m_cms.readUser(resource.getUserLastModified()).getName());
+        resElement.put(CmsADEManager.P_NAVTEXT, m_cms.readPropertyObject(
             resource,
             CmsPropertyDefinition.PROPERTY_NAVTEXT,
             false).getValue(""));
-        resElement.put(CmsADEServer.P_TITLE, m_cms.readPropertyObject(
+        resElement.put(CmsADEManager.P_TITLE, m_cms.readPropertyObject(
             resource,
             CmsPropertyDefinition.PROPERTY_TITLE,
             false).getValue(""));
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
-        resElement.put(
-            CmsADEServer.P_ALLOWEDIT,
-            resUtil.getLock().isLockableBy(m_cms.getRequestContext().currentUser()) && resUtil.isEditable());
-        resElement.put(CmsADEServer.P_LOCKED, resUtil.getLockedByName());
-        resElement.put(CmsADEServer.P_STATUS, "" + resUtil.getStateAbbreviation());
+        resElement.put(CmsADEManager.P_ALLOWEDIT, resUtil.getLock().isLockableBy(
+            m_cms.getRequestContext().currentUser())
+            && resUtil.isEditable());
+        resElement.put(CmsADEManager.P_LOCKED, resUtil.getLockedByName());
+        resElement.put(CmsADEManager.P_STATUS, "" + resUtil.getStateAbbreviation());
         // add formatted elements
         JSONObject resContents = new JSONObject();
-        resElement.put(CmsADEServer.P_CONTENTS, resContents);
+        resElement.put(CmsADEManager.P_CONTENTS, resContents);
         // add formatter uris
         JSONObject formatters = new JSONObject();
-        resElement.put(CmsADEServer.P_FORMATTERS, formatters);
+        resElement.put(CmsADEManager.P_FORMATTERS, formatters);
         if (resource.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
             Iterator<String> itTypes = types.iterator();
             while (itTypes.hasNext()) {
@@ -239,7 +245,7 @@ public final class CmsElementUtil {
 
             // add subitems
             JSONArray subitems = new JSONArray();
-            resElement.put(CmsADEServer.P_SUBITEMS, subitems);
+            resElement.put(CmsADEManager.P_SUBITEMS, subitems);
             // iterate the elements
             for (CmsContainerElementBean element : container.getElements()) {
                 CmsUUID id = element.getElement().getStructureId();
@@ -247,19 +253,21 @@ public final class CmsElementUtil {
                 subitems.put(createId(id));
             }
         } else {
-            // TODO: this may not be performing well, any way to access the content handler without reading the file content??
-            // CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(resource));
-            // CmsXmlContentDefinition contentDef = content.getContentDefinition();
-            String encoding = m_cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
-                OpenCms.getSystemInfo().getDefaultEncoding());
-            String cnt = CmsEncoder.createString(m_cms.readFile(resource).getContents(), encoding);
-            int start = cnt.indexOf("xsi:noNamespaceSchemaLocation=") + "xsi:noNamespaceSchemaLocation=".length();
-            String delimiter = cnt.substring(start, start + 1);
-            start++;
-            int end = cnt.indexOf(delimiter, start);
-            String systemId = cnt.substring(start, end);
-            CmsXmlContentDefinition contentDef = m_entityResolver.getCachedContentDefinition(systemId);
+            // get the content definition
+            List<CmsRelation> relations = m_cms.getRelationsForResource(
+                resource,
+                CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
+            CmsXmlContentDefinition contentDef = null;
+            if ((relations != null) && !relations.isEmpty()) {
+                String xsd = m_cms.getSitePath(relations.get(0).getTarget(m_cms, CmsResourceFilter.ALL));
+                contentDef = m_entityResolver.getCachedContentDefinition(xsd);
+            }
+            if (contentDef == null) {
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(resource));
+                contentDef = content.getContentDefinition();
+            }
 
+            // iterate the formatters
             Iterator<Map.Entry<String, String>> it = contentDef.getContentHandler().getFormatters().entrySet().iterator();
             if (!it.hasNext()) {
                 LOG.warn(Messages.get().getBundle().key(
