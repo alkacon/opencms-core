@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[XML based contents]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>In this section, you find additional examples for xml based contents (news and events) demonstrating how to manage structured contents.</p>
+<p>&nbsp;</p>
+<p>These contents are displayed in various list boxes, where the selection and the ordering of the contents shown inside is done by a so-called &quot;collector&quot;. At this page, for example, the collector provides the two most-recent news or events, only.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

@@ -1,0 +1,37 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="TemplateOptions" type="OpenCmsTemplateOptions"/>
+	
+	<xsd:complexType name="OpenCmsTemplateOptions">
+		<xsd:sequence>
+			<xsd:element name="TemplateOption" type="OpenCmsTemplateOption" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsTemplateOption">
+		<xsd:sequence>
+			<xsd:element name="TopNav" type="OpenCmsHtml" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="Header" type="OpenCmsHtml" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="Footer" type="OpenCmsHtml" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.template3.workplace"/>
+			<mappings/>
+			<layouts>
+				<layout element="TopNav" widget="HtmlWidget" configuration="height:100px,formatselect,source,imagegallery,downloadgallery,linkgallery,link,anchor,table" />
+				<layout element="Header" widget="HtmlWidget" configuration="height:150px,formatselect,source,imagegallery,downloadgallery,linkgallery,link,anchor,table" />
+				<layout element="Footer" widget="HtmlWidget" configuration="height:150px,formatselect,source,imagegallery,downloadgallery,linkgallery,link,anchor,table" />
+			</layouts>
+
+			<validationrules/>
+			<defaults/>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

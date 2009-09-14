@@ -1,0 +1,2028 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>7.5.0</opencms_version>
+		<createdate>Mon, 14 Sep 2009 13:35:50 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.frontend.template3</name>
+		<nicename><![CDATA[OpenCms 8 Template 3 frontend]]></nicename>
+		<group>Template 3</group>
+		<class/>
+		<description/>
+		<version>7.5.5</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.frontend.template3/lib/" destination="WEB-INF/lib/"/>
+			<exportpoint uri="/system/modules/org.opencms.frontend.template3/classes/" destination="WEB-INF/classes/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.frontend.template3/"/>
+			<resource uri="/system/handler/handle404.html"/>
+			<resource uri="/system/handler/handle500.html"/>
+			<resource uri="/system/workplace/resources/filetypes/t3listbox.png"/>
+			<resource uri="/system/workplace/resources/filetypes/t3options.png"/>
+			<resource uri="/system/workplace/resources/filetypes/t3style.png"/>
+			<resource uri="/system/workplace/resources/filetypes/t3textbox.png"/>
+			<resource uri="/system/workplace/resources/filetypes/t3menu.png"/>
+			<resource uri="/system/workplace/resources/filetypes/t3linkbox.png"/>
+			<resource uri="/system/workplace/resources/filetypes/t3search.png"/>
+		</resources>
+		<parameters/>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3textbox" id="142">
+				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3listbox" id="143">
+				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3style" id="144">
+				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/style.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3options" id="145">
+				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/options.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3linkbox" id="146">
+				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3search" id="147">
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.template3/pages/search.jsp]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/search.xsd</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="template3" key="fileicon.template3" icon="t3menu.png" reference="xmlcontent">
+				<newresource uri="newresource.jsp?page=template3" order="12" autosetnavigation="false" autosettitle="false" info="desc.template3"/>
+			</explorertype>
+			<explorertype name="t3textbox" key="fileicon.t3textbox" icon="t3textbox.png" reference="xmlcontent">
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3textbox" order="170" autosetnavigation="false" autosettitle="false" info="desc.t3textbox"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="t3listbox" key="fileicon.t3listbox" icon="t3listbox.png" reference="xmlcontent">
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3listbox" order="180" autosetnavigation="false" autosettitle="false" info="desc.t3listbox"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="t3style" key="fileicon.t3style" icon="t3style.png" reference="xmlcontent">
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3style" order="140" autosetnavigation="false" autosettitle="false" info="desc.t3style"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="t3options" key="fileicon.t3options" icon="t3options.png" reference="xmlcontent">
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3options" order="145" autosetnavigation="false" autosettitle="false" info="desc.t3options"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="t3linkbox" key="fileicon.t3linkbox" icon="t3linkbox.png" reference="xmlcontent">
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3linkbox" order="150" autosetnavigation="false" autosettitle="false" info="desc.t3linkbox"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="t3search" key="fileicon.t3search" icon="t3search.png" reference="xmlcontent">
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3search" order="144" autosetnavigation="false" autosettitle="false" info="desc.t3search"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+		</explorertypes>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>a482044b-81a3-11de-9b82-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 05 Aug 2009 09:37:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 09:37:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>a515e014-81a3-11de-9b82-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 05 Aug 2009 09:37:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 09:37:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3</destination>
+			<type>folder</type>
+			<uuidstructure>c27b3186-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Feb 2008 08:35:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/classes</destination>
+			<type>folder</type>
+			<uuidstructure>c2871868-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 10:46:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org</destination>
+			<type>folder</type>
+			<uuidstructure>c28bd35a-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 10:46:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms</destination>
+			<type>folder</type>
+			<uuidstructure>c292ff4c-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 10:46:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend</destination>
+			<type>folder</type>
+			<uuidstructure>c297ba3e-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 10:46:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3</destination>
+			<type>folder</type>
+			<uuidstructure>c29c9b40-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 10:46:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/frontend.properties</source>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/frontend.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c2a15632-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c2a15633-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 10:56:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/frontend_de.properties</source>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/frontend_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c2ad3d15-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c2ad3d16-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 10:56:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/workplace.properties</source>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/workplace.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c2b46908-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c2b46909-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 10:46:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/workplace_de.properties</source>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/workplace_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c2c04feb-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c2c04fec-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Feb 2008 15:48:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/workplace_en.messages</destination>
+			<type>plain</type>
+			<uuidstructure>d4f83944-9c8e-11de-beee-dd9f629b113b</uuidstructure>
+			<uuidresource>c2b46909-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 10:46:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/elements</destination>
+			<type>folder</type>
+			<uuidstructure>c2c77bde-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/breadcrumb.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/breadcrumb.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c3032562-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c3032563-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 10:51:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Displays the breadcrumb navigation]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/search-template.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/search-template.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>7c5b0290-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
+			<uuidresource>7c5b0291-9d2a-11de-b26f-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 14 Sep 2009 12:23:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 10:21:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/elements/linkbox</destination>
+			<type>folder</type>
+			<uuidstructure>cdaa55f0-9e09-11de-9c36-dd9f629b113b</uuidstructure>
+			<datelastmodified>Thu, 10 Sep 2009 12:59:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 12:59:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/linkbox/center.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/linkbox/center.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f5928d82-9e09-11de-9c36-dd9f629b113b</uuidstructure>
+			<uuidresource>f5928d83-9e09-11de-9c36-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 10 Sep 2009 13:02:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 13:00:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/elements/listbox</destination>
+			<type>folder</type>
+			<uuidstructure>c6d7a2ba-9d3d-11de-8a68-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 09 Sep 2009 12:39:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 12:39:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/listbox/center.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/listbox/center.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d98b14ac-9d3d-11de-8a68-dd9f629b113b</uuidstructure>
+			<uuidresource>d98b14ad-9d3d-11de-8a68-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 09 Sep 2009 12:46:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 12:39:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/listbox/right.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/listbox/right.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>923e40e4-9d3e-11de-8a68-dd9f629b113b</uuidstructure>
+			<uuidresource>923e40e5-9d3e-11de-8a68-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 09 Sep 2009 12:46:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 12:44:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/elements/menu</destination>
+			<type>folder</type>
+			<uuidstructure>c30a2a46-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Feb 2008 08:53:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Elements for displaying the menus]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/menu/nav_dolphin.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/menu/nav_dolphin.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c30f0c48-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c30f0c49-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 15:54:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>style.layout</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.template3/resources/menus/dolphin/style.css]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/menu/nav_left.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/menu/nav_left.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c318822c-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c318822d-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Feb 2008 15:12:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>stylesheet</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.template3/resources/css/nav_left.css]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/menu/nav_skeleton.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/menu/nav_skeleton.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c3246910-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c3246911-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Feb 2008 11:02:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>style.layout</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.template3/resources/menus/skeleton/skeleton.css]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/menu/nav_slidingdoors.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/menu/nav_slidingdoors.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c32e0604-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c32e0605-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Feb 2008 08:53:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>style.layout</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/slidingdoors.css]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/menu/nav_style2.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/menu/nav_style2.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c3377be8-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c3377be9-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 16:42:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>style.layout</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.template3/resources/menus/style2/style.css]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/elements/search</destination>
+			<type>folder</type>
+			<uuidstructure>7531838e-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 09 Sep 2009 10:20:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 10:20:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/elements/textbox</destination>
+			<type>folder</type>
+			<uuidstructure>090bda30-9d11-11de-840d-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 09 Sep 2009 07:18:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 07:18:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/textbox/center.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/textbox/center.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>315da857-9d1c-11de-873e-dd9f629b113b</uuidstructure>
+			<uuidresource>315da858-9d1c-11de-873e-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 09 Sep 2009 11:01:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 08:38:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/textbox/left.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/textbox/left.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>15679c12-9d11-11de-840d-dd9f629b113b</uuidstructure>
+			<uuidresource>15679c13-9d11-11de-840d-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 09 Sep 2009 14:35:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 07:19:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/elements/textbox/right.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/textbox/right.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>1b2444a5-9d11-11de-840d-dd9f629b113b</uuidstructure>
+			<uuidresource>1b2444a6-9d11-11de-840d-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 09 Sep 2009 11:02:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 07:19:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/java_src</destination>
+			<type>folder</type>
+			<uuidstructure>c34362cc-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 11:27:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/java_src/CmsListBox.java</source>
+			<destination>system/modules/org.opencms.frontend.template3/java_src/CmsListBox.java</destination>
+			<type>plain</type>
+			<uuidstructure>c34844ce-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c34844cf-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 11:27:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/java_src/CmsListBoxContentMapping.java</source>
+			<destination>system/modules/org.opencms.frontend.template3/java_src/CmsListBoxContentMapping.java</destination>
+			<type>plain</type>
+			<uuidstructure>c351bab1-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c351bab2-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 11:27:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/java_src/CmsListBoxEntry.java</source>
+			<destination>system/modules/org.opencms.frontend.template3/java_src/CmsListBoxEntry.java</destination>
+			<type>plain</type>
+			<uuidstructure>c35b57a4-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c35b57a5-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 11:27:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/java_src/CmsTemplateLayout.java</source>
+			<destination>system/modules/org.opencms.frontend.template3/java_src/CmsTemplateLayout.java</destination>
+			<type>plain</type>
+			<uuidstructure>c3698877-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c3698878-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 11:27:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/java_src/CmsTemplateMenu.java</source>
+			<destination>system/modules/org.opencms.frontend.template3/java_src/CmsTemplateMenu.java</destination>
+			<type>plain</type>
+			<uuidstructure>c370b46a-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c370b46b-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 11:27:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/java_src/README.txt</source>
+			<destination>system/modules/org.opencms.frontend.template3/java_src/README.txt</destination>
+			<type>plain</type>
+			<uuidstructure>c377e05d-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c377e05e-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 11:27:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/pages</destination>
+			<type>folder</type>
+			<uuidstructure>9415c316-9e06-11de-9c36-dd9f629b113b</uuidstructure>
+			<datelastmodified>Thu, 10 Sep 2009 12:36:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 12:36:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/pages/search.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/pages/search.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>a65df018-9e06-11de-9c36-dd9f629b113b</uuidstructure>
+			<uuidresource>a65df019-9e06-11de-9c36-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 10 Sep 2009 10:47:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 12:37:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources</destination>
+			<type>folder</type>
+			<uuidstructure>c3a0770a-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 14:30:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources/css</destination>
+			<type>folder</type>
+			<uuidstructure>c3a531fc-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/css/nav_left.css</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/css/nav_left.css</destination>
+			<type>plain</type>
+			<uuidstructure>c3a9ecee-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c3a9ecef-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Feb 2008 09:41:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/css/patch_ie.css</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/css/patch_ie.css</destination>
+			<type>plain</type>
+			<uuidstructure>c3b389e1-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c3b389e2-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Feb 2008 10:33:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/css/style.css</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/css/style.css</destination>
+			<type>jsp</type>
+			<uuidstructure>c3b844d4-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c3b844d5-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 09 Sep 2009 15:49:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Feb 2008 13:59:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[site;params=(preset,style)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources/images</destination>
+			<type>folder</type>
+			<uuidstructure>c3c1e1c7-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template images Template 3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/images/bg_blue.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/images/bg_blue.gif</destination>
+			<type>image</type>
+			<uuidstructure>c3fb1a39-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c3fb1a3a-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:15,h:600]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/images/bg_box_header.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/images/bg_box_header.gif</destination>
+			<type>image</type>
+			<uuidstructure>c407011d-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c407011e-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Feb 2008 11:16:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:26]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/images/bg_header.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/images/bg_header.gif</destination>
+			<type>image</type>
+			<uuidstructure>c40e2d11-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c40e2d12-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:10,h:120]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/images/bg_red.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/images/bg_red.gif</destination>
+			<type>image</type>
+			<uuidstructure>c417a2f5-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c417a2f6-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 08:30:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:15,h:600]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/images/gradient.png</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/images/gradient.png</destination>
+			<type>image</type>
+			<uuidstructure>c42389d9-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c42389da-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Feb 2008 12:55:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:26]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus</destination>
+			<type>folder</type>
+			<uuidstructure>c42d26cd-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resources for the different menus]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/dolphin</destination>
+			<type>folder</type>
+			<uuidstructure>c431e1bf-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 15:54:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/style.css</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/style.css</destination>
+			<type>plain</type>
+			<uuidstructure>c468a947-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c468a948-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 15:54:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images</destination>
+			<type>folder</type>
+			<uuidstructure>c4369cb1-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 15:54:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_bg-ON.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_bg-ON.gif</destination>
+			<type>image</type>
+			<uuidstructure>c43b57a3-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c43b57a4-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 15:54:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:33]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_bg-OVER.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_bg-OVER.gif</destination>
+			<type>image</type>
+			<uuidstructure>c444f497-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c444f498-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 15:54:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:29]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_bg.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_bg.gif</destination>
+			<type>image</type>
+			<uuidstructure>c450db7b-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c450db7c-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 15:54:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:29]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_left-ON.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_left-ON.gif</destination>
+			<type>image</type>
+			<uuidstructure>c458076f-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4580770-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 15:54:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:225,h:33]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_right-ON.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/dolphin/images/dolphin_right-ON.gif</destination>
+			<type>image</type>
+			<uuidstructure>c45f3363-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c45f3364-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 15:54:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:225,h:33]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/skeleton</destination>
+			<type>folder</type>
+			<uuidstructure>c46fd53a-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/skeleton/skeleton.css</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/skeleton/skeleton.css</destination>
+			<type>plain</type>
+			<uuidstructure>c474902c-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c474902d-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/skeleton/stuHover.js</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/skeleton/stuHover.js</destination>
+			<type>plain</type>
+			<uuidstructure>c47e2d1f-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c47e2d20-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors</destination>
+			<type>folder</type>
+			<uuidstructure>c4855912-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/left_both.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/left_both.gif</destination>
+			<type>image</type>
+			<uuidstructure>c48ecef4-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c48ecef5-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:300]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/right_both.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/right_both.gif</destination>
+			<type>image</type>
+			<uuidstructure>c4986be8-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4986be9-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:400,h:300]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/slidingdoors.css</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/slidingdoors.css</destination>
+			<type>plain</type>
+			<uuidstructure>c49f97dc-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c49f97dd-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/tab-left.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/tab-left.gif</destination>
+			<type>image</type>
+			<uuidstructure>c4a6c3cf-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4a6c3d0-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 12:00:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:10,h:249]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/tab-right.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/slidingdoors/tab-right.gif</destination>
+			<type>image</type>
+			<uuidstructure>c4b039b3-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4b039b4-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 12:00:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:370,h:249]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/style2</destination>
+			<type>folder</type>
+			<uuidstructure>c4b9d6a7-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 16:41:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/style2/style.css</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/style2/style.css</destination>
+			<type>plain</type>
+			<uuidstructure>c4dd8b53-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4dd8b54-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 16:42:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/style2/images</destination>
+			<type>folder</type>
+			<uuidstructure>c4be9199-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 16:41:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/style2/images/bgOFF.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/style2/images/bgOFF.gif</destination>
+			<type>image</type>
+			<uuidstructure>c4c8077b-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4c8077c-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 16:42:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:25]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/resources/menus/style2/images/bgON.gif</source>
+			<destination>system/modules/org.opencms.frontend.template3/resources/menus/style2/images/bgON.gif</destination>
+			<type>image</type>
+			<uuidstructure>c4d65f5f-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4d65f60-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 16:42:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:25]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>c4e4b746-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/boxelement.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/boxelement.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c4e97238-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4e97239-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Feb 2008 09:02:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for a single box element]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/link.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/link.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c4f7ca1e-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4f7ca1f-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 10:10:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for a link (text+target)]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/linkbox-entry.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/linkbox-entry.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c4fef611-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c4fef612-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 16:47:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for the entries in the linkbox]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c503b104-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c503b105-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 10 Sep 2009 13:00:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 16:26:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for the linkbox]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/listbox-mappings.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/listbox-mappings.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c50adcf7-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c50adcf8-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 10:45:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for the listbox mappings]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c51208ea-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c51208eb-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 14 Sep 2009 12:29:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 10:45:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for the listbox configuration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/options.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/options.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c51934dd-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c51934de-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 15:00:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for the template options]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/search.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/search.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c529d6b3-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c529d6b4-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 14 Sep 2009 12:25:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 14:07:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for the Template 3 Search Page]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/style.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/style.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c53102a6-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c53102a7-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 10:45:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for the style configuration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c5382e99-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c5382e9a-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 10 Sep 2009 13:00:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Feb 2008 10:58:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for the textbox]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/templates</destination>
+			<type>folder</type>
+			<uuidstructure>c53ce98c-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Tue, 08 Sep 2009 13:23:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/templates/main.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/templates/main.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c541a47e-9c7a-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>c541a47f-9c7a-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 10 Sep 2009 08:58:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Feb 2008 16:46:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Template 3]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[body*|Body Element,body2|Bottom Element]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3/templates/single.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/templates/single.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>8d170e24-9e0f-11de-9c36-dd9f629b113b</uuidstructure>
+			<uuidresource>8d170e25-9e0f-11de-9c36-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 10 Sep 2009 13:42:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 13:40:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Template 3]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[body*|Body Element,body2|Bottom Element]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/handler</destination>
+			<type>folder</type>
+			<uuidstructure>82a54b3f-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/handler/template/handlertemplate]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/handle404.html</source>
+			<destination>system/handler/handle404.html</destination>
+			<type>jsp</type>
+			<uuidstructure>82aff8a2-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[404 error handler page]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/handler/handle500.html</destination>
+			<type>jsp</type>
+			<uuidstructure>82bf3ae6-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
+			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[500 error handler page]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/t3linkbox.png</source>
+			<destination>system/workplace/resources/filetypes/t3linkbox.png</destination>
+			<type>image</type>
+			<uuidstructure>030fabf7-9c7c-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>030fabf8-9c7c-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 26 Feb 2008 10:18:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 10:18:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/t3listbox.png</source>
+			<destination>system/workplace/resources/filetypes/t3listbox.png</destination>
+			<type>image</type>
+			<uuidstructure>0316d7eb-9c7c-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>0316d7ec-9c7c-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Fri, 22 Feb 2008 08:15:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Feb 2008 08:15:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/t3menu.png</source>
+			<destination>system/workplace/resources/filetypes/t3menu.png</destination>
+			<type>image</type>
+			<uuidstructure>031ddccf-9c7c-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>031ddcd0-9c7c-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Fri, 22 Feb 2008 08:20:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Feb 2008 08:20:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/t3options.png</source>
+			<destination>system/workplace/resources/filetypes/t3options.png</destination>
+			<type>image</type>
+			<uuidstructure>0322bed3-9c7c-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>0322bed4-9c7c-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Fri, 22 Feb 2008 08:15:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Feb 2008 08:15:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/t3search.png</source>
+			<destination>system/workplace/resources/filetypes/t3search.png</destination>
+			<type>image</type>
+			<uuidstructure>0330efab-9c7c-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>0330efac-9c7c-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 27 Feb 2008 09:54:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Feb 2008 09:54:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/t3style.png</source>
+			<destination>system/workplace/resources/filetypes/t3style.png</destination>
+			<type>image</type>
+			<uuidstructure>03381b9f-9c7c-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>03381ba0-9c7c-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Fri, 22 Feb 2008 08:15:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Feb 2008 08:15:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/t3textbox.png</source>
+			<destination>system/workplace/resources/filetypes/t3textbox.png</destination>
+			<type>image</type>
+			<uuidstructure>033f4793-9c7c-11de-adde-dd9f629b113b</uuidstructure>
+			<uuidresource>033f4794-9c7c-11de-adde-dd9f629b113b</uuidresource>
+			<datelastmodified>Fri, 22 Feb 2008 08:15:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Feb 2008 08:15:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

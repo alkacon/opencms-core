@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[Multilanguage Pages]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Depending on the language settings of your browser, the intro page shows up in the appropriate language, if available.</p>]]></content>
+    </Content>
+  </TextBox>
+  <TextBox language="de">
+    <Title><![CDATA[Multilanguage Pages]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Depending on the language settings of your browser, the intro page shows up in the appropriate language, if available.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

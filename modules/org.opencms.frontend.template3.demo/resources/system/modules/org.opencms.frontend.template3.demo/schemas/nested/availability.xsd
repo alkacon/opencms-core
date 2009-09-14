@@ -1,0 +1,35 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="T3Availabilitys" type="OpenCmsT3Availabilitys"/>
+	
+	<xsd:complexType name="OpenCmsT3Availabilitys">
+		<xsd:sequence>
+			<xsd:element name="T3Availability" type="OpenCmsT3Availability" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsT3Availability">
+		<xsd:sequence>
+			<xsd:element name="Priority" type="OpenCmsString" minOccurs="0" />		
+			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
+			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.template3.demo.workplace" />		
+			<layouts>
+				<layout element="Priority" widget="SelectorWidget" configuration="2:${key.priority.high}|1*:${key.priority.standard}|0:${key.priority.low}" />
+			</layouts>
+			<defaults>
+				<default element="Priority" value="1" />
+				<default element="Release" value="${currenttime}" />
+				<default element="Expiration" value="${currenttime}" />
+			</defaults>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

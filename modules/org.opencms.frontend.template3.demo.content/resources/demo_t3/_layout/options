@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TemplateOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/options.xsd">
+  <TemplateOption language="en">
+    <Header name="Header0">
+      <links>
+        <link name="link4" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_t3/search.html]]></target>
+          <uuid>0fcf3a8a-9d2a-11de-b26f-dd9f629b113b</uuid>
+        </link>
+        <link name="link2" internal="false" type="A">
+          <target><![CDATA[http://www.opencms.org]]></target>
+        </link>
+        <link name="link3" internal="true" type="IMG">
+          <target><![CDATA[/system/modules/org.opencms.frontend.template3.demo/resources/images/logo_opencms_png24.png]]></target>
+          <uuid>87f85485-9c7c-11de-adde-dd9f629b113b</uuid>
+        </link>
+        <link name="link0" internal="false" type="A">
+          <target><![CDATA[http://www.alkacon.com]]></target>
+        </link>
+        <link name="link1" internal="true" type="IMG">
+          <target><![CDATA[/system/modules/org.opencms.frontend.template3.demo/resources/images/logo_alkacon_png24.png]]></target>
+          <uuid>87d6e9c9-9c7c-11de-adde-dd9f629b113b</uuid>
+        </link>
+      </links>
+      <content><![CDATA[<div style="padding: 10px 10px 5px; height: 55px;">
+<div style="margin: 0pt; padding: 0pt; float: left;"><a href="%(link0)"><img alt="Alkacon Software" title="Go to the Alkacon Software website" src="%(link1)" id="iimg_369039394" /></a></div>
+<div style="margin: 1pt; padding: 0pt; float: right;"><a href="%(link2)"><img alt="Logo OpenCms" title="Go to the OpenCms website" src="%(link3)" id="iimg_364996162" /></a></div>
+<div style="margin: 0px 210px 0pt 160px;">
+<p style="margin: 1pt; float: right;"><a href="%(link4)">Search</a> &nbsp;</p>
+<h3 style="margin: 0pt;">OpenCms %(opencms.version) Demo Website</h3>
+<p style="margin: 1pt;"><i>%(property.Title)</i></p>
+</div>
+</div>]]></content>
+    </Header>
+    <Footer name="Footer0">
+      <links>
+        <link name="link0" internal="false" type="A">
+          <target><![CDATA[http://www.opencms.org/]]></target>
+        </link>
+        <link name="link1" internal="false" type="A">
+          <target><![CDATA[http://www.alkacon.com]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<div style="padding: 2px 0px 0px; height: 14px; text-align: center;">Build with <a title="Go to the OpenCms website" href="%(link0)">OpenCms - The Open Source CMS</a>, provided by <a href="%(link1)" title="Go to the Alkacon Software website">Alkacon Software - The OpenCms Experts</a></div>]]></content>
+    </Footer>
+  </TemplateOption>
+</TemplateOptions>

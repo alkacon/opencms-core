@@ -1,0 +1,22 @@
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<c:set var="target" value="${fn:substring(pageContext.request.locale.language, 0, 2)}" />
+<c:if test="${target != 'de'}">
+	<c:set var="target" value="en" />
+</c:if>
+<c:set var="target" value="/demo_${target}/intro.html" />
+<c:redirect url="${cms:vfs(pageContext).link[target]}" context="/" />
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<title>Please redirect to ${cms:vfs(pageContext).link[target]}</title>
+	<meta http-equiv="refresh" content="3; URL=${cms:vfs(pageContext).link[target]}"/>
+</head>
+<body>
+	<h1>This page has moved!</h1>
+	<p>Please redirect your browser to: <a href="${cms:vfs(pageContext).link[target]}">${cms:vfs(pageContext).link[target]}</a></p>
+</body>
+</html>

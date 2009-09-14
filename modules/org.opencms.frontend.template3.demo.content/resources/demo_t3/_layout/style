@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Styles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/style.xsd">
+  <Style language="en">
+    <window.width><![CDATA[80em]]></window.width>
+    <window.background>#EEE</window.background>
+    <window.background.image>
+      <link type="STRONG">
+        <target><![CDATA[/system/modules/org.opencms.frontend.template3.demo/resources/images/bg_demo_png24.png]]></target>
+        <uuid>87b0c415-9c7c-11de-adde-dd9f629b113b</uuid>
+      </link>
+    </window.background.image>
+    <page.background>#FFFFFF</page.background>
+    <page.font.color>#444444</page.font.color>
+    <page.padding><![CDATA[5px]]></page.padding>
+    <header.color>#444444</header.color>
+    <header.background>#FFF</header.background>
+    <header.background.image>
+      <link type="STRONG">
+        <target><![CDATA[/system/modules/org.opencms.frontend.template3.demo/resources/images/bg_head_demo_png24.png]]></target>
+        <uuid>87cfbdd5-9c7c-11de-adde-dd9f629b113b</uuid>
+      </link>
+    </header.background.image>
+    <breadcrumb.divider><![CDATA[1px solid #B31B34]]></breadcrumb.divider>
+    <footer.color>#444444</footer.color>
+    <footer.background>#FFFFFF</footer.background>
+    <footer.background.image>
+      <link type="STRONG">
+        <target><![CDATA[/system/modules/org.opencms.frontend.template3.demo/resources/images/bg_foot_demo_png24.png]]></target>
+        <uuid>87bf1bfd-9c7c-11de-adde-dd9f629b113b</uuid>
+      </link>
+    </footer.background.image>
+    <footer.divider><![CDATA[1px solid #B31B34]]></footer.divider>
+    <font.family><![CDATA[Verdana, Helvetica, Arial, sans-serif]]></font.family>
+    <link.color>#B31B34</link.color>
+    <link.hover.color>#B31B34</link.hover.color>
+    <column.divider.left/>
+    <column.divider.right/>
+    <schema1.box.background>#AACCFF</schema1.box.background>
+    <schema1.box.header.background>#003082</schema1.box.header.background>
+    <schema1.box.header.color>#FFFFFF</schema1.box.header.color>
+    <schema2.box.background>#FFCCCC</schema2.box.background>
+    <schema2.box.header.background>#B31B34</schema2.box.header.background>
+    <schema2.box.header.color>#FFFFFF</schema2.box.header.color>
+    <schema3.box.background>#FFFFFF</schema3.box.background>
+    <schema3.box.header.background>#003082</schema3.box.header.background>
+    <schema3.box.header.color>#FFFFFF</schema3.box.header.color>
+    <nav.main><![CDATA[/system/modules/org.opencms.frontend.template3/elements/menu/nav_style2.jsp]]></nav.main>
+    <nav.main.background>#003082</nav.main.background>
+    <nav.main.color>#EEE</nav.main.color>
+    <nav.main.hover.background>#B31B34</nav.main.hover.background>
+    <nav.main.hover.color>#FFFFFF</nav.main.hover.color>
+    <nav.main.active.background>#B31B34</nav.main.active.background>
+    <nav.main.active.color>#FFFFFF</nav.main.active.color>
+    <nav.left.hover.background>#DDD</nav.left.hover.background>
+    <nav.left.hover.color>#444444</nav.left.hover.color>
+    <nav.left.active.background>#003082</nav.left.active.background>
+    <nav.left.active.color>#FFFFFF</nav.left.active.color>
+    <css.file/>
+  </Style>
+</Styles>

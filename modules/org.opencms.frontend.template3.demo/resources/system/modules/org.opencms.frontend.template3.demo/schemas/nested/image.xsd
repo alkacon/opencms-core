@@ -1,0 +1,31 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="T3Images" type="OpenCmsT3Images"/>
+	
+	<xsd:complexType name="OpenCmsT3Images">
+		<xsd:sequence>
+			<xsd:element name="T3Image" type="OpenCmsT3Image" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsT3Image">
+		<xsd:sequence>
+			<xsd:element name="Image" type="OpenCmsVfsFile" />
+			<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.template3.demo.workplace"/>
+			<layouts>
+				<layout element="Image" widget="ImageGalleryWidget" configuration="{useformat:true}" />			
+			</layouts>
+			<relations>
+				<relation element="Image" invalidate="false" type="strong" />
+			</relations>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[All Events]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>The box in the center of this page shows all available events.</p>
+<p>&nbsp;</p>
+<p>It utilizes a &quot;collector&quot; sorting all events after priority first, then after date.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

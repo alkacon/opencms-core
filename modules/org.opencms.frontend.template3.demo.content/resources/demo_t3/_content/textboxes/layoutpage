@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[Complex Layoutpage]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>This page is built with the type &quot;Layoutpage&quot; in order to show how complex layouts can be controlled using XML contents.</p>
+<p>&nbsp;</p>
+<p>Based on the data provided in the XML content, this page can be rendered either in one or in two colums, and images can be placed at various positions.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

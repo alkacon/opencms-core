@@ -1,0 +1,41 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.template3.demo/schemas/nested/paragraph.xsd"/>
+		
+	<xsd:element name="T3Articles" type="OpenCmsT3Articles"/>
+	
+	<xsd:complexType name="OpenCmsT3Articles">
+		<xsd:sequence>
+			<xsd:element name="T3Article" type="OpenCmsT3Article" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsT3Article">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Paragraphs" type="OpenCmsT3Paragraph" maxOccurs="5" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.template3.demo.workplace"/>
+			<preview uri="${previewtempfile}" />
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>
+			<layouts/>
+			<validationrules/>
+			<defaults/>
+			<relations>
+				<relation element="Paragraphs/Image/Image" invalidate="parent" />
+			</relations>
+			<formatters>
+				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/article/template.jsp" />
+			</formatters>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

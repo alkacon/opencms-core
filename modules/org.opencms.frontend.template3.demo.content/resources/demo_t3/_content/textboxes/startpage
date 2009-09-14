@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[Starting page]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>The startpage is based on a structured content for articles. Such types can be defined by yourself for editing and rendering structured contents.</p>
+<p>&nbsp;</p>
+<p>As part of the structured information, there is a definition which additional side elements (&quot;boxes&quot;) are displayed in the right, left or center column.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

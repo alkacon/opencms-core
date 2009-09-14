@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[Photo album]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>These pages are utilizing the standard OpenCms &quot;photo album&quot;.</p>
+<p>&nbsp;</p>
+<p>A photo album renders overview pages showing images of a distinct folder. By clicking on them, the album renders the selected image.</p>
+<p>&nbsp;</p>
+<p>Additionally, a different layout without a right column was used.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[XML-based News]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p align="left">This is an example for using XML-based news.</p>
+<p align="left">&nbsp;</p>
+<p align="left">These news can created and edited via the &quot;direct edit&quot; buttons. The listbox at the upper right corner shows the latest two news.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<LinkBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd">
+  <LinkBox language="en">
+    <Title><![CDATA[Available documents in the extranet]]></Title>
+    <Links>
+      <Title><![CDATA[Rare plants and flowers]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_t3/extra/extranet/rare.html]]></target>
+          <uuid>5ba90a6e-9c82-11de-adde-dd9f629b113b</uuid>
+        </link>
+      </Link>
+    </Links>
+    <Links>
+      <Title><![CDATA[Flowerglobally: UTF-8]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_t3/extra/extranet/utf-8.html]]></target>
+          <uuid>5bb28051-9c82-11de-adde-dd9f629b113b</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[Plant flower pages with UTF-8 encoding]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[OpenCms Services von Alkacon Software]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_t3/extra/extranet/documents/alkacon_opencms_services_en.pdf]]></target>
+          <uuid>51bd6209-9c86-11de-adde-dd9f629b113b</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[OpenCms means open source software with professional support, without compromise when it comes to quality and availability of training courses or
+development services. When it comes to OpenCms projects, Alkacon Software constantly delivers solutions to the most demanding customers on
+time and on budget.]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[OpenCms Days 2008]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_t3/extra/extranet/documents/opencms-days.pdf]]></target>
+          <uuid>51d074e0-9c86-11de-adde-dd9f629b113b</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[For the first time, OpenCms users and developers gather for a 2 day conference and expo. Meet and mingle with OpenCms experts such as core developers, experienced consultants, independent CMS analysts, executive decision makers and other OpenCms users.]]></Description>
+    </Links>
+  </LinkBox>
+</LinkBoxes>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[Infobox]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>At each page of this demo, you will find red boxes like this one used to explain the OpenCms functions used to create the page.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

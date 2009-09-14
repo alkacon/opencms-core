@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[Navigation boxes]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>This section is used to demonstrate how the content relation engine can be utilized in oder to create a kind of additional local navigation based on categories.</p>
+<p>&nbsp;</p>
+<p>All the contents are assigned to a single category and at each page, there is a list box displayed linking to all other contents of the same category.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

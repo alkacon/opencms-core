@@ -1,0 +1,49 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.template3.demo/schemas/nested/image.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.template3.demo/schemas/nested/extendedlink.xsd"/>
+		
+	<xsd:element name="T3Items" type="OpenCmsT3Items"/>
+	
+	<xsd:complexType name="OpenCmsT3Items">
+		<xsd:sequence>
+			<xsd:element name="T3Item" type="OpenCmsT3Item" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsT3Item">
+		<xsd:sequence>
+			<xsd:element name="Name" type="OpenCmsString" />
+			<xsd:element name="Category" type="OpenCmsString" />
+			<xsd:element name="ShortDescription" type="OpenCmsHtml" minOccurs="0" />
+			<xsd:element name="LongDescription" type="OpenCmsHtml" />
+			<xsd:element name="Images" type="OpenCmsT3Image" minOccurs="0" maxOccurs="5"/>			
+			<xsd:element name="Links" type="OpenCmsT3ExtendedLink" minOccurs="0" maxOccurs="5"/>
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<preview uri="${previewtempfile}" />
+			<mappings>
+				<mapping element="Name" mapto="property:Title" />
+			</mappings>
+			<layouts>
+				<layout element="Category" widget="CategoryWidget" configuration="category=species|keyprefix=itemcategory" />
+				<layout element="ShortDescription" widget="HtmlWidget" configuration="height:100px,link"/>
+				<layout element="LongDescription" widget="HtmlWidget" configuration="link,source"/>
+			</layouts>
+			<validationrules/>
+			<defaults/>
+			<relations>
+				<relation element="Images/Image" invalidate="parent" />
+			</relations>
+			<formatters>
+				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/item/template.jsp" />
+			</formatters>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

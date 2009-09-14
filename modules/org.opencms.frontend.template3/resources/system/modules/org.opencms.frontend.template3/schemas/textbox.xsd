@@ -1,0 +1,44 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="TextBoxes" type="OpenCmsTextBoxes"/>
+	
+	<xsd:complexType name="OpenCmsTextBoxes">
+		<xsd:sequence>
+			<xsd:element name="TextBox" type="OpenCmsTextBox" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsTextBox">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Content" type="OpenCmsHtml" />
+			<xsd:element name="JspFile" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.template3.workplace"/>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>
+			<layouts>
+				<layout element="Content" widget="HtmlWidget" configuration="height:400px,formatselect,source,imagegallery,downloadgallery,linkgallery,link,anchor,table" />
+			</layouts>
+			<validationrules/>
+			<defaults/>
+			<relations>
+				<relation element="JspFile" type="strong" invalidate="false"/>
+			</relations>
+			<formatters>
+				<formatter type="left" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/left.jsp" />
+				<formatter type="right" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/right.jsp" />
+				<formatter type="center" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/center.jsp" />
+			</formatters>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>
