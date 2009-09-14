@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/09/09 14:26:36 $
- * Version: $Revision: 1.129.2.1 $
+ * Date   : $Date: 2009/09/14 16:24:20 $
+ * Version: $Revision: 1.129.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.129.2.1 $
+ * @version $Revision: 1.129.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -1455,12 +1455,25 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // deserialize
                 Object data = null;
                 try {
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_READUSERINFO_2, key, type));
+                        if (value != null) {
+                            try {
+                                LOG.debug(Messages.get().getBundle().key(
+                                    Messages.LOG_DBG_READUSERINFO_VALUE_1,
+                                    new String(value)));
+                            } catch (Exception e) {
+                                // noop
+                            }
+                        } else {
+                            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_READUSERINFO_VALUE_1, null));
+                        }
+                    }
+
                     data = CmsDataTypeUtil.dataDeserialize(value, type);
-                } catch (IOException e) {
-                    LOG.error(
-                        Messages.get().container(Messages.ERR_READING_ADDITIONAL_INFO_1, userId.toString()).key(),
-                        e);
-                } catch (ClassNotFoundException e) {
+
+                } catch (Exception e) {
                     LOG.error(
                         Messages.get().container(Messages.ERR_READING_ADDITIONAL_INFO_1, userId.toString()).key(),
                         e);
@@ -2305,6 +2318,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         String userName = res.getString(m_sqlManager.readQuery("C_USERS_USER_NAME_0"));
         String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_USERS_USER_OU_0")));
         CmsUUID userId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID_0")));
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_CREATE_USER_1, userName));
+        }
+
         Map info = readUserInfos(dbc, userId);
         return new CmsUser(
             userId,
@@ -2454,13 +2472,26 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected void internalUpdateRoleGroup(CmsDbContext dbc, String groupName, CmsRole role)
     throws CmsDataAccessException {
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_UPDATE_ROLEGROUP_2, role.getRoleName(), groupName));
+        }
+
         CmsGroup group = readGroup(dbc, groupName);
         if ((CmsRole.valueOf(group) == null) || !CmsRole.valueOf(group).equals(role)) {
             CmsGroup roleGroup = readGroup(dbc, role.getGroupName());
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_UPDATE_ROLEGROUP_1, roleGroup));
+            }
+
             // copy all users from the group to the role
             Iterator it = readUsersOfGroup(dbc, groupName, false).iterator();
             while (it.hasNext()) {
                 CmsUser user = (CmsUser)it.next();
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_UPDATE_ROLEGROUP_USER_1, user));
+                }
                 createUserInGroup(dbc, user.getId(), roleGroup.getId());
             }
             // set the right flags
@@ -2589,7 +2620,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * @param userId the id of the user to update
      * @param additionalInfo the info to write
      * 
-     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsDataAccessException if user data could not be written
      */
     protected void internalWriteUserInfos(CmsDbContext dbc, CmsUUID userId, Map<String, Object> additionalInfo)
     throws CmsDataAccessException {

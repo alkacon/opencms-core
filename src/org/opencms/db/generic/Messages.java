@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:41 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/09/14 16:24:20 $
+ * Version: $Revision: 1.31.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.31.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -327,6 +327,24 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DBG_CLEAR_LOCKS_1 = "LOG_DBG_CLEAR_LOCKS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_CREATE_USER_1 = "LOG_DBG_CREATE_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_UPDATE_ROLEGROUP_1 = "LOG_DBG_UPDATE_ROLEGROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_UPDATE_ROLEGROUP_2 = "LOG_DBG_UPDATE_ROLEGROUP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_UPDATE_ROLEGROUP_USER_1 = "LOG_DBG_UPDATE_ROLEGROUP_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_READUSERINFO_2 = "LOG_DBG_READUSERINFO_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_READUSERINFO_VALUE_1 = "LOG_DBG_READUSERINFO_VALUE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DBG_READ_LOCKS_1 = "LOG_DBG_READ_LOCKS_1";
