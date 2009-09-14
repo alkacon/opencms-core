@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsResourceBundleLoader.java,v $
- * Date   : $Date: 2009/09/07 12:41:53 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2009/09/14 14:29:45 $
+ * Version: $Revision: 1.7.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.7.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -146,7 +146,7 @@ public final class CmsResourceBundleLoader {
     }
 
     /**  The resource bundle cache. */
-    private static Map m_bundleCache;
+    private static Map<BundleKey, Object> m_bundleCache;
 
     /** The last default Locale we saw, if this ever changes then we have to reset our caches. */
     private static Locale m_lastDefaultLocale;
@@ -170,7 +170,7 @@ public final class CmsResourceBundleLoader {
      */
     public static synchronized void flushBundleCache() {
 
-        m_bundleCache = new HashMap();
+        m_bundleCache = new HashMap<BundleKey, Object>();
     }
 
     /**
@@ -219,7 +219,7 @@ public final class CmsResourceBundleLoader {
         // all cache entries are invalidated.
         Locale defaultLocale = Locale.getDefault();
         if (defaultLocale != m_lastDefaultLocale) {
-            m_bundleCache = new HashMap();
+            m_bundleCache = new HashMap<BundleKey, Object>();
             m_lastDefaultLocale = defaultLocale;
         }
 

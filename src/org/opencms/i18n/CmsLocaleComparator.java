@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleComparator.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/09/14 14:29:45 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,17 +40,17 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsLocaleComparator implements Serializable, Comparator {
+public final class CmsLocaleComparator implements Serializable, Comparator<Locale> {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -690619562147670465L;
-    
+
     /** Static locale comparator. */
-    private static final Comparator LOCALE_COMPARATOR = new CmsLocaleComparator();
+    private static final Comparator<Locale> LOCALE_COMPARATOR = new CmsLocaleComparator();
 
     /**
      * Hides the public constructor.<p> 
@@ -65,7 +65,7 @@ public final class CmsLocaleComparator implements Serializable, Comparator {
      * 
      * @return a static instance of the locale comparator
      */
-    public static Comparator getComparator() {
+    public static Comparator<Locale> getComparator() {
 
         return LOCALE_COMPARATOR;
     }
@@ -73,11 +73,8 @@ public final class CmsLocaleComparator implements Serializable, Comparator {
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare(Object o1, Object o2) {
+    public int compare(Locale o1, Locale o2) {
 
-        if ((o1 instanceof Locale) && (o2 instanceof Locale)) {
-            return o1.toString().compareTo(o2.toString());
-        }
-        return 0;
+        return o1.toString().compareTo(o2.toString());
     }
 }

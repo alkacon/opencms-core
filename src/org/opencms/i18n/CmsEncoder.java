@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2009/09/07 12:41:54 $
- * Version: $Revision: 1.26.2.1 $
+ * Date   : $Date: 2009/09/14 14:29:45 $
+ * Version: $Revision: 1.26.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26.2.1 $ 
+ * @version $Revision: 1.26.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,7 +97,7 @@ public final class CmsEncoder {
     private static final Log LOG = CmsLog.getLog(CmsEncoder.class);
 
     /** A cache for encoding name lookup. */
-    private static Map m_encodingCache = new HashMap(16);
+    private static Map<String, String> m_encodingCache = new HashMap<String, String>(16);
 
     /** The plus entity. */
     private static final String PLUS_ENTITY = ENTITY_PREFIX + "043;";
@@ -536,6 +536,19 @@ public final class CmsEncoder {
     }
 
     /**
+     * A simple method to avoid injection.<p>
+     * 
+     * Replaces all single quotes to double single quotes in the value parameter of the SQL statement.<p> 
+     * 
+     * @param source the String to escape SQL from
+     * @return the escaped value of the parameter source
+     */
+    public static String escapeSql(String source) {
+
+        return source.replaceAll("'", "''");
+    }
+
+    /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
      * Multiple blanks are encoded _multiply _with <code>%20</code>.<p>
      * 
@@ -669,7 +682,7 @@ public final class CmsEncoder {
      */
     public static String lookupEncoding(String encoding, String fallback) {
 
-        String result = (String)m_encodingCache.get(encoding);
+        String result = m_encodingCache.get(encoding);
         if (result != null) {
             return result;
         }
@@ -731,19 +744,5 @@ public final class CmsEncoder {
             }
         }
         return decode(preparedSource.toString(), encoding);
-    }
-
-    /**
-     * A simple method to avoid injection.<p>
-     * 
-     * Replaces all single quotes to double single quotes in the value parameter of the sql statement.<p> 
-     * 
-     * @param source the String to escape SQL from
-     * @return the escaped value of the parameter source
-     */
-    public static String escapeSql(String source) {
-
-		int todo = 0; // TODO: Move to CmsStringUtil
-        return source.replaceAll("'", "''");
     }
 }

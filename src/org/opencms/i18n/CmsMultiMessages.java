@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2009/09/07 12:41:54 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2009/09/14 14:29:44 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,10 +69,10 @@ public class CmsMultiMessages extends CmsMessages {
     private static final Log LOG = CmsLog.getLog(CmsMultiMessages.class);
 
     /** A cache for the messages to prevent multiple lookups in many bundles. */
-    private Map m_messageCache;
+    private Map<String, String> m_messageCache;
 
     /** List of resource bundles from the installed modules. */
-    private List m_messages;
+    private List<CmsMessages> m_messages;
 
     /**
      * Constructor for creating a new messages object initialized with the given locale.<p>
@@ -86,9 +86,9 @@ public class CmsMultiMessages extends CmsMessages {
         setBundleName(CmsMultiMessages.MULTI_BUNDLE_NAME);
         setLocale(locale);
         // generate array for the messages        
-        m_messages = new ArrayList();
+        m_messages = new ArrayList<CmsMessages>();
         // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
-        m_messageCache = new Hashtable();
+        m_messageCache = new Hashtable<String, String>();
     }
 
     /**
@@ -135,7 +135,7 @@ public class CmsMultiMessages extends CmsMessages {
         if (!m_messages.contains(messages)) {
             if ((m_messageCache != null) && (m_messageCache.size() > 0)) {
                 // cache has already been used, must flush because of newly added keys
-                m_messageCache = new Hashtable();
+                m_messageCache = new Hashtable<String, String>();
             }
             m_messages.add(messages);
         }
@@ -146,15 +146,15 @@ public class CmsMultiMessages extends CmsMessages {
      * 
      * @param messages the messages instance to add
      */
-    public void addMessages(List messages) {
+    public void addMessages(List<CmsMessages> messages) {
 
         if (messages == null) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MULTIMSG_EMPTY_LIST_0));
         }
 
-        Iterator i = messages.iterator();
+        Iterator<CmsMessages> i = messages.iterator();
         while (i.hasNext()) {
-            addMessages((CmsMessages)i.next());
+            addMessages(i.next());
         }
     }
 
@@ -163,7 +163,7 @@ public class CmsMultiMessages extends CmsMessages {
      * 
      * @return the list of all individual message objects in this multi message instance
      */
-    public List getMessages() {
+    public List<CmsMessages> getMessages() {
 
         return m_messages;
     }
@@ -215,7 +215,7 @@ public class CmsMultiMessages extends CmsMessages {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_RESOLVE_MESSAGE_KEY_1, keyName));
         }
 
-        String result = (String)m_messageCache.get(keyName);
+        String result = m_messageCache.get(keyName);
         if (result == NULL_STRING) {
             // key was already checked and not found   
             return null;
@@ -224,7 +224,7 @@ public class CmsMultiMessages extends CmsMessages {
             // so far not in the cache
             for (int i = 0; (result == null) && (i < m_messages.size()); i++) {
                 try {
-                    result = ((CmsMessages)m_messages.get(i)).getString(keyName);
+                    result = (m_messages.get(i)).getString(keyName);
                     // if no exception is thrown here we have found the result
                 } catch (CmsMessageException e) {
                     // can usually be ignored

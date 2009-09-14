@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2009/09/14 14:29:46 $
+ * Version: $Revision: 1.35.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,13 +71,13 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.35.2.1 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.cache.I_CmsLruCacheObject
  */
-public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
+public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
 
     /** Initial size for lists. */
     public static final int INITIAL_CAPACITY_LISTS = 10;
@@ -98,10 +98,10 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     private long m_dateLastModified;
 
     /** The list of items for this resource. */
-    private List m_elements;
+    private List<Object> m_elements;
 
     /** A Map of cached headers for this resource. */
-    private Map m_headers;
+    private Map<String, List<String>> m_headers;
 
     /** Pointer to the next cache entry in the LRU cache. */
     private I_CmsLruCacheObject m_next;
@@ -116,7 +116,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     private String m_variationKey;
 
     /** The variation map where this cache entry is stored. */
-    private Map m_variationMap;
+    private Map<String, I_CmsLruCacheObject> m_variationMap;
 
     /** 
      * Constructor for class CmsFlexCacheEntry.<p>
@@ -126,7 +126,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      */
     public CmsFlexCacheEntry() {
 
-        m_elements = new ArrayList(INITIAL_CAPACITY_LISTS);
+        m_elements = new ArrayList<Object>(INITIAL_CAPACITY_LISTS);
         m_dateExpires = CmsResource.DATE_EXPIRED_DEFAULT;
         m_dateLastModified = -1;
         // base memory footprint of this object with all referenced objects
@@ -160,7 +160,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @param resource a name of a resource in the OpenCms VFS
      * @param parameters a map of parameters specific to this include call
      */
-    public void add(String resource, Map parameters) {
+    public void add(String resource, Map<String, String[]> parameters) {
 
         if (m_completed) {
             return;
@@ -169,7 +169,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             // Add only if not already redirected
             m_elements.add(resource);
             if (parameters == null) {
-                parameters = Collections.EMPTY_MAP;
+                parameters = Collections.emptyMap();
             }
             m_elements.add(parameters);
             m_byteSize += CmsMemoryMonitor.getMemorySize(resource);
@@ -182,14 +182,14 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      *
      * @param headers the map of headers to add to the entry 
      */
-    public void addHeaders(Map headers) {
+    public void addHeaders(Map<String, List<String>> headers) {
 
         if (m_completed) {
             return;
         }
         m_headers = headers;
 
-        Iterator allHeaders = m_headers.keySet().iterator();
+        Iterator<String> allHeaders = m_headers.keySet().iterator();
         while (allHeaders.hasNext()) {
             m_byteSize += CmsMemoryMonitor.getMemorySize(allHeaders.next());
         }
@@ -238,7 +238,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      *
      * @return the list of data elements of this cache entry
      */
-    public List elements() {
+    public List<Object> elements() {
 
         return m_elements;
     }
@@ -355,8 +355,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                 if (o instanceof String) {
                     // handle cached parameters
                     i++;
-                    Map map = (Map)m_elements.get(i);
-                    Map oldMap = null;
+                    Map<String, String[]> map = (Map<String, String[]>)m_elements.get(i);
+                    Map<String, String[]> oldMap = null;
                     if (map.size() > 0) {
                         oldMap = req.getParameterMap();
                         req.addParameterMap(map);
@@ -501,7 +501,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @param theVariationKey the variation key
      * @param theVariationMap the variation map
      */
-    public void setVariationData(String theVariationKey, Map theVariationMap) {
+    public void setVariationData(String theVariationKey, Map<String, I_CmsLruCacheObject> theVariationMap) {
 
         m_variationKey = theVariationKey;
         m_variationMap = theVariationMap;
@@ -512,12 +512,13 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      *
      * @return a basic String representation of this CmsFlexCache entry
      */
+    @Override
     public String toString() {
 
         String str = null;
         if (m_redirectTarget == null) {
             str = "CmsFlexCacheEntry [" + m_elements.size() + " Elements/" + getLruCacheCosts() + " bytes]\n";
-            Iterator i = m_elements.iterator();
+            Iterator<Object> i = m_elements.iterator();
             int count = 0;
             while (i.hasNext()) {
                 count++;

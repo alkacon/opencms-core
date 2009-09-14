@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2009/09/14 14:29:46 $
+ * Version: $Revision: 1.49.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -65,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.49.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -449,7 +451,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
             if (f_res.hasIncludeList()) {
                 // special case: this indicates that the output was not yet displayed
-                java.util.Map headers = w_res.getHeaders();
+                Map<String, List<String>> headers = w_res.getHeaders();
                 byte[] result = w_res.getWriterBytes();
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(

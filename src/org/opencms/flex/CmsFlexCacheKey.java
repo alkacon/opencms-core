@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/09/14 14:29:46 $
+ * Version: $Revision: 1.32.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.32.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +118,7 @@ public class CmsFlexCacheKey {
     private static final String CACHE_17_SITE = "site";
 
     /** The list of keywords of the Flex cache language. */
-    private static final List CACHE_COMMANDS = Arrays.asList(new String[] {
+    private static final List<String> CACHE_COMMANDS = Arrays.asList(new String[] {
         CACHE_00_ALWAYS,
         CACHE_01_NEVER,
         CACHE_02_URI,
@@ -160,25 +160,25 @@ public class CmsFlexCacheKey {
     private String m_locale;
 
     /** Cache key variable: List of "blocking" parameters. */
-    private Set m_noparams;
+    private Set<String> m_noparams;
 
     /** Cache key variable: List of parameters. */
-    private Set m_params;
+    private Set<String> m_params;
 
     /** Flag raised in case a key parse error occurred. */
     private boolean m_parseError;
 
     /** Cache key variable: The request TCP/IP port. */
-    private Set m_ports;
+    private Set<Integer> m_ports;
 
     /** The OpenCms resource that this key is used for. */
     private String m_resource;
 
     /** Cache key variable: Distinguishes request schemes (http, https etc.). */
-    private Set m_schemes;
+    private Set<String> m_schemes;
 
     /** Cache key variable: List of session variables. */
-    private Set m_session;
+    private Set<String> m_session;
 
     /** Cache key variable: The current site root. */
     private String m_site;
@@ -232,7 +232,7 @@ public class CmsFlexCacheKey {
      * @param resourcename the full name of the resource including site root
      * @param online must be true for an online resource, false for offline resources
      *
-     * @return fhe FlexCache key name
+     * @return the FlexCache key name
      */
     public static String getKeyName(String resourcename, boolean online) {
 
@@ -304,7 +304,7 @@ public class CmsFlexCacheKey {
             if ((m_noparams.size() == 0) && (key.getParams().size() > 0)) {
                 return null;
             }
-            Iterator i = key.getParams().keySet().iterator();
+            Iterator<String> i = key.getParams().keySet().iterator();
             while (i.hasNext()) {
                 if (m_noparams.contains(i.next())) {
                     return null;
@@ -351,18 +351,18 @@ public class CmsFlexCacheKey {
         if (m_params != null) {
             str.append(CACHE_04_PARAMS);
             str.append("=(");
-            Map keyParams = key.getParams();
+            Map<String, String[]> keyParams = key.getParams();
             if (keyParams != null) {
                 if (m_params.size() > 0) {
                     // match only params listed in cache directives
-                    Iterator i = m_params.iterator();
+                    Iterator<String> i = m_params.iterator();
                     while (i.hasNext()) {
                         Object o = i.next();
                         if (keyParams.containsKey(o)) {
                             str.append(o);
                             str.append("=");
-                            // TODO: handle multiple occurances of the same parameter value
-                            String[] values = (String[])keyParams.get(o);
+                            // TODO: handle multiple occurrences of the same parameter value
+                            String[] values = keyParams.get(o);
                             str.append(values[0]);
                             if (i.hasNext()) {
                                 str.append(",");
@@ -371,13 +371,13 @@ public class CmsFlexCacheKey {
                     }
                 } else {
                     // match all request params
-                    Iterator i = keyParams.entrySet().iterator();
+                    Iterator<Map.Entry<String, String[]>> i = keyParams.entrySet().iterator();
                     while (i.hasNext()) {
-                        Map.Entry entry = (Map.Entry)i.next();
+                        Map.Entry<String, String[]> entry = i.next();
                         str.append(entry.getKey());
                         str.append("=");
                         // TODO: handle multiple occurances of the same parameter value
-                        String[] values = (String[])entry.getValue();
+                        String[] values = entry.getValue();
                         str.append(values[0]);
                         if (i.hasNext()) {
                             str.append(",");
@@ -396,9 +396,9 @@ public class CmsFlexCacheKey {
             HttpSession keySession = key.getSession();
             if (keySession != null) {
                 // match only session attributes listed in cache directives
-                Iterator i = m_session.iterator();
+                Iterator<String> i = m_session.iterator();
                 while (i.hasNext()) {
-                    String name = (String)i.next();
+                    String name = i.next();
                     Object val = keySession.getAttribute(name);
                     if (val != null) {
                         found = true;
@@ -455,6 +455,7 @@ public class CmsFlexCacheKey {
      *
      * @return a complete String representation for this key
      */
+    @Override
     public String toString() {
 
         StringBuffer str = new StringBuffer(100);
@@ -474,7 +475,7 @@ public class CmsFlexCacheKey {
                 str.append(";");
             } else {
                 str.append("=(");
-                Iterator i = m_noparams.iterator();
+                Iterator<String> i = m_noparams.iterator();
                 while (i.hasNext()) {
                     Object o = i.next();
                     str.append(o);
@@ -528,7 +529,7 @@ public class CmsFlexCacheKey {
                 str.append(";");
             } else {
                 str.append("=(");
-                Iterator i = m_params.iterator();
+                Iterator<String> i = m_params.iterator();
                 while (i.hasNext()) {
                     Object o = i.next();
                     if (I_CmsResourceLoader.PARAMETER_ELEMENT.equals(o)) {
@@ -546,7 +547,7 @@ public class CmsFlexCacheKey {
             // add session variables
             str.append(CACHE_07_SESSION);
             str.append("=(");
-            Iterator i = m_session.iterator();
+            Iterator<String> i = m_session.iterator();
             while (i.hasNext()) {
                 Object o = i.next();
                 str.append(o);
@@ -570,7 +571,7 @@ public class CmsFlexCacheKey {
                 str.append(";");
             } else {
                 str.append("=(");
-                Iterator i = m_schemes.iterator();
+                Iterator<String> i = m_schemes.iterator();
                 while (i.hasNext()) {
                     str.append(i.next());
                     if (i.hasNext()) {
@@ -587,7 +588,7 @@ public class CmsFlexCacheKey {
                 str.append(";");
             } else {
                 str.append("=(");
-                Iterator i = m_ports.iterator();
+                Iterator<Integer> i = m_ports.iterator();
                 while (i.hasNext()) {
                     str.append(i.next());
                     if (i.hasNext()) {
@@ -652,11 +653,11 @@ public class CmsFlexCacheKey {
      */
     private void parseFlexKey(String key) {
 
-        List tokens = CmsStringUtil.splitAsList(key, ';', false);
-        Iterator i = tokens.iterator();
+        List<String> tokens = CmsStringUtil.splitAsList(key, ';', false);
+        Iterator<String> i = tokens.iterator();
         try {
             while (i.hasNext()) {
-                String t = (String)i.next();
+                String t = i.next();
                 String k = null;
                 String v = null;
                 int idx = t.indexOf('=');
@@ -693,7 +694,7 @@ public class CmsFlexCacheKey {
                         if (v != null) {
                             m_params = parseValueList(v);
                         } else {
-                            m_params = Collections.EMPTY_SET;
+                            m_params = Collections.emptySet();
                         }
 
                         if (m_params.contains(I_CmsResourceLoader.PARAMETER_ELEMENT)) {
@@ -711,7 +712,7 @@ public class CmsFlexCacheKey {
                             m_noparams = parseValueList(v);
                         } else {
                             // never cache with parameters
-                            m_noparams = Collections.EMPTY_SET;
+                            m_noparams = Collections.emptySet();
                         }
                         break;
                     case 6: // timeout
@@ -728,7 +729,15 @@ public class CmsFlexCacheKey {
                         m_schemes = parseValueList(v);
                         break;
                     case 9: // ports
-                        m_ports = parseValueList(v);
+                        Set<String> ports = parseValueList(v);
+                        m_ports = new HashSet<Integer>(ports.size());
+                        for (String p : ports) {
+                            try {
+                                m_ports.add(Integer.valueOf(p));
+                            } catch (NumberFormatException e) {
+                                // ignore this number
+                            }
+                        }
                         break;
                     case 11: // previous parse error - ignore
                         break;
@@ -771,7 +780,7 @@ public class CmsFlexCacheKey {
      * @param value the String to parse 
      * @return a Map that contains of the parsed values, only the keyset of the Map is needed later
      */
-    private Set parseValueList(String value) {
+    private Set<String> parseValueList(String value) {
 
         if (value.charAt(0) == '(') {
             value = value.substring(1);
@@ -786,8 +795,8 @@ public class CmsFlexCacheKey {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_PARSE_VALUES_1, value));
         }
-        List tokens = CmsStringUtil.splitAsList(value, ',', true);
-        Set result = new HashSet();
+        List<String> tokens = CmsStringUtil.splitAsList(value, ',', true);
+        Set<String> result = new HashSet<String>();
         result.addAll(tokens);
         return result;
     }

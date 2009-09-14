@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2009/09/14 14:29:46 $
+ * Version: $Revision: 1.26.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.26.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
     public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resourceName) {
 
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
-        List defaultLocales = null;
+        List<Locale> defaultLocales = null;
         String encoding = null;
 
         CmsObject adminCms = null;
@@ -158,7 +158,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
         Locale locale;
         // return the first default locale name 
         if ((defaultLocales != null) && (defaultLocales.size() > 0)) {
-            locale = (Locale)defaultLocales.get(0);
+            locale = defaultLocales.get(0);
         } else {
             locale = CmsLocaleManager.getDefaultLocale();
         }

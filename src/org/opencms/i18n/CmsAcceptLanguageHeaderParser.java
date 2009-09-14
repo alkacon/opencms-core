@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2009/09/07 12:41:53 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2009/09/14 14:29:45 $
+ * Version: $Revision: 1.20.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,8 +87,6 @@
 
 package org.opencms.i18n;
 
-import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
@@ -97,7 +95,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -108,16 +105,16 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Rall 
  * @author Alexander Kandzior
  *   
- * @version $Revision: 1.20.2.1 $ 
+ * @version $Revision: 1.20.2.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsAcceptLanguageHeaderParser implements Iterator {
+public class CmsAcceptLanguageHeaderParser {
 
     /**
      * Struct representing an element of the HTTP <code>Accept-Language</code> header.
      */
-    protected static class AcceptLanguage implements Comparable {
+    protected static class AcceptLanguage implements Comparable<AcceptLanguage> {
 
         /** The language and country. */
         Locale m_locale;
@@ -128,9 +125,9 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
         /**
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
-        public final int compareTo(Object acceptLang) {
+        public final int compareTo(AcceptLanguage acceptLang) {
 
-            return m_quality.compareTo(((AcceptLanguage)acceptLang).m_quality);
+            return m_quality.compareTo((acceptLang).m_quality);
         }
 
         /**
@@ -172,10 +169,10 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
     private static final char QUALITY_SEPARATOR = ';';
 
     /** The parsed <code>Accept-Language</code> headers. */
-    private List m_acceptLanguage = new ArrayList(3);
+    private List<AcceptLanguage> m_acceptLanguage = new ArrayList<AcceptLanguage>(3);
 
     /** The parsed locales. */
-    private List m_locales;
+    private List<Locale> m_locales;
 
     /**
      * Parses the <code>Accept-Language</code> header from the provided request.<p>
@@ -199,14 +196,14 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
         // check if there was a locale foud in the HTTP header.
         // if not, use the default locale.
         if (header == null) {
-            m_locales = new ArrayList();
+            m_locales = new ArrayList<Locale>();
             m_locales.add(defaultLocale);
         } else {
-            List tokens = CmsStringUtil.splitAsList(header, LOCALE_SEPARATOR, true);
-            Iterator it = tokens.iterator();
+            List<String> tokens = CmsStringUtil.splitAsList(header, LOCALE_SEPARATOR, true);
+            Iterator<String> it = tokens.iterator();
             while (it.hasNext()) {
                 AcceptLanguage acceptLang = new AcceptLanguage();
-                String element = (String)it.next();
+                String element = it.next();
                 int index;
 
                 // Record and cut off any quality value that comes after a semi-colon.
@@ -242,10 +239,10 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
             Collections.sort(m_acceptLanguage, Collections.reverseOrder());
 
             // store all calculated Locales in a List
-            m_locales = new ArrayList(m_acceptLanguage.size());
-            Iterator i = m_acceptLanguage.iterator();
+            m_locales = new ArrayList<Locale>(m_acceptLanguage.size());
+            Iterator<AcceptLanguage> i = m_acceptLanguage.iterator();
             while (i.hasNext()) {
-                AcceptLanguage lang = (AcceptLanguage)i.next();
+                AcceptLanguage lang = i.next();
                 m_locales.add(lang.m_locale);
             }
         }
@@ -262,11 +259,11 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
         String header;
 
         // get the default accept-language header value
-        List defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();
-        Iterator i = defaultLocales.iterator();
+        List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();
+        Iterator<Locale> i = defaultLocales.iterator();
         header = "";
         while (i.hasNext()) {
-            Locale loc = (Locale)i.next();
+            Locale loc = i.next();
             header += loc.getLanguage() + ", ";
         }
         header = header.substring(0, header.length() - 2);
@@ -278,43 +275,8 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
      * 
      * @return the sorted list of accepted Locales
      */
-    public List getAcceptedLocales() {
+    public List<Locale> getAcceptedLocales() {
 
         return m_locales;
-    }
-
-    /**
-     * @return Whether there are more locales.
-     */
-    public boolean hasNext() {
-
-        return !m_acceptLanguage.isEmpty();
-    }
-
-    /**
-     * Creates a <code>Locale</code> from the next element of the <code>Accept-Language</code> header.
-     * 
-     * @return The next highest-rated <code>Locale</code>.
-     */
-    public Object next() {
-
-        if (m_acceptLanguage.isEmpty()) {
-            throw new NoSuchElementException();
-        }
-        return ((AcceptLanguage)m_acceptLanguage.remove(0)).m_locale;
-    }
-
-    /**
-     * Not implemented.
-     * 
-     * @throws CmsIllegalArgumentException always to signal that remove is not implemented 
-     *         (<b>interface contract defines {@link UnsupportedOperationException}</b>) 
-     */
-    public final void remove() throws CmsIllegalArgumentException {
-
-        throw new CmsRuntimeException(org.opencms.db.Messages.get().container(
-            org.opencms.db.Messages.ERR_UNSUPPORTED_OPERATION_2,
-            getClass().getName(),
-            "remove()"));
     }
 }

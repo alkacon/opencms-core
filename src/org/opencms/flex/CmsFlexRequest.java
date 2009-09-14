@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2009/09/14 14:29:46 $
+ * Version: $Revision: 1.48.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.48.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,7 +92,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     private String m_elementUriSiteRoot;
 
     /** List of all include calls (to prevent an endless inclusion loop). */
-    private List m_includeCalls;
+    private List<String> m_includeCalls;
 
     /** Flag to check if this request is in the online project or not. */
     private boolean m_isOnline;
@@ -104,7 +104,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     private CmsFlexRequestKey m_key;
 
     /** Map of parameters from the original request. */
-    private Map m_parameters;
+    private Map<String, String[]> m_parameters;
 
     /** Stores the request URI after it was once calculated. */
     private String m_requestUri;
@@ -127,7 +127,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         CmsObject cms = m_controller.getCmsObject();
         m_elementUri = cms.getSitePath(m_controller.getCmsResource());
         m_elementUriSiteRoot = cms.getRequestContext().getSiteRoot();
-        m_includeCalls = new Vector();
+        m_includeCalls = new Vector<String>();
         m_parameters = req.getParameterMap();
         m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
         String[] params = req.getParameterValues(PARAMETER_FLEX);
@@ -135,7 +135,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         boolean dorecompile = false;
         if (params != null) {
             if (OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
-                List paramList = Arrays.asList(params);
+                List<String> paramList = Arrays.asList(params);
                 boolean firstCall = controller.isEmptyRequestList();
                 nocachepara |= paramList.contains("nocache");
                 dorecompile = paramList.contains("recompile");
@@ -144,7 +144,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                 if (paramList.contains("purge") && firstCall) {
                     OpenCms.fireCmsEvent(new CmsEvent(
                         I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
-                        new HashMap(0)));
+                        new HashMap<String, Object>(0)));
                     OpenCms.fireCmsEvent(new CmsEvent(
                         I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                         Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
@@ -230,7 +230,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @param map the map to add
      * @return the merged map of parameters
      */
-    public Map addParameterMap(Map map) {
+    public Map<String, String[]> addParameterMap(Map<String, String[]> map) {
 
         if (map == null) {
             return m_parameters;
@@ -238,18 +238,18 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         if ((m_parameters == null) || (m_parameters.size() == 0)) {
             m_parameters = Collections.unmodifiableMap(map);
         } else {
-            HashMap parameters = new HashMap();
+            Map<String, String[]> parameters = new HashMap<String, String[]>();
             parameters.putAll(m_parameters);
 
-            Iterator it = map.entrySet().iterator();
+            Iterator<Map.Entry<String, String[]>> it = map.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                String key = (String)entry.getKey();
+                Map.Entry<String, String[]> entry = it.next();
+                String key = entry.getKey();
                 // Check if the parameter name (key) exists
                 if (parameters.containsKey(key)) {
 
-                    String[] oldValues = (String[])parameters.get(key);
-                    String[] newValues = (String[])entry.getValue();
+                    String[] oldValues = parameters.get(key);
+                    String[] newValues = entry.getValue();
 
                     String[] mergeValues = new String[oldValues.length + newValues.length];
                     System.arraycopy(newValues, 0, mergeValues, 0, newValues.length);
@@ -304,9 +304,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
+    @Override
     public String getParameter(String name) {
 
-        String[] values = (String[])m_parameters.get(name);
+        String[] values = m_parameters.get(name);
         if (values != null) {
             return (values[0]);
         } else {
@@ -326,7 +327,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      *  
      * @see javax.servlet.ServletRequest#getParameterMap()
      */
-    public Map getParameterMap() {
+    @Override
+    public Map<String, String[]> getParameterMap() {
 
         return m_parameters;
     }
@@ -338,9 +340,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.ServletRequest#getParameterNames()
      */
-    public Enumeration getParameterNames() {
+    @Override
+    public Enumeration<String> getParameterNames() {
 
-        Vector v = new Vector();
+        Vector<String> v = new Vector<String>();
         v.addAll(m_parameters.keySet());
         return (v.elements());
     }
@@ -356,9 +359,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      *          
      * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
      */
+    @Override
     public String[] getParameterValues(String name) {
 
-        return (String[])m_parameters.get(name);
+        return m_parameters.get(name);
     }
 
     /** 
@@ -369,6 +373,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @return a special RequestDispatcher that allows access to VFS resources
      */
+    @Override
     public javax.servlet.RequestDispatcher getRequestDispatcher(String target) {
 
         String absolutUri = CmsLinkManager.getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
@@ -410,6 +415,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.http.HttpServletRequest#getRequestURI()
      */
+    @Override
     public String getRequestURI() {
 
         if (m_requestUri != null) {
@@ -430,6 +436,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.http.HttpServletRequest#getRequestURL()
      */
+    @Override
     public StringBuffer getRequestURL() {
 
         if (m_requestUrl != null) {
@@ -453,6 +460,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.http.HttpServletRequestWrapper#getServletPath()
      */
+    @Override
     public String getServletPath() {
 
         // unwrap the request to prevent multiple unneeded attempts to generate missing JSP files
@@ -530,7 +538,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @param map the map to set
      */
-    public void setParameterMap(Map map) {
+    public void setParameterMap(Map<String, String[]> map) {
 
         m_parameters = map;
     }
@@ -538,6 +546,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         // return the uri of the element requested for this request, useful in debugging
@@ -552,7 +561,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @return the List of include calls
      */
-    protected List getCmsIncludeCalls() {
+    protected List<String> getCmsIncludeCalls() {
 
         return m_includeCalls;
     }

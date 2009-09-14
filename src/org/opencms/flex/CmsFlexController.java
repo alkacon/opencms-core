@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2009/09/14 14:29:46 $
+ * Version: $Revision: 1.43.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.43.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,13 +70,13 @@ public class CmsFlexController {
     private CmsObject m_cmsObject;
 
     /** List of wrapped RequestContext info object. */
-    private List m_flexContextInfoList;
+    private List<CmsFlexRequestContextInfo> m_flexContextInfoList;
 
     /** List of wrapped CmsFlexRequests. */
-    private List m_flexRequestList;
+    private List<CmsFlexRequest> m_flexRequestList;
 
     /** List of wrapped CmsFlexResponses. */
-    private List m_flexResponseList;
+    private List<CmsFlexResponse> m_flexResponseList;
 
     /** Indicates if this controller is currently in "forward" mode. */
     private boolean m_forwardMode;
@@ -151,9 +151,9 @@ public class CmsFlexController {
         m_res = res;
         m_streaming = streaming;
         m_top = top;
-        m_flexRequestList = new Vector();
-        m_flexResponseList = new Vector();
-        m_flexContextInfoList = new Vector();
+        m_flexRequestList = new Vector<CmsFlexRequest>();
+        m_flexResponseList = new Vector<CmsFlexResponse>();
+        m_flexContextInfoList = new Vector<CmsFlexRequestContextInfo>();
         m_forwardMode = false;
         m_throwableResourceUri = null;
     }
@@ -434,7 +434,7 @@ public class CmsFlexController {
      */
     public CmsFlexRequest getCurrentRequest() {
 
-        return (CmsFlexRequest)m_flexRequestList.get(m_flexRequestList.size() - 1);
+        return m_flexRequestList.get(m_flexRequestList.size() - 1);
     }
 
     /**
@@ -444,7 +444,7 @@ public class CmsFlexController {
      */
     public CmsFlexResponse getCurrentResponse() {
 
-        return (CmsFlexResponse)m_flexResponseList.get(m_flexResponseList.size() - 1);
+        return m_flexResponseList.get(m_flexResponseList.size() - 1);
     }
 
     /**
@@ -459,7 +459,7 @@ public class CmsFlexController {
             // ensure a valid position is used
             return CmsResource.DATE_EXPIRED_DEFAULT;
         }
-        return ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).getDateExpires();
+        return (m_flexContextInfoList.get(pos)).getDateExpires();
     }
 
     /**
@@ -474,7 +474,7 @@ public class CmsFlexController {
             // ensure a valid position is used
             return CmsResource.DATE_RELEASED_DEFAULT;
         }
-        return ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).getDateLastModified();
+        return (m_flexContextInfoList.get(pos)).getDateLastModified();
     }
 
     /**
@@ -588,9 +588,9 @@ public class CmsFlexController {
             m_flexResponseList.remove(m_flexResponseList.size() - 1);
         }
         if ((m_flexContextInfoList != null) && !m_flexContextInfoList.isEmpty()) {
-            CmsFlexRequestContextInfo info = (CmsFlexRequestContextInfo)m_flexContextInfoList.remove(m_flexContextInfoList.size() - 1);
+            CmsFlexRequestContextInfo info = m_flexContextInfoList.remove(m_flexContextInfoList.size() - 1);
             if (m_flexContextInfoList.size() > 0) {
-                ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(0)).merge(info);
+                (m_flexContextInfoList.get(0)).merge(info);
                 updateRequestContextInfo();
             }
         }
@@ -654,7 +654,7 @@ public class CmsFlexController {
     public void suspendFlexResponse() {
 
         for (int i = 0; i < m_flexResponseList.size(); i++) {
-            CmsFlexResponse res = (CmsFlexResponse)m_flexResponseList.get(i);
+            CmsFlexResponse res = m_flexResponseList.get(i);
             res.setSuspended(true);
         }
     }
@@ -681,7 +681,7 @@ public class CmsFlexController {
             // ensure a valid position is used
             return;
         }
-        ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).updateDates(dateLastModified, dateExpires);
+        (m_flexContextInfoList.get(pos)).updateDates(dateLastModified, dateExpires);
     }
 
     /**
