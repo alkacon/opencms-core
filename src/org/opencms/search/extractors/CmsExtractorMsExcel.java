@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsExcel.java,v $
- * Date   : $Date: 2009/08/26 07:48:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/14 14:07:28 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,14 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -48,7 +50,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReader;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,6 +58,9 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
 
     /** Static member instance of the extractor. */
     private static final CmsExtractorMsExcel INSTANCE = new CmsExtractorMsExcel();
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExtractorMsExcel.class);
 
     /**
      * Hide the public constructor.<p> 
@@ -81,15 +86,21 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
     @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
-        // first extract the table content
-        String rawContent = extractTableContent(getStreamCopy(in));
-        rawContent = removeControlChars(rawContent);
+        String rawContent = "";
+        try {
+            // first extract the table content
+            rawContent = extractTableContent(getStreamCopy(in));
+            rawContent = removeControlChars(rawContent);
 
-        // now extract the meta information using POI 
-        POIFSReader reader = new POIFSReader();
-        reader.registerListener(this);
-        reader.read(getStreamCopy(in));
-
+            // now extract the meta information using POI 
+            POIFSReader reader = new POIFSReader();
+            reader.registerListener(this);
+            reader.read(getStreamCopy(in));
+        } catch (Exception e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().container(Messages.LOG_EXTRACT_TEXT_ERROR_0), e);
+            }
+        }
         // combine the meta information with the content and create the result
         return createExtractionResult(rawContent);
     }

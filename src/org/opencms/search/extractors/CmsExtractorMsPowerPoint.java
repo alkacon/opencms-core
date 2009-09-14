@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2009/08/20 11:31:13 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/14 14:07:27 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,11 @@
 package org.opencms.search.extractors;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsLog;
 
 import java.io.InputStream;
 
+import org.apache.commons.logging.Log;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.poifs.filesystem.DocumentInputStream;
@@ -45,7 +47,7 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,6 +55,9 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
 
     /** The buffer that is written with the content of the PPT. */
     private StringBuffer m_buffer;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExtractorMsPowerPoint.class);
 
     /**
      * Hide the public constructor.<p> 
@@ -79,15 +84,21 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
     @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
-        POIFSReader reader = new POIFSReader();
-        reader.registerListener(this);
-        reader.read(in);
+        String rawContent = "";
+        try {
+            POIFSReader reader = new POIFSReader();
+            reader.registerListener(this);
+            reader.read(in);
 
-        // extract all information
-        String rawContent = removeControlChars(m_buffer.toString());
-        // free buffer memory
-        m_buffer = new StringBuffer(4096);
-
+            // extract all information
+            rawContent = removeControlChars(m_buffer.toString());
+            // free buffer memory
+            m_buffer = new StringBuffer(4096);
+        } catch (Exception e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().container(Messages.LOG_EXTRACT_TEXT_ERROR_0), e);
+            }
+        }
         // combine the meta information with the content and create the result
         return createExtractionResult(rawContent);
     }

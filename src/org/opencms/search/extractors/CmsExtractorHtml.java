@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorHtml.java,v $
- * Date   : $Date: 2009/08/20 11:31:13 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/09/14 14:07:28 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,18 +31,21 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.InputStream;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Extracts the text from an HTML document.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,6 +53,9 @@ public final class CmsExtractorHtml extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
     private static final CmsExtractorHtml INSTANCE = new CmsExtractorHtml();
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExtractorHtml.class);
 
     /**
      * Hide the public constructor.<p> 
@@ -75,12 +81,18 @@ public final class CmsExtractorHtml extends A_CmsTextExtractor {
     @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
-        if (CmsStringUtil.isEmpty(encoding)) {
-            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+        String result = "";
+        try {
+            if (CmsStringUtil.isEmpty(encoding)) {
+                encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            }
+            result = CmsHtmlExtractor.extractText(in, encoding);
+            result = removeControlChars(result);
+        } catch (Exception e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().container(Messages.LOG_EXTRACT_TEXT_ERROR_0), e);
+            }
         }
-
-        String result = CmsHtmlExtractor.extractText(in, encoding);
-        result = removeControlChars(result);
         return new CmsExtractionResult(result);
     }
 }
