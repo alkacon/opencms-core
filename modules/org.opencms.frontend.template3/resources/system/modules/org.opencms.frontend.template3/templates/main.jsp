@@ -27,6 +27,8 @@
 	<meta name="robots" content="index, follow" >
 	<meta name="revisit-after" content="7 days" >
 
+	<cms:enable-ade/>
+
 	<!-- insert stylesheets needed for the template -->
 	<c:forEach items="${cms.stylesheets}" var="cssFile">
 		<link href="<cms:link>${cssFile}</cms:link>" rel="stylesheet" type="text/css">		
@@ -42,8 +44,6 @@
 	<c:if test="${!empty stylesheet}">
 		<link href="<cms:link>${stylesheet}</cms:link>" rel="stylesheet" type="text/css">
 	</c:if>
-
-	<cms:enable-ade/>
 </head>
 
 <body>
