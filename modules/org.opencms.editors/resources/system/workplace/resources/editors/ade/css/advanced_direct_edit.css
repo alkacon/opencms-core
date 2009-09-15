@@ -1,4 +1,4 @@
-﻿/** General **/
+/** General **/
 .cms-left {
 	float: left;
 }
@@ -563,7 +563,8 @@ div.cms-menu div.ui-widget-content div.ui-widget-content {
 }
 
 div.cms-menu div.ui-corner-bottom {
-	width: 351px;
+	width: 343px;
+    padding-top: 7px;
 }
 
 div.cms-menu div.cms-menu-connect {
@@ -578,8 +579,9 @@ div.cms-menu div.cms-menu-connect {
 }
 
 div.cms-menu button.cms-edit-favorites {
-	margin-left: 10px;
-	margin-bottom: 10px;
+	margin-left: 7px;
+	margin-bottom: 7px;
+    margin-top: 0px;
 	width: 329px;
 }
 
@@ -665,18 +667,29 @@ li.jTreePlacement, li.jTreePlaceholder {
 .cms-scrolling {
 	max-height: 300px;
 	overflow: auto;
-	width: 332px;
+	width: 328px;
 	position: relative;
-	
+	padding: 2px 0px;
 	background-color: #6e9ce0;
-	margin-left: 8px;
+	margin-left: 7px;
+    margin-bottom: 7px;
 }
 
-.cms-search-button {
-	margin-left: 10px;
+.cms-scrolling ul.cms-scrolling-inner {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#cms-search div.cms-loading {
+    margin-left: 7px;
+    margin-bottom: 7px;
+}
+
+#cms-search .cms-search-button {
+    margin-top: 0px;
+	margin-left: 7px;
 /*	margin-right: 30px;*/
-	margin-top: 1em;
-	margin-bottom: 10px;
+	margin-bottom: 7px;
 	width: 329px;
 }
 
@@ -687,11 +700,11 @@ li.jTreePlacement, li.jTreePlaceholder {
 
 
 #cms-search div.ui-corner-bottom {
-	width: 350px;
+	width: 343px;
 }
 
 .cms-menu div.ui-corner-bottom {
-	width: 350px;
+	width: 343px;
 }
 
 
@@ -715,7 +728,7 @@ li.jTreePlacement, li.jTreePlaceholder {
 .cms-menu .connect {
 	background: #AACCFF;
 	position: absolute;
-    right: -3px;
+    right: -2px;
     top: -35px;
     width: 99px;
     height: 36px;
@@ -837,7 +850,7 @@ ol.ade-forms fieldset {
 	border-left: 1px dashed #ff0000 !important;
 	border-right: 1px dashed #ff0000 !important;
 	border-bottom: 1px dashed #ff0000 !important;
-	border-top: 1px dashed #ff00000 !important;
+	border-top: 1px dashed #ff0000 !important;
 }
 
 #cms-new-list .cms-item .ui-widget-content, #cms-appendbox .cms-item .ui-widget-content {
@@ -872,11 +885,11 @@ ol.ade-forms fieldset {
 }
 
 #favorite-drop {
-	left: 88px;
+	left: 97px;
 }
 
 #favorite-drop .connect {
-	right: -1px !important;
+	right: 0px !important;
 }
 
 

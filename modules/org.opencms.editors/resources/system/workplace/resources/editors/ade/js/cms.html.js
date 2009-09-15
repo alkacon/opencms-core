@@ -124,34 +124,32 @@
          listId = menuId + "-list";
       }
       
-      var html = ['<div id="', menuId, '" class="cms-menu" style="width: 350px; display:none">\
+      var html = ['<div id="', menuId, '" class="cms-menu" style="width: 343px; display:none">\
     	<div class="connect ui-corner-top"></div>\
     	<div class="ui-widget-shadow ui-corner-all" style="width: 345px"></div>\
     	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
-            <div><span style="opacity:0;color:#aaccff;">.</span></div>\
             ', addMenuItem, '\
             <div class="cms-scrolling">\
                 <ul id="', listId, '" class="cms-scrolling-inner cms-item-list">\
                 </ul>\
             </div>\
-            <div><span style="opacity:0">.</span></div>\
-    	</div></div>'];
+        </div></div>'];
       
       return html.join('');
    }
    
    
    var searchMenu = cms.html.searchMenu = '\
-      <div id="cms-search" class="cms-menu" style="width: 350px; display:none">\
+      <div id="cms-search" class="cms-menu" style="width: 343px; display:none">\
           <div class="connect ui-corner-top"></div>\
           <div class="ui-widget-shadow ui-corner-all" style="width: 345px"></div>\
           <div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
               <button class="cms-search-button ui-corner-all ui-state-default">Search</button>\
-              <div class="cms-scrolling">\
+              <div class="cms-scrolling" style="display:none">\
                   <ul id="cms-search-list"  class="cms-scrolling-inner">\
                   </ul>\
               </div>\
-              <div class="cms-loading"><span style="opacity:0">.</span></div>\
+              <div class="cms-loading">Please start your search</div>\
           </div>\
       </div>';
    
