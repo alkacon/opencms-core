@@ -3979,7 +3979,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-        <file>
+		<file>
 			<source>system/workplace/resources/editors/ade/lib/jquery-ui-1.8a1.js</source>
 			<destination>system/workplace/resources/editors/ade/lib/jquery-ui-1.8a1.js</destination>
 			<type>plain</type>
@@ -3990,12 +3990,7 @@
 			<datecreated>Tue, 15 Sep 2009 15:19:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery-ui-1.8a1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
