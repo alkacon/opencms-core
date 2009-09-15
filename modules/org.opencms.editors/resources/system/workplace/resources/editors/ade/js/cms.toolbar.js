@@ -560,12 +560,6 @@
          toggleList(this, cms.html.searchMenuId);
       });
       
-      $('button[name="Reset"]').click(function() {
-         if (!$(this).hasClass('cms-deactivated')) {
-            window.location.reload();
-         }
-      });
-      
       $('#toolbar button, #show-button').mouseover(function() {
          if (!$(this).hasClass('cms-deactivated')) {
             $(this).addClass('ui-state-hover');
@@ -579,6 +573,7 @@
       
       initFavDialog();
       initLinks();
+      initReset();
       
       $(window).resize(fixMenuAlignment);
       
@@ -894,9 +889,9 @@
          
          
          var hideMenus = function() {
-            $(menuHandles).remove();
             $(menus).hide();
          }
+         $(menuHandles).remove();
          hideMenus();
          // HACK: sometimes hideMenus has no effect is executed synchronously
          window.setTimeout(hideMenus, 30);
@@ -1306,6 +1301,37 @@
          });
          return false;
       });
+   }
+   
+   var initReset = cms.toolbar.initReset = function() {
+      $('<div id="cms-reset-dialog" style="display:none">Do you really want to discard your changes and reset the page?</div>').appendTo('body');
+      $('button[name="Reset"]').live('click', function() {
+         if ($(this).hasClass('cms-deactivated')) {
+            return;
+         }
+         var buttons = {};
+         buttons['Reset'] = function() {
+            $(this).dialog('destroy');
+            setPageChanged(false);
+            window.location.reload();
+         }
+         
+         buttons['Cancel'] = function() {
+            $(this).dialog('destroy');
+         }
+         
+         $('#cms-reset-dialog').dialog({
+            autoOpen: true,
+            modal: true,
+            zIndex: 9999,
+            buttons: buttons,
+            close: function() {
+               $(this).dialog('destroy');
+            }
+         });
+         return false;
+      });
+      
    }
    
    //===========================================================================================================
