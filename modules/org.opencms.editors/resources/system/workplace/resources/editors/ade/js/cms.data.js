@@ -55,6 +55,12 @@
    var /** String */ CURRENT_URI = cms.data.CURRENT_URI;
    
    /**  
+    * The current locale.
+    * @see /system/workplace/editors/ade/include.txt
+    */
+   var /** String */ LOCALE = cms.data.LOCALE;
+   
+   /**  
     * The current container page uri.
     * @see /system/workplace/editors/ade/include.txt
     */
@@ -178,7 +184,8 @@
          'data': {
             'action': ACTION_ALL,
             'cntpage': CURRENT_CNT_PAGE,
-            'uri': CURRENT_URI
+            'uri': CURRENT_URI,
+            'locale': LOCALE
          },
          'timeout': AJAX_TIMEOUT,
          'error': function(xhr, status, error) {
@@ -254,7 +261,8 @@
    
       $.extend(data, {
          'cntpage': CURRENT_CNT_PAGE,
-         'uri': CURRENT_URI
+         'uri': CURRENT_URI,
+         'locale': LOCALE
       });
       $.ajax({
          'url': SERVER_GET_URL,
@@ -296,6 +304,7 @@
          'data': {
             'cntpage': CURRENT_CNT_PAGE,
             'uri': CURRENT_URI,
+            'locale': LOCALE,
             'action': action,
             'data': JSON.stringify(data)
          },

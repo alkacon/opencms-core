@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/09/14 13:59:36 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/09/15 13:29:07 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.6 
  */
@@ -194,6 +194,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         } catch (Exception e) {
             LOG.warn(e.getLocalizedMessage(), e);
         }
+        resolver.addMacro("currentLocale", cms.getRequestContext().getLocale().toString());
 
         headerInclude = resolver.resolveMacros(headerInclude);
 

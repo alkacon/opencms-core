@@ -15,7 +15,8 @@
           "SERVER_GET_URL"  : "%(serverGetUri)",
           "SERVER_SET_URL"  : "%(serverSetUri)",
           "CURRENT_CNT_PAGE": "%(currentContainerPage)",
-          "CURRENT_URI"     : "%(currentUri)"
+          "CURRENT_URI"     : "%(currentUri)",
+          "LOCALE"          : "%(currentLocale)"
         }, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}};
     </script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.data.js"></script>

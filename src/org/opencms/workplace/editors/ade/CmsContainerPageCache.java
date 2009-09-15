@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageCache.java,v $
- * Date   : $Date: 2009/09/09 16:03:10 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2009/09/15 13:29:06 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 7.6 
  */
@@ -205,7 +205,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
                 cms.getSitePath(resource),
                 locale.toString()).key());
             locale = OpenCms.getLocaleManager().getDefaultLocales(cms, resource).get(0);
-            if (!containerPageBean.containsKey(locale.toString())) {
+            if (!containerPageBean.containsKey(locale)) {
                 // locale not found!!
                 LOG.error(Messages.get().container(
                     Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,

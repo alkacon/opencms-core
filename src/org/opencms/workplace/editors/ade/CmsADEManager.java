@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/09/15 06:13:44 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/09/15 13:29:07 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.6
  */
@@ -406,6 +406,13 @@ public class CmsADEManager extends CmsJspActionElement {
                 PARAMETER_CNTPAGE));
             return result;
         }
+        String localeParam = request.getParameter(PARAMETER_LOCALE);
+        if (localeParam == null) {
+            result.put(RES_ERROR, Messages.get().getBundle().key(
+                Messages.ERR_JSON_MISSING_PARAMETER_1,
+                PARAMETER_LOCALE));
+            return result;
+        }
         String uriParam = request.getParameter(PARAMETER_URI);
         if (uriParam == null) {
             result.put(RES_ERROR, Messages.get().getBundle().key(Messages.ERR_JSON_MISSING_PARAMETER_1, PARAMETER_URI));
@@ -413,6 +420,7 @@ public class CmsADEManager extends CmsJspActionElement {
         }
 
         CmsObject cms = getCmsObject();
+        cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
         CmsResource cntPageRes = cms.readResource(cntPageParam);
         CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
             cms,
@@ -551,6 +559,14 @@ public class CmsADEManager extends CmsJspActionElement {
                 PARAMETER_ACTION));
             return result;
         }
+        String localeParam = getRequest().getParameter(PARAMETER_LOCALE);
+        if (localeParam == null) {
+            result.put(RES_ERROR, Messages.get().getBundle().key(
+                Messages.ERR_JSON_MISSING_PARAMETER_1,
+                PARAMETER_LOCALE));
+            return result;
+        }
+        getCmsObject().getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
         if (actionParam.equals(ACTION_FAV)) {
             // save the favorite list
             String dataParam = getRequest().getParameter(PARAMETER_DATA);
@@ -981,26 +997,29 @@ public class CmsADEManager extends CmsJspActionElement {
             searchBean.setParameters(params);
             searchBean.setSearchRoot(options.getLocation());
             List<CmsSearchResult> searchResults = searchBean.getSearchResult();
+            if (searchResults != null) {
+                // helper
+                CmsElementUtil elemUtil = new CmsElementUtil(
+                    cms,
+                    getRequest(),
+                    getResponse(),
+                    getRequest().getParameter(PARAMETER_URI));
 
-            // helper
-            CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse(), getRequest().getParameter(
-                PARAMETER_URI));
-
-            // iterate result list and generate the elements
-            Iterator<CmsSearchResult> it = searchResults.iterator();
-            while (it.hasNext()) {
-                CmsSearchResult sr = it.next();
-                // get the element data
-                String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
-                try {
-                    JSONObject resElement = elemUtil.getElementData(uri, types);
-                    // store element data
-                    elements.put(resElement);
-                } catch (Exception e) {
-                    LOG.warn(e.getLocalizedMessage(), e);
+                // iterate result list and generate the elements
+                Iterator<CmsSearchResult> it = searchResults.iterator();
+                while (it.hasNext()) {
+                    CmsSearchResult sr = it.next();
+                    // get the element data
+                    String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
+                    try {
+                        JSONObject resElement = elemUtil.getElementData(uri, types);
+                        // store element data
+                        elements.put(resElement);
+                    } catch (Exception e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                 }
             }
-
             // check if there are more search pages
             int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
             boolean hasMore = (searchBean.getSearchResultCount() > results);
