@@ -162,29 +162,16 @@
       var showMoveLeft = true;
       var setRightToZero = false;
       var inwardsHandle = false;
-      if ($.browser.msie) {
-         showMoveLeft = false;
-         setRightToZero = true;
-      }
+
       timer.handleDiv.addClass('ui-widget-header').css({
          'width': '72px',
          'right': right
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
-      
-      
-      if (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width()) {
-         showMoveLeft = false;
-         // can't set the css property here directly, since changing the orientation changes the handle box
-         setRightToZero = true;
-      }
-      
-      if (showMoveLeft) {
-         setModePositionLeft(timer.handleDiv);
+
+      if ($.browser.msie || (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width())) {
+         timer.handleDiv.addClass('cms-handle-reverse').css('right', '0px');
       } else {
-         setModePositionRight(timer.handleDiv);
-      }
-      if (setRightToZero) {
-         timer.handleDiv.css('right', '0px');
+         timer.handleDiv.removeClass('cms-handle-reverse');
       }
    }
    
