@@ -28,7 +28,7 @@
 <div style="margin: 1pt; padding: 0pt; float: right;"><a href="%(link2)"><img alt="Logo OpenCms" title="Go to the OpenCms website" src="%(link3)" id="iimg_364996162" /></a></div>
 <div style="margin: 0px 210px 0pt 160px;">
 <p style="margin: 1pt; float: right;"><a href="%(link4)">Search</a> &nbsp;</p>
-<h3 style="margin: 0pt;">OpenCms %(opencms.version) Demo Website</h3>
+<h3 style="margin: 0pt;">OpenCms 8.0 Demo Website</h3>
 <p style="margin: 1pt;"><i>%(property.Title)</i></p>
 </div>
 </div>]]></content>
