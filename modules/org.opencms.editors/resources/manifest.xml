@@ -3979,46 +3979,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		<file>
-			<source>system/workplace/resources/editors/ade/lib/jquery-ui-1.7.2.custom_.js</source>
-			<destination>system/workplace/resources/editors/ade/lib/jquery-ui-1.7.2.custom_.js</destination>
-			<type>plain</type>
-			<uuidstructure>19907969-8747-11de-83d4-dd9f629b113b</uuidstructure>
-			<uuidresource>1990796a-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 13:50:30 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 13:50:30 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery-ui-1.7.2.custom_]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/editors/ade/lib/jquery-ui-1.7.2.custom__.js</source>
-			<destination>system/workplace/resources/editors/ade/lib/jquery-ui-1.7.2.custom__.js</destination>
-			<type>plain</type>
-			<uuidstructure>1997a55c-8747-11de-83d4-dd9f629b113b</uuidstructure>
-			<uuidresource>1997a55d-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 13:50:30 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 13:50:30 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery-ui-1.7.2.custom__]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
         <file>
 			<source>system/workplace/resources/editors/ade/lib/jquery-ui-1.8a1.js</source>
 			<destination>system/workplace/resources/editors/ade/lib/jquery-ui-1.8a1.js</destination>
