@@ -1041,7 +1041,7 @@
       
       };
       $('#fav-dialog').dialog({
-         width: 340,
+         width: 380,
          // height: 500,
          title: "Edit favorites",
          modal: true,
