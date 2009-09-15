@@ -630,15 +630,16 @@
       $('#cms-search-list').closest('.cms-scrolling').scrollTop(0);
       
       
-      //hack
-      var nt = cms.data.newTypes;
       
+      var nt = cms.data.newTypes;
+      /*hack
       for (var i = 0; i < 50; i++) {
          var t = cms.util.deepCopy(nt[0]);
          t.type = t.type + i;
          nt.push(t);
       }
-      
+      hack */
+     
       bodyEl.append(cms.html.searchDialog(nt));
       
       $('#cms-search-dialog').dialog({
