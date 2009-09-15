@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/09/14 13:59:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/15 06:13:44 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.6
  */
@@ -495,10 +495,11 @@ public class CmsADEManager extends CmsJspActionElement {
 
             // we need those on the client side to make scrolling work
             CmsSearchOptions oldOptions = getSearchOptionsFromCache();
-            result.put(PARAMETER_TYPE, oldOptions.getTypes());
-            result.put(PARAMETER_TEXT, oldOptions.getText());
-            result.put(PARAMETER_LOCATION, oldOptions.getLocation());
-
+            if (oldOptions != null) {
+                result.put(PARAMETER_TYPE, oldOptions.getTypes());
+                result.put(PARAMETER_TEXT, oldOptions.getText());
+                result.put(PARAMETER_LOCATION, oldOptions.getLocation());
+            }
             result.merge(searchResult, true, false);
         } else if (actionParam.equals(ACTION_NEW)) {
             // get a new element
