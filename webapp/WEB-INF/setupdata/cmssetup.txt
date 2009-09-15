@@ -56,4 +56,7 @@ setSiteRoot "/sites/default/"
 # Import the modules that have been selected in the setup wizard
 importModulesFromSetupBean
 
+# Rebuild search indexes
+rebuildAllIndexes
+
 exit
