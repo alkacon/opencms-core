@@ -1,7 +1,6 @@
 <%@ page import="
     org.opencms.file.CmsPropertyDefinition,
     org.opencms.main.OpenCms,
-    org.opencms.site.CmsSiteManager,
 	org.opencms.workplace.CmsDialog,
 	org.opencms.workplace.commons.CmsSecure,
     org.opencms.workplace.commons.Messages
@@ -120,7 +119,7 @@ wp.setParamAction("secure");
       
       <% 
       // display secure dialog, if there exists a secure server for the current site
-      if(CmsSiteManager.getCurrentSite(wp.getCms()).hasSecureServer()) { 
+      if(OpenCms.getSiteManager().getCurrentSite(wp.getCms()).hasSecureServer()) { 
       %>
 
         <td style="white-space:nowrap;"><%= wp.key(Messages.GUI_SECURE_0) %>&nbsp;</td>
