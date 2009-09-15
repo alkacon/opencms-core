@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidgetOption.java,v $
- * Date   : $Date: 2009/07/01 15:46:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/09/15 10:24:42 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,16 +33,24 @@ package org.opencms.widgets;
 
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
+import org.opencms.workplace.galleries.CmsAjaxHtmlGallery;
+import org.opencms.workplace.galleries.CmsAjaxImageGallery;
+import org.opencms.workplace.galleries.CmsAjaxLinkGallery;
+import org.opencms.workplace.galleries.CmsAjaxTableGallery;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
- * An option of a Html type widget.<p>
+ * An option of a HTML type widget.<p>
  * 
  * Options can be defined for each element of the type <code>OpenCmsHtml</code> using the widget <code>HtmlWidget</code>.
- * They have to be placed in the annotation section of a XSD describing an xml content. The <code>configuration</code> attribute 
+ * They have to be placed in the annotation section of a XSD describing an XML content. The <code>configuration</code> attribute 
  * in the <code>layout</code> node for the element must contain the activated options as a comma separated String value:<p>
  * 
  * <code><layout element="Text" widget="HtmlWidget" configuration="height:400px,link,anchor,imagegallery,downloadgallery,formatselect,source" /></code><p>
@@ -50,13 +58,19 @@ import java.util.List;
  * Available options are:
  * <ul>
  * <li><code>anchor</code>: the anchor dialog button</li>
+ * <li><code>buttonbar:${button bar items, separated by ';'}</code>: an individual button bar configuration, 
+ *     see {@link #BUTTONBAR_DEFAULT} for an example.</li>
  * <li><code>css:/vfs/path/to/cssfile.css</code>: the absolute path in the OpenCms VFS to the CSS style sheet 
  *     to use to render the contents in the editor (availability depends on the integrated editor)</li>
  * <li><code>formatselect</code>: the format selector for selecting text format like paragraph or headings</li>
- * <li><code>fullpage</code>: the editor creates an entire html page code </li>
+ * <li><code>formatselect.options:${list of options, separated by ';'}</code>: the options that should be available in the format selector,
+ *     e.g. <code>formatselect.options:p;h1;h2</code></li>
+ * <li><code>fullpage</code>: the editor creates an entire HTML page code</li>
  * <li><code>${gallerytype}</code>: Shows a gallery dialog button, e.g. <code>imagegallery</code> displays 
  *     the image gallery button or <code>downloadgallery</code> displays the download gallery button</li>
  * <li><code>height:${editorheight}</code>: the editor height, where the height can be specified in px or %, e.g. <code>400px</code></li>
+ * <li><code>hidebuttons:${list of buttons to hide, separated by ';'}</code>: the buttons to hide that usually appear in
+ *     the default button bar, e.g. <code>hidebuttons:bold;italic;underline;strikethrough</code> hides some formatting buttons</li>
  * <li><code>image</code>: the image dialog button (availability depends on the integrated editor)</li>
  * <li><code>link</code>: the link dialog button</li>
  * <li><code>source</code>: shows the source code toggle button(s)</li>
@@ -64,15 +78,39 @@ import java.util.List;
  *     styles that should be displayed in the style selector (availability depends on the integrated editor)</li>
  * <li><code>table</code>: the table dialog button (availability depends on the integrated editor)</li>
  * </ul>
- * If an option key is not found in the configuration options, the corresponding button will be hidden in the editor widget.<p>
+ * Some things like the button bar items should be defined in the global widget configuration of the file <code>opencms-vfs.xml</code>.<p>
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.1
  */
 public class CmsHtmlWidgetOption {
+
+    /** The button bar end block indicator. */
+    public static final String BUTTONBAR_BLOCK_END = "]";
+
+    /** The button bar start block indicator. */
+    public static final String BUTTONBAR_BLOCK_START = "[";
+
+    /** The default editor widget button bar configuration. */
+    public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;selectall;removeformat;-;cut;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
+        + "[;alignleft;aligncenter;alignright;justify;-;orderedlist;unorderedlist;-;outdent;indent;];"
+        + "[;source;-;formatselect;style;editorlink;link;anchor;unlink;];"
+        + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;]";
+
+    /** The default button bar configuration as List. */
+    public static final List<String> BUTTONBAR_DEFAULT_LIST = CmsStringUtil.splitAsList(BUTTONBAR_DEFAULT, ';');
+
+    /** The button bar separator. */
+    public static final String BUTTONBAR_SEPARATOR = "-";
+
+    /** The delimiter to use in the configuration String. */
+    public static final String DELIMITER_OPTION = ",";
+
+    /** The delimiter to use for separation of option values. */
+    public static final char DELIMITER_VALUE = ';';
 
     /** The editor widget default height to use. */
     public static final String EDITOR_DEFAULTHEIGHT = "260px";
@@ -80,11 +118,17 @@ public class CmsHtmlWidgetOption {
     /** Option for the "anchor" dialog. */
     public static final String OPTION_ANCHOR = "anchor";
 
+    /** Option for the "buttonbar" configuration. */
+    public static final String OPTION_BUTTONBAR = "buttonbar:";
+
     /** Option for the css style sheet VFS path to use in the widget area. */
     public static final String OPTION_CSS = "css:";
 
-    /** The delimiter to use in the configuration String. */
-    public static final String OPTION_DELIMITER = ",";
+    /** Option for the "editor link" dialog (editor specific). */
+    public static final String OPTION_EDITORLINK = "editorlink";
+
+    /** Option for the "find" dialog. */
+    public static final String OPTION_FIND = "find";
 
     /** Option for the "formatselect" selector. */
     public static final String OPTION_FORMATSELECT = "formatselect";
@@ -107,8 +151,17 @@ public class CmsHtmlWidgetOption {
     /** Option for the "link" dialog. */
     public static final String OPTION_LINK = "link";
 
+    /** Option for the "replace" dialog. */
+    public static final String OPTION_REPLACE = "replace";
+
     /** Option for the "source" code mode. */
     public static final String OPTION_SOURCE = "source";
+
+    /** Option for the "spell check" dialog. */
+    public static final String OPTION_SPELLCHECK = "spellcheck";
+
+    /** Option for the style select box. */
+    public static final String OPTION_STYLE = "style";
 
     /** Option for the styles XML VFS path to use in the widget area. */
     public static final String OPTION_STYLES = "stylesxml:";
@@ -116,22 +169,45 @@ public class CmsHtmlWidgetOption {
     /** Option for the "table" dialog. */
     public static final String OPTION_TABLE = "table";
 
-    /** The delimiter to use for separation of option values. */
-    public static final char VALUE_DELIMITER = ';';
+    /** Option for the "unlink" button. */
+    public static final String OPTION_UNLINK = "unlink";
 
+    /** The optional buttons that can be additionally added to the button bar. */
+    public static final String[] OPTIONAL_BUTTONS = {
+        OPTION_ANCHOR,
+        OPTION_EDITORLINK,
+        OPTION_FIND,
+        OPTION_FORMATSELECT,
+        OPTION_IMAGE,
+        OPTION_LINK,
+        OPTION_REPLACE,
+        OPTION_SOURCE,
+        OPTION_SPELLCHECK,
+        OPTION_STYLE,
+        OPTION_TABLE,
+        OPTION_UNLINK,
+        CmsAjaxImageGallery.GALLERYTYPE_NAME,
+        CmsAjaxDownloadGallery.GALLERYTYPE_NAME,
+        CmsAjaxHtmlGallery.GALLERYTYPE_NAME,
+        CmsAjaxLinkGallery.GALLERYTYPE_NAME,
+        CmsAjaxTableGallery.GALLERYTYPE_NAME};
+
+    /** The optional buttons that can be additionally added to the button bar as list. */
+    public static final List<String> OPTIONAL_BUTTONS_LIST = Arrays.asList(OPTIONAL_BUTTONS);
+
+    /** Holds the global button bar configuration options to increase performance. */
+    private static List<String> m_globalButtonBarOption;
+
+    private List<String> m_additionalButtons;
+    private List<String> m_buttonBar;
+    private List<String> m_buttonBarOption;
+    private String m_buttonBarOptionString;
     private String m_configuration;
     private String m_cssPath;
-    private List m_displayGalleries;
     private String m_editorHeight;
     private String m_formatSelectOptions;
     private boolean m_fullPage;
-    private List m_hiddenButtons;
-    private boolean m_showAnchorDialog;
-    private boolean m_showFormatSelect;
-    private boolean m_showImageDialog;
-    private boolean m_showLinkDialog;
-    private boolean m_showSourceEditor;
-    private boolean m_showTableDialog;
+    private List<String> m_hiddenButtons;
     private String m_stylesXmlPath;
 
     /**
@@ -171,58 +247,10 @@ public class CmsHtmlWidgetOption {
             result.append(option.getEditorHeight());
             added = true;
         }
-        if (option.showAnchorDialog()) {
-            // append the anchor configuration
-            if (added) {
-                result.append(OPTION_DELIMITER);
-            }
-            result.append(OPTION_ANCHOR);
-            added = true;
-        }
-        if (option.showLinkDialog()) {
-            // append the link configuration
-            if (added) {
-                result.append(OPTION_DELIMITER);
-            }
-            result.append(OPTION_LINK);
-            added = true;
-        }
-        if (option.showFormatSelect()) {
-            // append the format selector configuration
-            if (added) {
-                result.append(OPTION_DELIMITER);
-            }
-            result.append(OPTION_FORMATSELECT);
-            added = true;
-        }
-        if (option.showSourceEditor()) {
-            // append the source code configuration
-            if (added) {
-                result.append(OPTION_DELIMITER);
-            }
-            result.append(OPTION_SOURCE);
-            added = true;
-        }
-        if (option.showTableDialog()) {
-            // append the table configuration
-            if (added) {
-                result.append(OPTION_DELIMITER);
-            }
-            result.append(OPTION_TABLE);
-            added = true;
-        }
-        if (option.showImageDialog()) {
-            // append the image configuration
-            if (added) {
-                result.append(OPTION_DELIMITER);
-            }
-            result.append(OPTION_IMAGE);
-            added = true;
-        }
         if (option.useCss()) {
             // append the CSS VFS path
             if (added) {
-                result.append(OPTION_DELIMITER);
+                result.append(DELIMITER_OPTION);
             }
             result.append(OPTION_CSS);
             result.append(option.getCssPath());
@@ -231,43 +259,297 @@ public class CmsHtmlWidgetOption {
         if (option.showStylesXml()) {
             // append the styles XML VFS path
             if (added) {
-                result.append(OPTION_DELIMITER);
+                result.append(DELIMITER_OPTION);
             }
             result.append(OPTION_STYLES);
             result.append(option.getStylesXmlPath());
             added = true;
         }
+        if (!option.getAdditionalButtons().isEmpty()) {
+            // append the additional buttons to show
+            if (added) {
+                result.append(DELIMITER_OPTION);
+            }
+            result.append(CmsStringUtil.collectionAsString(
+                option.getAdditionalButtons(),
+                String.valueOf(DELIMITER_OPTION)));
+            added = true;
+        }
         if (!option.getHiddenButtons().isEmpty()) {
             // append the buttons to hide from tool bar
             if (added) {
-                result.append(OPTION_DELIMITER);
+                result.append(DELIMITER_OPTION);
             }
             result.append(OPTION_HIDEBUTTONS);
-            result.append(CmsStringUtil.collectionAsString(option.getHiddenButtons(), String.valueOf(VALUE_DELIMITER)));
+            result.append(CmsStringUtil.collectionAsString(option.getHiddenButtons(), String.valueOf(DELIMITER_VALUE)));
+            added = true;
+        }
+        if (CmsStringUtil.isNotEmpty(option.getButtonBarOptionString())) {
+            // append the button bar definition
+            if (added) {
+                result.append(DELIMITER_OPTION);
+            }
+            result.append(OPTION_BUTTONBAR);
+            result.append(option.getButtonBarOptionString());
             added = true;
         }
         if (CmsStringUtil.isNotEmpty(option.getFormatSelectOptions())) {
             // append the format select option String
             if (added) {
-                result.append(OPTION_DELIMITER);
+                result.append(DELIMITER_OPTION);
             }
             result.append(OPTION_FORMATSELECT_OPTIONS);
             result.append(option.getFormatSelectOptions());
             added = true;
         }
 
-        boolean isFirst = true;
-        for (int i = 0; i < option.getDisplayGalleries().size(); i++) {
-            // append the galleries configuration
-            String gallery = (String)option.getDisplayGalleries().get(i);
-            if (added || !isFirst) {
-                result.append(OPTION_DELIMITER);
-            }
-            result.append(gallery);
-            isFirst = false;
-        }
-
         return result.toString();
+    }
+
+    /**
+     * Returns the buttons to show additionally as list with button names.<p>
+     * 
+     * @return the buttons to show additionally as list with button names
+     */
+    public List<String> getAdditionalButtons() {
+
+        return m_additionalButtons;
+    }
+
+    /**
+     * Returns the specific editor button bar string generated from the configuration.<p>
+     * 
+     * The lookup map can contain translations for the button names, the separator and the block names.
+     * The button bar will be automatically surrounded by block start and end items if they are not explicitly defined.<p>
+     * 
+     * It may be necessary to write your own method to generate the button bar string for a specific editor widget.
+     * In this case, use the method {@link #getButtonBarShownItems()} to get the calculated list of shown button bar items.<p>
+     * 
+     * @param buttonNamesLookUp the lookup map with translations for the button names, the separator and the block names or <code>null</code>
+     * @param itemSeparator the separator for the tool bar items
+     * @return the button bar string generated from the configuration
+     */
+    public String getButtonBar(Map<String, String> buttonNamesLookUp, String itemSeparator) {
+
+        return getButtonBar(buttonNamesLookUp, itemSeparator, true);
+    }
+
+    /**
+     * Returns the specific editor button bar string generated from the configuration.<p>
+     * 
+     * The lookup map can contain translations for the button names, the separator and the block names.<p>
+     * 
+     * It may be necessary to write your own method to generate the button bar string for a specific editor widget.
+     * In this case, use the method {@link #getButtonBarShownItems()} to get the calculated list of shown button bar items.<p>
+     * 
+     * @param buttonNamesLookUp the lookup map with translations for the button names, the separator and the block names or <code>null</code>
+     * @param itemSeparator the separator for the tool bar items
+     * @param addMissingBlock flag indicating if the button bar should be automatically surrounded by a block if not explicitly defined
+     * @return the button bar string generated from the configuration
+     */
+    public String getButtonBar(Map<String, String> buttonNamesLookUp, String itemSeparator, boolean addMissingBlock) {
+
+        // first get the calculated button bar items
+        List<String> buttonBar = getButtonBarShownItems();
+        if (addMissingBlock) {
+            // the button bar has to be surrounded by block items, check it
+            if (!buttonBar.isEmpty()) {
+                if (!buttonBar.get(0).equals(BUTTONBAR_BLOCK_START)) {
+                    // add missing start block item
+                    buttonBar.add(0, BUTTONBAR_BLOCK_START);
+                }
+                if (!buttonBar.get(buttonBar.size() - 1).equals(BUTTONBAR_BLOCK_END)) {
+                    // add missing end block items
+                    buttonBar.add(BUTTONBAR_BLOCK_END);
+                }
+            }
+        }
+        StringBuffer result = new StringBuffer(512);
+        boolean isFirst = true;
+        for (Iterator<String> i = buttonBar.iterator(); i.hasNext();) {
+            String barItem = i.next();
+            if (BUTTONBAR_BLOCK_START.equals(barItem)) {
+                // start a block
+                if (!isFirst) {
+                    result.append(itemSeparator);
+                }
+                result.append(getButtonName(barItem, buttonNamesLookUp));
+                // starting a block means also: next item is the first (of the block)
+                isFirst = true;
+            } else if (BUTTONBAR_BLOCK_END.equals(barItem)) {
+                // end a block (there is no item separator added before ending the block)
+                result.append(getButtonName(barItem, buttonNamesLookUp));
+                isFirst = false;
+            } else {
+                // button or separator
+                if (!isFirst) {
+                    result.append(itemSeparator);
+                }
+                result.append(getButtonName(barItem, buttonNamesLookUp));
+                isFirst = false;
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns the individual button bar configuration option.<p>
+     *  
+     * @return the individual button bar configuration option
+     */
+    public List<String> getButtonBarOption() {
+
+        if (m_buttonBarOption == null) {
+            // use lazy initializing for performance reasons
+            if (CmsStringUtil.isEmpty(getButtonBarOptionString())) {
+                // no individual configuration defined, create empty list
+                m_buttonBarOption = Collections.emptyList();
+            } else {
+                // create list of button bar options from configuration string
+                m_buttonBarOption = CmsStringUtil.splitAsList(getButtonBarOptionString(), DELIMITER_VALUE, true);
+            }
+        }
+        return m_buttonBarOption;
+    }
+
+    /**
+     * Returns the individual button bar configuration option string.<p>
+     *  
+     * @return the individual button bar configuration option string
+     */
+    public String getButtonBarOptionString() {
+
+        return m_buttonBarOptionString;
+    }
+
+    /**
+     * Returns the calculated button bar items, including blocks and separators, considering the current widget configuration.<p>
+     * 
+     * Use this method to get the calculated list of button bar items if {@link #getButtonBar(Map, String)} can not
+     * be used for a specific editor widget.<p> 
+     * 
+     * @return the calculated button bar items
+     */
+    public List<String> getButtonBarShownItems() {
+
+        if (m_buttonBar == null) {
+            // first get individual button bar configuration
+            List<String> buttonBar = getButtonBarOption();
+            if (buttonBar.isEmpty()) {
+                // no specific button bar defined, try to get global configuration first
+                if (m_globalButtonBarOption == null) {
+                    // global configuration not yet parsed, check it now
+                    String defaultConf = OpenCms.getXmlContentTypeManager().getWidgetDefaultConfiguration(
+                        CmsHtmlWidget.class.getName());
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(defaultConf) && defaultConf.contains(OPTION_BUTTONBAR)) {
+                        // found a global configuration containing a button bar definition, parse it
+                        CmsHtmlWidgetOption option = new CmsHtmlWidgetOption(defaultConf);
+                        // set global configuration in static member
+                        m_globalButtonBarOption = option.getButtonBarOption();
+                    } else {
+                        // no global configuration present, set static member to empty list
+                        m_globalButtonBarOption = Collections.emptyList();
+                    }
+                }
+                if (m_globalButtonBarOption.isEmpty()) {
+                    // no global button bar configuration found, use default button bar
+                    buttonBar = BUTTONBAR_DEFAULT_LIST;
+                } else {
+                    // found a global configuration containing a button bar definition, use it
+                    buttonBar = m_globalButtonBarOption;
+                }
+            }
+
+            List<String> result = new ArrayList<String>(buttonBar.size());
+            int lastSep = -1;
+            int lastBlock = -1;
+            boolean buttonInBlockAdded = false;
+            boolean buttonSinceSepAdded = false;
+            for (Iterator<String> i = buttonBar.iterator(); i.hasNext();) {
+                String barItem = i.next();
+                if (BUTTONBAR_BLOCK_START.equals(barItem)) {
+                    // start a block
+                    if ((lastSep != -1) && (lastSep == (result.size() - 1))) {
+                        // remove last separator before block start
+                        result.remove(lastSep);
+                    }
+                    lastBlock = result.size();
+                    lastSep = -1;
+                    buttonInBlockAdded = false;
+                    buttonSinceSepAdded = false;
+                    result.add(BUTTONBAR_BLOCK_START);
+                } else if (BUTTONBAR_BLOCK_END.equals(barItem)) {
+                    // end a block
+                    if (lastBlock != -1) {
+                        // block has been started
+                        if (lastSep == (result.size() - 1)) {
+                            // remove last separator before block end
+                            result.remove(lastSep);
+                        }
+                        //now check if there are items in it
+                        if (buttonInBlockAdded) {
+                            // block has items, add end
+                            result.add(BUTTONBAR_BLOCK_END);
+                        } else {
+                            // block has no items, remove block start ite,
+                            result.remove(lastBlock);
+                        }
+                        lastBlock = -1;
+                        lastSep = -1;
+                        buttonInBlockAdded = false;
+                        buttonSinceSepAdded = false;
+                    }
+                } else if (BUTTONBAR_SEPARATOR.equals(barItem)) {
+                    // insert a separator depending on preconditions
+                    if (buttonSinceSepAdded) {
+                        lastSep = result.size();
+                        result.add(BUTTONBAR_SEPARATOR);
+                        buttonSinceSepAdded = false;
+                    }
+                } else {
+                    // insert a button depending on preconditions
+                    if (getHiddenButtons().contains(barItem)) {
+                        // skip hidden buttons
+                        continue;
+                    }
+                    if (OPTIONAL_BUTTONS_LIST.contains(barItem)) {
+                        // check optional buttons
+                        if (CmsAjaxImageGallery.GALLERYTYPE_NAME.equals(barItem)) {
+                            // special handling of image button to keep compatibility
+                            if (!(getAdditionalButtons().contains(barItem) || getAdditionalButtons().contains(
+                                OPTION_IMAGE))) {
+                                // skip image gallery as it is not defined as additional button
+                                continue;
+                            }
+                        } else if (OPTION_UNLINK.equals(barItem)) {
+                            // special handling of unlink button to show only if anchor, editor link or link button are active
+                            if (!(getAdditionalButtons().contains(OPTION_LINK)
+                                || getAdditionalButtons().contains(OPTION_EDITORLINK) || getAdditionalButtons().contains(
+                                OPTION_ANCHOR))) {
+                                // skip unlink button because no link buttons are defined as additional buttons
+                                continue;
+                            }
+                        } else if (OPTION_STYLE.equals(barItem)) {
+                            // special handling of style select box to be shown only if a path to the styles XML had been defined
+                            if (!showStylesXml()) {
+                                // skip if no path has been defined
+                                continue;
+                            }
+                        } else if (!getAdditionalButtons().contains(barItem)) {
+                            // skip all optional buttons that are not defined
+                            continue;
+                        }
+                    }
+                    result.add(barItem);
+                    buttonSinceSepAdded = true;
+                    if (lastBlock != -1) {
+                        buttonInBlockAdded = true;
+                    }
+                }
+            }
+            m_buttonBar = result;
+        }
+        return m_buttonBar;
     }
 
     /**
@@ -288,16 +570,6 @@ public class CmsHtmlWidgetOption {
     public String getCssPath() {
 
         return m_cssPath;
-    }
-
-    /**
-     * Returns the displayed gallery names.<p>
-     * 
-     * @return the displayed gallery names
-     */
-    public List getDisplayGalleries() {
-
-        return m_displayGalleries;
     }
 
     /**
@@ -325,7 +597,7 @@ public class CmsHtmlWidgetOption {
      * 
      * @return the buttons to hide as list with button names
      */
-    public List getHiddenButtons() {
+    public List<String> getHiddenButtons() {
 
         return m_hiddenButtons;
     }
@@ -348,12 +620,24 @@ public class CmsHtmlWidgetOption {
     public void init(String configuration) {
 
         // initialize the members
+        m_additionalButtons = new ArrayList<String>(OPTIONAL_BUTTONS_LIST.size());
         m_configuration = configuration;
-        m_displayGalleries = new ArrayList();
         m_editorHeight = EDITOR_DEFAULTHEIGHT;
-        m_hiddenButtons = new ArrayList();
+        m_hiddenButtons = new ArrayList<String>();
         // initialize the widget options
         parseOptions(configuration);
+    }
+
+    /**
+     * Returns if the button with the given name should be additionally shown.<p>
+     * 
+     * @param buttonName the button name to check
+     * 
+     * @return <code>true</code> if the button with the given name should be additionally shown, otherwise <code>false</code>
+     */
+    public boolean isButtonAdditional(String buttonName) {
+
+        return getAdditionalButtons().contains(buttonName);
     }
 
     /**
@@ -369,6 +653,18 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Returns if the button with the given name is optional.<p>
+     * 
+     * @param buttonName the button name to check
+     * 
+     * @return <code>true</code> if the button with the given name is optional, otherwise <code>false</code>
+     */
+    public boolean isButtonOptional(String buttonName) {
+
+        return OPTIONAL_BUTTONS_LIST.contains(buttonName);
+    }
+
+    /**
      * Returns if the editor should be used in full page mode.<p>
      * 
      * @return true if the editor should be used in full page mode, otherwise false
@@ -379,6 +675,36 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Sets the buttons to show additionally as list with button names.<p>
+     * 
+     * @param buttons the buttons to show additionally as list with button names
+     */
+    public void setAdditionalButtons(List<String> buttons) {
+
+        m_additionalButtons = buttons;
+    }
+
+    /**
+     * Sets the individual button bar configuration option.<p>
+     * 
+     * @param buttonBar the individual button bar configuration option
+     */
+    public void setButtonBarOption(List<String> buttonBar) {
+
+        m_buttonBarOption = buttonBar;
+    }
+
+    /**
+     * Sets the individual button bar configuration option string.<p>
+     * 
+     * @param buttonBar the individual button bar configuration option string
+     */
+    public void setButtonBarOptionString(String buttonBar) {
+
+        m_buttonBarOptionString = buttonBar;
+    }
+
+    /**
      * Sets the CSS style sheet VFS path to use in the widget area.<p>
      *
      * @param cssPath the CSS style sheet VFS path to use in the widget area
@@ -386,16 +712,6 @@ public class CmsHtmlWidgetOption {
     public void setCssPath(String cssPath) {
 
         m_cssPath = cssPath;
-    }
-
-    /**
-     * Sets the displayed gallery names.<p>
-     * 
-     * @param displayGalleries the displayed gallery names
-     */
-    public void setDisplayGalleries(List displayGalleries) {
-
-        m_displayGalleries = displayGalleries;
     }
 
     /**
@@ -433,69 +749,9 @@ public class CmsHtmlWidgetOption {
      * 
      * @param buttons the buttons to hide as list with button names
      */
-    public void setHiddenButtons(List buttons) {
+    public void setHiddenButtons(List<String> buttons) {
 
         m_hiddenButtons = buttons;
-    }
-
-    /**
-     * Sets if the anchor dialog button should be available.<p>
-     * 
-     * @param showAnchorDialog true if the anchor dialog button should be available, otherwise false
-     */
-    public void setShowAnchorDialog(boolean showAnchorDialog) {
-
-        m_showAnchorDialog = showAnchorDialog;
-    }
-
-    /**
-     * Sets if the format selector should be available.<p>
-     * 
-     * @param showFormatSelect true if the format selector should be available, otherwise false
-     */
-    public void setShowFormatSelect(boolean showFormatSelect) {
-
-        m_showFormatSelect = showFormatSelect;
-    }
-
-    /**
-     * Sets if the image dialog button should be available.<p>
-     *
-     * @param showImageDialog true if the image dialog button should be available, otherwise false
-     */
-    public void setShowImageDialog(boolean showImageDialog) {
-
-        m_showImageDialog = showImageDialog;
-    }
-
-    /**
-     * Sets if the link dialog button should be available.<p>
-     * 
-     * @param showLinkDialog true if the link dialog button should be available, otherwise false
-     */
-    public void setShowLinkDialog(boolean showLinkDialog) {
-
-        m_showLinkDialog = showLinkDialog;
-    }
-
-    /**
-     * Sets if the source code button should be available.<p>
-     * 
-     * @param showSourceEditor true if the source code button should be available, otherwise false
-     */
-    public void setShowSourceEditor(boolean showSourceEditor) {
-
-        m_showSourceEditor = showSourceEditor;
-    }
-
-    /**
-     * Sets if the table dialog button should be available.<p>
-     *
-     * @param showTableDialog true if the table dialog button should be available, otherwise false
-     */
-    public void setShowTableDialog(boolean showTableDialog) {
-
-        m_showTableDialog = showTableDialog;
     }
 
     /**
@@ -515,7 +771,7 @@ public class CmsHtmlWidgetOption {
      */
     public boolean showAnchorDialog() {
 
-        return m_showAnchorDialog;
+        return getAdditionalButtons().contains(OPTION_ANCHOR);
     }
 
     /**
@@ -525,7 +781,7 @@ public class CmsHtmlWidgetOption {
      */
     public boolean showFormatSelect() {
 
-        return m_showFormatSelect;
+        return getAdditionalButtons().contains(OPTION_FORMATSELECT);
     }
 
     /**
@@ -536,7 +792,7 @@ public class CmsHtmlWidgetOption {
      */
     public boolean showGalleryDialog(String galleryType) {
 
-        return getDisplayGalleries().contains(galleryType);
+        return getAdditionalButtons().contains(galleryType);
     }
 
     /**
@@ -546,7 +802,7 @@ public class CmsHtmlWidgetOption {
      */
     public boolean showImageDialog() {
 
-        return m_showImageDialog;
+        return getAdditionalButtons().contains(OPTION_IMAGE);
     }
 
     /**
@@ -556,7 +812,7 @@ public class CmsHtmlWidgetOption {
      */
     public boolean showLinkDialog() {
 
-        return m_showLinkDialog;
+        return getAdditionalButtons().contains(OPTION_LINK);
     }
 
     /**
@@ -566,7 +822,7 @@ public class CmsHtmlWidgetOption {
      */
     public boolean showSourceEditor() {
 
-        return m_showSourceEditor;
+        return getAdditionalButtons().contains(OPTION_SOURCE);
     }
 
     /**
@@ -586,7 +842,7 @@ public class CmsHtmlWidgetOption {
      */
     public boolean showTableDialog() {
 
-        return m_showTableDialog;
+        return getAdditionalButtons().contains(OPTION_TABLE);
     }
 
     /**
@@ -600,6 +856,37 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Adds a button to the list of defined additional buttons.<p>
+     * 
+     * @param buttonName the button name to add
+     */
+    protected void addAdditionalButton(String buttonName) {
+
+        m_additionalButtons.add(buttonName);
+    }
+
+    /**
+     * Returns the real button name matched with the look up map.<p>
+     * 
+     * If no value is found in the look up map, the button name is returned unchanged.<p>
+     * 
+     * @param barItem the button bar item name to look up
+     * @param buttonNamesLookUp the look up map containing the button names and/or separator name to use
+     * @return the translated button name
+     */
+    protected String getButtonName(String barItem, Map<String, String> buttonNamesLookUp) {
+
+        String result = barItem;
+        if (buttonNamesLookUp != null) {
+            String translatedName = buttonNamesLookUp.get(barItem);
+            if (CmsStringUtil.isNotEmpty(translatedName)) {
+                result = translatedName;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Parses the given configuration String.<p>
      * 
      * @param configuration the configuration String to parse
@@ -607,32 +894,12 @@ public class CmsHtmlWidgetOption {
     protected void parseOptions(String configuration) {
 
         if (CmsStringUtil.isNotEmpty(configuration)) {
-            List options = CmsStringUtil.splitAsList(configuration, OPTION_DELIMITER, true);
-            Iterator i = options.iterator();
+            List<String> options = CmsStringUtil.splitAsList(configuration, DELIMITER_OPTION, true);
+            Iterator<String> i = options.iterator();
             while (i.hasNext()) {
-                String option = (String)i.next();
-                if (OPTION_LINK.equals(option)) {
-                    // show link dialog
-                    setShowLinkDialog(true);
-                } else if (OPTION_ANCHOR.equals(option)) {
-                    // show anchor dialog
-                    setShowAnchorDialog(true);
-                } else if (OPTION_SOURCE.equals(option)) {
-                    // show source button
-                    setShowSourceEditor(true);
-                } else if (OPTION_FORMATSELECT.equals(option)) {
-                    // show format selector
-                    setShowFormatSelect(true);
-                } else if (OPTION_FULLPAGE.equals(option)) {
-                    // use editor in full page mode
-                    setFullPage(true);
-                } else if (OPTION_IMAGE.equals(option)) {
-                    // show image dialog
-                    setShowImageDialog(true);
-                } else if (OPTION_TABLE.equals(option)) {
-                    // show table dialog
-                    setShowTableDialog(true);
-                } else if (option.startsWith(OPTION_FORMATSELECT_OPTIONS)) {
+                String option = i.next();
+                // check which option is defined
+                if (option.startsWith(OPTION_FORMATSELECT_OPTIONS)) {
                     // the format select options
                     option = option.substring(OPTION_FORMATSELECT_OPTIONS.length());
                     setFormatSelectOptions(option);
@@ -645,7 +912,7 @@ public class CmsHtmlWidgetOption {
                 } else if (option.startsWith(OPTION_HIDEBUTTONS)) {
                     // buttons to hide from the tool bar
                     option = option.substring(OPTION_HIDEBUTTONS.length());
-                    setHiddenButtons(CmsStringUtil.splitAsList(option, VALUE_DELIMITER, true));
+                    setHiddenButtons(CmsStringUtil.splitAsList(option, DELIMITER_VALUE, true));
                 } else if (option.startsWith(OPTION_CSS)) {
                     // the editor CSS
                     option = option.substring(OPTION_CSS.length());
@@ -654,11 +921,14 @@ public class CmsHtmlWidgetOption {
                     // the editor styles XML path
                     option = option.substring(OPTION_STYLES.length());
                     setStylesXmlPath(option);
+                } else if (option.startsWith(OPTION_BUTTONBAR)) {
+                    // the button bar definition string
+                    option = option.substring(OPTION_BUTTONBAR.length());
+                    setButtonBarOptionString(option);
                 } else {
-                    // check if option describes a gallery
-                    if (OpenCms.getWorkplaceManager().getGalleries().get(option) != null) {
-                        // add the option to the displayed galleries
-                        m_displayGalleries.add(option);
+                    // check if option describes an additional button
+                    if (OPTIONAL_BUTTONS_LIST.contains(option)) {
+                        addAdditionalButton(option);
                     }
                 }
             }

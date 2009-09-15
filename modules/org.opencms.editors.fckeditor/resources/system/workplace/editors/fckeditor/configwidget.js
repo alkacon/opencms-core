@@ -16,9 +16,13 @@ String site = OpenCms.getSiteManager().getWorkplaceServer();
 String configuration = request.getParameter(CmsFCKEditorWidget.PARAM_CONFIGURATION);
 CmsHtmlWidgetOption option = new CmsHtmlWidgetOption(configuration);
 
+String galleryPath = cms.link("/system/workplace/galleries/");
+
 %>
 FCKConfig.AutoDetectLanguage = false;
 FCKConfig.DefaultLanguage = "<%= wp.getLocale().getLanguage() %>";
+
+FCKConfig.CustomStyles = {};
 
 FCKConfig.ProcessHTMLEntities = true;
 FCKConfig.ProcessNumericEntities = false;
@@ -34,47 +38,20 @@ FCKConfig.ToolbarStartExpanded	= false;
 
 FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
 
-FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
-FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-FCKConfig.Plugins.Add("linkgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-FCKConfig.Plugins.Add("htmlgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-FCKConfig.Plugins.Add("tablegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-//replaced by image gallery: FCKConfig.Plugins.Add("ocmsimage", null, "<%= cms.link("plugins/") %>");
-<%
+FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");<%
+if (option.isButtonAdditional("imagegallery") || option.isButtonAdditional("image")) { %>
+FCKConfig.Plugins.Add("imagegallery", null, "<%= galleryPath %>");<% }
+if (option.isButtonAdditional("downloadgallery")) { %>
+FCKConfig.Plugins.Add("downloadgallery", null, "<%= galleryPath %>");<% }
+if (option.isButtonAdditional("linkgallery")) { %>
+FCKConfig.Plugins.Add("linkgallery", null, "<%= galleryPath %>");<% }
+if (option.isButtonAdditional("htmlgallery")) { %>
+FCKConfig.Plugins.Add("htmlgallery", null, "<%= galleryPath %>");<% }
+if (option.isButtonAdditional("tablegallery")) { %>
+FCKConfig.Plugins.Add("tablegallery", null, "<%= galleryPath %>");<% } %>
 
-StringBuffer toolbar = new StringBuffer(1024);
-
-toolbar.append("[");
-
-toolbar.append("'Undo','Redo','-','SelectAll','RemoveFormat'");
-
-toolbar.append(",'-','Cut','Copy','Paste','PasteText','PasteWord'");
-
-CmsFCKEditorWidget.buildFontButtons(toolbar, option);
-
-toolbar.append("]");
-
-CmsFCKEditorWidget.buildFormatButtons(toolbar, option);
-
-// append customized OpenCms buttons
-if (CmsFCKEditorWidget.buildMiscButtons(toolbar, option)) {
-	toolbar.append(",'-',");
-} else {
-	toolbar.append(",[");
-}
-
-toolbar.append("'SpecialChar'");
-
-if (!option.isButtonHidden("print")) {
-	toolbar.append(",'-','Print'");
-}
-
-toolbar.append(",'-','FitWindow']");
-
-%>
 FCKConfig.ToolbarSets["OpenCmsWidget"] = [
-        <%= toolbar %>
+        <%= option.getButtonBar(CmsFCKEditorWidget.BUTTON_TRANSLATION_MAP, ",") %>
 ];
 
 FCKConfig.Keystrokes = [
@@ -82,16 +59,21 @@ FCKConfig.Keystrokes = [
 	[ CTRL + 67 /*C*/, true ],
 	[ CTRL + 70 /*F*/, true ],
 	[ CTRL + 83 /*S*/, true ],
-	[ CTRL + 88 /*X*/, true ],
+	[ CTRL + 88 /*X*/, true ],<%
+	if (!option.isButtonHidden("paste")) { %>
 	[ CTRL + 86 /*V*/, 'Paste' ],
-	[ SHIFT + 45 /*INS*/, 'Paste' ],
+	[ SHIFT + 45 /*INS*/, 'Paste' ],<% } %>
 	[ CTRL + 90 /*Z*/, 'Undo' ],
 	[ CTRL + 89 /*Y*/, 'Redo' ],
-	[ CTRL + SHIFT + 90 /*Z*/, 'Redo' ],
-	[ CTRL + 76 /*L*/, 'Link' ],
-	[ CTRL + 66 /*B*/, 'Bold' ],
-	[ CTRL + 73 /*I*/, 'Italic' ],
-	[ CTRL + 85 /*U*/, 'Underline' ],
+	[ CTRL + SHIFT + 90 /*Z*/, 'Redo' ],<% 
+	if (option.showLinkDialog()) { %>
+	[ CTRL + 76 /*L*/, 'Link' ],<% }
+	if (!option.isButtonHidden("bold")) { %>
+	[ CTRL + 66 /*B*/, 'Bold' ],<% }
+	if (!option.isButtonHidden("italic")) { %>
+	[ CTRL + 73 /*I*/, 'Italic' ],<% }
+	if (!option.isButtonHidden("underline")) { %>
+	[ CTRL + 85 /*U*/, 'Underline' ],<% } %>
 	[ CTRL + SHIFT + 83 /*S*/, true ],
 	[ CTRL + ALT + 13 /*ENTER*/, 'FitWindow' ]<% 
 	if (option.showSourceEditor()) { %>,

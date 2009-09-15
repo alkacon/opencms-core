@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2009/07/01 15:46:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/09/15 10:24:41 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,15 +43,10 @@ import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
-import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
-import org.opencms.workplace.galleries.CmsAjaxHtmlGallery;
-import org.opencms.workplace.galleries.CmsAjaxImageGallery;
-import org.opencms.workplace.galleries.CmsAjaxLinkGallery;
-import org.opencms.workplace.galleries.CmsAjaxTableGallery;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Provides a widget that creates a rich input field using the "FCKeditor" component, for use on a widget dialog.<p>
@@ -60,11 +55,26 @@ import java.util.List;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.1.7
  */
 public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
+
+    /** The translation of the generic widget button names to FCKeditor specific button names. */
+    public static final String BUTTON_TRANSLATION = CmsHtmlWidgetOption.BUTTONBAR_SEPARATOR
+        + ":'-'|undo:'Undo'|redo:'Redo'|find:'Find'|replace:'Replace'|selectall:'SelectAll'|removeformat:'RemoveFormat'"
+        + "|cut:'Cut'|copy:'Copy'|paste:'Paste','PasteText','PasteWord'|bold:'Bold'|italic:'Italic'|underline:'Underline'|strikethrough:'StrikeThrough'"
+        + "|subscript:'Subscript'|superscript:'Superscript'|alignleft:'JustifyLeft'|aligncenter:'JustifyCenter'|alignright:'JustifyRight'|justify:'JustifyFull'"
+        + "|orderedlist:'OrderedList'|unorderedlist:'UnorderedList'|outdent:'Outdent'|indent:'Indent'|source:'Source'|formatselect:'FontFormat'|link:'oc-link'|editorlink:'Link'"
+        + "|anchor:'Anchor'|unlink:'Unlink'|imagegallery:'OcmsImageGallery'|downloadgallery:'OcmsDownloadGallery'|linkgallery:'OcmsLinkGallery'|htmlgallery:'OcmsHtmlGallery'|tablegallery:'OcmsTableGallery'"
+        + "|table:'Table'|specialchar:'SpecialChar'|print:'Print'|spellcheck:'SpellCheck'|fitwindow:'FitWindow'|style:'Style'";
+
+    /** The map containing the translation of the generic widget button names to FCKeditor specific button names. */
+    public static final Map<String, String> BUTTON_TRANSLATION_MAP = CmsStringUtil.splitAsMap(
+        BUTTON_TRANSLATION,
+        "|",
+        ":");
 
     /** Request parameter name for the tool bar configuration parameter. */
     public static final String PARAM_CONFIGURATION = "config";
@@ -99,296 +109,14 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
     }
 
     /**
-     * Builds the font buttons of the editor widget: bold, italic, underline, strikethrough, subscript, superscript.<p>
+     * Returns the button bar configuration String for the FCKeditor widget.<p>
      * 
-     * @param toolbar the tool bar configuration defining the buttons to show
-     * @param option the configured HTML widget options
-     * 
-     * @return <code>true</code> if at least one button was added to the tool bar, otherwise <code>false</code>
+     * @param configuration the configuration to use
+     * @return the button bar configuration String for the FCKeditor widget
      */
-    public static boolean buildFontButtons(StringBuffer toolbar, CmsHtmlWidgetOption option) {
+    public static String getButtonBar(CmsHtmlWidgetOption configuration) {
 
-        boolean showStyleBt = false;
-        StringBuffer styleBt = new StringBuffer(64);
-        if (!option.isButtonHidden("bold")) {
-            showStyleBt = true;
-            styleBt.append(",'Bold'");
-        }
-        if (!option.isButtonHidden("italic")) {
-            showStyleBt = true;
-            styleBt.append(",'Italic'");
-        }
-        if (!option.isButtonHidden("underline")) {
-            showStyleBt = true;
-            styleBt.append(",'Underline'");
-        }
-        if (!option.isButtonHidden("strikethrough")) {
-            showStyleBt = true;
-            styleBt.append(",'StrikeThrough'");
-        }
-        if (showStyleBt) {
-            // append configured font buttons with a leading separator
-            toolbar.append(",'-'").append(styleBt);
-        }
-
-        boolean showScriptBt = false;
-        styleBt = new StringBuffer(32);
-        if (!option.isButtonHidden("sub")) {
-            showScriptBt = true;
-            styleBt.append(",'Subscript'");
-        }
-        if (!option.isButtonHidden("super")) {
-            showScriptBt = true;
-            styleBt.append(",'Superscript'");
-        }
-        if (showScriptBt) {
-            // append configured buttons with a leading separator
-            toolbar.append(",'-'").append(styleBt);
-        }
-
-        return showStyleBt || showScriptBt;
-    }
-
-    /**
-     * Builds the format buttons of the editor widget: left, center, right, justify, ordered list, unordered list, indent, outdent.<p>
-     * 
-     * @param toolbar the tool bar configuration defining the buttons to show
-     * @param option the configured HTML widget options
-     * 
-     * @return <code>true</code> if at least one button was added to the tool bar, otherwise <code>false</code>
-     */
-    public static boolean buildFormatButtons(StringBuffer toolbar, CmsHtmlWidgetOption option) {
-
-        // first block: alignment buttons
-        boolean showAlignBt = false;
-        StringBuffer alignBt = new StringBuffer(64);
-        if (!option.isButtonHidden("alignleft")) {
-            showAlignBt = true;
-            alignBt.append("'JustifyLeft'");
-        }
-        if (!option.isButtonHidden("aligncenter")) {
-            if (showAlignBt) {
-                alignBt.append(",");
-            }
-            showAlignBt = true;
-            alignBt.append("'JustifyCenter'");
-        }
-        if (!option.isButtonHidden("alignright")) {
-            if (showAlignBt) {
-                alignBt.append(",");
-            }
-            showAlignBt = true;
-            alignBt.append("'JustifyRight'");
-        }
-        if (!option.isButtonHidden("justify")) {
-            if (showAlignBt) {
-                alignBt.append(",");
-            }
-            showAlignBt = true;
-            alignBt.append("'JustifyFull'");
-        }
-
-        // second block: list buttons
-        boolean showListBt = false;
-        StringBuffer listBt = new StringBuffer(32);
-        if (!option.isButtonHidden("orderedlist")) {
-            showListBt = true;
-            listBt.append("'OrderedList'");
-        }
-        if (!option.isButtonHidden("unorderedlist")) {
-            if (showListBt) {
-                listBt.append(",");
-            }
-            showListBt = true;
-            listBt.append("'UnorderedList'");
-        }
-
-        // third block: indentation buttons
-        boolean showIndBt = false;
-        StringBuffer indBt = new StringBuffer(32);
-        if (!option.isButtonHidden("outdent")) {
-            showIndBt = true;
-            indBt.append("'Outdent'");
-        }
-        if (!option.isButtonHidden("indent")) {
-            if (showIndBt) {
-                indBt.append(",");
-            }
-            showIndBt = true;
-            indBt.append("'Indent'");
-        }
-
-        if (showAlignBt || showListBt || showIndBt) {
-            // at least one button group is shown, append buttons to tool bar
-            toolbar.append(",[");
-            toolbar.append(alignBt);
-            if (showListBt) {
-                if (showAlignBt) {
-                    // add button separator between alignment and list buttons
-                    toolbar.append(",'-',");
-                }
-                toolbar.append(listBt);
-            }
-            if (showIndBt) {
-                if (showAlignBt || showListBt) {
-                    // add button separator before indentation buttons
-                    toolbar.append(",'-',");
-                }
-                toolbar.append(indBt);
-            }
-            toolbar.append("]");
-            return true;
-        }
-
-        // all buttons are hidden
-        return false;
-    }
-
-    /**
-     * Builds the tool bar button configuration String for miscellaneous buttons of the editor widget.<p>
-     * 
-     * @param toolbar the tool bar configuration defining the buttons to show
-     * @param option the configured HTML widget options
-     * @return <code>true</code> if at least one button was added to the tool bar, otherwise <code>false</code>
-     */
-    public static boolean buildMiscButtons(StringBuffer toolbar, CmsHtmlWidgetOption option) {
-
-        boolean buttonRendered = false;
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(option.getConfiguration())) {
-            // configuration String found, build buttons to show
-            StringBuffer custom = new StringBuffer(512);
-
-            // show source button if configured
-            if (option.showSourceEditor()) {
-                custom.append("\"Source\"");
-                buttonRendered = true;
-            }
-
-            // show format selector if configured
-            boolean showFormatSelect = false;
-            if (option.showFormatSelect()) {
-                if (buttonRendered) {
-                    custom.append(",\"-\",");
-                }
-                custom.append("\"FontFormat\"");
-                buttonRendered = true;
-                showFormatSelect = true;
-            }
-
-            // show style selector if configured
-            if (option.showStylesXml()) {
-                if (!showFormatSelect && buttonRendered) {
-                    custom.append(",\"-\",");
-                } else if (buttonRendered) {
-                    custom.append(",");
-                }
-                custom.append("\"Style\"");
-                buttonRendered = true;
-            }
-
-            // build the link and/or anchor buttons
-            boolean showLink = false;
-            if (option.showLinkDialog()) {
-                if (buttonRendered) {
-                    custom.append(",");
-                }
-                custom.append("\"oc-link\"");
-                buttonRendered = true;
-                showLink = true;
-            }
-            if (option.showAnchorDialog()) {
-                if (buttonRendered) {
-                    custom.append(",");
-                }
-                custom.append("\"Anchor\"");
-                buttonRendered = true;
-                showLink = true;
-            }
-            if (showLink) {
-                // append the unlink button if at least one link button is configured
-                custom.append(", \"Unlink\"");
-            }
-
-            //build the gallery buttons
-            boolean showGallery = false;
-            StringBuffer galleryResult = new StringBuffer(8);
-            if ((option.getDisplayGalleries().size() > 0) || option.showImageDialog()) {
-                // show image button if configured, compatible to old image dialog
-                if (option.getDisplayGalleries().contains(CmsAjaxImageGallery.GALLERYTYPE_NAME)
-                    || option.showImageDialog()) {
-                    if (galleryResult.length() > 0) {
-                        galleryResult.append(", ");
-                    }
-                    galleryResult.append("\"OcmsImageGallery\"");
-                    showGallery = true;
-                }
-
-                // show download gallery button if configured
-                if (option.getDisplayGalleries().contains(CmsAjaxDownloadGallery.GALLERYTYPE_NAME)) {
-                    if (galleryResult.length() > 0) {
-                        galleryResult.append(", ");
-                    }
-                    galleryResult.append("\"OcmsDownloadGallery\"");
-                    showGallery = true;
-                }
-
-                // show link gallery button if configured
-                if (option.getDisplayGalleries().contains(CmsAjaxLinkGallery.GALLERYTYPE_NAME)) {
-                    if (galleryResult.length() > 0) {
-                        galleryResult.append(", ");
-                    }
-                    galleryResult.append("\"OcmsLinkGallery\"");
-                    showGallery = true;
-                }
-
-                // show HTML gallery button if configured
-                if (option.getDisplayGalleries().contains(CmsAjaxHtmlGallery.GALLERYTYPE_NAME)) {
-                    if (galleryResult.length() > 0) {
-                        galleryResult.append(", ");
-                    }
-                    galleryResult.append("\"OcmsHtmlGallery\"");
-                    showGallery = true;
-                }
-
-                // show table gallery button if configured
-                if (option.getDisplayGalleries().contains(CmsAjaxTableGallery.GALLERYTYPE_NAME)) {
-                    if (galleryResult.length() > 0) {
-                        galleryResult.append(", ");
-                    }
-                    galleryResult.append("\"OcmsTableGallery\"");
-                    showGallery = true;
-                }
-            }
-
-            if (showGallery) {
-                // show the galleries
-                if (buttonRendered) {
-                    custom.append("],[");
-                }
-                custom.append(galleryResult);
-                buttonRendered = true;
-            }
-
-            // show table button if configured
-            if (option.showTableDialog()) {
-                if (buttonRendered) {
-                    custom.append(",\"-\",");
-                }
-                custom.append("\"Table\"");
-                buttonRendered = true;
-            }
-
-            if (buttonRendered) {
-                // insert grouping bracket if at least one button was rendered
-                custom.insert(0, ",[");
-                // append custom buttons to tool bar
-                toolbar.append(custom);
-            }
-
-        }
-
-        return buttonRendered;
+        return configuration.getButtonBar(BUTTON_TRANSLATION_MAP, ",");
     }
 
     /**
@@ -408,20 +136,9 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
     }
 
     /**
-     * Returns if the given button is configured to be shown.<p>
-     * 
-     * @param buttonName the name of the button to check
-     * @param widgetOptions the options List containing the button names to show
-     * @return true if the given button is configured to be shown
-     */
-    protected static boolean showButton(String buttonName, List widgetOptions) {
-
-        return (widgetOptions.contains(buttonName));
-    }
-
-    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(128);
@@ -436,6 +153,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         // creates the FCKeditor instances
@@ -445,6 +163,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(64);
@@ -501,14 +220,14 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
             getHtmlWidgetOption().setCssPath(null);
             cssConfigured = true;
         } else if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
-            Iterator i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
+            Iterator<I_CmsEditorCssHandler> i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
             try {
-                // cast param to I_CmsXmlContentValue
+                // cast parameter to I_CmsXmlContentValue
                 I_CmsXmlContentValue contentValue = (I_CmsXmlContentValue)param;
                 // now extract the absolute path of the edited resource
                 String editedResource = cms.getSitePath(contentValue.getDocument().getFile());
                 while (i.hasNext()) {
-                    I_CmsEditorCssHandler handler = (I_CmsEditorCssHandler)i.next();
+                    I_CmsEditorCssHandler handler = i.next();
                     if (handler.matches(cms, editedResource)) {
                         cssPath = handler.getUriStyleSheet(cms, editedResource);
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cssPath)) {
