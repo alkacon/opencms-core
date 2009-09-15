@@ -1,4 +1,4 @@
-<%@page session="false" import="org.opencms.jsp.*"%>
+<%@page session="false" import="org.opencms.jsp.*,org.opencms.file.*,org.opencms.relations.*,java.util.*"%>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -68,7 +68,36 @@
 	<!-- START: Result List -->
 	<c:forEach var="item" items="${result}">
 		<div class="search_result">
-			<a href="<cms:link>${item.path}</cms:link>"><strong><c:out value="${item.title}"/> (<c:out value="${item.score}"/>%)</strong></a><br/>
+<%
+String itemPath = cms.getCmsObject().getRequestContext().removeSiteRoot(((org.opencms.search.CmsSearchResult)pageContext.getAttribute("item")).getPath());
+try {
+  CmsResource res = cms.getCmsObject().readResource(itemPath);
+  if (res.getTypeId() == 136) { //news
+    itemPath = "/demo_t3/today/news/news.html?id=" +res.getStructureId();
+  } else if (res.getTypeId() == 138) { //event
+    itemPath = "/demo_t3/today/events/event.html?id=" +res.getStructureId();
+  } else if (res.getTypeId() == 137) { //item
+    String category = CmsCategoryService.getInstance().readResourceCategories(cms.getCmsObject(), itemPath).get(0).getName().toLowerCase();
+    itemPath = "/demo_t3/dictionary/item_composite.html";
+    if (category.contains("liliaceous")) {
+      itemPath = "/demo_t3/dictionary/item_liliaceous.html";
+    } else if (category.contains("rosaceous")) {
+      itemPath = "/demo_t3/dictionary/item_rosaceous.html";
+    } 
+    itemPath += "?id=" + res.getStructureId();
+  } else {
+    List<CmsRelation> relations = cms.getCmsObject().getRelationsForResource(itemPath, CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_STRONG));
+    if (relations.size()>1) {
+      itemPath = cms.getCmsObject().getSitePath(relations.get(0).getSource(cms.getCmsObject(), CmsResourceFilter.ALL));
+    }
+  }
+  pageContext.setAttribute("itemPath", itemPath);
+} catch(Exception e) {
+  out.println(org.opencms.main.CmsException.getStackTraceAsString(e));
+  pageContext.setAttribute("itemPath", itemPath);
+}
+%>		
+			<a href="<cms:link>${itemPath}</cms:link>"><strong><c:out value="${item.title}"/> (<c:out value="${item.score}"/>%)</strong></a><br/>
 			<c:out value="${item.excerpt}" escapeXml="false"/><br/>
 			<small><fmt:formatDate value="${item.dateLastModified}" type="both"/></small>
 		</div>
@@ -80,7 +109,7 @@
 		<div class="pagination">
 			<c:choose>
 				<c:when test="${!empty search.previousUrl}">
-					<a href="<cms:link><c:out value='${search.previousUrl}'/></cms:link>"><fmt:message key="search.previous" /></a>
+					<a href="<cms:link><c:out value='${fn:replace(search.previousUrl, "action=", "searchaction=")}'/></cms:link>"><fmt:message key="search.previous" /></a>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="search.previous" />
@@ -93,7 +122,7 @@
 						<b><c:out value="${navPage.key}" /></b>
 					</c:when>
 					<c:otherwise>
-						<a href="<cms:link><c:out value="${navPage.value}" /></cms:link>"><c:out value="${navPage.key}" /></a>
+						<a href="<cms:link><c:out value='${fn:replace(navPage.value, "action=", "searchaction=")}' /></cms:link>"><c:out value="${navPage.key}" /></a>
 					</c:otherwise>
 				</c:choose>
 				<c:if test="${!status.last}">| </c:if>
@@ -101,7 +130,7 @@
 			
 			<c:choose>
 				<c:when test="${!empty search.nextUrl}">
-					<a href="<cms:link><c:out value='${search.nextUrl}'/></cms:link>"><fmt:message key="search.next" /></a>
+					<a href="<cms:link><c:out value='${fn:replace(search.nextUrl, "action=", "searchaction=")}'/></cms:link>"><fmt:message key="search.next" /></a>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="search.next" />
