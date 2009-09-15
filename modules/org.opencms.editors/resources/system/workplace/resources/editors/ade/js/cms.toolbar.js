@@ -259,26 +259,26 @@
    
    /**
     * Initializes the hover event handler for a handle div.
-    * 
+    *
     * @param {Object} handleDiv the handle div
     * @param {Object} elem the element which the handle div belongs to
-    * @param {String} adeMode the current mode 
+    * @param {String} adeMode the current mode
     */
-   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/adeMode) {
+   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/ adeMode) {
       handleDiv.hover(function() {
-         cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
+         cms.move.hoverOutFilter(elem, '.' + cms.move.HOVER_NEW);
          cms.move.hoverIn(elem, 2);
          //cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
          startHoverTimeout(handleDiv, adeMode);
-         $('body').children('.'+cms.move.HOVER_NEW).remove();
+         $('body').children('.' + cms.move.HOVER_NEW).remove();
       }, function() {
          stopHover();
          if ($(elem).find('.' + cms.move.HOVER_NEW).size() == 0 && $(elem).hasClass('cms-new-element')) {
             cms.move.hoverInWithClass(elem, 2, cms.move.HOVER_NEW);
          }
-         $('body').children('.'+cms.move.HOVER_NEW).remove();
+         $('body').children('.' + cms.move.HOVER_NEW).remove();
       });
-      $('body').children('.'+cms.move.HOVER_NEW).remove();
+      $('body').children('.' + cms.move.HOVER_NEW).remove();
    }
    
    var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
@@ -301,7 +301,7 @@
             handles['move'].css('display', 'block');
          }
       } else {
-          initHandleDiv(handleDiv, elem, adeMode);
+         initHandleDiv(handleDiv, elem, adeMode);
       }
       handleDiv.css({
          'right': '0px',
@@ -630,16 +630,14 @@
       $('#cms-search-list').closest('.cms-scrolling').scrollTop(0);
       
       
-      
       var nt = cms.data.newTypes;
       /*hack
-      for (var i = 0; i < 50; i++) {
-         var t = cms.util.deepCopy(nt[0]);
-         t.type = t.type + i;
-         nt.push(t);
-      }
-      hack */
-     
+       for (var i = 0; i < 50; i++) {
+       var t = cms.util.deepCopy(nt[0]);
+       t.type = t.type + i;
+       nt.push(t);
+       }
+       hack */
       bodyEl.append(cms.html.searchDialog(nt));
       
       $('#cms-search-dialog').dialog({
@@ -878,6 +876,7 @@
    //      }
    //   };
    
+   
    var toggleList = cms.toolbar.toggleList = function(buttonElem, newMenu) {
       var button = $(buttonElem);
       var newMenuItems = $('#' + newMenu).find("ul").attr('id');
@@ -894,9 +893,13 @@
          }
          
          
-         
-         $(menuHandles).remove();
-         $(menus).hide();
+         var hideMenus = function() {
+            $(menuHandles).remove();
+            $(menus).hide();
+         }
+         hideMenus();
+         // HACK: sometimes hideMenus has no effect is executed synchronously
+         window.setTimeout(hideMenus, 30);
          
          button.removeClass('ui-state-active');
          
@@ -921,6 +924,7 @@
          }
          
          $('button.ui-state-active').trigger('click');
+         //cms.util.log('adding class ui-state-active');
          button.addClass('ui-state-active');
          // enabling move-mode
          // * current menu
