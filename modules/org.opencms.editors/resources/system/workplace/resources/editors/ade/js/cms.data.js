@@ -149,7 +149,7 @@
             var $html = element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element');
             // cms-new-element is used for drawing borders, and we do not want those on
             // default-formatted elements in menus
-            if (containerType != '_DEFAULT_' && (element.status == STATUS_NEW || element.status == STATUS_NEWCONFIG)) {
+            if (containerType != '_DEFAULT_' && (element.status == STATUS_NEWCONFIG)) {
                $html = $html.addClass('cms-new-element');
             }
             element.contents[containerType] = $html.appendTo($('<div></div>')).parent().html();
