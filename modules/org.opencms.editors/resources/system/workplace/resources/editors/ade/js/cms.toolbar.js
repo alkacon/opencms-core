@@ -259,26 +259,26 @@
    
    /**
     * Initializes the hover event handler for a handle div.
-    *
+    * 
     * @param {Object} handleDiv the handle div
     * @param {Object} elem the element which the handle div belongs to
-    * @param {String} adeMode the current mode
+    * @param {String} adeMode the current mode 
     */
-   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/ adeMode) {
+   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/adeMode) {
       handleDiv.hover(function() {
-         cms.move.hoverOutFilter(elem, '.' + cms.move.HOVER_NEW);
+         cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
          cms.move.hoverIn(elem, 2);
          //cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
          startHoverTimeout(handleDiv, adeMode);
-         $('body').children('.' + cms.move.HOVER_NEW).remove();
+         $('body').children('.'+cms.move.HOVER_NEW).remove();
       }, function() {
          stopHover();
          if ($(elem).find('.' + cms.move.HOVER_NEW).size() == 0 && $(elem).hasClass('cms-new-element')) {
             cms.move.hoverInWithClass(elem, 2, cms.move.HOVER_NEW);
          }
-         $('body').children('.' + cms.move.HOVER_NEW).remove();
+         $('body').children('.'+cms.move.HOVER_NEW).remove();
       });
-      $('body').children('.' + cms.move.HOVER_NEW).remove();
+      $('body').children('.'+cms.move.HOVER_NEW).remove();
    }
    
    var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
@@ -301,7 +301,7 @@
             handles['move'].css('display', 'block');
          }
       } else {
-         initHandleDiv(handleDiv, elem, adeMode);
+          initHandleDiv(handleDiv, elem, adeMode);
       }
       handleDiv.css({
          'right': '0px',
@@ -625,14 +625,16 @@
       $('#cms-search-list').closest('.cms-scrolling').scrollTop(0);
       
       
+      
       var nt = cms.data.newTypes;
       /*hack
-       for (var i = 0; i < 50; i++) {
-       var t = cms.util.deepCopy(nt[0]);
-       t.type = t.type + i;
-       nt.push(t);
-       }
-       hack */
+      for (var i = 0; i < 50; i++) {
+         var t = cms.util.deepCopy(nt[0]);
+         t.type = t.type + i;
+         nt.push(t);
+      }
+      hack */
+     
       bodyEl.append(cms.html.searchDialog(nt));
       
       $('#cms-search-dialog').dialog({
@@ -718,9 +720,9 @@
       $('li.cms-item, button', list).css('display', 'none');
       
       //stays
-      var left = 88;
+      var left = 97;
       if ($.browser.msie) {
-         left = 88;
+         left = 97;
       }
       list.appendTo('#toolbar_content').css({
          top: 35,
@@ -735,7 +737,7 @@
          top: 0,
          left: -4,
          width: list.outerWidth() + 8,
-         height: list.outerHeight() + 2,
+         height: list.outerHeight() + 1,
          border: '0px solid',
          opacity: 0.6
       });
@@ -871,7 +873,6 @@
    //      }
    //   };
    
-   
    var toggleList = cms.toolbar.toggleList = function(buttonElem, newMenu) {
       var button = $(buttonElem);
       var newMenuItems = $('#' + newMenu).find("ul").attr('id');
@@ -919,7 +920,6 @@
          }
          
          $('button.ui-state-active').trigger('click');
-         //cms.util.log('adding class ui-state-active');
          button.addClass('ui-state-active');
          // enabling move-mode
          // * current menu
@@ -942,7 +942,7 @@
                var elem = $(this);
                $('<a class="cms-handle cms-move"></a>').appendTo(elem);
             });
-            var leftOffset = -217;
+            var leftOffset = -209;
             if (true || buttonElem.name == 'Add') {
                leftOffset -= 36;
             }
@@ -953,9 +953,9 @@
             }).slideDown(100, function() {
                $('div.ui-widget-shadow', list).css({
                   top: 0,
-                  left: -4,
+                  left: -3,
                   width: list.outerWidth() + 8,
-                  height: list.outerHeight() + 2,
+                  height: list.outerHeight() + 1,
                   border: '0px solid',
                   opacity: 0.6
                });
@@ -1095,7 +1095,7 @@
          $additionalInfo.show(5, function() {
             var list = $(this).parents('div.cms-menu');
             $('div.ui-widget-shadow', list).css({
-               height: list.outerHeight() + 2
+               height: list.outerHeight() + 1
             });
          });
       } else {
@@ -1104,7 +1104,7 @@
          $additionalInfo.hide(5, function() {
             var list = $(this).parents('div.cms-menu');
             $('div.ui-widget-shadow', list).css({
-               height: list.outerHeight() + 2
+               height: list.outerHeight() + 1
             });
          });
       }
