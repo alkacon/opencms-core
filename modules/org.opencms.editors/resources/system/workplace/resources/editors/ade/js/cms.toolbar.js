@@ -1266,7 +1266,7 @@
     */
    var initLinks = cms.toolbar.initLinks = function() {
       $('<div id="cms-leave-dialog" style="display: none;">Do you really want to leave the page?</div>').appendTo('body');
-      $('.cms-element a:not(.cms-move, .cms-delete, .cms-edit)').live('click', function() {
+      $('a:not(.cms-left, .cms-move, .cms-delete, .cms-edit)').live('click', function() {
          var $link = $(this);
          var target = $link.attr('href');
          var buttons = {};
@@ -1293,6 +1293,7 @@
          $('#cms-leave-dialog').dialog({
             autoOpen: true,
             modal: true,
+            title: 'Leaving the page',
             zIndex: 9999,
             buttons: buttons,
             close: function() {
@@ -1303,6 +1304,9 @@
       });
    }
    
+   /**
+    * Initializes the reset dialog.
+    */
    var initReset = cms.toolbar.initReset = function() {
       $('<div id="cms-reset-dialog" style="display:none">Do you really want to discard your changes and reset the page?</div>').appendTo('body');
       $('button[name="Reset"]').live('click', function() {
@@ -1324,6 +1328,7 @@
             autoOpen: true,
             modal: true,
             zIndex: 9999,
+            title: 'Reset',
             buttons: buttons,
             close: function() {
                $(this).dialog('destroy');
