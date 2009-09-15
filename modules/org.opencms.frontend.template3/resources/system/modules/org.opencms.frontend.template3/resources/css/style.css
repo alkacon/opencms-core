@@ -182,18 +182,19 @@
   }
   
   #col4 {
-      margin: 5px 0px 0px 5px;
+      margin: 5px 0px;
       clear: both;
-      height: 110px;
+      min-height: 160px;
+      width: 100.6%;
   }
   
   #col4 div.box {
       margin-right: 5px;
       width: 32.5%;
       float: left;
-      height: 100px;
-      overflow: hidden;
+      min-height: 150px;
   }
+  
   
   #footer {
   	background: <c:out value="${cms.styleValue['footer.background']}" default="#cccccc" /> <c:if test="${!empty cms.styleValue['footer.background.image']}">url("<cms:link><c:out value="${cms.styleValue['footer.background.image']}" /></cms:link>") top left</c:if>;
