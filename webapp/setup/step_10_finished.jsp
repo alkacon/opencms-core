@@ -10,7 +10,7 @@
 	    // usually a mapping must be in the form "/opencms/*", cut off all slashes
 	    servletMapping = servletMapping.substring(0, servletMapping.length() - 2);
 	}
-	String openLink = request.getContextPath() + servletMapping + "/index.jsp";
+	String openLink = request.getContextPath() + servletMapping + "/demo_t3/";
 	if (Bean.isInitialized()) {
 		Bean.prepareStep10();
 		session.invalidate();
