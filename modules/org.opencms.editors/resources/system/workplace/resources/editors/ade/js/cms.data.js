@@ -146,7 +146,13 @@
       for (var containerType in element.contents) {
          var oldContent = element.contents[containerType];
          if (oldContent) {
-            element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element').appendTo($('<div></div>')).parent().html();
+            var $html = element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element');
+            // cms-new-element is used for drawing borders, and we do not want those on
+            // default-formatted elements in menus
+            if (containerType != '_DEFAULT_' && (element.status == STATUS_NEW || element.status == STATUS_NEWCONFIG)) {
+               $html = $html.addClass('cms-new-element');
+            }
+            element.contents[containerType] = $html.appendTo($('<div></div>')).parent().html();
          }
       }
    }
@@ -549,10 +555,7 @@
             } else {
                html = $(elem.contents[containers[containerName].type]);
             }
-            html.attr('rel', elem.id).addClass('cms-element');
-            if (elem.status == STATUS_NEW || elem.status == STATUS_NEWCONFIG) {
-               cms.move.hoverInWithClass(html, 4, cms.move.HOVER_NEW);
-            }
+            html.attr('rel', elem.id).addClass('cms-element').css('position', 'relative');
             $('#' + containerName).append(html);
             if (isSubcontainer) {
             
@@ -574,6 +577,7 @@
             }
          }
       }
+      cms.move.resetNewElementBorders();
       
    }
    
