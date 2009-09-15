@@ -605,6 +605,7 @@
 		        <mimetype extension=".onetoc2" type="application/onenote"/>
 		        <mimetype extension=".onetmp" type="application/onenote"/>
 		        <mimetype extension=".onepkg" type="application/onenote"/>
+		        <mimetype extension=".rar" type="application/x-rar-compressed"/>
 			</mimetypes>
 			<html-converters>
   		  		<html-converter name="true" class="org.opencms.util.CmsHtmlConverterJTidy" />
