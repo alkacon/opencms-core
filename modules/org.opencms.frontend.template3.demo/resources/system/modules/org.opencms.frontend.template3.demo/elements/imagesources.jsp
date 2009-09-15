@@ -17,7 +17,7 @@
 <fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
 <fmt:bundle basename="org/opencms/frontend/template3/demo/messages">
 
-<div class="box ${param.schema}">
+<div class="box box_schema3">
 	<h4><fmt:message key="t3.image.sources.title" /></h4>
 	<div class="boxbody">
 		<c:forEach items="${nav}" var="navElement">

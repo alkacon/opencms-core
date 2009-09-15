@@ -181,14 +181,14 @@
     
   }
   
-  #col4 {
+  #footercnt {
       margin: 5px 0px;
       clear: both;
       min-height: 160px;
       width: 100.6%;
   }
   
-  #col4 div.box {
+  #footercnt div.box {
       margin-right: 5px;
       width: 32.5%;
       float: left;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.frontend.template3/resources/system/modules/org.opencms.frontend.template3/java_src/Attic/CmsListBoxEntry.java,v $
- * Date   : $Date: 2009/09/14 13:46:07 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/15 13:30:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,10 +37,11 @@ import java.util.Date;
  * Java Bean which describes a single entry in a list box.<p>
  * 
  * @author Peter Bonrad
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @since 7.6
  * 
- * @since 7.0.4
+ * @version $Revision: 1.1.2.2 $ 
  */
 public class CmsListBoxEntry {
 

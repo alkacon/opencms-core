@@ -41,7 +41,7 @@
 				<relation element="Images/Image" invalidate="parent" />
 			</relations>
 			<formatters>
-				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/item/template.jsp" />
+				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/item-formatter.jsp" />
 			</formatters>
 		</xsd:appinfo>
 

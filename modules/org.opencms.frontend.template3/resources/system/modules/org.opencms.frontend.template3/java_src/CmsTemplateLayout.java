@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.frontend.template3/resources/system/modules/org.opencms.frontend.template3/java_src/Attic/CmsTemplateLayout.java,v $
- * Date   : $Date: 2009/09/14 13:46:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/15 13:30:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,20 +31,14 @@
 
 package org.opencms.frontend.template3;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,41 +55,24 @@ import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods to build the dynamic CSS style sheet of Template 3.<p>
+ * Provides methods to build the dynamic CSS style sheet of template two.<p>
  * 
  * Reads the resources for the style, the options and for the preset.<p>
  * 
  * @author Peter Bonrad
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @since 7.6
  * 
- * @since 7.0.4
+ * @version $Revision: 1.1.2.2 $ 
  */
 public class CmsTemplateLayout extends CmsJspActionElement {
-
-    /** The extension for the config file. */
-    public static final String EXTENSION_CONFIG = ".config";
 
     /** The name of the module. */
     public static final String MODULE_NAME = "org.opencms.frontend.template3";
 
-    /** Node name for the nested config in a XSD. */
-    public static final String NODE_CONFIG = "Config";
-
-    /** Node name for the preset in the config XSD. */
-    public static final String NODE_PRESET = "Preset";
-
-    /** Node name for a nested preset in the config XSD. */
-    public static final String NODE_PRESET_NESTED = NODE_CONFIG + "/" + NODE_PRESET;
-
-    /** The name of the parameter with the resource path of the preset. */
-    public static final String PARAM_PRESET = "preset";
-
     /** The name of the parameter with the resource path of the style. */
     public static final String PARAM_STYLE = "style";
-
-    /** The name of the property where the config can be found. */
-    public static final String PROPERTY_CONFIG = "style.config";
 
     /** The name of the property where the options can be found. */
     public static final String PROPERTY_OPTIONS = "style.options";
@@ -116,26 +93,14 @@ public class CmsTemplateLayout extends CmsJspActionElement {
         + MODULE_NAME
         + "/resources/css/nav_left.css";
 
-    /** The absolute VFS path to the Template 3 template. */
+    /** The absolute VFS path to the template two template. */
     public static final String VFS_PATH_TEMPLATE = CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/templates/main.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateLayout.class);
 
-    /** The resource with the configuration. */
-    private CmsXmlContent m_config;
-
     /** Xml content with the values for the options. */
     private CmsJspContentAccessBean m_options;
-
-    /** Xml content with the values for the preset. */
-    private CmsJspContentAccessBean m_preset;
-
-    /** The path to the configuration file. */
-    private String m_presetPath;
-
-    /** Lazy map with the values for the preset. */
-    private Map m_presetValue;
 
     /** Xml content with the values for the style. */
     private CmsJspContentAccessBean m_style;
@@ -144,7 +109,7 @@ public class CmsTemplateLayout extends CmsJspActionElement {
     private String m_stylePath;
 
     /** Lazy map with the values for the style. */
-    private Map m_styleValue;
+    private Map<String, String> m_styleValue;
 
     /**
      * Empty constructor, required for every JavaBean.<p>
@@ -170,40 +135,6 @@ public class CmsTemplateLayout extends CmsJspActionElement {
     }
 
     /**
-     * Returns the file name for the configuration file for the resource at the given path.<p>
-     * 
-     * @param path the path of the resource for which the configuration filename is returned
-     * 
-     * @return the file name for a configuration file for the resource at the given path
-     */
-    public static String getConfigFileName(String path) {
-
-        String result = null;
-        int index = path.lastIndexOf(".");
-        if (index > -1) {
-            result = path.substring(0, index).concat(EXTENSION_CONFIG);
-        } else {
-            result = path.concat(EXTENSION_CONFIG);
-        }
-
-        return result;
-    }
-
-    /**
-     * Returns the path to the configuration file for the current uri.<p>
-     * 
-     * @return the path to the configuration file for the current uri
-     */
-    public String getConfigPath() {
-
-        if (m_config != null) {
-            return getCmsObject().getSitePath(m_config.getFile());
-        }
-
-        return null;
-    }
-
-    /**
      * Return the options for that layout.<p>
      * 
      * @return the options for that layout
@@ -211,53 +142,6 @@ public class CmsTemplateLayout extends CmsJspActionElement {
     public CmsJspContentAccessBean getOptions() {
 
         return m_options;
-    }
-
-    /**
-     * Returns the path to the preset configuration file.<p>
-     *
-     * @return the path to the preset configuration file
-     */
-    public String getPresetPath() {
-
-        return m_presetPath;
-    }
-
-    /**
-     * Wrapper which returns null instead of an empty string to use the default
-     * functionality of &lt;c:out&gt;.<p>
-     * 
-     * @return a lazy initialized map
-     */
-    public Map getPresetValue() {
-
-        if (m_presetValue == null) {
-            m_presetValue = LazyMap.decorate(new HashMap(), new Transformer() {
-
-                /**
-                 * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-                 */
-                public Object transform(Object input) {
-
-                    if (getPreset() == null) {
-                        return null;
-                    }
-
-                    Object obj = getPreset().getValue().get(input);
-                    if (obj == null) {
-                        return null;
-                    }
-
-                    String value = obj.toString();
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
-                        return null;
-                    }
-
-                    return value;
-                }
-            });
-        }
-        return m_presetValue;
     }
 
     /**
@@ -275,14 +159,14 @@ public class CmsTemplateLayout extends CmsJspActionElement {
      * 
      * @return a list with css stylesheet files to include in the template
      */
-    public List getStylesheets() {
+    public List<String> getStylesheets() {
 
-        ArrayList result = new ArrayList();
+        List<String> result = new ArrayList<String>();
 
         String navMain = null;
 
         // find path of the jsp of the main menu
-        String navPath = (String)getStyleValue().get("nav.main");
+        String navPath = getStyleValue().get("nav.main");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(navPath)) {
             navMain = property(PROPERTY_STYLE, navPath);
         }
@@ -304,10 +188,11 @@ public class CmsTemplateLayout extends CmsJspActionElement {
      * 
      * @return a lazy initialized map
      */
-    public Map getStyleValue() {
+    @SuppressWarnings("unchecked")
+    public Map<String, String> getStyleValue() {
 
         if (m_styleValue == null) {
-            m_styleValue = LazyMap.decorate(new HashMap(), new Transformer() {
+            m_styleValue = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
 
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -338,36 +223,10 @@ public class CmsTemplateLayout extends CmsJspActionElement {
     /**
      * @see org.opencms.jsp.CmsJspBean#init(javax.servlet.jsp.PageContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super.init(context, req, res);
-
-        // preset
-        try {
-
-            m_presetPath = req.getParameter(PARAM_PRESET);
-            if (m_presetPath == null) {
-
-                // init configuration
-                initConfig();
-            }
-
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_presetPath)) {
-                CmsResource preset = getCmsObject().readResource(
-                    getCmsObject().getRequestContext().removeSiteRoot(m_presetPath),
-                    CmsResourceFilter.IGNORE_EXPIRATION);
-
-                Locale locale = OpenCms.getLocaleManager().getDefaultLocale(
-                    getCmsObject(),
-                    getCmsObject().getSitePath(preset));
-                m_preset = new CmsJspContentAccessBean(getCmsObject(), locale, preset);
-            }
-        } catch (Exception e) {
-            // problem reading preset, log error
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(e.getMessage(), e);
-            }
-        }
 
         // style
         try {
@@ -415,26 +274,6 @@ public class CmsTemplateLayout extends CmsJspActionElement {
     }
 
     /**
-     * Sets the full path to the preset configuration file.<p>
-     *
-     * @param presetPath the full path to the preset configuration file to set
-     */
-    public void setPresetPath(String presetPath) {
-
-        m_presetPath = presetPath;
-    }
-
-    /**
-     * Return the preset for that layout.<p>
-     * 
-     * @return the preset for that layout
-     */
-    protected CmsJspContentAccessBean getPreset() {
-
-        return m_preset;
-    }
-
-    /**
      * Return the style for that layout.<p>
      * 
      * @return the style for that layout
@@ -443,117 +282,4 @@ public class CmsTemplateLayout extends CmsJspActionElement {
 
         return m_style;
     }
-
-    /**
-     * Returns the preset path set in the given xml content.<p>
-     * 
-     * @param config the xml content with the config where to get the preset path from
-     * 
-     * @return the preset path set in the given xml content
-     */
-    private String getConfigPreset(CmsXmlContent config) {
-
-        String result = null;
-        if (config != null) {
-
-            Locale locale = OpenCms.getLocaleManager().getDefaultLocale(
-                getCmsObject(),
-                getCmsObject().getSitePath(m_config.getFile()));
-
-            if (config.getFile().getTypeId() == RESOURCE_TYPE_ID_CONFIG) {
-                result = config.getStringValue(getCmsObject(), NODE_PRESET, locale);
-            } else {
-                result = config.getStringValue(getCmsObject(), NODE_PRESET_NESTED, locale);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Search the file for the configuration and set the xml content.<p>
-     */
-    private void initConfig() {
-
-        // first check if current resource is an xml content with nested configuration
-        try {
-            CmsFile resource = getCmsObject().readFile(getRequestContext().getUri());
-            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCmsObject(), resource);
-                if (xmlContent.hasValue(NODE_CONFIG, getRequestContext().getLocale())) {
-                    m_config = xmlContent;
-                    m_presetPath = getConfigPreset(xmlContent);
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_presetPath)) {
-                        return;
-                    }
-                }
-            }
-        } catch (CmsException ex) {
-            // noop -> configuration not in current resource
-        }
-
-        // check if config file with correct extension exists
-        try {
-            String configFile = getConfigFileName(getRequestContext().getUri());
-            if (getCmsObject().existsResource(configFile)) {
-                CmsFile file = getCmsObject().readFile(getRequestContext().removeSiteRoot(configFile));
-                CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
-                if (m_config == null) {
-                    m_config = xmlContent;
-                }
-                m_presetPath = getConfigPreset(xmlContent);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_presetPath)) {
-                    return;
-                }
-            }
-        } catch (CmsException ex) {
-            // noop -> no config with file extension found
-        }
-
-        // check properties
-        try {
-            String filePath = getRequestContext().getUri();
-            // check properties on parent folder too
-            do {
-                String propPath = getCmsObject().readPropertyObject(filePath, PROPERTY_CONFIG, true).getValue();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(propPath)) {
-                    String candidate = null;
-                    boolean isAbsolute = CmsLinkManager.isAbsoluteUri(propPath);
-                    if (!isAbsolute) {
-                        String base = CmsResource.getFolderPath(filePath);
-                        candidate = CmsLinkManager.getAbsoluteUri(filePath, base);
-                    } else {
-                        candidate = propPath;
-                    }
-
-                    // check if the resource at the found path exists
-                    if (candidate != null) {
-                        if (getCmsObject().existsResource(candidate)) {
-                            CmsFile file = getCmsObject().readFile(getRequestContext().removeSiteRoot(candidate));
-                            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
-                            if (m_config == null) {
-                                m_config = xmlContent;
-                            }
-                            m_presetPath = getConfigPreset(xmlContent);
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_presetPath)) {
-                                return;
-                            }
-                        } else if (isAbsolute) {
-                            // if found path was absolute stop checking parent folders
-                            return;
-                        }
-                    }
-                } else {
-                    break;
-                }
-                // move on to parent folder
-                filePath = CmsResource.getParentFolder(filePath);
-            } while (filePath != null);
-        } catch (CmsException ex) {
-            // noop -> configuration was not found
-        }
-
-        return;
-    }
-
 }

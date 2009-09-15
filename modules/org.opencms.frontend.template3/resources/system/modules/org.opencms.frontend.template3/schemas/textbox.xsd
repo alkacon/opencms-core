@@ -37,6 +37,7 @@
 				<formatter type="left" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/left.jsp" />
 				<formatter type="right" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/right.jsp" />
 				<formatter type="center" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/center.jsp" />
+				<formatter type="footer" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/footer.jsp" />
 			</formatters>
 		</xsd:appinfo>
 

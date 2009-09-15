@@ -49,6 +49,9 @@
 			<relations>
 				<relation element="Paragraph/Image/Image" invalidate="parent" />
 			</relations>
+			<formatters>
+				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/event-formatter.jsp" />
+			</formatters>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

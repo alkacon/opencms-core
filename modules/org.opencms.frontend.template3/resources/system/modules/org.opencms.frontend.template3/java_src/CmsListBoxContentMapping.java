@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.frontend.template3/resources/system/modules/org.opencms.frontend.template3/java_src/Attic/CmsListBoxContentMapping.java,v $
- * Date   : $Date: 2009/09/14 13:46:07 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/15 13:30:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,9 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.collectors.CmsDateResourceComparator;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.ade.CmsContainerPageBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlHtmlValue;
@@ -57,10 +59,11 @@ import java.util.Set;
  * 
  * @author Alexander Kandzior 
  * @author Peter Bonrad
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @since 7.6
  * 
- * @since 7.0.4
+ * @version $Revision: 1.1.2.2 $ 
  */
 public class CmsListBoxContentMapping {
 
@@ -79,7 +82,7 @@ public class CmsListBoxContentMapping {
         private int m_maxLenght;
 
         /** The fields in the XML content to map. */
-        private List m_xmlFields;
+        private List<String> m_xmlFields;
 
         /**        
         * Creates a new list box field mapping to a list of XML fields with default value and max length.<p> 
@@ -89,7 +92,7 @@ public class CmsListBoxContentMapping {
         * @param maxLength the maximum length the field is allowed to have
         * @param defaultValue the default value for the list box field in case no XML content match is found
         */
-        public CmsListBoxFieldMapping(List xmlFields, String listBoxField, int maxLength, String defaultValue) {
+        public CmsListBoxFieldMapping(List<String> xmlFields, String listBoxField, int maxLength, String defaultValue) {
 
             m_xmlFields = xmlFields;
             m_listBoxField = listBoxField;
@@ -118,7 +121,7 @@ public class CmsListBoxContentMapping {
          */
         public CmsListBoxFieldMapping(String xmlField, String listBoxField, int maxLength, String defaultValue) {
 
-            this(new ArrayList(Collections.singletonList(xmlField)), listBoxField, maxLength, defaultValue);
+            this(new ArrayList<String>(Collections.singletonList(xmlField)), listBoxField, maxLength, defaultValue);
         }
 
         /**
@@ -151,6 +154,7 @@ public class CmsListBoxContentMapping {
          * 
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @Override
         public boolean equals(Object obj) {
 
             String listBoxField = null;
@@ -200,7 +204,7 @@ public class CmsListBoxContentMapping {
          *
          * @return the fields in the XML content to map
          */
-        public List getXmlFields() {
+        public List<String> getXmlFields() {
 
             return m_xmlFields;
         }
@@ -218,6 +222,7 @@ public class CmsListBoxContentMapping {
         /**
          * @see java.lang.Object#hashCode()
          */
+        @Override
         public int hashCode() {
 
             return m_listBoxField.hashCode();
@@ -256,17 +261,17 @@ public class CmsListBoxContentMapping {
     public static final String[] MAPPINGS = {ENTRY_TITLE, ENTRY_AUTHOR, ENTRY_TEXT, ENTRY_DATE, ENTRY_LINK, ENTRY_IMAGE};
 
     /** Constant list with all possible list box mappings. */
-    public static final List MAPPINGS_LIST = Collections.unmodifiableList(Arrays.asList(MAPPINGS));
+    public static final List<String> MAPPINGS_LIST = Collections.unmodifiableList(Arrays.asList(MAPPINGS));
 
     /** The map of mappings from the XML content to the list box entry. */
-    private Map m_mappings;
+    private Map<String, CmsListBoxFieldMapping> m_mappings;
 
     /**
      * Creates a new list box content mapping.<p>
      */
     public CmsListBoxContentMapping() {
 
-        m_mappings = new HashMap();
+        m_mappings = new HashMap<String, CmsListBoxFieldMapping>();
     }
 
     /**
@@ -277,7 +282,7 @@ public class CmsListBoxContentMapping {
      * @param maxLength the maximum length the field is allowed to have
      * @param defaultValue the default value for the list box entry field in case no XML content match is found
      */
-    public void addListBoxFieldMapping(List xmlFields, String listBoxField, int maxLength, String defaultValue) {
+    public void addListBoxFieldMapping(List<String> xmlFields, String listBoxField, int maxLength, String defaultValue) {
 
         if (MAPPINGS_LIST.contains(listBoxField)) {
             CmsListBoxFieldMapping mapping = new CmsListBoxFieldMapping(
@@ -297,7 +302,11 @@ public class CmsListBoxContentMapping {
      * @param maxLength the maximum length the field is allowed to have (will be converted to an int)
      * @param defaultValue the default value for the list box entry field in case no XML content match is found
      */
-    public void addListBoxFieldMapping(List xmlFields, String listBoxField, String maxLength, String defaultValue) {
+    public void addListBoxFieldMapping(
+        List<String> xmlFields,
+        String listBoxField,
+        String maxLength,
+        String defaultValue) {
 
         // store mappings as xpath to allow better control about what is mapped
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(defaultValue)) {
@@ -332,23 +341,23 @@ public class CmsListBoxContentMapping {
         }
 
         // get all configured mappings
-        Set mappings = m_mappings.entrySet();
+        Set<Map.Entry<String, CmsListBoxFieldMapping>> mappings = m_mappings.entrySet();
         // create the empty syndication entry
         CmsListBoxEntry result = new CmsListBoxEntry();
         boolean hasTitle = false;
 
-        Iterator i = mappings.iterator();
+        Iterator<Map.Entry<String, CmsListBoxFieldMapping>> i = mappings.iterator();
         String link = null;
         Date date = null;
         while (i.hasNext()) {
-            Map.Entry e = (Map.Entry)i.next();
-            String listBoxField = (String)e.getKey();
-            CmsListBoxFieldMapping mapping = (CmsListBoxFieldMapping)e.getValue();
+            Map.Entry<String, CmsListBoxFieldMapping> e = i.next();
+            String listBoxField = e.getKey();
+            CmsListBoxFieldMapping mapping = e.getValue();
 
             I_CmsXmlContentValue xmlContentValue = null;
-            List xmlFields = mapping.getXmlFields();
+            List<String> xmlFields = mapping.getXmlFields();
             for (int j = 0, size = xmlFields.size(); j < size; j++) {
-                String xmlField = (String)xmlFields.get(j);
+                String xmlField = xmlFields.get(j);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(xmlField)) {
                     xmlContentValue = content.getValue(xmlField, locale);
                     if (xmlContentValue != null) {
@@ -408,8 +417,12 @@ public class CmsListBoxContentMapping {
         if (hasTitle) {
             // we need at least an entry and an description
             if (link == null) {
-                // calculate the link
-                link = OpenCms.getLinkManager().getServerLink(cms, cms.getSitePath(content.getFile()));
+                // calculate the link                
+                link = OpenCms.getLinkManager().getServerLink(cms, m_facade);
+                link = CmsRequestUtil.appendParameter(
+                    link,
+                    CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER,
+                    content.getFile().getStructureId().toString());
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(link)) {
                 result.setLink(link);
@@ -430,7 +443,7 @@ public class CmsListBoxContentMapping {
      */
     public String getMappingForAuthor() {
 
-        CmsListBoxFieldMapping mapping = (CmsListBoxFieldMapping)m_mappings.get(ENTRY_AUTHOR);
+        CmsListBoxFieldMapping mapping = m_mappings.get(ENTRY_AUTHOR);
         return (mapping != null) ? (String)mapping.getXmlFields().get(0) : null;
     }
 
@@ -443,7 +456,7 @@ public class CmsListBoxContentMapping {
      */
     public String getMappingForDate() {
 
-        CmsListBoxFieldMapping mapping = (CmsListBoxFieldMapping)m_mappings.get(ENTRY_DATE);
+        CmsListBoxFieldMapping mapping = m_mappings.get(ENTRY_DATE);
         return (mapping != null) ? (String)mapping.getXmlFields().get(0) : null;
     }
 
@@ -456,7 +469,7 @@ public class CmsListBoxContentMapping {
      */
     public String getMappingForDescription() {
 
-        CmsListBoxFieldMapping mapping = (CmsListBoxFieldMapping)m_mappings.get(ENTRY_TEXT);
+        CmsListBoxFieldMapping mapping = m_mappings.get(ENTRY_TEXT);
         return (mapping != null) ? (String)mapping.getXmlFields().get(0) : null;
     }
 
@@ -469,7 +482,7 @@ public class CmsListBoxContentMapping {
      */
     public String getMappingForTitle() {
 
-        CmsListBoxFieldMapping mapping = (CmsListBoxFieldMapping)m_mappings.get(ENTRY_TITLE);
+        CmsListBoxFieldMapping mapping = m_mappings.get(ENTRY_TITLE);
         return (mapping != null) ? (String)mapping.getXmlFields().get(0) : null;
     }
 
@@ -534,7 +547,7 @@ public class CmsListBoxContentMapping {
             } catch (NumberFormatException e) {
                 // no luck parsing, so we have no date - try using other options...
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(stringValue)) {
-                    List items = CmsStringUtil.splitAsList(stringValue, '|', true);
+                    List<String> items = CmsStringUtil.splitAsList(stringValue, '|', true);
                     long date = CmsDateResourceComparator.calculateDate(cms, file, items, -1);
                     if (date != -1) {
                         result = new Date(date);
@@ -543,5 +556,18 @@ public class CmsListBoxContentMapping {
             }
         }
         return result;
+    }
+
+    /** The facade container page. */
+    private String m_facade;
+
+    /**
+     * Sets the facade container page.<p>
+     * 
+     * @param facade the facade container page
+     */
+    public void setFacade(String facade) {
+
+        m_facade = facade;
     }
 }

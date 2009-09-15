@@ -5,13 +5,19 @@
     <Title><![CDATA[All News]]></Title>
     <Links>
       <link type="WEAK">
-        <target><![CDATA[/sites/default/demo_t3/today/news/]]></target>
-        <uuid>5c24f162-9c82-11de-adde-dd9f629b113b</uuid>
+        <target><![CDATA[/sites/default/demo_t3/_content/news/]]></target>
+        <uuid>bd8587dc-a11a-11de-9057-dd9f629b113b</uuid>
       </link>
     </Links>
+    <Facade>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/demo_t3/today/news/news.html]]></target>
+        <uuid>dbbf0202-a12a-11de-9057-dd9f629b113b</uuid>
+      </link>
+    </Facade>
     <Collector><![CDATA[allInFolderPriorityDateDesc]]></Collector>
-    <Parameter><![CDATA[%(link1)news_%(number).html|ttnews|8]]></Parameter>
-    <More><![CDATA[Weiter]]></More>
+    <Parameter><![CDATA[%(link1)news_%(number).html|t3news|8]]></Parameter>
+    <More><![CDATA[More]]></More>
     <PositionAuthor><![CDATA[Top]]></PositionAuthor>
     <PositionDate><![CDATA[Top]]></PositionDate>
     <PositionImage><![CDATA[Left]]></PositionImage>

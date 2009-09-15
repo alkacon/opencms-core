@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.5.0</opencms_version>
-		<createdate>Mon, 14 Sep 2009 13:35:50 GMT</createdate>
+		<createdate>Tue, 15 Sep 2009 13:14:45 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,7 +14,7 @@
 		<group>Template 3</group>
 		<class/>
 		<description/>
-		<version>7.5.5</version>
+		<version>7.5.7</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -55,12 +55,6 @@
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3search" id="147">
-				<properties>
-					<property>
-						<name>template-elements</name>
-						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.template3/pages/search.jsp]]></value>
-					</property>
-				</properties>
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/search.xsd</param>
 			</type>
 		</resourcetypes>
@@ -345,45 +339,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.template3/elements/search-template.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3/elements/search-template.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>7c5b0290-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
-			<uuidresource>7c5b0291-9d2a-11de-b26f-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 14 Sep 2009 12:23:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 10:21:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.frontend.template3/elements/linkbox</destination>
-			<type>folder</type>
-			<uuidstructure>cdaa55f0-9e09-11de-9c36-dd9f629b113b</uuidstructure>
-			<datelastmodified>Thu, 10 Sep 2009 12:59:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:59:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.frontend.template3/elements/linkbox/center.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3/elements/linkbox/center.jsp</destination>
+			<source>system/modules/org.opencms.frontend.template3/elements/linkbox-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/linkbox-formatter.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>f5928d82-9e09-11de-9c36-dd9f629b113b</uuidstructure>
 			<uuidresource>f5928d83-9e09-11de-9c36-dd9f629b113b</uuidresource>
@@ -402,27 +359,14 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.template3/elements/listbox</destination>
-			<type>folder</type>
-			<uuidstructure>c6d7a2ba-9d3d-11de-8a68-dd9f629b113b</uuidstructure>
-			<datelastmodified>Wed, 09 Sep 2009 12:39:12 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 12:39:12 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.frontend.template3/elements/listbox/center.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3/elements/listbox/center.jsp</destination>
+			<source>system/modules/org.opencms.frontend.template3/elements/listbox-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/listbox-formatter.jsp</destination>
 			<type>jsp</type>
-			<uuidstructure>d98b14ac-9d3d-11de-8a68-dd9f629b113b</uuidstructure>
-			<uuidresource>d98b14ad-9d3d-11de-8a68-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 09 Sep 2009 12:46:38 GMT</datelastmodified>
+			<uuidstructure>923e40e4-9d3e-11de-8a68-dd9f629b113b</uuidstructure>
+			<uuidresource>923e40e5-9d3e-11de-8a68-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 09 Sep 2009 12:46:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 12:39:43 GMT</datecreated>
+			<datecreated>Wed, 09 Sep 2009 12:44:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -439,20 +383,20 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.template3/elements/listbox/right.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3/elements/listbox/right.jsp</destination>
+			<source>system/modules/org.opencms.frontend.template3/elements/search-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3/elements/search-formatter.jsp</destination>
 			<type>jsp</type>
-			<uuidstructure>923e40e4-9d3e-11de-8a68-dd9f629b113b</uuidstructure>
-			<uuidresource>923e40e5-9d3e-11de-8a68-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 09 Sep 2009 12:46:47 GMT</datelastmodified>
+			<uuidstructure>7c5b0290-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
+			<uuidresource>7c5b0291-9d2a-11de-b26f-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 14 Sep 2009 12:23:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 12:44:53 GMT</datecreated>
+			<datecreated>Wed, 09 Sep 2009 10:21:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[element]]></value>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -621,19 +565,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.template3/elements/search</destination>
-			<type>folder</type>
-			<uuidstructure>7531838e-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
-			<datelastmodified>Wed, 09 Sep 2009 10:20:54 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 10:20:54 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.frontend.template3/elements/textbox</destination>
 			<type>folder</type>
 			<uuidstructure>090bda30-9d11-11de-840d-dd9f629b113b</uuidstructure>
@@ -651,6 +582,29 @@
 			<destination>system/modules/org.opencms.frontend.template3/elements/textbox/center.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>315da857-9d1c-11de-873e-dd9f629b113b</uuidstructure>
+			<uuidresource>315da858-9d1c-11de-873e-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 09 Sep 2009 11:01:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 08:38:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3/elements/textbox/footer.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>af405203-a1ee-11de-aa46-dd9f629b113b</uuidstructure>
 			<uuidresource>315da858-9d1c-11de-873e-dd9f629b113b</uuidresource>
 			<datelastmodified>Wed, 09 Sep 2009 11:01:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -822,43 +776,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.template3/pages</destination>
-			<type>folder</type>
-			<uuidstructure>9415c316-9e06-11de-9c36-dd9f629b113b</uuidstructure>
-			<datelastmodified>Thu, 10 Sep 2009 12:36:35 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:36:35 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.frontend.template3/pages/search.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3/pages/search.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>a65df018-9e06-11de-9c36-dd9f629b113b</uuidstructure>
-			<uuidresource>a65df019-9e06-11de-9c36-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 10 Sep 2009 10:47:15 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:37:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.frontend.template3/resources</destination>
 			<type>folder</type>
 			<uuidstructure>c3a0770a-9c7a-11de-adde-dd9f629b113b</uuidstructure>
@@ -920,7 +837,7 @@
 			<type>jsp</type>
 			<uuidstructure>c3b844d4-9c7a-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>c3b844d5-9c7a-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 09 Sep 2009 15:49:38 GMT</datelastmodified>
+			<datelastmodified>Tue, 15 Sep 2009 11:01:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 08 Feb 2008 13:59:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1535,7 +1452,7 @@
 			<type>plain</type>
 			<uuidstructure>c503b104-9c7a-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>c503b105-9c7a-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 10 Sep 2009 13:00:28 GMT</datelastmodified>
+			<datelastmodified>Tue, 15 Sep 2009 11:54:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 25 Feb 2008 16:26:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1575,7 +1492,7 @@
 			<type>plain</type>
 			<uuidstructure>c51208ea-9c7a-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>c51208eb-9c7a-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 14 Sep 2009 12:29:58 GMT</datelastmodified>
+			<datelastmodified>Tue, 15 Sep 2009 11:54:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 13 Feb 2008 10:45:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1615,7 +1532,7 @@
 			<type>plain</type>
 			<uuidstructure>c529d6b3-9c7a-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>c529d6b4-9c7a-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 14 Sep 2009 12:25:07 GMT</datelastmodified>
+			<datelastmodified>Tue, 15 Sep 2009 13:14:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 14:07:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1655,7 +1572,7 @@
 			<type>plain</type>
 			<uuidstructure>c5382e99-9c7a-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>c5382e9a-9c7a-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 10 Sep 2009 13:00:04 GMT</datelastmodified>
+			<datelastmodified>Tue, 15 Sep 2009 11:55:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 11 Feb 2008 10:58:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1688,7 +1605,7 @@
 			<type>jsp</type>
 			<uuidstructure>c541a47e-9c7a-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>c541a47f-9c7a-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 10 Sep 2009 08:58:53 GMT</datelastmodified>
+			<datelastmodified>Tue, 15 Sep 2009 11:02:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Feb 2008 16:46:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1700,39 +1617,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;element]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>template-elements</name>
-					<value><![CDATA[body*|Body Element,body2|Bottom Element]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.frontend.template3/templates/single.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3/templates/single.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>8d170e24-9e0f-11de-9c36-dd9f629b113b</uuidstructure>
-			<uuidresource>8d170e25-9e0f-11de-9c36-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 10 Sep 2009 13:42:47 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 13:40:49 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms Template 3]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;element]]></value>
+					<value><![CDATA[element;uri;params=(id)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>

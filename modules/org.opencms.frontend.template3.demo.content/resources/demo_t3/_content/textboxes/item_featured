@@ -6,11 +6,11 @@
     <Content name="Content0">
       <links>
         <link name="link0" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_t3/view/flowerparade.html]]></target>
-          <uuid>5c890a91-9c82-11de-adde-dd9f629b113b</uuid>
+          <target><![CDATA[/sites/default/demo_t3/extra/]]></target>
+          <uuid>5b8a10b1-9c82-11de-adde-dd9f629b113b</uuid>
         </link>
       </links>
-      <content><![CDATA[<p>Visit our large <a href="%(link0)" target="_self" title="Flower parade">flower parade</a>!</p>]]></content>
+      <content><![CDATA[<p>Visit our extranet: <a title="Extranet" href="%(link0)">Flower Extra</a>.</p>]]></content>
     </Content>
     <JspFile>
       <link type="STRONG">

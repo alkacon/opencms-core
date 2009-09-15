@@ -5,12 +5,18 @@
     <Title><![CDATA[All events]]></Title>
     <Links>
       <link type="WEAK">
-        <target><![CDATA[/sites/default/demo_t3/today/events/]]></target>
-        <uuid>5bfa10be-9c82-11de-adde-dd9f629b113b</uuid>
+        <target><![CDATA[/sites/default/demo_t3/_content/events/]]></target>
+        <uuid>cb1e5da0-a11a-11de-9057-dd9f629b113b</uuid>
       </link>
     </Links>
+    <Facade>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/demo_t3/today/events/event.html]]></target>
+        <uuid>9ec0fe78-a12a-11de-9057-dd9f629b113b</uuid>
+      </link>
+    </Facade>
     <Collector><![CDATA[allInFolderPriorityDateDesc]]></Collector>
-    <Parameter><![CDATA[%(link1)event_%(number).html|ttevent]]></Parameter>
+    <Parameter><![CDATA[%(link1)event_%(number).html|t3event]]></Parameter>
     <More/>
     <PositionAuthor><![CDATA[Top]]></PositionAuthor>
     <PositionDate><![CDATA[Top]]></PositionDate>

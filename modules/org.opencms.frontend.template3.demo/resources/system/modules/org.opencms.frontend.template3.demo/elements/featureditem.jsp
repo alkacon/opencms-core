@@ -1,9 +1,11 @@
-<%@ page import="org.opencms.file.*" %>
+<%@ page import="org.opencms.file.*,org.opencms.jsp.*,org.opencms.relations.*" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
-<cms:contentload collector="allInFolder" param="/demo_t3/dictionary/|t3item" editable="false" preload="true">
+<%
+  CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+%>
+<cms:contentload collector="allInFolder" param="/demo_t3/_content/items/|t3item" editable="false" preload="true">
 	<cms:contentinfo var="info" />
 	<c:set var="max" value="${info.resultSize}" />
 	<c:set var="cur"><%= System.currentTimeMillis() % ((Integer)pageContext.getAttribute("max")).intValue() %></c:set>
@@ -11,6 +13,17 @@
 	<c:set var="cnt" value="0" />
 	<cms:contentload>
 		<c:set var="file"><cms:contentshow element="%(opencms.filename)" /></c:set>
+<%
+  String category = CmsCategoryService.getInstance().readResourceCategories(jsp.getCmsObject(), pageContext.getAttribute("file").toString()).get(0).getName().toLowerCase();
+  String link = "/demo_t3/dictionary/item_composite.html";
+  if (category.contains("liliaceous")) {
+    link = "/demo_t3/dictionary/item_liliaceous.html";
+  } else if (category.contains("rosaceous")) {
+    link = "/demo_t3/dictionary/item_rosaceous.html";
+  } 
+  link += "?id=" + jsp.getCmsObject().readResource(pageContext.getAttribute("file").toString()).getStructureId();
+  pageContext.setAttribute("link", link);
+%>
 		<c:if test="${cnt == cur}">
 			<cms:contentcheck ifexists="Images">
 			<cms:contentloop element="Images">
@@ -22,7 +35,7 @@
 				<c:set var="imagetitle">${cms:vfs(pageContext).property[imageName]['Title']}</c:set>
 				<c:set var="imagefolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("imageName")) %></c:set>
 				<div class="image">
-					<a href="<cms:link>${file}</cms:link>">
+					<a href="<cms:link>${link}</cms:link>">
 						<cms:img scaleType="1" width="185" alt="${imagetitle}">
 							<cms:param name="src">${image}</cms:param> 
 						</cms:img>

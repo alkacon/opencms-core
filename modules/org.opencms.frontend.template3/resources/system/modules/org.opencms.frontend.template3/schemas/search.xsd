@@ -31,7 +31,7 @@
 			<validationrules/>
 			<defaults/>
 			<formatters>
-				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3/elements/search-template.jsp" />
+				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3/elements/search-formatter.jsp" />
 			</formatters>
 		</xsd:appinfo>
 	</xsd:annotation>  

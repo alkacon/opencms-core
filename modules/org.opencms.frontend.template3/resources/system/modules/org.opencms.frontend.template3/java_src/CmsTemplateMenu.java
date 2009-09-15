@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.frontend.template3/resources/system/modules/org.opencms.frontend.template3/java_src/Attic/CmsTemplateMenu.java,v $
- * Date   : $Date: 2009/09/14 13:46:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/15 13:30:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,24 +55,25 @@ import org.apache.commons.collections.map.LazyMap;
  * Helper class to build a menu navigation with ul and li.<p>
  * 
  * @author Peter Bonrad
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @since 7.6
  * 
- * @since 7.0.4
+ * @version $Revision: 1.1.2.2 $ 
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
 
     /** Lazy map with the flags if the elements of the navigation have children. */
-    private Map m_children;
+    private Map<CmsJspNavElement, Boolean> m_children;
 
     /** Lazy map with the current elements of the navigation. */
-    private Map m_current;
+    private Map<CmsJspNavElement, Boolean> m_current;
 
     /** The list with the elements of the menu. */
-    private List m_elements;
+    private List<CmsJspNavElement> m_elements;
 
     /** Lazy map with the navigation text of the elements. */
-    private Map m_navText;
+    private Map<CmsJspNavElement, String> m_navText;
 
     /**
      * Empty constructor, required for every JavaBean.<p>
@@ -102,7 +103,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      *
      * @return the list with the elements of the menu
      */
-    public List getElements() {
+    public List<CmsJspNavElement> getElements() {
 
         return m_elements;
     }
@@ -112,10 +113,11 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      * 
      * @return a lazy initialized map
      */
-    public Map getHasChildren() {
+    @SuppressWarnings("unchecked")
+    public Map<CmsJspNavElement, Boolean> getHasChildren() {
 
         if (m_children == null) {
-            m_children = LazyMap.decorate(new HashMap(), new Transformer() {
+            m_children = LazyMap.decorate(new HashMap<CmsJspNavElement, Boolean>(), new Transformer() {
 
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -128,13 +130,13 @@ public class CmsTemplateMenu extends CmsJspActionElement {
                     int index = getElements().indexOf(elem);
 
                     if (index < getElements().size() - 1) {
-                        CmsJspNavElement next = (CmsJspNavElement)getElements().get(index + 1);
+                        CmsJspNavElement next = getElements().get(index + 1);
                         if (next.getNavTreeLevel() > currentLevel) {
-                            return new Boolean(true);
+                            return Boolean.TRUE;
                         }
                     }
 
-                    return new Boolean(false);
+                    return Boolean.FALSE;
                 }
             });
         }
@@ -146,10 +148,11 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      * 
      * @return a lazy initialized map
      */
-    public Map getIsCurrent() {
+    @SuppressWarnings("unchecked")
+    public Map<CmsJspNavElement, Boolean> getIsCurrent() {
 
         if (m_current == null) {
-            m_current = LazyMap.decorate(new HashMap(), new Transformer() {
+            m_current = LazyMap.decorate(new HashMap<CmsJspNavElement, Boolean>(), new Transformer() {
 
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -170,22 +173,22 @@ public class CmsTemplateMenu extends CmsJspActionElement {
 
                     // check if uri matches resource name
                     if (elem.getResourceName().equals(uri)) {
-                        return new Boolean(true);
+                        return Boolean.TRUE;
                     }
 
                     // check if the default file for the uri matches the resource name
                     String path = CmsJspNavBuilder.getDefaultFile(getCmsObject(), elem.getResourceName());
-                    if (path == null || uriElem.isInNavigation()) {
+                    if ((path == null) || ((uriElem != null) && uriElem.isInNavigation())) {
                         path = elem.getResourceName();
                     }
 
                     if (uri.equals(path)) {
-                        return new Boolean(true);
+                        return Boolean.TRUE;
                     }
 
                     // check if uri is in NOT in the navigation and so a parent folder will be marked as current
                     CmsJspNavElement navElem = uriElem;
-                    while (navElem != null && !navElem.isInNavigation()) {
+                    while ((navElem != null) && !navElem.isInNavigation()) {
 
                         String parentPath = CmsResource.getParentFolder(navElem.getResourceName());
                         if (parentPath == null) {
@@ -200,12 +203,11 @@ public class CmsTemplateMenu extends CmsJspActionElement {
                         }
                     }
 
-                    if (navElem != null && !uriElem.isInNavigation()) {
-
-                        return new Boolean(elem.equals(navElem));
+                    if ((navElem != null) && (uriElem != null) && !uriElem.isInNavigation()) {
+                        return Boolean.valueOf(elem.equals(navElem));
                     }
 
-                    return new Boolean(false);
+                    return Boolean.FALSE;
                 }
             });
         }
@@ -233,10 +235,11 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      * 
      * @return a lazy initialized map
      */
-    public Map getNavText() {
+    @SuppressWarnings("unchecked")
+    public Map<CmsJspNavElement, String> getNavText() {
 
         if (m_navText == null) {
-            m_navText = LazyMap.decorate(new HashMap(), new Transformer() {
+            m_navText = LazyMap.decorate(new HashMap<CmsJspNavElement, String>(), new Transformer() {
 
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -264,7 +267,10 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      */
     public int getTopLevel() {
 
-        CmsJspNavElement elem = (CmsJspNavElement)m_elements.get(0);
+        if ((m_elements == null) || m_elements.isEmpty()) {
+            return 0;
+        }
+        CmsJspNavElement elem = m_elements.get(0);
         if (elem == null) {
             return 0;
         }
@@ -277,7 +283,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      *
      * @param elements the list with the elements of the menu to set
      */
-    public void setElements(List elements) {
+    public void setElements(List<CmsJspNavElement> elements) {
 
         m_elements = elements;
     }

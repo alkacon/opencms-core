@@ -136,11 +136,11 @@
 			<!-- end: center column -->
 		</div>
 		
-		<!-- begin: bottom column -->
-		<div id="col4">
-			<cms:container name="col4" type="center" maxElements="3" />
+		<!-- begin: footer column -->
+		<div id="footercnt">
+			<cms:container name="footercnt" type="footer" maxElements="3" />
 		</div>
-		<!-- end: bottom column -->
+		<!-- end: footer column -->
 		
 		<!-- end: content area -->
 		

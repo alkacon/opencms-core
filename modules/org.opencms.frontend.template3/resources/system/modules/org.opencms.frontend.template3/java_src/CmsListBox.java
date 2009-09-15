@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.frontend.template3/resources/system/modules/org.opencms.frontend.template3/java_src/Attic/CmsListBox.java,v $
- * Date   : $Date: 2009/09/14 13:46:07 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/15 13:30:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
@@ -63,10 +64,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * @author Peter Bonrad
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @since 7.6
  * 
- * @since 7.0.4
+ * @version $Revision: 1.1.2.2 $ 
  */
 public class CmsListBox extends CmsJspActionElement {
 
@@ -82,6 +84,9 @@ public class CmsListBox extends CmsJspActionElement {
     /** Node name in the listbox XSD. */
     public static final String NODE_PARAMETER = "Parameter";
 
+    /** Node name in the listbox XSD. */
+    public static final String NODE_FACADE = "Facade";
+
     /** Name of the parameter with the path to the resource. */
     public static final String PARAM_FILE = "file";
 
@@ -92,7 +97,7 @@ public class CmsListBox extends CmsJspActionElement {
     private CmsXmlContent m_content;
 
     /** Lazy map with the mapped entries for the collected resources. */
-    private Map m_mappedEntries;
+    private Map<Object, CmsListBoxEntry> m_mappedEntries;
 
     /** The mapping of the xml content to the list box entries. */
     private CmsListBoxContentMapping m_mapping;
@@ -125,10 +130,11 @@ public class CmsListBox extends CmsJspActionElement {
      * 
      * @return a lazy initialized map
      */
-    public Map getMappedEntry() {
+    @SuppressWarnings("unchecked")
+    public Map<Object, CmsListBoxEntry> getMappedEntry() {
 
         if (m_mappedEntries == null) {
-            m_mappedEntries = LazyMap.decorate(new HashMap(), new Transformer() {
+            m_mappedEntries = LazyMap.decorate(new HashMap<Object, CmsListBoxEntry>(), new Transformer() {
 
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -173,12 +179,12 @@ public class CmsListBox extends CmsJspActionElement {
         Locale locale = getRequestContext().getLocale();
 
         String params = m_content.getStringValue(getCmsObject(), NODE_PARAMETER, locale);
-        List links = m_content.getValues(NODE_LINKS, locale);
+        List<I_CmsXmlContentValue> links = m_content.getValues(NODE_LINKS, locale);
 
         CmsMacroResolver macroResolver = CmsMacroResolver.newInstance();
         macroResolver.setKeepEmptyMacros(true);
         for (int i = 0; i < links.size(); i++) {
-            I_CmsXmlContentValue xmlValue = (I_CmsXmlContentValue)links.get(i);
+            I_CmsXmlContentValue xmlValue = links.get(i);
             String value = xmlValue.getStringValue(getCmsObject());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
                 StringBuffer macro = new StringBuffer(10);
@@ -193,13 +199,14 @@ public class CmsListBox extends CmsJspActionElement {
     /**
      * @see org.opencms.jsp.CmsJspBean#init(javax.servlet.jsp.PageContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super.init(context, req, res);
 
         // collect the configuration information 
         try {
-            String path = req.getParameter(PARAM_FILE);
+            String path = req.getParameter(I_CmsResourceLoader.PARAMETER_ELEMENT);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
                 // TODO
             }
@@ -227,17 +234,18 @@ public class CmsListBox extends CmsJspActionElement {
                     String maxLenghtStr = m_content.getStringValue(getCmsObject(), CmsXmlUtils.concatXpath(
                         basePath,
                         "MaxLength"), getRequestContext().getLocale());
-                    List xmlNodes = m_content.getValues(
-                        CmsXmlUtils.concatXpath(basePath, "XmlNode"),
-                        getRequestContext().getLocale());
-                    List nodes = new ArrayList(xmlNodes.size());
+                    List<I_CmsXmlContentValue> xmlNodes = m_content.getValues(CmsXmlUtils.concatXpath(
+                        basePath,
+                        "XmlNode"), getRequestContext().getLocale());
+                    List<String> nodes = new ArrayList<String>(xmlNodes.size());
                     for (int j = 0; j < xmlNodes.size(); j++) {
-                        nodes.add(((I_CmsXmlContentValue)xmlNodes.get(j)).getStringValue(getCmsObject()));
+                        nodes.add(xmlNodes.get(j).getStringValue(getCmsObject()));
                     }
                     m_mapping.addListBoxFieldMapping(nodes, field, maxLenghtStr, defaultValue);
                 }
+                m_mapping.setFacade(m_content.getValue(NODE_FACADE, getRequestContext().getLocale()).getStringValue(
+                    getCmsObject()));
             }
-
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e.getMessage(), e);
