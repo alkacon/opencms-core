@@ -3,7 +3,7 @@
     <link href="%(skinUri)editors/ade/css/customInput.css" rel="stylesheet" type="text/css" >
     
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery-1.3.2.js"></script>
-    <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery-ui-1.7.2.custom.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery-ui-1.8a1.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.jHelperTip.1.0.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.dump.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/json2.js"></script>
