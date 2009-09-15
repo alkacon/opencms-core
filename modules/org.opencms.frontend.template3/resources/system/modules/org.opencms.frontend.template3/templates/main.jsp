@@ -129,11 +129,19 @@
 					<div id="centercnt">
 						<cms:container name="centercnt" type="center" maxElements="3" />
 					</div>
+
 				</div>
 				<div class="clear">&nbsp;</div>
 			</div>
 			<!-- end: center column -->
 		</div>
+		
+		<!-- begin: bottom column -->
+		<div id="col4">
+			<cms:container name="col4" type="center" maxElements="3" />
+		</div>
+		<!-- end: bottom column -->
+		
 		<!-- end: content area -->
 		
 		<!-- begin: #footer -->

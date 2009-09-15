@@ -146,18 +146,16 @@
   #col1 {
     width: 20em;
     float: left;
-    z-index: 3;
+    
   }
 
   #col1_content {
-    position: relative;
     padding: 10px 10px 10px 0px;
-    z-index: 4;
+    
   }
   
   #col2 {
-    width: auto;
-    z-index: 1;
+    width: 39em;
     margin-left: 20em;
     margin-right: 20em;
     border-left: <c:out value="${cms.styleValue['column.divider.left']}" default="" />; 
@@ -167,21 +165,34 @@
   }
 
   #col2_content {
-    position: relative;
+    
     padding: 10px;
-    z-index: 2;
+    
   }
   
   #col3 {
     width: 20em;
     float: right;
-    z-index: 5;    
+        
   }
 
   #col3_content {
-    position: relative;
     padding: 10px 0px 10px 10px;
-    z-index: 6;
+    
+  }
+  
+  #col4 {
+      margin: 5px 0px 0px 5px;
+      clear: both;
+      height: 110px;
+  }
+  
+  #col4 div.box {
+      margin-right: 5px;
+      width: 32.5%;
+      float: left;
+      height: 100px;
+      overflow: hidden;
   }
   
   #footer {
