@@ -158,7 +158,8 @@
    
    
    var startAdd = cms.move.startAdd = function(event, ui) {
-   
+      $('.' + cms.move.HOVER_NEW).remove();
+      
       ui.self.cmsStartContainerId = ui.self.currentItem.parent().attr('id');
       // if (ui.self.cmsStartContainerId!=cms.html.favoriteListId){
       // $('#'+cms.html.favoriteMenuId).css('display', 'block');
@@ -348,13 +349,13 @@
       currentItem.removeClass('cms-helper-border cms-helper-background');
       if ($.browser.msie) {
          currentItem.get(0).style.removeAttribute('filter');
-      
+         
       } else if (currentItem) {
          currentItem.get(0).style.opacity = '';
       }
       updateContainer(startContainer);
       updateContainer(endContainer);
-
+      
       if (endContainer != cms.html.favoriteDropListId) {
          cms.toolbar.setPageChanged(true);
       }
@@ -368,6 +369,7 @@
          hoverOutFilter(currentItem, '.' + HOVER_NEW);
          hoverInWithClass(currentItem, 2, HOVER_NEW);
       }
+      resetNewElementBorders();
    }
    
    
