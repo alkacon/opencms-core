@@ -347,6 +347,10 @@ div.cms-handle a {
 	float: left;
 }
 
+div.cms-handle-reverse a {
+    float: right !important;
+}
+
 div.ui-widget-header a.ui-corner-all {
 	background-color: #eeeeee;
 }
