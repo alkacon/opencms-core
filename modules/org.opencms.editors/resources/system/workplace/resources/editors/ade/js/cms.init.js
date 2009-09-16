@@ -80,52 +80,57 @@ $.extend($.ui.sortable.prototype, {
       
    },
    _refreshItems: function(event) {
-        /*
-         * cms-addition:
-         * the arrays this.containers and queries are filled in a different order to avoid problems with favorites-dropzone
-         */
-        this.items = [];
-        this.containers = [];
-        var items = this.items;
-        var self = this;
-        var queries = [];
-        var connectWith = this._connectWith();
-        
-        if(connectWith) {
-            for (var i = connectWith.length - 1; i >= 0; i--){
-                var cur = $(connectWith[i]);
-                for (var j = cur.length - 1; j >= 0; j--){
-                    var inst = $.data(cur[j], 'sortable');
-                    if(inst && !inst.options.disabled) {
-                        queries.push([$.isFunction(inst.options.items) ? inst.options.items.call(inst.element[0], event, { item: this.currentItem }) : $(inst.options.items, inst.element), inst]);
-                        this.containers.push(inst);
-                    }
-                };
+      /*
+       * cms-addition:
+       * the arrays this.containers and queries are filled in a different order to avoid problems with favorites-dropzone
+       */
+      this.items = [];
+      this.containers = [];
+      var items = this.items;
+      var self = this;
+      var queries = [];
+      var connectWith = this._connectWith();
+      
+      if (connectWith) {
+         for (var i = connectWith.length - 1; i >= 0; i--) {
+            var cur = $(connectWith[i]);
+            for (var j = cur.length - 1; j >= 0; j--) {
+               var inst = $.data(cur[j], 'sortable');
+               if (inst && !inst.options.disabled) {
+                  queries.push([$.isFunction(inst.options.items) ? inst.options.items.call(inst.element[0], event, {
+                     item: this.currentItem
+                  }) : $(inst.options.items, inst.element), inst]);
+                  this.containers.push(inst);
+               }
             };
-        }else{
-            this.containers = [this];
-            queries = [[$.isFunction(this.options.items) ? this.options.items.call(this.element[0], event, { item: this.currentItem }) : $(this.options.items, this.element), this]];
-        }
-
-		for (var i = queries.length - 1; i >= 0; i--) {
-			var targetData = queries[i][1];
-			var _queries = queries[i][0];
-
-			for (var j=0, queriesLength = _queries.length; j < queriesLength; j++) {
-				var item = $(_queries[j]);
-
-				item.data('sortable-item', targetData); // Data for target checking (mouse manager)
-
-				items.push({
-					item: item,
-					instance: targetData,
-					width: 0, height: 0,
-					left: 0, top: 0
-				});
-			};
-		};
-
-	}
+                     };
+               } else {
+         this.containers = [this];
+         queries = [[$.isFunction(this.options.items) ? this.options.items.call(this.element[0], event, {
+            item: this.currentItem
+         }) : $(this.options.items, this.element), this]];
+      }
+      
+      for (var i = queries.length - 1; i >= 0; i--) {
+         var targetData = queries[i][1];
+         var _queries = queries[i][0];
+         
+         for (var j = 0, queriesLength = _queries.length; j < queriesLength; j++) {
+            var item = $(_queries[j]);
+            
+            item.data('sortable-item', targetData); // Data for target checking (mouse manager)
+            items.push({
+               item: item,
+               instance: targetData,
+               width: 0,
+               height: 0,
+               left: 0,
+               top: 0
+            });
+         };
+               };
+      
+         }
 })
 
 
@@ -153,9 +158,9 @@ $('document').ready(function() {
          cms.toolbar.resetNewList();
          if (!cms.data.allowEdit) {
             if (cms.data.lockedBy) {
-               alert('You can\'t edit this page. It is locked by the user "' + cms.data.lockedBy + '"');
+               cms.util.dialogAlert('You can\'t edit this page. It is locked by the user "' + cms.data.lockedBy + '"', 'Page locked');
             } else {
-               alert('You do not have the necessary permissions to edit this page.');
+               cms.util.dialogAlert('You do not have the necessary permissions to edit this page.', 'Can\'t edit');
             }
             var $buttons = $(cms.util.makeCombinedSelector(['Move', 'Delete', 'Add', 'New', 'Favorites', 'Recent'], 'button[name="%"]'));
             $buttons.unbind('click').unbind('mouseover').css('color', '#aaaaaa');
@@ -169,6 +174,10 @@ $('document').ready(function() {
                });
             }
          }
+         if (cms.util.isFirebugActive()) {
+            cms.util.dialogAlert('The Firefox Firebug plug-in is active. This may degrade the performance of Advanced Direct Edit.', 'Firebug is active')
+         }
+         
          $(document).trigger("cms-data-loaded");
          
       } else {

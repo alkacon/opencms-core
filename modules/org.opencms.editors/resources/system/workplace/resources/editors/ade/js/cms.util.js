@@ -275,49 +275,44 @@
       }
    }
    
-//   var setRight = cms.util.setRight = function(element, x) {
-//      var $elem = $(element);
-//      if ($elem.css('right')) {
-//         $elem.css('right', x);
-//      } else {
-//         $elem.css('left', x - $elem.width());
-//      }
-//   }
-//   
-//   var getRight = function(element) {
-//      var $element = $(element);
-//      return $element.offset().left + $element.width();
-//   }
-//   
-//   var getRightWindowOverhang = function(element) {
-//      var $element = $(element);
-//      var d = getRight(element) - getRight(window);
-//      return Math.max(d, 0);
-//   }
-//   
-//   var fixRightSideOverhang = cms.util.fixRightSideOverhang = function(element) {
-//      $(element).animate({
-//         'right': '-=' + getRightWindowOverhang(element)
-//      }, 5000)
-//   }
    
    /**
-    * Reverses the order of children of a given element
-    * @param {Object} context
-    * @param {Object} parentSelector
-    * @param {Object} childSelector
+    * Replacement for alert using a jQuery dialog.<p>
+    *
+    * @param {String} text the text to display in the dialog
+    * @param {String} title the title of the dialog
     */
-   var reverse = cms.util.reverse = function(elem, childSelector) {
-      var $parent = $(elem);
-      var $children = $(elem).children(childSelector);
-      var childrenArray = $children.get();
-      $children.remove();
-      childrenArray.reverse();
-      $.each(childrenArray, function(k, v) {
-         $parent.append(v);
+   var dialogAlert = cms.util.dialogAlert = function(/**String*/text, /**String*/ title) {
+      var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
+      $dialog.appendTo('body');
+      $dialog.text(text);
+      $dialog.dialog({
+         zIndex: 9999,
+         title: title,
+         modal: true,
+         close: function() {
+            $dialog.dialog('destroy');
+            $dialog.remove();
+         },
+         buttons: {
+            'OK': function() {
+               $dialog.dialog('destroy');
+               $dialog.remove();
+            }
+         }
       });
-      
    }
+   
+   
+   /**
+    * Checks whether Firebug is active.
+    *
+    */
+   var isFirebugActive = cms.util.isFirebugActive = function() {
+      return $('#_firebugConsole').size() > 0;
+   }
+   
+   
    
    
 })(cms);

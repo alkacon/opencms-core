@@ -907,3 +907,8 @@ ol.ade-forms fieldset {
 #cms-search-dialog {
 	overflow: hidden;
 }
+
+#toolbar_content .cms-move {
+	right: 3px;
+	top: 2px;
+}	
