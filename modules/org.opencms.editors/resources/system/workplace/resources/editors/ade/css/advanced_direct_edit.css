@@ -46,9 +46,9 @@
     position:fixed;
     z-index: 15000;
     width:100%;
-    background: #ffffff url(images/load.gif) no-repeat 50% 30%;
-    opacity: 0.7;
-    filter: alpha(opacity = 70);
+    background: #AAAAAA;
+    opacity: 0.6;
+    filter: alpha(opacity = 60);
     top: -34px;
     left: 0;
 }

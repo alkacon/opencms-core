@@ -235,8 +235,8 @@
       ui.self.placeholder.css({
          'background-color': 'blue',
          'border': 'solid 2px black',
-         'height': placeholderSize.height,
-         'width': (/left|right/).test(ui.placeholder.css('float')) ? placeholderSize.width : ''
+         'height': placeholderSize.height
+//         'width': (/left|right/).test(ui.placeholder.css('float')) ? placeholderSize.width : ''
       });
       
       refreshHelperPositions(ui.self);

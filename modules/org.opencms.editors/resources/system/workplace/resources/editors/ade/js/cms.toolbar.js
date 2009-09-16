@@ -3,7 +3,8 @@
    cms.toolbar.favorites = [];
    cms.toolbar.recent = [];
    cms.toolbar.recentSize = 10;
-   var toolbarActive = cms.toolbar.toolbarActive = true;
+   var toolbarReady = cms.toolbar.toolbarReady = false;
+   var leavingPage = cms.toolbar.leavingPage = false;
    var oldBodyMarginTop = 0;
    var menuIds = [cms.html.favoriteMenuId, cms.html.recentMenuId, cms.html.newMenuId, cms.html.searchMenuId];
    var sortmenus = cms.util.makeCombinedSelector(menuIds, "#% ul");
@@ -78,15 +79,6 @@
       setPageChanged(true);
    };
    
-   var setToolbarInactive = cms.toolbar.setToolbarInactive = function(){
-       cms.toolbar.toolbarActive = false;
-       $('#'+cms.html.toolbarOverlayId).css('display', 'block');
-   }
-   
-   var setToolbarActive = cms.toolbar.setToolbarActive = function(){
-       cms.toolbar.toolbarActive = true;
-       $('#'+cms.html.toolbarOverlayId).css('display', 'none');
-   }
    
    /**
     * Deletes the given elements from the favorites and recent list.<p>
@@ -308,6 +300,9 @@
    }
    
    var toggleMode = cms.toolbar.toggleMode = function() {
+      if (!cms.toolbar.toolbarReady){
+          return;
+      }
       var button = $(this);
       var adeMode = button.attr('name').toLowerCase();
       if (button.hasClass('ui-state-active')) {
@@ -516,7 +511,6 @@
    
    var addToolbar = cms.toolbar.addToolbar = function() {
       var bodyEl = $(document.body).css('position', 'relative');
-      bodyEl.append(cms.html.toolbarOverlay);
       $(window).unload(onUnload);
       initSaveDialog();
       oldBodyMarginTop = bodyEl.offset().top;
@@ -1271,6 +1265,10 @@
    var initLinks = cms.toolbar.initLinks = function() {
       $('<div id="cms-leave-dialog" style="display: none;">Do you really want to leave the page?</div>').appendTo('body');
       $('a:not(.cms-left, .cms-move, .cms-delete, .cms-edit)').live('click', function() {
+         if (!cms.toolbar.pageChanged){
+              cms.toolbar.leavingPage = true;
+              return;
+         }
          var $link = $(this);
          var target = $link.attr('href');
          var buttons = {};

@@ -144,7 +144,6 @@ $('document').ready(function() {
    // TODO: may be it is better to load the toolbar after successfully loading the data
    $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
    cms.toolbar.addToolbar();
-   cms.toolbar.setToolbarInactive();
    $('.cms-item-list div.cms-additional div').jHelperTip({
       trigger: 'hover',
       source: 'attribute',
@@ -176,9 +175,9 @@ $('document').ready(function() {
                });
             }
          }
-         cms.toolbar.setToolbarActive();
+         cms.toolbar.toolbarReady=true;
          if (cms.util.isFirebugActive()) {
-            cms.util.dialogAlert('The Firefox Firebug plug-in is active. This may degrade the performance of Advanced Direct Edit.', 'Firebug is active')
+            cms.util.dialogAlert('The Firefox Firebug plug-in is active. It is advised to deactivate it, as it may degrade the performance of OpenCms Advanced Direct Edit.', 'Firebug is active')
          }
          
          $(document).trigger("cms-data-loaded");

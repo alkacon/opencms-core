@@ -189,6 +189,9 @@
          },
          'timeout': AJAX_TIMEOUT,
          'error': function(xhr, status, error) {
+            if (cms.toolbar.leavingPage) {
+                return;
+            }
             alert(AJAX_LOAD_ERROR);
             afterLoad(false);
          },
@@ -269,6 +272,9 @@
          'data': data,
          'timeout': AJAX_TIMEOUT,
          'error': function(xhr, status, error) {
+            if (cms.toolbar.leavingPage) {
+                return;
+            }
             alert(AJAX_LOAD_ERROR);
             afterLoad(false, {});
          },
