@@ -273,7 +273,7 @@
       
       var handles = {
          'edit': cms.data.elements[elemId].allowEdit ? $('<a class="cms-edit cms-edit-enabled"></a>').click(openEditDialog) : $('<a class="cms-edit cms-edit-locked" title="locked by ' + cms.data.elements[elemId].locked + '" onclick="return false;"></a>'),
-         'move': $('<a class="cms-move"></a>').mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd),
+         'move': $('<a class="cms-move"></a>'),
          'delete': $('<a class="cms-delete"></a>').click(deleteItem)
       };
       handles[adeMode].appendTo(handleDiv);
@@ -758,14 +758,7 @@
          items: '.cms-element',
          revert: true,
          // replace ids
-         deactivate: function(event, ui) {
-            $('#' + cms.html.favoriteDropListId + ' li').hide(200);
-            $('#' + cms.html.favoriteDropMenuId).css('visibility', 'hidden');
-            $('.cms-handle').show();
-            if ($.browser.msie) {
-               setTimeout("$('.cms-element').css('display','block')", 50);
-            }
-         }
+         deactivate: cms.move.deactivateAdd
       });
    }
    
@@ -960,7 +953,6 @@
                over: cms.move.overAdd,
                out: cms.move.outAdd,
                tolerance: 'pointer',
-               opacity: 0.7,
                stop: cms.move.stopAdd,
                cursorAt: {
                   right: 15,

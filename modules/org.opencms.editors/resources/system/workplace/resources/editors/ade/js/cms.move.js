@@ -14,29 +14,26 @@
       //#
       return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId || id == cms.html.favoriteDropListId;
    }
+
    
-   var movePreparation = cms.move.movePreparation = function(event) {
-      if (cms.toolbar.timer.id) {
-         clearTimeout(cms.toolbar.timer.id);
-         cms.toolbar.timer.id = null;
-      }
-      var thisHandleDiv = $(this).closest('.cms-handle').unbind('mouseenter').unbind('mouseleave');
-      thisHandleDiv.children().removeClass('ui-corner-all ui-state-default');
-      hoverOut();
-      $('div.cms-handle').not(thisHandleDiv).hide();
-      thisHandleDiv.removeClass('ui-widget-header').children('*:not(.cms-move)').hide();
+   var deactivateAdd = cms.move.deactivateAdd = function(event, ui){
+       var handleDiv = ui.self.currentItem.children('.cms-handle');
+       if (handleDiv) {
+           cms.toolbar.initHandleDiv(handleDiv, ui.self.currentItem, cms.toolbar.timer.adeMode);
+       }
+       if ('move' != cms.toolbar.timer.adeMode) {
+           //$(this).hide();
+           handleDiv.children().hide();
+           handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
+       }
+       $('#' + cms.html.favoriteDropListId + ' li').hide(200);
+       $('#' + cms.html.favoriteDropMenuId).css('visibility', 'hidden');
+       $('.cms-handle').show();
+       if ($.browser.msie) {
+          setTimeout("$('.cms-element').css('display','block')", 50);
+       }
    }
    
-   var moveEnd = cms.move.moveEnd = function(event) {
-      var handleDiv = $(this).closest('.cms-handle');
-      if (handleDiv) {
-         cms.toolbar.initHandleDiv(handleDiv, $(this).closest('.cms-element'), cms.toolbar.timer.adeMode);
-      }
-      if ('move' != cms.toolbar.timer.adeMode) {
-         $(this).hide();
-         handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
-      }
-   }
    
    var saveZIndex = cms.move.saveZInde = function(containerId) {
       cms.move.zIndexMap[containerId] = $('#' + containerId).css('z-index');
@@ -95,10 +92,6 @@
             'zIndex': sortable.options.zIndex
          }).addClass('ui-sortable-helper cms-element').attr('rel', sortable.cmsItem.id).appendTo('#' + container.name);
          cms.toolbar.addHandles(sortable.cmsHelpers[container.name], sortable.cmsResource_id, cms.toolbar.timer.adeMode ? cms.toolbar.timer.adeMode : 'move', true);
-         if (sortable.cmsStartContainerId != cms.toolbar.currentMenuItems) {
-            $('a.cms-move', sortable.cmsHelpers[container.name]).mousedown(movePreparation).mouseup(moveEnd);
-         }
-         
          // to increase visibility of the helper
          if (helperElem.css('background-color') == 'transparent' && helperElem.css('background-image') == 'none') {
             helperElem.addClass('cms-helper-background');
@@ -137,10 +130,21 @@
    
    
    var startDragFromNormalContainer = cms.move.startDragFromNormalContainer = function(sortable) {
+      // prepare handles for move
+      if (cms.toolbar.timer.id) {
+         clearTimeout(cms.toolbar.timer.id);
+         cms.toolbar.timer.id = null;
+      }
+      var thisHandleDiv = sortable.currentItem.children('.cms-handle').unbind('mouseenter').unbind('mouseleave');
+      thisHandleDiv.children().removeClass('ui-corner-all ui-state-default');
+      hoverOut();
+      $('div.cms-handle').not(thisHandleDiv).hide();
+      thisHandleDiv.removeClass('ui-widget-header').children('*:not(.cms-move)').hide();
+      
       sortable.cmsHoverList += ', #' + sortable.cmsStartContainerId;
       cms.util.fixZIndex(sortable.cmsStartContainerId, cms.move.zIndexMap);
       // show drop zone for new favorites
-      var list_item = cms.html.formatFavListItem(sortable.cmsItem);
+      var list_item = cms.html.formatFavListItem(sortable.cmsItem).append('<a class="cms-handle cms-move"></a>');
       
       // shouldn't be able to drag new items to favorites before a resource is created 
       if (sortable.cmsItem.status == cms.data.STATUS_NEWCONFIG) {
@@ -158,6 +162,7 @@
    
    
    var startAdd = cms.move.startAdd = function(event, ui) {
+
       $('.' + cms.move.HOVER_NEW).remove();
       
       ui.self.cmsStartContainerId = ui.self.currentItem.parent().attr('id');
@@ -202,15 +207,15 @@
       });
       
       cms.move.zIndexMap = {};
-      for (container_name in cms.data.containers) {
-         initContainerForDrag(ui.self, cms.data.containers[container_name]);
-      }
+
       if (isMenuContainer(ui.self.cmsStartContainerId)) {
          startDragFromMenu(ui.self);
       } else {
          startDragFromNormalContainer(ui.self);
       }
-      
+      for (container_name in cms.data.containers) {
+         initContainerForDrag(ui.self, cms.data.containers[container_name]);
+      }     
       var placeholderSize = {
          height: ui.helper.height(),
          width: ui.helper.width()
@@ -349,13 +354,13 @@
       currentItem.removeClass('cms-helper-border cms-helper-background');
       if ($.browser.msie) {
          currentItem.get(0).style.removeAttribute('filter');
-         
+      
       } else if (currentItem) {
          currentItem.get(0).style.opacity = '';
       }
       updateContainer(startContainer);
       updateContainer(endContainer);
-      
+
       if (endContainer != cms.html.favoriteDropListId) {
          cms.toolbar.setPageChanged(true);
       }
