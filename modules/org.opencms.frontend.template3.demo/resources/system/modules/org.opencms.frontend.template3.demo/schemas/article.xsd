@@ -33,7 +33,9 @@
 				<relation element="Paragraphs/Image/Image" invalidate="parent" />
 			</relations>
 			<formatters>
-				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/article-formatter.jsp" />
+				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/article/template-formatter.jsp" />
+				<formatter type="left" uri="/system/modules/org.opencms.frontend.template3.demo/elements/article/left-formatter.jsp" />
+				<formatter type="right" uri="/system/modules/org.opencms.frontend.template3.demo/elements/article/right-formatter.jsp" />
 			</formatters>
 		</xsd:appinfo>
 

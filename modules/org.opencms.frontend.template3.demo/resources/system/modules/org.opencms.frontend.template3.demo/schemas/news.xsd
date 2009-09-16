@@ -54,7 +54,9 @@
 				<relation element="Paragraph/Image/Image" invalidate="parent" />
 			</relations>
 			<formatters>
-				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/news-formatter.jsp" />
+				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/news/template-formatter.jsp" />
+				<formatter type="left" uri="/system/modules/org.opencms.frontend.template3.demo/elements/news/left-formatter.jsp" />
+				<formatter type="right" uri="/system/modules/org.opencms.frontend.template3.demo/elements/news/right-formatter.jsp" />
 			</formatters>
 		</xsd:appinfo>
 

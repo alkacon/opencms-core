@@ -50,7 +50,9 @@
 				<relation element="Paragraph/Image/Image" invalidate="parent" />
 			</relations>
 			<formatters>
-				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/event-formatter.jsp" />
+				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3.demo/elements/event/template-formatter.jsp" />
+				<formatter type="left" uri="/system/modules/org.opencms.frontend.template3.demo/elements/event/left-formatter.jsp" />
+				<formatter type="right" uri="/system/modules/org.opencms.frontend.template3.demo/elements/event/right-formatter.jsp" />
 			</formatters>
 		</xsd:appinfo>
 

@@ -313,12 +313,73 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.template3.demo/elements/article-formatter.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3.demo/elements/article-formatter.jsp</destination>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/article</destination>
+			<type>folder</type>
+			<uuidstructure>1a54153c-a28d-11de-9072-475304f5f665</uuidstructure>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 06:49:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/article/left-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/article/left-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>ae0f1304-a28f-11de-9072-475304f5f665</uuidstructure>
+			<uuidresource>ae0f1305-a28f-11de-9072-475304f5f665</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 07:08:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/article/right-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/article/right-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>3fe29e08-a290-11de-9072-475304f5f665</uuidstructure>
+			<uuidresource>3fe29e09-a290-11de-9072-475304f5f665</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 07:12:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/article/template-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/article/template-formatter.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>acb421c4-9d0f-11de-840d-dd9f629b113b</uuidstructure>
 			<uuidresource>acb421c5-9d0f-11de-840d-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 09 Sep 2009 11:02:55 GMT</datelastmodified>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 09 Sep 2009 07:09:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -337,14 +398,245 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.template3.demo/elements/event-formatter.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3.demo/elements/event-formatter.jsp</destination>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/event</destination>
+			<type>folder</type>
+			<uuidstructure>1ff4351e-a28d-11de-9072-475304f5f665</uuidstructure>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 06:49:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/event/left-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/event/left-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>65366f20-a290-11de-9072-475304f5f665</uuidstructure>
+			<uuidresource>65366f21-a290-11de-9072-475304f5f665</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 07:13:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/event/right-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/event/right-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>a5d19694-a290-11de-9072-475304f5f665</uuidstructure>
+			<uuidresource>a5d19695-a290-11de-9072-475304f5f665</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 07:15:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/event/template-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/event/template-formatter.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>e912b18b-a1c1-11de-9d96-dd9f629b113b</uuidstructure>
 			<uuidresource>e912b18c-a1c1-11de-9d96-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 15 Sep 2009 07:00:13 GMT</datelastmodified>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 15 Sep 2009 06:35:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/item</destination>
+			<type>folder</type>
+			<uuidstructure>350a0112-a28d-11de-9072-475304f5f665</uuidstructure>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 06:50:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/item/left-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/item/left-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c044ad0c-a290-11de-9072-475304f5f665</uuidstructure>
+			<uuidresource>c044ad0d-a290-11de-9072-475304f5f665</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 07:15:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/item/right-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/item/right-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f5ff19e0-a290-11de-9072-475304f5f665</uuidstructure>
+			<uuidresource>f5ff19e1-a290-11de-9072-475304f5f665</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 07:17:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/item/template-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/item/template-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>96cbcea0-9d5a-11de-b17e-dd9f629b113b</uuidstructure>
+			<uuidresource>96cbcea1-9d5a-11de-b17e-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 16:05:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/news</destination>
+			<type>folder</type>
+			<uuidstructure>2f1b4c00-a28d-11de-9072-475304f5f665</uuidstructure>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 06:50:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/news/left-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/news/left-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>3678d6a8-a291-11de-9072-475304f5f665</uuidstructure>
+			<uuidresource>3678d6a9-a291-11de-9072-475304f5f665</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 07:19:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/news/right-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/news/right-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>681a11bc-a291-11de-9072-475304f5f665</uuidstructure>
+			<uuidresource>681a11bd-a291-11de-9072-475304f5f665</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 07:20:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;uri;params=(id)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/news/template-formatter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/news/template-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>a708a55e-a12f-11de-b279-dd9f629b113b</uuidstructure>
+			<uuidresource>a708a55f-a12f-11de-b279-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Sep 2009 13:08:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -405,30 +697,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.template3.demo/elements/item-formatter.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3.demo/elements/item-formatter.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>96cbcea0-9d5a-11de-b17e-dd9f629b113b</uuidstructure>
-			<uuidresource>96cbcea1-9d5a-11de-b17e-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 09 Sep 2009 16:07:13 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 16:05:27 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[element;uri;params=(id)]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/modules/org.opencms.frontend.template3.demo/elements/login.jsp</source>
 			<destination>system/modules/org.opencms.frontend.template3.demo/elements/login.jsp</destination>
 			<type>jsp</type>
@@ -440,30 +708,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.frontend.template3.demo/elements/news-formatter.jsp</source>
-			<destination>system/modules/org.opencms.frontend.template3.demo/elements/news-formatter.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>a708a55e-a12f-11de-b279-dd9f629b113b</uuidstructure>
-			<uuidresource>a708a55f-a12f-11de-b279-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 15 Sep 2009 06:17:17 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 14 Sep 2009 13:08:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[element;uri;params=(id)]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
