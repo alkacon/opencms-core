@@ -350,6 +350,7 @@
                var dialogWidth = self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
                var dialogHeight = self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
+               dialogHeight = dialogHeight < 700 ? dialogHeight : 700;
                var iFrameHeight = dialogHeight - 115 // mmoossen: resource name in body: - 126;
                var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
                var editorFrame = '<iframe style="border:none; width:100%; height:' + iFrameHeight + 'px;" name="cmsAdvancedDirectEditor" src="' + editorLink + '"></iframe>';
@@ -371,16 +372,17 @@
                   closeOnEscape: false,
                   draggable: true,
                   resizable: true,
-                  resize: function(event, ui) {
-                     $('#cms-editor iframe').height(ui.size.height - 70);
+                  resize: function(event) {
+                     $('#cms-editor iframe').height($(this).height() - 20);
                   },
-                  resizeStop: function(event, ui) {
-                     $('#cms-editor iframe').height(ui.size.height - 70);
+                  resizeStop: function(event) {
+                     $('#cms-editor iframe').height($(this).height() - 20);
                   },
-                  position: ['center', -20],
-                  open: function(event, ui) {
+                  position: ['center', 0],
+                  open: function(event) {
                      $('#cms_appendbox').css('z-index', 10005).append(editorDialog.parent());
                      $('a.ui-dialog-titlebar-close').hide();
+                     editorDialog.parent().css('top', '0px')
                   },
                   close: function() {
                      editorDialog.empty().dialog('destroy');
