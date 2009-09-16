@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2009/09/07 12:41:55 $
- * Version: $Revision: 1.30.2.1 $
+ * Date   : $Date: 2009/09/16 13:31:38 $
+ * Version: $Revision: 1.30.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLockFilter;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
@@ -110,26 +111,26 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsImportExport.class.getName());
 
-        suite.addTest(new TestCmsImportExport("testImportValidation"));
-        suite.addTest(new TestCmsImportExport("testImportSiblingIssue"));
-        suite.addTest(new TestCmsImportExport("testImportPermissionIssue"));
-        suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
-        suite.addTest(new TestCmsImportExport("testImportWrongSite"));
-        suite.addTest(new TestCmsImportExport("testSetup"));
-        suite.addTest(new TestCmsImportExport("testUserImport"));
-        suite.addTest(new TestCmsImportExport("testImportExportFolder"));
-        suite.addTest(new TestCmsImportExport("testImportExportId"));
+        //        suite.addTest(new TestCmsImportExport("testImportValidation"));
+        //        suite.addTest(new TestCmsImportExport("testImportSiblingIssue"));
+        //        suite.addTest(new TestCmsImportExport("testImportPermissionIssue"));
+        //        suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
+        //        suite.addTest(new TestCmsImportExport("testImportWrongSite"));
+        //        suite.addTest(new TestCmsImportExport("testSetup"));
+        //        suite.addTest(new TestCmsImportExport("testUserImport"));
+        //        suite.addTest(new TestCmsImportExport("testImportExportFolder"));
+        //        suite.addTest(new TestCmsImportExport("testImportExportId"));
         suite.addTest(new TestCmsImportExport("testImportExportBrokenLinksHtml"));
         suite.addTest(new TestCmsImportExport("testImportExportBrokenLinksXml"));
-        suite.addTest(new TestCmsImportExport("testImportResourceTranslator"));
-        suite.addTest(new TestCmsImportExport("testImportResourceTranslatorMultipleSite"));
-        suite.addTest(new TestCmsImportExport("testImportRecreatedFile"));
-        suite.addTest(new TestCmsImportExport("testImportSibling"));
-        suite.addTest(new TestCmsImportExport("testImportRecreatedSibling"));
-        suite.addTest(new TestCmsImportExport("testImportMovedResource"));
-        suite.addTest(new TestCmsImportExport("testImportChangedContent"));
-        suite.addTest(new TestCmsImportExport("testImportRelations"));
-        suite.addTest(new TestCmsImportExport("testImportContentIssue"));
+        //        suite.addTest(new TestCmsImportExport("testImportResourceTranslator"));
+        //        suite.addTest(new TestCmsImportExport("testImportResourceTranslatorMultipleSite"));
+        //        suite.addTest(new TestCmsImportExport("testImportRecreatedFile"));
+        //        suite.addTest(new TestCmsImportExport("testImportSibling"));
+        //        suite.addTest(new TestCmsImportExport("testImportRecreatedSibling"));
+        //        suite.addTest(new TestCmsImportExport("testImportMovedResource"));
+        //        suite.addTest(new TestCmsImportExport("testImportChangedContent"));
+        //        suite.addTest(new TestCmsImportExport("testImportRelations"));
+        //        suite.addTest(new TestCmsImportExport("testImportContentIssue"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -616,6 +617,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             "packages/testImportExportFolder.zip");
 
+        List<CmsResource> startResources = cms.readResources(filename, CmsResourceFilter.ALL, true);
+
         try {
             // export the folder
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
@@ -655,6 +658,33 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 }
             } catch (Throwable t) {
                 // intentionally left blank
+            }
+        }
+
+        assertResources(cms, filename, startResources);
+    }
+
+    /**
+     * Compares imported and exported resources.<p>
+     * 
+     * @param cms the current OpenCms Object
+     * @param path the path the the root folder
+     * @param startResources the list of original resources before exporting and importing
+     * 
+     * @throws CmsException in case of errors accessing the OpenCms VFS
+     */
+    private void assertResources(CmsObject cms, String path, List<CmsResource> startResources) throws CmsException {
+
+        List<CmsResource> endResources = cms.readResources(path, CmsResourceFilter.ALL, true);
+
+        for (CmsResource res : startResources) {
+            if (!endResources.contains(res)) {
+                fail("Resource " + res + " not found in imported resources!");
+            }
+        }
+        for (CmsResource res : endResources) {
+            if (!startResources.contains(res)) {
+                fail("Resource " + res + " was additionally imported!");
             }
         }
     }
@@ -957,6 +987,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             "packages/testImportPermissionIssue.zip");
 
+        List<CmsResource> startResources = cms.readResources("/", CmsResourceFilter.ALL, true);
+
         try {
             // set permissions
             cms.lockResource(filename);
@@ -1022,6 +1054,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 // intentionally left blank
             }
         }
+
+        assertResources(cms, "/", startResources);
     }
 
     /**
@@ -1775,6 +1809,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 new CmsShellReport(cms.getRequestContext().getLocale()));
             OpenCms.getPublishManager().waitWhileRunning();
 
+            List<CmsResource> startResources = cms.readResources("/", CmsResourceFilter.ALL, true);
+
             storeResources(cms, site + filename);
             storeResources(cms, sibname);
 
@@ -1829,6 +1865,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             filter.disableDateLastModifiedTest();
             assertFilter(cms, cms.readResource(site + filename), filter);
             assertFilter(cms, cms.readResource(sibname), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
+
+            assertResources(cms, "/", startResources);
+
         } finally {
             try {
                 if (zipExportFilename != null) {
@@ -1859,6 +1898,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
         try {
             cms.getRequestContext().setSiteRoot("/");
+
+            List<CmsResource> startResources = cms.readResources("/", CmsResourceFilter.ALL, true);
 
             // export the whole system
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
@@ -1892,6 +1933,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 impar);
 
             cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+
+            assertResources(cms, "/", startResources);
+
         } finally {
             try {
                 if (zipExportFilename != null) {

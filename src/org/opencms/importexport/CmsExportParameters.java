@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExportParameters.java,v $
- * Date   : $Date: 2009/06/04 14:29:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/16 13:31:37 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.2.1 $ 
  * 
  * @since 7.0.4 
  */
@@ -55,6 +55,9 @@ public class CmsExportParameters {
 
     /** If the account data should be exported. */
     private boolean m_exportAccountData;
+
+    /** Indicates if the resources are exported in one export .ZIP file (the default) or as individual files. */
+    private boolean m_exportAsFiles;
 
     /** If the project data should be exported. */
     private boolean m_exportProjectData;
@@ -81,7 +84,7 @@ public class CmsExportParameters {
     private boolean m_recursive = true;
 
     /** The resources to export.*/
-    private List m_resources;
+    private List<String> m_resources;
 
     /** If set, the manifest.xml file will be generated with dtd info. */
     private boolean m_xmlValidation;
@@ -115,7 +118,7 @@ public class CmsExportParameters {
         boolean exportResourceData,
         boolean exportUserdata,
         boolean exportProjectData,
-        List resourcesToExport,
+        List<String> resourcesToExport,
         boolean includeSystem,
         boolean includeUnchanged,
         long contentAge,
@@ -133,6 +136,7 @@ public class CmsExportParameters {
         setExportResourceData(exportResourceData);
         setExportProjectData(exportProjectData);
         setInProject(inProject);
+        setExportAsFiles(false);
     }
 
     /**
@@ -170,10 +174,10 @@ public class CmsExportParameters {
      *
      * @return the resources
      */
-    public List getResources() {
+    public List<String> getResources() {
 
         if (m_resources == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return m_resources;
     }
@@ -186,6 +190,17 @@ public class CmsExportParameters {
     public boolean isExportAccountData() {
 
         return m_exportAccountData;
+    }
+
+    /**
+     * Indicates if the resources are exported in one export .ZIP file (the default) or as individual files.<p>
+     *
+     * @return <code>false</code> if the resources will be exported in a .ZIP file, 
+     *      <code>true</code> if the resources will be exported as individual files 
+     */
+    public boolean isExportAsFiles() {
+
+        return m_exportAsFiles;
     }
 
     /**
@@ -283,6 +298,17 @@ public class CmsExportParameters {
     }
 
     /**
+     * Controls if the resources are exported in one export .ZIP file (the default) or as individual files.<p>
+     *
+     * @param exportAsZip if <code>false</code>, then the resources will be exported in a .ZIP file, 
+     *      otherwise as individual files 
+     */
+    public void setExportAsFiles(boolean exportAsZip) {
+
+        m_exportAsFiles = exportAsZip;
+    }
+
+    /**
      * Sets if to export project data.<p>
      *
      * @param exportProjectData the flag to set
@@ -374,7 +400,7 @@ public class CmsExportParameters {
      *
      * @param resources the resources to set
      */
-    public void setResources(List resources) {
+    public void setResources(List<String> resources) {
 
         m_resources = resources;
     }
