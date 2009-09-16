@@ -11,15 +11,20 @@ pageContext.setAttribute("cms", cms);
 <cms:contentload collector="singleFile" param="%(opencms.element)">
 	<cms:contentaccess var="content" />
 	<li class="cms-item">
-		<div class="ui-widget-content">
-			<div class="cms-head ui-state-hover">
+		<div class="ui-widget-content ui-corner-all">
+			<div class="cms-head ui-state-hover ui-corner-all">
 				<div class="cms-navtext">
 					<a class="cms-left ui-icon ui-icon-triangle-1-e"></a>
 					<c:if test="${cms.new}" >
 						<c:out value="${cms.typeName}" />
 					</c:if>
 					<c:if test="${!cms.new}" >
-						<c:out value="${content.vfs.property[content.file]['NavText']}" />
+						<c:if test="${!empty content.vfs.property[content.file]['NavText']}" >
+							<c:out value="${content.vfs.property[content.file]['NavText']}" />
+						</c:if>
+						<c:if test="${empty content.vfs.property[content.file]['NavText']}" >
+							<c:out value="${content.vfs.property[content.file]['Title']}" />
+						</c:if>
 					</c:if>
 				</div>
 				<span class="cms-title"><c:out value="${content.vfs.property[content.file]['Title']}" /></span>
