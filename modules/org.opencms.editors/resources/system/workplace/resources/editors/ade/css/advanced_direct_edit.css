@@ -562,9 +562,9 @@ ul.cms-item-list,ul.cms-publish-options {
 }
 
 li.cms-item,ul.options li,ul.cms-publish-options li {
+    clear: left;
 	list-style: none;
 	margin: 0 0 0 10px;
-    width: 292px;
 }
 
 #toolbar li.cms-item{

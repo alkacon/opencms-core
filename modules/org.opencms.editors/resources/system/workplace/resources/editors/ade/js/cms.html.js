@@ -168,6 +168,7 @@
       var $content = createItemFavListHtml(item.id);
       $content.prepend(deleteIcon);
       $('.cms-move', $content).remove();
+      $content.children('.ui-widget-content').addClass('cms-left');
       return cms.util.jqueryToHtml($content);
    }
    
