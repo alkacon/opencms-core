@@ -3,6 +3,7 @@
    cms.toolbar.favorites = [];
    cms.toolbar.recent = [];
    cms.toolbar.recentSize = 10;
+   var toolbarActive = cms.toolbar.toolbarActive = true;
    var oldBodyMarginTop = 0;
    var menuIds = [cms.html.favoriteMenuId, cms.html.recentMenuId, cms.html.newMenuId, cms.html.searchMenuId];
    var sortmenus = cms.util.makeCombinedSelector(menuIds, "#% ul");
@@ -76,6 +77,16 @@
       cms.move.updateContainer($container.attr('id'));
       setPageChanged(true);
    };
+   
+   var setToolbarInactive = cms.toolbar.setToolbarInactive = function(){
+       cms.toolbar.toolbarActive = false;
+       $('#'+cms.html.toolbarOverlayId).css('display', 'block');
+   }
+   
+   var setToolbarActive = cms.toolbar.setToolbarActive = function(){
+       cms.toolbar.toolbarActive = true;
+       $('#'+cms.html.toolbarOverlayId).css('display', 'none');
+   }
    
    /**
     * Deletes the given elements from the favorites and recent list.<p>
@@ -162,12 +173,12 @@
       var showMoveLeft = true;
       var setRightToZero = false;
       var inwardsHandle = false;
-      
+
       timer.handleDiv.addClass('ui-widget-header').css({
          'width': '72px',
          'right': right
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
-      
+
       if ($.browser.msie || (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width())) {
          timer.handleDiv.addClass('cms-handle-reverse').css('right', '0px');
       } else {
@@ -246,26 +257,26 @@
    
    /**
     * Initializes the hover event handler for a handle div.
-    *
+    * 
     * @param {Object} handleDiv the handle div
     * @param {Object} elem the element which the handle div belongs to
-    * @param {String} adeMode the current mode
+    * @param {String} adeMode the current mode 
     */
-   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/ adeMode) {
+   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/adeMode) {
       handleDiv.hover(function() {
-         cms.move.hoverOutFilter(elem, '.' + cms.move.HOVER_NEW);
+         cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
          cms.move.hoverIn(elem, 2);
          //cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
          startHoverTimeout(handleDiv, adeMode);
-         $('body').children('.' + cms.move.HOVER_NEW).remove();
+         $('body').children('.'+cms.move.HOVER_NEW).remove();
       }, function() {
          stopHover();
          if ($(elem).find('.' + cms.move.HOVER_NEW).size() == 0 && $(elem).hasClass('cms-new-element')) {
             cms.move.hoverInWithClass(elem, 2, cms.move.HOVER_NEW);
          }
-         $('body').children('.' + cms.move.HOVER_NEW).remove();
+         $('body').children('.'+cms.move.HOVER_NEW).remove();
       });
-      $('body').children('.' + cms.move.HOVER_NEW).remove();
+      $('body').children('.'+cms.move.HOVER_NEW).remove();
    }
    
    var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
@@ -288,7 +299,7 @@
             handles['move'].css('display', 'block');
          }
       } else {
-         initHandleDiv(handleDiv, elem, adeMode);
+          initHandleDiv(handleDiv, elem, adeMode);
       }
       handleDiv.css({
          'right': '0px',
@@ -502,13 +513,14 @@
    };
    
    var addToolbar = cms.toolbar.addToolbar = function() {
-   
+      var bodyEl = $(document.body).css('position', 'relative');
+      bodyEl.append(cms.html.toolbarOverlay);
       $(window).unload(onUnload);
       initSaveDialog();
-      var bodyEl = $(document.body).css('position', 'relative');
       oldBodyMarginTop = bodyEl.offset().top;
       var offsetLeft = bodyEl.offset().left;
       bodyEl.append(cms.html.toolbar);
+      
       bodyEl.append(cms.html.createMenu(cms.html.favoriteMenuId));
       bodyEl.append(cms.html.createFavDrop());
       
@@ -615,12 +627,12 @@
       
       var nt = cms.data.newTypes;
       /*hack
-       for (var i = 0; i < 50; i++) {
-       var t = cms.util.deepCopy(nt[0]);
-       t.type = t.type + i;
-       nt.push(t);
-       }
-       hack */
+      for (var i = 0; i < 50; i++) {
+         var t = cms.util.deepCopy(nt[0]);
+         t.type = t.type + i;
+         nt.push(t);
+      }
+      hack */
       bodyEl.append(cms.html.searchDialog(nt));
       
       var $dialog = $('#cms-search-dialog');
@@ -636,7 +648,7 @@
          cms.data.startNewSearch(sp.query, sp.types, sp.path);
          saveSearchInput(cms.data.searchParams);
       }
-      
+     
       $('#cms-search-query').keypress(function(event) {
          var keycode = event.keyCode ? event.keyCode : event.which;
          if (keycode == 13) {

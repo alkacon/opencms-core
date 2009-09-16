@@ -11,6 +11,7 @@
    var favoriteDialogId = cms.html.favoriteDialogId = 'fav-dialog';
    var publishDialogId = cms.html.publishDialogId = 'publishlist';
    var toolbarId = cms.html.toolbarId = 'toolbar';
+   var toolbarOverlayId = cms.html.toolbarOverlayId = 'toolbarOverlay';
    
    var newMenuId = cms.html.newMenuId = 'cms-new';
    var newListId = cms.html.newListId = 'cms-new-list';
@@ -202,7 +203,7 @@
    }
    
    var toolbar = cms.html.toolbar = '<div id="' + toolbarId + '">\
-	<div class="ui-widget-shadow"></div>\
+    <div class="ui-widget-shadow"></div>\
 	<div id="toolbar_background" class="ui-widget-header cms-toolbar-background">\
 	    <div id="toolbar_content" class="cms-toolbar-content">\
 	        <button name="Reset" title="Reset" class="cms-left ui-state-default ui-corner-all cms-deactivated"><span class="ui-icon cms-icon-reset"></span>&nbsp;</button>\
@@ -217,9 +218,8 @@
         </div>\
      </div></div>';
    
-   
-   
-   
+  var toolbarOverlay = cms.html.toolbarOverlay = '<div id="'+toolbarOverlayId+'"></div>';
+	
    var searchDialog = cms.html.searchDialog = function(/**Array*/types) {
       var/**String*/ html = ['<div id="', searchDialogId, '">\
           <form>\
