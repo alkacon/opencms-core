@@ -40,10 +40,10 @@
 }
 
 #toolbarOverlay {
-    height:100%;
+    height:110%;
     margin:0;
     padding:0;
-    position:absolute;
+    position:fixed;
     z-index: 15000;
     width:100%;
     background: #ffffff url(images/load.gif) no-repeat 50% 30%;
