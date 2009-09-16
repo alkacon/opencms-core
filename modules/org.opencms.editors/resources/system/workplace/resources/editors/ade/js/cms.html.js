@@ -147,7 +147,7 @@
           <div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
               <button class="cms-search-button ui-corner-all ui-state-default">Search</button>\
               <div class="cms-scrolling" style="display:none">\
-                  <ul id="cms-search-list"  class="cms-scrolling-inner">\
+                  <ul id="cms-search-list"  class="cms-scrolling-inner cms-item-list">\
                   </ul>\
               </div>\
               <div class="cms-loading">Please start your search</div>\
