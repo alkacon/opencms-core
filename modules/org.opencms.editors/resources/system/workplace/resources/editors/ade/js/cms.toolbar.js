@@ -162,12 +162,12 @@
       var showMoveLeft = true;
       var setRightToZero = false;
       var inwardsHandle = false;
-
+      
       timer.handleDiv.addClass('ui-widget-header').css({
          'width': '72px',
          'right': right
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
-
+      
       if ($.browser.msie || (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width())) {
          timer.handleDiv.addClass('cms-handle-reverse').css('right', '0px');
       } else {
@@ -246,26 +246,26 @@
    
    /**
     * Initializes the hover event handler for a handle div.
-    * 
+    *
     * @param {Object} handleDiv the handle div
     * @param {Object} elem the element which the handle div belongs to
-    * @param {String} adeMode the current mode 
+    * @param {String} adeMode the current mode
     */
-   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/adeMode) {
+   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/ adeMode) {
       handleDiv.hover(function() {
-         cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
+         cms.move.hoverOutFilter(elem, '.' + cms.move.HOVER_NEW);
          cms.move.hoverIn(elem, 2);
          //cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
          startHoverTimeout(handleDiv, adeMode);
-         $('body').children('.'+cms.move.HOVER_NEW).remove();
+         $('body').children('.' + cms.move.HOVER_NEW).remove();
       }, function() {
          stopHover();
          if ($(elem).find('.' + cms.move.HOVER_NEW).size() == 0 && $(elem).hasClass('cms-new-element')) {
             cms.move.hoverInWithClass(elem, 2, cms.move.HOVER_NEW);
          }
-         $('body').children('.'+cms.move.HOVER_NEW).remove();
+         $('body').children('.' + cms.move.HOVER_NEW).remove();
       });
-      $('body').children('.'+cms.move.HOVER_NEW).remove();
+      $('body').children('.' + cms.move.HOVER_NEW).remove();
    }
    
    var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
@@ -288,7 +288,7 @@
             handles['move'].css('display', 'block');
          }
       } else {
-          initHandleDiv(handleDiv, elem, adeMode);
+         initHandleDiv(handleDiv, elem, adeMode);
       }
       handleDiv.css({
          'right': '0px',
@@ -615,14 +615,35 @@
       
       var nt = cms.data.newTypes;
       /*hack
-      for (var i = 0; i < 50; i++) {
-         var t = cms.util.deepCopy(nt[0]);
-         t.type = t.type + i;
-         nt.push(t);
-      }
-      hack */
-     
+       for (var i = 0; i < 50; i++) {
+       var t = cms.util.deepCopy(nt[0]);
+       t.type = t.type + i;
+       nt.push(t);
+       }
+       hack */
       bodyEl.append(cms.html.searchDialog(nt));
+      
+      var $dialog = $('#cms-search-dialog');
+      
+      var _submitSearch = function() {
+         if (!cms.util.validateForm($('form', $('#cms-search-dialog')))) {
+            return;
+         }
+         $dialog.dialog('close');
+         var /**Object*/ sp = {};
+         saveSearchInput(sp);
+         searchLoadingSign.start();
+         cms.data.startNewSearch(sp.query, sp.types, sp.path);
+         saveSearchInput(cms.data.searchParams);
+      }
+      
+      $('#cms-search-query').keypress(function(event) {
+         var keycode = event.keyCode ? event.keyCode : event.which;
+         if (keycode == 13) {
+            _submitSearch();
+         }
+      });
+      
       
       $('#cms-search-dialog').dialog({
          autoOpen: false,
@@ -632,17 +653,7 @@
          title: 'Search',
          resizable: false,
          buttons: {
-            'Search': function() {
-               if (!cms.util.validateForm($('form', $('#cms-search-dialog')))) {
-                  return;
-               }
-               $(this).dialog('close');
-               var /**Object*/ sp = {};
-               saveSearchInput(sp);
-               searchLoadingSign.start();
-               cms.data.startNewSearch(sp.query, sp.types, sp.path);
-               saveSearchInput(cms.data.searchParams);
-            },
+            'Search': _submitSearch,
             'Cancel': function() {
                $(this).dialog('close');
                $('form span.ade-error', $('#cms-search-dialog')).remove();
