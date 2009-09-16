@@ -1903,6 +1903,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/load.gif</source>
+			<destination>system/workplace/resources/editors/ade/css/images/load.gif</destination>
+			<type>image</type>
+			<uuidstructure>edbecb6c-a29e-11de-af38-4def38635a4c</uuidstructure>
+			<uuidresource>edbecb6d-a29e-11de-af38-4def38635a4c</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2009 08:57:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2009 08:57:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:31,h:31]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/css/images/new_item_background.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/new_item_background.png</destination>
@@ -3979,7 +3999,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		<file>
+        <file>
 			<source>system/workplace/resources/editors/ade/lib/jquery-ui-1.8a1.js</source>
 			<destination>system/workplace/resources/editors/ade/lib/jquery-ui-1.8a1.js</destination>
 			<type>plain</type>
