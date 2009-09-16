@@ -550,6 +550,12 @@ ul.cms-item-list,ul.cms-publish-options {
 li.cms-item,ul.options li,ul.cms-publish-options li {
 	list-style: none;
 	margin: 0 0 0 10px;
+    width: 292px;
+}
+
+#toolbar li.cms-item{
+    margin: 0 auto;
+    width: 292px;
 }
 
 div.cms-menu {
@@ -680,8 +686,7 @@ li.jTreePlacement, li.jTreePlaceholder {
 }
 
 .cms-scrolling ul.cms-scrolling-inner {
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin: 0px;
 }
 
 #cms-search div.cms-loading {
@@ -696,12 +701,6 @@ li.jTreePlacement, li.jTreePlaceholder {
 	margin-bottom: 7px;
 	width: 329px;
 }
-
-#cms-search-list {
-	margin-left: 3px;
-}
-
-
 
 #cms-search div.ui-corner-bottom {
 	width: 343px;
