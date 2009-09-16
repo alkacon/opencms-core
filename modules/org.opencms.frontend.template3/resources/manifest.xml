@@ -39,6 +39,12 @@
 		</resources>
 		<parameters/>
 		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3search" id="140">
+				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/search.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3linkbox" id="141">
+				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd</param>
+			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3textbox" id="142">
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</param>
 			</type>
@@ -50,12 +56,6 @@
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3options" id="145">
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/options.xsd</param>
-			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3linkbox" id="146">
-				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd</param>
-			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3search" id="147">
-				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/search.xsd</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>

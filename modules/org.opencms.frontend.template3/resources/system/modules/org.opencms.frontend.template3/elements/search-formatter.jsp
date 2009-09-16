@@ -72,11 +72,11 @@
 String itemPath = cms.getCmsObject().getRequestContext().removeSiteRoot(((org.opencms.search.CmsSearchResult)pageContext.getAttribute("item")).getPath());
 try {
   CmsResource res = cms.getCmsObject().readResource(itemPath);
-  if (res.getTypeId() == 136) { //news
+  if (res.getTypeId() == 147) { //news
     itemPath = "/demo_t3/today/news/news.html?id=" +res.getStructureId();
-  } else if (res.getTypeId() == 138) { //event
+  } else if (res.getTypeId() == 149) { //event
     itemPath = "/demo_t3/today/events/event.html?id=" +res.getStructureId();
-  } else if (res.getTypeId() == 137) { //item
+  } else if (res.getTypeId() == 148) { //item
     String category = CmsCategoryService.getInstance().readResourceCategories(cms.getCmsObject(), itemPath).get(0).getName().toLowerCase();
     itemPath = "/demo_t3/dictionary/item_composite.html";
     if (category.contains("liliaceous")) {

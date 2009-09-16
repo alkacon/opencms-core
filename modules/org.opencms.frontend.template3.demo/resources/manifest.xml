@@ -35,40 +35,40 @@
 		</resources>
 		<parameters/>
 		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3article" id="135">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3article" id="146">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3news" id="136">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3news" id="147">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3item" id="137">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3item" id="148">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3event" id="138">
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3event" id="149">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="t3article" key="fileicon.t3article" icon="t3article.png" reference="xmlcontent">
-				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3article" order="140" autosetnavigation="false" autosettitle="false" info="desc.t3article"/>
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3article" order="100" autosetnavigation="false" autosettitle="false" info="desc.t3article"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="t3news" key="fileicon.t3news" icon="t3news.png" reference="xmlcontent">
-				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3news" order="140" autosetnavigation="false" autosettitle="false" info="desc.t3news"/>
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3news" order="110" autosetnavigation="false" autosettitle="false" info="desc.t3news"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="t3item" key="fileicon.t3item" icon="t3item.png" reference="xmlcontent">
-				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3item" order="140" autosetnavigation="false" autosettitle="false" info="desc.t3item"/>
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3item" order="120" autosetnavigation="false" autosettitle="false" info="desc.t3item"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="t3event" key="fileicon.t3event" icon="t3event.png" reference="xmlcontent">
-				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3event" order="140" autosetnavigation="false" autosettitle="false" info="desc.t3event"/>
+				<newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3event" order="130" autosetnavigation="false" autosettitle="false" info="desc.t3event"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
