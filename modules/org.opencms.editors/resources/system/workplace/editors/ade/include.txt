@@ -1,4 +1,4 @@
-﻿﻿    <link href="%(skinUri)editors/ade/css/custom-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" type="text/css" >
+﻿<link href="%(skinUri)editors/ade/css/custom-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" type="text/css" >
     <link href="%(skinUri)editors/ade/css/advanced_direct_edit.css" rel="stylesheet" type="text/css" >
     <link href="%(skinUri)editors/ade/css/customInput.css" rel="stylesheet" type="text/css" >
     
