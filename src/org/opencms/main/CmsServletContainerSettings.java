@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsServletContainerSettings.java,v $
- * Date   : $Date: 2009/09/17 11:50:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/17 13:15:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.5 
  */
@@ -621,36 +621,6 @@ public class CmsServletContainerSettings {
         m_preventResponseFlush = false;
         m_preventResponseFlush |= (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBSPHERE) > -1);
         m_preventResponseFlush |= (m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) > -1);
-
-        // the web application context 
-
-        //  if (m_servletContainerName.indexOf(SERVLET_CONTAINER_GLASSFISH) > -1) {
-        //        String contextPath = "";
-        //        try {
-        //            URL contextRelativeUrl = context.getResource("/");
-        //            LOG.fatal("url: " + contextRelativeUrl);
-        //            contextPath = contextRelativeUrl.getPath();
-        //            String[] pathTokens = CmsStringUtil.splitAsArray(contextPath, '/');
-        //            contextPath = pathTokens[pathTokens.length - 1];
-        //
-        //            // set the context path
-        //            if (contextPath.equals(getDefaultWebApplicationName())) {
-        //                m_contextPath = "";
-        //            } else {
-        //                m_contextPath = "/" + contextPath;
-        //            }
-        //
-        //            // set the OpenCms context
-        //            m_openCmsContext = m_contextPath + m_servletPath;
-        //
-        //        } catch (MalformedURLException e) {
-        //            contextPath = m_webApplicationName;
-        //            LOG.error(
-        //                Messages.get().getBundle().key(Messages.LOG_INIT_GLASSFISH_CONTEXTNAME_1, m_webApplicationName),
-        //                e);
-        //        }
-
-        //}
 
     }
 }

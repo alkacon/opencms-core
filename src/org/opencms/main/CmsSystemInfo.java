@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2009/09/17 11:50:35 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2009/09/17 13:15:37 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.67 $ 
+ * @version $Revision: 1.68 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,7 +102,7 @@ public class CmsSystemInfo {
     /** The project in which time stamps for the content notification are read. */
     private String m_notificationProject;
 
-    /** The duration after which responsibles will be notified about out-dated content (in days). */
+    /** The duration after which responsible resource owners will be notified about out-dated content (in days). */
     private int m_notificationTime;
 
     /** The absolute path to the "packages" folder (in the "real" file system). */
@@ -191,9 +191,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the abolute path to the "opencms.properties" configuration file (in the "real" file system).<p>
+     * Returns the absolute path to the "opencms.properties" configuration file (in the "real" file system).<p>
      * 
-     * @return the abolute path to the "opencms.properties" configuration file
+     * @return the absolute path to the "opencms.properties" configuration file
      */
     public String getConfigurationFileRfsPath() {
 
@@ -317,9 +317,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the duration after which responsibles will be notified about out-dated content (in days).<p>
+     * Returns the duration after which responsible resource owners will be notified about out-dated content (in days).<p>
      * 
-     * @return the duration after which responsibles will be notified about out-dated content
+     * @return the duration after which responsible resource owners will be notified about out-dated content
      */
     public int getNotificationTime() {
 
@@ -409,9 +409,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the time this OpenCms instance was started in miliseconds.<p>
+     * Returns the time this OpenCms instance was started in milliseconds.<p>
      *
-     * @return the time this OpenCms instance was started in miliseconds
+     * @return the time this OpenCms instance was started in milliseconds
      */
     public long getStartupTime() {
 
@@ -421,7 +421,7 @@ public class CmsSystemInfo {
     /**
      * Returns the identifier "OpenCms/" plus the OpenCms version number.<p>
      * 
-     * This information is used for example to identify OpenCms in http response headers.<p>
+     * This information is used for example to identify OpenCms in HTTP response headers.<p>
      *
      * @return the identifier "OpenCms/" plus the OpenCms version number
      */
@@ -512,9 +512,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Sets the duration after which responsibles will be notified about out-dated content (in days).<p>
+     * Sets the duration after which responsible resource owners will be notified about out-dated content (in days).<p>
      * 
-     * @param notificationTime the duration after which responsibles will be notified about out-dated content
+     * @param notificationTime the duration after which responsible resource owners will be notified about out-dated content
      */
     public void setNotificationTime(int notificationTime) {
 
@@ -602,11 +602,11 @@ public class CmsSystemInfo {
 
     /**
      * Initializes the version for this OpenCms, will be called by 
-     * CmsHttpServlet or CmsShell upon system startup.<p>
+     * {@link OpenCmsServlet} or {@link CmsShell} upon system startup.<p>
      */
     private void initVersion() {
 
-        // init version information with static defaults
+        // initialize version information with static defaults
         m_versionNumber = DEFAULT_VERSION_NUMBER;
         // set OpenCms version identifier with default values
         m_version = "OpenCms/" + m_versionNumber;
