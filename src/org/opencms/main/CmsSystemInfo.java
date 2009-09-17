@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2009/09/08 12:52:23 $
- * Version: $Revision: 1.66.2.1 $
+ * Date   : $Date: 2009/09/17 12:54:25 $
+ * Version: $Revision: 1.66.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.66.2.1 $ 
+ * @version $Revision: 1.66.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,14 +81,8 @@ public class CmsSystemInfo {
     /** The absolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
 
-    /** The web application context path. */
-    private String m_contextPath;
-
     /** Default encoding, can be set in opencms-system.xml. */
     private String m_defaultEncoding;
-
-    /** The default web application (usually "ROOT"). */
-    private String m_defaultWebApplicationName;
 
     /** Indicates if the version history is enabled. */
     private boolean m_historyEnabled;
@@ -111,9 +105,6 @@ public class CmsSystemInfo {
     /** The duration after which responsible resource owners will be notified about out-dated content (in days). */
     private int m_notificationTime;
 
-    /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code>. */
-    private String m_openCmsContext;
-
     /** The absolute path to the "packages" folder (in the "real" file system). */
     private String m_packagesRfsPath;
 
@@ -123,9 +114,6 @@ public class CmsSystemInfo {
     /** The servlet container specific settings. */
     private CmsServletContainerSettings m_servletContainerSettings;
 
-    /** The servlet path for the OpenCms servlet. */
-    private String m_servletPath;
-
     /** The startup time of this OpenCms instance. */
     private long m_startupTime;
 
@@ -134,15 +122,6 @@ public class CmsSystemInfo {
 
     /** The version number of this OpenCms installation. */
     private String m_versionNumber;
-
-    /** The web application name. */
-    private String m_webApplicationName;
-
-    /** The OpenCms web application servlet container folder path (in the "real" file system). */
-    private String m_webApplicationRfsPath;
-
-    /** The OpenCms web application "WEB-INF" path (in the "real" file system). */
-    private String m_webInfRfsPath;
 
     /**
      * Creates a new system info container.<p>
@@ -155,6 +134,7 @@ public class CmsSystemInfo {
         initVersion();
         // set default encoding (will be changed again later when properties have been read)
         m_defaultEncoding = DEFAULT_ENCODING.intern();
+        // this may look odd, but initMembers in OpenCms core has to initialize this (e.g. for setup to avoid NPE)
         m_servletContainerSettings = new CmsServletContainerSettings(null);
     }
 
@@ -242,7 +222,7 @@ public class CmsSystemInfo {
      */
     public String getContextPath() {
 
-        return m_contextPath;
+        return m_servletContainerSettings.getContextPath();
     }
 
     /**
@@ -266,7 +246,7 @@ public class CmsSystemInfo {
      */
     public String getDefaultWebApplicationName() {
 
-        return m_defaultWebApplicationName;
+        return m_servletContainerSettings.getDefaultWebApplicationName();
     }
 
     /**
@@ -358,7 +338,7 @@ public class CmsSystemInfo {
      */
     public String getOpenCmsContext() {
 
-        return m_openCmsContext;
+        return m_servletContainerSettings.getOpenCmsContext();
     }
 
     /**
@@ -425,7 +405,7 @@ public class CmsSystemInfo {
      */
     public String getServletPath() {
 
-        return m_servletPath;
+        return m_servletContainerSettings.getServletPath();
     }
 
     /**
@@ -476,7 +456,7 @@ public class CmsSystemInfo {
      */
     public String getWebApplicationName() {
 
-        return m_webApplicationName;
+        return m_servletContainerSettings.getWebApplicationName();
     }
 
     /**
@@ -486,7 +466,7 @@ public class CmsSystemInfo {
      */
     public String getWebApplicationRfsPath() {
 
-        return m_webApplicationRfsPath;
+        return m_servletContainerSettings.getWebApplicationRfsPath();
     }
 
     /** 
@@ -496,7 +476,7 @@ public class CmsSystemInfo {
      */
     public String getWebInfRfsPath() {
 
-        return m_webInfRfsPath;
+        return m_servletContainerSettings.getWebInfRfsPath();
     }
 
     /**
@@ -550,83 +530,13 @@ public class CmsSystemInfo {
     /** 
      * Sets the OpenCms web application "WEB-INF" directory path (in the "real" file system).<p>
      * 
-     * @param webInfRfsPath the OpenCms web application "WEB-INF" path in the "real" file system) to set
-     * @param servletMapping the OpenCms servlet mapping  (e.g. "/opencms/*")
-     * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
-     * @param defaultWebApplication the default web application name (usually "ROOT")
-     * @param servletContainerName the name of the servlet container running OpenCms
+     * @param settings container specific information needed for this system info
      */
-    protected void init(
-        String webInfRfsPath,
-        String servletMapping,
-        String webApplicationContext,
-        String defaultWebApplication,
-        String servletContainerName) {
+    protected void init(CmsServletContainerSettings settings) {
 
-        // initialize servlet container dependent parameters
-        m_servletContainerSettings = new CmsServletContainerSettings(servletContainerName);
-
-        // initialize base path
-        webInfRfsPath = webInfRfsPath.replace('\\', '/');
-        if (!webInfRfsPath.endsWith("/")) {
-            webInfRfsPath = webInfRfsPath + "/";
-        }
-        m_webInfRfsPath = CmsFileUtil.normalizePath(webInfRfsPath);
-
-        // set the servlet paths
-        if (!servletMapping.startsWith("/")) {
-            servletMapping = "/" + servletMapping;
-        }
-        if (servletMapping.endsWith("/*")) {
-            // usually a mapping must be in the form "/opencms/*", cut off all slashes
-            servletMapping = servletMapping.substring(0, servletMapping.length() - 2);
-        }
-        m_servletPath = servletMapping;
-
-        // set the default web application name
-        if (defaultWebApplication.endsWith("/")) {
-            defaultWebApplication = defaultWebApplication.substring(0, defaultWebApplication.length() - 1);
-        }
-        if (defaultWebApplication.startsWith("/")) {
-            defaultWebApplication = defaultWebApplication.substring(1);
-        }
-        m_defaultWebApplicationName = defaultWebApplication;
-
-        // set the web application name
-        File path = new File(m_webInfRfsPath);
-        m_webApplicationName = path.getParentFile().getName();
-
-        String contextPath;
-        if (webApplicationContext == null) {
-            // default: use web application context calculated form RFS path (fine with Tomcat)
-            contextPath = m_webApplicationName;
-        } else {
-            // optional: web application context was set in web.xml, required for certain 
-            // runtime environments (e.g. Jboss) that do not use the same RFS and context path
-            contextPath = webApplicationContext;
-        }
-
-        // set the context path
-        if (contextPath.equals(getDefaultWebApplicationName())) {
-            m_contextPath = "";
-        } else {
-            m_contextPath = "/" + contextPath;
-        }
-
-        // this fixes an issue with context names in Jboss
-        if (m_contextPath.endsWith(".war")) {
-            m_contextPath = m_contextPath.substring(0, m_contextPath.length() - 4);
-        }
-
-        // set the OpenCms context
-        m_openCmsContext = m_contextPath + m_servletPath;
-
-        // set the web application path
-        m_webApplicationRfsPath = path.getParentFile().getAbsolutePath();
-        if (!m_webApplicationRfsPath.endsWith(File.separator)) {
-            m_webApplicationRfsPath += File.separator;
-        }
+        m_servletContainerSettings = settings;
     }
+
 
     /**
      * Sets the default encoding, called after the configuration files have been read.<p>

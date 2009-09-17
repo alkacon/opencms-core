@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/09/08 12:52:23 $
- * Version: $Revision: 1.245.2.1 $
+ * Date   : $Date: 2009/09/17 12:54:25 $
+ * Version: $Revision: 1.245.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -141,7 +141,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.245.2.1 $ 
+ * @version $Revision: 1.245.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -1214,43 +1214,9 @@ public final class OpenCmsCore {
      */
     protected synchronized void initContext(ServletContext context) throws CmsInitException {
 
-        // read the the OpenCms servlet mapping from the servlet context parameters
-        String servletMapping = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_OPEN_CMS_SERVLET);
-        if (servletMapping == null) {
-            throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_SERVLET_0));
-        }
-
-        // check for OpenCms home (base) directory path
-        String webInfPath = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_OPEN_CMS_HOME);
-        if (CmsStringUtil.isEmpty(webInfPath)) {
-            webInfPath = CmsFileUtil.searchWebInfFolder(context.getRealPath("/"));
-            if (CmsStringUtil.isEmpty(webInfPath)) {
-                throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_FOLDER_0));
-            }
-        }
-
-        // read the the default context name from the servlet context parameters
-        String defaultWebApplication = context.getInitParameter("DefaultWebApplication");
-        if (defaultWebApplication == null) {
-            // not set in web.xml, so we use "ROOT" which should usually work since it is the (de-facto) standard 
-            defaultWebApplication = "ROOT";
-        }
-
-        // read the webapp context name from the servlet context parameters
-        // this is needed in case an application server specific deployment descriptor is used to changed the webapp context
-        String webApplicationContext = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_WEB_APPLICATION_CONTEXT);
-
-        // read the servlet container name
-        String servletContainerName = context.getServerInfo();
-
-        // now initialize the system info with the path and mapping information
-        // this will also set some system parameter from automatic servlet container recognition
-        getSystemInfo().init(
-            webInfPath,
-            servletMapping,
-            webApplicationContext,
-            defaultWebApplication,
-            servletContainerName);
+        // automatic servlet container recognition and specific behavior:
+        CmsServletContainerSettings servletContainerSettings = new CmsServletContainerSettings(context);
+        getSystemInfo().init(servletContainerSettings);
 
         // Collect the configurations 
         ExtendedProperties configuration;
