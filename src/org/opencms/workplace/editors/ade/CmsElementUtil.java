@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/09/14 13:59:35 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/09/17 06:34:30 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 7.6
  */
@@ -176,6 +177,7 @@ public final class CmsElementUtil {
         try {
             cms.getRequestContext().setUri(m_uri);
 
+            OpenCms.getLocaleManager();
             // TODO: is this going to be cached? most likely not! any alternative?
             // HACK: use the __element param for the element uri! 
             return new String(loaderFacade.getLoader().dump(
@@ -184,7 +186,7 @@ public final class CmsElementUtil {
                 m_cms.getSitePath(resource),
                 m_cms.getRequestContext().getLocale(),
                 m_req,
-                m_res));
+                m_res), CmsLocaleManager.getResourceEncoding(cms, resource));
         } finally {
             cms.getRequestContext().setUri(oldUri);
         }
