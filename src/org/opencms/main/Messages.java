@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2009/06/05 15:10:01 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2009/09/17 11:50:36 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,13 +135,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_REQUEST_SECURE_RESOURCE_0 = "ERR_REQUEST_SECURE_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SECURE_SITE_NOT_CONFIGURED_1 = "ERR_SECURE_SITE_NOT_CONFIGURED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SHOW_ERR_HANDLER_RESOURCE_2 = "ERR_SHOW_ERR_HANDLER_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_MODULE_1 = "ERR_UNKNOWN_MODULE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_SECURE_SITE_NOT_CONFIGURED_1 = "ERR_SECURE_SITE_NOT_CONFIGURED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_AVAILABLE_METHODS_1 = "GUI_SHELL_AVAILABLE_METHODS_1";
@@ -384,13 +384,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERROR_SCHEDULE_SHUTDOWN_1 = "LOG_ERROR_SCHEDULE_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1 = "LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_SECURITY_SHUTDOWN_1 = "LOG_ERROR_SECURITY_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1 = "LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1 = "LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_THREAD_SHUTDOWN_1 = "LOG_ERROR_THREAD_SHUTDOWN_1";
@@ -400,6 +400,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_CMSOBJECT_IN_HANDLER_2 = "LOG_INIT_CMSOBJECT_IN_HANDLER_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INIT_CONTEXTNAME_0 = "LOG_INIT_CONTEXTNAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_FAILURE_MESSAGE_1 = "LOG_INIT_FAILURE_MESSAGE_1";
