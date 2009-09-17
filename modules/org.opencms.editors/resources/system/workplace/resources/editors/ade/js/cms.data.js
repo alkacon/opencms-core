@@ -16,7 +16,7 @@
    var /** String */ STATUS_CHANGED = cms.data.STATUS_CHANGED = 'C';
    
    /** Timeout in ms for ajax requests. */
-   var /** long */ AJAX_TIMEOUT = 5000;
+   var /** long */ AJAX_TIMEOUT = 20000;
    
    /** Parameter 'action' value 'all' constant. */
    var /** String */ ACTION_ALL = 'all';
