@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/09/17 09:38:45 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2009/09/17 15:13:46 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.79 $ 
+ * @version $Revision: 1.80 $ 
  * 
  * @since 6.0.0 
  */
@@ -1910,6 +1910,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             IndexWriter writer = null;
             try {
+                // create a backup of the existing index
+                String backup = index.createIndexBackup();
+                if (backup != null) {
+                    index.indexSearcherOpen(backup);
+                }
                 // create a new index writer
                 writer = index.getIndexWriter(true);
 
@@ -1950,6 +1955,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     }
                 }
 
+                if (backup != null) {
+                    // remove the backup after the files have been re-indexed
+                    index.indexSearcherClose();
+                    index.removeIndexBackup(backup);
+                }
+
                 // output finish information on the report
                 report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_END_1, index.getName()),
@@ -1975,7 +1986,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     initOfflineIndexes();
                 }
                 // index has changed - initialize the index searcher instance
-                index.indexSearcherOpen();
+                index.indexSearcherOpen(index.getPath());
             }
 
             // show information about indexing runtime
@@ -2034,6 +2045,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             // unlock the index
             forceIndexUnlock(index, report, true);
+            index.indexSearcherClose();
 
             IndexWriter writer = null;
             try {
@@ -2090,7 +2102,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     }
                 }
                 // index has changed - initialize the index searcher instance
-                index.indexSearcherOpen();
+                index.indexSearcherOpen(index.getPath());
             }
 
             // output finish information on the report

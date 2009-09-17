@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/08/26 07:48:53 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2009/09/17 15:13:46 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
@@ -82,6 +83,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermsFilter;
+import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 /**
@@ -90,7 +92,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.80 $ 
+ * @version $Revision: 1.81 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,6 +128,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             return super.document(n, CONTENT_SELECTOR);
         }
     }
+
+    /** Constant for additional parameter to enable optimized full index regeneration (default: false). */
+    public static final String BACKUP_REINDEXING = CmsSearchIndex.class.getName() + ".useBackupReindexing";
 
     /** Constant for additional parameter to enable excerpt creation (default: true). */
     public static final String EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
@@ -205,6 +210,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The configured Lucene analyzer used for this index. */
     private Analyzer m_analyzer;
+
+    /** Indicates if backup re-indexing is used by this index. */
+    private boolean m_backupReindexing;
 
     /** The permission check mode for this index. */
     private boolean m_checkPermissions;
@@ -322,6 +330,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             m_createExcerpt = Boolean.valueOf(value).booleanValue();
         } else if (EXTRACT_CONTENT.equals(key)) {
             m_extractContent = Boolean.valueOf(value).booleanValue();
+        } else if (BACKUP_REINDEXING.equals(key)) {
+            m_backupReindexing = Boolean.valueOf(value).booleanValue();
         } else if (PRIORITY.equals(key)) {
             m_priority = Integer.parseInt(value);
             if (m_priority < Thread.MIN_PRIORITY) {
@@ -457,6 +467,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
         if (!isCheckingTimeRange()) {
             result.put(TIME_RANGE, Boolean.valueOf(m_checkTimeRange));
+        }
+        if (isBackupReindexing()) {
+            result.put(BACKUP_REINDEXING, Boolean.valueOf(m_backupReindexing));
         }
         // set the index writer parameter if required 
         if (m_luceneMaxMergeDocs != null) {
@@ -798,7 +811,22 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         setAnalyzer(m_fieldConfiguration.getAnalyzer(baseAnalyzer));
 
         // initialize the index searcher instance
-        indexSearcherOpen();
+        indexSearcherOpen(m_path);
+    }
+
+    /**
+     * Returns <code>true</code> if backup re-indexing is done by this index.<p>
+     *
+     * This is an optimization method by which the old extracted content is 
+     * reused in order to save performance when re-indexing.<p>
+     *
+     * @return  <code>true</code> if backup re-indexing is done by this index
+     * 
+     * @since 7.5.1
+     */
+    public boolean isBackupReindexing() {
+
+        return m_backupReindexing;
     }
 
     /**
@@ -1267,6 +1295,37 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Creates a backup of this index for optimized re-indexing of the whole content.<p>
+     * 
+     * @return the path to the backup folder, or <code>null</code> in case no backup was created
+     */
+    protected String createIndexBackup() {
+
+        if (!isBackupReindexing()) {
+            // if no backup is generated we don't need to do anything
+            return null;
+        }
+
+        // check if the target directory already exists
+        File file = new File(m_path);
+        if (!file.exists()) {
+            // index does not exist yet, so we can't backup it
+            return null;
+        }
+        String backupPath = m_path + "_backup";
+        try {
+            // open file directory for Lucene
+            FSDirectory oldDir = FSDirectory.getDirectory(file);
+            FSDirectory newDir = FSDirectory.getDirectory(backupPath);
+            Directory.copy(oldDir, newDir, true);
+        } catch (Exception e) {
+            // TODO: logging etc. 
+            backupPath = null;
+        }
+        return backupPath;
+    }
+
+    /**
      * Extends the given path query with another term for the given search root element.<p>
      * 
      * @param pathFilter the path filter to extend
@@ -1393,7 +1452,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Closes the Lucene index searcher for this index.<p>
      * 
-     * @see #indexSearcherOpen()
+     * @see #indexSearcherOpen(String)
      */
     protected synchronized void indexSearcherClose() {
 
@@ -1417,16 +1476,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * For performance reasons, one instance of the Lucene index searcher should be kept 
      * for all searches. However, if the index is updated or changed 
      * this searcher instance needs to be re-initialized.<p>
+     * 
+     * @param path the path to the index directory
      */
-    protected synchronized void indexSearcherOpen() {
+    protected synchronized void indexSearcherOpen(String path) {
 
         // first close the current searcher instance
         indexSearcherClose();
 
         // create the index searcher
         try {
-            if (IndexReader.indexExists(m_path)) {
-                IndexReader reader = new LazyContentReader(IndexReader.open(m_path));
+            if (IndexReader.indexExists(path)) {
+                IndexReader reader = new LazyContentReader(IndexReader.open(path));
                 m_searcher = new IndexSearcher(reader);
                 m_displayFilters = new HashMap<String, Filter>();
             }
@@ -1478,5 +1539,34 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         return true;
+    }
+
+    /**
+     * Removes the given backup folder of this index.<p>
+     * 
+     * @param path the backup folder to remove
+     * 
+     * @see #isBackupReindexing()
+     */
+    protected void removeIndexBackup(String path) {
+
+        if (!isBackupReindexing()) {
+            // if no backup is generated we don't need to do anything
+            return;
+        }
+
+        // check if the target directory already exists
+        File file = new File(path);
+        if (!file.exists()) {
+            // index does not exist yet
+            return;
+        }
+        try {
+            FSDirectory dir = FSDirectory.getDirectory(file);
+            dir.close();
+            CmsFileUtil.purgeDirectory(file);
+        } catch (Exception e) {
+            // TODO: logging etc. 
+        }
     }
 }

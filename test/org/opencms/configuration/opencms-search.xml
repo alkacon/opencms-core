@@ -187,6 +187,7 @@
 				<param name="org.opencms.search.CmsSearchIndex.checkPermissions">false</param>				
 				<param name="org.opencms.search.CmsSearchIndex.checkTimeRange">false</param>				
 				<param name="org.opencms.search.CmsSearchIndex.createExcerpt">false</param>				
+				<param name="org.opencms.search.CmsSearchIndex.useBackupReindexing">true</param>				
 			</index>
 		</indexes>
 		<indexsources>				
