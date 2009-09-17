@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractionResult.java,v $
- * Date   : $Date: 2009/08/26 07:48:55 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/09/17 09:38:45 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,8 +102,9 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      */
     public static final CmsExtractionResult fromBytes(byte[] bytes) {
 
-        Object obj = null;
+        CmsExtractionResult result = null;
         if (bytes != null) {
+            Object obj = null;
             // create an object out of the byte array
             try {
                 ByteArrayInputStream in = new ByteArrayInputStream(bytes);
@@ -114,11 +115,11 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
                 // ignore, null is not an instance of CmsExtractionResult
             }
             if (obj instanceof CmsExtractionResult) {
-                CmsExtractionResult result = (CmsExtractionResult)obj;
+                result = (CmsExtractionResult)obj;
                 result.m_serializedVersion = bytes;
             }
         }
-        return null;
+        return result;
     }
 
     /**

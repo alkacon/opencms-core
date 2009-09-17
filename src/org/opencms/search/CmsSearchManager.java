@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/08/26 07:48:53 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2009/09/17 09:38:45 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.78 $ 
+ * @version $Revision: 1.79 $ 
  * 
  * @since 6.0.0 
  */
@@ -1927,25 +1927,26 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
                     // new index creation, use all resources from the index source
                     indexer.rebuildIndex(writer, threadManager, source);
-                }
 
-                // wait for indexing threads to finish
-                while (threadManager.isRunning()) {
-                    try {
-                        wait(1000);
-                    } catch (InterruptedException e) {
-                        // just continue with the loop after interruption
+                    // wait for indexing threads to finish
+                    while (threadManager.isRunning()) {
+                        try {
+                            wait(1000);
+                        } catch (InterruptedException e) {
+                            // just continue with the loop after interruption
+                        }
                     }
-                }
-                // optimize the generated index
-                try {
-                    writer.optimize();
-                } catch (IOException e) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_1,
-                            index.getPath(),
-                            index.getName()), e);
+
+                    // optimize the index after each index source has been finished
+                    try {
+                        writer.optimize();
+                    } catch (IOException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(
+                                Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_1,
+                                index.getPath(),
+                                index.getName()), e);
+                        }
                     }
                 }
 

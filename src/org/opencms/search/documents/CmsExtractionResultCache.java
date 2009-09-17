@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsExtractionResultCache.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/17 09:38:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.2.0
  */
@@ -138,9 +138,8 @@ public class CmsExtractionResultCache {
     public String getCacheName(CmsResource resource, Locale locale) {
 
         // create a StringBuffer for the result
-        StringBuffer buf = new StringBuffer(m_rfsRepository.length() + 36);
+        StringBuffer buf = new StringBuffer(m_rfsRepository.length() + 72);
         buf.append(m_rfsRepository);
-        buf.append('/');
         buf.append(resource.getResourceId().toString());
 
         // check if parameters are provided, if so add them as well
