@@ -40,10 +40,10 @@
    var /** String */ ACTION_DEL = 'del';
    
    /** Parameter 'action' value 'search' constant. */
-   var /** String */ ACTION_SEARCH = 'search';
+   var /** String */ ACTION_SEARCH = cms.data.ACTION_SEARCH = 'search';
    
    /** Parameter 'action' value 'ls' constant. */
-   var /** String */ ACTION_LS = 'ls';
+   var /** String */ ACTION_LS = cms.data.ACTION_LS = 'ls';
    
    /** Editors back link uri. */
    var /** String */ BACKLINK_URL = cms.data.BACKLINK_URL = '/system/workplace/resources/editors/ade/backlink.html';
@@ -117,15 +117,6 @@
    /** Selector for deletable items. */
    var /** String */ deleteitems = cms.data.deleteitems = '.cms-element';
    
-   /** Search parameters. */
-   var /** Object */ searchParams = cms.data.searchParams = {
-      'page': -1,
-      'query': '',
-      'path': '',
-      'types': null,
-      'hasMore': false,
-      'totalResults': 0
-   };
    
    /** Search result list. */
    var /** Array<String> */ searchResultList = cms.data.searchResultList = [];
@@ -190,7 +181,7 @@
          'timeout': AJAX_TIMEOUT,
          'error': function(xhr, status, error) {
             if (cms.toolbar.leavingPage) {
-                return;
+               return;
             }
             alert(AJAX_LOAD_ERROR);
             afterLoad(false);
@@ -221,7 +212,7 @@
             }
             if (jsonData.elements) {
                elements = cms.data.elements = jsonData.elements;
-               cms.data.searchParams.types = [];
+               cms.search.searchParams.types = [];
                cms.data.newTypes = [];
                $.each(cms.data.elements, function() {
                   if (this.status == cms.data.STATUS_NEWCONFIG) {
@@ -229,7 +220,7 @@
                         'type': this.type,
                         'name': this.typename
                      });
-                     cms.data.searchParams.types.push({
+                     cms.search.searchParams.types.push({
                         'name': this.type,
                         'checked': true
                      });
@@ -273,7 +264,7 @@
          'timeout': AJAX_TIMEOUT,
          'error': function(xhr, status, error) {
             if (cms.toolbar.leavingPage) {
-                return;
+               return;
             }
             alert(AJAX_LOAD_ERROR);
             afterLoad(false, {});
@@ -597,199 +588,6 @@
    }
    
    
-   
-   /**
-    * Handler for search results, but not for the first page of results of a new search
-    * @param {Object} ok status of the AJAX request
-    * @param {Object} data the JSON data from the AJAX response.
-    */
-   var handleSearchResults = cms.data.handleSearchResults = function(ok, data) {
-   
-   
-      if (!ok) {
-         cms.toolbar.searchLoadingSign.stop();
-         return;
-      }
-      loadNecessarySubcontainerElements(data.elements, function(ok2, data2) {
-         cms.data.searchParams.page += 1;
-         var searchResults = data.elements;
-         cms.data.prepareLoadedElementsArray(searchResults);
-         for (var i = 0; i < searchResults.length; i++) {
-            var result = searchResults[i];
-            cms.data.elements[result.id] = result;
-            addSearchResult(result);
-         }
-         cms.data.searchParams.hasMore = data.hasmore;
-         cms.data.searchParams.totalResults = data.count;
-         if (cms.data.searchParams.totalResults>0) {
-             $('#cms-search-list').parent('*:hidden').css('display', 'block');
-         }else{
-             $('#cms-search-list').parent('*:visible').css('display', 'none');
-         }
-         $('#cms-search .ui-widget-shadow').css('height', $('#cms-search').outerHeight() + 1);
-         cms.toolbar.searchLoadingSign.stop();
-      });
-   }
-   
-   /**
-    * Handler for the first page of search results of a new search.<p>
-    *
-    * @param {Object} ok
-    * @param {Object} data
-    */
-   var handleNewSearchResults = cms.data.handleNewSearchResults = function(ok, data) {
-   
-      if (!ok) {
-         return;
-      }
-      handleSearchResults(ok, data);
-   }
-   
-   /**
-    * Adds an element to the list of search results in the DOM.<p>
-    *
-    * @param {Object} element the element which should be added to the search results.
-    */
-   var addSearchResult = cms.data.addSearchResult = function(/**Object*/result) {
-   
-      cms.data.searchResultList.push(result.id);
-      var $content = $(result.contents['_DEFAULT_']);
-      var $inner = $('#cms-search-list');
-      
-      $('.cms-head', $content).append('<a class="cms-handle cms-move"></a>');
-      $inner.append($content);
-      
-   }
-   
-   /**
-    * Removes all search results from the DOM.<p>
-    */
-   var clearSearchResults = cms.data.clearSearchResults = function() {
-   
-      cms.data.searchResultList.length = 0;
-      var $inner = $('#cms-search-list');
-      $inner.empty();
-      $('#cms-search .ui-widget-shadow').css('height', $('#cms-search').outerHeight() + 1);
-   }
-   
-   /**
-    * Handler for the results of the checkLastSearch function.<p>
-    *
-    * @param {boolean} ok the status of the AJAX call
-    * @param {Object} data the JSON data from the AJAX call
-    */
-   var handleLastSearch = cms.data.handleLastSearch = function(/**boolean*/ok, /**Object*/ data) {
-   
-      if (!ok) {
-         cms.toolbar.searchLoadingSign.stop();
-         return;
-      }
-      if (data.elements) {
-         prepareLoadedElementsArray(data.elements);
-         loadNecessarySubcontainerElements(data.elements, function(ok2, data2) {
-            cms.data.searchParams.page = 1;
-            cms.data.searchParams.query = data.text;
-            cms.data.searchParams.path = data.location;
-            $.each(cms.data.searchParams.types, function() {
-               this.checked = ($.inArray(this.name, data.type) >= 0);
-            });
-            
-            clearSearchResults();
-            var searchResults = data.elements;
-            for (var i = 0; i < searchResults.length; i++) {
-               var result = searchResults[i];
-               cms.data.elements[result.id] = result;
-               addSearchResult(result);
-            }
-            cms.data.searchParams.hasMore = data.hasmore;
-            cms.data.searchParams.totalResults = data.count;
-            if (cms.data.searchParams.totalResults>0) {
-                $('#cms-search-list').parent('*:hidden').css('display', 'block');
-            }else{
-                $('#cms-search-list').parent('*:visible').css('display', 'none');
-            }
-            $('#cms-search .ui-widget-shadow').css('height', $('#cms-search').outerHeight() + 1);
-            cms.toolbar.searchLoadingSign.stop();
-         });
-      }
-   }
-   
-   
-   /**
-    * Starts a new search.<p>
-    *
-    * @param {String} query the search query string
-    * @param {Array} type the string which is a comma-separated list of types to which the search is restricted
-    * @param {String} path the VFS path in which to search
-    */
-   var startNewSearch = cms.data.startNewSearch = function(/**String*/query, /**Array<String>*/ types, /**String*/ path) {
-   
-      cms.data.searchParams.page = 0;
-      cms.data.searchParams.path = path;
-      cms.data.searchParams.types = types;
-      cms.data.searchParams.query = query;
-      clearSearchResults();
-      loadJSON({
-         'action': ACTION_SEARCH,
-         'text': query,
-         'type': _stringifySearchTypes(types),
-         'location': path,
-         'page': 0
-      }, cms.data.handleNewSearchResults);
-   }
-   
-   /**
-    * Continues the last search, e.g. when scrolling past the last loaded search result.<p>
-    */
-   var continueSearch = cms.data.continueSearch = function() {
-   
-      loadJSON({
-         'action': ACTION_SEARCH,
-         'text': cms.data.searchParams.query,
-         'type': _stringifySearchTypes(cms.data.searchParams.types),
-         'location': cms.data.searchParams.path,
-         'page': cms.data.searchParams.page
-      }, cms.data.handleSearchResults);
-   }
-   
-   /**
-    * Converts the client-side search types in the server-side format.<p>
-    *
-    * @param {Array} searchTypes the search types to convert
-    */
-   var _stringifySearchTypes = function(/**Array*/searchTypes) {
-   
-      var/**Array<String>*/ sendTypes = [];
-      if (searchTypes) {
-         $.each(searchTypes, function() {
-            if (this.checked) {
-               sendTypes.push(this.name);
-            }
-         });
-      }
-      return JSON.stringify(sendTypes);
-   }
-   
-   /**
-    * Sends the current search parameters to the server to check if they're the same
-    * as the last search performed.<p>
-    *
-    * @param {Function} callback the callback that will be called after normal processing of the AJAX response
-    */
-   var checkLastSearch = cms.data.checkLastSearch = function(/**Function(boolean,Object)*/callback) {
-   
-      loadJSON({
-         'action': ACTION_LS,
-         'text': cms.data.searchParams.query,
-         'type': _stringifySearchTypes(cms.data.searchParams.types),
-         'location': cms.data.searchParams.path,
-         'page': 0
-      }, function(ok, data) {
-         cms.data.handleLastSearch(ok, data);
-         callback(ok, data);
-      });
-   };
-   
    /**
     * Initializes the counter for new elements by generating the first unused element id.<p>
     *
@@ -861,7 +659,7 @@
     * @param {Object} elements the elements which may be subcontainers
     * @param {Object} callback the callback which is called after the subcontainer elements are loaded.
     */
-   var loadNecessarySubcontainerElements = function(elements, callback) {
+   var loadNecessarySubcontainerElements = cms.data.loadNecessarySubcontainerElements = function(elements, callback) {
       var necessaryElements = {}
       var callbackWrapper = function(ok, data) {
          callback(ok, elements);

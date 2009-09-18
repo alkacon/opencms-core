@@ -13,8 +13,6 @@
    cms.toolbar.currentMenu = cms.html.favoriteMenuId;
    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
    
-   var searchLoadingSign = null;
-   
    var showPublishList = cms.toolbar.showPublishList = function() {
       var button = $(this);
       if (button.hasClass('ui-state-active')) {
@@ -165,12 +163,12 @@
       var showMoveLeft = true;
       var setRightToZero = false;
       var inwardsHandle = false;
-
+      
       timer.handleDiv.addClass('ui-widget-header').css({
          'width': '72px',
          'right': right
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
-
+      
       if ($.browser.msie || (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width())) {
          timer.handleDiv.addClass('cms-handle-reverse').css('right', '0px');
       } else {
@@ -249,26 +247,26 @@
    
    /**
     * Initializes the hover event handler for a handle div.
-    * 
+    *
     * @param {Object} handleDiv the handle div
     * @param {Object} elem the element which the handle div belongs to
-    * @param {String} adeMode the current mode 
+    * @param {String} adeMode the current mode
     */
-   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/adeMode) {
+   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/ adeMode) {
       handleDiv.hover(function() {
-         cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
+         cms.move.hoverOutFilter(elem, '.' + cms.move.HOVER_NEW);
          cms.move.hoverIn(elem, 2);
          //cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
          startHoverTimeout(handleDiv, adeMode);
-         $('body').children('.'+cms.move.HOVER_NEW).remove();
+         $('body').children('.' + cms.move.HOVER_NEW).remove();
       }, function() {
          stopHover();
          if ($(elem).find('.' + cms.move.HOVER_NEW).size() == 0 && $(elem).hasClass('cms-new-element')) {
             cms.move.hoverInWithClass(elem, 2, cms.move.HOVER_NEW);
          }
-         $('body').children('.'+cms.move.HOVER_NEW).remove();
+         $('body').children('.' + cms.move.HOVER_NEW).remove();
       });
-      $('body').children('.'+cms.move.HOVER_NEW).remove();
+      $('body').children('.' + cms.move.HOVER_NEW).remove();
    }
    
    var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
@@ -291,7 +289,7 @@
             handles['move'].css('display', 'block');
          }
       } else {
-          initHandleDiv(handleDiv, elem, adeMode);
+         initHandleDiv(handleDiv, elem, adeMode);
       }
       handleDiv.css({
          'right': '0px',
@@ -300,8 +298,8 @@
    }
    
    var toggleMode = cms.toolbar.toggleMode = function() {
-      if (!cms.toolbar.toolbarReady){
-          return;
+      if (!cms.toolbar.toolbarReady) {
+         return;
       }
       var button = $(this);
       var adeMode = button.attr('name').toLowerCase();
@@ -455,7 +453,7 @@
    /**
     * Helper class for displaying a 'Loading' sign when loading takes too long
     */
-   var LoadingSign = function(selector, waitTime, showLoading, hideLoading) {
+   var LoadingSign = cms.toolbar.LoadingSign = function(selector, waitTime, showLoading, hideLoading) {
    
       this.isLoading = false;
       
@@ -478,36 +476,6 @@
       return self;
    }
    
-   var saveSearchInput = cms.data.saveSearchInput = function(/**Object*/searchParams) {
-   
-      var/**JQuery*/ $context = $('#' + cms.html.searchDialogId);
-      searchParams.query = $('input.cms-search-query', $context).val();
-      searchParams.types = [];
-      $('input.cms-search-type', $context).each(function() {
-         var /**JQuery*/ $checkbox = $(this);
-         searchParams.types.push({
-            'name': $checkbox.attr('value'),
-            'checked': $checkbox.is(":checked")
-         });
-      });
-      searchParams.path = $('input.cms-search-path', $context).val();
-   };
-   
-   var restoreSearchInput = cms.data.restoreSearchInput = function() {
-   
-      var/**JQuery*/ $context = $('#' + cms.html.searchDialogId);
-      if (cms.data.searchParams.query) {
-         $('input.cms-search-query', $context).val(cms.data.searchParams.query);
-      }
-      if (cms.data.searchParams.types) {
-         $.each(cms.data.searchParams.types, function() {
-            $('#' + cms.html.searchTypePrefix + this.name).attr('checked', this.checked);
-         });
-      }
-      if (cms.data.searchParams.path) {
-         $('input.cms-search-path', $context).val(cms.data.searchParams.path);
-      }
-   };
    
    var addToolbar = cms.toolbar.addToolbar = function() {
       var bodyEl = $(document.body).css('position', 'relative');
@@ -522,11 +490,10 @@
       
       bodyEl.append(cms.html.createMenu(cms.html.newMenuId));
       bodyEl.append(cms.html.searchMenu);
-      searchLoadingSign = cms.toolbar.searchLoadingSign = new LoadingSign(".cms-loading", 500, showLoading, hideLoading);
-      $(document).bind('cms-data-loaded', initSearchScrollHandler);
+      $(document).bind('cms-data-loaded', cms.search.initScrollHandler);
       $('#' + cms.html.searchMenuId).find('button.cms-search-button').click(function() {
          if ($('#cms-search-dialog').length < 1) {
-            initSearch();
+            cms.search.initSearch();
             this.click();
          }
       });
@@ -585,119 +552,31 @@
    
    
    
-   /**
-    * Show the 'LOADING' text for the search menu.
-    */
-   var showLoading = function() {
-      $('.cms-loading').text('LOADING');
-   }
+   //   /**
+   //    * Show the 'LOADING' text for the search menu.
+   //    */
+   //   var showLoading = function() {
+   //      $('.cms-loading').text('LOADING');
+   //   }
    
-   /**
-    * Returns the number of search results currently in the search menu.
-    */
-   var getNumberOfSearchResults = function() {
-      return $('#cms-search-list').children().size();
-   }
+   //   /**
+   //    * Returns the number of search results currently in the search menu.
+   //    */
+   //   var getNumberOfSearchResults = function() {
+   //      return $('#cms-search-list').children().size();
+   //   }
+   //   
+   //   var getTotalNumberOfSearchResults = function() {
+   //      return cms.search.searchParams.totalResults;
+   //   }
    
-   var getTotalNumberOfSearchResults = function() {
-      return cms.data.searchParams.totalResults;
-   }
-   
-   /**
-    * Hide the LOADING text for the search menu and display the number of search results loaded instead.
-    */
-   var hideLoading = function() {
-      $('.cms-loading').text(getNumberOfSearchResults() + " of ~" + getTotalNumberOfSearchResults() + " results loaded");
-   }
-   
-   /**
-    * Initialize everything needed for the search.
-    */
-   var initSearch = cms.toolbar.initSearch = function() {
-      var bodyEl = $(document.body);
-      // scroll bar may not be at the top after reloading the page,  
-      // which could cause multiple search result pages to be reloaded 
-      $('#cms-search-list').closest('.cms-scrolling').scrollTop(0);
-      
-      
-      
-      var nt = cms.data.newTypes;
-      /*hack
-      for (var i = 0; i < 50; i++) {
-         var t = cms.util.deepCopy(nt[0]);
-         t.type = t.type + i;
-         nt.push(t);
-      }
-      hack */
-      bodyEl.append(cms.html.searchDialog(nt));
-      
-      var $dialog = $('#cms-search-dialog');
-      
-      var _submitSearch = function() {
-         if (!cms.util.validateForm($('form', $('#cms-search-dialog')))) {
-            return;
-         }
-         $dialog.dialog('close');
-         var /**Object*/ sp = {};
-         saveSearchInput(sp);
-         searchLoadingSign.start();
-         cms.data.startNewSearch(sp.query, sp.types, sp.path);
-         saveSearchInput(cms.data.searchParams);
-      }
-     
-      $('#cms-search-query').keypress(function(event) {
-         var keycode = event.keyCode ? event.keyCode : event.which;
-         if (keycode == 13) {
-            _submitSearch();
-         }
-      });
-      
-      
-      $('#cms-search-dialog').dialog({
-         autoOpen: false,
-         modal: true,
-         zIndex: 99999,
-         width: 340,
-         title: 'Search',
-         resizable: false,
-         buttons: {
-            'Search': _submitSearch,
-            'Cancel': function() {
-               $(this).dialog('close');
-               $('form span.ade-error', $('#cms-search-dialog')).remove();
-            }
-         }
-      });
-      $('input', $('#cms-search-dialog')).customInput();
-      
-      $(".cms-search-tree").click(function() {
-         window.open(cms.data.TREE_URL, '_blank', 'menubar=no');
-      })
-      
-      $(".cms-search-button").click(function() {
-         restoreSearchInput();
-         $('#cms-search-dialog').dialog('open');
-         
-      });
-   };
-   
-   
-   /**
-    * Initializes the scroll handler for the search menu.
-    */
-   var initSearchScrollHandler = cms.toolbar.initSearchScrollHandler = function() {
-      loading = searchLoadingSign;
-      var i = 0;
-      var $inner = $('#cms-search-list');
-      var $scrolling = $('#cms-search-list').closest('.cms-scrolling');
-      $scrolling.scroll(function() {
-         var delta = $inner.height() - $scrolling.height() - $scrolling.scrollTop();
-         if (delta < 64 && !loading.isLoading && cms.data.searchParams.hasMore) {
-            cms.data.continueSearch();
-            loading.start();
-         }
-      });
-   }
+   //   /**
+   //    * Hide the LOADING text for the search menu and display the number of search results loaded instead.
+   //    */
+   //   var hideLoading = function() {
+   //      $('.cms-loading').text(cms.search.getNumberOfResults() + " of ~" + cms.search.getTotalNumberOfResults() + " results loaded");
+   //   }
+   //   
    
    var destroyMove = function() {
    
@@ -781,96 +660,7 @@
       });
    }
    
-   //   var toggleMove = cms.toolbar.toggleMove = function(el) {
-   //      var button = $(this);
-   //      var containerSelector = cms.util.getContainerSelector();
-   //      if (button.hasClass('ui-state-active')) {
-   //         // disabling move-mode
-   //         $(containerSelector + ', #' + cms.html.favoriteListId).sortable('destroy');
-   //         var list = $('#' + cms.html.favoriteMenuId);
-   //         $('li.cms-item, button', list).css('display', 'block');
-   //         list.css('display', 'none');
-   //         list.get(0).style.visibility = '';
-   //         $('#' + cms.html.favoriteListId).get(0).style.height = '';
-   //         resetFavList();
-   //         $('a.cms-move').remove();
-   //         button.removeClass('ui-state-active');
-   //      } else {
-   //         $('button.ui-state-active').trigger('click');
-   //         // enabling move mode
-   //         $(containerSelector).children('.cms-element:visible').each(function() {
-   //            var elem = $(this).css('position', 'relative');
-   //            if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
-   //               var pos = cms.util.getElementPosition(elem);
-   //               var dimensions = cms.util.getInnerDimensions(elem, 1);
-   //               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
-   //                  cms.move.hoverInner(elem, 2, false);
-   //               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd).css('left', dimensions.left - pos.left + dimensions.width - 20);
-   //            } else {
-   //               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
-   //                  if (elem.hasClass('cms-subcontainer')) {
-   //                     cms.move.hoverInner(elem, 2, false);
-   //                  } else {
-   //                     cms.move.hoverIn(elem, 2);
-   //                  }
-   //               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd);
-   //            }
-   //            
-   //         });
-   //         
-   //         var list = $('#' + cms.html.favoriteMenuId);
-   //         var favbutton = $('button[name="Favorites"]');
-   //         $('li.cms-item, button', list).css('display', 'none');
-   //         list.appendTo('#toolbar_content').css({
-   //            top: 35,
-   //            left: favbutton.position().left - 217,
-   //            display: 'block',
-   //            visibility: 'hidden'
-   //         });
-   //         $('#' + cms.html.favoriteListId).css('height', '40px');
-   //         $('div.ui-widget-shadow', list).css({
-   //            top: 0,
-   //            left: -4,
-   //            width: list.outerWidth() + 8,
-   //            height: list.outerHeight() + 2,
-   //            border: '0px solid',
-   //            opacity: 0.6
-   //         });
-   //         
-   //         $(containerSelector).children('.cms-element:visible').css('position', 'relative');
-   //         $(containerSelector + ', #' + cms.html.favoriteListId).sortable({
-   //            connectWith: containerSelector + ', #' + cms.html.favoriteListId,
-   //            placeholder: 'cms-placeholder',
-   //            dropOnEmpty: true,
-   //            start: cms.move.startAdd,
-   //            beforeStop: cms.move.beforeStopFunction,
-   //            over: cms.move.overAdd,
-   //            out: cms.move.outAdd,
-   //            tolerance: 'pointer',
-   //            opacity: 0.7,
-   //            stop: cms.move.stopAdd,
-   //            cursorAt: {
-   //               right: 10,
-   //               top: 10
-   //            },
-   //            zIndex: 20000,
-   //            handle: 'a.cms-move',
-   //            items: '.cms-element',
-   //            revert: true,
-   //            deactivate: function(event, ui) {
-   //               $('#' + cms.html.favoriteListId + ' li').hide(200);
-   //               $('#' + cms.html.favoriteMenuId).css('visibility', 'hidden');
-   //               $('a.cms-move').show();
-   //               if ($.browser.msie) {
-   //                  setTimeout("$('.cms-element').css('display','block')", 10);
-   //               }
-   //            }
-   //         });
-   //         // list.css('display', 'none');
-   //         
-   //         button.addClass('ui-state-active');
-   //      }
-   //   };
+   
    
    var toggleList = cms.toolbar.toggleList = function(buttonElem, newMenu) {
       var button = $(buttonElem);
@@ -909,7 +699,7 @@
             //resetRecentList();
             loadFunction = cms.data.loadRecent;
          } else if (newMenuItems == cms.html.searchListId) {
-            loadFunction = cms.data.checkLastSearch;
+            loadFunction = cms.search.checkLastSearch;
          } else {
             // set a dummy load function that will immediately 
             // execute its callback
@@ -1265,9 +1055,9 @@
    var initLinks = cms.toolbar.initLinks = function() {
       $('<div id="cms-leave-dialog" style="display: none;">Do you really want to leave the page?</div>').appendTo('body');
       $('a:not(.cms-left, .cms-move, .cms-delete, .cms-edit)').live('click', function() {
-         if (!cms.toolbar.pageChanged){
-              cms.toolbar.leavingPage = true;
-              return;
+         if (!cms.toolbar.pageChanged) {
+            cms.toolbar.leavingPage = true;
+            return;
          }
          var $link = $(this);
          var target = $link.attr('href');

@@ -17,9 +17,10 @@
           "CURRENT_CNT_PAGE": "%(currentContainerPage)",
           "CURRENT_URI"     : "%(currentUri)",
           "LOCALE"          : "%(currentLocale)"
-        }, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}};
+        }, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}, search :{}};
     </script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.data.js"></script>
+	<script type="text/javascript" src="%(skinUri)editors/ade/js/cms.search.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.util.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.init.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.html.js"></script>
