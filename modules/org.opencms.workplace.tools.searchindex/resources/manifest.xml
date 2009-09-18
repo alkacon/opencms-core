@@ -237,7 +237,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-delete.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-delete.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -289,7 +289,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-delete.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-delete.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -341,7 +341,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-edit.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-edit.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -393,7 +393,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-editfield.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-editfield.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -441,7 +441,7 @@
 			<properties>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-editfield.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-editfield.png]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -485,7 +485,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -533,7 +533,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-new.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-new.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -581,7 +581,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-newfield.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-newfield.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -633,7 +633,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-newmapping.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-newmapping.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -685,7 +685,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-overview.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-overview.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -733,7 +733,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/fieldconfiguration-overviewfield.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/fieldconfiguration-overviewfield.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -777,7 +777,7 @@
 			<properties>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/searchindex.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/searchindex.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -817,7 +817,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/indexsource-delete.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/indexsource-delete.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -869,7 +869,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/indexsource-doctypes.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/indexsource-doctypes.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -921,7 +921,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/indexsource-edit.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/indexsource-edit.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -973,7 +973,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/indexsource.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/indexsource.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1021,7 +1021,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/indexsource-new.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/indexsource-new.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1069,7 +1069,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/indexsource.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/indexsource.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1117,7 +1117,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/indexsource-resources.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/indexsource-resources.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1169,7 +1169,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/searchindex-new.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/searchindex-new.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1213,7 +1213,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/searchindex-delete.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/searchindex-delete.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1261,7 +1261,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/searchindex-edit.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/searchindex-edit.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1309,7 +1309,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/searchindex.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/searchindex.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1357,7 +1357,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/searchindex-rebuild.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/searchindex-rebuild.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1441,7 +1441,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/searchindex-search.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/searchindex-search.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1493,7 +1493,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[/tools/searchindex/icons/big/indexsource.png]]></value>
+					<value><![CDATA[tools/searchindex/icons/big/indexsource.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
