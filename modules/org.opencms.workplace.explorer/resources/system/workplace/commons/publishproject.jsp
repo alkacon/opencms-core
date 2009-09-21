@@ -8,7 +8,7 @@
 		org.opencms.workplace.commons.Messages,
 		java.util.List,
 		java.util.ArrayList,
-		org.opencms.i18n.*
+		org.opencms.util.*
 " %><%	
 
 	// initialize the workplace class
@@ -147,16 +147,16 @@ function restartProgress() {
         + wp.getParamResource()
         + "&"
         + CmsPublishProject.PARAM_PUBLISHSIBLINGS
-        + "="
-        + "publishSiblings" 
+        + "='+"
+        + "publishSiblings+'" 
         + "&"
         + CmsPublishProject.PARAM_SUBRESOURCES
-        + "=" 
-        + "publishSubresources" 
+        + "='+" 
+        + "publishSubresources+'" 
         + "&" 
         + CmsPublishProject.PARAM_RELATEDRESOURCES
-        + "="
-        + "relatedResources" 
+        + "='+"
+        + "relatedResources+'" 
         + "&" 
         + CmsProgressWidget.PARAMETER_KEY
         + "="
@@ -169,7 +169,8 @@ function restartProgress() {
         + CmsProgressWidget.PARAMETER_REFRESHRATE
         + "=" 
         + wp.getProgress().getRefreshRate();
-	params = CmsEncoder.escapeXml(params);
+	params = CmsStringUtil.substitute(params, "<", "&lt;");
+	params = CmsStringUtil.substitute(params, ">", "&gt;");
 	%>
 	makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', '<%= params %>', 'updateProgressBar');
 }
