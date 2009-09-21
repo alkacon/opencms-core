@@ -1,5 +1,15 @@
 ﻿(function(cms) {
    var $ = jQuery;
+   
+   // current toolbar-mode ('Move', 'Edit', 'Delete' etc.)
+   var mode = cms.toolbar.mode = '';
+   
+   // hashmap for jquery-dom-objects
+   var dom = cms.toolbar.dom = {};
+   
+   var _bodyEl;
+   var _oldBodyMargin;
+   
    cms.toolbar.favorites = [];
    cms.toolbar.recent = [];
    cms.toolbar.recentSize = 10;
@@ -13,6 +23,22 @@
    cms.toolbar.currentMenu = cms.html.favoriteMenuId;
    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
    
+   /**
+    * This function will check if the given mode-string is one of the three editing modes (edit, move, delete).<p>
+    *
+    * @param {String} mode
+    * @return {boolean}
+    */
+   var _isEditingMode = function(mode) {
+      if (mode == 'edit' || mode == 'move' || mode == 'delete') {
+         return true;
+      }
+      return false;
+   }
+   
+   /**
+    * This function will display the publish dialog.<p>
+    */
    var showPublishList = cms.toolbar.showPublishList = function() {
       var button = $(this);
       if (button.hasClass('ui-state-active')) {
@@ -54,6 +80,9 @@
       }
    };
    
+   /**
+    * This event-handler function will remove an element from a container.
+    */
    var deleteItem = cms.toolbar.deleteItem = function() {
       var $item = $(this).closest('.cms-element');
       var $container = $item.parent();
@@ -123,31 +152,21 @@
       }
    };
    
-   var toggleDelete = cms.toolbar.toggleDelete = function(el) {
-      var button = $(this);
-      
-      if (button.hasClass('ui-state-active')) {
-         // disabling delete mode
-         $('a.cms-delete').remove();
-         button.removeClass('ui-state-active');
-      } else {
-         $('button.ui-state-active').trigger('click');
-         
-         // enabling delete mode
-         $(cms.data.deleteitems).each(function() {
-            var elem = $(this).css('position', 'relative');
-            $('<a class="cms-handle cms-delete"></a>').appendTo(elem).hover(function() {
-               cms.move.hoverIn(elem, 2);
-            }, cms.move.hoverOut).click(deleteItem);
-         });
-         button.addClass('ui-state-active');
-      }
-   };
+   /**
+    * Timer object used for delayed hover effect.
+    */
    var timer = cms.toolbar.timer = {
       id: null,
       handleDiv: null,
       adeMode: null
    };
+   
+   /**
+    * Starts a hover timeout.<p>
+    * 
+    * @param {Object} handleDiv
+    * @param {Object} adeMode
+    */
    var startHoverTimeout = cms.toolbar.startHoverTimeout = function(handleDiv, adeMode) {
       if (timer.id) {
          clearTimeout(timer.id);
@@ -157,6 +176,9 @@
       timer.adeMode = adeMode;
    }
    
+   /**
+    * Shows additional editing buttons within hover effect.
+    */ 
    var showAddButtons = cms.toolbar.showAddButtons = function() {
       timer.id = null;
       var right = '-48px';
@@ -170,12 +192,16 @@
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
       
       if ($.browser.msie || (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width())) {
+         // always show the additional handles within the element for IE to avoid z-index problems.
          timer.handleDiv.addClass('cms-handle-reverse').css('right', '0px');
       } else {
          timer.handleDiv.removeClass('cms-handle-reverse');
       }
    }
    
+   /**
+    * Cancels current hover timeout.<p>
+    */
    var stopHover = cms.toolbar.stopHover = function() {
       if (timer.id) {
          clearTimeout(timer.id);
@@ -193,57 +219,6 @@
       }).children().removeClass('ui-corner-all ui-state-default').not('a.cms-' + timer.adeMode).css('display', 'none');
    }
    
-   var toggleEdit = cms.toolbar.toggleEdit = function() {
-      var button = $(this);
-      if (button.hasClass('ui-state-active')) {
-         // disabling edit mode
-         $('.cms-element div.cms-handle').remove();
-         button.removeClass('ui-state-active');
-      } else {
-         $('button.ui-state-active').trigger('click');
-         // enabling edit mode
-         $(cms.data.sortitems).each(function() {
-            var elem = $(this).css('position', 'relative');
-            var elemId = elem.attr('rel');
-            if (elemId && cms.data.elements[elemId]) {
-               if (cms.data.elements[elemId].allowEdit) {
-                  var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem).hover(function() {
-                     cms.move.hoverIn(elem, 2);
-                     startHoverTimeout(handleDiv, 'edit');
-                  }, function() {
-                     stopHover();
-                  });
-                  
-                  $('<a class="cms-edit"></a>').appendTo(handleDiv).click(function() {
-                     openEditDialog(elemId);
-                  });
-                  $('<a class="cms-move"></a>').css('display', 'none').appendTo(handleDiv);
-                  $('<a class="cms-delete"></a>').css('display', 'none').appendTo(handleDiv).click(deleteItem);
-                  handleDiv.css({
-                     'left': handleDiv.position().left,
-                     'width': 24
-                  });
-               } else {
-                              // Append edit-locked-handle
-               }
-            }
-            
-         });
-         button.addClass('ui-state-active');
-      }
-   };
-   
-   var setModePositionLeft = function(handle) {
-      if ($(handle).children('*:last').hasClass('cms-' + timer.adeMode)) {
-         cms.util.reverse(handle, '*');
-      }
-   }
-   
-   var setModePositionRight = function(handle) {
-      if (!$(handle).children('*:last').hasClass('cms-' + timer.adeMode)) {
-         cms.util.reverse(handle, '*');
-      }
-   }
    
    /**
     * Initializes the hover event handler for a handle div.
@@ -257,7 +232,7 @@
          cms.move.hoverOutFilter(elem, '.' + cms.move.HOVER_NEW);
          cms.move.hoverIn(elem, 2);
          //cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
-         startHoverTimeout(handleDiv, adeMode);
+         startHoverTimeout(handleDiv, cms.toolbar.mode);
          $('body').children('.' + cms.move.HOVER_NEW).remove();
       }, function() {
          stopHover();
@@ -269,6 +244,14 @@
       $('body').children('.' + cms.move.HOVER_NEW).remove();
    }
    
+   /**
+    * Adds handle div to element.<p>
+    * 
+    * @param {Object} elem jquery-element-object
+    * @param {Object} elemId the resource-id
+    * @param {Object} adeMode current mode
+    * @param {Object} isMoving indicates if the current element is a sortable helper object
+    */
    var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
       var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem);
       
@@ -297,41 +280,182 @@
       });
    }
    
+   /**
+    * Click-event-handler for edit, move, delete, add, new, favorite and recent toolbar buttons.<p>
+    * Will enable or disable the current and previous mode.<p>
+    */
    var toggleMode = cms.toolbar.toggleMode = function() {
       if (!cms.toolbar.toolbarReady) {
          return;
       }
       var button = $(this);
-      var adeMode = button.attr('name').toLowerCase();
+      var buttonMode = button.attr('name').toLowerCase();
+      var buttonName = button.attr('name').toLowerCase();
       if (button.hasClass('ui-state-active')) {
-         // disabling edit mode
-         destroyMove();
-         $('.cms-element div.cms-handle').remove();
-         button.removeClass('ui-state-active');
+      
+         _disableMode(buttonMode);
+         
          // TODO: find a better way to rerender stuff in IE
          if ($.browser.msie) {
+            // In IE7 html-block elements may disappear after sorting, this should trigger the html to be re-rendered.
             setTimeout(function() {
                $(cms.util.getContainerSelector()).hide().show();
             }, 0);
          }
+         cms.toolbar.mode = '';
       } else {
-         $('button.ui-state-active').trigger('click');
-         // enabling edit mode
-         $(cms.util.getContainerSelector()).children('.cms-element').each(function() {
-            var elem = $(this).css('position', 'relative');
-            var elemId = elem.attr('rel');
-            if (elemId && cms.data.elements[elemId]) {
-               addHandles(elem, elemId, adeMode);
+      
+         if (_isEditingMode(cms.toolbar.mode) && _isEditingMode(buttonMode)) {
+            // reorder handles
+            
+            $('.cms-element div.cms-handle').each(function() {
+               var handleDiv = $(this);
+               $('a', handleDiv).css('display', 'none');
+               $('a.cms-' + buttonMode, handleDiv).prependTo(handleDiv).css('display', 'block');
+               
+            });
+            cms.toolbar.dom.buttons[cms.toolbar.mode].removeClass('ui-state-active');
+            
+         } else {
+            _disableMode(cms.toolbar.mode);
+            if (_isEditingMode(buttonMode)) {
+               $(cms.util.getContainerSelector()).children('.cms-element').each(function() {
+                  var elem = $(this).css('position', 'relative');
+                  var elemId = elem.attr('rel');
+                  if (elemId && cms.data.elements[elemId]) {
+                     addHandles(elem, elemId, buttonMode);
+                  }
+                  
+               });
+               initMove();
+            } else {
+            
+               var loadFunction;
+               if (buttonMode == 'favorites') {
+                  cms.toolbar.currentMenu = cms.html.favoriteMenuId;
+                  loadFunction = cms.data.loadFavorites;
+               } else if (buttonMode == 'recent') {
+                  cms.toolbar.currentMenu = cms.html.recentMenuId;
+                  loadFunction = cms.data.loadRecent;
+               } else if (buttonMode == 'add') {
+                  cms.toolbar.currentMenu = cms.html.searchMenuId;
+                  loadFunction = cms.search.checkLastSearch;
+               } else {
+                  // set a dummy load function that will immediately 
+                  // execute its callback
+                  cms.toolbar.currentMenu = cms.html.newMenuId;
+                  loadFunction = function(callback) {
+                     callback(true, null);
+                  }
+               }
+               
+               $('button.ui-state-active').trigger('click');
+               button.addClass('ui-state-active');
+               // enabling move-mode
+               // * current menu
+               loadFunction(function(ok, data) {
+                  if (!ok) {
+                     // TODO
+                     return;
+                  }
+                  if (buttonMode == 'favorites') {
+                     resetFavList();
+                  }
+                  if (buttonMode == 'recent') {
+                     resetRecentList();
+                  }
+                  if (!button.hasClass("ui-state-active")) {
+                     return;
+                  }
+                  list = $('#' + cms.toolbar.currentMenu);
+                  $('.cms-head:not(:has(a.cms-move))', list).each(function() {
+                     var elem = $(this);
+                     $('<a class="cms-handle cms-move"></a>').appendTo(elem);
+                  });
+                  list.css({
+                     /* position : 'fixed', */
+                     top: 35,
+                     left: button.position().left - 245
+                  }).slideDown(100, function() {
+                     $('div.ui-widget-shadow', list).css({
+                        top: 0,
+                        left: -3,
+                        width: list.outerWidth() + 8,
+                        height: list.outerHeight() + 1,
+                        border: '0px solid',
+                        opacity: 0.6
+                     });
+                  });
+                  $(cms.util.getContainerSelector()).css('position', 'relative').children('*:visible').css('position', 'relative');
+                  fixMenuAlignment();
+                  // * current menu
+                  $(cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenu + ' ul.cms-item-list').sortable({
+                     // * current menu
+                     connectWith: cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenu + ' ul.cms-item-list',
+                     placeholder: 'placeholder',
+                     dropOnEmpty: true,
+                     start: cms.move.startAdd,
+                     beforeStop: cms.move.beforeStopFunction,
+                     over: cms.move.overAdd,
+                     out: cms.move.outAdd,
+                     tolerance: 'pointer',
+                     stop: cms.move.stopAdd,
+                     cursorAt: {
+                        right: 15,
+                        top: 10
+                     },
+                     handle: 'a.cms-move',
+                     items: cms.data.sortitems + ', li.cms-item',
+                     revert: 100,
+                     deactivate: function(event, ui) {
+                        $('a.cms-move', $(this)).removeClass('cms-trigger');
+                        if ($.browser.msie) {
+                           // In IE7 html-block elements may disappear after sorting, this should trigger the html to be re-rendered.
+                           setTimeout(function() {
+                              $(cms.data.sortitems).css('display', 'block');
+                           }, 10);
+                        }
+                     }
+                  });
+               });
             }
             
-         });
-         initMove();
-         button.addClass('ui-state-active');
+         }
+         cms.toolbar.mode = buttonMode;
+         cms.toolbar.dom.buttons[cms.toolbar.mode].addClass('ui-state-active');
       }
    };
    
+   /**
+    * Disables the given mode.<p>
+    * 
+    * @param {Object} mode
+    */
+   var _disableMode = function(mode) {
+      if (mode == '') {
+         return;
+      }
+      if (_isEditingMode(mode)) {
+         // disabling edit/move/delete
+         var containerSelector = cms.util.getContainerSelector();
+         // replace ids
+         $(containerSelector + ', #' + cms.html.favoriteDropListId).sortable('destroy');
+         var list = $('#' + cms.html.favoriteDropMenuId);
+         $('li.cms-item, button', list).css('display', 'block');
+         resetFavList();
+         $('.cms-element div.cms-handle').remove();
+      } else {
+         // disabling add/new/favorites/recent
+         cms.toolbar.dom[mode + 'Menu'].hide();
+         $('ul', cms.toolbar.dom[mode + 'Menu']).add(cms.util.getContainerSelector()).sortable('destroy');
+      }
+      cms.toolbar.dom.buttons[mode].removeClass('ui-state-active');
+   }
    
-   
+   /**
+    * Click-event-handler for edit-handles.<p>
+    * Opens the content-editor-dialog.<p>
+    */
    var openEditDialog = cms.toolbar.openEditDialog = function() {
       var $domElement = $(this).closest('.cms-element');
       var elemId = $domElement.attr('rel');
@@ -417,11 +541,18 @@
       }
    }
    
+   /**
+    * Removes the toolbar-html-element from the dom.<p>
+    * Currently not used.<p>
+    */
    var removeToolbar = cms.toolbar.removeToolbar = function() {
       $('#toolbar').remove();
       $(document.body).css('margin-top', oldBodyMarginTop + 'px');
    };
    
+   /**
+    * Hides the toolbar.<p>
+    */
    var hideToolbar = cms.toolbar.hideToolbar = function() {
       $(document.body).animate({
          marginTop: oldBodyMarginTop + 'px'
@@ -432,6 +563,9 @@
       return false;
    };
    
+   /**
+    * Toggles the toolbar.<p>
+    */
    var toggleToolbar = cms.toolbar.toggleToolbar = function() {
       var button = $('#show-button');
       if (button.hasClass('toolbar_hidden')) {
@@ -476,50 +610,54 @@
       return self;
    }
    
-   
+   /**
+    * Adds the toolbar and most other ADE elements to the dom and initializes dialogs and event-handlers.<p>
+    */
    var addToolbar = cms.toolbar.addToolbar = function() {
-      var bodyEl = $(document.body).css('position', 'relative');
-      $(window).unload(onUnload);
+      _bodyEl = $(document.body).css('position', 'relative');
+      
+      // remember old margins/offset of body 
+      var offsetLeft = _bodyEl.offset().left;
+      _oldBodyMarginTop = _bodyEl.offset().top;
+      _bodyEl.css({
+         marginTop: oldBodyMarginTop + 34 + 'px'
+      });
+      // appending all necessary toolbar components and keeping their references
+      cms.toolbar.dom.toolbar = $(cms.html.toolbar).appendTo(_bodyEl);
+      cms.toolbar.dom.toolbarContent = $('#toolbar_content', cms.toolbar.dom.toolbar);
+      cms.toolbar.dom.favoritesMenu = $(cms.html.createMenu(cms.html.favoriteMenuId)).appendTo(cms.toolbar.dom.toolbarContent);
+      cms.toolbar.dom.favoritesDrop = $(cms.html.createFavDrop()).appendTo(cms.toolbar.dom.toolbarContent);
+      cms.toolbar.dom.newMenu = $(cms.html.createMenu(cms.html.newMenuId)).appendTo(cms.toolbar.dom.toolbarContent);
+      cms.toolbar.dom.addMenu = $(cms.html.searchMenu).appendTo(cms.toolbar.dom.toolbarContent);
+      cms.toolbar.dom.favoritesDialog = $(cms.html.favoriteDialog).appendTo(_bodyEl);
+      cms.toolbar.dom.recentMenu = $(cms.html.createMenu(cms.html.recentMenuId)).appendTo(cms.toolbar.dom.toolbarContent);
+      cms.toolbar.dom.appendBox = $('<div id="cms_appendbox"></div>').appendTo(_bodyEl);
+      cms.toolbar.dom.buttons = {
+         'edit': $('button[name="Edit"]', cms.toolbar.dom.toolbar),
+         'move': $('button[name="Move"]', cms.toolbar.dom.toolbar),
+         'delete': $('button[name="Delete"]', cms.toolbar.dom.toolbar),
+         'add': $('button[name="Add"]', cms.toolbar.dom.toolbar),
+         'new': $('button[name="New"]', cms.toolbar.dom.toolbar),
+         'recent': $('button[name="Recent"]', cms.toolbar.dom.toolbar),
+         'favorites': $('button[name="Favorites"]', cms.toolbar.dom.toolbar)
+      };
+      cms.toolbar.dom.showToolbar = $('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>').appendTo(_bodyEl);
+      
+      // initializing dialogs and event-handler
+      $(window).unload(onUnload); /* TODO */
       initSaveDialog();
-      oldBodyMarginTop = bodyEl.offset().top;
-      var offsetLeft = bodyEl.offset().left;
-      bodyEl.append(cms.html.toolbar);
-      
-      bodyEl.append(cms.html.createMenu(cms.html.favoriteMenuId));
-      bodyEl.append(cms.html.createFavDrop());
-      
-      bodyEl.append(cms.html.createMenu(cms.html.newMenuId));
-      bodyEl.append(cms.html.searchMenu);
+      $('button[name="Save"]', cms.toolbar.dom.toolbar).click(showSaveDialog);
       $(document).bind('cms-data-loaded', cms.search.initScrollHandler);
-      $('#' + cms.html.searchMenuId).find('button.cms-search-button').click(function() {
+      cms.toolbar.dom.addMenu.find('button.cms-search-button').click(function() {
          if ($('#cms-search-dialog').length < 1) {
             cms.search.initSearch();
             this.click();
          }
       });
-      bodyEl.append(cms.html.favoriteDialog);
-      bodyEl.append('<div id="cms_appendbox"></div>');
-      bodyEl.append(cms.html.createMenu(cms.html.recentMenuId));
-      bodyEl.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
-      $('#show-button').click(toggleToolbar);
-      $('#toolbar button[name="Edit"], #toolbar button[name="Move"], #toolbar button[name="Delete"]').click(toggleMode);
-      $('#toolbar button[name="Publish"]').click(showPublishList);
-      $('#toolbar button[name="Favorites"]').click(function() {
-         toggleList(this, cms.html.favoriteMenuId);
-      });
       
-      $('button[name="Save"]').click(showSaveDialog);
-      
-      $('button[name="Recent"]').click(function() {
-         toggleList(this, cms.html.recentMenuId);
-      });
-      
-      $('button[name="New"]').click(function() {
-         toggleList(this, cms.html.newMenuId);
-      });
-      
-      $('button[name="Add"]').click(function() {
-         toggleList(this, cms.html.searchMenuId);
+      cms.toolbar.dom.showToolbar.click(toggleToolbar);
+      $.each(cms.toolbar.dom.buttons, function() {
+         this.click(toggleMode);
       });
       
       $('#toolbar button, #show-button').mouseover(function() {
@@ -529,9 +667,7 @@
       }).mouseout(function() {
          $(this).removeClass('ui-state-hover');
       });
-      bodyEl.animate({
-         marginTop: oldBodyMarginTop + 34 + 'px'
-      }, 200);
+      
       
       initFavDialog();
       initLinks();
@@ -539,8 +675,12 @@
       
       $(window).resize(fixMenuAlignment);
       
+      
    };
    
+   /**
+    * Moves the dropdown menus to the right if required for small screen-sizes.<p>
+    */
    var fixMenuAlignment = function() {
       $('.cms-menu').each(function() {
          var $elem = $(this);
@@ -552,32 +692,9 @@
    
    
    
-   //   /**
-   //    * Show the 'LOADING' text for the search menu.
-   //    */
-   //   var showLoading = function() {
-   //      $('.cms-loading').text('LOADING');
-   //   }
-   
-   //   /**
-   //    * Returns the number of search results currently in the search menu.
-   //    */
-   //   var getNumberOfSearchResults = function() {
-   //      return $('#cms-search-list').children().size();
-   //   }
-   //   
-   //   var getTotalNumberOfSearchResults = function() {
-   //      return cms.search.searchParams.totalResults;
-   //   }
-   
-   //   /**
-   //    * Hide the LOADING text for the search menu and display the number of search results loaded instead.
-   //    */
-   //   var hideLoading = function() {
-   //      $('.cms-loading').text(cms.search.getNumberOfResults() + " of ~" + cms.search.getTotalNumberOfResults() + " results loaded");
-   //   }
-   //   
-   
+   /**
+    * Removes the sortable-object and event-handler.<p>
+    */
    var destroyMove = function() {
    
       var containerSelector = cms.util.getContainerSelector();
@@ -585,33 +702,26 @@
       $(containerSelector + ', #' + cms.html.favoriteDropListId).sortable('destroy');
       var list = $('#' + cms.html.favoriteDropMenuId);
       $('li.cms-item, button', list).css('display', 'block');
-      //list.css('display', 'none');
-      //list.get(0).style.visibility = '';
-      
-      // replace ids
-      //$('#' + cms.html.favoriteDropListId).get(0).style.height = '';
       resetFavList();
-      //      $('a.cms-move').remove();
+      $('.cms-element div.cms-handle').remove();
    };
    
+   /**
+    * Initializes the sortable.<p>
+    */
    var initMove = function() {
       var containerSelector = cms.util.getContainerSelector();
       
       // replace id
-      var list = $('#' + cms.html.favoriteDropMenuId);
+      var list = cms.toolbar.dom.favoritesDrop;
       var favbutton = $('button[name="Favorites"]');
       
       //unnecessary
       $('li.cms-item, button', list).css('display', 'none');
       
-      //stays
-      var left = 97;
-      if ($.browser.msie) {
-         left = 97;
-      }
-      list.appendTo('#toolbar_content').css({
+      list.css({
          top: 35,
-         left: left,
+         left: 97,
          display: 'block',
          visibility: 'hidden'
       });
@@ -662,138 +772,26 @@
    
    
    
-   var toggleList = cms.toolbar.toggleList = function(buttonElem, newMenu) {
-      var button = $(buttonElem);
-      var newMenuItems = $('#' + newMenu).find("ul").attr('id');
-      if (button.hasClass('ui-state-active')) {
-      
-      
-         //this line makes all elements vanish in IE
-         $(cms.util.getContainerSelector() + ', ' + sortmenus).sortable('destroy');
-         // TODO: find a better way to render stuff in IE
-         if ($.browser.msie) {
-            setTimeout(function() {
-               $(cms.util.getContainerSelector()).hide().show();
-            }, 0);
-         }
-         
-         
-         var hideMenus = function() {
-            $(menus).hide();
-         }
-         $(menuHandles).remove();
-         hideMenus();
-         // HACK: sometimes hideMenus has no effect is executed synchronously
-         window.setTimeout(hideMenus, 30);
-         
-         button.removeClass('ui-state-active');
-         
-      } else {
-         cms.toolbar.currentMenu = newMenu;
-         cms.toolbar.currentMenuItems = newMenuItems
-         var loadFunction;
-         if (newMenuItems == cms.html.favoriteListId) {
-            //resetFavList();
-            loadFunction = cms.data.loadFavorites;
-         } else if (newMenuItems == cms.html.recentListId) {
-            //resetRecentList();
-            loadFunction = cms.data.loadRecent;
-         } else if (newMenuItems == cms.html.searchListId) {
-            loadFunction = cms.search.checkLastSearch;
-         } else {
-            // set a dummy load function that will immediately 
-            // execute its callback
-            loadFunction = function(callback) {
-               callback(true, null);
-            }
-         }
-         
-         $('button.ui-state-active').trigger('click');
-         button.addClass('ui-state-active');
-         // enabling move-mode
-         // * current menu
-         loadFunction(function(ok, data) {
-            if (!ok) {
-               // TODO
-               return;
-            }
-            if (newMenuItems == cms.html.favoriteListId) {
-               resetFavList();
-            }
-            if (newMenuItems == cms.html.recentListId) {
-               resetRecentList();
-            }
-            if (!button.hasClass("ui-state-active")) {
-               return;
-            }
-            list = $('#' + cms.toolbar.currentMenu);
-            $('.cms-head', list).each(function() {
-               var elem = $(this);
-               $('<a class="cms-handle cms-move"></a>').appendTo(elem);
-            });
-            var leftOffset = -209;
-            if (true || buttonElem.name == 'Add') {
-               leftOffset -= 36;
-            }
-            list.appendTo('#toolbar_content').css({
-               /* position : 'fixed', */
-               top: 35,
-               left: $(buttonElem).position().left + leftOffset
-            }).slideDown(100, function() {
-               $('div.ui-widget-shadow', list).css({
-                  top: 0,
-                  left: -3,
-                  width: list.outerWidth() + 8,
-                  height: list.outerHeight() + 1,
-                  border: '0px solid',
-                  opacity: 0.6
-               });
-            });
-            $(cms.util.getContainerSelector()).css('position', 'relative').children('*:visible').css('position', 'relative');
-            fixMenuAlignment();
-            // * current menu
-            $(cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems).sortable({
-               // * current menu
-               connectWith: cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems,
-               placeholder: 'placeholder',
-               dropOnEmpty: true,
-               start: cms.move.startAdd,
-               beforeStop: cms.move.beforeStopFunction,
-               over: cms.move.overAdd,
-               out: cms.move.outAdd,
-               tolerance: 'pointer',
-               stop: cms.move.stopAdd,
-               cursorAt: {
-                  right: 15,
-                  top: 10
-               },
-               handle: 'a.cms-move',
-               items: cms.data.sortitems + ', li.cms-item',
-               revert: 100,
-               deactivate: function(event, ui) {
-                  $('a.cms-move', $(this)).removeClass('cms-trigger');
-                  if ($.browser.msie) {
-                     // TODO: please comment this kind of code!!!
-                     setTimeout(function() {
-                        $(cms.data.sortitems).css('display', 'block');
-                     }, 10);
-                  }
-               }
-            });
-         });
-      }
-   };
-   
+   /**
+    * Click-event-handler for delete icon in favorites dialog.<p>
+    */
    var clickFavDeleteIcon = cms.toolbar.clickFavDeleteIcon = function() {
       var button = $(this);
       var toRemove = button.parent().parent();
       toRemove.remove();
    };
    
+   /**
+    * Utility function to generate a string representing an array.<p>
+    * @param {Object} arr
+    */
    var arrayToString = function(arr) {
       return "[" + arr.join(", ") + "]";
    };
    
+   /**
+    * Adds another item to the favorite-list.<p>
+    */
    var saveFavorites = cms.toolbar.saveFavorites = function() {
       cms.toolbar.favorites.length = 0;
       $("#fav-dialog > ul > li.cms-item").each(function() {
@@ -802,6 +800,9 @@
       });
    };
    
+   /**
+    * Persists favorite-list on server.<p>
+    */
    var favEditOK = cms.toolbar.favEditOK = function() {
       $(this).dialog("close");
       saveFavorites();
@@ -812,10 +813,16 @@
       });
    }
    
+   /**
+    * Closes favorites edit dialog.<p>
+    */
    var favEditCancel = cms.toolbar.favEditCancel = function() {
       $(this).dialog("close");
    }
    
+   /**
+    * Initializes the favorites edit dialog.<p>
+    */
    var initFavDialog = cms.toolbar.initFavDialog = function() {
       $("#fav-edit").click(showFavDialog);
       var buttons = {
@@ -841,6 +848,9 @@
       
    };
    
+    /**
+    * Initializes the favorites edit dialog items.<p>
+    */
    var initFavDialogItems = cms.toolbar.initFavDialogItems = function() {
       $("#fav-dialog > ul").empty();
       var html = []
@@ -853,15 +863,11 @@
          axis: 'y',
          forcePlaceholderSize: true
       });
-      //		$('#fav-dialog div.cms-additional div').jHelperTip( {
-      //			trigger :'hover',
-      //			source :'attribute',
-      //			attrName :'alt',
-      //			topOff :-30,
-      //			opacity :0.8
-      //		});
    };
    
+   /**
+    * Opens the favorites edit dialog.<p>
+    */
    var showFavDialog = cms.toolbar.showFavDialog = function() {
       var button = $(this);
       if (button.hasClass("ui-state-active")) {
@@ -875,6 +881,9 @@
       }
    };
    
+   /**
+    * Shows/hides the additional item info in list-views.<p>
+    */
    var toggleAdditionalInfo = cms.toolbar.toggleAdditionalInfo = function() {
       var elem = $(this);
       var $additionalInfo = elem.closest('.ui-widget-content').children('.cms-additional');
@@ -899,7 +908,9 @@
       return false;
    };
    
-   
+   /**
+    * Reloads the favorites-list.<p>
+    */
    var resetFavList = cms.toolbar.resetFavList = function() {
       $("#" + cms.html.favoriteMenuId + " .cms-item-list > li.cms-item").remove();
       var $favlist = $("#" + cms.html.favoriteMenuId + " .cms-item-list");
@@ -908,35 +919,31 @@
       }
    }
    
+  
    
+//   var createNewListItemHtml = function(type, name) {
+//      return '<div rel="' + type + '">' + name + '</div>';
+//   };
+//   
+//   
+//   var createNewListItemHtml = function(type, name) {
+//      var html = ['<li class="cms-item" rel="', type, '">\
+//		<div class="cms-left ui-widget-content">\
+//			<div class="cms-head ui-state-hover">\
+//				<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>', type, '</div>\
+//				<span class="cms-title">', name, '</span>\
+//				<span class="cms-file-icon"></span>\
+//				<a class="cms-move cms-handle"></a>\
+//			</div>\
+//		</div>\
+//		<br clear="all" />\
+//	</li>'];
+//      return html.join('');
+//   };
    
-   var typesForNew = {
-      'ttnews': 'News article',
-      'ttevent': 'Event'
-   }
-   
-   
-   var createNewListItemHtml = function(type, name) {
-      return '<div rel="' + type + '">' + name + '</div>';
-   };
-   
-   
-   var createNewListItemHtml = function(type, name) {
-      var html = ['<li class="cms-item" rel="', type, '">\
-		<div class="cms-left ui-widget-content">\
-			<div class="cms-head ui-state-hover">\
-				<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>', type, '</div>\
-				<span class="cms-title">', name, '</span>\
-				<span class="cms-file-icon"></span>\
-				<a class="cms-move cms-handle"></a>\
-			</div>\
-		</div>\
-		<br clear="all" />\
-	</li>'];
-      return html.join('');
-   };
-   
-   
+   /**
+    * Reloads the new items list.<p>
+    */
    var resetNewList = cms.toolbar.resetNewList = function() {
       $('#' + cms.html.newMenuId + " li.cms-item").remove();
       var $newlist = $('#' + cms.html.newMenuId + " ul");
@@ -949,6 +956,11 @@
       }
    }
    
+   /**
+    * Adds item to recent list.<p>
+    * 
+    * @param {Object} itemId
+    */
    var addToRecent = cms.toolbar.addToRecent = function(itemId) {
       cms.util.addUnique(cms.toolbar.recent, itemId, cms.toolbar.recentSize);
       cms.data.persistRecent(function(ok) {
@@ -959,7 +971,9 @@
    }
    
    
-   //====================================================================================================
+   /**
+    * Initializes save dialog.<p>
+    */
    var initSaveDialog = function() {
       $('<div id="cms-save-dialog" style="display:none;" title="Save page">\
       <p>\
@@ -989,7 +1003,9 @@
    }
    
    
-   
+   /**
+    * Opens save dialog.<p>
+    */
    var showSaveDialog = function() {
       if (!$(this).hasClass('cms-deactivated')) {
          $('button[name="Save"]').addClass('ui-state-active');
@@ -997,6 +1013,10 @@
       }
    }
    
+   /**
+    * Persists container-page on server.<p>
+    * @param {Object} callback
+    */
    var savePage = cms.toolbar.savePage = function(callback) {
    
       cms.data.persistContainers(function(ok) {
@@ -1010,7 +1030,15 @@
       });
    }
    
+   /**
+    * Flag to indicate the status of the page (changed/unchanged).<p>
+    */
    var pageChanged = cms.toolbar.pageChanged = false;
+   
+   /**
+    * Sets the pageChanged flag and activates the save and reset-buttons.<p>
+    * @param {Object} newValue
+    */
    var setPageChanged = cms.toolbar.setPageChanged = function(newValue) {
       pageChanged = cms.toolbar.pageChanged = newValue;
       if (newValue) {
@@ -1020,6 +1048,9 @@
       }
    }
    
+   /**
+    * On-unload event-handler to prevent accidental data-loss.<p> 
+    */
    var onUnload = cms.toolbar.onUnload = function() {
       if (cms.toolbar.pageChanged) {
          var saveChanges = window.confirm("Do you want to save your changes made on " + window.location.href + "?\n (Cancel will discard changes)");
@@ -1131,7 +1162,9 @@
       
    }
    
-   //===========================================================================================================
+   /**
+    * Reloads the recent-list.<p>
+    */
    var resetRecentList = cms.toolbar.resetRecentList = function() {
       $("#" + cms.html.recentMenuId + " li.cms-item").remove();
       var $recentlist = $("#" + cms.html.recentListId);
