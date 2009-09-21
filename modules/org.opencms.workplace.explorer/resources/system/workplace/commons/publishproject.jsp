@@ -7,7 +7,8 @@
 		org.opencms.workplace.commons.CmsPublishResourcesList,
 		org.opencms.workplace.commons.Messages,
 		java.util.List,
-		java.util.ArrayList
+		java.util.ArrayList,
+		org.opencms.util.*
 " %><%	
 
 	// initialize the workplace class
@@ -134,7 +135,44 @@ function restartProgress() {
 		return;
 	}
 	progressState = 1;
-	makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', 'action=resourcereport&<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources + '&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=' + relatedResources + '&<%= CmsProgressWidget.PARAMETER_KEY%>=<%= wp.getProgress().getKey()%>' + '&<%= CmsProgressWidget.PARAMETER_SHOWWAITTIME%>=<%= wp.getProgress().getShowWaitTime()%>' + '&<%= CmsProgressWidget.PARAMETER_REFRESHRATE%>=<%= wp.getProgress().getRefreshRate()%>', 'updateProgressBar');
+	<%
+    String params = "action=resourcereport"
+    	+ "&" 
+        + CmsMultiDialog.PARAM_RESOURCELIST 
+        + "=" 
+        + wp.getParamResourcelist()
+        + "&"
+        + CmsDialog.PARAM_RESOURCE
+        + "="
+        + wp.getParamResource()
+        + "&"
+        + CmsPublishProject.PARAM_PUBLISHSIBLINGS
+        + "='+"
+        + "publishSiblings+'" 
+        + "&"
+        + CmsPublishProject.PARAM_SUBRESOURCES
+        + "='+" 
+        + "publishSubresources+'" 
+        + "&" 
+        + CmsPublishProject.PARAM_RELATEDRESOURCES
+        + "='+"
+        + "relatedResources+'" 
+        + "&" 
+        + CmsProgressWidget.PARAMETER_KEY
+        + "="
+        + wp.getProgress().getKey()
+        + "&"
+        + CmsProgressWidget.PARAMETER_SHOWWAITTIME
+        + "="
+        + wp.getProgress().getShowWaitTime()
+        + "&"
+        + CmsProgressWidget.PARAMETER_REFRESHRATE
+        + "=" 
+        + wp.getProgress().getRefreshRate();
+	params = CmsStringUtil.substitute(params, "<", "&lt;");
+	params = CmsStringUtil.substitute(params, ">", "&gt;");
+	%>
+	makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', '<%= params %>', 'updateProgressBar');
 }
 
 // -->
