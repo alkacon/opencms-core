@@ -151,16 +151,6 @@
       return keys;
    }
    
-   
-   var getCompatibleContainers = function(item) {
-      var result = [];
-      for (containerName in cms.data.containers) {
-         if (item.contents[containerName]) {
-            result.push(containerName);
-         }
-      }
-   }
-   
    /**
     * Returns a selector that matches all containers on the page.
     */
@@ -205,26 +195,6 @@
       cms.data.reloadItems(getKeys(toLoad), afterLoad);
       
    };
-   
-   
-   
-   var createInstanceForNewItem = cms.util.createInstanceForNewItem = function(type) {
-      var element = cms.util.deepCopy(cms.data.elements[type]);
-      var newId = "new_" + (cms.data.newCounter++);
-      element.id = newId;
-      cms.data.prepareLoadedElements({
-         1: element
-      });
-      cms.data.elements[newId] = element;
-      return element;
-   }
-   
-   
-   
-   
-   var deepCopy = cms.util.deepCopy = function(obj) {
-      return JSON.parse(JSON.stringify(obj));
-   }
    
    /**
     * Converts a jquery object to HTML.<p>

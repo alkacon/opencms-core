@@ -194,12 +194,12 @@
          var result = subcontainerItemStartHtml;
          for (var i = 0; i < element.subItems.length; i++) {
             var subElement = cms.data.elements[element.subItems[i]];
-            result += subElement.contents['_DEFAULT_'];
+            result += subElement.getContent('_DEFAULT_');
          }
          result += subcontainerItemEndHtml;
          return $(result).attr('rel', element.id).addClass('cms-element');
       } else {
-         return $(element.contents['_DEFAULT_']).attr('rel', element.id).addClass('cms-element');
+         return element.getContent('_DEFAULT_');
       }
    }
    
@@ -219,8 +219,8 @@
         </div>\
      </div></div>';
    
-  var toolbarOverlay = cms.html.toolbarOverlay = '<div id="'+toolbarOverlayId+'"></div>';
-	
+   var toolbarOverlay = cms.html.toolbarOverlay = '<div id="' + toolbarOverlayId + '"></div>';
+   
    var searchDialog = cms.html.searchDialog = function(/**Array*/types) {
       var/**String*/ html = ['<div id="', searchDialogId, '">\
           <form>\

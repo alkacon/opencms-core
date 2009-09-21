@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/09/17 06:34:30 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2009/09/21 12:27:14 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 7.6
  */
@@ -207,6 +207,7 @@ public final class CmsElementUtil {
 
         // create new json object for the element
         JSONObject resElement = new JSONObject();
+        resElement.put(CmsADEManager.P_OBJTYPE, CmsADEManager.ELEMENT_TYPE);
         resElement.put(CmsADEManager.P_ID, CmsElementUtil.ADE_ID_PREFIX + resource.getStructureId().toString());
         resElement.put(CmsADEManager.P_FILE, m_cms.getSitePath(resource));
         resElement.put(CmsADEManager.P_DATE, resource.getDateLastModified());

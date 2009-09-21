@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/09/15 13:29:07 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/09/21 12:27:14 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 7.6
  */
@@ -187,6 +187,9 @@ public class CmsADEManager extends CmsJspActionElement {
     public static final String P_MAXELEMENTS = "maxElem";
 
     /** JSON property constant file. */
+    public static final String P_OBJTYPE = "objtype";
+
+    /** JSON property constant file. */
     public static final String P_NAME = "name";
 
     /** JSON property constant file. */
@@ -263,6 +266,12 @@ public class CmsADEManager extends CmsJspActionElement {
 
     /** JSON response state value constant. */
     public static final String RES_STATE_OK = "ok";
+
+    /** JSON response state value constant. */
+    public static final String ELEMENT_TYPE = "Element";
+
+    /** JSON response state value constant. */
+    public static final String CONTAINER_TYPE = "Container";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
@@ -391,33 +400,13 @@ public class CmsADEManager extends CmsJspActionElement {
         JSONObject result = new JSONObject();
 
         HttpServletRequest request = getRequest();
-
+        if (!checkParameters(request, result, PARAMETER_ACTION, PARAMETER_CNTPAGE, PARAMETER_LOCALE, PARAMETER_URI)) {
+            return result;
+        }
         String actionParam = request.getParameter(PARAMETER_ACTION);
-        if (actionParam == null) {
-            result.put(RES_ERROR, Messages.get().getBundle().key(
-                Messages.ERR_JSON_MISSING_PARAMETER_1,
-                PARAMETER_ACTION));
-            return result;
-        }
         String cntPageParam = request.getParameter(PARAMETER_CNTPAGE);
-        if (cntPageParam == null) {
-            result.put(RES_ERROR, Messages.get().getBundle().key(
-                Messages.ERR_JSON_MISSING_PARAMETER_1,
-                PARAMETER_CNTPAGE));
-            return result;
-        }
         String localeParam = request.getParameter(PARAMETER_LOCALE);
-        if (localeParam == null) {
-            result.put(RES_ERROR, Messages.get().getBundle().key(
-                Messages.ERR_JSON_MISSING_PARAMETER_1,
-                PARAMETER_LOCALE));
-            return result;
-        }
         String uriParam = request.getParameter(PARAMETER_URI);
-        if (uriParam == null) {
-            result.put(RES_ERROR, Messages.get().getBundle().key(Messages.ERR_JSON_MISSING_PARAMETER_1, PARAMETER_URI));
-            return result;
-        }
 
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
@@ -434,9 +423,7 @@ public class CmsADEManager extends CmsJspActionElement {
             // get element data
             String elemParam = request.getParameter(PARAMETER_ELEM);
             if (elemParam == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_ELEM));
+                storeErrorMissingParam(result, PARAMETER_ELEM);
                 return result;
             }
             CmsElementUtil elemUtil = new CmsElementUtil(cms, request, getResponse(), uriParam);
@@ -480,10 +467,9 @@ public class CmsADEManager extends CmsJspActionElement {
         } else if (actionParam.equals(ACTION_SEARCH)) {
             // new search
             String containerPageUri = request.getParameter(PARAMETER_CNTPAGE);
+
             if (containerPageUri == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_CNTPAGE));
+                storeErrorMissingParam(result, PARAMETER_CNTPAGE);
                 return result;
             }
             CmsSearchOptions searchOptions = new CmsSearchOptions(request);
@@ -493,9 +479,7 @@ public class CmsADEManager extends CmsJspActionElement {
             // last search
             String containerPageUri = request.getParameter(PARAMETER_CNTPAGE);
             if (containerPageUri == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_CNTPAGE));
+                storeErrorMissingParam(result, PARAMETER_CNTPAGE);
                 return result;
             }
             CmsSearchOptions searchOptions = new CmsSearchOptions(request);
@@ -511,24 +495,12 @@ public class CmsADEManager extends CmsJspActionElement {
             result.merge(searchResult, true, false);
         } else if (actionParam.equals(ACTION_NEW)) {
             // get a new element
+            if (!checkParameters(request, result, PARAMETER_DATA)) {
+                return result;
+            }
             String dataParam = request.getParameter(PARAMETER_DATA);
-            if (dataParam == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_DATA));
-                return result;
-            }
-            String containerPageUri = request.getParameter(PARAMETER_CNTPAGE);
-            if (containerPageUri == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_CNTPAGE));
-                return result;
-            }
-
             String type = dataParam;
             CmsElementCreator elemCreator = new CmsElementCreator(cms, cntPage.getResTypeConfig());
-
             CmsResource newResource = elemCreator.createElement(cms, type);
             result.put(P_ID, CmsElementUtil.createId(newResource.getStructureId()));
             result.put(P_URI, cms.getSitePath(newResource));
@@ -551,29 +523,20 @@ public class CmsADEManager extends CmsJspActionElement {
      */
     protected JSONObject executeActionSet() throws JSONException, CmsException {
 
+        HttpServletRequest request = getRequest();
         JSONObject result = new JSONObject();
+        if (!checkParameters(request, result, PARAMETER_ACTION, PARAMETER_LOCALE)) {
+            return result;
+        }
         String actionParam = getRequest().getParameter(PARAMETER_ACTION);
-        if (actionParam == null) {
-            result.put(RES_ERROR, Messages.get().getBundle().key(
-                Messages.ERR_JSON_MISSING_PARAMETER_1,
-                PARAMETER_ACTION));
-            return result;
-        }
         String localeParam = getRequest().getParameter(PARAMETER_LOCALE);
-        if (localeParam == null) {
-            result.put(RES_ERROR, Messages.get().getBundle().key(
-                Messages.ERR_JSON_MISSING_PARAMETER_1,
-                PARAMETER_LOCALE));
-            return result;
-        }
+
         getCmsObject().getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
         if (actionParam.equals(ACTION_FAV)) {
             // save the favorite list
             String dataParam = getRequest().getParameter(PARAMETER_DATA);
             if (dataParam == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_DATA));
+                storeErrorMissingParam(result, PARAMETER_DATA);
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
@@ -582,47 +545,25 @@ public class CmsADEManager extends CmsJspActionElement {
             // save the recent list
             String dataParam = getRequest().getParameter(PARAMETER_DATA);
             if (dataParam == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_DATA));
+                storeErrorMissingParam(result, PARAMETER_DATA);
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
             setRecentList(list);
         } else if (actionParam.equals(ACTION_CNT)) {
             // save the container page
+            if (!checkParameters(request, result, PARAMETER_CNTPAGE, PARAMETER_DATA)) {
+                return result;
+            }
             String cntPageParam = getRequest().getParameter(PARAMETER_CNTPAGE);
-            if (cntPageParam == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_CNTPAGE));
-                return result;
-            }
             String dataParam = getRequest().getParameter(PARAMETER_DATA);
-            if (dataParam == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_DATA));
-                return result;
-            }
             JSONObject cntPage = new JSONObject(dataParam);
             setContainerPage(cntPageParam, cntPage);
         } else if (actionParam.equals(ACTION_DEL)) {
-            // save the container page
-            String cntPageParam = getRequest().getParameter(PARAMETER_CNTPAGE);
-            if (cntPageParam == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_CNTPAGE));
+            if (!checkParameters(request, result, PARAMETER_DATA)) {
                 return result;
             }
             String dataParam = getRequest().getParameter(PARAMETER_DATA);
-            if (dataParam == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_DATA));
-                return result;
-            }
             JSONArray elems = new JSONArray(dataParam);
             deleteElements(elems);
         } else {
@@ -682,6 +623,7 @@ public class CmsADEManager extends CmsJspActionElement {
 
             // set the container data
             JSONObject resContainer = new JSONObject();
+            resContainer.put(P_OBJTYPE, CONTAINER_TYPE);
             resContainer.put(P_NAME, container.getName());
             resContainer.put(P_TYPE, container.getType());
             resContainer.put(P_MAXELEMENTS, container.getMaxElements());
@@ -1142,5 +1084,41 @@ public class CmsADEManager extends CmsJspActionElement {
                 LOG.warn(Messages.get().container(Messages.ERR_INVALID_ID_1, list.optString(i)), t);
             }
         }
+    }
+
+    /**
+     * Checks whether a list of parameters are present as attributes of a request.<p>
+     * 
+     * If this isn't the case, an error message is written to the JSON result object.
+     * 
+     * @param request the request which contains the parameters
+     * @param result the JSON object which the error message should be written into
+     * @param params the array of parameter names which should be checked
+     * @return true if and only if all parameters are present in the request
+     * @throws JSONException if something goes wrong with JSON
+     */
+    private boolean checkParameters(HttpServletRequest request, JSONObject result, String... params)
+    throws JSONException {
+
+        for (String param : params) {
+            String value = request.getParameter(param);
+            if (value == null) {
+                storeErrorMissingParam(result, param);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Stores an error message for a missing parameter in a JSON object.
+     * 
+     * @param result the JSON object in which the error message should be stored
+     * @param parameterName the name of the missing parameter
+     * @throws JSONException if something goes wrong.
+     */
+    private void storeErrorMissingParam(JSONObject result, String parameterName) throws JSONException {
+
+        result.put(RES_ERROR, Messages.get().getBundle().key(Messages.ERR_JSON_MISSING_PARAMETER_1, parameterName));
     }
 }

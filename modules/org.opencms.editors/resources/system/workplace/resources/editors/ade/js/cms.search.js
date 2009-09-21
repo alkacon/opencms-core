@@ -23,7 +23,6 @@
       cms.data.loadNecessarySubcontainerElements(data.elements, function(ok2, data2) {
          searchParams.page += 1;
          var searchResults = data.elements;
-         cms.data.prepareLoadedElementsArray(searchResults);
          for (var i = 0; i < searchResults.length; i++) {
             var result = searchResults[i];
             cms.data.elements[result.id] = result;
@@ -63,7 +62,7 @@
    var _addResult = function(/**Object*/result) {
    
       searchResultList.push(result.id);
-      var $content = $(result.contents['_DEFAULT_']);
+      var $content = result.getContent('_DEFAULT_');
       var $inner = $('#cms-search-list');
       
       $('.cms-head', $content).append('<a class="cms-handle cms-move"></a>');
@@ -90,11 +89,10 @@
    var _handleLastSearch = function(/**boolean*/ok, /**Object*/ data) {
    
       if (!ok) {
-         cms.toolbar.searchLoadingSign.stop();
+         loadingSign.stop();
          return;
       }
       if (data.elements) {
-         cms.data.prepareLoadedElementsArray(data.elements);
          cms.data.loadNecessarySubcontainerElements(data.elements, function(ok2, data2) {
             searchParams.page = 1;
             searchParams.query = data.text;
@@ -118,7 +116,7 @@
                $('#cms-search-list').parent('*:visible').css('display', 'none');
             }
             $('#cms-search .ui-widget-shadow').css('height', $('#cms-search').outerHeight() + 1);
-            cms.toolbar.searchLoadingSign.stop();
+            loadingSign.stop();
          });
       }
    }

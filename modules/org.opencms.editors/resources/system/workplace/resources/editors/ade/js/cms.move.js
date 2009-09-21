@@ -14,24 +14,24 @@
       //#
       return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId || id == cms.html.favoriteDropListId;
    }
-
    
-   var deactivateAdd = cms.move.deactivateAdd = function(event, ui){
-       var handleDiv = ui.self.currentItem.children('.cms-handle');
-       if (handleDiv) {
-           cms.toolbar.initHandleDiv(handleDiv, ui.self.currentItem, cms.toolbar.timer.adeMode);
-       }
-       if ('move' != cms.toolbar.timer.adeMode) {
-           //$(this).hide();
-           handleDiv.children().hide();
-           handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
-       }
-       $('#' + cms.html.favoriteDropListId + ' li').hide(200);
-       $('#' + cms.html.favoriteDropMenuId).css('visibility', 'hidden');
-       $('.cms-handle').show();
-       if ($.browser.msie) {
-          setTimeout("$('.cms-element').css('display','block')", 50);
-       }
+   
+   var deactivateAdd = cms.move.deactivateAdd = function(event, ui) {
+      var handleDiv = ui.self.currentItem.children('.cms-handle');
+      if (handleDiv) {
+         cms.toolbar.initHandleDiv(handleDiv, ui.self.currentItem, cms.toolbar.timer.adeMode);
+      }
+      if ('move' != cms.toolbar.timer.adeMode) {
+         //$(this).hide();
+         handleDiv.children().hide();
+         handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
+      }
+      $('#' + cms.html.favoriteDropListId + ' li').hide(200);
+      $('#' + cms.html.favoriteDropMenuId).css('visibility', 'hidden');
+      $('.cms-handle').show();
+      if ($.browser.msie) {
+         setTimeout("$('.cms-element').css('display','block')", 50);
+      }
    }
    
    
@@ -81,10 +81,10 @@
             helperElem = $('<div class="cms-subcontainer"></div>');
             for (var j = 0; j < sortable.cmsItem.subItems.length; j++) {
                var subElem = cms.data.elements[sortable.cmsItem.subItems[j]];
-               $(subElem.contents[containerType]).attr('rel', subElem.id).addClass('cms-element').appendTo(helperElem);
+               subElem.getContent(containerType).appendTo(helperElem);
             }
          } else {
-            helperElem = $(sortable.cmsItem.contents[containerType]);
+            helperElem = sortable.cmsItem.getContent(containerType);
          }
          sortable.cmsHelpers[container.name] = helperElem.css({
             'display': 'none',
@@ -162,7 +162,7 @@
    
    
    var startAdd = cms.move.startAdd = function(event, ui) {
-
+   
       $('.' + cms.move.HOVER_NEW).remove();
       
       ui.self.cmsStartContainerId = ui.self.currentItem.parent().attr('id');
@@ -178,7 +178,7 @@
       if (ui.self.cmsStartContainerId == cms.html.newListId) {
          var typeElem = cms.data.elements[ui.self.cmsResource_id];
          if (typeElem) {
-            var newItem = ui.self.cmsItem = cms.util.createInstanceForNewItem(typeElem.id);
+            var newItem = ui.self.cmsItem = typeElem.cloneAsNew(); // ui.self.cmsItem = cms.util.createInstanceForNewItem(typeElem.id);
             ui.self.cmsResource_id = newItem.id;
          }
       } else {
@@ -207,7 +207,7 @@
       });
       
       cms.move.zIndexMap = {};
-
+      
       if (isMenuContainer(ui.self.cmsStartContainerId)) {
          startDragFromMenu(ui.self);
       } else {
@@ -215,7 +215,7 @@
       }
       for (container_name in cms.data.containers) {
          initContainerForDrag(ui.self, cms.data.containers[container_name]);
-      }     
+      }
       var placeholderSize = {
          height: ui.helper.height(),
          width: ui.helper.width()
@@ -236,7 +236,7 @@
          'background-color': 'blue',
          'border': 'solid 2px black',
          'height': placeholderSize.height
-//         'width': (/left|right/).test(ui.placeholder.css('float')) ? placeholderSize.width : ''
+         //         'width': (/left|right/).test(ui.placeholder.css('float')) ? placeholderSize.width : ''
       });
       
       refreshHelperPositions(ui.self);
@@ -354,13 +354,13 @@
       currentItem.removeClass('cms-helper-border cms-helper-background');
       if ($.browser.msie) {
          currentItem.get(0).style.removeAttribute('filter');
-      
+         
       } else if (currentItem) {
          currentItem.get(0).style.opacity = '';
       }
       updateContainer(startContainer);
       updateContainer(endContainer);
-
+      
       if (endContainer != cms.html.favoriteDropListId) {
          cms.toolbar.setPageChanged(true);
       }

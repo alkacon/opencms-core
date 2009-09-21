@@ -127,45 +127,6 @@
    /**
     * .<p>
     *
-    * @param {Object} elements
-    */
-   var prepareLoadedElements = cms.data.prepareLoadedElements = /** void */ function(/** Object */elements) {
-      for (var id in elements) {
-         prepareElement(elements[id]);
-      }
-   }
-   
-   /**
-    * Prepares an element by inserting its id as rel attribute and giving it the cms-element class (for each container type)
-    * @param {Object} element
-    */
-   var prepareElement = function(element) {
-      for (var containerType in element.contents) {
-         var oldContent = element.contents[containerType];
-         if (oldContent) {
-            var $html = element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element');
-            // cms-new-element is used for drawing borders, and we do not want those on
-            // default-formatted elements in menus
-            if (containerType != '_DEFAULT_' && (element.status == STATUS_NEWCONFIG)) {
-               $html = $html.addClass('cms-new-element');
-            }
-            element.contents[containerType] = $html.appendTo($('<div></div>')).parent().html();
-         }
-      }
-   }
-   
-   /**
-    * Same as prepareLoadedElements, but works with an array.
-    **/
-   var prepareLoadedElementsArray = cms.data.prepareLoadedElementsArray = function(elements) {
-      for (var i = 0; i < elements.length; i++) {
-         prepareElement(elements[i]);
-      }
-   }
-   
-   /**
-    * .<p>
-    *
     * @param {Function} afterLoad
     */
    var loadAllData = cms.data.loadAllData = /** void */ function(/** void Function(boolean) */afterLoad) {
@@ -188,13 +149,12 @@
          },
          'success': function(data) {
             try {
-               var jsonData = JSON.parse(data);
+               var jsonData = JSON.parse(data, _jsonRevive);
             } catch (e) {
                alert(JSON_PARSE_ERROR);
                afterLoad(false);
                return;
             }
-            prepareLoadedElements(jsonData.elements);
             if (jsonData.state == 'error') {
                alert(jsonData.error);
                afterLoad(false);
@@ -211,6 +171,7 @@
                containers = cms.data.containers = jsonData.containers;
             }
             if (jsonData.elements) {
+            
                elements = cms.data.elements = jsonData.elements;
                cms.search.searchParams.types = [];
                cms.data.newTypes = [];
@@ -271,7 +232,7 @@
          },
          'success': function(data) {
             try {
-               var jsonData = JSON.parse(data);
+               var jsonData = JSON.parse(data, _jsonRevive);
             } catch (e) {
                alert(JSON_PARSE_ERROR);
                afterLoad(false, {});
@@ -313,7 +274,7 @@
          },
          'success': function(data) {
             try {
-               var jsonData = JSON.parse(data);
+               var jsonData = JSON.parse(data, _jsonRevive);
             } catch (e) {
                alert(JSON_PARSE_ERROR);
                afterPost(false, {});
@@ -538,11 +499,13 @@
    }
    
    /**
-    * .<p>
+    * Empties all containers and fills them with the appropriate html from the element data.
+    * 
     */
    var fillContainers = cms.data.fillContainers = /** void */ function() {
    
       for (var containerName in containers) {
+         var containerType = containers[containerName].type;
          $('#' + containerName + ' > *').remove();
          var elementIds = containers[containerName].elements;
          for (var i = 0; i < elementIds.length; i++) {
@@ -556,12 +519,12 @@
                html = $('<div class="cms-subcontainer"></div>');
                for (var j = 0; j < elem.subItems.length; j++) {
                   var subElem = elements[elem.subItems[j]];
-                  $(subElem.contents[containers[containerName].type]).attr('rel', subElem.id).addClass('cms-element').appendTo(html);
+                  subElem.getContent(containerType).appendTo(html);
                }
             } else {
-               html = $(elem.contents[containers[containerName].type]);
+               html = elem.getContent(containerType);
             }
-            html.attr('rel', elem.id).addClass('cms-element').css('position', 'relative');
+            html.css('position', 'relative');
             $('#' + containerName).append(html);
             if (isSubcontainer) {
             
@@ -681,6 +644,113 @@
       }
    }
    
+   /**
+    * Element constructor.
+    * @param {Object} data the raw JSON element data
+    */
+   var Element = cms.data.Element = function(data) {
+      for (var key in data) {
+         this[key] = data[key];
+      }
+   }
+   
+   Element.prototype = {
+      /**
+       * Retrieves the contents of this element for a given container type.
+       * 
+       * @param {Object} containerType the type of the container
+       * @return {jQuery} the content as a fresh jQuery object 
+       */
+      getContent: function(containerType) {
+         var content = this.contents[containerType];
+         if (content) {
+            var $result = $(content).addClass('cms-element').attr('rel', this.id).css('position', 'relative');
+            if (containerType != '_DEFAULT_' && (this.status == STATUS_NEWCONFIG)) {
+               $result = $result.addClass('cms-new-element');
+            }
+            return $result;
+         } else {
+            throw "invalid container for this element";
+         }
+      },
+      
+      
+      /**
+       * This method does the same as getContent, but the parameter is a container.
+       * or container name instead of a container type
+       * 
+       * @param {Object} container a container name or container
+       */
+      getContentForContainer: function(container) {
+         if (typeof container == 'string') {
+            container = containers[container];
+         }
+         var containerType = container.type;
+         return this.getContent(containerType);
+      },
+     
+      
+      /**
+       * Clones this object.
+       * 
+       * @return the clone
+       */
+      clone: function() {
+         return new Element(JSON.parse(JSON.stringify(this)));
+      },
+      
+      
+      /**
+       * Clones this element, gives it an id of the form new_$i and stores in the global element table.
+       * @return {Object} the clone
+       */
+      cloneAsNew: function() {
+         var result = this.clone();
+         result.id = "new_" + (newCounter++);
+         elements[result.id] = result;
+         return result;
+      }
+   }
+   
+   /**
+    * Container constructor.
+    * @param {Object} data the raw JSON container data
+    */
+   var Container = function(data) {
+      for (var key in data) {
+         this[key] = data[key];
+      }
+   }
+   
+   Container.prototype = {
+      /**
+       * Returns the element objects for elements in this container.
+       * 
+       * @return {Array} an array of Element objects.
+       */
+      getElements: function() {
+         return $.map(this.elements, function(id, i) {
+            return cms.data.elements[id];
+         });
+      }
+   }
+   
+   var reviveTypeMap = {
+      Element: Element,
+      Container: Container
+   }
+   
+   /**
+    * JSON "revive" function which replaces JSON data structures that represent 
+    * objects with methods with the actual objects.
+    */
+   var _jsonRevive = function(key, value) {
+      var Type = reviveTypeMap[value.objtype];
+      if (Type) {
+         return new Type(value);
+      }
+      return value;
+   }
    
 })(cms);
 
