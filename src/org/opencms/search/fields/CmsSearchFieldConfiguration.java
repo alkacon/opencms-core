@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2009/08/26 07:48:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/09/21 16:11:55 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.0.0 
  */
@@ -290,8 +290,8 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         }
 
         // read all properties of the resource
-        List<String> propertiesSearched = cms.readPropertyObjects(resource, true);
-        List<String> properties = cms.readPropertyObjects(resource, false);
+        List<CmsProperty> propertiesSearched = cms.readPropertyObjects(resource, true);
+        List<CmsProperty> properties = cms.readPropertyObjects(resource, false);
 
         Iterator<CmsSearchField> fieldConfigs = getFields().iterator();
         while (fieldConfigs.hasNext()) {
@@ -330,7 +330,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             // all categories are internally stored lower case
             value = value.trim().toLowerCase();
             if (value.length() > 0) {
-                field = new Field(CmsSearchField.FIELD_CATEGORY, value, Field.Store.YES, Field.Index.UN_TOKENIZED);
+                field = new Field(CmsSearchField.FIELD_CATEGORY, value, Field.Store.YES, Field.Index.NOT_ANALYZED);
                 field.setBoost(0);
                 document.add(field);
             }
@@ -340,13 +340,13 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
                 CmsSearchField.FIELD_CATEGORY,
                 CmsSearchCategoryCollector.UNKNOWN_CATEGORY,
                 Field.Store.YES,
-                Field.Index.UN_TOKENIZED);
+                Field.Index.NOT_ANALYZED);
             document.add(field);
         }
 
         // add all parent folders of the current document
         String parentFolders = getParentFolderTokens(resource.getRootPath());
-        field = new Field(CmsSearchField.FIELD_PARENT_FOLDERS, parentFolders, Field.Store.NO, Field.Index.TOKENIZED);
+        field = new Field(CmsSearchField.FIELD_PARENT_FOLDERS, parentFolders, Field.Store.NO, Field.Index.ANALYZED);
         // set boost of 0 to parent folder field, since parent folder path should have no effect on search result score 
         field.setBoost(0);
         document.add(field);
@@ -357,12 +357,12 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             CmsSearchField.FIELD_PATH,
             resource.getRootPath(),
             Field.Store.YES,
-            Field.Index.UN_TOKENIZED));
+            Field.Index.NOT_ANALYZED));
 
         // add date of creation, content and last modification
         field = new Field(CmsSearchField.FIELD_DATE_CREATED, DateTools.dateToString(
             new Date(resource.getDateCreated()),
-            DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
+            DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.NOT_ANALYZED);
         field.setBoost(0);
         document.add(field);
         // add date of last modification
@@ -370,13 +370,13 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             CmsSearchField.FIELD_DATE_LASTMODIFIED,
             DateTools.dateToString(new Date(resource.getDateLastModified()), DateTools.Resolution.MILLISECOND),
             Field.Store.YES,
-            Field.Index.UN_TOKENIZED);
+            Field.Index.NOT_ANALYZED);
         field.setBoost(0);
         document.add(field);
         // add date of content
         field = new Field(CmsSearchField.FIELD_DATE_CONTENT, DateTools.dateToString(
             new Date(resource.getDateContent()),
-            DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
+            DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.NOT_ANALYZED);
         field.setBoost(0);
         document.add(field);
 
@@ -386,7 +386,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         if (type != null) {
             typeName = type.getTypeName();
         }
-        document.add(new Field(CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES, Field.Index.UN_TOKENIZED));
+        document.add(new Field(CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
         // set individual document boost factor for the search
         float boost = CmsSearchField.BOOST_DEFAULT;

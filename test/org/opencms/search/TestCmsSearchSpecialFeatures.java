@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchSpecialFeatures.java,v $
- * Date   : $Date: 2009/08/26 07:49:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/09/21 16:11:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.lucene.document.Document;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
@@ -122,6 +122,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
+        searchIndex.addConfigurationParameter(CmsSearchIndex.BACKUP_REINDEXING, "true");
 
         // initialize the new index
         searchIndex.initialize();
@@ -131,6 +132,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
         I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
         // this call does not throws the rebuild index event
+        OpenCms.getSearchManager().rebuildIndex(INDEX_SPECIAL, report);
         OpenCms.getSearchManager().rebuildIndex(INDEX_SPECIAL, report);
 
         // perform a search on the newly generated index

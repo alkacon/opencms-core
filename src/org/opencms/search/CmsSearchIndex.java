@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/09/17 15:13:46 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2009/09/21 16:11:54 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,6 +71,7 @@ import org.apache.lucene.index.FilterIndexReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanFilter;
@@ -78,11 +79,11 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilterClause;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermsFilter;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -92,7 +93,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.81 $ 
+ * @version $Revision: 1.82 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,6 +153,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Constant for additional parameter for the Lucene index setting. */
     public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
+
+    /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
+    public static final String MAX_HITS = CmsSearchIndex.class.getName() + ".maxHits";
+
+    /** Indicates how many hits are loaded at maximum by default. */
+    public static final int MAX_HITS_DEFAULT = 5000;
 
     /** Constant for additional parameter to enable permission checks (default: true). */
     public static final String PERMISSIONS = CmsSearchIndex.class.getName() + ".checkPermissions";
@@ -244,9 +251,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The locale of this index. */
     private Locale m_locale;
 
-    /** The Lucene index auto commit setting, see {@link IndexWriter} constructors. */
-    private Boolean m_luceneAutoCommit;
-
     /** The Lucene index merge factor setting, see {@link IndexWriter#setMaxMergeDocs(int)}. */
     private Integer m_luceneMaxMergeDocs;
 
@@ -258,6 +262,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The Lucene index setting that controls, see {@link IndexWriter#setUseCompoundFile(boolean)}.  */
     private Boolean m_luceneUseCompoundFile;
+
+    /** Indicates how many hits are loaded at maximum. */
+    private int m_maxHits;
 
     /** The name of this index. */
     private String m_name;
@@ -297,6 +304,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         m_checkPermissions = true;
         m_enabled = true;
         m_priority = -1;
+        m_maxHits = MAX_HITS_DEFAULT;
     }
 
     /**
@@ -332,6 +340,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             m_extractContent = Boolean.valueOf(value).booleanValue();
         } else if (BACKUP_REINDEXING.equals(key)) {
             m_backupReindexing = Boolean.valueOf(value).booleanValue();
+        } else if (MAX_HITS.equals(key)) {
+            try {
+                m_maxHits = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_PARAM_3, value, key, getName()));
+            }
+            if (m_maxHits < (MAX_HITS_DEFAULT / 100)) {
+                m_maxHits = MAX_HITS_DEFAULT;
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_PARAM_3, value, key, getName()));
+            }
         } else if (PRIORITY.equals(key)) {
             m_priority = Integer.parseInt(value);
             if (m_priority < Thread.MIN_PRIORITY) {
@@ -369,8 +387,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
         } else if (LUCENE_USE_COMPOUND_FILE.equals(key)) {
             m_luceneUseCompoundFile = Boolean.valueOf(value);
-        } else if (LUCENE_AUTO_COMMIT.equals(key)) {
-            m_luceneAutoCommit = Boolean.valueOf(value);
         }
     }
 
@@ -471,6 +487,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if (isBackupReindexing()) {
             result.put(BACKUP_REINDEXING, Boolean.valueOf(m_backupReindexing));
         }
+        if (getMaxHits() != MAX_HITS_DEFAULT) {
+            result.put(MAX_HITS, String.valueOf(getMaxHits()));
+        }
         // set the index writer parameter if required 
         if (m_luceneMaxMergeDocs != null) {
             result.put(LUCENE_MAX_MERGE_DOCS, m_luceneMaxMergeDocs);
@@ -483,9 +502,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
         if (m_luceneUseCompoundFile != null) {
             result.put(LUCENE_USE_COMPOUND_FILE, m_luceneUseCompoundFile);
-        }
-        if (m_luceneAutoCommit != null) {
-            result.put(LUCENE_AUTO_COMMIT, m_luceneAutoCommit);
         }
         return result;
     }
@@ -505,9 +521,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // search for an exact match on the document root path
             Term pathTerm = new Term(CmsSearchField.FIELD_PATH, rootPath);
             try {
-                Hits hits = searcher.search(new TermQuery(pathTerm));
-                if (hits.length() > 0) {
-                    result = hits.doc(0);
+                TopDocs hits = searcher.search(new TermQuery(pathTerm), 1);
+                if (hits.scoreDocs.length > 0) {
+                    result = searcher.doc(hits.scoreDocs[0].doc);
                 }
             } catch (IOException e) {
                 // ignore, return null and assume document was not found
@@ -597,13 +613,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 create = true;
             }
 
-            // auto commit status, according to Lucene experts setting this to 
-            // false increases performance
-            boolean autoCommit = (m_luceneAutoCommit == null) ? true : m_luceneAutoCommit.booleanValue();
             // open file directory for Lucene
             FSDirectory dir = FSDirectory.getDirectory(m_path);
             // index already exists
-            indexWriter = new IndexWriter(dir, autoCommit, getAnalyzer(), create);
+            indexWriter = new IndexWriter(dir, getAnalyzer(), create, MaxFieldLength.UNLIMITED);
 
             // set the index writer parameter if required 
             if (m_luceneMaxMergeDocs != null) {
@@ -648,6 +661,24 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public String getLocaleString() {
 
         return getLocale().toString();
+    }
+
+    /**
+     * Indicates the number of how many hits are loaded at maximum.<p> 
+     * 
+     * Since Lucene 2.4, the number of maximum documents to load from the index
+     * must be specified. The default of this setting is {@link CmsSearchIndex#MAX_HITS_DEFAULT} (5000).
+     * This means that at maximum 5000 results are returned from the index.
+     * Please note that this number may be reduced further because of OpenCms read permissions 
+     * or per-user file visibility settings not controlled in the index.<p>
+     * 
+     * @return the number of how many hits are loaded at maximum
+     * 
+     * @since 7.5.1
+     */
+    public int getMaxHits() {
+
+        return m_maxHits;
     }
 
     /**
@@ -930,7 +961,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         // the hits found during the search
-        Hits hits;
+        TopDocs hits;
 
         // storage for the results found
         CmsSearchResultList searchResults = new CmsSearchResultList();
@@ -1051,8 +1082,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 searchResults.setCategories(categoryCollector.getCategoryCountResult());
             }
 
-            // perform the search operation          
-            hits = getSearcher().search(query, filter, params.getSort());
+            // perform the search operation
+            if (params.getSort() == null) {
+                hits = getSearcher().search(query, filter, m_maxHits);
+            } else {
+                hits = getSearcher().search(query, filter, m_maxHits, params.getSort());
+            }
 
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
@@ -1061,7 +1096,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             CmsSearchResult searchResult;
 
             if (hits != null) {
-                int hitCount = hits.length();
+                int hitCount = hits.totalHits > hits.scoreDocs.length ? hits.scoreDocs.length : hits.totalHits;
                 int page = params.getSearchPage();
                 int start = -1, end = -1;
                 if ((params.getMatchesPerPage() > 0) && (page > 0) && (hitCount > 0)) {
@@ -1080,7 +1115,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 int visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
-                        doc = hits.doc(i);
+                        doc = getSearcher().doc(hits.scoreDocs[i].doc);
                         if ((isInTimeRange(doc, params)) && (hasReadPermission(searchCms, doc))) {
                             // user has read permission
                             if (cnt >= start) {
@@ -1090,7 +1125,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                                     I_CmsTermHighlighter highlighter = OpenCms.getSearchManager().getHighlighter();
                                     excerpt = highlighter.getExcerpt(doc, this, params, fieldsQuery, getAnalyzer());
                                 }
-                                searchResult = new CmsSearchResult(Math.round(hits.score(i) * 100f), doc, excerpt);
+                                searchResult = new CmsSearchResult(
+                                    Math.round(hits.scoreDocs[i].score * 100f),
+                                    doc,
+                                    excerpt);
                                 searchResults.add(searchResult);
                             }
                             cnt++;
@@ -1105,7 +1143,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     }
                 }
 
-                // save the total count of search results at the last index of the search result 
+                // save the total count of search results
                 searchResults.setHitCount(visibleHitCount);
             } else {
                 searchResults.setHitCount(0);
@@ -1125,7 +1163,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if (LOG.isDebugEnabled()) {
             timeTotal += System.currentTimeMillis();
             Object[] logParams = new Object[] {
-                new Integer(hits == null ? 0 : hits.length()),
+                new Integer(hits == null ? 0 : hits.totalHits),
                 new Long(timeTotal),
                 new Long(timeLucene),
                 new Long(timeResultProcessing)};
@@ -1195,6 +1233,24 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public void setLocaleString(String locale) {
 
         setLocale(CmsLocaleManager.getLocale(locale));
+    }
+
+    /**
+     * Sets the number of how many hits are loaded at maximum.<p> 
+     * 
+     * This must be set at least to 50, or this setting is ignored.<p>
+     * 
+     * @param maxHits the number of how many hits are loaded at maximum to set
+     * 
+     * @see #getMaxHits()
+     * 
+     * @since 7.5.1
+     */
+    public void setMaxHits(int maxHits) {
+
+        if (m_maxHits >= (MAX_HITS_DEFAULT / 100)) {
+            m_maxHits = maxHits;
+        }
     }
 
     /**
@@ -1457,9 +1513,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     protected synchronized void indexSearcherClose() {
 
         // in case there is an index searcher available close it
-        if (m_searcher != null) {
+        if ((m_searcher != null) && (m_searcher.getIndexReader() != null)) {
             try {
-                m_searcher.close();
+                m_searcher.getIndexReader().close();
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SHUTDOWN_1, getName()), e);
             }
