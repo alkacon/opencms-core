@@ -84,7 +84,7 @@ function initStartGallery(data) {
 /* OK Button was pressed, stores the image information back in the editor fields. */
 function okPressed() {
 	if (initValues.widgetmode == "simple") {
-	//cx, cy, cw, ch, w, h
+		// simple image gallery widget
 		if ( initValues.fieldid != null && initValues.fieldid != "") {
 			var imgField = window.opener.document.getElementById(initValues.fieldid);
 			var imagePath = activeItem.sitepath;
@@ -101,7 +101,7 @@ function okPressed() {
 				initValues.scale += newScale;
 								
 			} 
-			//remove cropping parameter
+			// remove cropping parameter
 			else if (getScaleValue(initValues.scale, "cx") != "") {
 				initValues.scale = removeScaleValue(initValues.scale, "cx");
 				initValues.scale = removeScaleValue(initValues.scale, "cy");
@@ -142,7 +142,8 @@ function okPressed() {
 			imgField.value = imagePath;
 
 		}
-	} else {  // widgetmode: normal
+	} else {
+		// widget mode: VFS image widget
 		if (initValues.editedresource != null && initValues.editedresource != "") {
 			var imgField = window.opener.document.getElementById("img." + initValues.fieldid);
 			imgField.value = activeItem.sitepath;
@@ -171,23 +172,25 @@ function okPressed() {
 			}
 			initValues.scale = removeScaleValue(initValues.scale, "w");
 			initValues.scale = removeScaleValue(initValues.scale, "h");
-			var newScale = "";
-			var sizeChanged = false;
-			if (initValues.scale != null && initValues.scale != ""  && initValues.scale.charAt(initValues.scale.length - 1) != ",") {
-				newScale += ",";
-			}
-			if (activeItem.newwidth > 0 && activeItem.width != activeItem.newwidth) {
-				sizeChanged = true;
-				newScale += "w:" + activeItem.newwidth;
-			}
-			if (activeItem.newheight > 0 && activeItem.height != activeItem.newheight ) {
-				if (sizeChanged == true) {
+			if (initValues.useformats != true || activeItem.isCropped) {
+				var newScale = "";
+				var sizeChanged = false;
+				if (initValues.scale != null && initValues.scale != ""  && initValues.scale.charAt(initValues.scale.length - 1) != ",") {
 					newScale += ",";
 				}
-				sizeChanged = true;
-				newScale += "h:" + activeItem.newheight;
+				if (activeItem.newwidth > 0 && activeItem.width != activeItem.newwidth) {
+					sizeChanged = true;
+					newScale += "w:" + activeItem.newwidth;
+				}
+				if (activeItem.newheight > 0 && activeItem.height != activeItem.newheight ) {
+					if (sizeChanged == true) {
+						newScale += ",";
+					}
+					sizeChanged = true;
+					newScale += "h:" + activeItem.newheight;
+				}
+				initValues.scale += newScale;
 			}
-			initValues.scale += newScale;
 			
 			var scaleField = window.opener.document.getElementById("scale." + initValues.fieldid);
 			scaleField.value = initValues.scale;
@@ -206,7 +209,7 @@ function okPressed() {
 	window.close();
 }
 
-/* removes scale parameter from the imagepath if available*/
+/* removes scale parameter from the image path if available. */
 function removeParamFromPath(pathWithParam) {
 	var path = "";
 	var index = pathWithParam.indexOf( "?__scale=" );
