@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/09/21 16:11:55 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2009/09/23 12:43:10 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
-import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -85,7 +84,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.81 $ 
+ * @version $Revision: 1.82 $ 
  * 
  * @since 6.0.0 
  */
@@ -1593,10 +1592,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     protected I_CmsDocumentFactory getDocumentFactory(CmsResource resource) {
 
         // first get the MIME type of the resource
-        String mimeType = OpenCms.getResourceManager().getMimeType(
-            resource.getRootPath(),
-            null,
-            CmsResourceManager.MIMETYPE_TEXT);
+        String mimeType = OpenCms.getResourceManager().getMimeType(resource.getRootPath(), null, "unknown");
         I_CmsDocumentFactory result = null;
         String typeName = null;
         try {
