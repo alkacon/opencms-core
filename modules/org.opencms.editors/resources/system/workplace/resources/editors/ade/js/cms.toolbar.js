@@ -163,7 +163,7 @@
    
    /**
     * Starts a hover timeout.<p>
-    * 
+    *
     * @param {Object} handleDiv
     * @param {Object} adeMode
     */
@@ -178,7 +178,7 @@
    
    /**
     * Shows additional editing buttons within hover effect.
-    */ 
+    */
    var showAddButtons = cms.toolbar.showAddButtons = function() {
       timer.id = null;
       var right = '-48px';
@@ -229,15 +229,14 @@
     */
    var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/ adeMode) {
       handleDiv.hover(function() {
-         cms.move.hoverOutFilter(elem, '.' + cms.move.HOVER_NEW);
+         cms.move.removeBorder(elem, '.' + cms.move.HOVER_NEW);
          cms.move.hoverIn(elem, 2);
-         //cms.move.hoverOutFilter(elem, '.'+cms.move.HOVER_NEW);
          startHoverTimeout(handleDiv, cms.toolbar.mode);
          $('body').children('.' + cms.move.HOVER_NEW).remove();
       }, function() {
          stopHover();
          if ($(elem).find('.' + cms.move.HOVER_NEW).size() == 0 && $(elem).hasClass('cms-new-element')) {
-            cms.move.hoverInWithClass(elem, 2, cms.move.HOVER_NEW);
+            cms.move.drawBorder(elem, 2, cms.move.HOVER_NEW);
          }
          $('body').children('.' + cms.move.HOVER_NEW).remove();
       });
@@ -246,7 +245,7 @@
    
    /**
     * Adds handle div to element.<p>
-    * 
+    *
     * @param {Object} elem jquery-element-object
     * @param {Object} elemId the resource-id
     * @param {Object} adeMode current mode
@@ -394,12 +393,12 @@
                      connectWith: cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenu + ' ul.cms-item-list',
                      placeholder: 'placeholder',
                      dropOnEmpty: true,
-                     start: cms.move.startAdd,
+                     start: cms.move.onStartDrag,
                      beforeStop: cms.move.beforeStopFunction,
-                     over: cms.move.overAdd,
-                     out: cms.move.outAdd,
+                     over: cms.move.onDragOverContainer,
+                     out: cms.move.onDragOutOfContainer,
                      tolerance: 'pointer',
-                     stop: cms.move.stopAdd,
+                     stop: cms.move.onStopDrag,
                      cursorAt: {
                         right: 15,
                         top: 10
@@ -428,7 +427,7 @@
    
    /**
     * Disables the given mode.<p>
-    * 
+    *
     * @param {Object} mode
     */
    var _disableMode = function(mode) {
@@ -523,7 +522,7 @@
                      // TODO
                      return;
                   }
-                  cms.move.hoverOutFilter($domElement, '.' + cms.move.HOVER_NEW);
+                  cms.move.removeBorder($domElement, '.' + cms.move.HOVER_NEW);
                   var elem = cms.data.elements[elemId];
                   delete cms.data.elements[elemId];
                   cms.data.elements[id] = elem;
@@ -746,17 +745,17 @@
          connectWith: containerSelector + ', #' + cms.html.favoriteDropListId,
          placeholder: 'cms-placeholder',
          dropOnEmpty: true,
-         start: cms.move.startAdd,
+         start: cms.move.onStartDrag,
          beforeStop: cms.move.beforeStopFunction,
-         over: cms.move.overAdd,
-         out: cms.move.outAdd,
+         over: cms.move.onDragOverContainer,
+         out: cms.move.onDragOutOfContainer,
          change: function(event, ui) {
             cms.move.hoverOut(ui.helper.parent());
             cms.move.hoverInner(ui.helper.parent(), 2, true);
          },
          tolerance: 'pointer',
          //           opacity: 0.7,
-         stop: cms.move.stopAdd,
+         stop: cms.move.onStopDrag,
          cursorAt: {
             right: 10,
             top: 10
@@ -848,7 +847,7 @@
       
    };
    
-    /**
+   /**
     * Initializes the favorites edit dialog items.<p>
     */
    var initFavDialogItems = cms.toolbar.initFavDialogItems = function() {
@@ -919,27 +918,6 @@
       }
    }
    
-  
-   
-//   var createNewListItemHtml = function(type, name) {
-//      return '<div rel="' + type + '">' + name + '</div>';
-//   };
-//   
-//   
-//   var createNewListItemHtml = function(type, name) {
-//      var html = ['<li class="cms-item" rel="', type, '">\
-//		<div class="cms-left ui-widget-content">\
-//			<div class="cms-head ui-state-hover">\
-//				<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>', type, '</div>\
-//				<span class="cms-title">', name, '</span>\
-//				<span class="cms-file-icon"></span>\
-//				<a class="cms-move cms-handle"></a>\
-//			</div>\
-//		</div>\
-//		<br clear="all" />\
-//	</li>'];
-//      return html.join('');
-//   };
    
    /**
     * Reloads the new items list.<p>
@@ -958,7 +936,7 @@
    
    /**
     * Adds item to recent list.<p>
-    * 
+    *
     * @param {Object} itemId
     */
    var addToRecent = cms.toolbar.addToRecent = function(itemId) {
@@ -1049,7 +1027,7 @@
    }
    
    /**
-    * On-unload event-handler to prevent accidental data-loss.<p> 
+    * On-unload event-handler to prevent accidental data-loss.<p>
     */
    var onUnload = cms.toolbar.onUnload = function() {
       if (cms.toolbar.pageChanged) {
@@ -1159,8 +1137,9 @@
          });
          return false;
       });
-      
    }
+   
+   
    
    /**
     * Reloads the recent-list.<p>

@@ -1,7 +1,5 @@
 (function(cms) {
    var $ = jQuery;
-   var over = null;
-   var cancel = false;
    
    /* class for normal move-related hover borders*/
    var HOVER_NORMAL = cms.move.HOVER_NORMAL = 'cms-hover-normal';
@@ -9,6 +7,38 @@
    var HOVER_NEW = cms.move.HOVER_NEW = 'cms-hover-new';
    
    cms.move.zIndexMap = {};
+   
+   var MoveState = function() {
+      this.currentResourceId = null;
+      this.currentContainerId = null;
+      this.element = null;
+      this.hoverList = null;
+      this.origPlaceholder = null;
+      this.startId = null;
+      this.over = null;
+      
+      this.isMoveFromFavorites = function() {
+         return this.startId == cms.html.favoriteListId;
+      }
+      
+      this.isMoveFromMenu = function() {
+         return isMenuContainer(this.startId);
+      }
+      
+      this.isMoveFromNew = function() {
+         return this.startId == cms.html.newListId;
+      }
+      
+      this.isMoveToFavorites = function() {
+         return this.currentContainerId == cms.html.favoriteDropListId;
+      }
+      
+      this.shouldAddToRecent = function() {
+         return !(this.isMoveToFavorites() || this.isMoveFromNew());
+      }
+   }
+   
+   
    
    var isMenuContainer = cms.move.isMenuContainer = function(id) {
       //#
@@ -30,7 +60,9 @@
       $('#' + cms.html.favoriteDropMenuId).css('visibility', 'hidden');
       $('.cms-handle').show();
       if ($.browser.msie) {
-         setTimeout("$('.cms-element').css('display','block')", 50);
+         setTimeout(function() {
+            $('.cms-element').css('display', 'block');
+         }, 50);
       }
    }
    
@@ -69,29 +101,31 @@
    var initContainerForDrag = cms.move.initContainerForDrag = function(sortable, container) {
       var containerType = container.type;
       //skip incompatible containers
-      if (!isCompatibleWithContainer(cms.data.elements[sortable.cmsResource_id], container.name)) {
+      if (!isCompatibleWithContainer(cms.data.elements[moveState.currentResourceId], container.name)) {
          return;
       }
       saveZIndex(container.name);
       
-      if (container.name != sortable.cmsStartContainerId) {
-         sortable.cmsHoverList += ', #' + container.name;
+      if (container.name != moveState.startId) {
+         moveState.hoverList += ', #' + container.name;
          var helperElem;
-         if (sortable.cmsItem.subItems) {
+         
+         // subcontainer stuff, this should go into the Element class
+         if (moveState.element.subItems) {
             helperElem = $('<div class="cms-subcontainer"></div>');
-            for (var j = 0; j < sortable.cmsItem.subItems.length; j++) {
-               var subElem = cms.data.elements[sortable.cmsItem.subItems[j]];
+            for (var j = 0; j < moveState.element.subItems.length; j++) {
+               var subElem = cms.data.elements[moveState.element.subItems[j]];
                subElem.getContent(containerType).appendTo(helperElem);
             }
          } else {
-            helperElem = sortable.cmsItem.getContent(containerType);
+            helperElem = moveState.element.getContent(containerType);
          }
-         sortable.cmsHelpers[container.name] = helperElem.css({
+         moveState.helpers[container.name] = helperElem.css({
             'display': 'none',
             'position': 'absolute',
             'zIndex': sortable.options.zIndex
-         }).addClass('ui-sortable-helper cms-element').attr('rel', sortable.cmsItem.id).appendTo('#' + container.name);
-         cms.toolbar.addHandles(sortable.cmsHelpers[container.name], sortable.cmsResource_id, cms.toolbar.timer.adeMode ? cms.toolbar.timer.adeMode : 'move', true);
+         }).addClass('ui-sortable-helper cms-element').attr('rel', moveState.element.id).appendTo('#' + container.name);
+         cms.toolbar.addHandles(moveState.helpers[container.name], moveState.currentResourceId, cms.toolbar.timer.adeMode ? cms.toolbar.timer.adeMode : 'move', true);
          // to increase visibility of the helper
          if (helperElem.css('background-color') == 'transparent' && helperElem.css('background-image') == 'none') {
             helperElem.addClass('cms-helper-background');
@@ -100,7 +134,7 @@
             helperElem.addClass('cms-helper-border');
          }
       } else {
-         sortable.cmsHelpers[container.name] = sortable.helper;
+         moveState.helpers[container.name] = sortable.helper;
          // to increase visibility of the helper
          if (sortable.helper.css('background-color') == 'transparent' && sortable.helper.css('background-image') == 'none') {
             sortable.helper.addClass('cms-helper-background');
@@ -108,13 +142,13 @@
          if (!sortable.helper.css('border') || sortable.helper.css('border') == 'none' || sortable.helper.css('border') == '') {
             sortable.helper.addClass('cms-helper-border');
          }
-         sortable.cmsOver = true;
+         moveState.over = true;
       }
    }
    
    
    var startDragFromMenu = cms.move.startDragFromMenu = function(sortable) {
-      sortable.cmsHelpers[cms.toolbar.currentMenuItems] = sortable.helper;
+      moveState.helpers[moveState.startId] = sortable.helper;
       var elem = $(document.createElement('div')).addClass("placeholder" + " ui-sortable-placeholder box").css('display', 'none');
       sortable.placeholder.replaceWith(elem);
       sortable.placeholder = elem;
@@ -123,8 +157,8 @@
       
       sortable.helper.appendTo('#cms_appendbox');
       
-      $('#' + sortable.cmsStartContainerId).closest('.cms-menu').css('display', 'none');
-      sortable.cmsOver = false;
+      $('#' + moveState.startId).closest('.cms-menu').css('display', 'none');
+      moveState.over = false;
    }
    
    
@@ -141,17 +175,17 @@
       $('div.cms-handle').not(thisHandleDiv).hide();
       thisHandleDiv.removeClass('ui-widget-header').children('*:not(.cms-move)').hide();
       
-      sortable.cmsHoverList += ', #' + sortable.cmsStartContainerId;
-      cms.util.fixZIndex(sortable.cmsStartContainerId, cms.move.zIndexMap);
+      moveState.hoverList += ', #' + moveState.startId;
+      cms.util.fixZIndex(moveState.startId, cms.move.zIndexMap);
       // show drop zone for new favorites
-      var list_item = cms.html.formatFavListItem(sortable.cmsItem).append('<a class="cms-handle cms-move"></a>');
+      var list_item = cms.html.formatFavListItem(moveState.element).append('<a class="cms-handle cms-move"></a>');
       
       // shouldn't be able to drag new items to favorites before a resource is created 
-      if (sortable.cmsItem.status == cms.data.STATUS_NEWCONFIG) {
+      if (moveState.element.status == cms.data.STATUS_NEWCONFIG) {
          return;
       }
       //#
-      sortable.cmsHelpers[cms.html.favoriteDropListId] = $(list_item).appendTo('#' + cms.html.favoriteDropListId).css({
+      moveState.helpers[cms.html.favoriteDropListId] = $(list_item).appendTo('#' + cms.html.favoriteDropListId).css({
          'display': 'none',
          'position': 'absolute',
          'zIndex': sortable.options.zIndex
@@ -160,31 +194,28 @@
       $('#' + cms.html.favoriteDropMenuId).css('visibility', 'visible');
    }
    
+   moveState = null;
    
-   var startAdd = cms.move.startAdd = function(event, ui) {
+   var onStartDrag = cms.move.onStartDrag = function(event, ui) {
    
       $('.' + cms.move.HOVER_NEW).remove();
+      moveState = new MoveState();
+      moveState.startId = ui.self.currentItem.parent().attr('id');
+      moveState.hoverList = '';
       
-      ui.self.cmsStartContainerId = ui.self.currentItem.parent().attr('id');
-      // if (ui.self.cmsStartContainerId!=cms.html.favoriteListId){
-      // $('#'+cms.html.favoriteMenuId).css('display', 'block');
-      // ui.self._refreshItems(event);
-      // }
-      ui.self.cmsHoverList = '';
-      ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
-      ui.self.cmsResource_id = ui.self.currentItem.attr('rel');
+      moveState.currentContainerId = moveState.startId;
+      moveState.currentResourceId = ui.self.currentItem.attr('rel');
       
-      
-      if (ui.self.cmsStartContainerId == cms.html.newListId) {
-         var typeElem = cms.data.elements[ui.self.cmsResource_id];
+      if (moveState.startId == cms.html.newListId) {
+         var typeElem = cms.data.elements[moveState.currentResourceId];
          if (typeElem) {
-            var newItem = ui.self.cmsItem = typeElem.cloneAsNew(); // ui.self.cmsItem = cms.util.createInstanceForNewItem(typeElem.id);
-            ui.self.cmsResource_id = newItem.id;
+            var newItem = moveState.element = typeElem.cloneAsNew(); // ui.self.cmsItem = cms.util.createInstanceForNewItem(typeElem.id);
+            moveState.currentResourceId = newItem.id;
          }
       } else {
-         ui.self.cmsItem = cms.data.elements[ui.self.cmsResource_id];
+         moveState.element = cms.data.elements[moveState.currentResourceId];
       }
-      if (!(ui.self.cmsResource_id && ui.self.cmsItem)) {
+      if (!(moveState.currentResourceId && moveState.element)) {
          $(cms.util.getContainerSelector()).sortable('cancel');
          return;
       }
@@ -196,11 +227,9 @@
       
       
       
-      ui.self.cmsHelpers = {};
-      ui.self.cmsOrgPlaceholder = ui.placeholder.clone().insertBefore(ui.placeholder);
-      //        ui.self.cmsOrgPlaceholder = $('<div />').insertBefore(
-      //				ui.placeholder);
-      ui.self.cmsOrgPlaceholder.css({
+      moveState.helpers = {};
+      moveState.origPlaceholder = origPlaceholder = ui.placeholder.clone().insertBefore(ui.placeholder);
+      moveState.origPlaceholder.css({
          'background-color': 'gray',
          'display': 'none',
          'height': ui.self.currentItem.height()
@@ -208,7 +237,7 @@
       
       cms.move.zIndexMap = {};
       
-      if (isMenuContainer(ui.self.cmsStartContainerId)) {
+      if (isMenuContainer(moveState.startId)) {
          startDragFromMenu(ui.self);
       } else {
          startDragFromNormalContainer(ui.self);
@@ -231,7 +260,7 @@
          }
          
       }
-      ui.self.cmsOrgPlaceholder.addClass(ui.self.placeholder.attr('class'));
+      moveState.origPlaceholder.addClass(ui.self.placeholder.attr('class'));
       ui.self.placeholder.css({
          'background-color': 'blue',
          'border': 'solid 2px black',
@@ -241,7 +270,7 @@
       
       refreshHelperPositions(ui.self);
       
-      $(ui.self.cmsHoverList).css('position', 'relative').each(function() {
+      $(moveState.hoverList).css('position', 'relative').each(function() {
          hoverInner($(this), 2, true);
       });
       
@@ -249,10 +278,7 @@
    }
    
    var beforeStopFunction = cms.move.beforeStopFunction = function(event, ui) {
-      if (!ui.self.cmsOver) 
-         cancel = true;
-      else 
-         cancel = false;
+      moveState.cancel = !moveState.over;
    }
    
    
@@ -268,83 +294,94 @@
       cms.data.containers[id].elements = newContents;
    }
    
-   var stopAdd = cms.move.stopAdd = function(event, ui) {
+   
+   /**
+    * Removes the helpers after a move operation.
+    * @param {Object} helpers the helpers map
+    * @param {Object} startContainer the name of the start container
+    * @param {Object} endContainer the name of the end container
+    */
+   var _removeHelpers = function(helpers, startContainer, endContainer) {
+      for (var containerName in helpers) {
+         var helper = helpers[containerName];
+         if (containerName == endContainer) {
+            // don't remove helper from end container
+            continue;
+         }
+         if (containerName == startContainer && isMenuContainer(endContainer)) {
+            // don't remove helper from start container if element was dragged into menu
+            continue;
+         }
+         helper.remove();
+      }
+   }
+   
+   var onStopDrag = cms.move.onStopDrag = function(event, ui) {
       cms.util.fixZIndex(null, cms.move.zIndexMap);
-      var helpers = ui.self.cmsHelpers;
-      var orgPlaceholder = ui.self.cmsOrgPlaceholder;
-      var startContainer = ui.self.cmsStartContainerId;
-      var endContainer = ui.self.cmsCurrentContainerId;
+      var helpers = moveState.helpers;
+      var origPlaceholder = moveState.origPlaceholder;
+      var startContainer = moveState.startId;
+      var endContainer = moveState.currentContainerId;
       var currentItem = ui.self.currentItem;
-      if (cancel) {
-         cancel = false;
-         
-         if (isMenuContainer(ui.self.cmsStartContainerId)) {
+      
+      if (moveState.cancel) {
+         if (isMenuContainer(startContainer)) {
             // show favorite list again after dragging a favorite from it.
             $('#' + cms.toolbar.currentMenu).css('display', 'block');
          }
          
          $(this).sortable('cancel');
-         orgPlaceholder.remove();
+         origPlaceholder.remove();
       } else {
-         if (isMenuContainer(startContainer)) {
-            orgPlaceholder.replaceWith(helpers[startContainer]);
-            helpers[startContainer].removeClass('ui-sortable-helper');
-            cms.util.clearAttributes(helpers[startContainer].get(0).style, ['width', 'height', 'top', 'left', 'position', 'opacity', 'zIndex', 'display']);
+         if (moveState.isMoveFromMenu()) {
+            // replace placeholder in the menu with the helper, i.e. the original item
+            var startHelper = helpers[startContainer];
+            origPlaceholder.replaceWith(startHelper);
+            startHelper.removeClass('ui-sortable-helper');
+            cms.util.clearAttributes(startHelper.get(0).style, ['width', 'height', 'top', 'left', 'position', 'opacity', 'zIndex', 'display']);
             $('div.cms-handle', currentItem).remove();
             $('button.ui-state-active').trigger('click');
-            
-            // add item to endContainer
          } else {
-            //#
-            if (endContainer == cms.html.favoriteDropListId) {
-               cms.util.addUnique(cms.toolbar.favorites, ui.self.cmsResource_id);
-               cms.data.persistFavorites(function(ok) {
-                  if (!ok) {
-                                    // TODO
-                  }
-               });
-               
-            }
-            orgPlaceholder.remove();
-            // add item to endContainer
+            origPlaceholder.remove();
          }
-         //#
-         if (endContainer != cms.html.favoriteDropListId && startContainer != cms.html.newListId) {
-            cms.toolbar.addToRecent(ui.self.cmsResource_id);
+         
+         if (moveState.isMoveToFavorites()) {
+            $('#' + cms.html.favoriteDropListId).children().remove();
+            cms.util.addUnique(cms.toolbar.favorites, moveState.currentResourceId);
+            cms.data.persistFavorites(function(ok) {
+               if (!ok) {
+                              // TODO
+               }
+            });
+         }
+         if (moveState.shouldAddToRecent()) {
+            cms.toolbar.addToRecent(moveState.currentResourceId);
          }
       }
-      for (var container_name in helpers) {
-         if (container_name != endContainer &&
-         !(startContainer == container_name && isMenuContainer(container_name))) {
-            var helper = helpers[container_name];
-            //#
-            if (container_name == startContainer &&
-            endContainer == cms.html.favoriteDropListId) {
-               var helperStyle = helper.get(0).style;
-               helper.removeClass('ui-sortable-helper cms-helper-border cms-helper-background');
-               // reset position (?) of helper that was dragged to favorites,
-               // but don't remove it
-               cms.util.clearAttributes(helperStyle, ['width', 'height', 'top', 'left', 'opacity', 'zIndex', 'display']);
-               
-               // reset handles
-               var handleDiv = $('div.cms-handle', helper);
-               cms.toolbar.initHandleDiv(handleDiv, helper, cms.toolbar.timer.adeMode);
-               if ('move' != cms.toolbar.timer.adeMode) {
-                  handleDiv.children('.cms-move').hide();
-                  handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
-               }
-               
-               helperStyle.position = 'relative';
-               if ($.browser.msie) {
-                  helperStyle.removeAttribute('filter');
-               }
-            } else {
-               // remove helper
-               helper.remove();
-               
-            }
+      
+      if (moveState.isMoveToFavorites()) {
+         helper = helpers[startContainer];
+         var helperStyle = helper.get(0).style;
+         helper.removeClass('ui-sortable-helper cms-helper-border cms-helper-background');
+         // reset position (?) of helper that was dragged to favorites,
+         // but don't remove it
+         cms.util.clearAttributes(helperStyle, ['width', 'height', 'top', 'left', 'opacity', 'zIndex', 'display']);
+         
+         // reset handles
+         var handleDiv = $('div.cms-handle', helper);
+         cms.toolbar.initHandleDiv(handleDiv, helper, cms.toolbar.timer.adeMode);
+         if ('move' != cms.toolbar.timer.adeMode) {
+            handleDiv.children('.cms-move').hide();
+            handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
+         }
+         
+         helperStyle.position = 'relative';
+         if ($.browser.msie) {
+            helperStyle.removeAttribute('filter');
          }
       }
+      
+      _removeHelpers(helpers, startContainer, endContainer);
       
       //$(ui.self.cmsHoverList).removeClass('show-sortable');
       
@@ -358,21 +395,23 @@
       } else if (currentItem) {
          currentItem.get(0).style.opacity = '';
       }
-      updateContainer(startContainer);
-      updateContainer(endContainer);
+      if (!moveState.cancel) {
+         updateContainer(startContainer);
+         updateContainer(endContainer);
+      }
       
-      if (endContainer != cms.html.favoriteDropListId) {
+      if (!moveState.isMoveToFavorites()) {
          cms.toolbar.setPageChanged(true);
       }
       
-      if (!cancel && startContainer == cms.html.newListId) {
+      if (moveState.isMoveFromNew() && !moveState.cancel) {
          $('button[name="Edit"]').trigger('click');
       }
       
-      var data = cms.data.elements[ui.self.cmsResource_id];
+      var data = cms.data.elements[moveState.currentResourceId];
       if (data.status == cms.data.STATUS_NEWCONFIG) {
-         hoverOutFilter(currentItem, '.' + HOVER_NEW);
-         hoverInWithClass(currentItem, 2, HOVER_NEW);
+         removeBorder(currentItem, '.' + HOVER_NEW);
+         drawBorder(currentItem, 2, HOVER_NEW);
       }
       resetNewElementBorders();
    }
@@ -386,39 +425,32 @@
     * @param {}
     *            ui
     */
-   var overAdd = cms.move.overAdd = function(event, ui) {
+   var onDragOverContainer = cms.move.onDragOverContainer = function(event, ui) {
       var elem = event.target ? event.target : event.srcElement;
       var elemId = $(elem).attr('id');
-      var reDoHover = !ui.self.cmsOver;
-      if (ui.self.cmsStartContainerId != elemId &&
-      //#
-      ui.self.cmsStartContainerId != cms.html.favoriteListId &&
-      ui.self.cmsStartContainerId != cms.html.recentListId) {
-         // show pacelholder in start container if dragging over a different
-         // container, but not from favorites or recent
-         ui.self.cmsOrgPlaceholder.css({
+      var reDoHover = !moveState.over;
+      if (moveState.startId != elemId) {
+         // show placeholder in start container if element moves over a different container
+         moveState.origPlaceholder.css({
             'display': 'block',
             'border': 'dotted 2px black'
          });
       } else {
          // hide placeholder (otherwise both the gray and blue boxes would be
          // shown)
-         ui.self.cmsOrgPlaceholder.css('display', 'none');
+         moveState.origPlaceholder.css('display', 'none');
       }
-      if (ui.self.cmsHelpers[elemId]) {
+      if (moveState.helpers[elemId]) {
          cms.util.fixZIndex(elemId, cms.move.zIndexMap);
          ui.placeholder.css('display', 'block');
-         ui.self.cmsOver = true;
-         if (elemId != ui.self.cmsCurrentContainerId) {
-         
-            ui.self.cmsCurrentContainerId = elemId;
-            
+         moveState.over = true;
+         if (elemId != moveState.currentContainerId) {
+            moveState.currentContainerId = elemId;
             reDoHover = true;
             // hide dragged helper, display helper for container instead
             setHelper(ui.self, elemId);
             ui.self.helper.width(ui.placeholder.width());
             ui.self.helper.height('');
-            
          }
          
          // in case of a subcontainer use inner height for placeholder and set a margin
@@ -434,42 +466,42 @@
          
       } else {
          ui.placeholder.css('display', 'none');
-         ui.self.cmsOver = false;
+         moveState.over = false;
       }
-      //#
-      if (elemId == cms.html.favoriteDropListId &&
-      ui.placeholder.parent().attr('id') != elemId) 
+      
+      // this bit of code is needed to prevent the bug where the display of the placeholder
+      // goes out of sync with the over/out events
+      if ((elemId == cms.html.favoriteDropListId) && (ui.placeholder.parent().attr('id') != elemId)) {
          ui.placeholder.appendTo(elem);
+      }
       
       if (reDoHover) {
          hoverOut();
-         $(ui.self.cmsHoverList).each(function() {
+         $(moveState.hoverList).each(function() {
             hoverInner($(this), 2, true);
          });
       }
       
    }
    
-   var outAdd = cms.move.outAdd = function(event, ui) {
+   var onDragOutOfContainer = cms.move.onDragOutOfContainer = function(event, ui) {
       var elem = event.target ? event.target : event.srcElement;
       var elemId = $(elem).attr('id');
-      if (ui.self.helper && elemId == ui.self.cmsCurrentContainerId) {
-         if (ui.self.cmsStartContainerId != ui.self.cmsCurrentContainerId) {
-            ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
-            cms.util.fixZIndex(ui.self.cmsStartContainerId, cms.move.zIndexMap);
-            setHelper(ui.self, ui.self.cmsCurrentContainerId);
+      if (ui.self.helper && elemId == moveState.currentContainerId) {
+         if (moveState.startId != moveState.currentContainerId) {
+            moveState.currentContainerId = moveState.startId;
+            cms.util.fixZIndex(moveState.startId, cms.move.zIndexMap);
+            setHelper(ui.self, moveState.currentContainerId);
          }
          ui.placeholder.css('display', 'none');
-         //#
-         if (ui.self.cmsStartContainerId != cms.html.favoriteListId) {
-            ui.self.cmsOrgPlaceholder.css({
-               'display': 'block',
-               'border': 'solid 2px black'
-            });
-         }
-         ui.self.cmsOver = false;
+         moveState.origPlaceholder.css({
+            'display': 'block',
+            'border': 'solid 2px black'
+         });
+         
+         moveState.over = false;
          hoverOut();
-         $(ui.self.cmsHoverList).each(function() {
+         $(moveState.hoverList).each(function() {
             hoverInner($(this), 2, true);
          });
       }
@@ -477,7 +509,7 @@
    }
    
    var hoverIn = cms.move.hoverIn = function(elem, hOff) {
-      hoverInWithClass(elem, hOff, HOVER_NORMAL);
+      drawBorder(elem, hOff, HOVER_NORMAL);
       //   hoverOutFilter(elem, '.' + HOVER_NEW);
    }
    
@@ -491,7 +523,7 @@
     * @param {Object} hOff the offset of the border
     * @param {Object} additionalClass the class which should be given to the elements of the border
     */
-   var hoverInWithClass = cms.move.hoverInWithClass = function(elem, hOff, additionalClass) {
+   var drawBorder = cms.move.drawBorder = function(elem, hOff, additionalClass) {
       elem = $(elem);
       var tHeight = elem.outerHeight();
       var tWidth = elem.outerWidth();
@@ -548,7 +580,7 @@
     * @param {Object} showBackground
     * @param {Object} additionalClass the CSS class for the border elements
     */
-   var hoverInnerWithClass = cms.move.hoverInnerWithClass = function(elem, hOff, showBackground, additionalClass) {
+   var drawInnerBorder = cms.move.drawInnerBorder = function(elem, hOff, showBackground, additionalClass) {
       elem = $(elem);
       var dimension = cms.util.getInnerDimensions(elem, 25);
       var elemPos = cms.util.getElementPosition(elem);
@@ -595,7 +627,7 @@
    }
    
    var hoverInner = cms.move.hoverInner = function(elem, hOff, showBackground) {
-      hoverInnerWithClass(elem, hOff, showBackground, HOVER_NORMAL);
+      drawInnerBorder(elem, hOff, showBackground, HOVER_NORMAL);
    }
    
    /**
@@ -604,7 +636,7 @@
     * @param {Object} context the parent element from which the border elements should be removed
     * @param {Object} filterString the JQuery filter string which the items to be removed should match
     */
-   var hoverOutFilter = cms.move.hoverOutFilter = function(context, filterString) {
+   var removeBorder = cms.move.removeBorder = function(context, filterString) {
       if (!context) {
          context = $('body');
       }
@@ -617,7 +649,7 @@
    
    
    var hoverOut = cms.move.hoverOut = function(context) {
-      hoverOutFilter(context, '.' + HOVER_NORMAL);
+      removeBorder(context, '.' + HOVER_NORMAL);
    }
    
    
@@ -629,14 +661,14 @@
    var resetNewElementBorders = cms.move.resetNewElementBorders = function() {
       $('.' + HOVER_NEW).remove();
       $('.cms-new-element').each(function() {
-         hoverInWithClass(this, 2, HOVER_NEW);
+         drawBorder(this, 2, HOVER_NEW);
       })
    }
    
    var setHelper = cms.move.setHelper = function(sortable, id) {
       sortable.helper.css('display', 'none');
-      sortable.helper = sortable.cmsHelpers[id].css('display', 'block');
-      sortable.currentItem = sortable.cmsHelpers[id];
+      sortable.helper = moveState.helpers[id].css('display', 'block');
+      sortable.currentItem = moveState.helpers[id];
       sortable.placeholder.attr('class', sortable.currentItem.attr('class') + ' cms-placeholder').removeClass('ui-sortable-helper');
       refreshHelperPositions(sortable);
    };
