@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/09/23 09:33:27 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.2.1 $ 
  * 
  * @since 6.0.2 
  */
@@ -574,7 +574,7 @@ public class CmsHistoryList extends A_CmsListDialog {
 
         CmsUUID structureId = new CmsUUID((String)getSelectedItem().get(LIST_COLUMN_STRUCTURE_ID));
         int version = Integer.parseInt(((CmsListItem)getSelectedItems().get(0)).getId());
-        CmsResource res = getCms().readResource(structureId);
+        CmsResource res = getCms().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
         checkLock(getCms().getSitePath(res));
         getCms().restoreResourceVersion(res.getStructureId(), version);
     }
