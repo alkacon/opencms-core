@@ -1,26 +1,42 @@
 ﻿(function(cms) {
    var $ = jQuery;
    
-   // current toolbar-mode ('Move', 'Edit', 'Delete' etc.)
-   var mode = cms.toolbar.mode = '';
+   /** current toolbar-mode ('Move', 'Edit', 'Delete' etc.) */
+   var /** string */ mode = cms.toolbar.mode = '';
    
-   // hashmap for jquery-dom-objects
-   var dom = cms.toolbar.dom = {};
+   /** hashmap for jquery-dom-objects */
+   var /** map */ dom = cms.toolbar.dom = {};
    
-   var _bodyEl;
-   var _oldBodyMargin;
+   /** jquery-document.body-object */
+   var /** jquery */ _bodyEl;
    
+   /** original body offset */
+   var /** integer */ _oldBodyMargin = 0;
+   
+   /** favorite-list ids */
+   /** array */
    cms.toolbar.favorites = [];
+   
+   /** recent-list ids */
+   /** array */
    cms.toolbar.recent = [];
+   
+   /** max-size of recent-list */
+   /** integer */
    cms.toolbar.recentSize = 10;
-   var toolbarReady = cms.toolbar.toolbarReady = false;
-   var leavingPage = cms.toolbar.leavingPage = false;
-   var oldBodyMarginTop = 0;
-   var menuIds = [cms.html.favoriteMenuId, cms.html.recentMenuId, cms.html.newMenuId, cms.html.searchMenuId];
-   var sortmenus = cms.util.makeCombinedSelector(menuIds, "#% ul");
-   var menuHandles = cms.util.makeCombinedSelector(menuIds, "#% a.cms-move")
-   var menus = cms.util.makeCombinedSelector(menuIds, "#%");
+   
+   /** flag to indicate all necessary data has been loaded */
+   var /** boolean */ toolbarReady = cms.toolbar.toolbarReady = false;
+   
+   /** flag to indicate the user is leaving the page */
+   var /** boolean */ leavingPage = cms.toolbar.leavingPage = false;
+   
+   /** id of current menu */
+   /** string */
    cms.toolbar.currentMenu = cms.html.favoriteMenuId;
+   
+   /** id of current menu item list */
+   /** string */
    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
    
    /**
@@ -89,17 +105,22 @@
       cms.move.hoverOut();
       var elemId = $item.attr('rel');
       if (elemId && cms.data.elements[elemId]) {
-         if (cms.data.elements[elemId].status == cms.data.STATUS_CREATED) {
-            cms.data.deleteResources([elemId], function(ok) {
-               deleteFromFavListAndRecList([elemId]);
-               if (!ok) {
-                  // TODO
-                  alert("error");
-               }
-            });
-         } else {
-            addToRecent($item.attr('rel'));
-         }
+      
+         // a resource that has been edited and saved should not be removed from the vfs without comment/warning.
+         
+         //         if (cms.data.elements[elemId].status == cms.data.STATUS_CREATED) {
+         //            cms.data.deleteResources([elemId], function(ok) {
+         //               deleteFromFavListAndRecList([elemId]);
+         //               if (!ok) {
+         //                  // TODO
+         //                  alert("error");
+         //               }
+         //            });
+         //         } else {
+         //            addToRecent($item.attr('rel'));
+         //         }
+         
+         addToRecent($item.attr('rel'));
       }
       $item.remove();
       cms.move.updateContainer($container.attr('id'));
@@ -546,7 +567,7 @@
     */
    var removeToolbar = cms.toolbar.removeToolbar = function() {
       $('#toolbar').remove();
-      $(document.body).css('margin-top', oldBodyMarginTop + 'px');
+      $(document.body).css('margin-top', _oldBodyMarginTop + 'px');
    };
    
    /**
@@ -554,7 +575,7 @@
     */
    var hideToolbar = cms.toolbar.hideToolbar = function() {
       $(document.body).animate({
-         marginTop: oldBodyMarginTop + 'px'
+         marginTop: _oldBodyMarginTop + 'px'
       }, 200, 'swing', function() {
          $('#show-button').show(50);
       });
@@ -570,12 +591,12 @@
       if (button.hasClass('toolbar_hidden')) {
          $('#toolbar').fadeIn(100);
          $(document.body).animate({
-            marginTop: oldBodyMarginTop + 34 + 'px'
+            marginTop: _oldBodyMarginTop + 34 + 'px'
          }, 200, 'swing');
          button.removeClass('toolbar_hidden');
       } else {
          $(document.body).animate({
-            marginTop: oldBodyMarginTop + 'px'
+            marginTop: _oldBodyMarginTop + 'px'
          }, 200, 'swing');
          $('#toolbar').fadeOut(100);
          button.addClass('toolbar_hidden');
@@ -616,10 +637,9 @@
       _bodyEl = $(document.body).css('position', 'relative');
       
       // remember old margins/offset of body 
-      var offsetLeft = _bodyEl.offset().left;
       _oldBodyMarginTop = _bodyEl.offset().top;
       _bodyEl.css({
-         marginTop: oldBodyMarginTop + 34 + 'px'
+         marginTop: _oldBodyMarginTop + 34 + 'px'
       });
       // appending all necessary toolbar components and keeping their references
       cms.toolbar.dom.toolbar = $(cms.html.toolbar).appendTo(_bodyEl);
@@ -1138,8 +1158,7 @@
          return false;
       });
    }
-   
-   
+      
    
    /**
     * Reloads the recent-list.<p>

@@ -109,10 +109,6 @@
       return dimension;
    }
    
-   //var getRequiredWidth = cms.util.getRequiredWidth = function(elem){
-   //    
-   //}
-   
    var fixZIndex = cms.util.fixZIndex = function(currentId, zmap) {
       if (!$.browser.msie) {
          return;

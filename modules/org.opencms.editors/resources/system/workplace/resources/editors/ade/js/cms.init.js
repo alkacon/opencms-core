@@ -1,4 +1,16 @@
+/**
+ * Certain functions of ui.sortable need to be extended for better performance within OpenCms Advanced Direct Edit.<p>
+ * 
+ * First of all the _uiHash function is replaced by a version that will grant access to the private plugin-functions and properties. 
+ * The other extended functions deal with special cases and scenarios of the Advanced Direct Edit use-case.<p>
+ * 
+ */
 $.extend($.ui.sortable.prototype, {
+    /**
+     * Returns the ui-object used with event-handlers.<p>
+     * 
+     * @param {Object} inst
+     */
    _uiHash: function(inst) {
       var self = inst || this;
       
@@ -15,6 +27,13 @@ $.extend($.ui.sortable.prototype, {
          self: self
       };
    },
+   /**
+    * Internal event-handler for the mouse-stop-event. Adjusted to show a reverting animation to the original position of the item
+    * in case of a canceled sorting indicated by a hidden placeholder.<p>.
+    * 
+    * @param {Object} event
+    * @param {Object} noPropagation
+    */
    _mouseStop: function(event, noPropagation) {
    
       if (!event) 
@@ -51,6 +70,11 @@ $.extend($.ui.sortable.prototype, {
       return false;
       
    },
+   /**
+    * Check whether the pointer intersects with a certain item.<p>
+    * 
+    * @param {Object} item
+    */
    _intersectsWithPointer: function(item) {
    
       var isOverElementHeight = $.ui.isOverAxis(this.positionAbs.top + this.offset.click.top, item.top, item.height), isOverElementWidth = $.ui.isOverAxis(this.positionAbs.left + this.offset.click.left, item.left, item.width), isOverElement = isOverElementHeight && isOverElementWidth;
@@ -79,6 +103,11 @@ $.extend($.ui.sortable.prototype, {
       return this.floating ? (((horizontalDirection && horizontalDirection == "right") || verticalDirection == "down") ? 2 : 1) : (verticalDirection && (verticalDirection == "down" ? 2 : 1));
       
    },
+   /**
+    * Refreshes the list of sortable items.<p>
+    * 
+    * @param {Object} event
+    */
    _refreshItems: function(event) {
         /*
          * cms-addition:
