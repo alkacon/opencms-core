@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExportHelper.java,v $
- * Date   : $Date: 2009/09/16 13:31:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/23 14:03:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.5.1
  */
@@ -91,20 +91,15 @@ public class CmsExportHelper {
         m_exportPath = exportPath;
         m_isExportAsFiles = exportAsFiles;
 
+        removeOldExport(exportPath);
+
         Writer writer;
         if (m_isExportAsFiles) {
             m_exportPath = m_exportPath + "/";
             // write to file system directly
             String fileName = getRfsFileName(CmsImportExportManager.EXPORT_MANIFEST);
             File rfsFile = new File(fileName);
-
-            File exportFolder = rfsFile.getParentFile();
-            // check if export file exists, if so delete it
-            if (exportFolder.exists() && exportFolder.canWrite()) {
-                CmsFileUtil.purgeDirectory(exportFolder);
-            }
-
-            exportFolder.mkdirs();
+            rfsFile.getParentFile().mkdirs();
             rfsFile.createNewFile();
             writer = new FileWriter(rfsFile);
         } else {
@@ -185,6 +180,30 @@ public class CmsExportHelper {
     protected String getRfsFileName(String name) {
 
         return m_exportPath + name;
+    }
+
+    /**
+     * Removes the old export output, which may be an existing file or directory.<p> 
+     * 
+     * @param exportPath the export output path
+     */
+    protected void removeOldExport(String exportPath) {
+
+        File output = new File(exportPath);
+        if (output.exists()) {
+            // the output already exists
+            if (output.isDirectory()) {
+                // purge the complete directory
+                CmsFileUtil.purgeDirectory(output);
+            } else {
+                // remove the existing file
+                if (m_isExportAsFiles) {
+                    // in case we write to a file we can just overwrite, 
+                    // but for a folder we must remove an existing file
+                    output.delete();
+                }
+            }
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2009/09/16 13:31:38 $
- * Version: $Revision: 1.30.2.2 $
+ * Date   : $Date: 2009/09/23 14:03:22 $
+ * Version: $Revision: 1.30.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -111,26 +111,26 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsImportExport.class.getName());
 
-        //        suite.addTest(new TestCmsImportExport("testImportValidation"));
-        //        suite.addTest(new TestCmsImportExport("testImportSiblingIssue"));
-        //        suite.addTest(new TestCmsImportExport("testImportPermissionIssue"));
-        //        suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
-        //        suite.addTest(new TestCmsImportExport("testImportWrongSite"));
-        //        suite.addTest(new TestCmsImportExport("testSetup"));
-        //        suite.addTest(new TestCmsImportExport("testUserImport"));
-        //        suite.addTest(new TestCmsImportExport("testImportExportFolder"));
-        //        suite.addTest(new TestCmsImportExport("testImportExportId"));
+        suite.addTest(new TestCmsImportExport("testImportValidation"));
+        suite.addTest(new TestCmsImportExport("testImportSiblingIssue"));
+        suite.addTest(new TestCmsImportExport("testImportPermissionIssue"));
+        suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
+        suite.addTest(new TestCmsImportExport("testImportWrongSite"));
+        suite.addTest(new TestCmsImportExport("testSetup"));
+        suite.addTest(new TestCmsImportExport("testUserImport"));
+        suite.addTest(new TestCmsImportExport("testImportExportFolder"));
+        suite.addTest(new TestCmsImportExport("testImportExportId"));
         suite.addTest(new TestCmsImportExport("testImportExportBrokenLinksHtml"));
         suite.addTest(new TestCmsImportExport("testImportExportBrokenLinksXml"));
-        //        suite.addTest(new TestCmsImportExport("testImportResourceTranslator"));
-        //        suite.addTest(new TestCmsImportExport("testImportResourceTranslatorMultipleSite"));
-        //        suite.addTest(new TestCmsImportExport("testImportRecreatedFile"));
-        //        suite.addTest(new TestCmsImportExport("testImportSibling"));
-        //        suite.addTest(new TestCmsImportExport("testImportRecreatedSibling"));
-        //        suite.addTest(new TestCmsImportExport("testImportMovedResource"));
-        //        suite.addTest(new TestCmsImportExport("testImportChangedContent"));
-        //        suite.addTest(new TestCmsImportExport("testImportRelations"));
-        //        suite.addTest(new TestCmsImportExport("testImportContentIssue"));
+        suite.addTest(new TestCmsImportExport("testImportResourceTranslator"));
+        suite.addTest(new TestCmsImportExport("testImportResourceTranslatorMultipleSite"));
+        suite.addTest(new TestCmsImportExport("testImportRecreatedFile"));
+        suite.addTest(new TestCmsImportExport("testImportSibling"));
+        suite.addTest(new TestCmsImportExport("testImportRecreatedSibling"));
+        suite.addTest(new TestCmsImportExport("testImportMovedResource"));
+        suite.addTest(new TestCmsImportExport("testImportChangedContent"));
+        suite.addTest(new TestCmsImportExport("testImportRelations"));
+        suite.addTest(new TestCmsImportExport("testImportContentIssue"));
 
         TestSetup wrapper = new TestSetup(suite) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExtendedHtmlImportDefault.java,v $
- * Date   : $Date: 2009/06/04 14:29:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/09/23 14:03:20 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ package org.opencms.importexport;
  *
  * @author Anja Roettgers
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.4.2.1 $
  * 
  * @since 7.0.2
  */
@@ -368,6 +368,7 @@ public class CmsExtendedHtmlImportDefault {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();
@@ -386,5 +387,4 @@ public class CmsExtendedHtmlImportDefault {
         result.append("\n KeepBrokenLinks:").append(getKeepBrokenLinks());
         return result.toString();
     }
-
 }

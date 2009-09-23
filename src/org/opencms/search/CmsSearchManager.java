@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/09/23 12:43:48 $
- * Version: $Revision: 1.76.2.4 $
+ * Date   : $Date: 2009/09/23 14:03:21 $
+ * Version: $Revision: 1.76.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -73,7 +74,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.FSDirectory;
@@ -85,7 +85,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.76.2.4 $ 
+ * @version $Revision: 1.76.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1514,7 +1514,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (indexPath.exists()) {
             // get the lock state of the given index
             try {
-                indexLocked = IndexReader.isLocked(index.getPath());
+                indexLocked = IndexWriter.isLocked(index.getPath());
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_IO_INDEX_READER_OPEN_2,
@@ -1527,7 +1527,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if ((m_forceUnlockMode != null) && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.ALWAYS)) {
                     try {
                         // try to force unlock on the index
-                        IndexReader.unlock(FSDirectory.getDirectory(index.getPath()));
+                        IndexWriter.unlock(FSDirectory.getDirectory(index.getPath()));
                     } catch (Exception e) {
                         // unable to force unlock of Lucene index, we can't continue this way
                         CmsMessageContainer msg = Messages.get().container(
@@ -1565,7 +1565,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         } else {
                             try {
                                 // try to force unlock on the index
-                                IndexReader.unlock(FSDirectory.getDirectory(index.getPath()));
+                                IndexWriter.unlock(FSDirectory.getDirectory(index.getPath()));
                             } catch (Exception e) {
                                 // unable to force unlock of Lucene index, we can't continue this way
                                 CmsMessageContainer msg = Messages.get().container(
@@ -1906,6 +1906,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             IndexWriter writer = null;
             try {
+                // create a backup of the existing index
+                String backup = index.createIndexBackup();
+                if (backup != null) {
+                    index.indexSearcherOpen(backup);
+                }
                 // create a new index writer
                 writer = index.getIndexWriter(true);
 
@@ -1923,26 +1928,34 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
                     // new index creation, use all resources from the index source
                     indexer.rebuildIndex(writer, threadManager, source);
+
+                    // wait for indexing threads to finish
+                    while (threadManager.isRunning()) {
+                        try {
+                            wait(1000);
+                        } catch (InterruptedException e) {
+                            // just continue with the loop after interruption
+                        }
+                    }
+
+                    // optimize and commit the index after each index source has been finished
+                    try {
+                        writer.optimize();
+                        writer.commit();
+                    } catch (IOException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(
+                                Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_1,
+                                index.getPath(),
+                                index.getName()), e);
+                        }
+                    }
                 }
 
-                // wait for indexing threads to finish
-                while (threadManager.isRunning()) {
-                    try {
-                        wait(1000);
-                    } catch (InterruptedException e) {
-                        // just continue with the loop after interruption
-                    }
-                }
-                // optimize the generated index
-                try {
-                    writer.optimize();
-                } catch (IOException e) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_1,
-                            index.getPath(),
-                            index.getName()), e);
-                    }
+                if (backup != null) {
+                    // remove the backup after the files have been re-indexed
+                    index.indexSearcherClose();
+                    index.removeIndexBackup(backup);
                 }
 
                 // output finish information on the report
@@ -1970,7 +1983,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     initOfflineIndexes();
                 }
                 // index has changed - initialize the index searcher instance
-                index.indexSearcherOpen();
+                index.indexSearcherOpen(index.getPath());
             }
 
             // show information about indexing runtime
@@ -2076,6 +2089,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 // close the index writer
                 if (writer != null) {
                     try {
+                        writer.commit();
                         writer.close();
                     } catch (IOException e) {
                         LOG.error(Messages.get().getBundle().key(
@@ -2085,7 +2099,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     }
                 }
                 // index has changed - initialize the index searcher instance
-                index.indexSearcherOpen();
+                index.indexSearcherOpen(index.getPath());
             }
 
             // output finish information on the report
@@ -2164,7 +2178,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         try {
             int lockSecs = 0;
             while (indexLocked && (lockSecs < m_indexLockMaxWaitSeconds)) {
-                indexLocked = IndexReader.isLocked(index.getPath());
+                indexLocked = IndexWriter.isLocked(index.getPath());
                 if (indexLocked) {
                     // index is still locked, wait one second
                     report.println(Messages.get().container(

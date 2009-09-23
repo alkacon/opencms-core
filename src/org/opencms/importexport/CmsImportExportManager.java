@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2009/06/04 14:28:59 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2009/09/23 14:03:20 $
+ * Version: $Revision: 1.40.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.40.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -861,6 +861,7 @@ public class CmsImportExportManager {
     /**
      * @see java.lang.Object#finalize()
      */
+    @Override
     protected void finalize() throws Throwable {
 
         try {

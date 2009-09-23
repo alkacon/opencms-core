@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2009/09/01 09:24:18 $
- * Version: $Revision: 1.30.2.1 $
+ * Date   : $Date: 2009/09/23 14:03:21 $
+ * Version: $Revision: 1.30.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,10 +36,12 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.fields.CmsSearchField;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
 
 /**
  * Implements the indexing method for a single resource as thread.<p>
@@ -49,7 +51,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.30.2.1 $ 
+ * @version $Revision: 1.30.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,7 +143,8 @@ public class CmsIndexingThread extends Thread {
 
             if (!isInterrupted()) {
                 // write the document to the index
-                m_writer.addDocument(doc);
+                Term pathTerm = new Term(CmsSearchField.FIELD_PATH, m_res.getRootPath());
+                m_writer.updateDocument(pathTerm, doc);
             }
 
             // indicate that the document was correctly handled

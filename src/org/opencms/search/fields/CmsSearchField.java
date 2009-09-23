@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2009/09/08 12:54:46 $
- * Version: $Revision: 1.11.2.2 $
+ * Date   : $Date: 2009/09/23 14:03:21 $
+ * Version: $Revision: 1.11.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11.2.2 $ 
+ * @version $Revision: 1.11.2.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -300,9 +300,9 @@ public class CmsSearchField {
             Index index = Field.Index.NO;
             if (isIndexed()) {
                 if (isTokenizedAndIndexed()) {
-                    index = Field.Index.TOKENIZED;
+                    index = Field.Index.ANALYZED;
                 } else {
-                    index = Field.Index.UN_TOKENIZED;
+                    index = Field.Index.NOT_ANALYZED;
                 }
             }
             Field.Store store = Field.Store.NO;

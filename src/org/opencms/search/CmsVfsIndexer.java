@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2009/09/07 13:09:27 $
- * Version: $Revision: 1.41.2.3 $
+ * Date   : $Date: 2009/09/23 14:03:21 $
+ * Version: $Revision: 1.41.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.lucene.index.Term;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.41.2.3 $ 
+ * @version $Revision: 1.41.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,30 +239,38 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         if (pubRes.getState().isNew()) {
             // new resource just needs to be updated
             if (pubRes.getPublishTag() < 0) {
-                // for the in offline indexes we also must delete new resources
-                updateData.addResourceToDelete(pubRes);
-            }
-            if (isResourceInTimeWindow(pubRes)) {
-                // update only if resource is in time window
+                // this is for an offline index
+                if (isResourceInTimeWindow(pubRes)) {
+                    // update only if resource is in time window
+                    updateData.addResourceToUpdate(pubRes);
+                } else {
+                    // for offline index state may be wrong, correct this
+                    pubRes.setState(CmsResourceState.STATE_DELETED);
+                    // in the offline indexes we must delete new resources outside of the time window
+                    updateData.addResourceToDelete(pubRes);
+                }
+            } else {
+                // for a standard index, just index the resource
                 updateData.addResourceToUpdate(pubRes);
-            } else if (pubRes.getPublishTag() < 0) {
-                // for offline index state may be wrong, correct this
-                pubRes.setState(CmsResourceState.STATE_DELETED);
             }
         } else if (pubRes.getState().isDeleted()) {
             // deleted resource just needs to be removed
             updateData.addResourceToDelete(pubRes);
         } else if (pubRes.getState().isChanged() || pubRes.getState().isUnchanged()) {
-            // changed (or unchanged) resource must be removed first, and then updated
-            // note: unchanged resources can be siblings that have been added from the online project,
-            //       these must be treated as if the resource had changed
-            updateData.addResourceToDelete(pubRes);
-            if (isResourceInTimeWindow(pubRes)) {
-                // update only if resource is in time window
+            if (pubRes.getPublishTag() < 0) {
+                // this is for an offline index
+                if (isResourceInTimeWindow(pubRes)) {
+                    // update only if resource is in time window
+                    updateData.addResourceToUpdate(pubRes);
+                } else {
+                    // for offline index state may be wrong, correct this
+                    pubRes.setState(CmsResourceState.STATE_DELETED);
+                    // in the offline indexes we must delete new resources outside of the time window
+                    updateData.addResourceToDelete(pubRes);
+                }
+            } else {
+                // for a standard index, just update the resource
                 updateData.addResourceToUpdate(pubRes);
-            } else if (pubRes.getPublishTag() < 0) {
-                // for offline index state may be wrong, correct this
-                pubRes.setState(CmsResourceState.STATE_DELETED);
             }
         }
     }

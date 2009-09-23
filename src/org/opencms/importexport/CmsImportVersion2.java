@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2009/06/04 14:29:00 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2009/09/23 14:03:20 $
+ * Version: $Revision: 1.119.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.119 $ 
+ * @version $Revision: 1.119.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -229,7 +229,8 @@ public class CmsImportVersion2 extends A_CmsImport {
         ZipFile importZip,
         Document docXml) throws CmsImportExportException {
 
-        CmsImportParameters params = new CmsImportParameters(importResource != null ? importResource.getAbsolutePath()
+        CmsImportParameters params = new CmsImportParameters(importResource != null
+        ? importResource.getAbsolutePath()
         : importZip.getName(), importPath, true);
 
         try {
@@ -245,6 +246,7 @@ public class CmsImportVersion2 extends A_CmsImport {
      * This is required since there is only one instance for
      * each import version that is kept in memory and reused.<p>
      */
+    @Override
     protected void cleanUp() {
 
         m_pageStorage = null;
@@ -270,14 +272,6 @@ public class CmsImportVersion2 extends A_CmsImport {
         // if the import is older than version 3, some additional conversions must be made
         if (getVersion() < 3) {
             if ("page".equals(resType)) {
-                if (DEBUG > 0) {
-                    System.err.println("#########################");
-                    System.err.println("["
-                        + this.getClass().getName()
-                        + ".convertContent()]: storing resource "
-                        + source
-                        + '.');
-                }
                 // if the imported resource is a page, store its path inside the VFS for later
                 // integration with its body
                 m_pageStorage.add(destination);
@@ -319,6 +313,7 @@ public class CmsImportVersion2 extends A_CmsImport {
     /**
      * @see org.opencms.importexport.A_CmsImport#importUser(String, String, String, String, String, String, long, Map, List)
      */
+    @Override
     protected void importUser(
         String name,
         String flags,
@@ -350,6 +345,7 @@ public class CmsImportVersion2 extends A_CmsImport {
      * This is required since there is only one instance for
      * each import version that is kept in memory and reused.<p>
      */
+    @Override
     protected void initialize() {
 
         m_convertToXmlPage = true;
@@ -413,7 +409,8 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
         }
 
-        String key = (webAppNames.size() > 0) ? Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_ENABLED_0
+        String key = (webAppNames.size() > 0)
+        ? Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_ENABLED_0
         : Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_DISABLED_0;
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(key));
