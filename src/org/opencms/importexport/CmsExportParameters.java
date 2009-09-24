@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExportParameters.java,v $
- * Date   : $Date: 2009/09/16 13:31:37 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2009/09/24 07:39:39 $
+ * Version: $Revision: 1.5.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5.2.1 $ 
+ * @version $Revision: 1.5.2.2 $ 
  * 
  * @since 7.0.4 
  */
@@ -300,12 +300,12 @@ public class CmsExportParameters {
     /**
      * Controls if the resources are exported in one export .ZIP file (the default) or as individual files.<p>
      *
-     * @param exportAsZip if <code>false</code>, then the resources will be exported in a .ZIP file, 
+     * @param exportAsFiles if <code>false</code>, then the resources will be exported in a .ZIP file, 
      *      otherwise as individual files 
      */
-    public void setExportAsFiles(boolean exportAsZip) {
+    public void setExportAsFiles(boolean exportAsFiles) {
 
-        m_exportAsFiles = exportAsZip;
+        m_exportAsFiles = exportAsFiles;
     }
 
     /**
