@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExportParameters.java,v $
- * Date   : $Date: 2009/09/24 07:32:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/24 08:52:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.4 
  */
@@ -166,6 +166,10 @@ public class CmsExportParameters {
      */
     public String getPath() {
 
+        // ensure the export file name ends with ".zip" in case of ZIP file export
+        if ((m_path != null) && !isExportAsFiles() && !m_path.toLowerCase().endsWith(".zip")) {
+            m_path += ".zip";
+        }
         return m_path;
     }
 
@@ -379,10 +383,6 @@ public class CmsExportParameters {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILE_NAME_1, path));
         }
         m_path = path;
-        // ensure the export file name ends with ".zip"
-        if (!m_path.toLowerCase().endsWith(".zip")) {
-            m_path += ".zip";
-        }
     }
 
     /**

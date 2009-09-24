@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExportHelper.java,v $
- * Date   : $Date: 2009/09/23 13:55:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/09/24 08:52:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.1
  */
@@ -154,7 +154,7 @@ public class CmsExportHelper {
     }
 
     /**
-     * Writes the OpenCms manifext.xml file to the export.<p>
+     * Writes the OpenCms manifest.xml file to the export.<p>
      * 
      * @param xmlSaxWriter the SAX writer to use
      * 
@@ -246,7 +246,7 @@ public class CmsExportHelper {
     }
 
     /**
-     * Writes the OpenCms manifext.xml file to the RFS export.<p>
+     * Writes the OpenCms manifest.xml file to the RFS export.<p>
      * 
      * In case of the RFS export the file is directly written to a file output stream,
      * so calling this method just closes the XML and finishes the stream.<p>
@@ -254,15 +254,17 @@ public class CmsExportHelper {
      * @param xmlSaxWriter the SAX writer to use
      * 
      * @throws SAXException in case of issues creating the manifest.xml
+     * @throws IOException in case of issues closing the file writer
      */
-    protected void writeManifest2Rfs(CmsXmlSaxWriter xmlSaxWriter) throws SAXException {
+    protected void writeManifest2Rfs(CmsXmlSaxWriter xmlSaxWriter) throws SAXException, IOException {
 
         // close the document - this will also trigger flushing the contents to the file system
         xmlSaxWriter.endDocument();
+        xmlSaxWriter.getWriter().close();
     }
 
     /**
-     * Writes the OpenCms manifext.xml file to the ZIP export.<p>
+     * Writes the OpenCms manifest.xml file to the ZIP export.<p>
      * 
      * In case of the ZIP export the manifest is written to an internal StringBuffer 
      * first, which is then stored in the ZIP file when this method is called.<p>
@@ -276,6 +278,7 @@ public class CmsExportHelper {
 
         // close the document
         xmlSaxWriter.endDocument();
+        xmlSaxWriter.getWriter().close();
 
         // create zip entry for the manifest XML document
         ZipEntry entry = new ZipEntry(CmsImportExportManager.EXPORT_MANIFEST);
