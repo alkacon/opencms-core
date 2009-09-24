@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:46 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/09/24 07:40:06 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,12 +151,12 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
 
         // create export settings block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0)));
-        result.append(createDialogRowsHtml(4, 8));
+        result.append(createDialogRowsHtml(4, 9));
         result.append(createWidgetBlockEnd());
 
         // create export resource(s) block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0)));
-        result.append(createDialogRowsHtml(9, 9));
+        result.append(createDialogRowsHtml(10, 10));
         result.append(createWidgetBlockEnd());
 
         // close table
@@ -202,6 +202,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
             1));
         addWidget(new CmsWidgetDialogParameter(m_exportParams, "recursive", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportParams, "inProject", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportParams, "exportAsFiles", PAGES[0], new CmsCheckboxWidget()));
 
         addWidget(new CmsWidgetDialogParameter(m_exportParams, "resources", "/", PAGES[0], new CmsVfsFileWidget(
             false,
@@ -219,7 +220,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     protected List getComboExportFiles() {
 
         List result = new ArrayList(8);
-        Iterator i = CmsDatabaseImportFromServer.getFileListFromServer(false).iterator();
+        Iterator i = CmsDatabaseImportFromServer.getFileListFromServer(true).iterator();
         while (i.hasNext()) {
             String fileName = (String)i.next();
             String helpText = key(Messages.GUI_EDITOR_HELP_EXPORTFILE_1, new String[] {fileName});
