@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/09/21 12:27:14 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2009/09/25 08:45:22 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,9 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
+import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
+import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -74,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 7.6
  */
@@ -176,6 +179,11 @@ public final class CmsElementUtil {
         String oldUri = cms.getRequestContext().getUri();
         try {
             cms.getRequestContext().setUri(m_uri);
+
+            // to enable 'old' direct edit features for content-collector-elements, set the direct-edit-provider-attribute in the request
+            I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
+            eb.init(cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(resource));
+            m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
 
             OpenCms.getLocaleManager();
             // TODO: is this going to be cached? most likely not! any alternative?
