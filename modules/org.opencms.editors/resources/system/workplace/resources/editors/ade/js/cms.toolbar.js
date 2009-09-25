@@ -549,37 +549,52 @@
                   elem.id = id;
                   elem.status = cms.data.STATUS_CREATED;
                   cms.util.replaceNewElement(elemId, id);
-                  _openDialog(uri, id);
+                  _openContentEditor(uri, id);
                });
                
             } else {
-               _openDialog(element.file, elemId);
+               _openContentEditor(element.file, elemId);
                
             }
          }
       }
    }
    
+   /**
+    * Opens the content editor for elements loaded within an element by a content-collector. 'Old' direct edit function.
+    */
    var openSubelementEditDialog = cms.toolbar.openSubelementDialog = function() {
       var editable = $(this).closest('.cms-editable');
       var elemId = editable.attr('rel');
       var parentId = $(this).closest('.cms-element').attr('rel');
       var path = editable.find('input[name="resource"]').val();
-      _openDialog(path, [elemId, parentId]);
+      _openContentEditor(path, [elemId, parentId]);
       return false;
    }
    
+   /**
+    * Opens the content editor for new elements loaded within an element by a content-collector. 'Old' direct edit function.
+    */
    var openEditNewDialog = cms.toolbar.openEditNewDialog = function() {
       var editable = $(this).closest('.cms-editable');
       var elemId = editable.attr('rel');
       var parentId = $(this).closest('.cms-element').attr('rel');
       var path = editable.find('input[name="resource"]').val();
-      var newLink = '&amp;newlink=' + escape(editable.find('input[name="newlink"]').val())+'&amp;editortitle=Editing+%28new+resource%29';
-      _openDialog(path, [elemId, parentId], newLink);
+      var newLink = '&amp;newlink=' + escape(editable.find('input[name="newlink"]').val()) + '&amp;editortitle=Editing+%28new+resource%29';
+      _openContentEditor(path, [elemId, parentId], newLink);
       return false;
    }
    
-   var _openDialog = function(path, ids, newLink) {
+   /**
+    * Opens the content-editor dialog for a regular container element (if a single id string is given),
+    * a content-collector element (if an array of ids is given, editing the element of the first)
+    * or for a new content-collector element (if newLink != null)
+    *
+    * @param {Object} path
+    * @param {Object} ids may be an array or a single element-id
+    * @param {Object} newLink
+    */
+   var _openContentEditor = function(path, ids, newLink) {
       var _afterReload = function(ok) {
          if (ok) {
             if ($.isArray(ids)) {
@@ -871,7 +886,7 @@
          items: '.cms-element',
          revert: true,
          // replace ids
-         deactivate: cms.move.deactivateAdd
+         deactivate: cms.move.onDeactivateDrag
       });
    }
    

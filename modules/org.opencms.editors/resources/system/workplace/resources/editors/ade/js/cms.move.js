@@ -6,8 +6,15 @@
    // class for hover borders for new items
    var HOVER_NEW = cms.move.HOVER_NEW = 'cms-hover-new';
    
+   /**
+    * Status of the current move-process.<p>
+    */
+   var moveState=null;
    cms.move.zIndexMap = {};
    
+   /**
+    * Status object for move-process
+    */
    var MoveState = function() {
       this.currentResourceId = null;
       this.currentContainerId = null;
@@ -16,7 +23,7 @@
       this.origPlaceholder = null;
       this.startId = null;
       this.over = null;
-      this.overflowElem=null;
+      this.overflowElem = null;
       
       this.isMoveFromFavorites = function() {
          return this.startId == cms.html.favoriteListId;
@@ -40,21 +47,37 @@
    }
    
    
-   
+   /**
+    * Checks whether given id matches a menu-container.<p>
+    * 
+    * @param {string} id
+    * @return boolean
+    */
    var isMenuContainer = cms.move.isMenuContainer = function(id) {
       //#
       return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId || id == cms.html.favoriteDropListId;
    }
    
-   var isOverflowContainer = cms.move.isOverflowContainer = function(container){
-       if (container) {
-           return container.elements.length >= container.maxElem;
-       }
-       return false;
+   /**
+    * Checks whether the given container has reached its max-elements number.<p>
+    * 
+    * @param {Object} container container-object
+    */
+   var isOverflowContainer = cms.move.isOverflowContainer = function(container) {
+      if (container) {
+         return container.elements.length >= container.maxElem;
+      }
+      return false;
    }
    
    
-   var deactivateAdd = cms.move.deactivateAdd = function(event, ui) {
+   /**
+    * Things to do after element dragging is done.<p>
+    * 
+    * @param {Object} event
+    * @param {Object} ui
+    */
+   var onDeactivateDrag = cms.move.onDeactivateDrag = function(event, ui) {
       var handleDiv = ui.self.currentItem.children('.cms-handle');
       if (handleDiv) {
          cms.toolbar.initHandleDiv(handleDiv, ui.self.currentItem, cms.toolbar.timer.adeMode);
@@ -72,10 +95,15 @@
             $('.cms-element').css('display', 'block');
          }, 50);
       }
+      moveState=null;
    }
    
-   
-   var saveZIndex = cms.move.saveZInde = function(containerId) {
+   /**
+    * Puts z-index of given container into the z-index-map
+    * 
+    * @param {Object} containerId
+    */
+   var saveZIndex = cms.move.saveZIndex = function(containerId) {
       cms.move.zIndexMap[containerId] = $('#' + containerId).css('z-index');
    }
    
@@ -106,6 +134,12 @@
    }
    
    
+   /**
+    * Creates the sortable-helper elment for the given container.<p>
+    * 
+    * @param {Object} sortable
+    * @param {Object} container
+    */
    var initContainerForDrag = cms.move.initContainerForDrag = function(sortable, container) {
       var containerType = container.type;
       //skip incompatible containers
@@ -155,6 +189,11 @@
    }
    
    
+   /**
+    * Preparations for a drag from the menu.<p>
+    * 
+    * @param {Object} sortable
+    */
    var startDragFromMenu = cms.move.startDragFromMenu = function(sortable) {
       moveState.helpers[moveState.startId] = sortable.helper;
       var elem = $(document.createElement('div')).addClass("placeholder" + " ui-sortable-placeholder box").css('display', 'none');
@@ -170,7 +209,11 @@
    }
    
    
-   
+   /**
+    * Preparations for dragging from a container.<p>
+    * 
+    * @param {Object} sortable
+    */
    var startDragFromNormalContainer = cms.move.startDragFromNormalContainer = function(sortable) {
       // prepare handles for move
       if (cms.toolbar.timer.id) {
@@ -202,8 +245,13 @@
       $('#' + cms.html.favoriteDropMenuId).css('visibility', 'visible');
    }
    
-   moveState = null;
    
+   /**
+    * Initializing the move/drag-process.<p>
+    * 
+    * @param {Object} event
+    * @param {Object} ui
+    */
    var onStartDrag = cms.move.onStartDrag = function(event, ui) {
    
       $('.' + cms.move.HOVER_NEW).remove();
@@ -285,11 +333,21 @@
       
    }
    
+   /**
+    * Sets the cancel-flag if dragging stops outside the containers.<p>
+    * 
+    * @param {Object} event
+    * @param {Object} ui
+    */
    var beforeStopFunction = cms.move.beforeStopFunction = function(event, ui) {
       moveState.cancel = !moveState.over;
    }
    
-   
+   /**
+    * Gets all element-ids from the given container an updates the container-object with these.<p>
+    * 
+    * @param {Object} id container-id
+    */
    var updateContainer = cms.move.updateContainer = function(id) {
       if (isMenuContainer(id)) {
          return;
@@ -304,7 +362,8 @@
    
    
    /**
-    * Removes the helpers after a move operation.
+    * Removes the helpers after a move operation.<p>
+    * 
     * @param {Object} helpers the helpers map
     * @param {Object} startContainer the name of the start container
     * @param {Object} endContainer the name of the end container
@@ -324,6 +383,13 @@
       }
    }
    
+   
+   /**
+    * Finishing the drag process.<p>
+    * 
+    * @param {Object} event
+    * @param {Object} ui
+    */
    var onStopDrag = cms.move.onStopDrag = function(event, ui) {
       cms.util.fixZIndex(null, cms.move.zIndexMap);
       var helpers = moveState.helpers;
@@ -404,15 +470,15 @@
          currentItem.get(0).style.opacity = '';
       }
       if (!moveState.cancel) {
-          
-          // check if end-container is overflowing
-          if (startContainer != endContainer && isOverflowContainer(cms.data.containers[endContainer])){
-              var overflowElement= $('.cms-overflow-element', $('#'+endContainer));
-              cms.toolbar.addToRecent(overflowElement.attr('rel'));
-              overflowElement.remove();
-              // just in case: remove leftover cms-overflow-element class
-              $('.cms-overflow-element').removeClass('cms-overflow-element');
-          }
+      
+         // check if end-container is overflowing
+         if (startContainer != endContainer && isOverflowContainer(cms.data.containers[endContainer])) {
+            var overflowElement = $('.cms-overflow-element', $('#' + endContainer));
+            cms.toolbar.addToRecent(overflowElement.attr('rel'));
+            overflowElement.remove();
+            // just in case: remove leftover cms-overflow-element class
+            $('.cms-overflow-element').removeClass('cms-overflow-element');
+         }
          updateContainer(startContainer);
          updateContainer(endContainer);
       }
@@ -433,14 +499,11 @@
       resetNewElementBorders();
    }
    
-   
    /**
-    * sertzsrthzs
-    *
-    * @param {Event}
-    *            event fff
-    * @param {}
-    *            ui
+    * Dom-operations necessary to show the appropriate helper and place-holder while dragging over a container.<p> 
+    * 
+    * @param {Object} event
+    * @param {Object} ui
     */
    var onDragOverContainer = cms.move.onDragOverContainer = function(event, ui) {
       var elem = event.target ? event.target : event.srcElement;
@@ -452,8 +515,9 @@
             'display': 'block',
             'border': 'dotted 2px black'
          });
-         if (moveState.helpers[elemId] && isOverflowContainer(cms.data.containers[elemId])){
-             $('.cms-element:not(.ui-sortable-helper, .cms-placeholder):last', elem).addClass('cms-overflow-element');
+         // check whether current container is overflowing
+         if (moveState.helpers[elemId] && isOverflowContainer(cms.data.containers[elemId])) {
+            $('.cms-element:not(.ui-sortable-helper, .cms-placeholder):last', elem).addClass('cms-overflow-element');
          }
       } else {
          // hide placeholder (otherwise both the gray and blue boxes would be
@@ -504,6 +568,12 @@
       
    }
    
+   /**
+    * Dom-operations necessary to show the appropriate helper and place-holder while dragging outside the containers.<p>
+    * 
+    * @param {Object} event
+    * @param {Object} ui
+    */
    var onDragOutOfContainer = cms.move.onDragOutOfContainer = function(event, ui) {
       var elem = event.target ? event.target : event.srcElement;
       var elemId = $(elem).attr('id');
@@ -512,8 +582,9 @@
             moveState.currentContainerId = moveState.startId;
             cms.util.fixZIndex(moveState.startId, cms.move.zIndexMap);
             setHelper(ui.self, moveState.currentContainerId);
-            if(isOverflowContainer(cms.data.containers[elemId])){
-                $('.cms-overflow-element', elem).removeClass('cms-overflow-element');
+            // check whether current container was overflowing
+            if (isOverflowContainer(cms.data.containers[elemId])) {
+               $('.cms-overflow-element', elem).removeClass('cms-overflow-element');
             }
          }
          ui.placeholder.css('display', 'none');
@@ -531,6 +602,12 @@
       
    }
    
+   /**
+    * Highlighting of the given elment.<p>
+    * 
+    * @param {Object} elem dom-elment
+    * @param {Object} hOff highlighting-offset
+    */
    var hoverIn = cms.move.hoverIn = function(elem, hOff) {
       drawBorder(elem, hOff, HOVER_NORMAL);
       //   hoverOutFilter(elem, '.' + HOVER_NEW);
@@ -594,8 +671,8 @@
    }
    
    /**
-    * Generalized version of hoverInner.<p>
-    *-
+    * Generalized version of hoverInner, drawing a border around all visible elements inside the given element.<p>
+    *
     *  This functions adds a given CSS class to the elements of the border.
     *
     * @param {Object} elem the element for
@@ -669,12 +746,12 @@
          width: dimension.width + 2 * hOff
       };
       $('div.cms-directedit-buttons', elem).css({
-         top: inner.top+hOff,
-         left: inner.left+inner.width-60,
-      }).hover(function(){
-          $(this).nextAll('.cms-hovering').css('display', 'block');
-      }, function(){
-          $(this).nextAll('.cms-hovering').css('display', 'none');
+         top: inner.top + hOff,
+         left: inner.left + inner.width - 60,
+      }).hover(function() {
+         $(this).nextAll('.cms-hovering').css('display', 'block');
+      }, function() {
+         $(this).nextAll('.cms-hovering').css('display', 'none');
       });
       $('a.cms-edit-enabled', elem).click(cms.toolbar.openSubelementDialog);
       $('a.cms-new', elem).click(cms.toolbar.openEditNewDialog);
@@ -704,6 +781,13 @@
       
    }
    
+   /**
+    * Drawing a border around all visible elements inside the given element.<p>
+    * 
+    * @param {Object} elem
+    * @param {Object} hOff
+    * @param {Object} showBackground
+    */
    var hoverInner = cms.move.hoverInner = function(elem, hOff, showBackground) {
       drawInnerBorder(elem, hOff, showBackground, HOVER_NORMAL);
    }
@@ -726,6 +810,11 @@
    };
    
    
+   /**
+    * Removes the highlighting within a given context.<p>
+    * 
+    * @param {Object} context
+    */
    var hoverOut = cms.move.hoverOut = function(context) {
       removeBorder(context, '.' + HOVER_NORMAL);
    }
@@ -743,6 +832,12 @@
       })
    }
    
+   /**
+    * Switches helpers in the dragging process.<p>
+    * 
+    * @param {Object} sortable
+    * @param {Object} id
+    */
    var setHelper = cms.move.setHelper = function(sortable, id) {
       sortable.helper.css('display', 'none');
       sortable.helper = moveState.helpers[id].css('display', 'block');
@@ -750,14 +845,13 @@
       sortable.placeholder.attr('class', sortable.currentItem.attr('class') + ' cms-placeholder').removeClass('ui-sortable-helper');
       refreshHelperPositions(sortable);
    };
+
    
-   var setHelperObj = cms.move.setHelperObj = function(sortable, helper) {
-      sortable.helper.css('display', 'none');
-      sortable.helper = helper;
-      sortable.currentItem = helper;
-      refreshHelperPositions(sortable);
-   }
-   
+   /**
+    * Forces a recalculation of the helper-position in the dragging-process.<p>
+    * 
+    * @param {Object} sortable
+    */
    var refreshHelperPositions = cms.move.refreshHelperPositions = function(sortable) {
       sortable._cacheHelperProportions();
       sortable._adjustOffsetFromHelper(sortable.options.cursorAt);
