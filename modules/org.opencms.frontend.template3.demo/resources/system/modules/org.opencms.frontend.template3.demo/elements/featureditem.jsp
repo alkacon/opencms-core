@@ -11,7 +11,7 @@
 	<c:set var="cur"><%= System.currentTimeMillis() % ((Integer)pageContext.getAttribute("max")).intValue() %></c:set>
 
 	<c:set var="cnt" value="0" />
-	<cms:contentload editable="true">
+	<cms:contentload>
 		<c:set var="file"><cms:contentshow element="%(opencms.filename)" /></c:set>
 <%
   String category = CmsCategoryService.getInstance().readResourceCategories(jsp.getCmsObject(), pageContext.getAttribute("file").toString()).get(0).getName().toLowerCase();
