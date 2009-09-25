@@ -29,7 +29,7 @@
 
 <div class="box box_schema1">
 
-	<cms:contentload collector="singleFile" param="%(opencms.element)" editable="true">
+	<cms:contentload collector="singleFile" param="%(opencms.element)">
 
 		<cms:contentaccess var="listbox" />
 
@@ -57,7 +57,7 @@
 		
 			<cms:contentinfo var="info" />			
 			<c:if test="${info.resultSize > 0}">
-				<cms:contentload editable="false">
+				<cms:contentload editable="true">
 					<cms:contentaccess var="resource" />
 					<c:set var="entry" value="${cms.mappedEntry[resource.rawContent]}" />
 					

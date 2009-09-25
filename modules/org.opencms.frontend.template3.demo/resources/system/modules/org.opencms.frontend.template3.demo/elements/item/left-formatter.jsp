@@ -2,7 +2,7 @@
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<cms:contentload collector="singleFile" param="%(opencms.element)" editable="auto">
+<cms:contentload collector="singleFile" param="%(opencms.element)">
 <div class="box box_schema1">
 		<h4><cms:contentshow element="Name" /></h4>
 <div class="boxbody">	

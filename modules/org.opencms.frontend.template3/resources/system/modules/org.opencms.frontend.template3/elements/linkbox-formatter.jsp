@@ -9,7 +9,7 @@
 <c:set var="locale" value="${cms.requestContext.locale}" />
 <fmt:setLocale value="${locale}" />
 
-<cms:contentload collector="singleFile" param="%(opencms.element)" editable="true">
+<cms:contentload collector="singleFile" param="%(opencms.element)">
 	<div class="box box_schema3">
 
 		<cms:contentaccess var="linkbox" />

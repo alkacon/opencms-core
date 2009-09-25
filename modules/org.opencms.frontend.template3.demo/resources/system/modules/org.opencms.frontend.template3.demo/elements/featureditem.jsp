@@ -5,13 +5,13 @@
 <%
   CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
 %>
-<cms:contentload collector="allInFolder" param="/demo_t3/_content/items/|t3item" editable="false" preload="true">
+<cms:contentload collector="allInFolder" param="/demo_t3/_content/items/|t3item" preload="true">
 	<cms:contentinfo var="info" />
 	<c:set var="max" value="${info.resultSize}" />
 	<c:set var="cur"><%= System.currentTimeMillis() % ((Integer)pageContext.getAttribute("max")).intValue() %></c:set>
 
 	<c:set var="cnt" value="0" />
-	<cms:contentload>
+	<cms:contentload editable="true">
 		<c:set var="file"><cms:contentshow element="%(opencms.filename)" /></c:set>
 <%
   String category = CmsCategoryService.getInstance().readResourceCategories(jsp.getCmsObject(), pageContext.getAttribute("file").toString()).get(0).getName().toLowerCase();
