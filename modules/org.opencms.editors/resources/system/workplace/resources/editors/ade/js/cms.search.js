@@ -9,7 +9,7 @@
       'hasMore': false,
       'totalResults': 0
    };
-   
+    
    /**
     * Handler for search results, but not for the first page of results of a new search
     * @param {Object} ok status of the AJAX request

@@ -16,6 +16,7 @@
       this.origPlaceholder = null;
       this.startId = null;
       this.over = null;
+      this.overflowElem=null;
       
       this.isMoveFromFavorites = function() {
          return this.startId == cms.html.favoriteListId;
@@ -43,6 +44,13 @@
    var isMenuContainer = cms.move.isMenuContainer = function(id) {
       //#
       return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId || id == cms.html.favoriteDropListId;
+   }
+   
+   var isOverflowContainer = cms.move.isOverflowContainer = function(container){
+       if (container) {
+           return container.elements.length >= container.maxElem;
+       }
+       return false;
    }
    
    
@@ -396,6 +404,15 @@
          currentItem.get(0).style.opacity = '';
       }
       if (!moveState.cancel) {
+          
+          // check if end-container is overflowing
+          if (startContainer != endContainer && isOverflowContainer(cms.data.containers[endContainer])){
+              var overflowElement= $('.cms-overflow-element', $('#'+endContainer));
+              cms.toolbar.addToRecent(overflowElement.attr('rel'));
+              overflowElement.remove();
+              // just in case: remove leftover cms-overflow-element class
+              $('.cms-overflow-element').removeClass('cms-overflow-element');
+          }
          updateContainer(startContainer);
          updateContainer(endContainer);
       }
@@ -435,6 +452,9 @@
             'display': 'block',
             'border': 'dotted 2px black'
          });
+         if (moveState.helpers[elemId] && isOverflowContainer(cms.data.containers[elemId])){
+             $('.cms-element:not(.ui-sortable-helper, .cms-placeholder):last', elem).addClass('cms-overflow-element');
+         }
       } else {
          // hide placeholder (otherwise both the gray and blue boxes would be
          // shown)
@@ -492,6 +512,9 @@
             moveState.currentContainerId = moveState.startId;
             cms.util.fixZIndex(moveState.startId, cms.move.zIndexMap);
             setHelper(ui.self, moveState.currentContainerId);
+            if(isOverflowContainer(cms.data.containers[elemId])){
+                $('.cms-overflow-element', elem).removeClass('cms-overflow-element');
+            }
          }
          ui.placeholder.css('display', 'none');
          moveState.origPlaceholder.css({

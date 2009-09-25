@@ -315,6 +315,10 @@ div.cms-highlight-container {
 	visibility: hidden;
 }
 
+.cms-overflow-element{
+    display: none !important;
+}
+
 .cms-menu .cms-placeholder {
 	margin: 0 0 2px 10px !important;
 	width: 290px !important;
