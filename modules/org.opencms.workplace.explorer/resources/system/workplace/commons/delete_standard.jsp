@@ -139,10 +139,10 @@ function doReportUpdate(msg, state) {
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
 if (wp.isMultiOperation()) { 
     // include resource list
-    %><%@ include file="includes/multiresourcelist.txt" %><%
+    %><%@ include file="/system/workplace/commons/includes/multiresourcelist.txt" %><%
 } else { 
     // include resource information
-	%><%@ include file="includes/resourceinfo.txt" %><%
+	%><%@ include file="/system/workplace/commons/includes/resourceinfo.txt" %><%
 } %>
 
 <%= wp.dialogSpacer() %>
