@@ -65,6 +65,13 @@
       return position;
    }
    
+   /**
+    * Calculates dimensions of the visible children of the given element.<p>
+    * 
+    * @param {object} elem jquery-object
+    * @param {integer} minHeight default height
+    * @return {object} hashmap containing dimension-data as left, top, bottom, right, height, width
+    */
    var getInnerDimensions = cms.util.getInnerDimensions = function(elem, minHeight) {
       var dimension = {
          left: 'x',
@@ -75,8 +82,8 @@
          width: ''
       
       };
-      var bottom = 'x';
-      var right = 'x';
+      //      var bottom = 'x';
+      //      var right = 'x';
       var contentElements = elem.children('*:visible:not(.ui-sortable-helper)');
       contentElements = contentElements.add(contentElements.filter('.cms-subcontainer').children('*:visible')).not('.cms-subcontainer');
       if (contentElements.length) {
@@ -97,6 +104,56 @@
             el.outerWidth() : dimension.right;
             
          });
+      } else {
+         var elemPos = getElementPosition(elem);
+         dimension.top = elemPos.top;
+         dimension.left = elemPos.left;
+         dimension.right = dimension.left + elem.innerWidth();
+         dimension.bottom = dimension.top + minHeight;
+      }
+      dimension.height = dimension.bottom - dimension.top;
+      dimension.width = dimension.right - dimension.left;
+      return dimension;
+   }
+   
+   
+   /**
+    * Calculates dimensions for the following siblings of the given element.<p>
+    * 
+    * @param {object} elem jquery-object
+    * @param {integer} minHeight default height
+    * @param {string} stopAtClass only calculate dimensions until next sibling with this class
+    * @return {object} hashmap containing dimension-data as left, top, bottom, right, height, width
+    */
+   var getSiblingsDimensions = cms.util.getSiblingsDimensions = function(elem, minHeight, stopAtClass) {
+      var dimension = {
+         left: 'x',
+         top: 'x',
+         bottom: 'x',
+         right: 'x',
+         height: '',
+         width: ''
+      
+      };
+      var current = elem.next('*:visible:not(.' + stopAtClass + ')');
+      if (current.length) {
+         while (current.length) {
+            var pos = cms.util.getElementPosition(current);
+            dimension.left = (dimension.left == 'x' || pos.left < dimension.left) ? pos.left : dimension.left;
+            dimension.top = (dimension.top == 'x' || pos.top < dimension.top) ? pos.top : dimension.top;
+            dimension.bottom = (dimension.bottom == 'x' ||
+            dimension.bottom <
+            (pos.top +
+            current.outerHeight())) ? pos.top +
+            current.outerHeight() : dimension.bottom;
+            dimension.right = (dimension.right == 'x' ||
+            dimension.right <
+            (pos.left +
+            current.outerWidth())) ? pos.left +
+            current.outerWidth() : dimension.right;
+            
+            current = current.next('*:visible:not(.' + stopAtClass + ')');
+         }
       } else {
          var elemPos = getElementPosition(elem);
          dimension.top = elemPos.top;

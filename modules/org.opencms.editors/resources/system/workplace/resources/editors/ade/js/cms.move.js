@@ -626,6 +626,61 @@
       }
    }
    
+   /**
+    *  This function draws a border around the following siblings of the given element.
+    *
+    * @param {Object} elem the element for
+    * @param {Object} hOff
+    * @param {Object} showBackground
+    * @param {Object} additionalClass the CSS class for the border elements
+    */
+   var drawSiblingBorder = cms.move.drawSiblingBorder = function(elem, hOff, stopAtClass, showBackground, additionalClass) {
+      elem = $(elem);
+      var dimension = cms.util.getSiblingsDimensions(elem, 25, stopAtClass);
+      var elemPos = cms.util.getElementPosition(elem.parents('.cms-element'));
+      var hWidth = 2;
+      var inner = {
+         top: dimension.top - (elemPos.top + hOff),
+         left: dimension.left - (elemPos.left + hOff),
+         height: dimension.height + 2 * hOff,
+         width: dimension.width + 2 * hOff
+      };
+      $('div.cms-directedit-buttons', elem).css({
+         top: inner.top+hOff,
+         left: inner.left+inner.width-60,
+      }).hover(function(){
+          $(this).nextAll('.cms-hovering').css('display', 'block');
+      }, function(){
+          $(this).nextAll('.cms-hovering').css('display', 'none');
+      });
+      $('a.cms-edit-enabled', elem).click(cms.toolbar.openSubelementDialog);
+      $('a.cms-new', elem).click(cms.toolbar.openEditNewDialog);
+      $('a.cms-delete', elem).click(cms.toolbar.directDeleteItem);
+      if (showBackground) {
+         // inner
+         
+         $('<div class="cms-highlight-container" style="position: absolute; z-index:0; top: ' +
+         inner.top +
+         'px; left: ' +
+         inner.left +
+         'px; height: ' +
+         inner.height +
+         'px; width: ' +
+         inner.width +
+         'px;"></div>').addClass(additionalClass).appendTo(elem);
+      }
+      
+      // top
+      $('<div class="cms-hovering cms-hovering-top"></div>').addClass(additionalClass).height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
+      // right
+      $('<div class="cms-hovering cms-hovering-right"></div>').addClass(additionalClass).height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left + inner.width + hOff).appendTo(elem);
+      // left
+      $('<div class="cms-hovering cms-hovering-left"></div>').addClass(additionalClass).height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
+      // bottom
+      $('<div class="cms-hovering cms-hovering-bottom"></div>').addClass(additionalClass).height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top + inner.height).css('left', inner.left - hWidth).appendTo(elem);
+      
+   }
+   
    var hoverInner = cms.move.hoverInner = function(elem, hOff, showBackground) {
       drawInnerBorder(elem, hOff, showBackground, HOVER_NORMAL);
    }

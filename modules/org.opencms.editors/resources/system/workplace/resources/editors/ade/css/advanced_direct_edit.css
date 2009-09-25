@@ -250,6 +250,12 @@ div.cms-highlight-container {
 	margin: 0 !important;
 }
 
+/** for 'old' direct edit highlighting **/
+
+.cms-editable  .cms-hovering{
+    display: none;
+}
+
 .cms-hovering-top,.hovering-top {
 	background: transparent url(images/ocms_de_t.gif) repeat scroll 0 50%
 		!important;
@@ -419,6 +425,33 @@ span.cms-check-icon-inactive {
 	background-image: url(images/16x16/checkbox_empty_16x16.png);
 }
 
+.cms-editable .cms-directedit-buttons{
+    position: absolute;
+    width: 60px;
+    height: 20px;
+    z-index: 1000;
+    display: none;
+}
+
+div.cms-editable div.cms-editmode, div.cms-editable div.cms-deletemode{
+    display: block;
+}
+
+.cms-directedit-buttons a{
+    float: right;
+    display: none;
+    width: 20px;
+    height: 20px;
+}
+
+.cms-editmode a.cms-edit-enabled, .cms-editmode a.cms-edit-locked, .cms-editmode a.cms-new{
+    display: block;
+}
+
+.cms-deletemode a.cms-delete{
+    display: block;
+}
+
 .cms-edit-enabled {
 	background: transparent url(images/16x16/ocms_de_editor_i.png) no-repeat
 		scroll 50% 50%;
@@ -469,6 +502,14 @@ div.ui-widget-header a.cms-delete {
 
 .cms-delete:hover,div.ui-widget-header a.cms-delete:hover {
 	background-image: url(images/16x16/ocms_de_delete_a.png);
+}
+
+.cms-new{
+    background: transparent url(images/16x16/ocms_de_new_i.png) no-repeat scroll 50% 50%;
+}
+
+a.cms-new:hover{
+    background-image: url(images/16x16/ocms_de_new_a.png);
 }
 
 .ui-dialog div.cms-dialog {
@@ -860,14 +901,6 @@ ol.ade-forms fieldset {
 }*/
 .cms-subcontainer-item>.cms-handle {
 	z-index: 10;
-}
-
-.cms-new {
-	border-width: 10px;
-	border-left: 1px dashed #ff0000 !important;
-	border-right: 1px dashed #ff0000 !important;
-	border-bottom: 1px dashed #ff0000 !important;
-	border-top: 1px dashed #ff0000 !important;
 }
 
 #cms-new-list .cms-item .ui-widget-content, #cms-appendbox .cms-item .ui-widget-content {

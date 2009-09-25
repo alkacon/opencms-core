@@ -127,13 +127,57 @@
       setPageChanged(true);
    };
    
+   var directDeleteItem = cms.toolbar.directDeleteItem = function() {
+      var elemId = $(this).closest('.cms-editable').attr('rel');
+      $('<div id="cms-delete-dialog" style="display:none;" title="Delete Resource">\
+          <p>\
+            Do you really want to delete this resource?\
+          </p>\
+        </div>').appendTo("body").dialog({
+         autoOpen: true,
+         buttons: {
+            Cancel: function() {
+               $(this).dialog('close');
+            },
+            'Delete': function() {
+               $(this).dialog('close');
+               cms.data.deleteResources([elemId], function(ok) {
+                  var elemList = [elemId];
+                  deleteFromFavListAndRecList(elemList);
+                  $(cms.util.getContainerSelector()).find('.cms-element [rel="' + elemId + '"]').remove();
+                  for (var key in cms.data.containers) {
+                     cms.move.updateContainer(key);
+                  }
+                  $(cms.util.getContainerSelector()).find('.cms-element:has(div.cms-editable)').each(function() {
+                     elemList.push($(this).attr('rel'));
+                  });
+                  cms.data.loadElements(elemList, function(ok) {
+                     if (ok) {
+                        cms.data.fillContainers();
+                        // to reset the mode we turn it off and on again
+                        var activeButton = $("#toolbar button.ui-state-active");
+                        activeButton.trigger('click');
+                        activeButton.trigger('click');
+                     } else {
+                                          // TODO
+                     }
+                  });
+               });
+            }
+         },
+         resizable: false,
+         modal: true,
+         zIndex: 10000
+      
+      });
+   }
    
    /**
     * Deletes the given elements from the favorites and recent list.<p>
     *
     * @param {Array} ids a list of ids of elements to be deleted
     */
-   var deleteFromFavListAndRecList = function(/**Array<String>*/ids) {
+   var deleteFromFavListAndRecList = cms.toolbar.deleteFromFavListAndRecList = function(/**Array<String>*/ids) {
    
       var /**boolean*/ saveFavorites = false;
       var /**boolean*/ saveRecentList = false;
@@ -324,7 +368,7 @@
          }
          cms.toolbar.mode = '';
       } else {
-      
+         var containers = $(cms.util.getContainerSelector());
          if (_isEditingMode(cms.toolbar.mode) && _isEditingMode(buttonMode)) {
             // reorder handles
             
@@ -335,11 +379,14 @@
                
             });
             cms.toolbar.dom.buttons[cms.toolbar.mode].removeClass('ui-state-active');
-            
+            containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering))').each(function() {
+               cms.move.drawSiblingBorder($(this), 2, 'cms-editable', false, 'cms-test');
+            });
+            containers.find('div.cms-editable div.cms-directedit-buttons').removeClass('cms-' + cms.toolbar.mode + 'mode').addClass('cms-' + buttonMode + 'mode');
          } else {
             _disableMode(cms.toolbar.mode);
             if (_isEditingMode(buttonMode)) {
-               $(cms.util.getContainerSelector()).children('.cms-element').each(function() {
+               containers.children('.cms-element').each(function() {
                   var elem = $(this).css('position', 'relative');
                   var elemId = elem.attr('rel');
                   if (elemId && cms.data.elements[elemId]) {
@@ -348,6 +395,10 @@
                   
                });
                initMove();
+               containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering))').each(function() {
+                  cms.move.drawSiblingBorder($(this), 2, 'cms-editable', false, 'cms-test');
+               });
+               containers.find('div.cms-editable div.cms-directedit-buttons').addClass('cms-' + buttonMode + 'mode');
             } else {
             
                var loadFunction;
@@ -464,6 +515,7 @@
          $('li.cms-item, button', list).css('display', 'block');
          resetFavList();
          $('.cms-element div.cms-handle').remove();
+         $(containerSelector).find('div.cms-editable div.cms-directedit-buttons').removeClass('cms-' + mode + 'mode');
       } else {
          // disabling add/new/favorites/recent
          cms.toolbar.dom[mode + 'Menu'].hide();
@@ -483,60 +535,7 @@
       if (elemId && cms.data.elements[elemId]) {
          if (cms.data.elements[elemId].allowEdit) {
             var element = cms.data.elements[elemId];
-            var _openDialog = function(path, id, afterClose) {
-               var dialogWidth = self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
-               dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
-               var dialogHeight = self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
-               dialogHeight = dialogHeight < 700 ? dialogHeight : 700;
-               var iFrameHeight = dialogHeight - 115 // mmoossen: resource name in body: - 126;
-               var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
-               var editorFrame = '<iframe style="border:none; width:100%; height:' + iFrameHeight + 'px;" name="cmsAdvancedDirectEditor" src="' + editorLink + '"></iframe>';
-               var editorDialog = $('#cms-editor');
-               if (!editorDialog.length) {
-                  editorDialog = $('<div id="cms-editor"  rel="' + id + '"></div>').appendTo(document.body);
-               } else {
-                  editorDialog.empty().attr('rel', id);
-               }
-               
-               // mmoossen: resource name in body: editorDialog.append('<div class="cms-editor-subtitle">Resource: ' + path + '</div>')
-               editorDialog.append(editorFrame);
-               editorDialog.dialog({
-                  width: dialogWidth - 50,
-                  height: dialogHeight - 60,
-                  title: "Editor - " + path, // mmoossen: resource name in title
-                  modal: true,
-                  autoOpen: true,
-                  closeOnEscape: false,
-                  draggable: true,
-                  resizable: true,
-                  resize: function(event) {
-                     $('#cms-editor iframe').height($(this).height() - 20);
-                  },
-                  resizeStop: function(event) {
-                     $('#cms-editor iframe').height($(this).height() - 20);
-                  },
-                  position: ['center', 0],
-                  open: function(event) {
-                     $('#cms_appendbox').css('z-index', 10005).append(editorDialog.parent());
-                     $('a.ui-dialog-titlebar-close').hide();
-                     editorDialog.parent().css('top', '0px')
-                  },
-                  close: function() {
-                     editorDialog.empty().dialog('destroy');
-                     cms.data.reloadElement(id, function(ok) {
-                        if (ok) {
-                           // to reset the mode we turn it off and on again
-                           var activeButton = $("#toolbar button.ui-state-active");
-                           activeButton.trigger('click');
-                           activeButton.trigger('click');
-                        } else {
-                                                // TODO
-                        }
-                     });
-                  },
-                  zIndex: 10000
-               });
-            }
+            
             if (element.status == cms.data.STATUS_NEWCONFIG) {
                cms.data.createResource(element.type, function(ok, id, uri) {
                   if (!ok) {
@@ -559,6 +558,93 @@
             }
          }
       }
+   }
+   
+   var openSubelementEditDialog = cms.toolbar.openSubelementDialog = function() {
+      var editable = $(this).closest('.cms-editable');
+      var elemId = editable.attr('rel');
+      var parentId = $(this).closest('.cms-element').attr('rel');
+      var path = editable.find('input[name="resource"]').val();
+      _openDialog(path, [elemId, parentId]);
+      return false;
+   }
+   
+   var openEditNewDialog = cms.toolbar.openEditNewDialog = function() {
+      var editable = $(this).closest('.cms-editable');
+      var elemId = editable.attr('rel');
+      var parentId = $(this).closest('.cms-element').attr('rel');
+      var path = editable.find('input[name="resource"]').val();
+      var newLink = '&amp;newlink=' + escape(editable.find('input[name="newlink"]').val())+'&amp;editortitle=Editing+%28new+resource%29';
+      _openDialog(path, [elemId, parentId], newLink);
+      return false;
+   }
+   
+   var _openDialog = function(path, ids, newLink) {
+      var _afterReload = function(ok) {
+         if (ok) {
+            if ($.isArray(ids)) {
+               cms.data.fillContainers();
+            }
+            
+            // to reset the mode we turn it off and on again
+            var activeButton = $("#toolbar button.ui-state-active");
+            activeButton.trigger('click');
+            activeButton.trigger('click');
+         } else {
+                  // TODO
+         }
+      };
+      var id = $.isArray(ids) ? ids[0] : ids;
+      var dialogWidth = self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
+      dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
+      var dialogHeight = self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
+      dialogHeight = dialogHeight < 700 ? dialogHeight : 700;
+      var iFrameHeight = dialogHeight - 115 // mmoossen: resource name in body: - 126;
+      var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
+      if (newLink) {
+         editorLink += newLink;
+      }
+      var editorFrame = '<iframe style="border:none; width:100%; height:' + iFrameHeight + 'px;" name="cmsAdvancedDirectEditor" src="' + editorLink + '"></iframe>';
+      var editorDialog = $('#cms-editor');
+      if (!editorDialog.length) {
+         editorDialog = $('<div id="cms-editor"  rel="' + id + '"></div>').appendTo(document.body);
+      } else {
+         editorDialog.empty().attr('rel', id);
+      }
+      
+      // mmoossen: resource name in body: editorDialog.append('<div class="cms-editor-subtitle">Resource: ' + (newLink) ? "new resource" : path + '</div>')
+      editorDialog.append(editorFrame);
+      editorDialog.dialog({
+         width: dialogWidth - 50,
+         height: dialogHeight - 60,
+         title: "Editor - " + (newLink) ? "new resource" : path, // mmoossen: resource name in title
+         modal: true,
+         autoOpen: true,
+         closeOnEscape: false,
+         draggable: true,
+         resizable: true,
+         resize: function(event) {
+            $('#cms-editor iframe').height($(this).height() - 20);
+         },
+         resizeStop: function(event) {
+            $('#cms-editor iframe').height($(this).height() - 20);
+         },
+         position: ['center', 0],
+         open: function(event) {
+            $('#cms_appendbox').css('z-index', 10005).append(editorDialog.parent());
+            $('a.ui-dialog-titlebar-close').hide();
+            editorDialog.parent().css('top', '0px')
+         },
+         close: function() {
+            editorDialog.empty().dialog('destroy');
+            if ($.isArray(ids)) {
+               cms.data.loadElements(ids, _afterReload);
+            } else {
+               cms.data.reloadElement(id, _afterReload);
+            }
+         },
+         zIndex: 10000
+      });
    }
    
    /**
@@ -1158,7 +1244,7 @@
          return false;
       });
    }
-      
+   
    
    /**
     * Reloads the recent-list.<p>
