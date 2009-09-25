@@ -30,7 +30,11 @@ Sub SetXmlHeaders()
 	Response.CacheControl = "no-cache"
 
 	' Set the response format.
+	on error resume next
+	' The CodePage property isn't supported in Windows 2000. #2604
 	Response.CodePage 		= 65001
+	on error goto 0
+
 	Response.CharSet		= "UTF-8"
 	Response.ContentType	= "text/xml"
 End Sub
