@@ -3152,6 +3152,66 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_a.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_a.png</destination>
+			<type>image</type>
+			<uuidstructure>86986747-a8e7-11de-b87c-03673277c95b</uuidstructure>
+			<uuidresource>86986748-a8e7-11de-b87c-03673277c95b</uuidresource>
+			<datelastmodified>Thu, 24 Sep 2009 08:52:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2009 08:52:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_d.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_d.png</destination>
+			<type>image</type>
+			<uuidstructure>86b9d1fa-a8e7-11de-b87c-03673277c95b</uuidstructure>
+			<uuidresource>86b9d1fb-a8e7-11de-b87c-03673277c95b</uuidresource>
+			<datelastmodified>Thu, 24 Sep 2009 08:52:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2009 08:52:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_i.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_i.png</destination>
+			<type>image</type>
+			<uuidstructure>864c1c04-a8e7-11de-b87c-03673277c95b</uuidstructure>
+			<uuidresource>864c1c05-a8e7-11de-b87c-03673277c95b</uuidresource>
+			<datelastmodified>Thu, 24 Sep 2009 08:52:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2009 08:52:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<destination>system/workplace/resources/editors/ade/css/images/24x24</destination>
 			<type>folder</type>
