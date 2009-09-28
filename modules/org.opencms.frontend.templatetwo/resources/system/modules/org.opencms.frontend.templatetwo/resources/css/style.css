@@ -4,10 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
 	CmsTemplateLayout cms = new CmsTemplateLayout(pageContext, request, response);
 	pageContext.setAttribute("cms", cms);
-%><c:if test="${!empty cms.styleValue['css.file']}">
-	@import url(<cms:link>${cms.styleValue['css.file']}</cms:link>);
-	<%-- Import additional css file --%>
-</c:if>
+%>
 @media all
 {
   /**
@@ -455,4 +452,7 @@
   
   #col2, #col2_content { width: 100%; margin:0; padding: 0; border:0; }
 }
-
+<%-- Import additional css file --%>
+<c:if test="${!empty cms.styleValue['css.file']}">
+	<cms:include file="${cms.styleValue['css.file']}" />
+</c:if>
