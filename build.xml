@@ -109,7 +109,7 @@
         	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
         </uptodate>
             	
-       	<javac  encoding="windows-1252"
+       	<javac
             srcdir="${opencms.input}/src"
             destdir="${opencms.output.classes}"
             debug="on"
@@ -484,7 +484,7 @@
     	
         <mkdir dir="${opencms.output.tests}" />    	
     	
-       	<javac encoding="windows-1252"
+       	<javac
             srcdir="${opencms.input}/test"
             destdir="${opencms.output.tests}"
             excludes="**/data/**"
@@ -529,7 +529,7 @@
     	
         <mkdir dir="${opencms.output}/build/setup" />    	
     	
-       	<javac encoding="windows-1252"
+       	<javac
             srcdir="${opencms.input}/src-setup"
             destdir="${opencms.output}/build/setup"
             debug="on"
@@ -615,7 +615,7 @@
             </fileset>
         </delete>
         
-        <javac encoding="windows-1252"
+        <javac
             srcdir="${opencms.input}/src-components/org/opencms/applet"
             destdir="${opencms.output}/upload"
             debug="on"
