@@ -58,7 +58,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0" uri="commons/property_multifile.jsp" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0" uri="commons/property_multifile.jsp" rule="nondeleted"/>     
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
@@ -466,6 +466,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0" uri="commons/property_multifile.jsp" rule="nondeleted"/>     
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
@@ -692,6 +693,7 @@
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNotDeletedNoAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedInactiveMovedAl" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveChangedAl" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
     	</menurule>
@@ -764,6 +766,7 @@
           <reporttype>extended</reporttype>
           <uploadapplet>true</uploadapplet>
           <publishbuttonappearance>always</publishbuttonappearance>
+          <listallprojects>false</listallprojects>
           <publishnotification>false</publishnotification>
           <show-fileuploadbutton>true</show-fileuploadbutton>
           <allowbrokenrelations>false</allowbrokenrelations>
@@ -781,7 +784,7 @@
           <restrictexplorerview>false</restrictexplorerview>
         </workplace-startupsettings>
         <workplace-search>
-        	<searchindex-name>Online project EN (VFS)</searchindex-name>
+        	<searchindex-name>Offline project EN (VFS)</searchindex-name>
         	<searchview-style>explorer</searchview-style>
         </workplace-search>
       </workplace-preferences>

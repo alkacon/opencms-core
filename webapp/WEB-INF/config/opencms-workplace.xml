@@ -466,6 +466,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0" uri="commons/property_multifile.jsp" rule="nondeleted"/>     
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
