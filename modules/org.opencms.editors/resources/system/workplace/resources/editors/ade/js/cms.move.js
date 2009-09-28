@@ -95,7 +95,6 @@
             $('.cms-element').css('display', 'block');
          }, 50);
       }
-      moveState=null;
    }
    
    /**

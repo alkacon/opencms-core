@@ -45,7 +45,7 @@
     * @param {String} mode
     * @return {boolean}
     */
-   var _isEditingMode = function(mode) {
+   var _isEditingMode = function(/** String */mode) {
       if (mode == 'edit' || mode == 'move' || mode == 'delete') {
          return true;
       }
@@ -55,7 +55,7 @@
    /**
     * This function will display the publish dialog.<p>
     */
-   var showPublishList = cms.toolbar.showPublishList = function() {
+   var showPublishList = cms.toolbar.showPublishList = /** void */ function() {
       var button = $(this);
       if (button.hasClass('ui-state-active')) {
       
@@ -99,7 +99,7 @@
    /**
     * This event-handler function will remove an element from a container.
     */
-   var deleteItem = cms.toolbar.deleteItem = function() {
+   var deleteItem = cms.toolbar.deleteItem = /** void */ function() {
       var $item = $(this).closest('.cms-element');
       var $container = $item.parent();
       cms.move.hoverOut();
@@ -127,7 +127,11 @@
       setPageChanged(true);
    };
    
-   var directDeleteItem = cms.toolbar.directDeleteItem = function() {
+   /**
+    * This event-handler function will delete an element from the vfs. It is to be assigned to delete buttons in content-collector lists only.
+    * It matches the functionallity of the 'old' direct edit.
+    */
+   var directDeleteItem = cms.toolbar.directDeleteItem = /** void */ function() {
       var elemId = $(this).closest('.cms-editable').attr('rel');
       $('<div id="cms-delete-dialog" style="display:none;" title="Delete Resource">\
           <p>\
@@ -177,7 +181,7 @@
     *
     * @param {Array} ids a list of ids of elements to be deleted
     */
-   var deleteFromFavListAndRecList = cms.toolbar.deleteFromFavListAndRecList = function(/**Array<String>*/ids) {
+   var deleteFromFavListAndRecList = cms.toolbar.deleteFromFavListAndRecList = /** void */ function(/**Array<String>*/ids) {
    
       var /**boolean*/ saveFavorites = false;
       var /**boolean*/ saveRecentList = false;
@@ -232,7 +236,7 @@
     * @param {Object} handleDiv
     * @param {Object} adeMode
     */
-   var startHoverTimeout = cms.toolbar.startHoverTimeout = function(handleDiv, adeMode) {
+   var startHoverTimeout = cms.toolbar.startHoverTimeout = /** void */ function(/** jquery-object */ handleDiv, /** string */ adeMode) {
       if (timer.id) {
          clearTimeout(timer.id);
       }
@@ -244,7 +248,7 @@
    /**
     * Shows additional editing buttons within hover effect.
     */
-   var showAddButtons = cms.toolbar.showAddButtons = function() {
+   var showAddButtons = cms.toolbar.showAddButtons = /** void */ function() {
       timer.id = null;
       var right = '-48px';
       var showMoveLeft = true;
@@ -267,7 +271,7 @@
    /**
     * Cancels current hover timeout.<p>
     */
-   var stopHover = cms.toolbar.stopHover = function() {
+   var stopHover = cms.toolbar.stopHover = /** void */ function() {
       if (timer.id) {
          clearTimeout(timer.id);
          timer.id = null;
@@ -292,7 +296,7 @@
     * @param {Object} elem the element which the handle div belongs to
     * @param {String} adeMode the current mode
     */
-   var initHandleDiv = cms.toolbar.initHandleDiv = function(handleDiv, elem, /**String*/ adeMode) {
+   var initHandleDiv = cms.toolbar.initHandleDiv = /** void */ function(/** jquery-object */ handleDiv, /** jquery-object */ elem, /** String */ adeMode) {
       handleDiv.hover(function() {
          cms.move.removeBorder(elem, '.' + cms.move.HOVER_NEW);
          cms.move.hoverIn(elem, 2);
@@ -316,7 +320,7 @@
     * @param {Object} adeMode current mode
     * @param {Object} isMoving indicates if the current element is a sortable helper object
     */
-   var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
+   var addHandles = cms.toolbar.addHandles = /** void */ function(/** jquery-object */ elem, /** String */ elemId, /** String */ adeMode, /** boolean */ isMoving) {
       var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem);
       
       var handles = {
@@ -348,7 +352,7 @@
     * Click-event-handler for edit, move, delete, add, new, favorite and recent toolbar buttons.<p>
     * Will enable or disable the current and previous mode.<p>
     */
-   var toggleMode = cms.toolbar.toggleMode = function() {
+   var toggleMode = cms.toolbar.toggleMode = /** void */ function() {
       if (!cms.toolbar.toolbarReady) {
          return;
       }
@@ -502,7 +506,7 @@
     *
     * @param {Object} mode
     */
-   var _disableMode = function(mode) {
+   var _disableMode = /** void */ function(mode) {
       if (mode == '') {
          return;
       }
@@ -528,7 +532,7 @@
     * Click-event-handler for edit-handles.<p>
     * Opens the content-editor-dialog.<p>
     */
-   var openEditDialog = cms.toolbar.openEditDialog = function() {
+   var openEditDialog = cms.toolbar.openEditDialog = /** void */ function() {
       var $domElement = $(this).closest('.cms-element');
       var elemId = $domElement.attr('rel');
       
@@ -563,7 +567,7 @@
    /**
     * Opens the content editor for elements loaded within an element by a content-collector. 'Old' direct edit function.
     */
-   var openSubelementEditDialog = cms.toolbar.openSubelementDialog = function() {
+   var openSubelementEditDialog = cms.toolbar.openSubelementDialog = /** boolean */ function() {
       var editable = $(this).closest('.cms-editable');
       var elemId = editable.attr('rel');
       var parentId = $(this).closest('.cms-element').attr('rel');
@@ -575,7 +579,7 @@
    /**
     * Opens the content editor for new elements loaded within an element by a content-collector. 'Old' direct edit function.
     */
-   var openEditNewDialog = cms.toolbar.openEditNewDialog = function() {
+   var openEditNewDialog = cms.toolbar.openEditNewDialog = /** boolean */ function() {
       var editable = $(this).closest('.cms-editable');
       var elemId = editable.attr('rel');
       var parentId = $(this).closest('.cms-element').attr('rel');
@@ -590,11 +594,11 @@
     * a content-collector element (if an array of ids is given, editing the element of the first)
     * or for a new content-collector element (if newLink != null)
     *
-    * @param {Object} path
-    * @param {Object} ids may be an array or a single element-id
-    * @param {Object} newLink
+    * @param {String} path
+    * @param {String / Array} ids may be an array or a single element-id
+    * @param {String} newLink
     */
-   var _openContentEditor = function(path, ids, newLink) {
+   var _openContentEditor = /** void */ function( /** String */ path, /** String / Array<String> */ ids, /** String */ newLink) {
       var _afterReload = function(ok) {
          if (ok) {
             if ($.isArray(ids)) {
@@ -666,7 +670,7 @@
     * Removes the toolbar-html-element from the dom.<p>
     * Currently not used.<p>
     */
-   var removeToolbar = cms.toolbar.removeToolbar = function() {
+   var removeToolbar = cms.toolbar.removeToolbar = /** void */ function() {
       $('#toolbar').remove();
       $(document.body).css('margin-top', _oldBodyMarginTop + 'px');
    };
@@ -674,7 +678,7 @@
    /**
     * Hides the toolbar.<p>
     */
-   var hideToolbar = cms.toolbar.hideToolbar = function() {
+   var hideToolbar = cms.toolbar.hideToolbar = /** boolean */ function() {
       $(document.body).animate({
          marginTop: _oldBodyMarginTop + 'px'
       }, 200, 'swing', function() {
@@ -687,7 +691,7 @@
    /**
     * Toggles the toolbar.<p>
     */
-   var toggleToolbar = cms.toolbar.toggleToolbar = function() {
+   var toggleToolbar = cms.toolbar.toggleToolbar = /** boolean */ function() {
       var button = $('#show-button');
       if (button.hasClass('toolbar_hidden')) {
          $('#toolbar').fadeIn(100);
@@ -708,7 +712,7 @@
    /**
     * Helper class for displaying a 'Loading' sign when loading takes too long
     */
-   var LoadingSign = cms.toolbar.LoadingSign = function(selector, waitTime, showLoading, hideLoading) {
+   var LoadingSign = cms.toolbar.LoadingSign = /** Object */ function(/** String */ selector, /** long */ waitTime, /** function */ showLoading, /** function */ hideLoading) {
    
       this.isLoading = false;
       
@@ -734,7 +738,7 @@
    /**
     * Adds the toolbar and most other ADE elements to the dom and initializes dialogs and event-handlers.<p>
     */
-   var addToolbar = cms.toolbar.addToolbar = function() {
+   var addToolbar = cms.toolbar.addToolbar = /** void */ function() {
       _bodyEl = $(document.body).css('position', 'relative');
       
       // remember old margins/offset of body 
@@ -801,7 +805,7 @@
    /**
     * Moves the dropdown menus to the right if required for small screen-sizes.<p>
     */
-   var fixMenuAlignment = function() {
+   var fixMenuAlignment = /** void */ function() {
       $('.cms-menu').each(function() {
          var $elem = $(this);
          if ($elem.offset().left < 0) {
@@ -829,7 +833,7 @@
    /**
     * Initializes the sortable.<p>
     */
-   var initMove = function() {
+   var initMove = /** void */ function() {
       var containerSelector = cms.util.getContainerSelector();
       
       // replace id
@@ -895,7 +899,7 @@
    /**
     * Click-event-handler for delete icon in favorites dialog.<p>
     */
-   var clickFavDeleteIcon = cms.toolbar.clickFavDeleteIcon = function() {
+   var clickFavDeleteIcon = cms.toolbar.clickFavDeleteIcon = /** void */ function() {
       var button = $(this);
       var toRemove = button.parent().parent();
       toRemove.remove();
@@ -903,9 +907,9 @@
    
    /**
     * Utility function to generate a string representing an array.<p>
-    * @param {Object} arr
+    * @param {Array} arr
     */
-   var arrayToString = function(arr) {
+   var arrayToString = function(/** Array<String> */ arr) {
       return "[" + arr.join(", ") + "]";
    };
    
@@ -1058,9 +1062,9 @@
    /**
     * Adds item to recent list.<p>
     *
-    * @param {Object} itemId
+    * @param {String} itemId
     */
-   var addToRecent = cms.toolbar.addToRecent = function(itemId) {
+   var addToRecent = cms.toolbar.addToRecent = function(/** String */ itemId) {
       cms.util.addUnique(cms.toolbar.recent, itemId, cms.toolbar.recentSize);
       cms.data.persistRecent(function(ok) {
          if (!ok) {
@@ -1116,7 +1120,7 @@
     * Persists container-page on server.<p>
     * @param {Object} callback
     */
-   var savePage = cms.toolbar.savePage = function(callback) {
+   var savePage = cms.toolbar.savePage = function(/** function */ callback) {
    
       cms.data.persistContainers(function(ok) {
          $('#cms-save-dialog').dialog('close');
@@ -1136,9 +1140,9 @@
    
    /**
     * Sets the pageChanged flag and activates the save and reset-buttons.<p>
-    * @param {Object} newValue
+    * @param {boolean} newValue
     */
-   var setPageChanged = cms.toolbar.setPageChanged = function(newValue) {
+   var setPageChanged = cms.toolbar.setPageChanged = function(/** boolean */ newValue) {
       pageChanged = cms.toolbar.pageChanged = newValue;
       if (newValue) {
          $('#toolbar button[name="Save"], #toolbar button[name="Reset"]').removeClass('cms-deactivated');
