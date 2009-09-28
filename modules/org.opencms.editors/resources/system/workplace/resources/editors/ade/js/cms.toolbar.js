@@ -144,7 +144,7 @@
                cms.data.deleteResources([elemId], function(ok) {
                   var elemList = [elemId];
                   deleteFromFavListAndRecList(elemList);
-                  $(cms.util.getContainerSelector()).find('.cms-element [rel="' + elemId + '"]').remove();
+                  $(cms.util.getContainerSelector()).find('.cms-element[rel="' + elemId + '"]').remove();
                   for (var key in cms.data.containers) {
                      cms.move.updateContainer(key);
                   }
