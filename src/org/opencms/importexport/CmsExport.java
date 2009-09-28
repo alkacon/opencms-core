@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2009/09/23 13:55:48 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2009/09/28 13:29:14 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -92,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.99 $ 
+ * @version $Revision: 1.100 $ 
  * 
  * @since 6.0.0 
  */
@@ -232,6 +233,122 @@ public class CmsExport {
 
             throw new CmsImportExportException(message, ioe);
         }
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if <code>true</code>, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     * 
+     * @deprecated use the {@link CmsExportParameters} constructor instead
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        List resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged)
+    throws CmsImportExportException, CmsRoleViolationException {
+
+        this(cms, exportFile, resourcesToExport, includeSystem, includeUnchanged, null, false, 0, new CmsShellReport(
+            cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if <code>true</code>, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param moduleElement module informations in a Node for module export
+     * @param exportUserdata if <code>true</code>, the user and group data will also be exported
+     * @param contentAge export contents changed after this date/time
+     * @param report to handle the log messages
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     * 
+     * @deprecated use the {@link CmsExportParameters} constructor instead
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        List resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        Element moduleElement,
+        boolean exportUserdata,
+        long contentAge,
+        I_CmsReport report)
+    throws CmsImportExportException, CmsRoleViolationException {
+
+        this(
+            cms,
+            exportFile,
+            resourcesToExport,
+            includeSystem,
+            includeUnchanged,
+            moduleElement,
+            exportUserdata,
+            contentAge,
+            report,
+            true);
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if <code>true</code>, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param moduleElement module informations in a Node for module export
+     * @param exportUserdata if <code>true</code>, the user and group data will also be exported
+     * @param contentAge export contents changed after this date/time
+     * @param report to handle the log messages
+     * @param recursive recursive flag
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     * 
+     * @deprecated use the {@link CmsExportParameters} constructor instead
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        List resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        Element moduleElement,
+        boolean exportUserdata,
+        long contentAge,
+        I_CmsReport report,
+        boolean recursive)
+    throws CmsImportExportException, CmsRoleViolationException {
+
+        this(cms, report);
+        exportData(new CmsExportParameters(
+            exportFile,
+            moduleElement,
+            true,
+            exportUserdata,
+            false,
+            resourcesToExport,
+            includeSystem,
+            includeUnchanged,
+            contentAge,
+            recursive,
+            false));
     }
 
     /**
