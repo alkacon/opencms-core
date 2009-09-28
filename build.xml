@@ -2,7 +2,7 @@
 
 <project name="OpenCms" default="bindist" basedir=".">
 
-    <property name="version.number"             		value="7.5.0" />
+    <property name="version.number"             		value="7.5.1" />
     <property name="java.target.version"                value="1.5" />
     
 	<property name="app.name" 							value="opencms" />
@@ -109,7 +109,7 @@
         	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
         </uptodate>
             	
-       	<javac
+       	<javac  encoding="windows-1252"
             srcdir="${opencms.input}/src"
             destdir="${opencms.output.classes}"
             debug="on"
@@ -484,7 +484,7 @@
     	
         <mkdir dir="${opencms.output.tests}" />    	
     	
-       	<javac
+       	<javac encoding="windows-1252"
             srcdir="${opencms.input}/test"
             destdir="${opencms.output.tests}"
             excludes="**/data/**"
@@ -529,7 +529,7 @@
     	
         <mkdir dir="${opencms.output}/build/setup" />    	
     	
-       	<javac
+       	<javac encoding="windows-1252"
             srcdir="${opencms.input}/src-setup"
             destdir="${opencms.output}/build/setup"
             debug="on"
@@ -615,7 +615,7 @@
             </fileset>
         </delete>
         
-        <javac
+        <javac encoding="windows-1252"
             srcdir="${opencms.input}/src-components/org/opencms/applet"
             destdir="${opencms.output}/upload"
             debug="on"

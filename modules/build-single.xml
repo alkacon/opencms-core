@@ -282,7 +282,7 @@
 				<if>
 					<equals arg1="${src.mode}" arg2="shared" />
 					<then>
-						<javac 
+						<javac encoding="windows-1252"
 							srcdir="${module.input.src.shared}" 
 							destdir="${module.output.classes}" 
 							debug="on" 
@@ -323,7 +323,7 @@
 												<var name="package.dir" value="${package.dir}@{package}/" />
 											</sequential>
 										</for>
-										<javac 
+										<javac  encoding="windows-1252"
 											srcdir="${module.input.src.shared}" 
 											destdir="${module.output.classes}" 
 											debug="on" 
@@ -354,7 +354,7 @@
 								</for>
 							</then>
 							<else>
-								<javac 
+								<javac  encoding="windows-1252"
 									srcdir="${module.input.src.single}" 
 									destdir="${module.output.classes}" 
 									debug="on" 
