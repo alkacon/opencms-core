@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/25 10:00:39 $
- * Version: $Revision: 1.1136 $
+ * Date   : $Date: 2009/09/28 13:24:06 $
+ * Version: $Revision: 1.1137 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@ OpenCms 7.5.1 - month day, 2009
 ! Added context menu entry "Publish scheduled" to publish resources at specified date
 ! Added content tool "Property viewer" to view properties from resources in specified folder
 ! Added content tool "Language node copier" to copy language nodes in XML contents in specified folder
-! Added context menu entry "Comment comment" to view and change the default properties from all files in the selected folder
+! Added context menu entry "Comment content" to view and change the default properties from all files in the selected folder
 ! Added option to use the current site macro in the template one form module
 ! Added content tool "Convert XML contents" to convert XML contents in specified folder
 ! Added option to limit full text search to certain resource types only
