@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2009/08/20 11:31:50 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/29 15:05:40 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.1.3 
  */
@@ -180,10 +180,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
         // find the next delimiter
         for (int j = 0; j < delimiters.length; j++) {
-            if (source.indexOf(delimiters[j]) > -1) {
-                if (source.indexOf(delimiters[j]) < max) {
-                    max = source.indexOf(delimiters[j]);
-                    n = source.indexOf(delimiters[j]);
+            int delimPos = source.indexOf(delimiters[j]);
+            if (delimPos > -1) {
+                if (delimPos < max) {
+                    max = delimPos;
+                    n = delimPos;
                     delimiter = delimiters[j];
                 }
             }
@@ -209,10 +210,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
             max = Integer.MAX_VALUE;
             n = -1;
             for (int j = 0; j < delimiters.length; j++) {
-                if (source.indexOf(delimiters[j], i) > -1) {
-                    if (source.indexOf(delimiters[j], i) < max) {
-                        max = source.indexOf(delimiters[j], i);
-                        n = source.indexOf(delimiters[j], i);
+                int delimPos = source.indexOf(delimiters[j], i);
+                if (delimPos > -1) {
+                    if (delimPos < max) {
+                        max = delimPos;
+                        n = delimPos;
                         delimiter = delimiters[j];
                     }
                 }
@@ -299,8 +301,8 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
             // split the input into single words
             List wordList = splitAsList(text, delimiters, false, true);
-
-            for (int i = 0; i < wordList.size(); i++) {
+            int wordCount = wordList.size();
+            for (int i = 0; i < wordCount; i++) {
                 String word = (String)wordList.get(i);
 
                 if (LOG.isDebugEnabled()) {
@@ -332,18 +334,29 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                         word));
                 }
 
-                // if there is a decoration obejct for this word, we must do the decoration
-                // if not, we must test if the word itself consits of several parts diveded by
+                // if there is a decoration object for this word, we must do the decoration
+                // if not, we must test if the word itself consists of several parts divided by
                 // second level delimiters
                 if (decObj == null) {
-                    if (hasDelimiter(word, DELIMITERS_SECOND_LEVEL) && recursive) {
-                        // add the following symbol if possbile to allow the second level decoration
+                    if (recursive && hasDelimiter(word, DELIMITERS_SECOND_LEVEL)) {
+                        // add the following symbol if possible to allow the second level decoration
                         // test to make a forward lookup as well
                         String secondLevel = word;
-                        if (i < wordList.size() - 1) {
-                            if (!((String)wordList.get(i + 1)).equals(" ")) {
-                                secondLevel = word + (String)wordList.get(i + 1);
-                                i++;
+                        if (i < wordCount - 1) {
+                            String nextWord = (String)wordList.get(i + 1);
+                            if (!nextWord.equals(" ")) {
+                                //don't allow HTML entities to be split in the middle during the recursion!
+                                String afterNextWord = "";
+                                if (i < wordCount - 2) {
+                                    afterNextWord = (String)wordList.get(i + 2);
+                                }
+                                if (nextWord.contains("&") && afterNextWord.equals(";")) {
+                                    secondLevel = word + nextWord + ";";
+                                    i += 2;
+                                } else {
+                                    secondLevel = word + nextWord;
+                                    i++;
+                                }
                             }
                         }
                         appendText(secondLevel, DELIMITERS_SECOND_LEVEL, false);
@@ -358,7 +371,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                         if (forwardLookup > FORWARD_LOOKUP) {
                             forwardLookup = FORWARD_LOOKUP;
                         }
-                        if (i < wordList.size() - forwardLookup) {
+                        if (i < wordCount - forwardLookup) {
                             for (int j = 1; j <= forwardLookup; j++) {
                                 decKey.append(wordList.get(i + j));
                                 decObj = (CmsDecorationObject)m_decorations.get(decKey.toString());

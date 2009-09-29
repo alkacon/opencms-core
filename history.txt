@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/29 15:04:07 $
- * Version: $Revision: 1.1143 $
+ * Date   : $Date: 2009/09/29 15:05:40 $
+ * Version: $Revision: 1.1144 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ OpenCms 7.5.1 - month day, 2009
 ! Added feature #1741: Out of the box support for JBOSS servlet container
 ! Added detection of email addresses in editor link dialog
 ! Added option to export the VFS into a folder structure instead of a .ZIP file
+* Fixed issue #1711: HtmlDecorater problem with html-entities 
 * Fixed issue #1734: normalizePath will now remove leading double slashes of the path
 * Fixed issue #1735: Resolved problems with CmsLinkManager and absolute internal links
 * Fixed issue #1739: Deleted or moved project resources cannot be removed from project
