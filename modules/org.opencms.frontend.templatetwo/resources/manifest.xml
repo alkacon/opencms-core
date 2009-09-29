@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.5.0</opencms_version>
+		<opencms_version>7.5.1</opencms_version>
 		<createdate>Mon, 03 Mar 2008 10:13:23 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -14,7 +14,7 @@
 		<group>Template Two</group>
 		<class>org.opencms.frontend.templatetwo.CmsTemplateModuleAction</class>
 		<description/>
-		<version>7.5.0</version>
+		<version>7.5.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
