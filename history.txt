@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/29 13:46:46 $
- * Version: $Revision: 1.1139 $
+ * Date   : $Date: 2009/09/29 13:53:11 $
+ * Version: $Revision: 1.1140 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -39,12 +39,14 @@ OpenCms 7.5.1 - month day, 2009
 ! Added support for servlet container GlassFish/v3 (preview release, builds earlier than 25-Aug-2009)
 ! Improved detection of the context-root path (support for GlassFish) 
 ! Added feature #1636: SMPT ports are now configurable 
+! Added feature #1741: Out of the box support for JBOSS servlet container
 ! Added detection of email addresses in editor link dialog
 ! Added option to export the VFS into a folder structure instead of a .ZIP file
 * Fixed issue #1739: Deleted or moved project resources cannot be removed from project
 * Fixed issue #1743: Cached users for groups are not invalidated when writing user
 * Fixed issue #1759: XSS Security
 * Fixed issue #1775: Endless loop on project names
+* Fixed issue #1779: Resolved problem with import of additional style-sheet for template-two
 * Fixed issue with OU users being unable to work after OU resource has been renamed 
 * Fixed issue with pointer targets being stored in XML contents (instead of the uri to pointers) when selecting them from link gallery
 * Fixed issue with transfer permissions of a deleted user to another user
