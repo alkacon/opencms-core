@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddResourcesToRender.java,v $
- * Date   : $Date: 2009/08/20 11:30:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/09/29 09:49:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.2
  */
@@ -71,10 +71,10 @@ public class CmsXmlAddResourcesToRender extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
     @Override
-    protected boolean executeUpdate(Document document, String xpath) {
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {

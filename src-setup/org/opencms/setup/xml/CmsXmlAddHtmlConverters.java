@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddXmlSchemaTypes.java,v $
- * Date   : $Date: 2009/09/29 09:49:40 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddHtmlConverters.java,v $
+ * Date   : $Date: 2009/09/29 09:49:41 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,32 +34,23 @@ package org.opencms.setup.xml;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.widgets.CmsVfsFileWidget;
-import org.opencms.widgets.CmsVfsImageWidget;
-import org.opencms.xml.types.CmsXmlVarLinkValue;
-import org.opencms.xml.types.CmsXmlVfsImageValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Adds the new xml schema types.<p>
+ * Adds the new html converters.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.1 $ 
  * 
- * @since 7.0.3
+ * @since 6.9.2
  */
-public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
-
-    private Map m_schemaData;
+public class CmsXmlAddHtmlConverters extends A_CmsSetupXmlUpdate {
 
     /** List of xpaths to update. */
     private List m_xpaths;
@@ -69,7 +60,7 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
      */
     public String getName() {
 
-        return "Add new Xml schema types";
+        return "Add new html converters";
     }
 
     /**
@@ -88,23 +79,19 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
-            if (getXPathsToUpdate().contains(xpath)) {
-                Iterator it = getSchemaData().entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry entry = (Map.Entry)it.next();
-                    String className = (String)entry.getKey();
-                    String widgetName = (String)entry.getValue();
-                    if (xpath.indexOf(className) > 0) {
-                        CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_CLASS, className);
-                        CmsSetupXmlHelper.setValue(
-                            document,
-                            xpath + "/@" + CmsVfsConfiguration.A_DEFAULTWIDGET,
-                            widgetName);
-                        break;
-                    }
+            for (int i = 0; i < m_htmlConverters.length; i++) {
+                if (xpath.equals(getXPathsToUpdate().get(i))) {
+                    CmsSetupXmlHelper.setValue(
+                        document,
+                        xpath + "/@" + I_CmsXmlConfiguration.A_NAME,
+                        m_htmlConverters[i]);
+                    CmsSetupXmlHelper.setValue(
+                        document,
+                        xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
+                        "org.opencms.util.CmsHtmlConverterJTidy");
                 }
-                return true;
             }
+            return true;
         }
         return false;
     }
@@ -115,14 +102,17 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
     @Override
     protected String getCommonPath() {
 
-        // /opencms/vfs/xmlcontent/schematypes
+        // "/opencms/vfs/resources/html-converters"
         StringBuffer xp = new StringBuffer(256);
         xp.append("/").append(CmsConfigurationManager.N_ROOT);
         xp.append("/").append(CmsVfsConfiguration.N_VFS);
-        xp.append("/").append(CmsVfsConfiguration.N_XMLCONTENT);
-        xp.append("/").append(CmsVfsConfiguration.N_SCHEMATYPES);
+        xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
+        xp.append("/").append(CmsVfsConfiguration.N_HTML_CONVERTERS);
         return xp.toString();
     }
+
+    /** List of converters to add. */
+    private String[] m_htmlConverters = {"true", "xhtml", "cleanup", "replace-paragraphs"};
 
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
@@ -131,39 +121,22 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
     protected List getXPathsToUpdate() {
 
         if (m_xpaths == null) {
-            // "/opencms/vfs/xmlcontent/schematypes/schematype[@class='...']";
+            // "/opencms/vfs/resources/html-converters/html-converter[@name='...']";
             StringBuffer xp = new StringBuffer(256);
             xp.append("/").append(CmsConfigurationManager.N_ROOT);
             xp.append("/").append(CmsVfsConfiguration.N_VFS);
-            xp.append("/").append(CmsVfsConfiguration.N_XMLCONTENT);
-            xp.append("/").append(CmsVfsConfiguration.N_SCHEMATYPES);
-            xp.append("/").append(CmsVfsConfiguration.N_SCHEMATYPE);
-            xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
+            xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
+            xp.append("/").append(CmsVfsConfiguration.N_HTML_CONVERTERS);
+            xp.append("/").append(CmsVfsConfiguration.N_HTML_CONVERTER);
+            xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
             xp.append("='");
             m_xpaths = new ArrayList();
-            Iterator it = getSchemaData().entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                String className = (String)entry.getKey();
-                m_xpaths.add(xp.toString() + className + "']");
+            for (int i = 0; i < m_htmlConverters.length; i++) {
+                m_xpaths.add(xp.toString() + m_htmlConverters[i] + "']");
             }
         }
+
         return m_xpaths;
-    }
-
-    /**
-     * Returns the schema type data.<p>
-     * 
-     * @return the schema type data
-     */
-    private Map getSchemaData() {
-
-        if (m_schemaData == null) {
-            m_schemaData = new HashMap();
-            m_schemaData.put(CmsXmlVarLinkValue.class.getName(), CmsVfsFileWidget.class.getName());
-            m_schemaData.put(CmsXmlVfsImageValue.class.getName(), CmsVfsImageWidget.class.getName());
-        }
-        return m_schemaData;
     }
 
 }

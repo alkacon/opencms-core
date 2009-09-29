@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlChangeGalleryClasses.java,v $
- * Date   : $Date: 2009/08/20 11:30:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/09/29 09:49:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -113,10 +113,10 @@ public class CmsXmlChangeGalleryClasses extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
     @Override
-    protected boolean executeUpdate(Document document, String xpath) {
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         Node node = document.selectSingleNode(xpath);
         String oldClass = node.getText();

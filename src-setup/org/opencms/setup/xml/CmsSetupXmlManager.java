@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2009/06/05 14:26:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/29 09:49:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.8 
  */
@@ -85,7 +85,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new CmsXmlRemoveImmutables());
         m_plugins.add(new CmsXmlRemoveImportVersions());
         m_plugins.add(new CmsXmlRemoveImportHandlers());
-        //these are not properly working
+        //these are not working properly
         //m_plugins.add(new CmsXmlRemoveResourcesToRender());
         //m_plugins.add(new CmsXmlAddResourcesToRender());
         m_plugins.add(new CmsXmlAddImportVersions());
@@ -112,6 +112,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new CmsXmlAddXmlSchemaTypes());
         m_plugins.add(new CmsXmlAddMimeTypes());
         m_plugins.add(new CmsXmlAddResourceTypes());
+        m_plugins.add(new CmsXmlAddHtmlConverters());
 
         // workplace
         if (fromV6) {
@@ -128,6 +129,7 @@ public class CmsSetupXmlManager {
             m_plugins.add(new CmsXmlUpdateLocalizationKeys());
         }
         m_plugins.add(new CmsXmlUpdateDirectEditProvider());
+        m_plugins.add(new CmsXmlAddContextMenuItems());
         setup();
     }
 

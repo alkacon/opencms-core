@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/A_CmsSetupXmlUpdate.java,v $
- * Date   : $Date: 2009/06/04 14:31:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/09/29 09:49:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.8 
  */
@@ -71,7 +71,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
         Iterator itUpdate = getXPathsToUpdate().iterator();
         while (itUpdate.hasNext()) {
             String xpath = (String)itUpdate.next();
-            executeUpdate(doc, xpath);
+            executeUpdate(doc, xpath, true);
         }
     }
 
@@ -107,7 +107,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
         while (itUpdate.hasNext()) {
             String xpath = (String)itUpdate.next();
             updateDoc(doc, newDoc, xpath);
-            boolean exe = executeUpdate(newDoc, xpath);
+            boolean exe = executeUpdate(newDoc, xpath, false);
             modified = modified || exe;
             if ((parentPath == null) && exe) {
                 Node node = newDoc.selectSingleNode(xpath);
@@ -168,13 +168,13 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
      * 
      * @param document the document to apply the changes to
      * @param xpath the xpath to execute the changes for
+     * @param forReal is <code>false</code>, it is only on a empty doc to display the changes to the user
      * 
      * @return if something was modified
      */
-    protected boolean executeUpdate(Document document, String xpath) {
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
-        // do something to avoid warning
-        return ((Object)document == (Object)xpath);
+        return false;
     }
 
     /**
