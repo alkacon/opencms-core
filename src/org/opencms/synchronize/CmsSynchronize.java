@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2009/06/04 14:29:56 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2009/09/29 15:08:17 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.70 $ 
+ * @version $Revision: 1.71 $ 
  * 
  * @since 6.0.0 
  */
@@ -456,7 +456,7 @@ public class CmsSynchronize {
                     m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                     // its a folder, so create a folder in the FS
-                    fsFile.mkdir();
+                    fsFile.mkdirs();
                 }
                 // add resource to synchronization list
                 CmsSynchronizeList syncList = new CmsSynchronizeList(
@@ -663,7 +663,7 @@ public class CmsSynchronize {
                 removeFromRfs(res[i].getAbsolutePath());
             }
             // now check if this resource is still in the old sync list.
-            // if so, then it does not exist in the FS anymore andm ust be 
+            // if so, then it does not exist in the FS anymore and must be 
             // deleted
             CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(vfsFile));
 
