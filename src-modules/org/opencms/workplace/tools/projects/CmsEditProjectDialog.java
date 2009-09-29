@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2009/08/20 11:31:54 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/09/29 08:25:45 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -314,7 +314,16 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
      */
     public void setName(String name) {
 
-        m_project.setName(getOufqn() + "/" + name);
+        String oufqn = getOufqn();
+        if (oufqn != null) {
+            if (!oufqn.endsWith("/")) {
+                oufqn += "/";
+            }
+        } else {
+            oufqn = "/";
+        }
+        m_project.setName(oufqn + name);
+
     }
 
     /**
