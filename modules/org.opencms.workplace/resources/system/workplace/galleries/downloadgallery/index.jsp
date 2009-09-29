@@ -91,6 +91,7 @@ var isAppletUsed = <%=isAppletUsed %>;
 	<!-- The dialog html for the search dialog -->
 	<%@ include file="%(link.strong:/system/workplace/galleries/galleryelements/searchdialog.html:01f57eeb-5f28-11de-8c07-2d12956623b5)" %>
 	<a href="#" class="thickbox" id="resourcepublishlink"></a>
+	<a href="#" class="thickbox" id="resourcedeletelink"></a>
 </body>
 
 </html>

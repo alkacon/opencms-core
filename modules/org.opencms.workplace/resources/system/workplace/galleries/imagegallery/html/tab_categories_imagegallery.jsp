@@ -24,6 +24,11 @@
 							<button id="categoryitempublishbutton" onclick="publishItem(categoryItems.markedItem, 'category');" type="button" title="<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_PUBLISH_0) %>">
 								<img src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>buttons/publish.png" />
 							</button>
+							<!-- Delete-->
+							<button id="categoryitemdeletebutton" onclick="deleteItem(categoryItems.markedItem, 'category');" type="button" title="<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_DELETE_0) %>">							
+								<img src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>buttons/deletecontent.png" />
+							</button>
+							<!-- Delete-->
 						</td>
 						<td style="width: 40%;" colspan="2" class="iteminfostate">
 							<span id="categoryitemstate"></span>

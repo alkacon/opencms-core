@@ -222,7 +222,12 @@ function getSearch(newSearchString, modeName){
 		var selectedGallery = new Array();
 		if (modeName == 'gallery') {
 			var publishObj = new Object();
+			// sets the publish permissionm if the resource is not locked
 			publishObj.publishable = galleryItems.publishable;
+			// direct publish permission allows the user to publish the changes for this folder, after the resource is changed
+			publishObj.directpublish = galleryItems.directpublish;
+			// write permissions for the folder allows the user to upload the files
+			publishObj.writepermission = galleryItems.writepermission;
 			publishableInfo[0] = publishObj;
 			selectedGallery = publishableInfo.concat(galleryItems.items);
 		} else {
@@ -263,6 +268,7 @@ function filterItems(galleryItems, modeName) {
 		for (var i = 0; i < galleryNotFiltered.length; i++) {
 			var title = galleryNotFiltered[i].title;
 			var filename = galleryNotFiltered[i].linkpath.substring(galleryNotFiltered[i].linkpath.lastIndexOf("/") + 1);
+			var description = galleryNotFiltered[i].description;
 			if (title.search(eval("/" + searchKeyword + "/i")) != -1 
 				|| filename.search(eval("/" + searchKeyword + "/i")) != -1) {
 				galleryFiltered.push(galleryNotFiltered[i]);
@@ -421,6 +427,7 @@ function setActiveItem(itemIndex, modeName, event) {
 function showItemPagegallery(page_id, jq) {
 	$("#galleryitempage" + galleryItems.currentPage).hide();
 	$("#galleryitempage" + page_id).fadeIn("fast");
+	//$("#galleryitempage" + page_id).show();
 	galleryItems.currentPage = page_id;
 }
 
@@ -428,6 +435,7 @@ function showItemPagegallery(page_id, jq) {
 function showItemPagecategory(page_id, jq) {
 	$("#categoryitempage" + categoryItems.currentPage).hide();
 	$("#categoryitempage" + page_id).fadeIn("fast");
+	//$("#categoryitempage" + page_id).show();
 	categoryItems.currentPage = page_id;
 }
 
@@ -490,3 +498,21 @@ function publishItem(imgIndex, modeName) {
 	$("#resourcepublishlink").click();
 }
 
+function createDeleteLink(vfsPath) {
+	var deleteLink = "../galleryelements/delete.jsp?resource=";
+	deleteLink += vfsPath;
+	deleteLink += "&amp;TB_iframe=true&amp;width=600&amp;height=550&amp;modal=true";
+	return deleteLink;
+}
+
+function deleteItem(itemIndex, modeName) {
+	var sitePath;
+	if (modeName == "category") {
+		sitePath = categoryItems.items[itemIndex].sitepath;
+	} else {
+		sitePath = galleryItems.items[itemIndex].sitepath;
+	}
+	$("#resourcedeletelink").attr("href", createDeleteLink(sitePath));
+	$("#resourcedeletelink").click();
+
+}

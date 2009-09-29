@@ -1275,6 +1275,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/galleries/galleryelements/delete.jsp</source>
+			<destination>system/workplace/galleries/galleryelements/delete.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>5adf5e8a-80ce-11de-b914-23b3f260de74</uuidstructure>
+			<uuidresource>5adf5e8b-80ce-11de-b914-23b3f260de74</uuidresource>
+			<datelastmodified>Tue, 04 Aug 2009 08:12:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 04 Aug 2009 08:11:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Delete a gallery item]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/galleries/galleryelements/gallerytabs_downloadgallery.html</source>
 			<destination>system/workplace/galleries/galleryelements/gallerytabs_downloadgallery.html</destination>
 			<type>plain</type>

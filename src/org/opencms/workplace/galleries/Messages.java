@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Messages.java,v $
- * Date   : $Date: 2009/07/09 09:23:45 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/29 15:52:34 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,6 +119,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_ITEMDETAIL_DATE_MODIFIED_0 = "GUI_GALLERY_ITEMDETAIL_DATE_MODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_ITEMDETAIL_DELETE_0 = "GUI_GALLERY_ITEMDETAIL_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_ITEMDETAIL_EDIT_HELP_0 = "GUI_GALLERY_ITEMDETAIL_EDIT_HELP_0";

@@ -84,7 +84,7 @@ function initStartGallery(data) {
 /* OK Button was pressed, stores the image information back in the editor fields. */
 function okPressed() {
 	if (initValues.widgetmode == "simple") {
-		// simple image gallery widget
+	// simple image gallery widget
 		if ( initValues.fieldid != null && initValues.fieldid != "") {
 			var imgField = window.opener.document.getElementById(initValues.fieldid);
 			var imagePath = activeItem.sitepath;
@@ -101,7 +101,7 @@ function okPressed() {
 				initValues.scale += newScale;
 								
 			} 
-			// remove cropping parameter
+			//remove cropping parameter
 			else if (getScaleValue(initValues.scale, "cx") != "") {
 				initValues.scale = removeScaleValue(initValues.scale, "cx");
 				initValues.scale = removeScaleValue(initValues.scale, "cy");
@@ -142,8 +142,8 @@ function okPressed() {
 			imgField.value = imagePath;
 
 		}
-	} else {
-		// widget mode: VFS image widget
+	} else {  
+		// widgetmode: VFS image widget
 		if (initValues.editedresource != null && initValues.editedresource != "") {
 			var imgField = window.opener.document.getElementById("img." + initValues.fieldid);
 			imgField.value = activeItem.sitepath;
@@ -209,7 +209,7 @@ function okPressed() {
 	window.close();
 }
 
-/* removes scale parameter from the image path if available. */
+/* removes scale parameter from the image path if available*/
 function removeParamFromPath(pathWithParam) {
 	var path = "";
 	var index = pathWithParam.indexOf( "?__scale=" );

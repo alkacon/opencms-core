@@ -529,7 +529,8 @@ td.imageinfostate, td.iteminfostate, td.infostate {
 
 #galleryitemselectbutton, #categoryitemselectbutton, 
 #galleryitempublishbutton, #categoryitempublishbutton,
-#galleryitempreviewbutton, #categoryitempreviewbutton {
+#galleryitempreviewbutton, #categoryitempreviewbutton,
+#galleryitemdeletebutton, #categoryitemdeletebutton {
 	display: none;
 	width: 28px;
 	height: 18px;
@@ -540,7 +541,8 @@ td.imageinfostate, td.iteminfostate, td.infostate {
 
 #galleryitemselectbutton img, #categoryitemselectbutton img, 
 #galleryitempublishbutton img, #categoryitempublishbutton img,
-#galleryitempreviewbutton img, #categoryitempreviewbutton img {
+#galleryitempreviewbutton img, #categoryitempreviewbutton img, 
+#galleryitemdeletebutton img, #categoryitemdeletebutton img{
 	margin-top: -4px;
 	margin-left: -2px;
 }
