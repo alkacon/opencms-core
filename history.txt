@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/29 13:58:01 $
- * Version: $Revision: 1.1141 $
+ * Date   : $Date: 2009/09/29 14:54:29 $
+ * Version: $Revision: 1.1142 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,9 @@ OpenCms 7.5.1 - month day, 2009
 ! Added feature #1741: Out of the box support for JBOSS servlet container
 ! Added detection of email addresses in editor link dialog
 ! Added option to export the VFS into a folder structure instead of a .ZIP file
+* Fixed issue #1735: Resolved problems with CmsLinkManager and absolute internal links
 * Fixed issue #1739: Deleted or moved project resources cannot be removed from project
+* Fixed issue #1740: Synchronization of empty folders with rfs
 * Fixed issue #1743: Cached users for groups are not invalidated when writing user
 * Fixed issue #1744: Concurrency issue of CmsImportExportManager resolved
 * Fixed issue #1759: XSS Security

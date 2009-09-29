@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2009/09/29 14:54:29 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.78 $ 
+ * @version $Revision: 1.79 $ 
  * 
  * @since 6.0.0 
  */
@@ -632,7 +632,7 @@ public class CmsLinkManager {
             siteRoot = cms.getRequestContext().getSiteRoot();
         } else {
             // we found a site root, cut this from the resource path
-            sitePath = link.substring(siteRoot.length());
+            sitePath = sitePath.substring(siteRoot.length());
         }
         return substituteLink(cms, sitePath, siteRoot, false);
     }
