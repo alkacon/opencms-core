@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2009/08/20 11:31:00 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/09/29 15:10:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,6 +144,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 newUser.setLastname(m_user.getLastname());
                 newUser.setEmail(m_user.getEmail());
                 newUser.setAddress(m_user.getAddress());
+                newUser.setManaged(m_user.isManaged());
+                newUser.setEnabled(m_user.isEnabled());
+
                 m_user = newUser;
             } else if (CmsStringUtil.isNotEmpty(m_pwdInfo.getNewPwd())) {
                 m_pwdInfo.validate();
@@ -309,6 +312,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Return if user is enabled.<p>
+     * 
+     * @return enabled status
+     */
+    public boolean isEnabled() {
+
+        return m_user.isEnabled();
+    }
+
+    /**
      * This method is only needed for displaying reasons.<p>
      * 
      * @param assignedOu nothing to do with this parameter
@@ -390,6 +403,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public void setSelfManagement(boolean selfManagement) {
 
         m_user.setManaged(!selfManagement);
+    }
+
+    /**
+     * Sets if user is enabled.<p>
+     * 
+     * @param enabled is the user enabled
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_user.setEnabled(enabled);
     }
 
     /**
