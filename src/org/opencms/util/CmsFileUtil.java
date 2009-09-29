@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/09/29 15:04:06 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -396,17 +396,22 @@ public final class CmsFileUtil {
     public static String normalizePath(String path, char separatorChar) {
 
         if (CmsStringUtil.isNotEmpty(path)) {
-            // ensure all File separators are '/'
-            path = path.replace('\\', '/');
+
+            // handle windows paths including drive-information first
             String drive = null;
             if ((path.length() > 1) && (path.charAt(1) == ':')) {
                 // windows path like C:\home\
                 drive = path.substring(0, 2);
                 path = path.substring(2);
-            } else if ((path.length() > 1) && (path.charAt(0) == '/') && (path.charAt(1) == '/')) {
+            } else if ((path.length() > 1) && (path.charAt(0) == '\\') && (path.charAt(1) == '\\')) {
                 // windows path like \\home\ (network mapped drives)
                 drive = path.substring(0, 2);
                 path = path.substring(2);
+            }
+            // ensure all File separators are '/'
+            path = path.replace('\\', '/');
+            if (drive != null) {
+                drive.replace('\\', '/');
             }
             if (path.charAt(0) == '/') {
                 // trick to resolve all ../ inside a path
