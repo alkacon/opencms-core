@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXsltUtil.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/30 15:24:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,11 +50,10 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * Provides utility functions for XSLT transformations.<p>
  *
- * TODO: This class is apparently customer specific and should probably be removed from the core! 
- * 
+* 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.2.1
  */
@@ -167,7 +166,7 @@ public final class CmsXsltUtil {
             trans.transform(xmlSource, new StreamResult(writer));
             result = writer.toString();
         } catch (Exception exc) {
-            throw new CmsXmlException(Messages.get().container(Messages.ERR_CSV_XML_TRANSFORMATION_FAILED_0));
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_XML_XSL_TRANSFORMATION_FAILED_0));
         }
 
         // cut of the prefacing declaration '<?xml version="1.0" encoding="UTF-8"?>'
