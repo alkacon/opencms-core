@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2009/08/20 11:30:34 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/09/30 07:50:02 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -592,14 +592,14 @@ public class CmsTree extends CmsWorkplace {
             String site = getCms().getRequestContext().getSiteRoot();
             try {
                 getCms().getRequestContext().setSiteRoot(getSettings().getTreeSite(getTreeType()));
-                if (!getCms().existsResource(resource)) {
+                if ((resource != null) && !getCms().existsResource(resource)) {
                     resource = null;
                 }
             } finally {
                 getCms().getRequestContext().setSiteRoot(site);
             }
         } else {
-            if (!getCms().existsResource(resource)) {
+            if ((resource != null) && !getCms().existsResource(resource)) {
                 resource = null;
             }
         }
