@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2009/08/20 11:31:24 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/09/30 15:58:30 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -55,7 +54,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,45 +136,6 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         resourcename = validateFoldername(resourcename);
         return super.createResource(cms, securityManager, resourcename, content, properties);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceDeleteMode)
-     */
-    @Override
-    public void deleteResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        CmsResourceDeleteMode siblingMode) throws CmsException {
-
-        super.deleteResource(cms, securityManager, resource, siblingMode);
-
-        // update the project resources: 
-        List projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
-        CmsProject project;
-        List projectResources;
-        Iterator itProjectResources;
-
-        String projectResourceRootPath;
-        String deletedResourceRootPath = resource.getRootPath();
-        Iterator itProjects = projects.iterator();
-        while (itProjects.hasNext()) {
-            project = (CmsProject)itProjects.next();
-            projectResources = cms.readProjectResources(project);
-            itProjectResources = projectResources.iterator();
-            while (itProjectResources.hasNext()) {
-                projectResourceRootPath = (String)itProjectResources.next();
-                if (projectResourceRootPath.startsWith(deletedResourceRootPath)) {
-
-                    // we have to change the project resource: 
-                    CmsObject projectCms = OpenCms.initCmsObject(cms);
-                    CmsRequestContext context = projectCms.getRequestContext();
-                    context.setCurrentProject(project);
-                    securityManager.removeResourceFromProject(context, resource);
-                }
-            }
-        }
     }
 
     /**

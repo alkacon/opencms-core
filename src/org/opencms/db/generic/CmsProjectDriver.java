@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/07/08 11:11:35 $
- * Version: $Revision: 1.255 $
+ * Date   : $Date: 2009/09/30 15:58:29 $
+ * Version: $Revision: 1.256 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,11 +98,14 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.255 $
+ * @version $Revision: 1.256 $
  * 
  * @since 6.0.0 
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
+
+    /** Attribute name for reading the project of a resource. */
+    public static final String DBC_ATTR_READ_PROJECT_FOR_RESOURCE = "DBC_ATTR_READ_PROJECT_FOR_RESOURCE";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsProjectDriver.class);
@@ -842,6 +845,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 throw e;
             }
 
+            // remove relations
             try {
                 m_driverManager.getVfsDriver().deleteRelations(
                     dbc,
@@ -860,6 +864,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         currentFolder.getRootPath()), e);
                 }
                 throw e;
+            }
+
+            // remove project resources
+            String deletedResourceRootPath = currentFolder.getRootPath();
+            Iterator itProjects = readProjectsForResource(dbc, deletedResourceRootPath).iterator();
+            while (itProjects.hasNext()) {
+                CmsProject project = (CmsProject)itProjects.next();
+                deleteProjectResource(dbc, project.getUuid(), deletedResourceRootPath);
             }
 
             report.println(
@@ -1742,6 +1754,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      */
     public List readProjects(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException {
 
+        if (dbc.getRequestContext().getAttribute(DBC_ATTR_READ_PROJECT_FOR_RESOURCE) != null) {
+            dbc.getRequestContext().removeAttribute(DBC_ATTR_READ_PROJECT_FOR_RESOURCE);
+            // TODO: this should get its own method in the interface
+            return readProjectsForResource(dbc, ouFqn);
+        }
         List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1830,6 +1847,47 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return (projects);
+    }
+
+    /**
+     * Returns the projects of a given resource.<p>
+     * 
+     * @param dbc the database context
+     * @param rootPath the resource root path
+     * 
+     * @return the projects of the resource, as a list of projects
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    public List readProjectsForResource(CmsDbContext dbc, String rootPath) throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        List projects = new ArrayList();
+        ResultSet res = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYRESOURCE_1");
+
+            stmt.setString(1, rootPath + "%");
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                projects.add(internalCreateProject(res));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        return projects;
     }
 
     /**
