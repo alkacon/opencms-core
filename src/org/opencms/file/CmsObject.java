@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.166 $
+ * Date   : $Date: 2009/09/30 07:49:42 $
+ * Version: $Revision: 1.167 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.166 $
+ * @version $Revision: 1.167 $
  * 
  * @since 6.0.0 
  */
@@ -871,9 +871,9 @@ public final class CmsObject {
         long timeDeleted,
         I_CmsReport report) throws CmsException {
 
-       deleteHistoricalVersions(versionsToKeep, versionsDeleted, timeDeleted, report);
+        deleteHistoricalVersions(versionsToKeep, versionsDeleted, timeDeleted, report);
     }
-    
+
     /**
      * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
      * 
@@ -884,18 +884,10 @@ public final class CmsObject {
      * 
      * @throws CmsException if operation was not successful
      */
-    public void deleteHistoricalVersions(
-        int versionsToKeep,
-        int versionsDeleted,
-        long timeDeleted,
-        I_CmsReport report) throws CmsException {
+    public void deleteHistoricalVersions(int versionsToKeep, int versionsDeleted, long timeDeleted, I_CmsReport report)
+    throws CmsException {
 
-        m_securityManager.deleteHistoricalVersions(
-            m_context,
-            versionsToKeep,
-            versionsDeleted,
-            timeDeleted,
-            report);
+        m_securityManager.deleteHistoricalVersions(m_context, versionsToKeep, versionsDeleted, timeDeleted, report);
     }
 
     /**
@@ -1130,6 +1122,9 @@ public final class CmsObject {
      */
     public boolean existsResource(String resourcename, CmsResourceFilter filter) {
 
+        if (resourcename == null) {
+            return false;
+        }
         return m_securityManager.existsResource(m_context, addSiteRoot(resourcename), filter);
     }
 
@@ -1447,7 +1442,8 @@ public final class CmsObject {
     public List getGroupsOfUser(String username, boolean directGroupsOnly, boolean includeOtherOus, String remoteAddress)
     throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus ? ""
+        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus
+        ? ""
         : CmsOrganizationalUnit.getParentFqn(username)), includeOtherOus, false, directGroupsOnly, remoteAddress);
     }
 

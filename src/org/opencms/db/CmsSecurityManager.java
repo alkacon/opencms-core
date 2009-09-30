@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2009/09/30 07:49:42 $
+ * Version: $Revision: 1.124 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1233,13 +1233,12 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, root, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
             m_driverManager.deleteHistoricalVersions(dbc, versionsToKeep, versionsDeleted, timeDeleted, report);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_DELETE_HISTORY_4,
-                new Object[] {
-                    "/",
-                    new Integer(versionsToKeep),
-                    new Integer(versionsDeleted),
-                    new Date(timeDeleted)}), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_DELETE_HISTORY_4,
+                    new Object[] {"/", new Integer(versionsToKeep), new Integer(versionsDeleted), new Date(timeDeleted)}),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5844,6 +5843,12 @@ public final class CmsSecurityManager {
      */
     protected CmsResource readResource(CmsDbContext dbc, String resourcePath, CmsResourceFilter filter)
     throws CmsException {
+
+        if (resourcePath == null) {
+            throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
+                dbc.removeSiteRoot(resourcePath)));
+        }
 
         // read the resource from the VFS
         CmsResource resource = m_driverManager.readResource(dbc, resourcePath, filter);
