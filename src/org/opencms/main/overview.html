@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/overview.html,v $
- Date   : $Date: 2008/02/27 12:05:39 $
- Version: $Revision: 1.5 $
+ Date   : $Date: 2009/09/30 14:48:31 $
+ Version: $Revision: 1.6 $
 
  This library is part of OpenCms -
  the Open Source Content Management System
@@ -37,7 +37,7 @@
 <body bgcolor="white">
 
 <p>
-This is the API description for the OpenCms core, please read the <a href="#intro">introdution</a> below to learn 
+This is the API description for the OpenCms core, please read the <a href="#intro">introduction</a> below to learn 
 about the packages and functions of the API that are intended to be used in OpenCms application development.
 </p>
 
@@ -53,7 +53,7 @@ The OpenCms API contains several building blocks:
 <li>The module API.</li>
 <li>The main runtime system.</li>
 <li>Several utility classes, for example for mail transport or scheduling.</li>
-<li>A number of low level database connetion methods.</li>
+<li>A number of low level database connection methods.</li>
 <li>The OpenCms Workplace implementation.</li>
 </ul>
 
@@ -69,7 +69,7 @@ but usually not directly by an application.
 <h2>How to start developing OpenCms applications</h2>
 
 <p>
-Here are some basic pointers that should help you identify importants 
+Here are some basic pointers that should help you to identify important
 parts in this API documentation that are usually required in OpenCms application development:
 </p>
 
@@ -77,7 +77,7 @@ parts in this API documentation that are usually required in OpenCms application
 You should start with the template functions provided in the <code>org.opencms.jsp</code> package.
 This contains the OpenCms <code>&lt;cms:&gt;</code> taglib, as well as the <code>{@link org.opencms.jsp.CmsJspActionElement}</code> 
 (for use with scriptlets). 
-These allow you to easliy access the current users <code>{@link org.opencms.file.CmsObject}</code> from a JSP, 
+These allow you to easily access the current users <code>{@link org.opencms.file.CmsObject}</code> from a JSP, 
 and with this you can dynamically build OpenCms front end applications based on the users permissions.
 </p>
 
@@ -102,7 +102,7 @@ gain access to the low level manager classes that handle the system runtime.
 <p>
 The <code>org.opencms.module</code> package contains the OpenCms module API. 
 You do not usually need to "program" a module because a module is most often created using the OpenCms Workplace.
-However, in case you want to trigger certain module lifecyle events, have a look at the <code>{@link org.opencms.module.I_CmsModuleAction}</code>
+However, in case you want to trigger certain module life cycle events, have a look at the <code>{@link org.opencms.module.I_CmsModuleAction}</code>
 interface.
 </p>
 
@@ -134,8 +134,8 @@ This <code>{@link org.opencms.main.OpenCms}</code> singleton instance can be con
 
 <p>
 After the "operating system" is initialized and the <code>{@link org.opencms.main.OpenCms}</code> object is available,
-all requestes made to the <code>{@link org.opencms.main.OpenCmsServlet}</code> are directly passed to this for authorization.
-When a request is recieved, it's first authenticated to see which <code>{@link org.opencms.file.CmsUser}</code>
+all requests made to the <code>{@link org.opencms.main.OpenCmsServlet}</code> are directly passed to this for authorization.
+When a request is received, it's first authenticated to see which <code>{@link org.opencms.file.CmsUser}</code>
 has made the request. If the user has not been authenticated so far, the <code>{@link org.opencms.file.CmsUser}</code> object
 is initialized with "Guest" user permissions. 
 With this user context, an instance of a <code>{@link org.opencms.file.CmsRequestContext}</code> is generated, and with that 
@@ -149,7 +149,7 @@ this means that all access operations automatically are done with the authentica
 
 <!-- Put @see and @since tags down here. -->
 
-@version $Revision: 1.5 $ 
+@version $Revision: 1.6 $ 
 
 </body>
 </html>
