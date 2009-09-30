@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsCreateImageSizeJob.java,v $
- * Date   : $Date: 2009/06/04 14:29:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/30 09:29:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * A schedulable OpenCms job to calculate image size information.<p>
  * 
  * Image size information is stored in the <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> property 
- * of an image file must have the format "h:x,w:y" with x and y being positive Integer vaulues.<p>
+ * of an image file must have the format "h:x,w:y" with x and y being positive Integer values.<p>
  * 
  * Job parameters:<p>
  * <dl>
@@ -66,7 +66,7 @@ import java.util.Map;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.2 
  */
