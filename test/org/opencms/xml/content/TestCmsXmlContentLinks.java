@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentLinks.java,v $
- * Date   : $Date: 2009/08/20 11:31:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/30 08:54:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
@@ -326,7 +326,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         assertTrue(errHandler.getErrors().isEmpty());
         assertEquals(errHandler.getWarnings().size(), 1);
         assertTrue(errHandler.getWarnings().containsKey(Locale.ENGLISH));
-        Map enWarnings = (Map)errHandler.getWarnings().get(Locale.ENGLISH);
+        Map enWarnings = errHandler.getWarnings().get(Locale.ENGLISH);
         assertEquals(enWarnings.size(), 1);
         assertTrue(enWarnings.containsKey("VfsLink[1]"));
         assertTrue(enWarnings.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
@@ -413,7 +413,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         errHandler = xmlcontent.validate(cms);
         assertEquals(errHandler.getErrors().size(), 1);
         assertTrue(errHandler.getErrors().containsKey(Locale.ENGLISH));
-        Map enErrors = (Map)errHandler.getErrors().get(Locale.ENGLISH);
+        Map enErrors = errHandler.getErrors().get(Locale.ENGLISH);
         assertEquals(enErrors.size(), 1);
         assertTrue(enErrors.containsKey("VfsLink[1]"));
         assertTrue(enErrors.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
@@ -545,7 +545,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         assertTrue(errHandler.getErrors().isEmpty());
         assertEquals(errHandler.getWarnings().size(), 1);
         assertTrue(errHandler.getWarnings().containsKey(Locale.ENGLISH));
-        Map enWarnings = (Map)errHandler.getWarnings().get(Locale.ENGLISH);
+        Map enWarnings = errHandler.getWarnings().get(Locale.ENGLISH);
         assertEquals(enWarnings.size(), 1);
         assertTrue(enWarnings.containsKey("ALink[1]/VfsLink[1]"));
         assertTrue(enWarnings.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
@@ -633,7 +633,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         errHandler = xmlcontent.validate(cms);
         assertEquals(errHandler.getErrors().size(), 1);
         assertTrue(errHandler.getErrors().containsKey(Locale.ENGLISH));
-        Map enErrors = (Map)errHandler.getErrors().get(Locale.ENGLISH);
+        Map enErrors = errHandler.getErrors().get(Locale.ENGLISH);
         assertEquals(enErrors.size(), 1);
         assertTrue(enErrors.containsKey("ALink[1]/VfsLink[1]"));
         assertTrue(enErrors.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(

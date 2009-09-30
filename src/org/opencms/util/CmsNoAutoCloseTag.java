@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsNoAutoCloseTag.java,v $
- * Date   : $Date: 2009/09/08 15:52:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/09/30 08:54:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.util;
 
 import org.htmlparser.nodes.TagNode;
-import org.htmlparser.tags.CompositeTag;
 
 /**
  * A <code>{@link TagNode}</code> with an arbitrary name which is misused for avoiding the creation of 
@@ -40,12 +39,12 @@ import org.htmlparser.tags.CompositeTag;
  * 
  * The trick is: The free name (constructor) is used by the tag factory which allows to use these 
  * tags as replacement for the regular ones. And these tags do not extend 
- * <code>{@link CompositeTag}</code>: They are not supposed to have a closing tag and following tags are 
+ * <code>{@link org.htmlparser.tags.CompositeTag}</code>: They are not supposed to have a closing tag and following tags are 
  * not treated as their children but siblings. <p>
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since  7.5.1
  *
@@ -57,6 +56,7 @@ public class CmsNoAutoCloseTag extends TagNode {
 
     /** The names of this tag. */
     private String[] m_ids;
+
     /** 
      * Creates an instance with the given names. 
      * 

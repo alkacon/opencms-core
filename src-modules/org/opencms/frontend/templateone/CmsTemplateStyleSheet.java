@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2009/08/20 11:31:13 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/09/30 08:54:52 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,7 +140,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
             value = m_configuration.getStringValue(getCmsObject(), key, getRequestContext().getLocale());
             if (CmsStringUtil.isEmpty(value)) {
                 // value not found for current Locale, try to get it from first found Locale
-                value = m_configuration.getStringValue(getCmsObject(), key, (Locale)m_configuration.getLocales().get(0));
+                value = m_configuration.getStringValue(getCmsObject(), key, m_configuration.getLocales().get(0));
             }
         } catch (Exception e) {
             // log error in debug mode

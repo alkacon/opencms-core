@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2009/08/20 11:31:24 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2009/09/30 08:54:52 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,9 +143,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, m_schema);
 
             // read the default locale for the new resource
-            Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(
-                cms,
-                CmsResource.getParentFolder(resourcename)).get(0);
+            Locale locale = OpenCms.getLocaleManager().getDefaultLocales(cms, CmsResource.getParentFolder(resourcename)).get(
+                0);
 
             String modelUri = (String)cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_MODEL);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2009/08/20 11:31:27 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2009/09/30 08:54:52 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -512,9 +512,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     protected void initBodyElementLanguage() {
 
         List locales = m_page.getLocales();
-        Locale defaultLocale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(
-            getCms(),
-            getCms().getSitePath(m_file)).get(0);
+        Locale defaultLocale = OpenCms.getLocaleManager().getDefaultLocales(getCms(), getCms().getSitePath(m_file)).get(
+            0);
 
         if (locales.size() == 0) {
             // no body present, create default body

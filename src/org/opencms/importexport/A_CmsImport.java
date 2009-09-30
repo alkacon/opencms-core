@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2009/08/20 11:31:32 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2009/09/30 08:54:52 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.93 $ 
+ * @version $Revision: 1.94 $ 
  * 
  * @since 6.0.0 
  * 
@@ -627,11 +627,10 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         if (localeName != null) {
             // locale was already set on the files properties
-            return (Locale)OpenCms.getLocaleManager().getAvailableLocales(localeName).get(0);
+            return OpenCms.getLocaleManager().getAvailableLocales(localeName).get(0);
         }
         // locale not set in properties, read default locales
-        return (Locale)OpenCms.getLocaleManager().getDefaultLocales(m_cms, CmsResource.getParentFolder(destination)).get(
-            0);
+        return OpenCms.getLocaleManager().getDefaultLocales(m_cms, CmsResource.getParentFolder(destination)).get(0);
     }
 
     /**

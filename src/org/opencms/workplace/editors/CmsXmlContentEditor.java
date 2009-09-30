@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2009/08/20 11:31:27 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2009/09/30 08:54:52 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.87 $ 
+ * @version $Revision: 1.88 $ 
  * 
  * @since 6.0.0 
  */
@@ -465,7 +465,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             CmsFile templateFile = getCms().readFile(templateFileName, CmsResourceFilter.IGNORE_EXPIRATION);
 
             CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCloneCms(), templateFile);
-            Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
+            Locale locale = OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
 
             // now create a new XML content based on the templates content definition            
             CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
@@ -1113,7 +1113,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
             if (!m_content.hasLocale(locale)) {
                 // value may have changed because of the copy operation
-                locale = (Locale)m_content.getLocales().get(0);
+                locale = m_content.getLocales().get(0);
             }
         }
         setParamElementlanguage(locale.toString());
@@ -1641,8 +1641,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 if (useTabs) {
                     // check if a tab is starting with this element
                     for (int tabIndex = 0; tabIndex < contentDefinition.getContentHandler().getTabs().size(); tabIndex++) {
-                        CmsXmlContentTab checkTab = (CmsXmlContentTab)contentDefinition.getContentHandler().getTabs().get(
-                            tabIndex);
+                        CmsXmlContentTab checkTab = contentDefinition.getContentHandler().getTabs().get(tabIndex);
                         if (checkTab.getStartName().equals(type.getName())) {
                             // a tab is starting, add block element
                             if (tabOpened) {
@@ -1739,16 +1738,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             result.append("<tr><td class=\"xmlTdError\"><img src=\"");
                             result.append(getEditorResourceUri());
                             result.append("error.png\" border=\"0\" alt=\"\" align=\"left\" hspace=\"5\">");
-                            result.append(resolveMacros((String)getValidationHandler().getErrors(getElementLocale()).get(
-                                key)));
+                            result.append(resolveMacros(getValidationHandler().getErrors(getElementLocale()).get(key)));
                             result.append("</td><td></td></tr>\n");
                         } else {
                             result.append("<tr><td></td><td><img src=\"");
                             result.append(getEditorResourceUri());
                             result.append("error.png");
                             result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError\">");
-                            result.append(resolveMacros((String)getValidationHandler().getErrors(getElementLocale()).get(
-                                key)));
+                            result.append(resolveMacros(getValidationHandler().getErrors(getElementLocale()).get(key)));
                             result.append("</td><td></td></tr>\n");
                         }
 
@@ -1770,16 +1767,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             result.append("<tr><td class=\"xmlTdError\"><img src=\"");
                             result.append(getEditorResourceUri());
                             result.append("warning.png\" border=\"0\" alt=\"\" align=\"left\" hspace=\"5\">");
-                            result.append(resolveMacros((String)getValidationHandler().getWarnings(getElementLocale()).get(
-                                key)));
+                            result.append(resolveMacros(getValidationHandler().getWarnings(getElementLocale()).get(key)));
                             result.append("</td><td></td></tr>\n");
                         } else {
                             result.append("<tr><td></td><td><img src=\"");
                             result.append(getEditorResourceUri());
                             result.append("warning.png");
                             result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdWarning\">");
-                            result.append(resolveMacros((String)getValidationHandler().getWarnings(getElementLocale()).get(
-                                key)));
+                            result.append(resolveMacros(getValidationHandler().getWarnings(getElementLocale()).get(key)));
                             result.append("</td><td></td></tr>\n");
                         }
 
