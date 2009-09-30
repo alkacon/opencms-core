@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeletedResourcesList.java,v $
- * Date   : $Date: 2009/08/20 11:30:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/30 09:06:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import java.util.Locale;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.9.1
  */
@@ -246,6 +246,9 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
             public boolean isVisible() {
 
                 String path = (String)getItem().get(LIST_COLUMN_NAME);
+                if (path.contains("|")) {
+                    path = path.substring(path.indexOf("|") + 1);
+                }
                 return getCms().existsResource(path);
             }
 
