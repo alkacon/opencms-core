@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/30 08:16:06 $
- * Version: $Revision: 1.1147 $
+ * Date   : $Date: 2009/09/30 08:40:07 $
+ * Version: $Revision: 1.1148 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.5.1 - month day, 2009
+OpenCms 7.5.1 - September 30, 2009
 
 ! Added context menu entry "Publish scheduled" to publish resources at a specified date
 ! Added improved search dialog to all galleries
@@ -43,26 +43,26 @@ OpenCms 7.5.1 - month day, 2009
 ! Added feature #1741: Out of the box support for JBOSS servlet container
 ! Added detection of email addresses in editor link dialog
 ! Added option to use the current site macro in the template one form module
+- Updated FCKeditor to version 2.6.5
+- Updated Lucene to version 2.4.1
+- Full text search in documents: exceptions are now catched while extracting the text from documents
 * Fixed issue #1708: User creation settings 'enabled' and 'selfManaged' were not saved
 * Fixed issue #1711: HtmlDecorater problem with html-entities 
 * Fixed issue #1734: normalizePath will now remove leading double slashes of the path
 * Fixed issue #1735: Resolved problems with CmsLinkManager and absolute internal links
 * Fixed issue #1739: Deleted or moved project resources cannot be removed from project
-* Fixed issue #1740: Synchronization of empty folders with rfs
+* Fixed issue #1740: Synchronization of empty folders with real file system
 * Fixed issue #1743: Cached users for groups are not invalidated when writing user
 * Fixed issue #1744: Concurrency issue of CmsImportExportManager resolved
 * Fixed issue #1759: Fixed XSS security issues reported by Security Focus
 * Fixed issue #1775: Endless loop on project names
-* Fixed issue #1779: Resolved problem with import of additional style-sheet for template-two
+* Fixed issue #1779: Resolved problem with import of additional CSS stylesheet for template two
 * Fixed issue with OU users being unable to work after OU resource has been renamed 
 * Fixed issue with pointer targets stored in XML contents (instead of the URI to pointers) when selecting them in a link gallery
 * Fixed issue with transfer permissions of a deleted user to another user
 * Fixed issue with consumed exception messages for email sending
-* Fixed issue with noAutoCloseTags attribute of cms:parse tag only supporting DIV 
+* Fixed issue with noAutoCloseTags attribute of <cms:parse> tag only supporting DIV 
 * Switched icons from ascending/descending order in lists
-- Updated FCKeditor to version 2.6.5
-- Updated Lucene to version 2.4.1
-- Full text search in documents: exceptions are now catched while extracting the text from documents
 
 OpenCms 7.5.0 - June 15, 2009
 ! Added support for new Microsoft document types to upload applet
