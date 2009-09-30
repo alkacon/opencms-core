@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/09/30 08:40:20 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 6.0.0
  */
@@ -164,10 +164,16 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     public static final String N_MAPPING = "mapping";
 
     /** Node name constant. */
+    public static final String N_MAX_MODIFICATIONS_BEFORE_COMMIT = "maxModificationsBeforeCommit";
+
+    /** Node name constant. */
     public static final String N_MIMETYPE = "mimetype";
 
     /** Node name constant. */
     public static final String N_MIMETYPES = "mimetypes";
+
+    /** Node name constant. */
+    public static final String N_OFFLINE_UPDATE_FREQUENCY = "offlineUpdateFrequency";
 
     /** Node name constant. */
     public static final String N_PROJECT = "project";
@@ -198,9 +204,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
     /** Node name constant. */
     public static final String N_TIMEOUT = "timeout";
-
-    /** Node name constant. */
-    public static final String N_OFFLINE_UPDATE_FREQUENCY = "offlineUpdateFrequency";
 
     /** Node name constant. */
     private static final String XPATH_SEARCH = "*/" + N_SEARCH;
@@ -252,6 +255,12 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // rule for the max. age of entries in the extraction cache
         digester.addCallMethod(XPATH_SEARCH + "/" + N_EXTRACTION_CACHE_MAX_AGE, "setExtractionCacheMaxAge", 0);
+
+        // rule for max. number of modifications before commit
+        digester.addCallMethod(
+            XPATH_SEARCH + "/" + N_MAX_MODIFICATIONS_BEFORE_COMMIT,
+            "setMaxModificationsBeforeCommit",
+            0);
 
         // rule for the highlighter to highlight the search terms in the excerpt of the search result
         digester.addCallMethod(XPATH_SEARCH + "/" + N_HIGHLIGHTER, "setHighlighter", 0);
@@ -372,6 +381,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         // add <extractionCacheMaxAge> element
         searchElement.addElement(N_EXTRACTION_CACHE_MAX_AGE).addText(
             String.valueOf(m_searchManager.getExtractionCacheMaxAge()));
+        // add <maxModificationsBeforeCommit> element
+        searchElement.addElement(N_MAX_MODIFICATIONS_BEFORE_COMMIT).addText(
+            String.valueOf(m_searchManager.getMaxModificationsBeforeCommit()));
         // add <highlighter> element
         searchElement.addElement(N_HIGHLIGHTER).addText(m_searchManager.getHighlighter().getClass().getName());
 

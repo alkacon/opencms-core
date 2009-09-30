@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/09/30 08:40:20 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -260,7 +260,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_IO_INDEX_WRITER_CLOSE_2 = "LOG_IO_INDEX_WRITER_CLOSE_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_IO_INDEX_WRITER_OPTIMIZE_1 = "LOG_IO_INDEX_WRITER_OPTIMIZE_1";
+    public static final String LOG_IO_INDEX_WRITER_COMMIT_2 = "LOG_IO_INDEX_WRITER_COMMIT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IO_INDEX_WRITER_OPTIMIZE_2 = "LOG_IO_INDEX_WRITER_OPTIMIZE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_INDEX_WITH_NAME_1 = "LOG_NO_INDEX_WITH_NAME_1";
@@ -272,10 +275,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PARSE_EXTRACTION_CACHE_AGE_FAILED_2 = "LOG_PARSE_EXTRACTION_CACHE_AGE_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PARSE_TIMEOUT_FAILED_2 = "LOG_PARSE_TIMEOUT_FAILED_2";
+    public static final String LOG_PARSE_MAXCOMMIT_FAILED_2 = "LOG_PARSE_MAXCOMMIT_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSE_OFFLINE_UPDATE_FAILED_2 = "LOG_PARSE_OFFLINE_UPDATE_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PARSE_TIMEOUT_FAILED_2 = "LOG_PARSE_TIMEOUT_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_CATEGORY_FAILED_1 = "LOG_READ_CATEGORY_FAILED_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2009/08/26 07:48:53 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2009/09/30 08:40:20 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -55,7 +56,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,14 +83,19 @@ public class CmsIndexingThreadManager {
     /** Timeout for abandoning threads. */
     private long m_timeout;
 
+    /** The maximum number of modifications before a commit in the search index is triggered. */
+    private int m_maxModificationsBeforeCommit;
+
     /**
      * Creates and starts a thread manager for indexing threads.<p>
      * 
      * @param timeout timeout after a thread is abandoned
+     * @param maxModificationsBeforeCommit the maximum number of modifications before a commit in the search index is triggered
      */
-    public CmsIndexingThreadManager(long timeout) {
+    public CmsIndexingThreadManager(long timeout, int maxModificationsBeforeCommit) {
 
         m_timeout = timeout;
+        m_maxModificationsBeforeCommit = maxModificationsBeforeCommit;
     }
 
     /**
@@ -183,6 +189,18 @@ public class CmsIndexingThreadManager {
             thread.interrupt();
         } else {
             m_returnedCounter++;
+        }
+        if ((m_startedCounter % m_maxModificationsBeforeCommit) == 0) {
+            try {
+                writer.commit();
+            } catch (IOException e) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
+                        index.getName(),
+                        index.getPath()), e);
+                }
+            }
         }
     }
 

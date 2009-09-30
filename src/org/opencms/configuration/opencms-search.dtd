@@ -14,6 +14,7 @@
 	forceunlock?,
 	excerpt,
 	extractionCacheMaxAge?,
+	maxModificationsBeforeCommit?,
 	highlighter,
 	documenttypes,
 	analyzers,
@@ -60,6 +61,11 @@
 # The max. age text extraction results should be kept in the extraction cache.
 -->
 <!ELEMENT extractionCacheMaxAge (#PCDATA)>
+
+<!--
+# The maximum number of modifications before a commit in the search index is triggered.
+-->
+<!ELEMENT maxModificationsBeforeCommit (#PCDATA)>
 
 <!--
 # A class implementing org.opencms.search.documents.I_TermHighlighter
