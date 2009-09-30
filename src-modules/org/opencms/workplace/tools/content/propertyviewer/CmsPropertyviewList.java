@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/propertyviewer/CmsPropertyviewList.java,v $
- * Date   : $Date: 2009/08/13 12:31:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/09/30 13:27:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,6 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
-import org.opencms.workplace.list.CmsListSearchAction;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -79,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.5.1
  */
@@ -428,9 +427,7 @@ public class CmsPropertyviewList extends A_CmsListDialog {
     @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // makes the list searchable
-        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_PATH));
-        metadata.setSearchAction(searchAction);
+        // nothing to do here
     }
 
     /**

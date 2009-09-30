@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/languagecopy/CmsLanguageCopySelectionList.java,v $
- * Date   : $Date: 2009/08/13 12:31:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/09/30 13:27:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,6 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
-import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
 import org.opencms.xml.content.CmsXmlContent;
@@ -85,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.5.1
  * 
@@ -451,10 +450,7 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
     @Override
     protected void setIndependentActions(final CmsListMetadata metadata) {
 
-        // makes the list searchable
-        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_PATH));
-        searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_RESOURCETYPE));
-        metadata.setSearchAction(searchAction);
+        // nothing to do here
     }
 
     /**
