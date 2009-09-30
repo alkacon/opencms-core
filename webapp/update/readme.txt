@@ -125,6 +125,10 @@ IMPORTANT: PLEASE READ THIS
 * Hint: You can use the "Resource changed since" feature in the the Database 
   Administration to export all the changes you have done after installing 
   OpenCms
+* In some cases there may occur problems while updating the configuration files.
+  Make sure these files don't contain any html-entities that are not valid 
+  xml-entities also (for example: &copy; is no valid xml-entity, replace it 
+  with &#169;).
 
 --------------------------------------
 Important Notes for 6.x Updates only: 
