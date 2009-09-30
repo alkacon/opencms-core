@@ -8,6 +8,7 @@
 		<forceunlock>onlyfull</forceunlock>		
 		<excerpt>1024</excerpt>	
 		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>
+		<maxModificationsBeforeCommit>20</maxModificationsBeforeCommit>			
 		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>
 		<documenttypes>		
 			<documenttype>

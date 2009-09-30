@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/09/23 14:03:21 $
- * Version: $Revision: 1.76.2.5 $
+ * Date   : $Date: 2009/09/30 08:43:35 $
+ * Version: $Revision: 1.76.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
-import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -85,7 +84,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.76.2.5 $ 
+ * @version $Revision: 1.76.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -380,6 +379,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** The default value used for keeping the extraction results in the cache (672 hours = 4 weeks). */
     public static final float DEFAULT_EXTRACTION_CACHE_MAX_AGE = 672.0f;
 
+    /** Default for the maximum number of modifications before a commit in the search index is triggered (500). */
+    public static final int DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT = 500;
+
     /** The default update frequency for offline indexes (15000 msec = 15 sec). */
     public static final int DEFAULT_OFFLINE_UPDATE_FREQNENCY = 15000;
 
@@ -440,6 +442,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** The max. char. length of the excerpt in the search result. */
     private int m_maxExcerptLength;
 
+    /** The maximum number of modifications before a commit in the search index is triggered. */
+    private int m_maxModificationsBeforeCommit;
+
     /** The offline index search handler. */
     private CmsSearchOfflineHandler m_offlineHandler;
 
@@ -462,10 +467,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_analyzers = new HashMap<Locale, CmsSearchAnalyzer>();
         m_indexes = new ArrayList<CmsSearchIndex>();
         m_indexSources = new TreeMap<String, CmsSearchIndexSource>();
+        m_offlineHandler = new CmsSearchOfflineHandler();
         m_extractionCacheMaxAge = DEFAULT_EXTRACTION_CACHE_MAX_AGE;
         m_maxExcerptLength = DEFAULT_EXCERPT_LENGTH;
-        m_offlineHandler = new CmsSearchOfflineHandler();
         m_offlineUpdateFrequency = DEFAULT_OFFLINE_UPDATE_FREQNENCY;
+        m_maxModificationsBeforeCommit = DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT;
 
         m_fieldConfigurations = new HashMap<String, CmsSearchFieldConfiguration>();
         // make sure we have a "standard" field configuration
@@ -862,6 +868,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public int getMaxExcerptLength() {
 
         return m_maxExcerptLength;
+    }
+
+    /**
+     * Returns the maximum number of modifications before a commit in the search index is triggered.<p>
+     *
+     * @return the maximum number of modifications before a commit in the search index is triggered
+     */
+    public int getMaxModificationsBeforeCommit() {
+
+        return m_maxModificationsBeforeCommit;
     }
 
     /**
@@ -1409,6 +1425,34 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Sets the maximum number of modifications before a commit in the search index is triggered.<p>
+     *
+     * @param maxModificationsBeforeCommit the maximum number of modifications to set
+     */
+    public void setMaxModificationsBeforeCommit(int maxModificationsBeforeCommit) {
+
+        m_maxModificationsBeforeCommit = maxModificationsBeforeCommit;
+    }
+
+    /**
+     * Sets the maximum number of modifications before a commit in the search index is triggered as a string.<p>
+     *
+     * @param value the maximum number of modifications to set
+     */
+    public void setMaxModificationsBeforeCommit(String value) {
+
+        try {
+            setMaxModificationsBeforeCommit(Integer.parseInt(value));
+        } catch (Exception e) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_PARSE_MAXCOMMIT_FAILED_2,
+                value,
+                new Integer(DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT)), e);
+            setMaxModificationsBeforeCommit(DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT);
+        }
+    }
+
+    /**
      * Sets the update frequency of the offline indexer in milliseconds.<p>
      *
      * @param offlineUpdateFrequency the update frequency in milliseconds to set
@@ -1893,7 +1937,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             forceIndexUnlock(index, report, false);
             // create a new thread manager for the indexing threads
-            CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(m_timeout);
+            CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(
+                m_timeout,
+                m_maxModificationsBeforeCommit);
 
             boolean isOfflineIndex = false;
             if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
@@ -1941,13 +1987,22 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     // optimize and commit the index after each index source has been finished
                     try {
                         writer.optimize();
+                    } catch (IOException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(
+                                Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_2,
+                                index.getName(),
+                                index.getPath()), e);
+                        }
+                    }
+                    try {
                         writer.commit();
                     } catch (IOException e) {
                         if (LOG.isWarnEnabled()) {
                             LOG.warn(Messages.get().getBundle().key(
-                                Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_1,
-                                index.getPath(),
-                                index.getName()), e);
+                                Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
+                                index.getName(),
+                                index.getPath()), e);
                         }
                     }
                 }
@@ -2063,7 +2118,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
                 if (hasResourcesToUpdate) {
                     // create a new thread manager
-                    CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(m_timeout);
+                    CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(
+                        m_timeout,
+                        m_maxModificationsBeforeCommit);
 
                     Iterator<CmsSearchIndexUpdateData> i = updateCollections.iterator();
                     while (i.hasNext()) {
