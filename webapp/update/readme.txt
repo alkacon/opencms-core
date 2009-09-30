@@ -155,7 +155,7 @@ settings may get lost, but this is unfortunately inevitable.
 Additionally the automatic configuration files update from OpenCms 6.x to OpenCms 
 7.0.x is working, for all configuration files, except the opencms-workplace.xml file, 
 since it has been completely restructured.
-Before continuing you need to get an OpenCms 7.x.x opencms-workplace.xml configuration 
+Before starting the update-wizard you need to get an OpenCms 7.x.x opencms-workplace.xml configuration 
 file. One is provided under update/config, but you will need to manually copy it to 
 your WEB-INF/config/ folder. This procedure is to prevent that your changes get lost,
 but you are the responsible for customizing this configuration file again.
