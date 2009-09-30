@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/propertyviewer/Messages.java,v $
- * Date   : $Date: 2009/08/13 12:31:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/09/30 08:47:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.5.1
  */
@@ -66,9 +66,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_PROPERTYVIEW_COL_PATH_NAME_0 = "GUI_LIST_PROPERTYVIEW_COL_PATH_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LIST_PROPERTYVIEW_COL_PREVIEW_NAME_0 = "GUI_LIST_PROPERTYVIEW_COL_PREVIEW_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_PROPERTYVIEW_COL_PROPERTY_HELP_0 = "GUI_LIST_PROPERTYVIEW_COL_PROPERTY_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -82,21 +79,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_DETAIL_DIALOG_MESSAGE_0 = "GUI_MODULES_DETAIL_DIALOG_MESSAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_DETAIL_HIDE_ALL_PROPERTIES_HELP_0 = "GUI_MODULES_DETAIL_HIDE_ALL_PROPERTIES_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_DETAIL_HIDE_ALL_PROPERTIES_KEY_VALUE_0 = "GUI_MODULES_DETAIL_HIDE_ALL_PROPERTIES_KEY_VALUE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_DETAIL_SHOW_ALL_PROPERTIES_HELP_0 = "GUI_MODULES_DETAIL_SHOW_ALL_PROPERTIES_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_DETAIL_SHOW_ALL_PROPERTIES_KEY_VALUE_0 = "GUI_MODULES_DETAIL_SHOW_ALL_PROPERTIES_KEY_VALUE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_LABEL_ALL_PROPERTIES_0 = "GUI_MODULES_LABEL_ALL_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTYVIEW_ADMIN_TOOL_BLOCK_0 = "GUI_PROPERTYVIEW_ADMIN_TOOL_BLOCK_0";
