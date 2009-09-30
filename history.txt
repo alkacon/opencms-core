@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/30 08:40:07 $
- * Version: $Revision: 1.1148 $
+ * Date   : $Date: 2009/09/30 09:27:34 $
+ * Version: $Revision: 1.1149 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -21,12 +21,12 @@ Legend:
 
 OpenCms 7.5.1 - September 30, 2009
 
-! Added context menu entry "Publish scheduled" to publish resources at a specified date
+! Added context menu entry "Publish scheduled" to publish files at a specified date
 ! Added improved search dialog to all galleries
-! Added delete feature in all galleries
-! Added selectable start galleries to user preferences and possibility to set start galleries in workplace configuration
+! Added delete resource option to all galleries
+! Added selectable start galleries to user preferences and possibility to set start galleries in the Workplace configuration
 ! Added option to export the VFS into a folder structure instead of a .ZIP file
-! Improved HTML widget button configuration and unstructured content button configuration to hide unwanted buttons
+! Improved HTML widget button configuration and unstructured content button configuration options
 ! Added option to set global default widget configurations
 ! Added option to hide "Advanced" button of customized property dialog depending on the current users groups
 ! Added content tool "Property viewer" to view properties from resources in specified folder
@@ -34,8 +34,8 @@ OpenCms 7.5.1 - September 30, 2009
 ! Added content tool "Convert XML contents" to convert XML contents in specified folder
 ! Added context menu entry "Comment content" to view and change the default properties of all files in a folder
 ! Added option to limit full text search to certain resource types only
-! Added "fields query" option to full text search by which you can search for different terms in several fields
-! Added "backup re-indexing" option to Lucene index generation 
+! Added fields query option to full text search by which you can search for different terms in several fields
+! Added backup re-indexing option to Lucene index generation 
 ! Added support for servlet container Sun GlassFish Enterprise Server v2.1
 ! Added support for servlet container GlassFish/v3 (preview release, builds earlier than 25-Aug-2009)
 ! Improved detection of the context-root path (support for GlassFish) 
