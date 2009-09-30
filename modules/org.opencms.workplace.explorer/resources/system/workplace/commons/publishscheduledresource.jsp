@@ -85,7 +85,7 @@ function checkPublishScheduledFields(fieldId) {
     </tr>
     <tr>
 		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_RESET_PUBLISH_SCHEDULED_0) %>
-		<td colspan="2"><input type="checkbox" name="<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>" id="<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>" value="true" onclick="checkPublishScheduledFields'<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>');"></td>
+		<td colspan="2"><input type="checkbox" name="<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>" id="<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>" value="true" onclick="checkPublishScheduledFields('<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>');"></td>
     </tr>
 </table>
 <%= wp.dialogBlockEnd() %>
