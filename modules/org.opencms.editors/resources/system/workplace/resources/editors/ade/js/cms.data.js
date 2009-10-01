@@ -125,9 +125,9 @@
    var /** Array */ newTypes = cms.data.newTypes = [];
    
    /**
-    * .<p>
+    * Initial load function that loads all data needed for ADE to start.
     *
-    * @param {Function} afterLoad
+    * @param {Function} afterLoad the function that should be called after loading is finished
     */
    var loadAllData = cms.data.loadAllData = /** void */ function(/** void Function(boolean) */afterLoad) {
    
@@ -207,10 +207,10 @@
    }
    
    /**
-    * .<p>
+    * Generic JSON loading function.
     *
-    * @param {Object} data
-    * @param {Function} afterLoad
+    * @param {Object} data the request parameters that should be sent to the server
+    * @param {Function} afterLoad the callback that should be called after loading is finished
     */
    var loadJSON = cms.data.loadJSON = /** void */ function(/** Object */data, /** void Function(boolean, Object) */ afterLoad) {
    
@@ -249,11 +249,11 @@
    }
    
    /**
-    * .<p>
+    * Generic function for posting JSON data to the server.
     *
-    * @param {String} action
-    * @param {Object} data
-    * @param {Function} afterPost
+    * @param {String} action a string to tell the server what to do with the data
+    * @param {Object} data the JSON data
+    * @param {Function} afterPost the callback that should be called after the server replied
     */
    var postJSON = cms.data.postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost) {
    
@@ -291,10 +291,10 @@
    }
    
    /**
-    * .<p>
+    * Creates a new resource on the server via AJAX
     *
-    * @param {String} type
-    * @param {Function} afterCreate
+    * @param {String} type the type of resource to create
+    * @param {Function} afterCreate the callback that should be called after creation
     *
     * @see cms.toolbar.openEditDialog
     */
@@ -309,10 +309,10 @@
    }
    
    /**
-    * .<p>
+    * Deletes a list of resources on the server via AJAX.
     *
-    * @param {Array} ids
-    * @param {Function} afterDelete
+    * @param {Array} ids the list of ids (ade_structureid) of the resources to delete
+    * @param {Function} afterDelete the callback that should be called after deletion
     */
    var deleteResources = cms.data.deleteResources = /** void */ function(/** Array */ids, /** void Function(boolean) */ afterDelete) {
    
@@ -322,10 +322,10 @@
    }
    
    /**
-    * .<p>
+    * Reloads a single element and resets the containers on the page.
     *
-    * @param {String} id
-    * @param {Function} afterReload
+    * @param {String} id the id (ade_structureid) of the element to reload
+    * @param {Function} afterReload the callback that should be called after loading is finished
     */
    var reloadElement = cms.data.reloadElement = /** void */ function(/** String */id, /** void Function(boolean, Object) */ afterReload) {
    
@@ -350,10 +350,10 @@
    }
    
    /**
-    * .<p>
+    * Loads (or reloads) a set of elements via AJAX and stores them in cms.data.elements.
     *
-    * @param {String} ids
-    * @param {Function} afterLoad
+    * @param {String} ids a list of ids of the form ade_structureid
+    * @param {Function} afterLoad the callback that should be called after loading is finished
     */
    var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, Object) */ afterLoad) {
    
@@ -371,9 +371,9 @@
    }
    
    /**
-    * .<p>
+    * Loads the favorite list using an AJAX call and stores it in cms.toolbar.favorites.
     *
-    * @param {Function} afterFavoritesLoad
+    * @param {Function} afterFavoritesLoad the callback that should be called after loading is finished
     */
    var loadFavorites = cms.data.loadFavorites = /** void */ function(/** void Function(boolean, Object) */afterFavoritesLoad) {
    
@@ -416,6 +416,12 @@
       
    }
    
+   
+   /**
+    * Loads the recent list and saves it in cms.toolbar.recent.
+    *
+    * @param {Function} afterRecentLoad the callback that should be called after loading is finished
+    */
    var loadRecent = cms.data.loadRecent = /** void */ function(/** void Function(boolean, Object) */afterRecentLoad) {
    
       loadJSON({
@@ -444,9 +450,9 @@
    }
    
    /**
-    * .<p>
+    * Persists the container page using an AJAX call.
     *
-    * @param {Function} afterSave
+    * @param {Function} afterSave the callback that should be called after saving
     */
    var persistContainers = cms.data.persistContainers = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
@@ -479,9 +485,9 @@
    
    
    /**
-    * .<p>
+    * Persists the favorite list using an AJAX call.
     *
-    * @param {Function} afterSave
+    * @param {Function} afterSave the callback that should be called after saving
     */
    var persistFavorites = cms.data.persistFavorites = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
@@ -489,7 +495,7 @@
    }
    
    /**
-    * .<p>
+    * Persists the recent list using an AJAX call.
     *
     * @param {Function} afterSave
     */
@@ -500,7 +506,7 @@
    
    /**
     * Empties all containers and fills them with the appropriate html from the element data.
-    * 
+    *
     */
    var fillContainers = cms.data.fillContainers = /** void */ function() {
    
@@ -574,48 +580,6 @@
       return result;
    }
    
-   
-   ///////// these function are for debugging /////////////
-   var serialize = function() {
-   
-      var ser = {
-         'container': []
-      };
-      $(sortlist).each(function(i) {
-         ser.container[i] = {
-            'id': $(this).attr('id'),
-            'elements': []
-         };
-         $(this).children().each(function(ie, elem) {
-            ser.container[i].elements[ie] = {
-               'id': $(elem).attr('id'),
-               'index': ie
-            }
-         });
-      });
-      $('body').append('<p>' + JSON.stringify(ser) + '</p>');
-   };
-   
-   var getSerializeString = function() {
-   
-      var ser = {
-         'container': []
-      };
-      $(sortlist).each(function(i) {
-         ser.container[i] = {
-            'id': $(this).attr('id'),
-            'elements': []
-         };
-         $(this).children().each(function(ie, elem) {
-            ser.container[i].elements[ie] = {
-               'id': $(elem).attr('id'),
-               'index': ie
-            }
-         });
-      });
-      return JSON.stringify(ser);
-   };
-   
    /**
     * Loads all subcontainer elements referenced from an existing element collection
     * which haven't already been loaded.
@@ -657,9 +621,9 @@
    Element.prototype = {
       /**
        * Retrieves the contents of this element for a given container type.
-       * 
+       *
        * @param {Object} containerType the type of the container
-       * @return {jQuery} the content as a fresh jQuery object 
+       * @return {jQuery} the content as a fresh jQuery object
        */
       getContent: function(containerType) {
          var content = this.contents[containerType];
@@ -678,7 +642,7 @@
       /**
        * This method does the same as getContent, but the parameter is a container.
        * or container name instead of a container type
-       * 
+       *
        * @param {Object} container a container name or container
        */
       getContentForContainer: function(container) {
@@ -688,11 +652,11 @@
          var containerType = container.type;
          return this.getContent(containerType);
       },
-     
+      
       
       /**
        * Clones this object.
-       * 
+       *
        * @return the clone
        */
       clone: function() {
@@ -725,7 +689,7 @@
    Container.prototype = {
       /**
        * Returns the element objects for elements in this container.
-       * 
+       *
        * @return {Array} an array of Element objects.
        */
       getElements: function() {
@@ -736,12 +700,12 @@
    }
    
    var reviveTypeMap = {
-      Element: Element,
-      Container: Container
+      'Element': Element,
+      'Container': Container
    }
    
    /**
-    * JSON "revive" function which replaces JSON data structures that represent 
+    * JSON "revive" function which replaces JSON data structures that represent
     * objects with methods with the actual objects.
     */
    var _jsonRevive = function(key, value) {
