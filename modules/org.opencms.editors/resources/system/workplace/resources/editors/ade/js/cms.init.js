@@ -49,7 +49,7 @@ $.extend($.ui.sortable.prototype, {
          
          /* cms-addition:
           * in case the placeholder is hidden use the initial offset for reverting */
-         if (self.placeholder.css('display') == 'none') {
+         if (self.cmsStartOffset && self.placeholder.css('display') == 'none') {
             cur = self.cmsStartOffset;
          } else {
             cur = self.placeholder.offset();
