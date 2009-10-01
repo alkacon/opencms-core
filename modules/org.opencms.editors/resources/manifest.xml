@@ -3971,6 +3971,29 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        
+        <file>
+			<source>system/workplace/resources/editors/ade/js/cms.search.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.search.js</destination>
+			<type>plain</type>
+			<uuidstructure>19d7e2d3-8747-11de-83d4-dd9f629c113b</uuidstructure>
+			<uuidresource>19d7e2d4-8747-11de-83d4-dd9f629c113b</uuidresource>
+			<datelastmodified>Mon, 07 Sep 2009 07:19:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[cms.search]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        
+        
 		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.util.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.util.js</destination>
