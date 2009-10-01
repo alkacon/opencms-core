@@ -9,7 +9,7 @@
       'hasMore': false,
       'totalResults': 0
    };
-    
+   
    /**
     * Handler for search results, but not for the first page of results of a new search
     * @param {Object} ok status of the AJAX request
@@ -197,7 +197,10 @@
       });
    };
    
-   
+   /**
+    * Saves the search parameters from the search dialog
+    * @param {Object} searchParams the search parameters
+    */
    var _saveSearchInput = function(/**Object*/searchParams) {
    
       var/**JQuery*/ $context = $('#' + cms.html.searchDialogId);
@@ -213,6 +216,9 @@
       searchParams.path = $('input.cms-search-path', $context).val();
    };
    
+   /**
+    * Sets the input values in the search dialog to the previously saved values.
+    */
    var _restoreSearchInput = function() {
    
       var/**JQuery*/ $context = $('#' + cms.html.searchDialogId);
@@ -314,6 +320,9 @@
       });
    }
    
+   /**
+    * Resets the scroll bar of the search menu.
+    */
    var _resetScroll = function() {
       var $scrolling = $('#cms-search-list').closest('.cms-scrolling');
       $scrolling.scroll();
@@ -328,6 +337,9 @@
       return $('#cms-search-list').children().size();
    }
    
+   /**
+    * Returns the estimated total number of search results.
+    */
    var getTotalNumberOfResults = cms.search.getTotalNumberOfResults = function() {
       return searchParams.totalResults;
    }
