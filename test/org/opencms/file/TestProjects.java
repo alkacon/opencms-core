@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2009/09/30 15:58:30 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/10/01 06:40:53 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class TestProjects extends OpenCmsTestCase {
 
@@ -86,6 +86,7 @@ public class TestProjects extends OpenCmsTestCase {
         suite.addTest(new TestProjects("testAccessibleProjects"));
         suite.addTest(new TestProjects("testDeleteNewFolderInProject"));
         suite.addTest(new TestProjects("testDeleteFolderInProject"));
+        suite.addTest(new TestProjects("testMoveFolderInProject"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -332,6 +333,56 @@ public class TestProjects extends OpenCmsTestCase {
         // check the project resources
         resNames = cms.readProjectResources(project);
         assertTrue(resNames.isEmpty());
+    }
+
+    /**
+     * Test the "move folder in project" function.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveFolderInProject() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing moving folder in project");
+
+        String projectName = "testMoveFolderInProject";
+
+        cms.getRequestContext().setSiteRoot("/sites/default/");
+        String folderName = "/xmlcontent/";
+
+        // create new project
+        CmsProject project = cms.createProject(
+            projectName,
+            projectName,
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+            CmsProject.PROJECT_TYPE_NORMAL);
+        cms.getRequestContext().setCurrentProject(project);
+        // add folder to project
+        cms.copyResourceToProject(folderName);
+
+        // check the project resources
+        List<String> resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
+
+        // move folder
+        String destFolder = "/testMoveFolderInProject/";
+        cms.lockResource(folderName);
+        cms.moveResource(folderName, destFolder);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(destFolder), resNames.get(0));
+
+        // undo changes
+        cms.undoChanges(destFolder, CmsResource.UNDO_MOVE_CONTENT);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
     }
 
     /**
