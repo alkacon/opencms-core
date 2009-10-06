@@ -1,9 +1,9 @@
 (function(cms) {
    var $ = jQuery;
    
-   /* class for normal move-related hover borders*/
+   /** class for normal move-related hover borders */
    var HOVER_NORMAL = cms.move.HOVER_NORMAL = 'cms-hover-normal';
-   // class for hover borders for new items
+   /** class for hover borders for new items */
    var HOVER_NEW = cms.move.HOVER_NEW = 'cms-hover-new';
    
    /**
@@ -275,6 +275,7 @@
          return;
       }
       
+      // save the current offset. this is needed by ui.sortable._mouseStop for the reverting-animation in case the move is canceled
       ui.self.cmsStartOffset = {
          top: ui.self.offset.top,
          left: ui.self.offset.left

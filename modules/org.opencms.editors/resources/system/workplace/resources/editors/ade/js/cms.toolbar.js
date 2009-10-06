@@ -450,7 +450,7 @@
                   list.css({
                      /* position : 'fixed', */
                      top: 35,
-                     left: button.position().left - 245
+                     left: button.position().left - 1
                   }).slideDown(100, function() {
                      $('div.ui-widget-shadow', list).css({
                         top: 0,
@@ -845,7 +845,7 @@
       
       list.css({
          top: 35,
-         left: 97,
+         left: 341,
          display: 'block',
          visibility: 'hidden'
       });

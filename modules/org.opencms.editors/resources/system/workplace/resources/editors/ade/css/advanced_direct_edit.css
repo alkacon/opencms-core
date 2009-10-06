@@ -790,7 +790,7 @@ li.jTreePlacement, li.jTreePlaceholder {
 .cms-menu .connect {
 	background: #AACCFF;
 	position: absolute;
-    right: -2px;
+    left: 0px;
     top: -35px;
     width: 99px;
     height: 36px;
