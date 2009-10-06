@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageBean.java,v $
- * Date   : $Date: 2009/09/14 13:59:35 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/10/06 08:19:06 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.workplace.editors.ade;
 
-import org.opencms.file.CmsResource;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
@@ -63,9 +61,6 @@ public class CmsContainerPageBean {
     /** The locale. */
     private Locale m_locale;
 
-    /** The 'resource type' configuration file. */
-    private CmsResource m_resTypeConfig;
-
     /** The supported types. */
     private Set<String> m_types;
 
@@ -73,12 +68,10 @@ public class CmsContainerPageBean {
      * Creates a new container page bean.<p> 
      * 
      * @param locale the locale
-     * @param resTypeConfig the 'resource type' configuration 
      **/
-    public CmsContainerPageBean(Locale locale, CmsResource resTypeConfig) {
+    public CmsContainerPageBean(Locale locale) {
 
         m_locale = locale;
-        m_resTypeConfig = resTypeConfig;
         m_containers = new HashMap<String, CmsContainerBean>();
         m_types = new HashSet<String>();
     }
@@ -112,16 +105,6 @@ public class CmsContainerPageBean {
     public Locale getLocale() {
 
         return m_locale;
-    }
-
-    /**
-     * Returns the 'resource type' configuration.<p>
-     *
-     * @return the 'resource type' configuration
-     */
-    public CmsResource getResTypeConfig() {
-
-        return m_resTypeConfig;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsTypeConfigurationItem.java,v $
- * Date   : $Date: 2009/09/01 13:15:26 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsConfigurationItem.java,v $
+ * Date   : $Date: 2009/10/06 08:19:05 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,11 +41,11 @@ package org.opencms.workplace.editors.ade;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 7.6 
  */
-public class CmsTypeConfigurationItem {
+public class CmsConfigurationItem {
 
     /** The destination folder uri. */
     private final String m_folder;
@@ -63,7 +63,7 @@ public class CmsTypeConfigurationItem {
      * @param destinationFolder the destination folder uri
      * @param pattern the file pattern
      **/
-    public CmsTypeConfigurationItem(String sourceFile, String destinationFolder, String pattern) {
+    public CmsConfigurationItem(String sourceFile, String destinationFolder, String pattern) {
 
         m_sourceFile = sourceFile;
         m_folder = destinationFolder;

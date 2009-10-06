@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/09/14 13:59:35 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/10/06 08:19:05 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,10 +118,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String MESSAGE_DEFAULT_FORMATTER_FILE_1 = "MESSAGE_DEFAULT_FORMATTER_FILE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String MESSAGE_DEFAULT_FORMATTER_FOLDER_0 = "MESSAGE_DEFAULT_FORMATTER_FOLDER_0";
+    public static final String MESSAGE_DEFAULT_FORMATTER_NEWNAME_0 = "MESSAGE_DEFAULT_FORMATTER_NEWNAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String MESSAGE_DEFAULT_FORMATTER_FOLDER_1 = "MESSAGE_DEFAULT_FORMATTER_FOLDER_1";
+    public static final String MESSAGE_DEFAULT_FORMATTER_NEWNAME_1 = "MESSAGE_DEFAULT_FORMATTER_NEWNAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String MESSAGE_DEFAULT_FORMATTER_TEXT_0 = "MESSAGE_DEFAULT_FORMATTER_TEXT_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/09/14 13:59:35 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/10/06 08:19:05 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -48,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.6 
  */
@@ -57,8 +59,8 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     /** The element's resource. */
     private CmsResource m_resource;
 
-    /** The resource type configuration. */
-    private CmsTypeConfigurationItem m_resTypeConfig;
+    /** The ADE manager. */
+    private CmsADEManager m_manager;
 
     /**
      * Constructor, with parameters.
@@ -86,18 +88,18 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     }
 
     /**
-     * Returns the configured folder for new elements.<p> 
+     * Returns the name of the next new file of the type to be created.<p>
      * 
-     * @return the configured folder for new elements
+     * @return the name of the next new file of the type to be created
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong 
      */
-    public String getNewFolder() throws CmsException {
+    public String getNextNewFileName() throws CmsException {
 
         if (!isNew()) {
             return "";
         }
-        return getResTypeConfig().getFolder();
+        return getADEManager().getNextNewFileName(getType());
     }
 
     /**
@@ -125,34 +127,6 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
             m_resource = getCmsObject().readResource(getRequest().getParameter(I_CmsResourceLoader.PARAMETER_ELEMENT));
         }
         return m_resource;
-    }
-
-    /**
-     * Returns the resource type configuration.<p>
-     * 
-     * @return the resource type configuration
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsTypeConfigurationItem getResTypeConfig() throws CmsException {
-
-        if (m_resTypeConfig == null) {
-            CmsObject cms = getCmsObject();
-            CmsResource cntPageRes = cms.readResource(getCmsObject().getRequestContext().getUri());
-            CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
-                cms,
-                cntPageRes,
-                cms.getRequestContext().getLocale());
-            if (cntPage.getResTypeConfig() != null) {
-                CmsElementCreator ec = new CmsElementCreator(cms, cntPage.getResTypeConfig());
-                m_resTypeConfig = ec.getConfiguration().get(getType());
-            }
-            if (m_resTypeConfig == null) {
-                // missing configuration file
-                m_resTypeConfig = new CmsTypeConfigurationItem("", "", "");
-            }
-        }
-        return m_resTypeConfig;
     }
 
     /**
@@ -190,6 +164,21 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      */
     public boolean isNew() throws CmsException {
 
-        return getPath().equals(getResTypeConfig().getSourceFile());
+        List<CmsResource> elems = getADEManager().getCreatableElements();
+        return elems.contains(getResource());
+    }
+
+    /**
+     * Returns the ADE manager.<p>
+     * 
+     * @return the ADE manager
+     */
+    public CmsADEManager getADEManager() {
+
+        if (m_manager == null) {
+            CmsObject cms = getCmsObject();
+            m_manager = OpenCms.getADEManager(cms, cms.getRequestContext().getUri(), getRequest());
+        }
+        return m_manager;
     }
 }

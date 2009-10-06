@@ -33,8 +33,8 @@ pageContext.setAttribute("cms", cms);
 			<div class="cms-additional">
 			    <!-- TODO: WHY NOT TO USE THE TITLE ATTRIBUTE?? -->
 			    <c:if test="${cms.new}" >
-				<div alt="<fmt:message key="MESSAGE_DEFAULT_FORMATTER_FOLDER_1"><fmt:param value="${cms.newFolder}"/></fmt:message>">
-					<span class="cms-left"><fmt:message key="MESSAGE_DEFAULT_FORMATTER_FOLDER_0" /></span>${cms.newFolder}
+				<div alt="<fmt:message key="MESSAGE_DEFAULT_FORMATTER_NEWNAME_1"><fmt:param value="${cms.nextNewFileName}"/></fmt:message>">
+					<span class="cms-left"><fmt:message key="MESSAGE_DEFAULT_FORMATTER_NEWNAME_0" /></span>${cms.nextNewFileName}
 				</div>
 			    </c:if>
 			    <c:if test="${!cms.new}" >

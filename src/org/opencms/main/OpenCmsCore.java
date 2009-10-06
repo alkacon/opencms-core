@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/09/17 12:54:25 $
- * Version: $Revision: 1.245.2.2 $
+ * Date   : $Date: 2009/10/06 08:19:07 $
+ * Version: $Revision: 1.245.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,13 +87,14 @@ import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.editors.ade.CmsADEDefaultConfiguration;
+import org.opencms.workplace.editors.ade.CmsADEManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
 
 import java.io.IOException;
@@ -141,7 +142,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.245.2.2 $ 
+ * @version $Revision: 1.245.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -487,6 +488,22 @@ public final class OpenCmsCore {
     protected CmsModuleManager getModuleManager() {
 
         return m_moduleManager;
+    }
+
+    /**
+     * Returns the advanced direct edit.<p>
+     * 
+     * @param cms the cms context 
+     * @param cntPageUri the container page uri
+     * @param request the request itself
+     * 
+     * @return the advanced direct edit
+     */
+    protected CmsADEManager getADEManager(CmsObject cms, String cntPageUri, HttpServletRequest request) {
+
+        // initialize the ADE manager
+        // TODO: make this configurable in opencms-workplace.xml
+        return new CmsADEManager(cms, cntPageUri, request, m_memoryMonitor, new CmsADEDefaultConfiguration());
     }
 
     /**

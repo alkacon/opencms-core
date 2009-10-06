@@ -1,5 +1,5 @@
-<%@page buffer="none" session="false" import="org.opencms.workplace.editors.ade.CmsADEManager" %><%
+<%@page buffer="none" session="false" import="org.opencms.workplace.editors.ade.CmsADEServer" %><%
 
-  CmsADEManager ade = new CmsADEManager(pageContext, request, response);
+  CmsADEServer ade = new CmsADEServer(pageContext, request, response);
   ade.serve();
 %>

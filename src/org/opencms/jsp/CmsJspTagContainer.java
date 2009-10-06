@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/09/14 13:59:36 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2009/10/06 08:19:07 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.11 $ 
+ * @version $Revision: 1.1.2.12 $ 
  * 
  * @since 7.6 
  */
@@ -152,11 +152,34 @@ public class CmsJspTagContainer extends TagSupport {
 
         // get the container
         if (!cntPage.getContainers().containsKey(containerName)) {
+            /*
+            if (!cms.getRequestContext().currentProject().isOnlineProject()) {
+                CmsFile file = cms.readFile(containerPage);
+                CmsXmlContent cnt = CmsXmlContentFactory.unmarshal(cms, file);
+                I_CmsXmlContentValue value = cnt.addValue(
+                    cms,
+                    CmsContainerPageLoader.N_CONTAINER,
+                    locale,
+                    cnt.getIndexCount(CmsContainerPageLoader.N_CONTAINER, locale));
+                cnt.getValue(CmsXmlUtils.concatXpath(value.getPath(), CmsContainerPageLoader.N_NAME), locale, 0).setStringValue(
+                    cms,
+                    containerName);
+                cnt.getValue(CmsXmlUtils.concatXpath(value.getPath(), CmsContainerPageLoader.N_TYPE), locale, 0).setStringValue(
+                    cms,
+                    containerType);
+                file.setContents(cnt.marshal());
+                cms.lockResource(cms.getSitePath(file));
+                cms.writeFile(file);
+                containerTagAction(pageContext, containerName, containerType, containerMaxElements, req, res);
+                return;
+            } else {
+            */
             throw new CmsIllegalStateException(Messages.get().container(
                 Messages.LOG_CONTAINER_NOT_FOUND_3,
                 cms.getSitePath(containerPage),
                 locale,
                 containerName));
+            //}
         }
         CmsContainerBean container = cntPage.getContainers().get(containerName);
 

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementCreator.java,v $
- * Date   : $Date: 2009/09/01 13:53:54 $
- * Version: $Revision: 1.1.2.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsConfigurationParser.java,v $
+ * Date   : $Date: 2009/10/06 08:19:06 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,11 +65,11 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 7.6 
  */
-public class CmsElementCreator {
+public class CmsConfigurationParser {
 
     /** The format used for the macro replacement. */
     public static final String FILE_NUMBER_FORMAT = "%0.4d";
@@ -92,7 +93,10 @@ public class CmsElementCreator {
     public static final String N_SOURCE = "Source";
 
     /** Configuration data, read from xml content. */
-    private Map<String, CmsTypeConfigurationItem> m_configuration;
+    private Map<String, CmsConfigurationItem> m_configuration;
+
+    /** New elements. */
+    private List<CmsResource> m_newElements;
 
     /**
      * Constructs a new instance.<p>
@@ -102,10 +106,11 @@ public class CmsElementCreator {
      *  
      * @throws CmsException if something goes wrong
      */
-    public CmsElementCreator(CmsObject cms, CmsResource config)
+    public CmsConfigurationParser(CmsObject cms, CmsResource config)
     throws CmsException {
 
-        m_configuration = new HashMap<String, CmsTypeConfigurationItem>();
+        m_configuration = new HashMap<String, CmsConfigurationItem>();
+        m_newElements = new ArrayList<CmsResource>();
 
         CmsFile configFile = cms.readFile(config);
         I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, configFile);
@@ -132,7 +137,7 @@ public class CmsElementCreator {
      * 
      * @throws CmsException if something goes wrong
      */
-    public static synchronized String getNewFileName(CmsObject cms, String pattern) throws CmsException {
+    public String getNewFileName(CmsObject cms, String pattern) throws CmsException {
 
         // this method was adapted from A_CmsResourceCollector#getCreateInFolder
         pattern = cms.getRequestContext().removeSiteRoot(pattern);
@@ -169,28 +174,9 @@ public class CmsElementCreator {
      * 
      * @throws CmsException if something goes wrong
      */
-    private static String getTypeName(int typeId) throws CmsException {
+    protected String getTypeName(int typeId) throws CmsException {
 
         return OpenCms.getResourceManager().getResourceType(typeId).getTypeName();
-    }
-
-    /**
-     * Creates a new element of a given type at the configured location.<p>
-     * 
-     * @param cms the CmsObject used for creating the new element
-     * @param type the type of the element to be created
-     * 
-     * @return the CmsResource representing the newly created element
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createElement(CmsObject cms, String type) throws CmsException {
-
-        CmsTypeConfigurationItem configItem = m_configuration.get(type);
-        String destination = configItem.getDestination();
-        String newFileName = getNewFileName(cms, destination);
-        cms.copyResource(configItem.getSourceFile(), newFileName);
-        return cms.readResource(newFileName);
     }
 
     /**
@@ -198,9 +184,19 @@ public class CmsElementCreator {
      * 
      * @return the configuration as an unmodifiable map
      */
-    public Map<String, CmsTypeConfigurationItem> getConfiguration() {
+    public Map<String, CmsConfigurationItem> getConfiguration() {
 
         return Collections.unmodifiableMap(m_configuration);
+    }
+
+    /**
+     * Returns the new elements.<p>
+     * 
+     * @return the new elements
+     */
+    public List<CmsResource> getNewElements() {
+
+        return Collections.unmodifiableList(m_newElements);
     }
 
     /**
@@ -249,10 +245,11 @@ public class CmsElementCreator {
             String pattern = content.getValue(
                 CmsXmlUtils.concatXpath(typePath, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN)),
                 locale).getStringValue(cms);
-            CmsTypeConfigurationItem configItem = new CmsTypeConfigurationItem(source, folder, pattern);
+            CmsConfigurationItem configItem = new CmsConfigurationItem(source, folder, pattern);
             CmsResource resource = cms.readResource(source);
             String type = getTypeName(resource.getTypeId());
             m_configuration.put(type, configItem);
+            m_newElements.add(resource);
         }
     }
 }
