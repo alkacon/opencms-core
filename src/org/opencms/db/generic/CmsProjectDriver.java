@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/09/30 15:58:29 $
- * Version: $Revision: 1.256 $
+ * Date   : $Date: 2009/10/07 10:32:26 $
+ * Version: $Revision: 1.257 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.256 $
+ * @version $Revision: 1.257 $
  * 
  * @since 6.0.0 
  */
@@ -1754,7 +1754,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      */
     public List readProjects(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException {
 
-        if (dbc.getRequestContext().getAttribute(DBC_ATTR_READ_PROJECT_FOR_RESOURCE) != null) {
+        if ((dbc.getRequestContext() != null)
+            && (dbc.getRequestContext().getAttribute(DBC_ATTR_READ_PROJECT_FOR_RESOURCE) != null)) {
             dbc.getRequestContext().removeAttribute(DBC_ATTR_READ_PROJECT_FOR_RESOURCE);
             // TODO: this should get its own method in the interface
             return readProjectsForResource(dbc, ouFqn);

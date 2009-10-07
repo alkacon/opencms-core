@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2009/10/01 06:40:52 $
- * Version: $Revision: 1.287 $
+ * Date   : $Date: 2009/10/07 10:32:26 $
+ * Version: $Revision: 1.288 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.287 $
+ * @version $Revision: 1.288 $
  * 
  * @since 6.0.0 
  */
@@ -1154,7 +1154,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
         // repair project resources
-        if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
+        if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID) && (dbc.getRequestContext() != null)) {
             String deletedResourceRootPath = source.getRootPath();
             dbc.getRequestContext().setAttribute(CmsProjectDriver.DBC_ATTR_READ_PROJECT_FOR_RESOURCE, Boolean.TRUE);
             Iterator itProjects = m_driverManager.getProjectDriver().readProjects(dbc, deletedResourceRootPath).iterator();
@@ -2438,11 +2438,16 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // remove project resources
         String deletedResourceRootPath = resource.getRootPath();
-        dbc.getRequestContext().setAttribute(CmsProjectDriver.DBC_ATTR_READ_PROJECT_FOR_RESOURCE, Boolean.TRUE);
-        Iterator itProjects = m_driverManager.getProjectDriver().readProjects(dbc, deletedResourceRootPath).iterator();
-        while (itProjects.hasNext()) {
-            CmsProject project = (CmsProject)itProjects.next();
-            m_driverManager.getProjectDriver().deleteProjectResource(dbc, project.getUuid(), deletedResourceRootPath);
+        if (dbc.getRequestContext() != null) {
+            dbc.getRequestContext().setAttribute(CmsProjectDriver.DBC_ATTR_READ_PROJECT_FOR_RESOURCE, Boolean.TRUE);
+            Iterator itProjects = m_driverManager.getProjectDriver().readProjects(dbc, deletedResourceRootPath).iterator();
+            while (itProjects.hasNext()) {
+                CmsProject project = (CmsProject)itProjects.next();
+                m_driverManager.getProjectDriver().deleteProjectResource(
+                    dbc,
+                    project.getUuid(),
+                    deletedResourceRootPath);
+            }
         }
     }
 
