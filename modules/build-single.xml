@@ -3,7 +3,7 @@
 <project name="OpenCms Common Module" default="dist" basedir=".">
 
 	<property name="opencms.input" location="${basedir}/.." />
-	<property name="opencms.output" location="${opencms.input}/.." />
+	<property name="opencms.output" location="${opencms.input}/../BuildCms6" />
 	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
 	<property name="opencms.input.libs" location="${opencms.input.warfiles}/WEB-INF/lib" />
 	<property name="opencms.build" location="${opencms.output}/build" />

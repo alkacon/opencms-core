@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="OpenCms" default="compile" basedir=".">
+<project name="OpenCms6" default="compile" basedir=".">
 
     <property name="version.number"             		value="6.2.4" />    
     
@@ -8,7 +8,7 @@
 	<property name="src.all.comps" 						value="src-modules,src-components,modules,test,webapp" />
 	
     <property name="opencms.input" 						location="${basedir}" />
-    <property name="opencms.output"						location="${basedir}/../" />    	
+    <property name="opencms.output"						location="${basedir}/../BuildCms6" />    	
 
     <property name="opencms.build"			            location="${opencms.output}/build" />
     <property name="opencms.output.classes"             location="${opencms.output}/build/classes-core" />

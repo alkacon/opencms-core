@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="OpenCms Common Modules" default="war" basedir=".">
+<project name="OpenCms6 Common Modules" default="war" basedir=".">
 	<property name="app.name" 							value="opencms" />
  	<property name="opencms.input" 						location="${basedir}/.." />
-    <property name="opencms.output"						location="${opencms.input}/.." />
+    <property name="opencms.output"						location="${opencms.input}/../BuildCms6" />
  	<property name="opencms.setup.input" 				location="${opencms.input}/webapp/setup" />
  	<property name="opencms.config.input" 				location="${opencms.input}/webapp/WEB-INF/config" />
     <property name="opencms.input.libs" 				location="${opencms.input}/webapp/WEB-INF/lib" />
