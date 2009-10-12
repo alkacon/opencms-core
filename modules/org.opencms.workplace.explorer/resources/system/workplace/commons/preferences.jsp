@@ -296,6 +296,7 @@ case 6:
 				}
 				if (newPwd == conPwd) {
 					pwdForm.<%= wp.PARAM_ACTION %>.value = "<%= wp.DIALOG_CHPWD %>";
+					pwdForm.<%= wp.PARAM_FRAMENAME %>.value = window.name; 
 					pwdForm.submit();
 				} else {
 					alert("<%= wp.key(Messages.ERR_CHPWD_NO_MATCH_0) %>");
