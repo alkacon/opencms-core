@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/30 10:38:11 $
- * Version: $Revision: 1.1150 $
+ * Date   : $Date: 2009/10/12 08:26:25 $
+ * Version: $Revision: 1.1151 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,8 +19,10 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.5.1 - October 1, 2009
+OpenCms x.x.x - month day, year
+* If an error occurs while changing the user password in the preferences tab, so the error dialog can be closed with the close button
 
+OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
 ! Added improved search dialog to all galleries
 ! Added delete resource option to all galleries
