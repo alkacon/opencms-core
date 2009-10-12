@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/A_CmsSetupXmlUpdate.java,v $
- * Date   : $Date: 2009/06/04 14:31:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/12 08:11:57 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.setup.CmsSetupBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,7 +51,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.2.1 $ 
  * 
  * @since 6.1.8 
  */
@@ -63,15 +63,15 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
     public void execute(CmsSetupBean setupBean) throws Exception {
 
         Document doc = setupBean.getXmlHelper().getDocument(getXmlFilename());
-        Iterator itRemove = getXPathsToRemove().iterator();
+        Iterator<String> itRemove = getXPathsToRemove().iterator();
         while (itRemove.hasNext()) {
-            String xpath = (String)itRemove.next();
+            String xpath = itRemove.next();
             CmsSetupXmlHelper.setValue(doc, xpath, null);
         }
-        Iterator itUpdate = getXPathsToUpdate().iterator();
+        Iterator<String> itUpdate = getXPathsToUpdate().iterator();
         while (itUpdate.hasNext()) {
-            String xpath = (String)itUpdate.next();
-            executeUpdate(doc, xpath);
+            String xpath = itUpdate.next();
+            executeUpdate(doc, xpath, true);
         }
     }
 
@@ -84,12 +84,12 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
         Document doc = setupBean.getXmlHelper().getDocument(getXmlFilename());
 
         // get the nodes to be deleted
-        Iterator itRemove = getXPathsToRemove().iterator();
+        Iterator<String> itRemove = getXPathsToRemove().iterator();
         while (itRemove.hasNext()) {
-            String xpath = (String)itRemove.next();
-            Iterator it = doc.selectNodes(xpath).iterator();
+            String xpath = itRemove.next();
+            Iterator<Node> it = doc.selectNodes(xpath).iterator();
             while (it.hasNext()) {
-                Node node = (Node)it.next();
+                Node node = it.next();
                 if (node != null) {
                     ret += CmsXmlUtils.marshal(node, CmsEncoder.ENCODING_UTF_8);
                 }
@@ -103,11 +103,11 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
 
         boolean modified = false;
         // update the temp doc
-        Iterator itUpdate = getXPathsToUpdate().iterator();
+        Iterator<String> itUpdate = getXPathsToUpdate().iterator();
         while (itUpdate.hasNext()) {
-            String xpath = (String)itUpdate.next();
+            String xpath = itUpdate.next();
             updateDoc(doc, newDoc, xpath);
-            boolean exe = executeUpdate(newDoc, xpath);
+            boolean exe = executeUpdate(newDoc, xpath, false);
             modified = modified || exe;
             if ((parentPath == null) && exe) {
                 Node node = newDoc.selectSingleNode(xpath);
@@ -168,13 +168,13 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
      * 
      * @param document the document to apply the changes to
      * @param xpath the xpath to execute the changes for
+     * @param forReal is <code>false</code>, it is only on a empty doc to display the changes to the user
      * 
      * @return if something was modified
      */
-    protected boolean executeUpdate(Document document, String xpath) {
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
-        // do something to avoid warning
-        return ((Object)document == (Object)xpath);
+        return false;
     }
 
     /**
@@ -182,9 +182,9 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
      * 
      * @return a list of strings
      */
-    protected List getXPathsToRemove() {
+    protected List<String> getXPathsToRemove() {
 
-        return Collections.EMPTY_LIST;
+        return new ArrayList<String>();
     }
 
     /**
@@ -192,9 +192,9 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
      * 
      * @return a list of strings
      */
-    protected List getXPathsToUpdate() {
+    protected List<String> getXPathsToUpdate() {
 
-        return Collections.EMPTY_LIST;
+        return new ArrayList<String>();
     }
 
     /**

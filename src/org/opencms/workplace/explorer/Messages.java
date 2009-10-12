@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2009/07/23 10:13:12 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/10/12 08:12:01 $
+ * Version: $Revision: 1.21.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,6 +164,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_MOVE_MULTI_0 = "GUI_EXPLORER_CONTEXT_MOVE_MULTI_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0 = "GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_OPENGALLERY_0 = "GUI_EXPLORER_CONTEXT_OPENGALLERY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -195,6 +198,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0 = "GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0 = "GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_TOUCH_0 = "GUI_EXPLORER_CONTEXT_TOUCH_0";
@@ -596,9 +602,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_ORDER_CONTEXT_MENU_1 = "LOG_WRONG_ORDER_CONTEXT_MENU_1";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0 = "GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0";
-
     /** Name of the resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.messages";
 
@@ -610,6 +613,14 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
 
     /**
      * Returns an instance of this localized message accessor.<p>
@@ -636,14 +647,6 @@ public final class Messages extends A_CmsMessageBundle {
         sb.append(state.getState());
         sb.append(GUI_STATE_POSTFIX);
         return sb.toString();
-    }
-
-    /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
     }
 
     /**

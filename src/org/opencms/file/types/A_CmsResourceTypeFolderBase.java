@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2009/09/09 15:54:52 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2009/10/12 08:12:02 $
+ * Version: $Revision: 1.24.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,21 +34,16 @@ package org.opencms.file.types;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsDataNotImplementedException;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -56,7 +51,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.2.1 $ 
+ * @version $Revision: 1.24.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,45 +136,6 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceDeleteMode)
-     */
-    @Override
-    public void deleteResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        CmsResourceDeleteMode siblingMode) throws CmsException {
-
-        super.deleteResource(cms, securityManager, resource, siblingMode);
-
-        // update the project resources: 
-        List<CmsProject> projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
-        CmsProject project;
-        List<String> projectResources;
-        Iterator<String> itProjectResources;
-
-        String projectResourceRootPath;
-        String deletedResourceRootPath = resource.getRootPath();
-        Iterator<CmsProject> itProjects = projects.iterator();
-        while (itProjects.hasNext()) {
-            project = itProjects.next();
-            projectResources = cms.readProjectResources(project);
-            itProjectResources = projectResources.iterator();
-            while (itProjectResources.hasNext()) {
-                projectResourceRootPath = itProjectResources.next();
-                if (projectResourceRootPath.startsWith(deletedResourceRootPath)) {
-
-                    // we have to change the project resource: 
-                    CmsObject projectCms = OpenCms.initCmsObject(cms);
-                    CmsRequestContext context = projectCms.getRequestContext();
-                    context.setCurrentProject(project);
-                    securityManager.removeResourceFromProject(context, resource);
-                }
-            }
-        }
-    }
-
-    /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     @Override
@@ -227,118 +183,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         // first validate the destination name
         dest = validateFoldername(dest);
 
-        // this has to be read before the move for changing projectresources: 
-        // update the project resources: 
-        List<CmsProject> projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
-        CmsProject project;
-        List<String> projectResources;
-        Iterator<String> itProjectResources;
-        String projectResourceRootPathTarget;
-        String moveResourceRootPath = resource.getRootPath();
-        Iterator<CmsProject> itProjects = projects.iterator();
-        // we have to change the project resource: 
-        CmsObject projectCms = OpenCms.initCmsObject(cms);
-        CmsRequestContext context = projectCms.getRequestContext();
-        context.setSiteRoot("/");
-        /*
-        * 1. Moved resource may be part of several project resources. 
-        * 2. Moved resource may be part of resources of several projects. 
-        * 3. If the single move operation fails, all project resources should remain untouched. 
-        * 4. It is not possible to remove a project resource once the move of the resource has been done, 
-        *    because the API requires a CmsResource: 
-        * 
-        * --> Store all project resource movements, finally do all project resource removals, do the resource move 
-        *     and then the project resource additions. 
-        */
-        List<CmsProjectResourceMoveData> projectResourceMoveList = new ArrayList<CmsProjectResourceMoveData>();
-        while (itProjects.hasNext()) {
-            project = itProjects.next();
-            context.setCurrentProject(project);
-            projectResources = cms.readProjectResources(project);
-            itProjectResources = projectResources.iterator();
-            while (itProjectResources.hasNext()) {
-                projectResourceRootPathTarget = itProjectResources.next();
-                if (projectResourceRootPathTarget.startsWith(moveResourceRootPath)) {
-                    CmsResource deleteProjectResource = null;
-                    CmsResource addProjectResource = null;
-
-                    // compute the project resource (it could be a subpath of the moved folder): 
-                    String projectResourceRootPathSource = resource.getRootPath()
-                        + projectResourceRootPathTarget.substring(moveResourceRootPath.length());
-
-                    // compute the new full project resource path: 
-                    projectResourceRootPathTarget = dest
-                        + projectResourceRootPathTarget.substring(moveResourceRootPath.length());
-
-                    if (projectResourceRootPathTarget.equals(moveResourceRootPath)) {
-                        deleteProjectResource = resource;
-                    } else {
-                        deleteProjectResource = projectCms.readResource(
-                            projectResourceRootPathSource,
-                            CmsResourceFilter.ALL);
-                    }
-
-                    // impossible to set root path on resource: copy
-                    addProjectResource = new CmsResource(
-                        resource.getStructureId(),
-                        resource.getResourceId(),
-                        projectResourceRootPathTarget,
-                        resource.getTypeId(),
-                        resource.isFolder(),
-                        resource.getFlags(),
-                        resource.getProjectLastModified(),
-                        resource.getState(),
-                        resource.getDateCreated(),
-                        resource.getUserCreated(),
-                        resource.getDateLastModified(),
-                        resource.getUserLastModified(),
-                        resource.getDateReleased(),
-                        resource.getDateExpired(),
-                        resource.getSiblingCount(),
-                        resource.getLength(),
-                        resource.getDateContent(),
-                        resource.getVersion()
-
-                    );
-                    projectResourceMoveList.add(new CmsProjectResourceMoveData(
-                        project,
-                        deleteProjectResource,
-                        addProjectResource));
-                }
-            }
-
-        }
-
-        // Action:
-        // 1. remove project resources: 
-        CmsProjectResourceMoveData projectResourceMoveData;
-        Iterator<CmsProjectResourceMoveData> projectMoveResourceIt = projectResourceMoveList.iterator();
-        while (projectMoveResourceIt.hasNext()) {
-            projectResourceMoveData = projectMoveResourceIt.next();
-            context.setCurrentProject(projectResourceMoveData.getProject());
-            securityManager.removeResourceFromProject(context, projectResourceMoveData.getSourceResource());
-        }
-        // 2. move the resource:
-        try {
-            securityManager.moveResource(cms.getRequestContext(), resource, dest);
-
-            // 3. add the moved resource
-            projectMoveResourceIt = projectResourceMoveList.iterator();
-            while (projectMoveResourceIt.hasNext()) {
-                projectResourceMoveData = projectMoveResourceIt.next();
-                context.setCurrentProject(projectResourceMoveData.getProject());
-                securityManager.copyResourceToProject(context, projectResourceMoveData.getTargetResource());
-            }
-        } catch (CmsException consistancyCheck) {
-            // moving failed, rollback of removed project resources: 
-            projectMoveResourceIt = projectResourceMoveList.iterator();
-            while (projectMoveResourceIt.hasNext()) {
-                projectResourceMoveData = projectMoveResourceIt.next();
-                context.setCurrentProject(projectResourceMoveData.getProject());
-                securityManager.copyResourceToProject(context, projectResourceMoveData.getSourceResource());
-            }
-            throw consistancyCheck;
-        }
+        securityManager.moveResource(cms.getRequestContext(), resource, dest);
     }
 
     /**

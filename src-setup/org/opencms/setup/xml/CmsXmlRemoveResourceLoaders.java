@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlRemoveResourceLoaders.java,v $
- * Date   : $Date: 2009/06/04 14:31:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/12 08:11:55 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,14 +43,14 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.2.1 $ 
  * 
  * @since 7.0.3
  */
 public class CmsXmlRemoveResourceLoaders extends A_CmsSetupXmlUpdate {
 
     /** List of xpaths to update. */
-    private List m_xpaths;
+    private List<String> m_xpaths;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -71,7 +71,8 @@ public class CmsXmlRemoveResourceLoaders extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToRemove()
      */
-    protected List getXPathsToRemove() {
+    @Override
+    protected List<String> getXPathsToRemove() {
 
         if (m_xpaths == null) {
             // "/opencms/vfs/resources/resourceloaders/loader[@class='com.opencms.legacy.CmsXmlTemplateLoader']";
@@ -83,7 +84,7 @@ public class CmsXmlRemoveResourceLoaders extends A_CmsSetupXmlUpdate {
             xp.append("/").append(CmsVfsConfiguration.N_LOADER);
             xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
             xp.append("='com.opencms.legacy.CmsXmlTemplateLoader']");
-            m_xpaths = new ArrayList();
+            m_xpaths = new ArrayList<String>();
             m_xpaths.add(xp.toString());
         }
         return m_xpaths;

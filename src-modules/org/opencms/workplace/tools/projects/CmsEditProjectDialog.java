@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/10/12 08:12:01 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,6 +122,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
     /**
      * Commits the edited project to the database.<p>
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -313,7 +314,16 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
      */
     public void setName(String name) {
 
-        m_project.setName(getOufqn() + "/" + name);
+        String oufqn = getOufqn();
+        if (oufqn != null) {
+            if (!oufqn.endsWith("/")) {
+                oufqn += "/";
+            }
+        } else {
+            oufqn = "/";
+        }
+        m_project.setName(oufqn + name);
+
     }
 
     /**
@@ -381,6 +391,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -410,6 +421,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the project object to use for the dialog
@@ -454,6 +466,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -462,6 +475,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -512,6 +526,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         super.initWorkplaceMembers(jsp);
@@ -521,6 +536,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -546,6 +562,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (!isNewProject()) {

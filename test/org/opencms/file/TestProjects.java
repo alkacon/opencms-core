@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2009/09/07 12:41:41 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2009/10/12 08:12:04 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
@@ -52,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.1 $
+ * @version $Revision: 1.21.2.2 $
  */
 public class TestProjects extends OpenCmsTestCase {
 
@@ -83,6 +84,9 @@ public class TestProjects extends OpenCmsTestCase {
         suite.addTest(new TestProjects("testDeleteProjectWithResources"));
         suite.addTest(new TestProjects("testReadProjectResources"));
         suite.addTest(new TestProjects("testAccessibleProjects"));
+        suite.addTest(new TestProjects("testDeleteNewFolderInProject"));
+        suite.addTest(new TestProjects("testDeleteFolderInProject"));
+        suite.addTest(new TestProjects("testMoveFolderInProject"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -251,6 +255,196 @@ public class TestProjects extends OpenCmsTestCase {
                 fail("Project " + project.getName() + "not deleted");
             }
         }
+    }
+
+    /**
+     * Test the "delete folder in project" function.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDeleteFolderInProject() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing deleting folder in project");
+
+        String projectName = "testDeleteFolderInProject";
+
+        cms.getRequestContext().setSiteRoot("/sites/default/");
+        String folderName = "/types/";
+
+        // create new project
+        CmsProject project = cms.createProject(
+            projectName,
+            projectName,
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+            CmsProject.PROJECT_TYPE_NORMAL);
+        cms.getRequestContext().setCurrentProject(project);
+        // add folder to project
+        cms.copyResourceToProject(folderName);
+
+        // check the project resources
+        List<String> resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
+
+        // delete folder
+        cms.lockResource(folderName);
+        cms.deleteResource(folderName, CmsResourceDeleteMode.MODE_DELETE_REMOVE_SIBLINGS);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
+
+        // publish folder
+        OpenCms.getPublishManager().publishResource(cms, folderName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertTrue(resNames.isEmpty());
+
+        // check now delete a parent folder
+        folderName = "/folder2/";
+        String subfolder = "/folder2/subfolder21/";
+
+        // add folder to project
+        cms.copyResourceToProject(subfolder);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(subfolder), resNames.get(0));
+
+        // delete folder
+        cms.lockResource(folderName);
+        cms.deleteResource(folderName, CmsResourceDeleteMode.MODE_DELETE_REMOVE_SIBLINGS);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(subfolder), resNames.get(0));
+
+        // publish folder
+        OpenCms.getPublishManager().publishResource(cms, folderName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertTrue(resNames.isEmpty());
+    }
+
+    /**
+     * Test the "move folder in project" function.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveFolderInProject() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing moving folder in project");
+
+        String projectName = "testMoveFolderInProject";
+
+        cms.getRequestContext().setSiteRoot("/sites/default/");
+        String folderName = "/xmlcontent/";
+
+        // create new project
+        CmsProject project = cms.createProject(
+            projectName,
+            projectName,
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+            CmsProject.PROJECT_TYPE_NORMAL);
+        cms.getRequestContext().setCurrentProject(project);
+        // add folder to project
+        cms.copyResourceToProject(folderName);
+
+        // check the project resources
+        List<String> resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
+
+        // move folder
+        String destFolder = "/testMoveFolderInProject/";
+        cms.lockResource(folderName);
+        cms.moveResource(folderName, destFolder);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(destFolder), resNames.get(0));
+
+        // undo changes
+        cms.undoChanges(destFolder, CmsResource.UNDO_MOVE_CONTENT);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
+    }
+
+    /**
+     * Test the "delete new folder in project" function.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDeleteNewFolderInProject() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing deleting new folder in project");
+
+        String projectName = "testDeleteNewFolderInProject";
+
+        cms.getRequestContext().setSiteRoot("/sites/default/");
+        String folderName = "/testDeleteNewFolderInProject/";
+        // create new folder
+        cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+
+        // create new project
+        CmsProject project = cms.createProject(
+            projectName,
+            projectName,
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+            CmsProject.PROJECT_TYPE_NORMAL);
+        cms.getRequestContext().setCurrentProject(project);
+        // add new folder to project
+        cms.copyResourceToProject(folderName);
+
+        // check the project resources
+        List<String> resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
+
+        // delete folder
+        cms.deleteResource(folderName, CmsResourceDeleteMode.MODE_DELETE_REMOVE_SIBLINGS);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertTrue(resNames.isEmpty());
+
+        // test now deleting a parent folder
+        String subfolderName = "/testDeleteNewFolderInProject/test/";
+        // create new folder
+        cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(subfolderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+
+        // add new folder to project
+        cms.copyResourceToProject(subfolderName);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(subfolderName), resNames.get(0));
+
+        // delete folder
+        cms.deleteResource(folderName, CmsResourceDeleteMode.MODE_DELETE_REMOVE_SIBLINGS);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertTrue(resNames.isEmpty());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlUpdateDefaultProperties.java,v $
- * Date   : $Date: 2009/06/04 14:31:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/12 08:11:52 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.2.1 $ 
  * 
  * @since 6.9.2
  */
@@ -107,10 +107,10 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
     }
 
     /** List of xpaths to update. */
-    private List m_xpaths;
+    private List<String> m_xpaths;
 
     /** List of xpaths to remove. */
-    private List m_xpathsRemove;
+    private List<String> m_xpathsRemove;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -129,16 +129,19 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
-    protected boolean executeUpdate(Document document, String xpath) {
+    @Override
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
             int index = getXPathsToUpdate().indexOf(xpath);
             if (index > -1) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_NAME, ((Pair)getKeys().get(
-                    index)).getSecond());
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath + "/@" + I_CmsXmlConfiguration.A_NAME,
+                    getKeys().get(index).getSecond());
                 return true;
             }
             return false;
@@ -149,6 +152,7 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         return null;
@@ -167,9 +171,9 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
      * 
      * @return a list of pairs (resource type, property name)
      */
-    protected List getKeys() {
+    protected List<Pair> getKeys() {
 
-        List keys = new ArrayList();
+        List<Pair> keys = new ArrayList<Pair>();
         keys.add(new Pair(CmsResourceTypeFolder.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
         keys.add(new Pair(CmsResourceTypeBinary.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
         keys.add(new Pair(CmsResourceTypePointer.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
@@ -195,7 +199,8 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToRemove()
      */
-    protected List getXPathsToRemove() {
+    @Override
+    protected List<String> getXPathsToRemove() {
 
         if (m_xpathsRemove == null) {
             // /opencms/workplace/explorertypes/explorertype/editoptions/defaultproperties/property
@@ -215,7 +220,8 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
-    protected List getXPathsToUpdate() {
+    @Override
+    protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
             // /opencms/workplace/explorertypes/explorertype[@name='${etype}']/editoptions/defaultproperties/defaultproperty[@name='${pname}']
@@ -245,14 +251,14 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
              jsp             Title cache content-encoding export
              */
 
-            m_xpaths = new ArrayList();
-            Iterator it = getKeys().iterator();
+            m_xpaths = new ArrayList<String>();
+            Iterator<Pair> it = getKeys().iterator();
             while (it.hasNext()) {
-                Pair entry = (Pair)it.next();
+                Pair entry = it.next();
                 String eType = entry.getFirst();
                 String prop = entry.getSecond();
 
-                Map subs = new HashMap();
+                Map<String, String> subs = new HashMap<String, String>();
                 subs.put("${etype}", eType);
                 subs.put("${pname}", prop);
                 m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));

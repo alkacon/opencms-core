@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlUpdateDefaultPermissions.java,v $
- * Date   : $Date: 2009/06/04 14:31:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/12 08:11:56 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,14 +54,14 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.2.1 $ 
  * 
  * @since 6.1.8 
  */
 public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
 
     /** List of xpaths to update. */
-    private List m_xpaths;
+    private List<String> m_xpaths;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -72,9 +72,10 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
-    protected boolean executeUpdate(Document document, String xpath) {
+    @Override
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         boolean changed = false;
         if (xpath.endsWith(CmsWorkplaceConfiguration.N_ACCESSCONTROL)) {
@@ -121,7 +122,8 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
                     "GROUP.TestGroup"), null))
                     || changed;
                 if (CmsSetupXmlHelper.getValue(document, xpath + "/" + CmsWorkplaceConfiguration.N_ACCESSENTRY) == null) {
-                    if ((xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) < 0) && (xpath.indexOf("XMLTemplate") < 0)) {
+                    if ((xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) < 0)
+                        && (xpath.indexOf("XMLTemplate") < 0)) {
                         changed = (0 < CmsSetupXmlHelper.setValue(document, xpath, null)) || changed;
                     }
                 }
@@ -141,6 +143,7 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         // /opencms/workplace/explorertypes
@@ -151,7 +154,8 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
-    protected List getXPathsToUpdate() {
+    @Override
+    protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
             // /opencms/workplace/explorertypes/explorertype[@name='${etype}']/accesscontrol
@@ -163,7 +167,7 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
             xp.append("[@").append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='${etype}']/");
             xp.append(CmsWorkplaceConfiguration.N_ACCESSCONTROL);
-            m_xpaths = new ArrayList();
+            m_xpaths = new ArrayList<String>();
             // ${etype}: folder, imagegallery, downloadgallery, xmlcontent, xmlpage, plain, image, jsp, binary, pointer, XMLTemplate, link, upload
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeFolder.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "imagegallery"));

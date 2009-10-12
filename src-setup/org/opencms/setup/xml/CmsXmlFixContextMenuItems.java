@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddImmutables.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlFixContextMenuItems.java,v $
  * Date   : $Date: 2009/10/12 08:11:56 $
- * Version: $Revision: 1.3.2.1 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,9 @@
 package org.opencms.setup.xml;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.configuration.CmsImportExportConfiguration;
+import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,15 +43,15 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Adds the new immutable resources, from 6.2.3 to 7.0.x.<p>
+ * Fixes some context menu item nodes.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
- * @since 6.9.2
+ * @since 7.5.1
  */
-public class CmsXmlAddImmutables extends A_CmsSetupXmlUpdate {
+public class CmsXmlFixContextMenuItems extends A_CmsXmlWorkplace {
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;
@@ -60,15 +61,7 @@ public class CmsXmlAddImmutables extends A_CmsSetupXmlUpdate {
      */
     public String getName() {
 
-        return "Add new immutable resources";
-    }
-
-    /**
-     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getXmlFilename()
-     */
-    public String getXmlFilename() {
-
-        return CmsImportExportConfiguration.DEFAULT_XML_FILE_NAME;
+        return "Fixes some context menu item nodes";
     }
 
     /**
@@ -77,14 +70,16 @@ public class CmsXmlAddImmutables extends A_CmsSetupXmlUpdate {
     @Override
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
+        boolean modified = false;
         Node node = document.selectSingleNode(xpath);
-        if (node == null) {
-            if (xpath.equals(getXPathsToUpdate().get(0))) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_URI, "/system/categories/");
+        if (node != null) {
+            String xp = xpath + "/@" + CmsWorkplaceConfiguration.A_RULE;
+            if (!document.selectSingleNode(xp).getText().equals("nondeleted")) {
+                CmsSetupXmlHelper.setValue(document, xp, "nondeleted");
+                modified = true;
             }
-            return true;
         }
-        return false;
+        return modified;
     }
 
     /**
@@ -93,13 +88,9 @@ public class CmsXmlAddImmutables extends A_CmsSetupXmlUpdate {
     @Override
     protected String getCommonPath() {
 
-        // /opencms/importexport/import/immutables
-        StringBuffer xp = new StringBuffer(256);
-        xp.append("/").append(CmsConfigurationManager.N_ROOT);
-        xp.append("/").append(CmsImportExportConfiguration.N_IMPORTEXPORT);
-        xp.append("/").append(CmsImportExportConfiguration.N_IMPORT);
-        xp.append("/").append(CmsImportExportConfiguration.N_IMMUTABLES);
-        return xp.toString();
+        // /opencms/workplace/explorertypes
+        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
     }
 
     /**
@@ -109,19 +100,32 @@ public class CmsXmlAddImmutables extends A_CmsSetupXmlUpdate {
     protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
-            // "/opencms/importexport/import/immutables/resource[@uri='...']";
+            // /opencms/workplace/explorertypes/explorertype[@name='${etype}']/editoptions/contextmenu/entry[@uri='commons/opengallery.jsp']
             StringBuffer xp = new StringBuffer(256);
-            xp.append("/").append(CmsConfigurationManager.N_ROOT);
-            xp.append("/").append(CmsImportExportConfiguration.N_IMPORTEXPORT);
-            xp.append("/").append(CmsImportExportConfiguration.N_IMPORT);
-            xp.append("/").append(CmsImportExportConfiguration.N_IMMUTABLES);
-            xp.append("/").append(I_CmsXmlConfiguration.N_RESOURCE);
-            xp.append("[@").append(I_CmsXmlConfiguration.A_URI);
-            xp.append("='");
+            xp.append("/");
+            xp.append(CmsConfigurationManager.N_ROOT);
+            xp.append("/");
+            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/");
+            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/");
+            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+            xp.append("[@");
+            xp.append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("='${etype}']/");
+            xp.append(CmsWorkplaceConfiguration.N_EDITOPTIONS);
+            xp.append("/");
+            xp.append(CmsWorkplaceConfiguration.N_CONTEXTMENU);
+            xp.append("/");
+            xp.append(CmsWorkplaceConfiguration.N_ENTRY);
+            xp.append("[@");
+            xp.append(I_CmsXmlConfiguration.A_URI);
+            xp.append("='commons/opengallery.jsp']");
+
             m_xpaths = new ArrayList<String>();
-            m_xpaths.add(xp.toString() + "/system/categories/']");
+            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "downloadgallery"));
+            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "imagegallery"));
         }
         return m_xpaths;
     }
-
 }

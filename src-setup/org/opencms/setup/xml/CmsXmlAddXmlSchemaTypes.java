@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddXmlSchemaTypes.java,v $
- * Date   : $Date: 2009/06/09 10:55:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/10/12 08:11:57 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,16 +53,16 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.2.1 $ 
  * 
  * @since 7.0.3
  */
 public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
 
-    private Map m_schemaData;
+    private Map<String, String> m_schemaData;
 
     /** List of xpaths to update. */
-    private List m_xpaths;
+    private List<String> m_xpaths;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -81,18 +81,19 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
-    protected boolean executeUpdate(Document document, String xpath) {
+    @Override
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
             if (getXPathsToUpdate().contains(xpath)) {
-                Iterator it = getSchemaData().entrySet().iterator();
+                Iterator<Map.Entry<String, String>> it = getSchemaData().entrySet().iterator();
                 while (it.hasNext()) {
-                    Map.Entry entry = (Map.Entry)it.next();
-                    String className = (String)entry.getKey();
-                    String widgetName = (String)entry.getValue();
+                    Map.Entry<String, String> entry = it.next();
+                    String className = entry.getKey();
+                    String widgetName = entry.getValue();
                     if (xpath.indexOf(className) > 0) {
                         CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_CLASS, className);
                         CmsSetupXmlHelper.setValue(
@@ -111,6 +112,7 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         // /opencms/vfs/xmlcontent/schematypes
@@ -125,7 +127,8 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
-    protected List getXPathsToUpdate() {
+    @Override
+    protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
             // "/opencms/vfs/xmlcontent/schematypes/schematype[@class='...']";
@@ -137,11 +140,11 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
             xp.append("/").append(CmsVfsConfiguration.N_SCHEMATYPE);
             xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
             xp.append("='");
-            m_xpaths = new ArrayList();
-            Iterator it = getSchemaData().entrySet().iterator();
+            m_xpaths = new ArrayList<String>();
+            Iterator<Map.Entry<String, String>> it = getSchemaData().entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                String className = (String)entry.getKey();
+                Map.Entry<String, String> entry = it.next();
+                String className = entry.getKey();
                 m_xpaths.add(xp.toString() + className + "']");
             }
         }
@@ -153,10 +156,10 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsSetupXmlUpdate {
      * 
      * @return the schema type data
      */
-    private Map getSchemaData() {
+    private Map<String, String> getSchemaData() {
 
         if (m_schemaData == null) {
-            m_schemaData = new HashMap();
+            m_schemaData = new HashMap<String, String>();
             m_schemaData.put(CmsXmlVarLinkValue.class.getName(), CmsVfsFileWidget.class.getName());
             m_schemaData.put(CmsXmlVfsImageValue.class.getName(), CmsVfsImageWidget.class.getName());
         }

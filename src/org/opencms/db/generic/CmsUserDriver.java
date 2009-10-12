@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/09/14 16:24:20 $
- * Version: $Revision: 1.129.2.2 $
+ * Date   : $Date: 2009/10/12 08:12:00 $
+ * Version: $Revision: 1.129.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.129.2.2 $
+ * @version $Revision: 1.129.2.3 $
  * 
  * @since 6.0.0 
  */
@@ -345,9 +345,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if ((ou.getParentFqn() != null)) {
                 // if not the root ou, create default roles & groups
                 // for the root ou, are created in #fillDefaults
-                Locale locale = dbc.getRequestContext().getLocale();
-                if (locale == null) {
-                    locale = CmsLocaleManager.getDefaultLocale();
+                Locale locale = CmsLocaleManager.getDefaultLocale();
+                if (dbc.getRequestContext() != null) {
+                    locale = dbc.getRequestContext().getLocale();
                 }
                 // create default groups
                 internalCreateDefaultGroups(dbc, ou.getName(), ou.getDisplayName(locale), ou.hasFlagWebuser());

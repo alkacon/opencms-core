@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2009/07/06 08:02:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/10/12 08:11:58 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -84,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 7.5.0 
  */
@@ -876,7 +877,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      * <li><code>datelastmodified</code>: the modification date.</li>
      * <li><code>state</code>: the state of the resource, new or changed.</li>
      * <li><code>lockedby</code>: indicates if the resource is locked by another user.</li>
-     * <li><code>editable</code>: ditable flag to determine if item is editable and can be published.</li>
+     * <li><code>editable</code>: editable flag to determine if item is editable and can be lockes by the user.</li>
+     * <li><code>writepermission</code>: flag to indicate if the user has write permissions for given resource.</li>
+     * <li><code>directpublish</code>: flag to indicate if the user has write direct publish permission for given resource.</li>
      * <li><code>description</code>: description property of the resource.</li>
      * </ul>
      * 
@@ -930,14 +933,40 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 }
             }
             jsonObj.put("lockedby", locked);
-            // 9: item editable flag to determine if item is editable and can be published
+            // 9: item editable flag to determine if item is editable (offline project and can be locked by the current user)
             boolean editable = false;
-            if (!getCms().getRequestContext().currentProject().isOnlineProject()
-                && lock.isLockableBy(getCms().getRequestContext().currentUser())) {
-                editable = true;
+            // 10: item write permissions to determine if the user has write permission
+            boolean writePermission = false;
+            // 10: item direct publish flag to determine if the user has direct publish permission
+            boolean directPublishPermission = false;
+            try {
+                // test if the resource is in the offline project and it can be locked by the user
+                if (!getCms().getRequestContext().currentProject().isOnlineProject()
+                    && lock.isLockableBy(getCms().getRequestContext().currentUser())) {
+                    editable = true;
+                    // test if the user has the write permission
+                    if (getCms().hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL)) {
+                        writePermission = true;
+                    }
+                    // test if the user has direct publish permission
+                    if (getCms().hasPermissions(
+                        res,
+                        CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                        false,
+                        CmsResourceFilter.ALL)) {
+                        directPublishPermission = true;
+                    }
+
+                }
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
             jsonObj.put("editable", editable);
-            // 10: item description
+            jsonObj.put("writepermission", writePermission);
+            jsonObj.put("directpublish", directPublishPermission);
+            // 11: item description
             String desc = getJsp().property(CmsPropertyDefinition.PROPERTY_DESCRIPTION, sitePath, "");
             jsonObj.put("description", CmsStringUtil.escapeJavaScript(desc));
         } catch (JSONException e) {
@@ -991,19 +1020,49 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
         }
         List items = new ArrayList(resourceitems.size() + 1);
         boolean isPublishEnabled = false;
+        boolean hasDirectPublish = false;
+        boolean hasWritePermission = false;
         if (CmsStringUtil.isNotEmpty(parentFolder)) {
-            // check if there are changes in the currently selected gallery
+            // check if there are changes in the currently selected gallery and the user has direct edit permissions
             try {
-                if (OpenCms.getPublishManager().getPublishList(getCms(), getCms().readResource(parentFolder), false).size() > 0) {
+                if ((OpenCms.getPublishManager().getPublishList(getCms(), getCms().readResource(parentFolder), false).size() > 0)) {
                     isPublishEnabled = true;
                 }
-            } catch (Exception e) {
+            } catch (CmsException e) {
                 // ignore, gallery can not be published
+            }
+            // check if the user has direst publish permissions, 
+            // used to enable the gallerypublish button, if user has enough permissions
+            try {
+                if (getCms().hasPermissions(
+                    getCms().readResource(parentFolder),
+                    CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                    false,
+                    CmsResourceFilter.ALL)) {
+                    hasDirectPublish = true;
+                }
+            } catch (CmsException e) {
+                // ignore, no publish permissions for gallery  
+            }
+            try {
+                // check if the user has write permissions,
+                // used to display the upload buttons
+                if (getCms().hasPermissions(
+                    getCms().readResource(parentFolder),
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.ALL)) {
+                    hasWritePermission = true;
+                }
+            } catch (CmsException e) {
+                // ignore, no write permissions for gallery
             }
         }
         JSONObject publishInfo = new JSONObject();
         try {
             publishInfo.put("publishable", isPublishEnabled);
+            publishInfo.put("directpublish", hasDirectPublish);
+            publishInfo.put("writepermission", hasWritePermission);
         } catch (JSONException e) {
             // ignore
         }
@@ -1112,6 +1171,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

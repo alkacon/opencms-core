@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsTimeShiftPublish.java,v $
- * Date   : $Date: 2009/07/23 10:44:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/12 08:12:01 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.2.1 $ 
  * 
  * @since 7.5.0
  */
@@ -224,7 +224,7 @@ public class CmsTimeShiftPublish extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for dialog
-            setDialogTitle(Messages.GUI_TIMESHIFT_PUBLISH_SETTINGS_1);
+            setDialogTitle(Messages.GUI_PUBLISH_SCHEDULED_SETTINGS_1);
         }
     }
 
@@ -253,7 +253,7 @@ public class CmsTimeShiftPublish extends CmsDialog {
         // check if the selected date is in the future
         if (date.getTime() < new Date().getTime()) {
             // the selected date in in the past, this is not possible
-            throw new CmsException(Messages.get().container(Messages.ERR_SHIFTTIME_PUBLISH_DATE_IN_PAST_1, date));
+            throw new CmsException(Messages.get().container(Messages.ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1, date));
         }
 
         // make copies from the admin cmsobject and the user cmsobject

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddAutoSetFeatures.java,v $
- * Date   : $Date: 2009/06/04 14:31:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/12 08:11:55 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,14 +54,14 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.2.1 $ 
  * 
  * @since 6.1.8 
  */
 public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
 
     /** List of xpaths to update. */
-    private List m_xpaths;
+    private List<String> m_xpaths;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -72,9 +72,10 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
-    protected boolean executeUpdate(Document document, String xpath) {
+    @Override
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
@@ -87,6 +88,7 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         // /opencms/workplace/explorertypes
@@ -97,7 +99,8 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
-    protected List getXPathsToUpdate() {
+    @Override
+    protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
             // /opencms/workplace/explorertypes/explorertype[@name='${etype}']/newresource/@${attr}
@@ -109,7 +112,7 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
             xp.append("[@").append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='${etype}']/").append(CmsWorkplaceConfiguration.N_NEWRESOURCE);
             xp.append("/@");
-            m_xpaths = new ArrayList();
+            m_xpaths = new ArrayList<String>();
             // ${etype}: folder, imagegallery, downloadgallery, xmlcontent, xmlpage, plain, image, jsp, binary, pointer, XMLTemplate, link, upload, extendedfolder, structurecontent
             // ${attr}: autosetnavigation, autosettitle 
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeFolder.getStaticTypeName())

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2009/09/23 14:03:20 $
- * Version: $Revision: 1.40.2.1 $
+ * Date   : $Date: 2009/10/12 08:11:57 $
+ * Version: $Revision: 1.40.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.40.2.1 $ 
+ * @version $Revision: 1.40.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -505,7 +505,8 @@ public class CmsImportExportManager {
      */
     public CmsExtendedHtmlImportDefault getExtendedHtmlImportDefault(boolean withNull) {
 
-        return (withNull || (m_extendedHtmlImportDefault != null) ? m_extendedHtmlImportDefault
+        return (withNull || (m_extendedHtmlImportDefault != null)
+        ? m_extendedHtmlImportDefault
         : new CmsExtendedHtmlImportDefault());
     }
 
@@ -676,8 +677,10 @@ public class CmsImportExportManager {
         try {
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
             I_CmsImportExportHandler handler = getImportExportHandler(parameters);
-            handler.setImportParameters(parameters);
-            handler.importData(cms, report);
+            synchronized (handler) {
+                handler.setImportParameters(parameters);
+                handler.importData(cms, report);
+            }
         } finally {
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
         }

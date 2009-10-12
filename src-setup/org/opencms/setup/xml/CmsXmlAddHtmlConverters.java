@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddImageLoader.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddHtmlConverters.java,v $
  * Date   : $Date: 2009/10/12 08:11:55 $
- * Version: $Revision: 1.3.2.1 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,26 +34,23 @@ package org.opencms.setup.xml;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.loader.CmsImageLoader;
-import org.opencms.setup.CmsSetupBean;
-import org.opencms.util.CmsStringUtil;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Adds the new image loader.<p>
+ * Adds the new html converters.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
- * @since 6.1.8 
+ * @since 6.9.2
  */
-public class CmsXmlAddImageLoader extends A_CmsSetupXmlUpdate {
+public class CmsXmlAddHtmlConverters extends A_CmsSetupXmlUpdate {
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;
@@ -63,7 +60,7 @@ public class CmsXmlAddImageLoader extends A_CmsSetupXmlUpdate {
      */
     public String getName() {
 
-        return "Add new Image Loader";
+        return "Add new html converters";
     }
 
     /**
@@ -75,15 +72,6 @@ public class CmsXmlAddImageLoader extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#validate(org.opencms.setup.CmsSetupBean)
-     */
-    @Override
-    public boolean validate(CmsSetupBean setupBean) throws Exception {
-
-        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCodeToChange(setupBean));
-    }
-
-    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
     @Override
@@ -91,20 +79,17 @@ public class CmsXmlAddImageLoader extends A_CmsSetupXmlUpdate {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
-            if (xpath.equals(getXPathsToUpdate().get(0))) {
-                CmsSetupXmlHelper.setValue(
-                    document,
-                    xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsImageLoader.class.getName());
-                CmsSetupXmlHelper.setValue(
-                    document,
-                    xpath + "/" + I_CmsXmlConfiguration.N_PARAM,
-                    Boolean.TRUE.toString());
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + I_CmsXmlConfiguration.N_PARAM
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_NAME, CmsImageLoader.CONFIGURATION_SCALING_ENABLED);
+            for (int i = 0; i < m_htmlConverters.length; i++) {
+                if (xpath.equals(getXPathsToUpdate().get(i))) {
+                    CmsSetupXmlHelper.setValue(
+                        document,
+                        xpath + "/@" + I_CmsXmlConfiguration.A_NAME,
+                        m_htmlConverters[i]);
+                    CmsSetupXmlHelper.setValue(
+                        document,
+                        xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
+                        "org.opencms.util.CmsHtmlConverterJTidy");
+                }
             }
             return true;
         }
@@ -117,11 +102,17 @@ public class CmsXmlAddImageLoader extends A_CmsSetupXmlUpdate {
     @Override
     protected String getCommonPath() {
 
-        // /opencms/vfs/resources/resourceloaders
-        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsVfsConfiguration.N_VFS).append("/").append(CmsVfsConfiguration.N_RESOURCES).append("/").append(
-            CmsVfsConfiguration.N_RESOURCELOADERS).toString();
+        // "/opencms/vfs/resources/html-converters"
+        StringBuffer xp = new StringBuffer(256);
+        xp.append("/").append(CmsConfigurationManager.N_ROOT);
+        xp.append("/").append(CmsVfsConfiguration.N_VFS);
+        xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
+        xp.append("/").append(CmsVfsConfiguration.N_HTML_CONVERTERS);
+        return xp.toString();
     }
+
+    /** List of converters to add. */
+    private String[] m_htmlConverters = {"true", "xhtml", "cleanup", "replace-paragraphs"};
 
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
@@ -130,17 +121,21 @@ public class CmsXmlAddImageLoader extends A_CmsSetupXmlUpdate {
     protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
-            // "/opencms/vfs/resources/resourceloaders/loader[@class='org.opencms.loader.CmsImageLoader']";
+            // "/opencms/vfs/resources/html-converters/html-converter[@name='...']";
             StringBuffer xp = new StringBuffer(256);
             xp.append("/").append(CmsConfigurationManager.N_ROOT);
             xp.append("/").append(CmsVfsConfiguration.N_VFS);
             xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
-            xp.append("/").append(CmsVfsConfiguration.N_RESOURCELOADERS);
-            xp.append("/").append(CmsVfsConfiguration.N_LOADER);
-            xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
-            xp.append("='").append(CmsImageLoader.class.getName()).append("']");
-            m_xpaths = Collections.singletonList(xp.toString());
+            xp.append("/").append(CmsVfsConfiguration.N_HTML_CONVERTERS);
+            xp.append("/").append(CmsVfsConfiguration.N_HTML_CONVERTER);
+            xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
+            xp.append("='");
+            m_xpaths = new ArrayList<String>();
+            for (int i = 0; i < m_htmlConverters.length; i++) {
+                m_xpaths.add(xp.toString() + m_htmlConverters[i] + "']");
+            }
         }
+
         return m_xpaths;
     }
 

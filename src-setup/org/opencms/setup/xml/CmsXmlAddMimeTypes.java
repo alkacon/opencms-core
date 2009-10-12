@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddMimeTypes.java,v $
- * Date   : $Date: 2009/06/05 14:26:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/10/12 08:11:53 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,9 @@ package org.opencms.setup.xml;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.util.CmsStringUtil;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -46,14 +47,14 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * 
  * @since 6.2.3
  */
 public class CmsXmlAddMimeTypes extends A_CmsSetupXmlUpdate {
 
     /** List of xpaths to update. */
-    private List m_xpaths;
+    private List<String> m_xpaths;
 
     /** List of mimetypes to add. */
     private String[][] m_mimeTypes = {
@@ -574,7 +575,9 @@ public class CmsXmlAddMimeTypes extends A_CmsSetupXmlUpdate {
         {".onetoc", "application/onenote"},
         {".onetoc2", "application/onenote"},
         {".onetmp", "application/onenote"},
-        {".onepkg", "application/onenote"}};
+        {".onepkg", "application/onenote"},
+        {".rar", "application/x-rar-compressed"},
+        {".flv", "video/x-flv"}};
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -593,49 +596,41 @@ public class CmsXmlAddMimeTypes extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document,
-     *      java.lang.String)
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
-    protected boolean executeUpdate(Document document, String xpath) {
+    @Override
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         Node node = document.selectSingleNode(xpath);
-        if (xpath.equals(getXPathsToUpdate().get(0))) {
-            for (int i = 0; i < m_mimeTypes.length; i++) {
-                String mPath = xpath
-                    + "/"
-                    + CmsVfsConfiguration.N_MIMETYPE
-                    + "[@"
-                    + CmsVfsConfiguration.A_EXTENSION
-                    + "=\""
-                    + m_mimeTypes[i][0]
-                    + "\"]";
-                CmsSetupXmlHelper.setValue(document, mPath + "/@" + CmsVfsConfiguration.A_EXTENSION, m_mimeTypes[i][0]);
-                CmsSetupXmlHelper.setValue(document, mPath + "/@" + I_CmsXmlConfiguration.A_TYPE, m_mimeTypes[i][1]);
-            }
+        if (node == null) {
+            int pos = getXPathsToUpdate().indexOf(xpath);
+            CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_TYPE, m_mimeTypes[pos][1]);
+            return true;
         }
-        return true;
-
-    }
-
-    /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
-     */
-    protected String getCommonPath() {
-
-        // /opencms/vfs/resources/mimetypes
-        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsVfsConfiguration.N_VFS).append("/").append(CmsVfsConfiguration.N_RESOURCES).append("/").append(
-            CmsVfsConfiguration.N_MIMETYPES).toString();
+        return false;
     }
 
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
-    protected List getXPathsToUpdate() {
+    @Override
+    protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
-            // /opencms/vfs/resources/mimetypes
-            m_xpaths = Collections.singletonList(getCommonPath());
+            m_xpaths = new ArrayList<String>();
+
+            // /opencms/vfs/resources/mimetypes/mimetype[@extension='${ext}']
+            String xp = new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+                CmsVfsConfiguration.N_VFS).append("/").append(CmsVfsConfiguration.N_RESOURCES).append("/").append(
+                CmsVfsConfiguration.N_MIMETYPES).toString()
+                + "/"
+                + CmsVfsConfiguration.N_MIMETYPE
+                + "[@"
+                + CmsVfsConfiguration.A_EXTENSION
+                + "='${ext}']";
+            for (int i = 0; i < m_mimeTypes.length; i++) {
+                m_xpaths.add(CmsStringUtil.substitute(xp, "${ext}", m_mimeTypes[i][0]));
+            }
         }
         return m_xpaths;
     }

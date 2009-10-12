@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlHelper.java,v $
- * Date   : $Date: 2009/06/04 14:31:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/10/12 08:11:54 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -68,11 +69,14 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.2.1 $ 
  * 
  * @since 6.1.8 
  */
 public class CmsSetupXmlHelper {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSetupXmlHelper.class);
 
     /** Entity resolver to skip dtd validation. */
     private static final EntityResolver NO_ENTITY_RESOLVER = new EntityResolver() {
@@ -90,7 +94,7 @@ public class CmsSetupXmlHelper {
     private String m_basePath;
 
     /** Document cache. */
-    private Map m_cache = new HashMap();
+    private Map<String, Document> m_cache = new HashMap<String, Document>();
 
     /**
      * Default constructor.<p>
@@ -145,9 +149,6 @@ public class CmsSetupXmlHelper {
         }
     }
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSetupXmlHelper.class);
-
     /**
      * Sets the given value in all nodes identified by the given xpath of the given xml file.<p>
      * 
@@ -164,9 +165,29 @@ public class CmsSetupXmlHelper {
      */
     public static int setValue(Document document, String xPath, String value) {
 
+        return setValue(document, xPath, value, null);
+    }
+
+    /**
+     * Sets the given value in all nodes identified by the given xpath of the given xml file.<p>
+     * 
+     * If value is <code>null</code>, all nodes identified by the given xpath will be deleted.<p>
+     * 
+     * If the node identified by the given xpath does not exists, the missing nodes will be created
+     * (if <code>value</code> not <code>null</code>).<p>
+     * 
+     * @param document the xml document
+     * @param xPath the xpath to set
+     * @param value the value to set (can be <code>null</code> for deletion)
+     * @param nodeToInsert optional, if given it will be inserted after xPath with the given value
+     * 
+     * @return the number of successful changed or deleted nodes
+     */
+    public static int setValue(Document document, String xPath, String value, String nodeToInsert) {
+
         int changes = 0;
         // be naive and try to find the node
-        Iterator itNodes = document.selectNodes(xPath).iterator();
+        Iterator<Node> itNodes = document.selectNodes(xPath).iterator();
 
         // if not found
         if (!itNodes.hasNext()) {
@@ -175,13 +196,13 @@ public class CmsSetupXmlHelper {
                 return 0;
             }
             // find the node creating missing nodes in the way
-            Iterator it = CmsStringUtil.splitAsList(xPath, "/", false).iterator();
+            Iterator<String> it = CmsStringUtil.splitAsList(xPath, "/", false).iterator();
             Node currentNode = document;
             while (it.hasNext()) {
-                String nodeName = (String)it.next();
+                String nodeName = it.next();
                 // if a string condition contains '/'
                 while ((nodeName.indexOf("='") > 0) && (nodeName.indexOf("']") < 0)) {
-                    nodeName += "/" + (String)it.next();
+                    nodeName += "/" + it.next();
                 }
                 Node node = currentNode.selectSingleNode(nodeName);
                 if (node != null) {
@@ -235,18 +256,67 @@ public class CmsSetupXmlHelper {
                     break;
                 }
             }
-            return 1;
+            if (nodeToInsert == null) {
+                // if not inserting we are done
+                return 1;
+            }
+            // if inserting, we just created the insertion point, so continue
+            itNodes = document.selectNodes(xPath).iterator();
         }
 
         // if found 
         while (itNodes.hasNext()) {
-            Node node = (Node)itNodes.next();
-            if (value != null) {
-                // if found, change the value
-                node.setText(value);
+            Node node = itNodes.next();
+            if (nodeToInsert == null) {
+                // if not inserting
+                if (value != null) {
+                    // if found, change the value
+                    node.setText(value);
+                } else {
+                    // if node for deletion is found
+                    node.getParent().remove(node);
+                }
             } else {
-                // if node for deletion is found
-                node.getParent().remove(node);
+                // first create the node to insert
+                Element parent = node.getParent();
+
+                String childName = null;
+                String childValue = "";
+                String nodeName = nodeToInsert;
+                int pos = nodeName.indexOf("[");
+                if (pos > 0) {
+                    // handle child node
+                    int pos2 = nodeName.indexOf("=\'", pos);
+                    if (pos2 > 0) {
+                        childName = nodeName.substring(pos + 1, pos2);
+                        childValue = nodeName.substring(pos2 + 2, nodeName.indexOf('\'', pos2 + 2));
+                    }
+                    nodeName = nodeName.substring(0, pos);
+                }
+                // create node
+                Element elem = parent.addElement(nodeName);
+                if (childName != null) {
+                    // create child node
+                    if (childName.startsWith("@")) {
+                        elem.addAttribute(childName.substring(1), childValue);
+                    } else {
+                        Element child = elem.addElement(childName);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(childValue)) {
+                            child.addText(childValue);
+                        }
+                    }
+                }
+                if (value != null) {
+                    elem.setText(value);
+                }
+
+                // get the parent element list
+                List<Node> list = parent.content();
+                // remove the just created element
+                list.remove(list.size() - 1);
+                // insert it back to the right position
+                pos = list.indexOf(node);
+                list.add(pos + 1, elem); // insert after
             }
             changes++;
         }
@@ -294,7 +364,7 @@ public class CmsSetupXmlHelper {
     public Document getDocument(String xmlFilename) throws CmsXmlException {
 
         // try to get it from the cache
-        Document document = (Document)m_cache.get(xmlFilename);
+        Document document = m_cache.get(xmlFilename);
 
         if (document == null) {
             try {
@@ -343,7 +413,29 @@ public class CmsSetupXmlHelper {
      */
     public int setValue(String xmlFilename, String xPath, String value) throws CmsXmlException {
 
-        return setValue(getDocument(xmlFilename), xPath, value);
+        return setValue(getDocument(xmlFilename), xPath, value, null);
+    }
+
+    /**
+     * Sets the given value in all nodes identified by the given xpath of the given xml file.<p>
+     * 
+     * If value is <code>null</code>, all nodes identified by the given xpath will be deleted.<p>
+     * 
+     * If the node identified by the given xpath does not exists, the missing nodes will be created
+     * (if <code>value</code> not <code>null</code>).<p>
+     * 
+     * @param xmlFilename the xml config file (could be relative to the base path)
+     * @param xPath the xpath to set
+     * @param value the value to set (can be <code>null</code> for deletion)
+     * @param nodeToInsert optional, if given it will be inserted after xPath with the given value
+     * 
+     * @return the number of successful changed or deleted nodes
+     * 
+     * @throws CmsXmlException if something goes wrong 
+     */
+    public int setValue(String xmlFilename, String xPath, String value, String nodeToInsert) throws CmsXmlException {
+
+        return setValue(getDocument(xmlFilename), xPath, value, nodeToInsert);
     }
 
     /**
@@ -356,7 +448,7 @@ public class CmsSetupXmlHelper {
     public void write(String xmlFilename) throws CmsXmlException {
 
         // try to get it from the cache
-        Document document = (Document)m_cache.get(xmlFilename);
+        Document document = m_cache.get(xmlFilename);
 
         if (document != null) {
             try {
@@ -375,9 +467,9 @@ public class CmsSetupXmlHelper {
      */
     public void writeAll() throws CmsXmlException {
 
-        Iterator it = new ArrayList(m_cache.keySet()).iterator();
+        Iterator<String> it = new ArrayList<String>(m_cache.keySet()).iterator();
         while (it.hasNext()) {
-            String filename = (String)it.next();
+            String filename = it.next();
             write(filename);
         }
     }

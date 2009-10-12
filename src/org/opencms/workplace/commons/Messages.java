@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2009/07/23 10:13:11 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/10/12 08:12:01 $
+ * Version: $Revision: 1.29.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.29.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -148,6 +148,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PUBLISH_LIST_CREATION_0 = "ERR_PUBLISH_LIST_CREATION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1 = "ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_REDIRECT_INDEXPAGE_DIALOG_1 = "ERR_REDIRECT_INDEXPAGE_DIALOG_1";
 
     /** Message constant for key in the resource bundle. */
@@ -161,9 +164,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_SELECTED_RESOURCES_1 = "ERR_RESTORE_SELECTED_RESOURCES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_SHIFTTIME_PUBLISH_DATE_IN_PAST_1 = "ERR_SHIFTTIME_PUBLISH_DATE_IN_PAST_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TOUCH_MULTI_0 = "ERR_TOUCH_MULTI_0";
@@ -529,6 +529,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDIT_POINTER_LINK_URL_0 = "GUI_EDIT_POINTER_LINK_URL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0 = "GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -649,13 +652,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_DATE_LAST_MODIFIED_0 = "GUI_LABEL_DATE_LAST_MODIFIED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_DATE_PUBLISH_SCHEDULED_0 = "GUI_LABEL_DATE_PUBLISH_SCHEDULED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_DATE_RELEASED_0 = "GUI_LABEL_DATE_RELEASED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_DATE_RESET_TIMESHIFT_PUBLISH_0 = "GUI_LABEL_DATE_RESET_TIMESHIFT_PUBLISH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_DATE_TIMESHIFT_PUBLISH_0 = "GUI_LABEL_DATE_TIMESHIFT_PUBLISH_0";
+    public static final String GUI_LABEL_DATE_RESET_PUBLISH_SCHEDULED_0 = "GUI_LABEL_DATE_RESET_PUBLISH_SCHEDULED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_DELETE_0 = "GUI_LABEL_DELETE_0";
@@ -860,6 +863,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MULTI_RESOURCELIST_TITLE_0 = "GUI_MULTI_RESOURCELIST_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MULTIFILE_PROPERTY_TITLE_1 = "GUI_MULTIFILE_PROPERTY_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_INVITATION_0 = "GUI_NEW_INVITATION_0";
@@ -1369,6 +1375,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_RESOURCES_TITLE_0 = "GUI_PUBLISH_RESOURCES_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SCHEDULED_0 = "GUI_PUBLISH_SCHEDULED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2 = "GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SCHEDULED_SETTINGS_1 = "GUI_PUBLISH_SCHEDULED_SETTINGS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_SITE_RELATION_2 = "GUI_PUBLISH_SITE_RELATION_2";
 
     /** Message constant for key in the resource bundle. */
@@ -1463,12 +1478,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SYNCHRONIZATION_INFO_0 = "GUI_SYNCHRONIZATION_INFO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TIMESHIFT_PUBLISH_0 = "GUI_TIMESHIFT_PUBLISH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TIMESHIFT_PUBLISH_SETTINGS_1 = "GUI_TIMESHIFT_PUBLISH_SETTINGS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOUCH_0 = "GUI_TOUCH_0";
@@ -1597,6 +1606,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERROR_INCLUDE_FAILED_1 = "LOG_ERROR_INCLUDE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_MULTIFILE_PROPERTY_CONFIGURATION_1 = "LOG_ERROR_MULTIFILE_PROPERTY_CONFIGURATION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_PROGRESS_CLEAN_UP_THREAD_1 = "LOG_PROGRESS_CLEAN_UP_THREAD_1";
 
     /** Message constant for key in the resource bundle. */
@@ -1616,6 +1628,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_PROJECT_NAME_FAILED_0 = "LOG_SET_PROJECT_NAME_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_MULTIFILE_PROPERTY_ILLEGALPROPERTY_2 = "LOG_WARN_MULTIFILE_PROPERTY_ILLEGALPROPERTY_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.commons.messages";

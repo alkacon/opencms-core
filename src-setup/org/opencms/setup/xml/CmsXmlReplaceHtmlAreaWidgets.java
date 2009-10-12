@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlReplaceHtmlAreaWidgets.java,v $
- * Date   : $Date: 2009/06/04 14:31:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/12 08:11:53 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,14 +47,14 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.2.1 $ 
  * 
  * @since 6.1.8 
  */
 public class CmsXmlReplaceHtmlAreaWidgets extends A_CmsSetupXmlUpdate {
 
     /** List of xpaths to update. */
-    private List m_xpaths;
+    private List<String> m_xpaths;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -73,9 +73,10 @@ public class CmsXmlReplaceHtmlAreaWidgets extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
-    protected boolean executeUpdate(Document document, String xpath) {
+    @Override
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         // node have to exists to be able to update
         Node node = document.selectSingleNode(xpath);
@@ -99,6 +100,7 @@ public class CmsXmlReplaceHtmlAreaWidgets extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         // /opencms/vfs/xmlcontent
@@ -112,7 +114,8 @@ public class CmsXmlReplaceHtmlAreaWidgets extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
-    protected List getXPathsToUpdate() {
+    @Override
+    protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
             // /opencms/vfs/xmlcontent/widgets/widget[@class='org.opencms.widgets.CmsHtmlAreaWidget']
@@ -124,7 +127,7 @@ public class CmsXmlReplaceHtmlAreaWidgets extends A_CmsSetupXmlUpdate {
             xp.append("/").append(CmsVfsConfiguration.N_WIDGET);
             xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
             xp.append("='org.opencms.widgets.CmsHtmlAreaWidget']");
-            m_xpaths = new ArrayList();
+            m_xpaths = new ArrayList<String>();
             m_xpaths.add(xp.toString());
             // /opencms/vfs/xmlcontent/schematypes/schematype[@defaultwidget='org.opencms.widgets.CmsHtmlAreaWidget']
             xp = new StringBuffer(256);

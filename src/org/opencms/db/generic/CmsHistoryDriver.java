@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2009/09/09 14:26:35 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2009/10/12 08:11:59 $
+ * Version: $Revision: 1.18.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18.2.1 $
+ * @version $Revision: 1.18.2.2 $
  * 
  * @since 6.9.1
  */
@@ -664,7 +664,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-        if (!result.isEmpty() || (dbc.getRequestContext().getAttribute("ATTR_RESOURCE_NAME") == null)) {
+        if (!result.isEmpty()
+            || (dbc.getRequestContext() == null)
+            || (dbc.getRequestContext().getAttribute("ATTR_RESOURCE_NAME") == null)) {
             return result;
         }
         try {

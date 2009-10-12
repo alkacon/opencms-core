@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxImageGallery.java,v $
- * Date   : $Date: 2009/07/03 12:46:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/10/12 08:11:58 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.2.1 $ 
  * 
  * @since 7.5.0 
  */
@@ -151,6 +151,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryItemsTypeId()
      */
+    @Override
     public int getGalleryItemsTypeId() {
 
         return CmsResourceTypeImage.getStaticTypeId();
@@ -159,6 +160,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryTypeId()
      */
+    @Override
     public int getGalleryTypeId() {
 
         try {
@@ -175,6 +177,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryTypeName()
      */
+    @Override
     public String getGalleryTypeName() {
 
         return GALLERYTYPE_NAME;
@@ -185,6 +188,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
      * 
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#init()
      */
+    @Override
     public void init() {
 
         if (CmsImageLoader.isEnabled()) {
@@ -230,6 +234,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
      * 
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath)
      */
+    @Override
     protected void buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath) {
 
         CmsImageScaler scaler = new CmsImageScaler(getCms(), res);

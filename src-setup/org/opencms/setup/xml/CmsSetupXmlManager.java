@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2009/06/05 14:26:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/10/12 08:11:56 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,20 +47,20 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.1.8 
  */
 public class CmsSetupXmlManager {
 
     /** List of xml update plugins. */
-    private List m_plugins;
+    private List<I_CmsSetupXmlUpdate> m_plugins;
 
     /** User selected plugins to execute. */
-    private List m_selectedPlugins;
+    private List<String> m_selectedPlugins;
 
     /** Map of file sorted plugins. */
-    private Map m_sortedPlugins;
+    private Map<String, List<I_CmsSetupXmlUpdate>> m_sortedPlugins;
 
     /**
      * Default constructor.<p>
@@ -77,15 +77,15 @@ public class CmsSetupXmlManager {
      */
     public void initialize(boolean fromV6) {
 
-        m_selectedPlugins = new ArrayList();
-        m_plugins = new ArrayList();
+        m_selectedPlugins = new ArrayList<String>();
+        m_plugins = new ArrayList<I_CmsSetupXmlUpdate>();
         // put the plugins here in chronological order (or first remove then add)
 
         // importexport
         m_plugins.add(new CmsXmlRemoveImmutables());
         m_plugins.add(new CmsXmlRemoveImportVersions());
         m_plugins.add(new CmsXmlRemoveImportHandlers());
-        //these are not properly working
+        //these are not working properly
         //m_plugins.add(new CmsXmlRemoveResourcesToRender());
         //m_plugins.add(new CmsXmlAddResourcesToRender());
         m_plugins.add(new CmsXmlAddImportVersions());
@@ -112,6 +112,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new CmsXmlAddXmlSchemaTypes());
         m_plugins.add(new CmsXmlAddMimeTypes());
         m_plugins.add(new CmsXmlAddResourceTypes());
+        m_plugins.add(new CmsXmlAddHtmlConverters());
 
         // workplace
         if (fromV6) {
@@ -128,6 +129,8 @@ public class CmsSetupXmlManager {
             m_plugins.add(new CmsXmlUpdateLocalizationKeys());
         }
         m_plugins.add(new CmsXmlUpdateDirectEditProvider());
+        m_plugins.add(new CmsXmlAddContextMenuItems());
+        m_plugins.add(new CmsXmlFixContextMenuItems());
         setup();
     }
 
@@ -140,14 +143,14 @@ public class CmsSetupXmlManager {
      */
     public void execute(CmsSetupBean setupBean) throws Exception {
 
-        Iterator it = m_selectedPlugins.iterator();
+        Iterator<String> it = m_selectedPlugins.iterator();
         while (it.hasNext()) {
-            String id = (String)it.next();
+            String id = it.next();
             int d = id.lastIndexOf(".xml") + ".xml".length();
             String fileName = id.substring(0, d);
             int pos = Integer.parseInt(id.substring(d));
-            List plugins = (List)m_sortedPlugins.get(fileName);
-            I_CmsSetupXmlUpdate plugin = (I_CmsSetupXmlUpdate)plugins.get(pos);
+            List<I_CmsSetupXmlUpdate> plugins = m_sortedPlugins.get(fileName);
+            I_CmsSetupXmlUpdate plugin = plugins.get(pos);
             plugin.execute(setupBean);
         }
         setupBean.getXmlHelper().writeAll();
@@ -158,7 +161,7 @@ public class CmsSetupXmlManager {
      * 
      * @return a map of [filenames, list of plugins]
      */
-    public Map getPlugins() {
+    public Map<String, List<I_CmsSetupXmlUpdate>> getPlugins() {
 
         return Collections.unmodifiableMap(m_sortedPlugins);
     }
@@ -175,13 +178,13 @@ public class CmsSetupXmlManager {
     public String htmlAvailablePlugins(CmsSetupBean setupBean) throws Exception {
 
         StringBuffer html = new StringBuffer(1024);
-        Iterator itFiles = m_sortedPlugins.keySet().iterator();
+        Iterator<String> itFiles = m_sortedPlugins.keySet().iterator();
         while (itFiles.hasNext()) {
-            String fileName = (String)itFiles.next();
-            Iterator itPlugins = ((List)m_sortedPlugins.get(fileName)).iterator();
+            String fileName = itFiles.next();
+            Iterator<I_CmsSetupXmlUpdate> itPlugins = m_sortedPlugins.get(fileName).iterator();
             StringBuffer code = new StringBuffer(256);
             for (int i = 0; itPlugins.hasNext(); i++) {
-                I_CmsSetupXmlUpdate plugin = (I_CmsSetupXmlUpdate)itPlugins.next();
+                I_CmsSetupXmlUpdate plugin = itPlugins.next();
                 if (plugin.validate(setupBean)) {
                     code.append(htmlPlugin(setupBean, plugin, i));
                 }
@@ -248,13 +251,13 @@ public class CmsSetupXmlManager {
      */
     private void setup() {
 
-        m_sortedPlugins = new HashMap();
-        Iterator it = m_plugins.iterator();
+        m_sortedPlugins = new HashMap<String, List<I_CmsSetupXmlUpdate>>();
+        Iterator<I_CmsSetupXmlUpdate> it = m_plugins.iterator();
         while (it.hasNext()) {
-            I_CmsSetupXmlUpdate plugin = (I_CmsSetupXmlUpdate)it.next();
-            List list = (List)m_sortedPlugins.get(plugin.getXmlFilename());
+            I_CmsSetupXmlUpdate plugin = it.next();
+            List<I_CmsSetupXmlUpdate> list = m_sortedPlugins.get(plugin.getXmlFilename());
             if (list == null) {
-                list = new ArrayList();
+                list = new ArrayList<I_CmsSetupXmlUpdate>();
                 m_sortedPlugins.put(plugin.getXmlFilename(), list);
             }
             list.add(plugin);

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddAvailabilityContextMenu.java,v $
- * Date   : $Date: 2009/10/12 08:11:53 $
- * Version: $Revision: 1.3.2.1 $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddContextMenuItems.java,v $
+ * Date   : $Date: 2009/10/12 08:11:56 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.util.CmsStringUtil;
 
@@ -51,15 +52,15 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Adds the availability context menu node.<p>
+ * Adds new context menu item nodes.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
-public class CmsXmlAddAvailabilityContextMenu extends A_CmsXmlWorkplace {
+public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;
@@ -69,7 +70,7 @@ public class CmsXmlAddAvailabilityContextMenu extends A_CmsXmlWorkplace {
      */
     public String getName() {
 
-        return "Add context menu for Availability";
+        return "Add new context menu items";
     }
 
     /**
@@ -80,24 +81,53 @@ public class CmsXmlAddAvailabilityContextMenu extends A_CmsXmlWorkplace {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
-            if (xpath.indexOf("availability") > 0) {
-                CmsSetupXmlHelper.setValue(
-                    document,
-                    xpath + "/@" + I_CmsXmlConfiguration.A_URI,
-                    "commons/availability.jsp");
+            if (xpath.indexOf("property_multifile") > 0) {
+                // insert after /opencms/workplace/explorertypes/explorertype[@name='${etype}']/editoptions/contextmenu/separator[2]']
+                if (forReal) {
+                    String xp = xpath.substring(0, xpath.indexOf("entry[@"))
+                        + CmsWorkplaceConfiguration.N_SEPARATOR
+                        + "[2]";
+                    CmsSetupXmlHelper.setValue(document, xp, null, xpath.substring(xpath.indexOf("entry[@")));
+                }
                 CmsSetupXmlHelper.setValue(
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_KEY,
-                    "explorer.context.availability");
+                    org.opencms.workplace.commons.Messages.GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0);
+                CmsSetupXmlHelper.setValue(document, xpath + "/@" + CmsWorkplaceConfiguration.A_RULE, "nondeleted");
+                // insert separator 
+                CmsSetupXmlHelper.setValue(document, xpath, null, CmsWorkplaceConfiguration.N_SEPARATOR);
+            } else if (xpath.indexOf("publishscheduledresource") > 0) {
+                // insert after /opencms/workplace/explorertypes/explorertype[@name='${etype}']/editoptions/contextmenu/entry[@uri='commons/publishresource.jsp']
+                if (forReal) {
+                    String xp = xpath.replace("publishscheduledresource", "publishresource");
+                    CmsSetupXmlHelper.setValue(document, xp, null, xpath.substring(xpath.indexOf("entry[@")));
+                }
                 CmsSetupXmlHelper.setValue(
                     document,
-                    xpath + "/@" + CmsWorkplaceConfiguration.A_RULES,
-                    "d d iiii aaai dddd");
-                CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_ORDER, "200");
-            } else if (xpath.indexOf("undochanges") > 0) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_ORDER, "210");
-            } else if (xpath.indexOf("undelete") > 0) {
-                CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_ORDER, "220");
+                    xpath + "/@" + I_CmsXmlConfiguration.A_KEY,
+                    org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0);
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath + "/@" + CmsWorkplaceConfiguration.A_RULE,
+                    "publishscheduled");
+            } else if (xpath.indexOf("publishscheduled") > 0) {
+                CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_NAME, "publishscheduled");
+                String xp = xpath
+                    + "[@"
+                    + I_CmsXmlConfiguration.A_NAME
+                    + "='publishscheduled']/"
+                    + CmsWorkplaceConfiguration.N_MENUITEMRULE
+                    + "[@"
+                    + I_CmsXmlConfiguration.A_CLASS
+                    + "='";
+                String[] classes = new String[] {
+                    org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible.class.getName(),
+                    org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible.class.getName(),
+                    org.opencms.workplace.explorer.menu.CmsMirDirectPublish.class.getName()};
+                for (int i = 0; i < classes.length; i++) {
+                    String xpMenuRule = xp + classes[i] + "']" + "/@" + I_CmsXmlConfiguration.A_CLASS;
+                    CmsSetupXmlHelper.setValue(document, xpMenuRule, classes[i]);
+                }
             }
             return true;
         }
@@ -144,34 +174,15 @@ public class CmsXmlAddAvailabilityContextMenu extends A_CmsXmlWorkplace {
             xp.append(I_CmsXmlConfiguration.A_URI);
             xp.append("='commons/${res}.jsp']");
             m_xpaths = new ArrayList<String>();
-            // ${etype}: folder, imagegallery, xmlcontent, xmlpage, plain, image, jsp, binary, XMLTemplate
-            // ${res}: availability, undochanges, undelete 
+
             Map<String, String> subs = new HashMap<String, String>();
-            subs.put("${res}", "availability");
+            subs.put("${res}", "property_multifile");
             subs.put("${etype}", CmsResourceTypeFolder.getStaticTypeName());
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", "imagegallery");
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", "xmlcontent");
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypeXmlPage.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypePlain.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypeImage.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypeJsp.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypeBinary.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", "XMLTemplate");
+            subs.put("${etype}", "downloadgallery");
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
 
-            subs.put("${res}", "undochanges");
-            subs.put("${etype}", CmsResourceTypeFolder.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", "imagegallery");
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
+            subs.put("${res}", "publishscheduledresource");
             subs.put("${etype}", "xmlcontent");
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
             subs.put("${etype}", CmsResourceTypeXmlPage.getStaticTypeName());
@@ -184,30 +195,28 @@ public class CmsXmlAddAvailabilityContextMenu extends A_CmsXmlWorkplace {
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
             subs.put("${etype}", CmsResourceTypeBinary.getStaticTypeName());
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", "XMLTemplate");
+            subs.put("${etype}", CmsResourceTypePointer.getStaticTypeName());
+            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
+            subs.put("${etype}", "unknown_file");
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
 
-            subs.put("${res}", "undelete");
-            subs.put("${etype}", CmsResourceTypeFolder.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", "imagegallery");
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", "xmlcontent");
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypeXmlPage.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypePlain.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypeImage.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypeJsp.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypeBinary.getStaticTypeName());
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", "XMLTemplate");
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
+            // /opencms/workplace/explorertypes/menurules/menurule[@name='publishscheduled']
+            xp.setLength(0);
+            xp.append("/");
+            xp.append(CmsConfigurationManager.N_ROOT);
+            xp.append("/");
+            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/");
+            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/");
+            xp.append(CmsWorkplaceConfiguration.N_MENURULES);
+            xp.append("/");
+            xp.append(CmsWorkplaceConfiguration.N_MENURULE);
+            xp.append("[@");
+            xp.append(I_CmsXmlConfiguration.A_NAME);
+            xp.append("='publishscheduled']");
+            m_xpaths.add(xp.toString());
         }
         return m_xpaths;
     }
-
 }

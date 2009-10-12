@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddXmlContentWidgets.java,v $
- * Date   : $Date: 2009/06/09 10:55:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/10/12 08:11:56 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,16 +61,16 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.1.8 
  */
 public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
 
-    private Map m_widgetData;
+    private Map<String, String> m_widgetData;
 
     /** List of xpaths to update. */
-    private List m_xpaths;
+    private List<String> m_xpaths;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -89,18 +89,19 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
-    protected boolean executeUpdate(Document document, String xpath) {
+    @Override
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
             if (getXPathsToUpdate().contains(xpath)) {
-                Iterator it = getWidgetData().entrySet().iterator();
+                Iterator<Map.Entry<String, String>> it = getWidgetData().entrySet().iterator();
                 while (it.hasNext()) {
-                    Map.Entry entry = (Map.Entry)it.next();
-                    String widgetName = (String)entry.getKey();
-                    String className = (String)entry.getValue();
+                    Map.Entry<String, String> entry = it.next();
+                    String widgetName = entry.getKey();
+                    String className = entry.getValue();
                     if (xpath.indexOf(widgetName) > 0) {
                         CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_ALIAS, widgetName);
                         CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_CLASS, className);
@@ -116,6 +117,7 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         // /opencms/vfs/xmlcontent/widgets
@@ -130,7 +132,8 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
-    protected List getXPathsToUpdate() {
+    @Override
+    protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
             // "/opencms/vfs/xmlcontent/widgets/widget[@alias='widget']";
@@ -142,11 +145,11 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
             xp.append("/").append(CmsVfsConfiguration.N_WIDGET);
             xp.append("[@").append(I_CmsXmlConfiguration.A_ALIAS);
             xp.append("='");
-            m_xpaths = new ArrayList();
-            Iterator it = getWidgetData().entrySet().iterator();
+            m_xpaths = new ArrayList<String>();
+            Iterator<Map.Entry<String, String>> it = getWidgetData().entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                String widgetName = (String)entry.getKey();
+                Map.Entry<String, String> entry = it.next();
+                String widgetName = entry.getKey();
                 m_xpaths.add(xp.toString() + widgetName + "']");
             }
         }
@@ -158,10 +161,10 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
      * 
      * @return the widget data
      */
-    private Map getWidgetData() {
+    private Map<String, String> getWidgetData() {
 
         if (m_widgetData == null) {
-            m_widgetData = new HashMap();
+            m_widgetData = new HashMap<String, String>();
             m_widgetData.put("DisplayWidget", CmsDisplayWidget.class.getName());
             m_widgetData.put("MultiSelectWidget", CmsMultiSelectWidget.class.getName());
             m_widgetData.put("UserWidget", CmsUserWidget.class.getName());

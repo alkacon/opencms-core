@@ -2,7 +2,7 @@
 	<div id="galleryfolders"><div class="head"><%= wp.key(Messages.GUI_GALLERY_GALLERIES_HL_AVAILABLE_0) %></div><div id="galleryfolderlist"></div></div>
 	<div id="galleryitems">
 		<div id="gallerybuttons">
-			<button type="button" id="gallerynewlinkbutton" onclick="$('#gallerynewlink').click();">
+			<button type="button" id="gallerynewlinkbutton" disabled="disabled" onclick="$('#gallerynewlink').click();">
 				<div> <%= wp.key(Messages.GUI_LINKGALLERY_BUTTON_NEWLINK_0) %> </div>
 			</button><a href="#" class="thickbox" id="gallerynewlink"></a>
 			<button type="button" id="opengallerybutton" class="linkgallery" onclick="showGalleryFolders();" title="<%= wp.key(Messages.GUI_GALLERY_GALLERIES_BUTTON_SHOW_0) %>">
@@ -37,7 +37,9 @@
 						<button id="galleryitempublishbutton" onclick="publishItem(galleryItems.markedItem, 'gallery');" type="button" title="<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_PUBLISH_0) %>">
 							<img src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>buttons/publish.png" />
 						</button>
-						
+						<button id="galleryitemdeletebutton" onclick="deleteItem(galleryItems.markedItem, 'gallery');" type="button" title="<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_DELETE_0) %>">								
+							<img src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>buttons/deletecontent.png" />
+						</button>
 					</td>
 					<td style="width: 40%;" colspan="2"  class="iteminfostate" >
 						<span id="galleryitemstate"></span>
