@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/12 10:14:49 $
- * Version: $Revision: 1.1.2.26 $
+ * Date   : $Date: 2009/10/12 15:24:28 $
+ * Version: $Revision: 1.1.2.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.workplace.editors.ade;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
@@ -57,6 +58,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.IOException;
@@ -82,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.26 $
+ * @version $Revision: 1.1.2.27 $
  * 
  * @since 7.6
  */
@@ -101,6 +103,9 @@ public class CmsADEServer extends CmsJspActionElement {
     public static final String ACTION_ELEM = "elem";
 
     /** Request parameter action value constant. */
+    public static final String ACTION_ELEM_PROPS = "elemProps";
+
+    /** Request parameter action value constant. */
     public static final String ACTION_FAV = "fav";
 
     /** Request parameter action value constant. */
@@ -108,6 +113,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** Request parameter action value constant. */
     public static final String ACTION_NEW = "new";
+
+    /** Request parameter action value constant. */
+    public static final String ACTION_PROPS = "props";
 
     /** Request parameter action value constant. */
     public static final String ACTION_REC = "rec";
@@ -172,6 +180,9 @@ public class CmsADEServer extends CmsJspActionElement {
     /** JSON property constant uri. */
     public static final String P_URI = "uri";
 
+    /** JSON property constant id. */
+    public static final String P_ID = "id";
+
     /** JSON property constant formatter. */
     public static final String P_XML_FORMATTER = "formatter";
 
@@ -195,6 +206,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** Request parameter name constant. */
     public static final String PARAMETER_PAGE = "page";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_PROPERTIES = "properties";
 
     /** Request parameter name constant. */
     public static final String PARAMETER_TEXT = "text";
@@ -458,9 +472,8 @@ public class CmsADEServer extends CmsJspActionElement {
                 for (int i = 0; i < elems.length(); i++) {
                     String elemId = elems.getString(i);
                     try {
-                        resElements.put(elemId, elemUtil.getElementData(
-                            CmsADEManager.convertToServerId(elemId),
-                            cntPage.getTypes()));
+                        CmsContainerElementBean element = m_manager.getCachedElement(elemId);
+                        resElements.put(element.getClientId(), elemUtil.getElementData(element, cntPage.getTypes()));
                     } catch (Exception e) {
                         // ignore any problems
                         if (!LOG.isDebugEnabled()) {
@@ -472,9 +485,8 @@ public class CmsADEServer extends CmsJspActionElement {
             } else {
                 // single element
                 try {
-                    resElements.put(elemParam, elemUtil.getElementData(
-                        CmsADEManager.convertToServerId(elemParam),
-                        cntPage.getTypes()));
+                    CmsContainerElementBean element = m_manager.getCachedElement(elemParam);
+                    resElements.put(element.getClientId(), elemUtil.getElementData(element, cntPage.getTypes()));
                 } catch (Exception e) {
                     // ignore any problems
                     if (!LOG.isDebugEnabled()) {
@@ -484,6 +496,34 @@ public class CmsADEServer extends CmsJspActionElement {
                 }
             }
             result.put(P_ELEMENTS, resElements);
+        } else if (actionParam.equals(ACTION_ELEM_PROPS)) {
+
+            String elemParam = request.getParameter(PARAMETER_ELEM);
+            String propertiesParam = request.getParameter(PARAMETER_PROPERTIES);
+            if (elemParam == null) {
+                storeErrorMissingParam(result, PARAMETER_ELEM);
+                return result;
+            }
+            if (propertiesParam == null) {
+                storeErrorMissingParam(result, PARAMETER_PROPERTIES);
+                return result;
+            }
+            try {
+                CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
+                JSONObject resElements = new JSONObject();
+                JSONObject properties = new JSONObject(propertiesParam);
+                CmsContainerElementBean element = m_manager.createElementBean(
+                    CmsADEManager.convertToServerId(elemParam),
+                    properties);
+                String clientId = element.getClientId();
+                m_manager.setCachedElement(clientId, element);
+                resElements.put(clientId, elemUtil.getElementData(element, cntPage.getTypes()));
+            } catch (Exception e) {
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
         } else if (actionParam.equals(ACTION_FAV)) {
             // get the favorite list
             result.put(P_FAVORITES, getFavoriteList(null, cntPage.getTypes()));
@@ -519,6 +559,24 @@ public class CmsADEServer extends CmsJspActionElement {
             CmsResource newResource = m_manager.createNewElement(type);
             result.put(CmsElementUtil.P_ELEMENT_ID, CmsADEManager.convertToClientId(newResource.getStructureId()));
             result.put(P_URI, cms.getSitePath(newResource));
+        } else if (actionParam.equals(ACTION_PROPS)) {
+            // get property dialog information
+            // get element data
+            String elemParam = request.getParameter(PARAMETER_ELEM);
+            if (elemParam == null) {
+                storeErrorMissingParam(result, PARAMETER_ELEM);
+                return result;
+            }
+            try {
+                CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
+                CmsContainerElementBean element = m_manager.getCachedElement(elemParam);
+                result = elemUtil.getElementPropertyInfo(element);
+            } catch (Exception e) {
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
         } else {
             result.put(RES_ERROR, Messages.get().getBundle().key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
@@ -1016,7 +1074,7 @@ public class CmsADEServer extends CmsJspActionElement {
                     // skip main-content if acting as template
                     continue;
                 }
-
+                String clientId = elem.getString(P_ID);
                 I_CmsXmlContentValue elemValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
                     cntValue.getPath(),
                     CmsContainerPageLoader.N_ELEMENT), locale, i);
@@ -1027,6 +1085,50 @@ public class CmsADEServer extends CmsJspActionElement {
                     CmsXmlUtils.concatXpath(elemValue.getPath(), CmsContainerPageLoader.N_FORMATTER),
                     locale,
                     0).setStringValue(cms, formatter);
+                // checking if there are any properties to set
+                if (clientId.contains("#")) {
+                    CmsContainerElementBean element = m_manager.getCachedElement(clientId);
+                    Map<String, CmsProperty> properties = element.getProperties();
+                    Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(element.getElement());
+                    Iterator<String> itProps = properties.keySet().iterator();
+
+                    // index of the property
+                    int j = 0;
+
+                    // iterating all properties
+                    while (itProps.hasNext()) {
+                        String propertyName = itProps.next();
+
+                        // only if there is a value set and the property is configured in the schema we will save it to the container-page 
+                        if ((properties.get(propertyName).getStructureValue() != null)
+                            && propertiesConf.containsKey(propertyName)) {
+                            I_CmsXmlContentValue propValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                                elemValue.getPath(),
+                                CmsContainerPageLoader.N_PROPERTIES), locale, j);
+                            xmlCnt.getValue(
+                                CmsXmlUtils.concatXpath(propValue.getPath(), CmsContainerPageLoader.N_NAME),
+                                locale,
+                                0).setStringValue(cms, propertyName);
+                            I_CmsXmlContentValue valValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                                propValue.getPath(),
+                                CmsContainerPageLoader.N_VALUE), locale, 0);
+                            if (propertiesConf.get(propertyName).getPropertyType() == CmsXmlContentProperty.T_URI) {
+                                xmlCnt.addValue(
+                                    cms,
+                                    CmsXmlUtils.concatXpath(valValue.getPath(), CmsContainerPageLoader.N_URI),
+                                    locale,
+                                    0).setStringValue(cms, properties.get(propertyName).getStructureValue());
+                            } else {
+                                xmlCnt.addValue(
+                                    cms,
+                                    CmsXmlUtils.concatXpath(valValue.getPath(), CmsContainerPageLoader.N_STRING),
+                                    locale,
+                                    0).setStringValue(cms, properties.get(propertyName).getStructureValue());
+                            }
+                            j++;
+                        }
+                    }
+                }
 
             }
             cntCount++;

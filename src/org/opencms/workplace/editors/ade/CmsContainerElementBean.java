@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/10/12 10:14:48 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/10/12 15:24:28 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.workplace.editors.ade;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
@@ -52,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
@@ -121,6 +123,31 @@ public class CmsContainerElementBean {
             while (itProperties.hasNext()) {
                 String propertyName = itProperties.next();
                 CmsProperty property = new CmsProperty(propertyName, properties.get(propertyName), null);
+                m_properties.put(propertyName, property);
+            }
+        }
+        this.initProperties(cms);
+    }
+
+    /**
+     * Creates a new container page element bean.<p> 
+     *  
+     * @param element the element 
+     * @param properties the properties as a JSON object
+     * @param cms the cms-object
+     * @throws JSONException - if something goes wrong parsing JSON
+     **/
+    public CmsContainerElementBean(CmsResource element, JSONObject properties, CmsObject cms)
+    throws JSONException {
+
+        m_element = element;
+        m_formatter = null;
+        m_properties = new HashMap<String, CmsProperty>();
+        if (properties != null) {
+            Iterator<String> itProperties = properties.keys();
+            while (itProperties.hasNext()) {
+                String propertyName = itProperties.next();
+                CmsProperty property = new CmsProperty(propertyName, properties.getString(propertyName), null);
                 m_properties.put(propertyName, property);
             }
         }

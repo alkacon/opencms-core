@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/12 10:14:49 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2009/10/12 15:24:28 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.editors.ade;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
@@ -51,6 +52,7 @@ import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -68,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  * 
  * @since 7.6
  */
@@ -115,6 +117,36 @@ public final class CmsElementUtil {
 
     /** JSON property constant file. */
     public static final String P_ELEMENT_USER = "user";
+
+    /** JSON property constant type. */
+    public static final String P_PROPERTY_TYPE = "type";
+
+    /** JSON property constant widget. */
+    public static final String P_PROPERTY_WIDGET = "widget";
+
+    /** JSON property constant widgetConf. */
+    public static final String P_PROPERTY_WIDGET_CONF = "widgetConf";
+
+    /** JSON property constant ruleType. */
+    public static final String P_PROPERTY_RULE_TYPE = "ruleType";
+
+    /** JSON property constant ruleType. */
+    public static final String P_PROPERTY_RULE_REGEX = "ruleRegex";
+
+    /** JSON property constant value. */
+    public static final String P_PROPERTY_VALUE = "value";
+
+    /** JSON property constant defaultValue. */
+    public static final String P_PROPERTY_DEFAULT_VALUE = "defaultValue";
+
+    /** JSON property constant niceName. */
+    public static final String P_PROPERTY_NICE_NAME = "niceName";
+
+    /** JSON property constant description. */
+    public static final String P_PROPERTY_DESCRIPTION = "description";
+
+    /** JSON property constant error. */
+    public static final String P_PROPERTY_ERROR = "error";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementUtil.class);
@@ -346,5 +378,41 @@ public final class CmsElementUtil {
 
         CmsContainerElementBean element = new CmsContainerElementBean(resource, m_cms);
         return element;
+    }
+
+    /**
+     * Returns the property information for the given element as a JSON object.<p>
+     * 
+     * @param element the element
+     * @return the property information
+     * @throws CmsException - if something goes wrong
+     * @throws JSONException - if something goes wrong generating the JSON
+     */
+    public JSONObject getElementPropertyInfo(CmsContainerElementBean element) throws CmsException, JSONException {
+
+        JSONObject result = new JSONObject();
+        Map<String, CmsXmlContentProperty> propertiesConf = CmsContainerElementBean.getPropertyConfiguration(
+            m_cms,
+            element.getElement());
+        Map<String, CmsProperty> properties = element.getProperties();
+        Iterator<String> itProperties = propertiesConf.keySet().iterator();
+        while (itProperties.hasNext()) {
+            JSONObject jSONProperty = new JSONObject();
+            String propertyName = itProperties.next();
+            CmsXmlContentProperty conf = propertiesConf.get(propertyName);
+
+            jSONProperty.put(P_PROPERTY_VALUE, properties.get(propertyName).getStructureValue());
+            jSONProperty.put(P_PROPERTY_DEFAULT_VALUE, conf.getDefault());
+            jSONProperty.put(P_PROPERTY_TYPE, conf.getPropertyType());
+            jSONProperty.put(P_PROPERTY_WIDGET, conf.getWidget());
+            jSONProperty.put(P_PROPERTY_WIDGET_CONF, conf.getWidgetConfiguration());
+            jSONProperty.put(P_PROPERTY_RULE_TYPE, conf.getRuleType());
+            jSONProperty.put(P_PROPERTY_RULE_REGEX, conf.getRuleRegex());
+            jSONProperty.put(P_PROPERTY_NICE_NAME, conf.getNiceName());
+            jSONProperty.put(P_PROPERTY_DESCRIPTION, conf.getDescription());
+            jSONProperty.put(P_PROPERTY_ERROR, conf.getError());
+            result.put(propertyName, jSONProperty);
+        }
+        return result;
     }
 }

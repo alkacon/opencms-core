@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/12 10:14:49 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2009/10/12 15:24:28 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -48,6 +50,7 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 7.6
  */
@@ -194,6 +197,35 @@ public class CmsADEManager {
     }
 
     /**
+     * Creates a new CmsContainerElementBean for a structure-id and given properties.<p> 
+     * 
+     * @param structureId the structure-id
+     * @param properties the properties-map
+     * @return the element bean
+     * @throws CmsException if something goes wrong reading the element resource
+     */
+    public CmsContainerElementBean createElementBean(CmsUUID structureId, Map<String, String> properties)
+    throws CmsException {
+
+        return new CmsContainerElementBean(m_cms.readResource(structureId), properties, m_cms);
+    }
+
+    /**
+     * Creates a new CmsContainerElementBean for a structure-id and given properties.<p> 
+     * 
+     * @param structureId the structure-id
+     * @param properties the properties-map
+     * @return the element bean
+     * @throws CmsException - if something goes wrong reading the element resource
+     * @throws JSONException - if something goes wrong parsing JSON
+     */
+    public CmsContainerElementBean createElementBean(CmsUUID structureId, JSONObject properties)
+    throws CmsException, JSONException {
+
+        return new CmsContainerElementBean(m_cms.readResource(structureId), properties, m_cms);
+    }
+
+    /**
      * Creates a new element of a given type at the configured location.<p>
      * 
      * @param type the type of the element to be created
@@ -296,6 +328,18 @@ public class CmsADEManager {
             m_cache.cacheADERecentList(user.getId().toString(), recentList);
         }
         return recentList;
+    }
+
+    /**
+     * Returns the property configuration for a given resource.<p>
+     * 
+     * @param resource the resource
+     * @return the property configuration
+     * @throws CmsException - if something goes wrong
+     */
+    public Map<String, CmsXmlContentProperty> getElementPropertyConfiguration(CmsResource resource) throws CmsException {
+
+        return CmsContainerElementBean.getPropertyConfiguration(m_cms, resource);
     }
 
     /**

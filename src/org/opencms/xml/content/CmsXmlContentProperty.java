@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2009/10/12 10:14:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/12 15:24:29 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,12 @@ package org.opencms.xml.content;
  */
 public class CmsXmlContentProperty {
 
+    /** Property type constant uri. */
+    public static final String T_URI = "uri";
+
+    /** Property type constant string. */
+    public static final String T_STRING = "string";
+
     /** The name of the property. */
     private String m_propertyName;
 
@@ -60,6 +66,15 @@ public class CmsXmlContentProperty {
 
     /** Default value. */
     private String m_default;
+
+    /** The nice name. */
+    private String m_niceName;
+
+    /** The description. */
+    private String m_description;
+
+    /** The error message. */
+    private String m_error;
 
     /**
      * @param propertyName
@@ -227,6 +242,66 @@ public class CmsXmlContentProperty {
     public void setDefault(String default1) {
 
         m_default = default1;
+    }
+
+    /**
+     * Returns the niceName.<p>
+     *
+     * @return the niceName
+     */
+    public String getNiceName() {
+
+        return m_niceName;
+    }
+
+    /**
+     * Sets the niceName.<p>
+     *
+     * @param niceName the niceName to set
+     */
+    public void setNiceName(String niceName) {
+
+        m_niceName = niceName;
+    }
+
+    /**
+     * Returns the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
+    }
+
+    /**
+     * Sets the description.<p>
+     *
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+
+        m_description = description;
+    }
+
+    /**
+     * Returns the error.<p>
+     *
+     * @return the error
+     */
+    public String getError() {
+
+        return m_error;
+    }
+
+    /**
+     * Sets the error.<p>
+     *
+     * @param error the error to set
+     */
+    public void setError(String error) {
+
+        m_error = error;
     }
 
 }
