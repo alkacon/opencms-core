@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2009/09/11 11:13:35 $
- * Version: $Revision: 1.31.2.3 $
+ * Date   : $Date: 2009/10/12 10:14:50 $
+ * Version: $Revision: 1.31.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31.2.3 $ 
+ * @version $Revision: 1.31.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +118,13 @@ public interface I_CmsXmlContentHandler {
      * @return the element formatters, as &lt;name,uri&gt;
      */
     Map<String, String> getFormatters();
+
+    /**
+     * Returns the element properties.<p>
+     * 
+     * @return the element properties, as &lt;name,CmsXmlContentProperty&gt;
+     */
+    Map<String, CmsXmlContentProperty> getProperties();
 
     /**
      * Returns the {@link CmsMessages} that are used to resolve localized keys 

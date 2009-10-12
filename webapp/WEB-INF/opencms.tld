@@ -565,6 +565,25 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>        
+    
+    <tag>
+        <description>
+            This tag is used to read the element property values within container-pages.
+        </description>
+        <name>elementProperty</name>
+        <tag-class>org.opencms.jsp.CmsJspTagElementProperty</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>property</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>default</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+   </tag>
 
     <function>
         <description>

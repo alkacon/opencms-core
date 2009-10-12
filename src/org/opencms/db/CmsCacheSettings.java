@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheSettings.java,v $
- * Date   : $Date: 2009/08/13 10:47:34 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2009/10/12 10:14:52 $
+ * Version: $Revision: 1.8.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ package org.opencms.db;
  * @author Thomas Weckert 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.2.1 $
+ * @version $Revision: 1.8.2.2 $
  * 
  * @since 6.0.0
  */
@@ -45,6 +45,9 @@ public class CmsCacheSettings {
 
     /** Default size for container page caches. */
     private static final int DEFAULT_CONTAINER_PAGE_SIZE = 128;
+
+    /** Default size for container element caches. */
+    private static final int DEFAULT_CONTAINER_ELEMENT_SIZE = 1024;
 
     /** The size of the memory monitor's cache for ACLs. */
     private int m_aclCacheSize;
@@ -57,6 +60,12 @@ public class CmsCacheSettings {
 
     /** The size of the container page online cache. */
     private int m_containerPageOnlineSize = -1; // this configuration entry is optional 
+
+    /** The size of the container element offline cache. */
+    private int m_containerElementOfflineSize = -1; // this configuration entry is optional 
+
+    /** The size of the container element online cache. */
+    private int m_containerElementOnlineSize = -1; // this configuration entry is optional 
 
     /** The size of the memory monitor's cache for groups. */
     private int m_groupCacheSize;
@@ -218,6 +227,32 @@ public class CmsCacheSettings {
             return DEFAULT_CONTAINER_PAGE_SIZE;
         }
         return m_containerPageOnlineSize;
+    }
+
+    /**
+     * Returns the size of the container element offline cache.<p>
+     * 
+     * @return the size of the container element offline cache
+     */
+    public int getContainerElementOfflineSize() {
+
+        if (m_containerElementOfflineSize < 0) {
+            return DEFAULT_CONTAINER_ELEMENT_SIZE;
+        }
+        return m_containerElementOfflineSize;
+    }
+
+    /**
+     * Returns the size of the container element online cache.<p>
+     * 
+     * @return the size of the container element online cache
+     */
+    public int getContainerElementOnlineSize() {
+
+        if (m_containerElementOnlineSize < 0) {
+            return DEFAULT_CONTAINER_ELEMENT_SIZE;
+        }
+        return m_containerElementOnlineSize;
     }
 
     /**

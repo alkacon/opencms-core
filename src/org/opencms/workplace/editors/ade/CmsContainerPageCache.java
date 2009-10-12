@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageCache.java,v $
- * Date   : $Date: 2009/10/06 08:19:05 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2009/10/12 10:14:48 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.editors.ade;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.loader.CmsContainerPageLoader;
 import org.opencms.main.CmsEvent;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 7.6 
  */
@@ -351,8 +352,30 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
                         locale).getStringValue(cms);
                     CmsResource formatterRes = cms.readResource(formatter);
 
-                    CmsContainerElementBean elem = new CmsContainerElementBean(elemRes, formatterRes);
+                    HashMap<String, CmsProperty> properties = new HashMap<String, CmsProperty>();
+                    Iterator<I_CmsXmlContentValue> itProperties = content.getValues(
+                        CmsXmlUtils.concatXpath(elementPath, CmsContainerPageLoader.N_PROPERTIES),
+                        locale).iterator();
+                    while (itProperties.hasNext()) {
+                        I_CmsXmlContentValue property = itProperties.next();
+                        String propertyPath = property.getPath();
+                        String propertyName = content.getValue(
+                            CmsXmlUtils.concatXpath(propertyPath, CmsContainerPageLoader.N_NAME),
+                            locale).getStringValue(cms);
+                        List<I_CmsXmlContentValue> propertyValues = content.getSubValues(CmsXmlUtils.concatXpath(
+                            propertyPath,
+                            CmsContainerPageLoader.N_VALUE), locale);
+                        String propertyValue = null;
+                        if (propertyValues.size() >= 1) {
+                            propertyValue = propertyValues.get(0).getStringValue(cms);
+                        }
+                        if (propertyValue != null) {
+                            properties.put(propertyName, new CmsProperty(propertyName, propertyValue, null));
+                        }
 
+                    }
+                    CmsContainerElementBean elem = new CmsContainerElementBean(elemRes, formatterRes, properties, cms);
+                    m_cache.cacheContainerElement(elem.getClientId(), elem);
                     // add element to container
                     cnt.addElement(elem);
                 }

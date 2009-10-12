@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsContainerPageLoader.java,v $
- * Date   : $Date: 2009/09/14 13:59:36 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2009/10/12 10:14:51 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.ServletRequest;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 7.6
  */
@@ -64,14 +64,26 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
     /** Xml content node constant formatter. */
     public static final String N_FORMATTER = "Formatter";
 
+    /** Xml content node constant properties. */
+    public static final String N_PROPERTIES = "Properties";
+
+    /** Xml content node constant property. */
+    public static final String N_PROPERTY = "Property";
+
     /** Xml content node constant name. */
     public static final String N_NAME = "Name";
+
+    /** Xml content node constant string. */
+    public static final String N_STRING = "String";
 
     /** Xml content node constant type. */
     public static final String N_TYPE = "Type";
 
     /** Xml content node constant uri. */
     public static final String N_URI = "Uri";
+
+    /** Xml content node constant value. */
+    public static final String N_VALUE = "Value";
 
     /** The id of this loader. */
     public static final int RESOURCE_LOADER_ID = 11;

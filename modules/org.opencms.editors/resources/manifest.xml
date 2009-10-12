@@ -310,6 +310,21 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/schemas/container_element_property.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/container_element_property.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>95986e4d-b1c2-11de-be9a-65ba8ac698cf</uuidstructure>
+			<uuidresource>95986e4e-b1c2-11de-be9a-65ba8ac698cf</uuidresource>
+			<datelastmodified>Tue, 06 Oct 2009 08:42:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Oct 2009 15:20:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/schemas/container_page.xsd</source>
 			<destination>system/workplace/editors/ade/schemas/container_page.xsd</destination>
@@ -319,6 +334,21 @@
 			<datelastmodified>Mon, 31 Aug 2009 08:55:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/editors/ade/schemas/property_value_choice.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/property_value_choice.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>51ddae1a-b24a-11de-91b3-65ba8ac698cf</uuidstructure>
+			<uuidresource>51ddae1b-b24a-11de-91b3-65ba8ac698cf</uuidresource>
+			<datelastmodified>Tue, 06 Oct 2009 07:54:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 06 Oct 2009 07:31:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

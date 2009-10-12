@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/09/16 13:20:18 $
- * Version: $Revision: 1.64.2.7 $
+ * Date   : $Date: 2009/10/12 10:14:51 $
+ * Version: $Revision: 1.64.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64.2.7 $ 
+ * @version $Revision: 1.64.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,6 +130,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "regex" appinfo attribute name. */
     public static final String APPINFO_ATTR_REGEX = "regex";
 
+    /** Constant for the "rule-regex" appinfo attribute name. */
+    public static final String APPINFO_ATTR_RULE_REGEX = "rule-regex";
+
+    /** Constant for the "rule-type" appinfo attribute name. */
+    public static final String APPINFO_ATTR_RULE_TYPE = "rule-type";
+
     /** Constant for the "searchcontent" appinfo attribute name. */
     public static final String APPINFO_ATTR_SEARCHCONTENT = "searchcontent";
 
@@ -156,6 +162,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "widget" appinfo attribute name. */
     public static final String APPINFO_ATTR_WIDGET = "widget";
+
+    /** Constant for the "widget-config" appinfo attribute name. */
+    public static final String APPINFO_ATTR_WIDGET_CONFIG = "widget-config";
 
     /** Constant for the "default" appinfo element name. */
     public static final String APPINFO_DEFAULT = "default";
@@ -186,6 +195,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "preview" appinfo element name. */
     public static final String APPINFO_PREVIEW = "preview";
+
+    /** Constant for the "properties" appinfo element name. */
+    public static final String APPINFO_PROPERTIES = "properties";
+
+    /** Constant for the "property" appinfo element name. */
+    public static final String APPINFO_PROPERTY = "property";
 
     /** Constant for the "relation" appinfo element name. */
     public static final String APPINFO_RELATION = "relation";
@@ -269,6 +284,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The configured formatters. */
     protected Map<String, String> m_formatters;
+
+    /** The configured properties. */
+    protected Map<String, CmsXmlContentProperty> m_properties;
 
     /** The resource bundle name to be used for localization of this content handler. */
     protected String m_messageBundleName;
@@ -400,6 +418,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public Map<String, String> getFormatters() {
 
         return Collections.unmodifiableMap(m_formatters);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getProperties()
+     */
+    public Map<String, CmsXmlContentProperty> getProperties() {
+
+        return Collections.unmodifiableMap(m_properties);
     }
 
     /**
@@ -1365,6 +1391,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_tabs = new ArrayList<CmsXmlContentTab>();
         m_formatters = new HashMap<String, String>();
         m_formatters.put(DEFAULT_FORMATTER_TYPE, DEFAULT_FORMATTER);
+        m_properties = new HashMap<String, CmsXmlContentProperty>();
     }
 
     /**
@@ -1422,6 +1449,31 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             }
             // add the formatter
             m_formatters.put(type, uri);
+        }
+    }
+
+    /**
+     * Initializes the properties for this content handler.<p>
+     * 
+     * @param root the "formatters" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the tabs belong to
+     */
+    protected void initProperties(Element root, CmsXmlContentDefinition contentDefinition) {
+
+        Iterator<Element> itProperties = CmsXmlGenericWrapper.elementIterator(root, APPINFO_PROPERTY);
+        while (itProperties.hasNext()) {
+            Element element = itProperties.next();
+            CmsXmlContentProperty property = new CmsXmlContentProperty(
+                element.attributeValue(APPINFO_ATTR_NAME),
+                element.attributeValue(APPINFO_ATTR_TYPE),
+                element.attributeValue(APPINFO_ATTR_WIDGET),
+                element.attributeValue(APPINFO_ATTR_WIDGET_CONFIG),
+                element.attributeValue(APPINFO_ATTR_RULE_REGEX),
+                element.attributeValue(APPINFO_ATTR_RULE_TYPE),
+                element.attributeValue(APPINFO_ATTR_DEFAULT));
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(property.getPropertyName())) {
+                m_properties.put(property.getPropertyName(), property);
+            }
         }
     }
 

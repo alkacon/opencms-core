@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBox.java,v $
- * Date   : $Date: 2009/09/14 13:46:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/12 10:14:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,11 +35,12 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.ade.CmsADEManager;
+import org.opencms.workplace.editors.ade.CmsContainerElementBean;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  */
 public class CmsListBox extends CmsJspActionElement {
 
@@ -206,13 +207,9 @@ public class CmsListBox extends CmsJspActionElement {
 
         // collect the configuration information 
         try {
-            String path = req.getParameter(I_CmsResourceLoader.PARAMETER_ELEMENT);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
-                // TODO
-            }
-
+            CmsContainerElementBean element = CmsADEManager.getCurrentElement(req);
             CmsFile file = getCmsObject().readFile(
-                getCmsObject().getRequestContext().removeSiteRoot(path),
+                getCmsObject().getSitePath(element.getElement()),
                 CmsResourceFilter.IGNORE_EXPIRATION);
             m_content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
 

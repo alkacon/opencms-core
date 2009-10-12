@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/06 08:19:06 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/10/12 10:14:49 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -52,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.list.NodeCachingLinkedList;
@@ -64,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 7.6
  */
@@ -125,7 +127,7 @@ public class CmsADEManager {
      * 
      * @return the generated html id
      */
-    public String convertToClientId(CmsUUID id) {
+    public static String convertToClientId(CmsUUID id) {
 
         return ADE_ID_PREFIX + id.toString();
     }
@@ -139,16 +141,56 @@ public class CmsADEManager {
      * 
      * @throws CmsIllegalArgumentException if the id has not the right format
      */
-    public CmsUUID convertToServerId(String id) throws CmsIllegalArgumentException {
+    public static CmsUUID convertToServerId(String id) throws CmsIllegalArgumentException {
 
         if ((id == null) || (!id.startsWith(ADE_ID_PREFIX))) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_ID_1, id));
         }
+        String serverId = id;
         try {
-            return new CmsUUID(id.substring(ADE_ID_PREFIX.length()));
+            if (serverId.contains("#")) {
+                serverId = serverId.substring(ADE_ID_PREFIX.length(), serverId.indexOf("#"));
+            } else {
+                serverId = serverId.substring(ADE_ID_PREFIX.length());
+            }
+
+            return new CmsUUID(serverId);
         } catch (NumberFormatException e) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_ID_1, id));
         }
+    }
+
+    /**
+     * Reads the current element bean from the request.<p>
+     * 
+     * @param req the servlet request
+     * @return the element bean
+     * @throws CmsException if attribute "__currentElement" not set, or if a type cast exception occurs
+     */
+    public static CmsContainerElementBean getCurrentElement(ServletRequest req) throws CmsException {
+
+        CmsContainerElementBean element = null;
+        try {
+            element = (CmsContainerElementBean)req.getAttribute(CmsJspTagContainer.P_CURRENT_ELEMENT);
+        } catch (Exception e) {
+            throw new CmsException(Messages.get().container(Messages.ERR_READING_ELEMENT_FROM_REQUEST_0), e);
+        }
+        if (element == null) {
+            throw new CmsException(Messages.get().container(Messages.ERR_READING_ELEMENT_FROM_REQUEST_0));
+        }
+        return element;
+    }
+
+    /**
+     * Creates a new CmsContainerElementBean from a CmsContainerElement.<p> 
+     * 
+     * @param elem the element
+     * @return the element bean
+     * @throws CmsException if something goes wrong reading the element resource
+     */
+    public CmsContainerElementBean createElementBean(CmsContainerElement elem) throws CmsException {
+
+        return new CmsContainerElementBean(m_cms.readResource(elem.getStructureId()), elem.getProperties(), m_cms);
     }
 
     /**
@@ -189,18 +231,18 @@ public class CmsADEManager {
      * @throws CmsException if something goes wrong 
      */
     @SuppressWarnings("unchecked")
-    public List<CmsUUID> getFavoriteList() throws CmsException {
+    public List<CmsContainerElement> getFavoriteList() throws CmsException {
 
         CmsUser user = m_cms.getRequestContext().currentUser();
-        List<CmsUUID> favList = null;
+        List<CmsContainerElement> favList = null;
         try {
-            favList = (List<CmsUUID>)user.getAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST);
+            favList = (List<CmsContainerElement>)user.getAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST);
         } catch (Throwable e) {
             // should never happen
             LOG.warn(e.getLocalizedMessage(), e);
         }
         if (favList == null) {
-            favList = new ArrayList<CmsUUID>();
+            favList = new ArrayList<CmsContainerElement>();
             saveFavoriteList(favList);
         }
         return favList;
@@ -244,16 +286,62 @@ public class CmsADEManager {
      * @throws CmsException if something goes wrong 
      */
     @SuppressWarnings("unchecked")
-    public List<CmsUUID> getRecentList() throws CmsException {
+    public List<CmsContainerElement> getRecentList() throws CmsException {
 
         CmsUser user = m_cms.getRequestContext().currentUser();
-        List<CmsUUID> recentList = m_cache.getADERecentList(user.getId().toString());
+        List<CmsContainerElement> recentList = m_cache.getADERecentList(user.getId().toString());
         if (recentList == null) {
             int maxElems = m_configuration.getRecentListMaxSize();
             recentList = new NodeCachingLinkedList(maxElems);
             m_cache.cacheADERecentList(user.getId().toString(), recentList);
         }
         return recentList;
+    }
+
+    /**
+     * Reads the cached element-bean for the given client-side-id from cache.<p>
+     * 
+     * @param clientId the client-side-id
+     * @return the CmsContainerElementBean
+     * @throws CmsException - if the resource could not be read for any reason
+     */
+    public CmsContainerElementBean getCachedElement(String clientId) throws CmsException {
+
+        String id = clientId;
+        CmsContainerElementBean element = null;
+        try {
+            element = m_cache.getCacheContainerElement(id);
+        } catch (Exception e) {
+            // may happen if element was not cached
+        }
+        if (element != null) {
+            return element;
+        }
+        if (id.contains("#")) {
+            id = id.substring(0, id.indexOf("#"));
+            try {
+                element = m_cache.getCacheContainerElement(id);
+            } catch (Exception e) {
+                // may happen if element was not cached
+            }
+            if (element != null) {
+                return element;
+            }
+        }
+        element = new CmsContainerElementBean(m_cms.readResource(convertToServerId(id)), m_cms);
+        m_cache.cacheContainerElement(id, element);
+        return element;
+    }
+
+    /**
+     * Writes the given element-bean to the cache.<p>
+     * 
+     * @param clientId the client-side-id as the cache key
+     * @param element the element-bean
+     */
+    public void setCachedElement(String clientId, CmsContainerElementBean element) {
+
+        m_cache.cacheContainerElement(clientId, element);
     }
 
     /**
@@ -352,7 +440,7 @@ public class CmsADEManager {
      * 
      * @throws CmsException if something goes wrong 
      */
-    public void saveFavoriteList(List<CmsUUID> favoriteList) throws CmsException {
+    public void saveFavoriteList(List<CmsContainerElement> favoriteList) throws CmsException {
 
         CmsUser user = m_cms.getRequestContext().currentUser();
         user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, favoriteList);
@@ -364,7 +452,7 @@ public class CmsADEManager {
      * 
      * @param recentList the element id list
      */
-    public void saveRecentList(List<CmsUUID> recentList) {
+    public void saveRecentList(List<CmsContainerElement> recentList) {
 
         CmsUser user = m_cms.getRequestContext().currentUser();
         m_cache.cacheADERecentList(user.getId().toString(), recentList);

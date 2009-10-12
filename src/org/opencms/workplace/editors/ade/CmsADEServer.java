@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/06 08:19:07 $
- * Version: $Revision: 1.1.2.25 $
+ * Date   : $Date: 2009/10/12 10:14:49 $
+ * Version: $Revision: 1.1.2.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.25 $
+ * @version $Revision: 1.1.2.26 $
  * 
  * @since 7.6
  */
@@ -298,11 +298,36 @@ public class CmsADEServer extends CmsJspActionElement {
      */
     protected List<CmsUUID> arrayToUUIDList(JSONArray array) throws JSONException {
 
+        // TODO: check if this method is still needed
         List<CmsUUID> result = new ArrayList<CmsUUID>(array.length());
         for (int i = 0; i < array.length(); i++) {
             String id = array.getString(i);
             try {
-                result.add(m_manager.convertToServerId(id));
+                result.add(CmsADEManager.convertToServerId(id));
+            } catch (CmsIllegalArgumentException e) {
+                LOG.warn(Messages.get().container(Messages.ERR_INVALID_ID_1, id), e);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of container elements from a json array with client ids.<p>
+     * 
+     * @param array the json array
+     * 
+     * @return a list of resource ids
+     * 
+     * @throws JSONException if something goes wrong
+     * @throws CmsException 
+     */
+    protected List<CmsContainerElement> arrayToElementList(JSONArray array) throws JSONException, CmsException {
+
+        List<CmsContainerElement> result = new ArrayList<CmsContainerElement>(array.length());
+        for (int i = 0; i < array.length(); i++) {
+            String id = array.getString(i);
+            try {
+                result.add(m_manager.getCachedElement(id).getContainerElement());
             } catch (CmsIllegalArgumentException e) {
                 LOG.warn(Messages.get().container(Messages.ERR_INVALID_ID_1, id), e);
             }
@@ -377,7 +402,7 @@ public class CmsADEServer extends CmsJspActionElement {
 
         CmsObject cms = getCmsObject();
         for (int i = 0; i < elems.length(); i++) {
-            CmsResource res = cms.readResource(m_manager.convertToServerId(elems.optString(i)));
+            CmsResource res = cms.readResource(CmsADEManager.convertToServerId(elems.optString(i)));
             if (cms.getLock(res).isUnlocked()) {
                 cms.lockResource(cms.getSitePath(res));
             }
@@ -434,7 +459,7 @@ public class CmsADEServer extends CmsJspActionElement {
                     String elemId = elems.getString(i);
                     try {
                         resElements.put(elemId, elemUtil.getElementData(
-                            m_manager.convertToServerId(elemId),
+                            CmsADEManager.convertToServerId(elemId),
                             cntPage.getTypes()));
                     } catch (Exception e) {
                         // ignore any problems
@@ -448,7 +473,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 // single element
                 try {
                     resElements.put(elemParam, elemUtil.getElementData(
-                        m_manager.convertToServerId(elemParam),
+                        CmsADEManager.convertToServerId(elemParam),
                         cntPage.getTypes()));
                 } catch (Exception e) {
                     // ignore any problems
@@ -492,7 +517,7 @@ public class CmsADEServer extends CmsJspActionElement {
             String type = dataParam;
 
             CmsResource newResource = m_manager.createNewElement(type);
-            result.put(CmsElementUtil.P_ELEMENT_ID, m_manager.convertToClientId(newResource.getStructureId()));
+            result.put(CmsElementUtil.P_ELEMENT_ID, CmsADEManager.convertToClientId(newResource.getStructureId()));
             result.put(P_URI, cms.getSitePath(newResource));
         } else {
             result.put(RES_ERROR, Messages.get().getBundle().key(
@@ -530,7 +555,8 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
-            m_manager.saveFavoriteList(arrayToUUIDList(list));
+
+            m_manager.saveFavoriteList(arrayToElementList(list));
         } else if (actionParam.equals(ACTION_REC)) {
             // save the recent list
             String dataParam = request.getParameter(PARAMETER_DATA);
@@ -539,7 +565,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
-            m_manager.saveRecentList(arrayToUUIDList(list));
+            m_manager.saveRecentList(arrayToElementList(list));
         } else if (actionParam.equals(ACTION_CNT)) {
             // save the container page
             if (!checkParameters(request, result, PARAMETER_CNTPAGE, PARAMETER_DATA)) {
@@ -610,7 +636,7 @@ public class CmsADEServer extends CmsJspActionElement {
             getRequest().getParameter(PARAMETER_URI),
             getRequest(),
             getResponse());
-        Set<CmsUUID> ids = new HashSet<CmsUUID>();
+        Set<String> ids = new HashSet<String>();
         for (Map.Entry<String, CmsContainerBean> entry : cntPage.getContainers().entrySet()) {
             CmsContainerBean container = entry.getValue();
 
@@ -633,18 +659,20 @@ public class CmsADEServer extends CmsJspActionElement {
                 renderElems--;
 
                 CmsResource elemRes = cms.readResource(elemUri);
+                CmsContainerElementBean element = elemUtil.getElementBeanForResource(elemRes);
                 // check if the element already exists
-                String id = m_manager.convertToClientId(elemRes.getStructureId());
+                String id = element.getClientId();
                 // collect ids
                 resContainerElems.put(id);
-                if (ids.contains(elemRes.getStructureId())) {
+                if (ids.contains(id)) {
                     continue;
                 }
                 // get the element data
-                JSONObject resElement = elemUtil.getElementData(elemRes, types);
+                JSONObject resElement = elemUtil.getElementData(element, types);
                 // store element data
-                ids.add(elemRes.getStructureId());
+                ids.add(id);
                 resElements.put(id, resElement);
+
             }
             // iterate the elements
             for (CmsContainerElementBean element : container.getElements()) {
@@ -655,33 +683,40 @@ public class CmsADEServer extends CmsJspActionElement {
                 }
                 renderElems--;
 
-                // check if the element already exists
-                String id = m_manager.convertToClientId(element.getElement().getStructureId());
                 // collect ids
+                String id = element.getClientId();
                 resContainerElems.put(id);
-                if (ids.contains(element.getElement().getStructureId())) {
+                if (ids.contains(id)) {
                     continue;
                 }
                 // get the element data
-                JSONObject resElement = elemUtil.getElementData(element.getElement(), types);
+                JSONObject resElement = elemUtil.getElementData(element, types);
 
                 // get subcontainer elements
                 if (resElement.has(P_SUBITEMS)) {
-                    JSONArray subItems = resElement.getJSONArray(P_SUBITEMS);
-                    for (int i = 0; i < subItems.length(); i++) {
-                        String subItemId = subItems.getString(i);
-                        CmsUUID subItemUuid = m_manager.convertToServerId(subItemId);
-                        if (!ids.contains(subItemUuid)) {
-                            CmsResource subItemResource = cms.readResource(subItemUuid);
-                            JSONObject subItemData = elemUtil.getElementData(subItemResource, types);
-                            ids.add(subItemUuid);
-                            resElements.put(subItemId, subItemData);
+                    // this container page should contain exactly one container
+                    CmsContainerPageBean subCntPage = CmsContainerPageCache.getInstance().getCache(
+                        cms,
+                        element.getElement(),
+                        cms.getRequestContext().getLocale());
+                    CmsContainerBean subContainer = subCntPage.getContainers().values().iterator().next();
+
+                    // adding all sub-items to the elements data
+                    for (CmsContainerElementBean subElement : subContainer.getElements()) {
+                        if (!ids.contains(subElement.getElement().getStructureId())) {
+                            String subId = subElement.getClientId();
+                            if (ids.contains(subId)) {
+                                continue;
+                            }
+                            JSONObject subItemData = elemUtil.getElementData(subElement, types);
+                            ids.add(subId);
+                            resElements.put(subId, subItemData);
                         }
                     }
                 }
 
                 // store element data
-                ids.add(element.getElement().getStructureId());
+                ids.add(id);
                 resElements.put(id, resElement);
             }
 
@@ -717,13 +752,15 @@ public class CmsADEServer extends CmsJspActionElement {
             getResponse());
 
         // iterate the list and create the missing elements
-        List<CmsUUID> favList = m_manager.getFavoriteList();
-        for (CmsUUID id : favList) {
-            String clientId = m_manager.convertToClientId(id);
-            if ((resElements != null) && !resElements.has(clientId)) {
+        List<CmsContainerElement> favList = m_manager.getFavoriteList();
+        for (CmsContainerElement elem : favList) {
+            CmsContainerElementBean element = m_manager.createElementBean(elem);
+            String id = element.getClientId();
+            m_manager.setCachedElement(id, element);
+            if ((resElements != null) && !resElements.has(id)) {
                 try {
-                    resElements.put(clientId, elemUtil.getElementData(id, types));
-                    result.put(clientId);
+                    resElements.put(id, elemUtil.getElementData(element, types));
+                    result.put(id);
                 } catch (Exception e) {
                     // ignore any problems
                     if (!LOG.isDebugEnabled()) {
@@ -732,7 +769,7 @@ public class CmsADEServer extends CmsJspActionElement {
                     LOG.debug(e.getLocalizedMessage(), e);
                 }
             } else {
-                result.put(clientId);
+                result.put(id);
             }
         }
 
@@ -814,13 +851,16 @@ public class CmsADEServer extends CmsJspActionElement {
             getResponse());
 
         // get the cached list
-        List<CmsUUID> recentList = m_manager.getRecentList();
+        List<CmsContainerElement> recentList = m_manager.getRecentList();
         // iterate the list and create the missing elements
-        for (CmsUUID structureId : recentList) {
-            String id = m_manager.convertToClientId(structureId);
+        for (CmsContainerElement elem : recentList) {
+            CmsContainerElementBean element = m_manager.createElementBean(elem);
+
+            String id = element.getClientId();
+            m_manager.setCachedElement(id, element);
             if ((resElements != null) && !resElements.has(id)) {
                 try {
-                    resElements.put(id, elemUtil.getElementData(structureId, types));
+                    resElements.put(id, elemUtil.getElementData(element, types));
                     result.put(id);
                 } catch (Exception e) {
                     // ignore any problems

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/10/06 08:19:05 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2009/10/12 10:14:49 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,6 +59,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GENERATE_FORMATTED_ELEMENT_3 = "ERR_GENERATE_FORMATTED_ELEMENT_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1 = "ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_ELEMENT_FROM_REQUEST_0 = "ERR_READING_ELEMENT_FROM_REQUEST_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_ID_1 = "ERR_INVALID_ID_1";

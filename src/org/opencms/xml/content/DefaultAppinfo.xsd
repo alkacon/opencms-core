@@ -19,6 +19,7 @@
 			<xsd:element name="modelfolder" type="OpenCmsDefaultAppinfoModelfolder" minOccurs="0" />
 			<xsd:element name="tabs" type="OpenCmsDefaultAppinfoTabs" minOccurs="0" />
 			<xsd:element name="formatters" type="OpenCmsDefaultAppinfoFormatters" minOccurs="0" />
+			<xsd:element name="properties" type="OpenCmsDefaultAppinfoProperties" minOccurs="0" />
 		</xsd:all>
 	</xsd:complexType>
 	

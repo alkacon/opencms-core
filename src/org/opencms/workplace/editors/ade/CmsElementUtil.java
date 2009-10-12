@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/06 08:19:06 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2009/10/12 10:14:49 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  * 
  * @since 7.6
  */
@@ -153,7 +154,7 @@ public final class CmsElementUtil {
     /**
      * Returns the content of an element when rendered with the given formatter.<p> 
      * 
-     * @param resource the element resource
+     * @param element the element bean
      * @param formatter the formatter uri
      * 
      * @return generated html code
@@ -162,11 +163,11 @@ public final class CmsElementUtil {
      * @throws ServletException if a jsp related error occurs
      * @throws IOException if a jsp related error occurs
      */
-    public String getElementContent(CmsResource resource, CmsResource formatter)
+    public String getElementContent(CmsContainerElementBean element, CmsResource formatter)
     throws CmsException, ServletException, IOException {
 
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
-            formatter), resource, formatter);
+            formatter), element.getElement(), formatter);
 
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
 
@@ -178,18 +179,17 @@ public final class CmsElementUtil {
 
             // to enable 'old' direct edit features for content-collector-elements, set the direct-edit-provider-attribute in the request
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
-            eb.init(cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(resource));
+            eb.init(cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(element.getElement()));
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
-
+            m_req.setAttribute(CmsJspTagContainer.P_CURRENT_ELEMENT, element);
             // TODO: is this going to be cached? most likely not! any alternative?
-            // HACK: use the __element param for the element uri! 
             return new String(loaderFacade.getLoader().dump(
                 m_cms,
                 loaderRes,
-                m_cms.getSitePath(resource),
+                null,
                 m_cms.getRequestContext().getLocale(),
                 m_req,
-                m_res), CmsLocaleManager.getResourceEncoding(cms, resource));
+                m_res), CmsLocaleManager.getResourceEncoding(cms, element.getElement()));
         } finally {
             cms.getRequestContext().setUri(oldUri);
         }
@@ -198,7 +198,7 @@ public final class CmsElementUtil {
     /**
      * Returns the data for an element.<p>
      * 
-     * @param resource the resource
+     * @param element the resource
      * @param types the types supported by the container page
      * 
      * @return the data for an element
@@ -206,12 +206,14 @@ public final class CmsElementUtil {
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong in the json manipulation
      */
-    public JSONObject getElementData(CmsResource resource, Collection<String> types) throws CmsException, JSONException {
+    public JSONObject getElementData(CmsContainerElementBean element, Collection<String> types)
+    throws CmsException, JSONException {
 
         // create new json object for the element
         JSONObject resElement = new JSONObject();
+        CmsResource resource = element.getElement();
         resElement.put(CmsADEServer.P_OBJTYPE, CmsADEServer.ELEMENT_TYPE);
-        resElement.put(P_ELEMENT_ID, m_manager.convertToClientId(resource.getStructureId()));
+        resElement.put(P_ELEMENT_ID, element.getClientId());
         resElement.put(P_ELEMENT_FILE, m_cms.getSitePath(resource));
         resElement.put(P_ELEMENT_DATE, resource.getDateLastModified());
         resElement.put(P_ELEMENT_USER, m_cms.readUser(resource.getUserLastModified()).getName());
@@ -252,10 +254,9 @@ public final class CmsElementUtil {
             JSONArray subitems = new JSONArray();
             resElement.put(P_ELEMENT_SUBITEMS, subitems);
             // iterate the elements
-            for (CmsContainerElementBean element : container.getElements()) {
-                CmsUUID id = element.getElement().getStructureId();
+            for (CmsContainerElementBean subElement : container.getElements()) {
                 // collect ids
-                subitems.put(m_manager.convertToClientId(id));
+                subitems.put(subElement.getClientId());
             }
         } else {
             Iterator<Map.Entry<String, String>> it = m_manager.getXmlContentFormatters(resource).entrySet().iterator();
@@ -270,7 +271,7 @@ public final class CmsElementUtil {
                 formatters.put(type, formatterUri);
                 // execute the formatter jsp for the given element
                 try {
-                    String jspResult = getElementContent(resource, m_cms.readResource(formatterUri));
+                    String jspResult = getElementContent(element, m_cms.readResource(formatterUri));
                     // set the results
                     resContents.put(type, jspResult);
                 } catch (Exception e) {
@@ -284,6 +285,23 @@ public final class CmsElementUtil {
         }
 
         return resElement;
+    }
+
+    /**
+     * Returns the data for an element.<p>
+     * 
+     * @param resource the resource
+     * @param types the types supported by the container page
+     * 
+     * @return the data for an element
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if something goes wrong in the json manipulation
+     */
+    public JSONObject getElementData(CmsResource resource, Collection<String> types) throws CmsException, JSONException {
+
+        CmsContainerElementBean element = new CmsContainerElementBean(resource, m_cms);
+        return getElementData(element, types);
     }
 
     /**
@@ -316,5 +334,17 @@ public final class CmsElementUtil {
     public JSONObject getElementData(String elementUri, Collection<String> types) throws CmsException, JSONException {
 
         return getElementData(m_cms.readResource(elementUri), types);
+    }
+
+    /**
+     * Creates an element-bean for the given resource.<p>
+     * 
+     * @param resource the resource
+     * @return the element-bean
+     */
+    public CmsContainerElementBean getElementBeanForResource(CmsResource resource) {
+
+        CmsContainerElementBean element = new CmsContainerElementBean(resource, m_cms);
+        return element;
     }
 }
