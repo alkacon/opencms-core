@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageCache.java,v $
- * Date   : $Date: 2009/10/12 10:14:48 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2009/10/13 09:44:23 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 7.6 
  */
@@ -374,7 +374,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
                         }
 
                     }
-                    CmsContainerElementBean elem = new CmsContainerElementBean(elemRes, formatterRes, properties, cms);
+                    CmsContainerElementBean elem = new CmsContainerElementBean(cms, elemRes, formatterRes, properties);
                     m_cache.cacheContainerElement(elem.getClientId(), elem);
                     // add element to container
                     cnt.addElement(elem);

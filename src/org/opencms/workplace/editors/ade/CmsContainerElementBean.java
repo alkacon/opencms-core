@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/10/13 09:34:21 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/10/13 09:44:23 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.6 
  */
@@ -77,28 +77,28 @@ public class CmsContainerElementBean {
 
     /** 
      * Creates a new container page element bean.<p> 
-     *  
-     * @param element the element 
+     * 
      * @param cms the cms-object
+     * @param element the element 
      **/
-    public CmsContainerElementBean(CmsResource element, CmsObject cms) {
+    public CmsContainerElementBean(CmsObject cms, CmsResource element) {
 
-        this(element, null, null, cms);
+        this(cms, element, null, null);
     }
 
     /** 
      * Creates a new container page element bean.<p> 
-     *  
+     * 
+     * @param cms the cms-object
      * @param element the element 
      * @param formatter the formatter
      * @param properties the element properties, may be null
-     * @param cms the cms-object
      **/
     public CmsContainerElementBean(
+        CmsObject cms,
         CmsResource element,
         CmsResource formatter,
-        Map<String, CmsProperty> properties,
-        CmsObject cms) {
+        Map<String, CmsProperty> properties) {
 
         m_element = element;
         m_formatter = formatter;
@@ -108,13 +108,14 @@ public class CmsContainerElementBean {
 
     /**
      * Creates a new container page element bean.<p> 
-     *  
+     * 
+     * @param cms the cms-object
      * @param element the element 
      * @param properties the properties as a JSON object
-     * @param cms the cms-object
+     *  
      * @throws JSONException - if something goes wrong parsing JSON
      **/
-    public CmsContainerElementBean(CmsResource element, JSONObject properties, CmsObject cms)
+    public CmsContainerElementBean(CmsObject cms, CmsResource element, JSONObject properties)
     throws JSONException {
 
         m_element = element;
@@ -133,12 +134,12 @@ public class CmsContainerElementBean {
 
     /**
      * Creates a new container page element bean.<p> 
-     *  
+     * 
+     * @param cms the cms-object
      * @param element the element 
      * @param properties the properties as a map of name/value pairs
-     * @param cms the cms-object
      **/
-    public CmsContainerElementBean(CmsResource element, Map<String, String> properties, CmsObject cms) {
+    public CmsContainerElementBean(CmsObject cms, CmsResource element, Map<String, String> properties) {
 
         m_element = element;
         m_formatter = null;
@@ -157,15 +158,17 @@ public class CmsContainerElementBean {
     /**
      * Returns the property configuration for a given resource.<p>
      * 
-     * @param cms
-     * @param element
+     * @param cms the cms-object
+     * @param resource the resource
+     * 
      * @return The properties map
+     * 
      * @throws CmsException if something goes wrong
      */
-    public static Map<String, CmsXmlContentProperty> getPropertyConfiguration(CmsObject cms, CmsResource element)
+    public static Map<String, CmsXmlContentProperty> getPropertyConfiguration(CmsObject cms, CmsResource resource)
     throws CmsException {
 
-        return CmsXmlContentDefinition.getContentHandlerForResource(cms, element).getProperties();
+        return CmsXmlContentDefinition.getContentHandlerForResource(cms, resource).getProperties();
     }
 
     /**

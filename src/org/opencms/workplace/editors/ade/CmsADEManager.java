@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/12 15:24:28 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2009/10/13 09:44:24 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 7.6
  */
@@ -193,7 +193,7 @@ public class CmsADEManager {
      */
     public CmsContainerElementBean createElementBean(CmsContainerElement elem) throws CmsException {
 
-        return new CmsContainerElementBean(m_cms.readResource(elem.getStructureId()), elem.getProperties(), m_cms);
+        return new CmsContainerElementBean(m_cms, m_cms.readResource(elem.getStructureId()), elem.getProperties());
     }
 
     /**
@@ -207,7 +207,7 @@ public class CmsADEManager {
     public CmsContainerElementBean createElementBean(CmsUUID structureId, Map<String, String> properties)
     throws CmsException {
 
-        return new CmsContainerElementBean(m_cms.readResource(structureId), properties, m_cms);
+        return new CmsContainerElementBean(m_cms, m_cms.readResource(structureId), properties);
     }
 
     /**
@@ -222,7 +222,7 @@ public class CmsADEManager {
     public CmsContainerElementBean createElementBean(CmsUUID structureId, JSONObject properties)
     throws CmsException, JSONException {
 
-        return new CmsContainerElementBean(m_cms.readResource(structureId), properties, m_cms);
+        return new CmsContainerElementBean(m_cms, m_cms.readResource(structureId), properties);
     }
 
     /**
@@ -372,7 +372,7 @@ public class CmsADEManager {
                 return element;
             }
         }
-        element = new CmsContainerElementBean(m_cms.readResource(convertToServerId(id)), m_cms);
+        element = new CmsContainerElementBean(m_cms, m_cms.readResource(convertToServerId(id)));
         m_cache.cacheContainerElement(id, element);
         return element;
     }

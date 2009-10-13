@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/13 09:28:41 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2009/10/13 09:44:24 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.12 $
+ * @version $Revision: 1.1.2.13 $
  * 
  * @since 7.6
  */
@@ -336,7 +336,7 @@ public final class CmsElementUtil {
      */
     public JSONObject getElementData(CmsResource resource, Collection<String> types) throws CmsException, JSONException {
 
-        CmsContainerElementBean element = new CmsContainerElementBean(resource, m_cms);
+        CmsContainerElementBean element = new CmsContainerElementBean(m_cms, resource);
         return getElementData(element, types);
     }
 
@@ -380,7 +380,7 @@ public final class CmsElementUtil {
      */
     public CmsContainerElementBean getElementBeanForResource(CmsResource resource) {
 
-        CmsContainerElementBean element = new CmsContainerElementBean(resource, m_cms);
+        CmsContainerElementBean element = new CmsContainerElementBean(m_cms, resource);
         return element;
     }
 
