@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2009/09/07 12:41:57 $
- * Version: $Revision: 1.51.2.1 $
+ * Date   : $Date: 2009/10/13 14:23:05 $
+ * Version: $Revision: 1.51.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.51.2.1 $ 
+ * @version $Revision: 1.51.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,6 +133,26 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Returns a string representation for the given array using the given separator.<p>
+     * 
+     * @param arg the array to transform to a String
+     * @param separator the item separator
+     * 
+     * @return the String of the given array
+     */
+    public static String arrayAsString(final String[] arg, String separator) {
+
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < arg.length; i++) {
+            result.append(arg[i]);
+            if (i + 1 < arg.length) {
+                result.append(separator);
+            }
+        }
+        return result.toString();
+    }
+
+    /**
      * Changes the filename suffix. 
      * 
      * @param filename the filename to be changed
@@ -197,10 +217,10 @@ public final class CmsStringUtil {
      * 
      * @return the string representation for the given collection
      */
-    public static String collectionAsString(Collection collection, String separator) {
+    public static String collectionAsString(Collection<?> collection, String separator) {
 
         StringBuffer string = new StringBuffer(128);
-        Iterator it = collection.iterator();
+        Iterator<?> it = collection.iterator();
         while (it.hasNext()) {
             string.append(it.next());
             if (it.hasNext()) {
@@ -1129,28 +1149,6 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Returns a substring of the source, which is at most length characters long.<p>
-     * 
-     * If a char is cut, the given <code>suffix</code> is appended to the result.<p>
-     * 
-     * This is almost the same as calling {@link #trimToSize(String, int, int, String)} with the 
-     * parameters <code>(source, length, length*, suffix)</code>. If <code>length</code>
-     * if larger then 100, then <code>length* = length / 2</code>,
-     * otherwise <code>length* = length</code>.<p>
-     * 
-     * @param source the string to trim
-     * @param length the maximum length of the string to be returned
-     * @param suffix the suffix to append in case the String was trimmed
-     * 
-     * @return a substring of the source, which is at most length characters long
-     */
-    public static String trimToSize(String source, int length, String suffix) {
-
-        int area = (length > 100) ? length / 2 : length;
-        return trimToSize(source, length, area, suffix);
-    }
-
-    /**
      * Returns a substring of the source, which is at most length characters long, cut 
      * in the last <code>area</code> chars in the source at a sentence ending char or whitespace.<p>
      * 
@@ -1207,6 +1205,28 @@ public final class CmsStringUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Returns a substring of the source, which is at most length characters long.<p>
+     * 
+     * If a char is cut, the given <code>suffix</code> is appended to the result.<p>
+     * 
+     * This is almost the same as calling {@link #trimToSize(String, int, int, String)} with the 
+     * parameters <code>(source, length, length*, suffix)</code>. If <code>length</code>
+     * if larger then 100, then <code>length* = length / 2</code>,
+     * otherwise <code>length* = length</code>.<p>
+     * 
+     * @param source the string to trim
+     * @param length the maximum length of the string to be returned
+     * @param suffix the suffix to append in case the String was trimmed
+     * 
+     * @return a substring of the source, which is at most length characters long
+     */
+    public static String trimToSize(String source, int length, String suffix) {
+
+        int area = (length > 100) ? length / 2 : length;
+        return trimToSize(source, length, area, suffix);
     }
 
     /**
