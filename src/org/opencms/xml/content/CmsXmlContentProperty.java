@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2009/10/12 15:24:29 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/13 09:28:41 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,13 +77,18 @@ public class CmsXmlContentProperty {
     private String m_error;
 
     /**
-     * @param propertyName
-     * @param propertyType
-     * @param widget
-     * @param widgetConfiguration
-     * @param ruleRegex
-     * @param ruleType
-     * @param default1
+     * Public constructor.
+     * 
+     * @param propertyName the property name
+     * @param propertyType the property type (string|uri)
+     * @param widget the widget
+     * @param widgetConfiguration the widget configuration
+     * @param ruleRegex the validation rule regex
+     * @param ruleType the validation rule type
+     * @param default1 the default value
+     * @param niceName the nice-name
+     * @param description  the description
+     * @param error the error message
      */
     public CmsXmlContentProperty(
         String propertyName,
@@ -92,7 +97,10 @@ public class CmsXmlContentProperty {
         String widgetConfiguration,
         String ruleRegex,
         String ruleType,
-        String default1) {
+        String default1,
+        String niceName,
+        String description,
+        String error) {
 
         super();
         m_propertyName = propertyName;
@@ -102,6 +110,9 @@ public class CmsXmlContentProperty {
         m_ruleRegex = ruleRegex;
         m_ruleType = ruleType;
         m_default = default1;
+        m_niceName = niceName;
+        m_description = description;
+        m_error = error;
     }
 
     /**

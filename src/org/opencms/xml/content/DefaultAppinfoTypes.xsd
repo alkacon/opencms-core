@@ -147,6 +147,10 @@
 		<xsd:attribute name="default" type="xsd:string" use="optional" />
 		<xsd:attribute name="rule-regex" type="xsd:string" use="optional" />
 		<xsd:attribute name="rule-type" type="OpenCmsDefaultAppinfoValidationruleType" use="optional" />
+		<xsd:attribute name="nice-name" type="xsd:string" use="optional" />
+		<xsd:attribute name="desciption" type="xsd:string" use="optional" />
+		<xsd:attribute name="error" type="xsd:string" use="optional" />
+		
 	</xsd:complexType>
 	
 	<xsd:simpleType name="OpenCmsDefaultAppinfoPropertyType">

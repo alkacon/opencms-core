@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/12 15:24:28 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2009/10/13 09:28:41 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.editors.ade;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -38,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -46,11 +48,13 @@ import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -70,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  * 
  * @since 7.6
  */
@@ -390,6 +394,9 @@ public final class CmsElementUtil {
      */
     public JSONObject getElementPropertyInfo(CmsContainerElementBean element) throws CmsException, JSONException {
 
+        CmsUserSettings settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
+        CmsMessages messages = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, element.getElement()).getMessages(
+            settings.getLocale());
         JSONObject result = new JSONObject();
         Map<String, CmsXmlContentProperty> propertiesConf = CmsContainerElementBean.getPropertyConfiguration(
             m_cms,
@@ -400,17 +407,23 @@ public final class CmsElementUtil {
             JSONObject jSONProperty = new JSONObject();
             String propertyName = itProperties.next();
             CmsXmlContentProperty conf = propertiesConf.get(propertyName);
-
+            CmsMacroResolver.resolveMacros(conf.getWidgetConfiguration(), m_cms, Messages.get().getBundle());
             jSONProperty.put(P_PROPERTY_VALUE, properties.get(propertyName).getStructureValue());
             jSONProperty.put(P_PROPERTY_DEFAULT_VALUE, conf.getDefault());
             jSONProperty.put(P_PROPERTY_TYPE, conf.getPropertyType());
             jSONProperty.put(P_PROPERTY_WIDGET, conf.getWidget());
-            jSONProperty.put(P_PROPERTY_WIDGET_CONF, conf.getWidgetConfiguration());
+            jSONProperty.put(P_PROPERTY_WIDGET_CONF, CmsMacroResolver.resolveMacros(
+                conf.getWidgetConfiguration(),
+                m_cms,
+                messages));
             jSONProperty.put(P_PROPERTY_RULE_TYPE, conf.getRuleType());
             jSONProperty.put(P_PROPERTY_RULE_REGEX, conf.getRuleRegex());
-            jSONProperty.put(P_PROPERTY_NICE_NAME, conf.getNiceName());
-            jSONProperty.put(P_PROPERTY_DESCRIPTION, conf.getDescription());
-            jSONProperty.put(P_PROPERTY_ERROR, conf.getError());
+            jSONProperty.put(P_PROPERTY_NICE_NAME, CmsMacroResolver.resolveMacros(conf.getNiceName(), m_cms, messages));
+            jSONProperty.put(P_PROPERTY_DESCRIPTION, CmsMacroResolver.resolveMacros(
+                conf.getDescription(),
+                m_cms,
+                messages));
+            jSONProperty.put(P_PROPERTY_ERROR, CmsMacroResolver.resolveMacros(conf.getError(), m_cms, messages));
             result.put(propertyName, jSONProperty);
         }
         return result;

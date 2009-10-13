@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/10/12 15:24:28 $
- * Version: $Revision: 1.64.2.9 $
+ * Date   : $Date: 2009/10/13 09:28:40 $
+ * Version: $Revision: 1.64.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64.2.9 $ 
+ * @version $Revision: 1.64.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,8 +112,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "default" appinfo attribute name. */
     public static final String APPINFO_ATTR_DEFAULT = "default";
 
+    /** Constant for the "description" appinfo attribute name. */
+    public static final String APPINFO_ATTR_DESCRIPTION = "description";
+
     /** Constant for the "element" appinfo attribute name. */
     public static final String APPINFO_ATTR_ELEMENT = "element";
+
+    /** Constant for the "error" appinfo attribute name. */
+    public static final String APPINFO_ATTR_ERROR = "error";
 
     /** Constant for the "invalidate" appinfo attribute name. */
     public static final String APPINFO_ATTR_INVALIDATE = "invalidate";
@@ -126,6 +132,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "name" appinfo attribute name. */
     public static final String APPINFO_ATTR_NAME = "name";
+
+    /** Constant for the "nice-name" appinfo attribute name. */
+    public static final String APPINFO_ATTR_NICE_NAME = "nice-name";
 
     /** Constant for the "regex" appinfo attribute name. */
     public static final String APPINFO_ATTR_REGEX = "regex";
@@ -1472,7 +1481,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 element.attributeValue(APPINFO_ATTR_WIDGET_CONFIG),
                 element.attributeValue(APPINFO_ATTR_RULE_REGEX),
                 element.attributeValue(APPINFO_ATTR_RULE_TYPE),
-                element.attributeValue(APPINFO_ATTR_DEFAULT));
+                element.attributeValue(APPINFO_ATTR_DEFAULT),
+                element.attributeValue(APPINFO_ATTR_NICE_NAME),
+                element.attributeValue(APPINFO_ATTR_DESCRIPTION),
+                element.attributeValue(APPINFO_ATTR_ERROR));
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(property.getPropertyName())) {
                 m_properties.put(property.getPropertyName(), property);
             }
