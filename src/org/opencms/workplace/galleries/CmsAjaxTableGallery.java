@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxTableGallery.java,v $
- * Date   : $Date: 2009/08/20 11:31:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/10/13 07:50:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.galleries;
 
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.json.JSONException;
@@ -41,7 +40,6 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.5.0
  */
@@ -152,20 +150,8 @@ public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
     @Override
     protected void buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath) {
 
-        String cssFile = "";
-        String html;
         try {
-            cssFile = getJsp().link(
-                getCms().readPropertyObject(sitePath, CmsPropertyDefinition.PROPERTY_STYLESHEET, true).getValue(""));
-
-            StringBuffer htmltable = new StringBuffer();
-            if (CmsStringUtil.isNotEmpty(cssFile)) {
-                htmltable.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(cssFile).append("\">");
-            }
-            html = new String(getCms().readFile(res).getContents());
-            htmltable.append(html);
-
-            jsonObj.append("htmltable", htmltable);
+            jsonObj.append("htmltable", new String(getCms().readFile(res).getContents()));
         } catch (CmsException e) {
             // reading the resource or property value failed
             if (LOG.isErrorEnabled()) {
