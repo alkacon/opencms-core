@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentMacroVisitor.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/10/13 11:59:44 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.2.1 $ 
  * 
  * @since 6.5.5 
  */
-class CmsXmlContentMacroVisitor implements I_CmsXmlContentValueVisitor {
+public class CmsXmlContentMacroVisitor implements I_CmsXmlContentValueVisitor {
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContentMacroVisitor.class);

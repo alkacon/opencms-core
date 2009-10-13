@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerBean.java,v $
- * Date   : $Date: 2009/08/27 14:46:18 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerBean.java,v $
+ * Date   : $Date: 2009/10/13 11:59:42 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.xml.containerpage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,10 +44,10 @@ import java.util.List;
  * 
  * @since 7.6 
  */
-public class CmsContainerBean {
+public class CmsContainerBean implements I_CmsContainerBean {
 
     /** The container elements.*/
-    private List<CmsContainerElementBean> m_elements;
+    private List<I_CmsContainerElementBean> m_elements;
 
     /** The maximal number of elements in the container.*/
     private int m_maxElements;
@@ -70,7 +70,7 @@ public class CmsContainerBean {
         m_name = name;
         m_type = type;
         m_maxElements = maxElements;
-        m_elements = new ArrayList<CmsContainerElementBean>();
+        m_elements = new ArrayList<I_CmsContainerElementBean>();
     }
 
     /**
@@ -78,25 +78,21 @@ public class CmsContainerBean {
      * 
      * @param elem the element to add
      */
-    public void addElement(CmsContainerElementBean elem) {
+    public void addElement(I_CmsContainerElementBean elem) {
 
         m_elements.add(elem);
     }
 
     /**
-     * Returns the elements.<p>
-     *
-     * @return the elements
+     * @see org.opencms.xml.containerpage.I_CmsContainerBean#getElements()
      */
-    public List<CmsContainerElementBean> getElements() {
+    public List<I_CmsContainerElementBean> getElements() {
 
         return Collections.unmodifiableList(m_elements);
     }
 
     /**
-     * Returns the maximal number of elements in the container.<p>
-     *
-     * @return the maximal number of elements in the container
+     * @see org.opencms.xml.containerpage.I_CmsContainerBean#getMaxElements()
      */
     public int getMaxElements() {
 
@@ -104,9 +100,7 @@ public class CmsContainerBean {
     }
 
     /**
-     * Returns the name.<p>
-     *
-     * @return the name
+     * @see org.opencms.xml.containerpage.I_CmsContainerBean#getName()
      */
     public String getName() {
 
@@ -114,9 +108,7 @@ public class CmsContainerBean {
     }
 
     /**
-     * Returns the type.<p>
-     *
-     * @return the type
+     * @see org.opencms.xml.containerpage.I_CmsContainerBean#getType()
      */
     public String getType() {
 

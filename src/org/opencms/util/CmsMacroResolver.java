@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2009/10/12 10:14:51 $
- * Version: $Revision: 1.28.2.2 $
+ * Date   : $Date: 2009/10/13 11:59:47 $
+ * Version: $Revision: 1.28.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,8 +41,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
-import org.opencms.workplace.editors.ade.CmsADEManager;
-import org.opencms.workplace.editors.ade.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.I_CmsContainerElementBean;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28.2.2 $ 
+ * @version $Revision: 1.28.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -607,10 +607,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
                         if (m_jspPageContext != null) {
                             try {
-                                CmsContainerElementBean element = CmsADEManager.getCurrentElement(m_jspPageContext.getRequest());
+                                I_CmsContainerElementBean element = CmsADEManager.getCurrentElement(m_jspPageContext.getRequest());
                                 value = m_cms.getSitePath(element.getElement());
                             } catch (CmsException ex) {
                                 LOG.warn(ex);
+                                LOG.debug(ex.getLocalizedMessage(), ex);
                             }
                         }
                         break;

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageHandler.java,v $
- * Date   : $Date: 2009/09/01 08:44:20 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerPageHandler.java,v $
+ * Date   : $Date: 2009/10/13 11:59:40 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,10 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
-import org.opencms.loader.CmsContainerPageLoader;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
@@ -48,7 +47,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 7.6
  */
@@ -76,10 +75,10 @@ public class CmsContainerPageHandler extends CmsDefaultXmlContentHandler {
 
         // get the current name
         Locale locale = value.getLocale();
-        String namePath = CmsXmlUtils.concatXpath(value.getPath(), CmsContainerPageLoader.N_NAME);
+        String namePath = CmsXmlUtils.concatXpath(value.getPath(), CmsXmlContainerPage.N_NAME);
         String name = content.getValue(namePath, locale).getStringValue(cms);
         // iterate over all containers
-        Iterator<I_CmsXmlContentValue> itValues = content.getValues(CmsContainerPageLoader.N_CONTAINER, locale).iterator();
+        Iterator<I_CmsXmlContentValue> itValues = content.getValues(CmsXmlContainerPage.N_CONTAINER, locale).iterator();
         while (itValues.hasNext()) {
             I_CmsXmlContentValue itValue = itValues.next();
             if (itValue.getPath().equals(value.getPath())) {
@@ -87,7 +86,7 @@ public class CmsContainerPageHandler extends CmsDefaultXmlContentHandler {
                 continue;
             }
             // get container name
-            namePath = CmsXmlUtils.concatXpath(itValue.getPath(), CmsContainerPageLoader.N_NAME);
+            namePath = CmsXmlUtils.concatXpath(itValue.getPath(), CmsXmlContainerPage.N_NAME);
             String itName = content.getValue(namePath, locale).getStringValue(cms);
             // validate
             if (name.equals(itName)) {
@@ -111,7 +110,7 @@ public class CmsContainerPageHandler extends CmsDefaultXmlContentHandler {
         }
 
         // we only have to validate containers
-        if ((value != null) && CmsXmlUtils.removeXpath(value.getPath()).equals(CmsContainerPageLoader.N_CONTAINER)) {
+        if ((value != null) && CmsXmlUtils.removeXpath(value.getPath()).equals(CmsXmlContainerPage.N_CONTAINER)) {
             CmsXmlContent content = (CmsXmlContent)value.getDocument();
             try {
                 validateNames(cms, value, content);

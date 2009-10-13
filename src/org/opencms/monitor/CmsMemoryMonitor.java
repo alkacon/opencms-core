@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/10/12 10:14:50 $
- * Version: $Revision: 1.69.2.9 $
+ * Date   : $Date: 2009/10/13 11:59:45 $
+ * Version: $Revision: 1.69.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,11 +72,6 @@ import org.opencms.util.CmsMapGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
-import org.opencms.workplace.editors.ade.CmsADEManager;
-import org.opencms.workplace.editors.ade.CmsContainerElement;
-import org.opencms.workplace.editors.ade.CmsContainerElementBean;
-import org.opencms.workplace.editors.ade.CmsContainerPageBean;
-import org.opencms.workplace.editors.ade.CmsSearchOptions;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 
@@ -108,7 +103,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69.2.9 $ 
+ * @version $Revision: 1.69.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,12 +124,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Cache for access control lists. */
     private Map m_accessControlListCache;
 
-    /** Cache for ADE recent lists. */
-    private Map<String, List<CmsContainerElement>> m_adeRecentLists;
-
-    /** Cache for ADE search options. */
-    private Map<String, CmsSearchOptions> m_adeSearchOptions;
-
     /** If the property cache is enabled. */
     private boolean m_cacheProperty = true;
 
@@ -149,15 +138,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_configuration;
-
-    /** Cache for offline container pages. */
-    private Map m_containerPagesOffline;
-
-    /** Cache for online container pages. */
-    private Map m_containerPagesOnline;
-
-    /** Cache for offline container elements. */
-    private Map<String, CmsContainerElementBean> m_containerElementsOffline;
 
     /** A temporary cache for XML content definitions. */
     private Map m_contentDefinitionsCache;
@@ -517,57 +497,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * Caches the given ADE recent list under the given cache key.<p>
-     * 
-     * @param key the cache key
-     * @param list the recent list to cache
-     */
-    public void cacheADERecentList(String key, List<CmsContainerElement> list) {
-
-        m_adeRecentLists.put(key, list);
-    }
-
-    /**
-     * Caches the given ADE search options under the given cache key.<p>
-     * 
-     * @param key the cache key
-     * @param opts the search options to cache
-     */
-    public void cacheADESearchOptions(String key, CmsSearchOptions opts) {
-
-        m_adeSearchOptions.put(key, opts);
-    }
-
-    /**
-     * Caches the given container page under the given key and for the given project.<p>
-     * 
-     * @param key the cache key
-     * @param containerPage the object to cache
-     * @param online if to cache in online or offline project
-     */
-    public void cacheContainerPages(String key, Map<Locale, CmsContainerPageBean> containerPage, boolean online) {
-
-        if (online) {
-            m_containerPagesOnline.put(key, containerPage);
-        } else {
-            m_containerPagesOffline.put(key, containerPage);
-        }
-    }
-
-    /**
-     * Caches the given container element under the given key and for the given project.<p>
-     * 
-     * @param key the cache key
-     * @param containerElement the object to cache
-     * @param online if to cache in online or offline project
-     */
-    public void cacheContainerElement(String key, CmsContainerElementBean containerElement) {
-
-        m_containerElementsOffline.put(key, containerElement);
-
-    }
-
-    /**
      * Caches the given content definition under the given cache key.<p>
      * 
      * @param key the cache key
@@ -869,11 +798,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushPropertyLists();
         flushProjectResources();
         flushPublishedResources();
-        flushContainerPages(true);
-        flushContainerPages(false);
-        flushContainerElements();
-        flushADERecentLists();
-        flushADESearchOptions();
     }
 
     /**
@@ -929,47 +853,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public void flushACLs() {
 
         m_accessControlListCache.clear();
-    }
-
-    /**
-     * Flushes the ADE recent list cache.<p>
-     */
-    public void flushADERecentLists() {
-
-        m_adeRecentLists.clear();
-    }
-
-    /**
-     * Flushes the ADE search options cache.<p>
-     */
-    public void flushADESearchOptions() {
-
-        m_adeSearchOptions.clear();
-    }
-
-    /**
-     * Flushes the container pages cache.<p>
-     * 
-     * @param online if to flush the online or offline cache
-     */
-    public void flushContainerPages(boolean online) {
-
-        if (online) {
-            m_containerPagesOnline.clear();
-        } else {
-            m_containerPagesOffline.clear();
-        }
-    }
-
-    /**
-     * Flushes the container elements cache.<p>
-     * 
-     * @param online if to flush the online or offline cache
-     */
-    public void flushContainerElements() {
-
-        m_containerElementsOffline.clear();
-
     }
 
     /**
@@ -1175,30 +1058,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * Returns the ADE recent list cached with the given cache key or <code>null</code> if not found.<p>
-     * 
-     * @param key the cache key to look for, this may be the user's uuid
-     * 
-     * @return the cached recent list with the given cache key
-     */
-    public List<CmsContainerElement> getADERecentList(String key) {
-
-        return m_adeRecentLists.get(key);
-    }
-
-    /**
-     * Returns the ADE search options cached with the given cache key or <code>null</code> if not found.<p>
-     * 
-     * @param key the cache key to look for, this may be the user's uuid
-     * 
-     * @return the cached search options with the given cache key
-     */
-    public CmsSearchOptions getADESearchOptions(String key) {
-
-        return m_adeSearchOptions.get(key);
-    }
-
-    /**
      * Returns all cached lock root paths.<p>
      * 
      * @return a list of {@link String} objects
@@ -1236,37 +1095,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public List getAllCachedPublishJobsInHistory() {
 
         return new ArrayList(m_publishHistory);
-    }
-
-    /**
-     * Returns the cached container page under the given key and for the given project.<p>
-     * 
-     * @param key the cache key
-     * @param online if cached in online or offline project
-     * 
-     * @return  the cached container page or <code>null</code> if not found
-     */
-    public Map<Locale, CmsContainerPageBean> getCacheContainerPage(String key, boolean online) {
-
-        if (online) {
-            return (Map<Locale, CmsContainerPageBean>)m_containerPagesOnline.get(key);
-        } else {
-            return (Map<Locale, CmsContainerPageBean>)m_containerPagesOffline.get(key);
-        }
-    }
-
-    /**
-     * Returns the cached container element under the given key and for the given project.<p>
-     * 
-     * @param key the cache key
-     * @param online if cached in online or offline project
-     * 
-     * @return  the cached container element or <code>null</code> if not found
-     */
-    public CmsContainerElementBean getCacheContainerElement(String key) {
-
-        return m_containerElementsOffline.get(key);
-
     }
 
     /**
@@ -1819,20 +1647,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_accessControlListCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".accessControlListCache", lruMap);
 
-        // container page caches
-        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
-        m_containerPagesOffline = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".containerPagesOffline", lruMap);
-
-        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
-        m_containerPagesOnline = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".containerPagesOnline", lruMap);
-
-        // container element caches
-        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerElementOfflineSize());
-        m_containerElementsOffline = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".containerElementsOffline", lruMap);
-
         // vfs object cache
         Map vfsObjectCache = new HashMap();
         m_vfsObjectCache = Collections.synchronizedMap(vfsObjectCache);
@@ -1842,16 +1656,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         Map memObjectCache = new HashMap();
         m_memObjectCache = Collections.synchronizedMap(memObjectCache);
         register(CmsMemoryObjectCache.class.getName(), memObjectCache);
-
-        // ADE search options
-        Map<String, CmsSearchOptions> adeSearchOptions = new HashMap<String, CmsSearchOptions>();
-        m_adeSearchOptions = Collections.synchronizedMap(adeSearchOptions);
-        register(CmsADEManager.class.getName(), adeSearchOptions);
-
-        // ADE recent lists
-        Map<String, List<CmsContainerElement>> adeRecentList = new HashMap<String, List<CmsContainerElement>>();
-        m_adeRecentLists = Collections.synchronizedMap(adeRecentList);
-        register(CmsADEManager.class.getName(), adeRecentList);
 
         if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
@@ -2064,36 +1868,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushXmlTemporaryEntities();
         flushRoles();
         flushRoleLists();
-        flushContainerPages(true);
-        flushContainerPages(false);
-        flushContainerElements();
-    }
-
-    /**
-     * Removes the container page identified by the given cache key from the cache.<p>
-     * 
-     * @param cacheKey the cache key to identify the container page to remove
-     * @param online if online or offline
-     */
-    public void uncacheContainerPage(String cacheKey, boolean online) {
-
-        if (online) {
-            m_containerPagesOnline.remove(cacheKey);
-        } else {
-            m_containerPagesOffline.remove(cacheKey);
-        }
-    }
-
-    /**
-     * Removes the container element identified by the given cache key from the cache.<p>
-     * 
-     * @param cacheKey the cache key to identify the container element to remove
-     * @param online if online or offline
-     */
-    public void uncacheContainerElement(String cacheKey) {
-
-        m_containerElementsOffline.remove(cacheKey);
-
     }
 
     /**

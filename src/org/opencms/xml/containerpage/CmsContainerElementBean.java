@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/10/13 09:44:23 $
- * Version: $Revision: 1.1.2.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerElementBean.java,v $
+ * Date   : $Date: 2009/10/13 11:59:40 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -54,11 +54,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 7.6 
  */
-public class CmsContainerElementBean {
+public class CmsContainerElementBean implements I_CmsContainerElementBean {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContainerElementBean.class);
@@ -77,7 +77,7 @@ public class CmsContainerElementBean {
 
     /** 
      * Creates a new container page element bean.<p> 
-     * 
+     *  
      * @param cms the cms-object
      * @param element the element 
      **/
@@ -88,7 +88,7 @@ public class CmsContainerElementBean {
 
     /** 
      * Creates a new container page element bean.<p> 
-     * 
+     *  
      * @param cms the cms-object
      * @param element the element 
      * @param formatter the formatter
@@ -106,9 +106,9 @@ public class CmsContainerElementBean {
         initProperties(cms);
     }
 
-    /**
+    /** 
      * Creates a new container page element bean.<p> 
-     * 
+     *  
      * @param cms the cms-object
      * @param element the element 
      * @param properties the properties as a JSON object
@@ -134,7 +134,7 @@ public class CmsContainerElementBean {
 
     /**
      * Creates a new container page element bean.<p> 
-     * 
+     *  
      * @param cms the cms-object
      * @param element the element 
      * @param properties the properties as a map of name/value pairs
@@ -186,7 +186,7 @@ public class CmsContainerElementBean {
      * 
      * @return the CmsContainerElement representing this element bean
      */
-    public CmsContainerElement getContainerElement() {
+    public CmsContainerListElement getContainerElement() {
 
         Map<String, String> properties = new HashMap<String, String>();
         Iterator<String> itProperties = m_properties.keySet().iterator();
@@ -197,7 +197,7 @@ public class CmsContainerElementBean {
                 properties.put(propertyName, property.getStructureValue());
             }
         }
-        return new CmsContainerElement(m_element.getStructureId(), properties);
+        return new CmsContainerListElement(m_element.getStructureId(), properties);
     }
 
     /**
@@ -231,9 +231,7 @@ public class CmsContainerElementBean {
     }
 
     /**
-     * Returns a hash-code of all element properties set in the container-page.<p>
-     * 
-     * @return the hash-code (0 if no properties were set)
+     * @see org.opencms.xml.containerpage.I_CmsContainerElementBean#getPropertyHash()
      */
     public int getPropertyHash() {
 

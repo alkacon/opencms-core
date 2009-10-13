@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageBean.java,v $
- * Date   : $Date: 2009/10/06 08:19:06 $
- * Version: $Revision: 1.1.2.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerPageBean.java,v $
+ * Date   : $Date: 2009/10/13 11:59:40 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.xml.containerpage;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,24 +39,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * One locale of a container page.<p>
+ * Describes one locale of a container page.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
- * @since 7.6 
+ * @since 7.6
  */
-public class CmsContainerPageBean {
-
-    /** The template container type. */
-    public static final String TYPE_TEMPLATE = "template";
-
-    /** The template container element parameter name. */
-    public static final String TEMPLATE_ELEMENT_PARAMETER = "id";
+public class CmsContainerPageBean implements I_CmsContainerPageBean {
 
     /** The containers. */
-    private Map<String, CmsContainerBean> m_containers;
+    private Map<String, I_CmsContainerBean> m_containers;
 
     /** The locale. */
     private Locale m_locale;
@@ -72,7 +66,7 @@ public class CmsContainerPageBean {
     public CmsContainerPageBean(Locale locale) {
 
         m_locale = locale;
-        m_containers = new HashMap<String, CmsContainerBean>();
+        m_containers = new HashMap<String, I_CmsContainerBean>();
         m_types = new HashSet<String>();
     }
 
@@ -81,26 +75,22 @@ public class CmsContainerPageBean {
      * 
      * @param container the container to add
      */
-    public void addContainer(CmsContainerBean container) {
+    public void addContainer(I_CmsContainerBean container) {
 
         m_containers.put(container.getName(), container);
         m_types.add(container.getType());
     }
 
     /**
-     * Returns the containers.<p>
-     *
-     * @return the containers
+     * @see org.opencms.xml.containerpage.I_CmsContainerPageBean#getContainers()
      */
-    public Map<String, CmsContainerBean> getContainers() {
+    public Map<String, I_CmsContainerBean> getContainers() {
 
         return Collections.unmodifiableMap(m_containers);
     }
 
     /**
-     * Returns the locale.<p>
-     *
-     * @return the locale
+     * @see org.opencms.xml.containerpage.I_CmsContainerPageBean#getLocale()
      */
     public Locale getLocale() {
 
@@ -108,9 +98,7 @@ public class CmsContainerPageBean {
     }
 
     /**
-     * Returns the types.<p>
-     *
-     * @return the types
+     * @see org.opencms.xml.containerpage.I_CmsContainerPageBean#getTypes()
      */
     public Set<String> getTypes() {
 

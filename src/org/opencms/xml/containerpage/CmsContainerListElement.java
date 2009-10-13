@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerElement.java,v $
- * Date   : $Date: 2009/10/12 10:14:49 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerListElement.java,v $
+ * Date   : $Date: 2009/10/13 11:59:42 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.xml.containerpage;
 
 import org.opencms.util.CmsUUID;
 
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * 
  */
-public class CmsContainerElement implements Serializable {
+public class CmsContainerListElement implements Serializable {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 1L;
@@ -64,7 +64,7 @@ public class CmsContainerElement implements Serializable {
      * @param id the structure-id of the element
      * @param properties the properties as name/value
      */
-    public CmsContainerElement(CmsUUID id, Map<String, String> properties) {
+    public CmsContainerListElement(CmsUUID id, Map<String, String> properties) {
 
         m_structureId = id;
         m_properties = properties;

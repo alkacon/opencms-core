@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsSearchOptions.java,v $
- * Date   : $Date: 2009/10/06 08:19:05 $
- * Version: $Revision: 1.1.2.7 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsSearchOptions.java,v $
+ * Date   : $Date: 2009/10/13 11:59:41 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,11 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.xml.containerpage;
 
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.ade.CmsADEServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 7.6 
  */

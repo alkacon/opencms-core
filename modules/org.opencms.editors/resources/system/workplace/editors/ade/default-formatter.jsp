@@ -33,16 +33,16 @@ pageContext.setAttribute("cms", cms);
 			<div class="cms-additional">
 			    <!-- TODO: WHY NOT TO USE THE TITLE ATTRIBUTE?? -->
 			    <c:if test="${cms.new}" >
-				<div alt="<fmt:message key="MESSAGE_DEFAULT_FORMATTER_NEWNAME_1"><fmt:param value="${cms.nextNewFileName}"/></fmt:message>">
-					<span class="cms-left"><fmt:message key="MESSAGE_DEFAULT_FORMATTER_NEWNAME_0" /></span>${cms.nextNewFileName}
+				<div alt="<fmt:message key="GUI_DEFAULT_FORMATTER_NEWNAME_1"><fmt:param value="${cms.nextNewFileName}"/></fmt:message>">
+					<span class="cms-left"><fmt:message key="GUI_DEFAULT_FORMATTER_NEWNAME_0" /></span>${cms.nextNewFileName}
 				</div>
 			    </c:if>
 			    <c:if test="${!cms.new}" >
-				<div alt="<fmt:message key="MESSAGE_DEFAULT_FORMATTER_FILE_1"><fmt:param value="${cms.path}"/></fmt:message>">
-					<span class="cms-left"><fmt:message key="MESSAGE_DEFAULT_FORMATTER_FILE_0" /></span>${cms.path}
+				<div alt="<fmt:message key="GUI_DEFAULT_FORMATTER_FILE_1"><fmt:param value="${cms.path}"/></fmt:message>">
+					<span class="cms-left"><fmt:message key="GUI_DEFAULT_FORMATTER_FILE_0" /></span>${cms.path}
 				</div>
-				<div alt="<fmt:message key="MESSAGE_DEFAULT_FORMATTER_TYPE_1"><fmt:param value="${cms.typeName}"/></fmt:message>">
-					<span class="cms-left"><fmt:message key="MESSAGE_DEFAULT_FORMATTER_TYPE_0" /></span>${cms.typeName}
+				<div alt="<fmt:message key="GUI_DEFAULT_FORMATTER_TYPE_1"><fmt:param value="${cms.typeName}"/></fmt:message>">
+					<span class="cms-left"><fmt:message key="GUI_DEFAULT_FORMATTER_TYPE_0" /></span>${cms.typeName}
 				</div>
 			    </c:if>
 			</div>

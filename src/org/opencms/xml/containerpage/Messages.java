@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/10/13 11:59:43 $
- * Version: $Revision: 1.1.2.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/Messages.java,v $
+ * Date   : $Date: 2009/10/13 11:59:41 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.xml.containerpage;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -39,53 +39,71 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_GENERATE_FORMATTED_ELEMENT_3 = "ERR_GENERATE_FORMATTED_ELEMENT_3";
+    public static final String ERR_DUPLICATE_NAME_1 = "ERR_DUPLICATE_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIG_NOT_FOUND_3 = "ERR_CONFIG_NOT_FOUND_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIG_NOT_SET_2 = "ERR_CONFIG_NOT_SET_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIG_WRONG_TYPE_3 = "ERR_CONFIG_WRONG_TYPE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_ID_1 = "ERR_INVALID_ID_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_JSON_INVALID_ACTION_URL_1 = "ERR_JSON_INVALID_ACTION_URL_1";
+    public static final String ERR_JSON_EXCEPTION_1 = "ERR_JSON_EXCEPTION_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_JSON_MISSING_PARAMETER_1 = "ERR_JSON_MISSING_PARAMETER_1";
+    public static final String ERR_NO_TYPE_CONFIG_1 = "ERR_NO_TYPE_CONFIG_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_JSON_WRONG_PARAMETER_VALUE_2 = "ERR_JSON_WRONG_PARAMETER_VALUE_2";
+    public static final String ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1 = "ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_SERVER_EXCEPTION_1 = "ERR_SERVER_EXCEPTION_1";
+    public static final String ERR_READING_ELEMENT_FROM_REQUEST_0 = "ERR_READING_ELEMENT_FROM_REQUEST_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_FORMATTER_FILE_0 = "GUI_DEFAULT_FORMATTER_FILE_0";
+    public static final String LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2 = "LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_FORMATTER_FILE_1 = "GUI_DEFAULT_FORMATTER_FILE_1";
+    public static final String LOG_CONTAINER_PAGE_NOT_FOUND_1 = "LOG_CONTAINER_PAGE_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_FORMATTER_NEWNAME_0 = "GUI_DEFAULT_FORMATTER_NEWNAME_0";
+    public static final String LOG_DEBUG_CACHE_MATCHED_OFFLINE_2 = "LOG_DEBUG_CACHE_MATCHED_OFFLINE_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_FORMATTER_NEWNAME_1 = "GUI_DEFAULT_FORMATTER_NEWNAME_1";
+    public static final String LOG_DEBUG_CACHE_MATCHED_ONLINE_2 = "LOG_DEBUG_CACHE_MATCHED_ONLINE_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_FORMATTER_TEXT_0 = "GUI_DEFAULT_FORMATTER_TEXT_0";
+    public static final String LOG_DEBUG_CACHE_MISSED_OFFLINE_1 = "LOG_DEBUG_CACHE_MISSED_OFFLINE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_FORMATTER_TYPE_0 = "GUI_DEFAULT_FORMATTER_TYPE_0";
+    public static final String LOG_DEBUG_CACHE_MISSED_ONLINE_1 = "LOG_DEBUG_CACHE_MISSED_ONLINE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_FORMATTER_TYPE_1 = "GUI_DEFAULT_FORMATTER_TYPE_1";
+    public static final String LOG_DEBUG_CACHE_SET_OFFLINE_2 = "LOG_DEBUG_CACHE_SET_OFFLINE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_CACHE_SET_ONLINE_2 = "LOG_DEBUG_CACHE_SET_ONLINE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_NO_FORMATTERS_DEFINED_1 = "LOG_WARN_NO_FORMATTERS_DEFINED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_UNCACHE_NULL_0 = "LOG_WARN_UNCACHE_NULL_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.editors.ade.messages";
+    private static final String BUNDLE_NAME = "org.opencms.xml.containerpage.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

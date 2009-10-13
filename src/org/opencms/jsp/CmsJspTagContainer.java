@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/10/12 10:14:52 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2009/10/13 11:59:45 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,13 +39,16 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.editors.ade.CmsContainerBean;
-import org.opencms.workplace.editors.ade.CmsContainerElementBean;
-import org.opencms.workplace.editors.ade.CmsContainerPageBean;
-import org.opencms.workplace.editors.ade.CmsContainerPageCache;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsContainerBean;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.I_CmsContainerBean;
+import org.opencms.xml.containerpage.I_CmsContainerElementBean;
+import org.opencms.xml.containerpage.I_CmsContainerPageBean;
 
 import java.util.Locale;
 
@@ -62,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.13 $ 
+ * @version $Revision: 1.1.2.14 $ 
  * 
  * @since 7.6 
  */
@@ -71,8 +74,8 @@ public class CmsJspTagContainer extends TagSupport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1228397990961282556L;
 
-    /** The page-context parameter for the current element-bean. */
-    public static final String P_CURRENT_ELEMENT = "__currentElement";
+    /** The request attribute name for the current element-bean. */
+    public static final String ATTR_CURRENT_ELEMENT = "__currentElement";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagContainer.class);
@@ -136,13 +139,11 @@ public class CmsJspTagContainer extends TagSupport {
                     cntPagePath));
             }
             actAsTemplate = true;
-        } else if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
+        } else if (req.getParameter(I_CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
             actAsTemplate = true;
         }
-        CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
-            cms,
-            containerPage,
-            cms.getRequestContext().getLocale());
+        CmsADEManager manager = OpenCms.getADEManager(cms, cms.getSitePath(containerPage), req);
+        I_CmsContainerPageBean cntPage = manager.getCache(cms, containerPage, cms.getRequestContext().getLocale());
         Locale locale = cntPage.getLocale();
 
         // get the container
@@ -176,7 +177,7 @@ public class CmsJspTagContainer extends TagSupport {
                 containerName));
             //}
         }
-        CmsContainerBean container = cntPage.getContainers().get(containerName);
+        I_CmsContainerBean container = cntPage.getContainers().get(containerName);
 
         // validate the type
         if (!containerType.equals(container.getType())) {
@@ -196,7 +197,7 @@ public class CmsJspTagContainer extends TagSupport {
                     new Object[] {cms.getSitePath(containerPage), locale, containerName, containerMaxElements}), e);
             }
             // actualize the cache
-            container.setMaxElements(maxElements);
+            ((CmsContainerBean)container).setMaxElements(maxElements);
         }
 
         // get the actual number of elements to render
@@ -205,19 +206,19 @@ public class CmsJspTagContainer extends TagSupport {
             renderElems = maxElements;
         }
         if (actAsTemplate) {
-            if (!cntPage.getTypes().contains(CmsContainerPageBean.TYPE_TEMPLATE)) {
+            if (!cntPage.getTypes().contains(I_CmsContainerPageBean.TYPE_TEMPLATE)) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_CONTAINER_PAGE_NO_TYPE_3,
                     cms.getRequestContext().getUri(),
                     cms.getSitePath(containerPage),
-                    CmsContainerPageBean.TYPE_TEMPLATE));
+                    I_CmsContainerPageBean.TYPE_TEMPLATE));
             }
-            if (containerType.equals(CmsContainerPageBean.TYPE_TEMPLATE)) {
+            if (containerType.equals(I_CmsContainerPageBean.TYPE_TEMPLATE)) {
                 // render template element
                 renderElems--;
                 CmsResource resUri;
-                if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
-                    CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
+                if (req.getParameter(I_CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
+                    CmsUUID id = new CmsUUID(req.getParameter(I_CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
                     resUri = cms.readResource(id);
                 } else {
                     resUri = cms.readResource(cms.getRequestContext().getUri());
@@ -228,29 +229,34 @@ public class CmsJspTagContainer extends TagSupport {
                     cms,
                     resUri);
 
-                String elementFormater = contentDef.getContentHandler().getFormatters().get(containerType);
+                String elementFormatter = contentDef.getContentHandler().getFormatters().get(containerType);
 
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormater)) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormatter)) {
                     throw new CmsIllegalStateException(Messages.get().container(
                         Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
                         cms.getRequestContext().getUri(),
                         contentDef.getSchemaLocation(),
-                        CmsContainerPageBean.TYPE_TEMPLATE));
+                        I_CmsContainerPageBean.TYPE_TEMPLATE));
                 }
                 // execute the formatter jsp for the given element uri
-                CmsContainerElementBean element = new CmsContainerElementBean(
+                I_CmsContainerElementBean element = new CmsContainerElementBean(
+                    cms,
                     resUri,
-                    cms.readResource(elementFormater),
-                    null,
-                    cms);
-                req.setAttribute(P_CURRENT_ELEMENT, element);
+                    cms.readResource(elementFormatter),
+                    null);
 
-                CmsJspTagInclude.includeTagAction(pageContext, elementFormater, null, false, null, req, res);
+                Object currentElement = req.getAttribute(ATTR_CURRENT_ELEMENT);
+                req.setAttribute(ATTR_CURRENT_ELEMENT, element);
+                try {
+                    CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, null, false, null, req, res);
+                } finally {
+                    req.setAttribute(ATTR_CURRENT_ELEMENT, currentElement);
+                }
             }
         }
 
         // iterate the elements
-        for (CmsContainerElementBean element : container.getElements()) {
+        for (I_CmsContainerElementBean element : container.getElements()) {
             if (renderElems < 1) {
                 break;
             }
@@ -259,14 +265,11 @@ public class CmsJspTagContainer extends TagSupport {
             CmsResource resUri = element.getElement();
             if (resUri.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
                 // get the subcontainer data from cache
-                CmsContainerPageBean subcntPage = CmsContainerPageCache.getInstance().getCache(
-                    cms,
-                    resUri,
-                    cms.getRequestContext().getLocale());
+                I_CmsContainerPageBean subcntPage = manager.getCache(cms, resUri, cms.getRequestContext().getLocale());
                 // get the first subcontainer
-                CmsContainerBean subcontainer = subcntPage.getContainers().values().iterator().next();
+                I_CmsContainerBean subcontainer = subcntPage.getContainers().values().iterator().next();
                 // iterate the subelements
-                for (CmsContainerElementBean subelement : subcontainer.getElements()) {
+                for (I_CmsContainerElementBean subelement : subcontainer.getElements()) {
                     String subelementUri = cms.getSitePath(subelement.getElement());
                     // get the content definition
                     CmsXmlContentDefinition contentDef = CmsXmlContentDefinition.getContentDefinitionForResource(
@@ -287,15 +290,25 @@ public class CmsJspTagContainer extends TagSupport {
                     }
 
                     // execute the formatter jsp for the given element uri
-                    req.setAttribute(P_CURRENT_ELEMENT, subelement);
-                    CmsJspTagInclude.includeTagAction(pageContext, subelementFormatter, null, false, null, req, res);
+                    Object currentElement = req.getAttribute(ATTR_CURRENT_ELEMENT);
+                    req.setAttribute(ATTR_CURRENT_ELEMENT, subelement);
+                    try {
+                        CmsJspTagInclude.includeTagAction(pageContext, subelementFormatter, null, false, null, req, res);
+                    } finally {
+                        req.setAttribute(ATTR_CURRENT_ELEMENT, currentElement);
+                    }
                 }
             } else {
                 String elementFormatter = cms.getSitePath(element.getFormatter());
 
                 // execute the formatter jsp for the given element uri
-                req.setAttribute(P_CURRENT_ELEMENT, element);
-                CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, null, false, null, req, res);
+                Object currentElement = req.getAttribute(ATTR_CURRENT_ELEMENT);
+                req.setAttribute(ATTR_CURRENT_ELEMENT, element);
+                try {
+                    CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, null, false, null, req, res);
+                } finally {
+                    req.setAttribute(ATTR_CURRENT_ELEMENT, currentElement);
+                }
             }
         }
     }

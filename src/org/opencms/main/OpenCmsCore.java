@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/10/06 08:19:07 $
- * Version: $Revision: 1.245.2.3 $
+ * Date   : $Date: 2009/10/13 11:59:46 $
+ * Version: $Revision: 1.245.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,9 +93,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
-import org.opencms.workplace.editors.ade.CmsADEDefaultConfiguration;
-import org.opencms.workplace.editors.ade.CmsADEManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
+import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
+import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsContainerPageCache;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -112,6 +113,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -142,7 +144,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.245.2.3 $ 
+ * @version $Revision: 1.245.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -261,6 +263,9 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
+
+    /** The container page cache. */
+    private CmsContainerPageCache m_cntPageCache;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
@@ -499,11 +504,11 @@ public final class OpenCmsCore {
      * 
      * @return the advanced direct edit
      */
-    protected CmsADEManager getADEManager(CmsObject cms, String cntPageUri, HttpServletRequest request) {
+    protected CmsADEManager getADEManager(CmsObject cms, String cntPageUri, ServletRequest request) {
 
         // initialize the ADE manager
         // TODO: make this configurable in opencms-workplace.xml
-        return new CmsADEManager(cms, cntPageUri, request, m_memoryMonitor, new CmsADEDefaultConfiguration());
+        return new CmsADEManager(cms, cntPageUri, request, m_cntPageCache, new CmsADEDefaultConfiguration());
     }
 
     /**
@@ -1165,6 +1170,9 @@ public final class OpenCmsCore {
         // initialize the session storage provider
         I_CmsSessionStorageProvider sessionStorageProvider = systemConfiguration.getSessionStorageProvider();
 
+        // initialize the container page cache
+        m_cntPageCache = new CmsContainerPageCache(m_memoryMonitor, systemConfiguration.getCacheSettings());
+
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms;
         try {
@@ -1638,6 +1646,15 @@ public final class OpenCmsCore {
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(
                         Messages.LOG_ERROR_MEMORY_MONITOR_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
+                try {
+                    if (m_cntPageCache != null) {
+                        m_cntPageCache.shutdown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_CNTPAGE_CACHE_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());

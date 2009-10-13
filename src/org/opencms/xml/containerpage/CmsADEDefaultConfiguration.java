@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2009/10/06 08:19:06 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEDefaultConfiguration.java,v $
+ * Date   : $Date: 2009/10/13 11:59:40 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -43,7 +43,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -95,10 +95,10 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     protected String m_cntPageUri;
 
     /** The request itself. */
-    protected HttpServletRequest m_request;
+    protected ServletRequest m_request;
 
     /**
-     * @see org.opencms.workplace.editors.ade.I_CmsADEConfiguration#createNewElement(String)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(String)
      */
     public CmsResource createNewElement(String type) throws CmsException {
 
@@ -110,11 +110,11 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.workplace.editors.ade.I_CmsADEConfiguration#getCreatableElements()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getCreatableElements()
      */
     public List<CmsResource> getCreatableElements() throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(m_cms, m_request.getParameter(CmsADEServer.PARAMETER_CNTPAGE));
+        CmsResource cfg = getConfigurationFile(m_cms, m_request.getParameter(CmsADEManager.PARAMETER_CNTPAGE));
         if (cfg == null) {
             return new ArrayList<CmsResource>();
         }
@@ -122,7 +122,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.workplace.editors.ade.I_CmsADEConfiguration#getFavoriteListMaxSize()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFavoriteListMaxSize()
      */
     public int getFavoriteListMaxSize() {
 
@@ -135,7 +135,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.workplace.editors.ade.I_CmsADEConfiguration#getNextNewFileName(java.lang.String)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getNextNewFileName(java.lang.String)
      */
     public synchronized String getNextNewFileName(String type) throws CmsException {
 
@@ -145,7 +145,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.workplace.editors.ade.I_CmsADEConfiguration#getRecentListMaxSize()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getRecentListMaxSize()
      */
     public int getRecentListMaxSize() {
 
@@ -158,11 +158,11 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.workplace.editors.ade.I_CmsADEConfiguration#getSearchableResourceTypes()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchableResourceTypes()
      */
     public List<String> getSearchableResourceTypes() throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(m_cms, m_request.getParameter(CmsADEServer.PARAMETER_CNTPAGE));
+        CmsResource cfg = getConfigurationFile(m_cms, m_request.getParameter(CmsADEManager.PARAMETER_CNTPAGE));
         if (cfg == null) {
             return new ArrayList<String>();
         }
@@ -175,7 +175,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.workplace.editors.ade.I_CmsADEConfiguration#getSearchPageSize()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchPageSize()
      */
     public int getSearchPageSize() {
 
@@ -188,9 +188,9 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.workplace.editors.ade.I_CmsADEConfiguration#init(org.opencms.file.CmsObject, java.lang.String, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#init(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest)
      */
-    public void init(CmsObject cms, String cntPageUri, HttpServletRequest request) {
+    public void init(CmsObject cms, String cntPageUri, ServletRequest request) {
 
         m_cms = cms;
         m_cntPageUri = cntPageUri;

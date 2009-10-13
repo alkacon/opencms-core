@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagElementProperty.java,v $
- * Date   : $Date: 2009/10/12 10:14:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/13 11:59:45 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,8 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editors.ade.CmsADEManager;
-import org.opencms.workplace.editors.ade.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.I_CmsContainerElementBean;
 
 import java.io.IOException;
 
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.6
  */
@@ -91,7 +91,7 @@ public class CmsJspTagElementProperty extends TagSupport {
 
         String propValue = "";
         // get the element
-        CmsContainerElementBean element = null;
+        I_CmsContainerElementBean element = null;
         try {
             element = CmsADEManager.getCurrentElement(req);
         } catch (CmsException e) {
@@ -103,13 +103,7 @@ public class CmsJspTagElementProperty extends TagSupport {
         if ((element != null) && element.getProperties().containsKey(propertyName)) {
             CmsProperty property = element.getProperties().get(propertyName);
             if (property != null) {
-                if (null != property.getStructureValue()) {
-                    // the property-value set for the element in the container-page, may be an empty string
-                    propValue = property.getStructureValue();
-                } else if ((null != property.getResourceValue()) && CmsStringUtil.isEmptyOrWhitespaceOnly(defaultValue)) {
-                    // if no default attribute was set, the default property-value configured for the resource-type will be returned
-                    propValue = property.getResourceValue();
-                }
+                propValue = property.getValue(defaultValue);
             }
         }
         pageContext.getOut().print(propValue);

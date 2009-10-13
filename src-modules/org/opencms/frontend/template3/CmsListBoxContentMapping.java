@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBoxContentMapping.java,v $
- * Date   : $Date: 2009/09/14 13:46:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/13 11:59:46 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.file.collectors.CmsDateResourceComparator;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editors.ade.CmsContainerPageBean;
+import org.opencms.xml.containerpage.I_CmsContainerPageBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlHtmlValue;
@@ -63,7 +63,7 @@ import java.util.Set;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  */
 public class CmsListBoxContentMapping {
 
@@ -421,7 +421,7 @@ public class CmsListBoxContentMapping {
                 link = OpenCms.getLinkManager().getServerLink(cms, m_facade);
                 link = CmsRequestUtil.appendParameter(
                     link,
-                    CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER,
+                    I_CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER,
                     content.getFile().getStructureId().toString());
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(link)) {

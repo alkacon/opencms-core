@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2009/09/04 15:01:16 $
- * Version: $Revision: 1.46.2.1 $
+ * Date   : $Date: 2009/10/13 11:59:44 $
+ * Version: $Revision: 1.46.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46.2.1 $ 
+ * @version $Revision: 1.46.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -676,6 +676,42 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
+     * Adds a new XML schema type with the default value to the given parent node.<p>
+     * 
+     * @param cms the cms context
+     * @param parent the XML parent element to add the new value to
+     * @param type the type of the value to add
+     * @param locale the locale to add the new value for
+     * @param insertIndex the index in the XML document where to add the XML node
+     * 
+     * @return the created XML content value
+     */
+    protected I_CmsXmlContentValue addValue(
+        CmsObject cms,
+        Element parent,
+        I_CmsXmlSchemaType type,
+        Locale locale,
+        int insertIndex) {
+
+        // first generate the XML element for the new value
+        Element element = type.generateXml(cms, this, parent, locale);
+        // detach the XML element from the appended position in order to insert it at the required position
+        element.detach();
+        // add the XML element at the required position in the parent XML node 
+        CmsXmlGenericWrapper.content(parent).add(insertIndex, element);
+        // create the type and return it
+        I_CmsXmlContentValue value = type.createValue(this, element, locale);
+        // generate the default value again - required for nested mappings because only now the full path is available  
+        String defaultValue = m_contentDefinition.getContentHandler().getDefault(cms, value, locale);
+        if (defaultValue != null) {
+            // only if there is a default value available use it to overwrite the initial default
+            value.setStringValue(cms, defaultValue);
+        }
+        // finally return the value        
+        return value;
+    }
+
+    /**
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmark(java.lang.String)
      */
     @Override
@@ -693,6 +729,40 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
         // allows package classes to directly access the bookmark information of the XML content 
         return super.getBookmarks();
+    }
+
+    /**
+     * Returns the content definition object for this xml content object.<p>
+     * 
+     * @param resolver the XML entity resolver to use, required for VFS access
+     * 
+     * @return the content definition object for this xml content object
+     * 
+     * @throws CmsRuntimeException if the schema location attribute (<code>systemId</code>)cannot be found, 
+     *         parsing of the schema fails, an underlying IOException occurs or unmarshalling fails
+     *           
+     */
+    protected CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsRuntimeException {
+
+        String schemaLocation = m_document.getRootElement().attributeValue(
+            I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION);
+        // Note regarding exception handling:
+        // Since this object already is a valid XML content object,
+        // it must have a valid schema, otherwise it would not exist.
+        // Therefore the exceptions should never be really thrown.
+        if (schemaLocation == null) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_SCHEMA_0));
+        }
+
+        try {
+            return CmsXmlContentDefinition.unmarshal(schemaLocation, resolver);
+        } catch (SAXException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_0), e);
+        } catch (IOException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_IO_0), e);
+        } catch (CmsXmlException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
+        }
     }
 
     /**
@@ -771,86 +841,6 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
-     * Sets the file this XML content is written to.<p> 
-     * 
-     * @param file the file this XML content content is written to
-     */
-    protected void setFile(CmsFile file) {
-
-        m_file = file;
-    }
-
-    /**
-     * Adds a new XML schema type with the default value to the given parent node.<p>
-     * 
-     * @param cms the cms context
-     * @param parent the XML parent element to add the new value to
-     * @param type the type of the value to add
-     * @param locale the locale to add the new value for
-     * @param insertIndex the index in the XML document where to add the XML node
-     * 
-     * @return the created XML content value
-     */
-    private I_CmsXmlContentValue addValue(
-        CmsObject cms,
-        Element parent,
-        I_CmsXmlSchemaType type,
-        Locale locale,
-        int insertIndex) {
-
-        // first generate the XML element for the new value
-        Element element = type.generateXml(cms, this, parent, locale);
-        // detach the XML element from the appended position in order to insert it at the required position
-        element.detach();
-        // add the XML element at the required position in the parent XML node 
-        CmsXmlGenericWrapper.content(parent).add(insertIndex, element);
-        // create the type and return it
-        I_CmsXmlContentValue value = type.createValue(this, element, locale);
-        // generate the default value again - required for nested mappings because only now the full path is available  
-        String defaultValue = m_contentDefinition.getContentHandler().getDefault(cms, value, locale);
-        if (defaultValue != null) {
-            // only if there is a default value available use it to overwrite the initial default
-            value.setStringValue(cms, defaultValue);
-        }
-        // finally return the value        
-        return value;
-    }
-
-    /**
-     * Returns the content definition object for this xml content object.<p>
-     * 
-     * @param resolver the XML entity resolver to use, required for VFS access
-     * 
-     * @return the content definition object for this xml content object
-     * 
-     * @throws CmsRuntimeException if the schema location attribute (<code>systemId</code>)cannot be found, 
-     *         parsing of the schema fails, an underlying IOException occurs or unmarshalling fails
-     *           
-     */
-    private CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsRuntimeException {
-
-        String schemaLocation = m_document.getRootElement().attributeValue(
-            I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION);
-        // Note regarding exception handling:
-        // Since this object already is a valid XML content object,
-        // it must have a valid schema, otherwise it would not exist.
-        // Therefore the exceptions should never be really thrown.
-        if (schemaLocation == null) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_SCHEMA_0));
-        }
-
-        try {
-            return CmsXmlContentDefinition.unmarshal(schemaLocation, resolver);
-        } catch (SAXException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_0), e);
-        } catch (IOException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_IO_0), e);
-        } catch (CmsXmlException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
-        }
-    }
-
-    /**
      * Processes a document node and extracts the values of the node according to the provided XML
      * content definition.<p> 
      * 
@@ -859,7 +849,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * @param locale the locale 
      * @param definition the XML content definition to use for processing the values
      */
-    private void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
+    protected void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
 
         // iterate all XML nodes 
         for (Iterator<Node> i = CmsXmlGenericWrapper.content(root).iterator(); i.hasNext();) {
@@ -909,5 +899,15 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 }
             }
         }
+    }
+
+    /**
+     * Sets the file this XML content is written to.<p> 
+     * 
+     * @param file the file this XML content content is written to
+     */
+    protected void setFile(CmsFile file) {
+
+        m_file = file;
     }
 }

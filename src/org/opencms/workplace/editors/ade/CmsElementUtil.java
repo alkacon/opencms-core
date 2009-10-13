@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/13 09:44:24 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2009/10/13 11:59:43 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,11 @@ import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.I_CmsContainerBean;
+import org.opencms.xml.containerpage.I_CmsContainerElementBean;
+import org.opencms.xml.containerpage.I_CmsContainerPageBean;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -74,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.13 $
+ * @version $Revision: 1.1.2.14 $
  * 
  * @since 7.6
  */
@@ -199,7 +204,7 @@ public final class CmsElementUtil {
      * @throws ServletException if a jsp related error occurs
      * @throws IOException if a jsp related error occurs
      */
-    public String getElementContent(CmsContainerElementBean element, CmsResource formatter)
+    public String getElementContent(I_CmsContainerElementBean element, CmsResource formatter)
     throws CmsException, ServletException, IOException {
 
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
@@ -217,15 +222,20 @@ public final class CmsElementUtil {
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
             eb.init(cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(element.getElement()));
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
-            m_req.setAttribute(CmsJspTagContainer.P_CURRENT_ELEMENT, element);
+            Object currentElement = m_req.getAttribute(CmsJspTagContainer.ATTR_CURRENT_ELEMENT);
+            m_req.setAttribute(CmsJspTagContainer.ATTR_CURRENT_ELEMENT, element);
             // TODO: is this going to be cached? most likely not! any alternative?
-            return new String(loaderFacade.getLoader().dump(
-                m_cms,
-                loaderRes,
-                null,
-                m_cms.getRequestContext().getLocale(),
-                m_req,
-                m_res), CmsLocaleManager.getResourceEncoding(cms, element.getElement()));
+            try {
+                return new String(loaderFacade.getLoader().dump(
+                    m_cms,
+                    loaderRes,
+                    null,
+                    m_cms.getRequestContext().getLocale(),
+                    m_req,
+                    m_res), CmsLocaleManager.getResourceEncoding(cms, element.getElement()));
+            } finally {
+                m_req.setAttribute(CmsJspTagContainer.ATTR_CURRENT_ELEMENT, currentElement);
+            }
         } finally {
             cms.getRequestContext().setUri(oldUri);
         }
@@ -242,7 +252,7 @@ public final class CmsElementUtil {
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong in the json manipulation
      */
-    public JSONObject getElementData(CmsContainerElementBean element, Collection<String> types)
+    public JSONObject getElementData(I_CmsContainerElementBean element, Collection<String> types)
     throws CmsException, JSONException {
 
         // create new json object for the element
@@ -280,17 +290,14 @@ public final class CmsElementUtil {
                 resContents.put(type, ""); // empty contents
             }
             // this container page should contain exactly one container
-            CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
-                m_cms,
-                resource,
-                m_cms.getRequestContext().getLocale());
-            CmsContainerBean container = cntPage.getContainers().values().iterator().next();
+            I_CmsContainerPageBean cntPage = m_manager.getCache(m_cms, resource, m_cms.getRequestContext().getLocale());
+            I_CmsContainerBean container = cntPage.getContainers().values().iterator().next();
 
             // add subitems
             JSONArray subitems = new JSONArray();
             resElement.put(P_ELEMENT_SUBITEMS, subitems);
             // iterate the elements
-            for (CmsContainerElementBean subElement : container.getElements()) {
+            for (I_CmsContainerElementBean subElement : container.getElements()) {
                 // collect ids
                 subitems.put(subElement.getClientId());
             }
@@ -336,8 +343,7 @@ public final class CmsElementUtil {
      */
     public JSONObject getElementData(CmsResource resource, Collection<String> types) throws CmsException, JSONException {
 
-        CmsContainerElementBean element = new CmsContainerElementBean(m_cms, resource);
-        return getElementData(element, types);
+        return getElementData(getElementBeanForResource(resource), types);
     }
 
     /**
@@ -376,12 +382,12 @@ public final class CmsElementUtil {
      * Creates an element-bean for the given resource.<p>
      * 
      * @param resource the resource
+     * 
      * @return the element-bean
      */
-    public CmsContainerElementBean getElementBeanForResource(CmsResource resource) {
+    public I_CmsContainerElementBean getElementBeanForResource(CmsResource resource) {
 
-        CmsContainerElementBean element = new CmsContainerElementBean(m_cms, resource);
-        return element;
+        return new CmsContainerElementBean(m_cms, resource);
     }
 
     /**
@@ -392,7 +398,7 @@ public final class CmsElementUtil {
      * @throws CmsException - if something goes wrong
      * @throws JSONException - if something goes wrong generating the JSON
      */
-    public JSONObject getElementPropertyInfo(CmsContainerElementBean element) throws CmsException, JSONException {
+    public JSONObject getElementPropertyInfo(I_CmsContainerElementBean element) throws CmsException, JSONException {
 
         CmsUserSettings settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
         CmsMessages messages = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, element.getElement()).getMessages(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsContainerPageLoader.java,v $
- * Date   : $Date: 2009/10/12 10:14:51 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2009/10/13 11:59:44 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,10 +35,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.editors.ade.CmsContainerPageCache;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.I_CmsXmlDocument;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
 import javax.servlet.ServletRequest;
 
@@ -49,41 +49,11 @@ import javax.servlet.ServletRequest;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 7.6
  */
 public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
-
-    /** Xml content node constant name. */
-    public static final String N_CONTAINER = "Containers";
-
-    /** Xml content node constant element. */
-    public static final String N_ELEMENT = "Elements";
-
-    /** Xml content node constant formatter. */
-    public static final String N_FORMATTER = "Formatter";
-
-    /** Xml content node constant properties. */
-    public static final String N_PROPERTIES = "Properties";
-
-    /** Xml content node constant property. */
-    public static final String N_PROPERTY = "Property";
-
-    /** Xml content node constant name. */
-    public static final String N_NAME = "Name";
-
-    /** Xml content node constant string. */
-    public static final String N_STRING = "String";
-
-    /** Xml content node constant type. */
-    public static final String N_TYPE = "Type";
-
-    /** Xml content node constant uri. */
-    public static final String N_URI = "Uri";
-
-    /** Xml content node constant value. */
-    public static final String N_VALUE = "Value";
 
     /** The id of this loader. */
     public static final int RESOURCE_LOADER_ID = 11;
@@ -140,8 +110,8 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
     protected I_CmsXmlDocument unmarshalXmlDocument(CmsObject cms, CmsResource resource, ServletRequest req)
     throws CmsException {
 
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, resource, req);
-        CmsContainerPageCache.getInstance().setCache(cms, resource, content);
-        return content;
+        CmsXmlContainerPage cntPage = CmsXmlContainerPageFactory.unmarshal(cms, resource, req);
+        OpenCms.getADEManager(cms, cms.getSitePath(resource), req).setCache(cms, resource, cntPage);
+        return cntPage;
     }
 }

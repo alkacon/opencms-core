@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2009/10/12 10:14:50 $
- * Version: $Revision: 1.44.2.4 $
+ * Date   : $Date: 2009/10/13 11:59:44 $
+ * Version: $Revision: 1.44.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
@@ -64,6 +65,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -79,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44.2.4 $ 
+ * @version $Revision: 1.44.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,6 +127,9 @@ public class CmsXmlContentDefinition implements Cloneable {
     /** Constant for the XML schema attribute value "language". */
     public static final String XSD_ATTRIBUTE_VALUE_LANGUAGE = "language";
 
+    /** Constant for the XML schema attribute value "1". */
+    public static final String XSD_ATTRIBUTE_VALUE_ONE = "1";
+
     /** Constant for the XML schema attribute value "optional". */
     public static final String XSD_ATTRIBUTE_VALUE_OPTIONAL = "optional";
 
@@ -138,9 +144,6 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /** Constant for the XML schema attribute value "0". */
     public static final String XSD_ATTRIBUTE_VALUE_ZERO = "0";
-
-    /** Constant for the XML schema attribute value "1". */
-    public static final String XSD_ATTRIBUTE_VALUE_ONE = "1";
 
     /** The opencms default type definition include. */
     public static final String XSD_INCLUDE_OPENCMS = CmsXmlEntityResolver.OPENCMS_SCHEME + "opencms-xmlcontent.xsd";
@@ -174,6 +177,9 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /** Constant for the "sequence" node in the XML schema namespace. */
     public static final QName XSD_NODE_SEQUENCE = QName.get("sequence", XSD_NAMESPACE);
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlContentDefinition.class);
 
     /** Null schema type value, required for map lookups. */
     private static final I_CmsXmlSchemaType NULL_SCHEMA_TYPE = new CmsXmlStringValue("NULL", "0", "0");
@@ -252,6 +258,69 @@ public class CmsXmlContentDefinition implements Cloneable {
     protected CmsXmlContentDefinition() {
 
         // noop, required for clone operation
+    }
+
+    /**
+     * Factory method that returns a XML content definition instance for a given resource.<p>
+     * 
+     * @param cms the cms-object
+     * @param resource the resource
+     * 
+     * @return the XML content definition
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsXmlContentDefinition getContentDefinitionForResource(CmsObject cms, CmsResource resource)
+    throws CmsException {
+
+        CmsXmlContentDefinition contentDef = null;
+        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
+        if (schema != null) {
+            try {
+                contentDef = unmarshal(cms, schema);
+            } catch (CmsException e) {
+                // this should never happen, unless the configured schema is different than the schema in the xml
+                LOG.warn(e);
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+        if (contentDef == null) {
+            // could still be empty since it is not mandatory to configure the resource type
+            // try through the xsd relation 
+            List<CmsRelation> relations = cms.getRelationsForResource(
+                resource,
+                CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
+            if ((relations != null) && !relations.isEmpty()) {
+                CmsXmlEntityResolver entityResolver = new CmsXmlEntityResolver(cms);
+                String xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
+                contentDef = entityResolver.getCachedContentDefinition(xsd);
+            }
+        }
+        if (contentDef == null) {
+            // could still be empty if the xml content has not been save with a version newer than 7.9.0
+            // so, to unmarshall is the only possibility left
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
+            contentDef = content.getContentDefinition();
+        }
+
+        return contentDef;
+    }
+
+    /**
+     * Returns a content handler instance for the given resource.<p>
+     * 
+     * @param cms the cms-object
+     * @param resource the resource
+     * 
+     * @return the content handler
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static I_CmsXmlContentHandler getContentHandlerForResource(CmsObject cms, CmsResource resource)
+    throws CmsException {
+
+        return getContentDefinitionForResource(cms, resource).getContentHandler();
     }
 
     /**
@@ -394,56 +463,6 @@ public class CmsXmlContentDefinition implements Cloneable {
             result = unmarshalInternal(CmsXmlUtils.unmarshalHelper(xmlData, resolver), schemaLocation, resolver);
         }
         return result;
-    }
-
-    /**
-     * Factory method that returns a XML content definition instance for a given resource.<p>
-     * 
-     * @param cms the cms-object
-     * @param resource the resource
-     * @return the XML content definition
-     * @throws CmsException if something goes wrong
-     * 
-     */
-    public static CmsXmlContentDefinition getContentDefinitionForResource(CmsObject cms, CmsResource resource)
-    throws CmsException {
-
-        CmsXmlContentDefinition contentDef = null;
-        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-        String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
-        if (schema != null) {
-            contentDef = unmarshal(cms, schema);
-        }
-        if (contentDef == null) {
-            List<CmsRelation> relations = cms.getRelationsForResource(
-                resource,
-                CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
-            if ((relations != null) && !relations.isEmpty()) {
-                CmsXmlEntityResolver entityResolver = new CmsXmlEntityResolver(cms);
-                String xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
-                contentDef = entityResolver.getCachedContentDefinition(xsd);
-            }
-        }
-        if (contentDef == null) {
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
-            contentDef = content.getContentDefinition();
-        }
-
-        return contentDef;
-    }
-
-    /**
-     * Returns a content handler instance for the given resource.<p>
-     * 
-     * @param cms the cms-object
-     * @param resource the resource
-     * @return the content handler
-     * @throws CmsException if something goes wrong
-     */
-    public static I_CmsXmlContentHandler getContentHandlerForResource(CmsObject cms, CmsResource resource)
-    throws CmsException {
-
-        return getContentDefinitionForResource(cms, resource).getContentHandler();
     }
 
     /**

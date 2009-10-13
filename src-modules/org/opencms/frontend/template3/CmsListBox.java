@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBox.java,v $
- * Date   : $Date: 2009/10/12 10:14:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/13 11:59:46 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,15 +33,14 @@ package org.opencms.frontend.template3;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editors.ade.CmsADEManager;
-import org.opencms.workplace.editors.ade.CmsContainerElementBean;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.I_CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -69,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  */
 public class CmsListBox extends CmsJspActionElement {
 
@@ -207,10 +206,8 @@ public class CmsListBox extends CmsJspActionElement {
 
         // collect the configuration information 
         try {
-            CmsContainerElementBean element = CmsADEManager.getCurrentElement(req);
-            CmsFile file = getCmsObject().readFile(
-                getCmsObject().getSitePath(element.getElement()),
-                CmsResourceFilter.IGNORE_EXPIRATION);
+            I_CmsContainerElementBean element = CmsADEManager.getCurrentElement(req);
+            CmsFile file = getCmsObject().readFile(element.getElement());
             m_content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
 
             // process the default mappings (if set / available)

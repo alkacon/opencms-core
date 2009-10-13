@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/09/15 13:29:07 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/10/13 11:59:45 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
-import org.opencms.workplace.editors.ade.CmsContainerPageBean;
+import org.opencms.xml.containerpage.I_CmsContainerPageBean;
 
 import java.io.IOException;
 
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.6 
  */
@@ -183,8 +183,8 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 } catch (CmsException e) {
                     LOG.warn(e.getLocalizedMessage(), e);
                 }
-            } else if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
-                CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
+            } else if (req.getParameter(I_CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
+                CmsUUID id = new CmsUUID(req.getParameter(I_CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
                 resolver.addMacro("currentUri", cms.getSitePath(cms.readResource(id)));
             } else {
                 resolver.addMacro("currentUri", cms.getRequestContext().getUri());
