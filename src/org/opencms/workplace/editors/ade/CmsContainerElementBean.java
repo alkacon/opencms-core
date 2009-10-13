@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/10/12 15:24:28 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/10/13 09:34:21 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.6 
  */
@@ -63,17 +63,28 @@ public class CmsContainerElementBean {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContainerElementBean.class);
 
+    /** The clientId including properties-hash. */
+    private String m_clientId;
+
     /** The element. */
     private CmsResource m_element;
 
     /** The formatter. */
     private CmsResource m_formatter;
 
-    /** The clientId including properties-hash. */
-    private String m_clientId;
-
     /** The element properties. */
     private Map<String, CmsProperty> m_properties;
+
+    /** 
+     * Creates a new container page element bean.<p> 
+     *  
+     * @param element the element 
+     * @param cms the cms-object
+     **/
+    public CmsContainerElementBean(CmsResource element, CmsObject cms) {
+
+        this(element, null, null, cms);
+    }
 
     /** 
      * Creates a new container page element bean.<p> 
@@ -92,41 +103,7 @@ public class CmsContainerElementBean {
         m_element = element;
         m_formatter = formatter;
         m_properties = properties == null ? new HashMap<String, CmsProperty>() : properties;
-        this.initProperties(cms);
-    }
-
-    /** 
-     * Creates a new container page element bean.<p> 
-     *  
-     * @param element the element 
-     * @param cms the cms-object
-     **/
-    public CmsContainerElementBean(CmsResource element, CmsObject cms) {
-
-        this(element, null, null, cms);
-    }
-
-    /**
-     * Creates a new container page element bean.<p> 
-     *  
-     * @param element the element 
-     * @param properties the properties as a map of name/value pairs
-     * @param cms the cms-object
-     **/
-    public CmsContainerElementBean(CmsResource element, Map<String, String> properties, CmsObject cms) {
-
-        m_element = element;
-        m_formatter = null;
-        m_properties = new HashMap<String, CmsProperty>();
-        if (properties != null) {
-            Iterator<String> itProperties = properties.keySet().iterator();
-            while (itProperties.hasNext()) {
-                String propertyName = itProperties.next();
-                CmsProperty property = new CmsProperty(propertyName, properties.get(propertyName), null);
-                m_properties.put(propertyName, property);
-            }
-        }
-        this.initProperties(cms);
+        initProperties(cms);
     }
 
     /**
@@ -151,7 +128,103 @@ public class CmsContainerElementBean {
                 m_properties.put(propertyName, property);
             }
         }
-        this.initProperties(cms);
+        initProperties(cms);
+    }
+
+    /**
+     * Creates a new container page element bean.<p> 
+     *  
+     * @param element the element 
+     * @param properties the properties as a map of name/value pairs
+     * @param cms the cms-object
+     **/
+    public CmsContainerElementBean(CmsResource element, Map<String, String> properties, CmsObject cms) {
+
+        m_element = element;
+        m_formatter = null;
+        m_properties = new HashMap<String, CmsProperty>();
+        if (properties != null) {
+            Iterator<String> itProperties = properties.keySet().iterator();
+            while (itProperties.hasNext()) {
+                String propertyName = itProperties.next();
+                CmsProperty property = new CmsProperty(propertyName, properties.get(propertyName), null);
+                m_properties.put(propertyName, property);
+            }
+        }
+        initProperties(cms);
+    }
+
+    /**
+     * Returns the property configuration for a given resource.<p>
+     * 
+     * @param cms
+     * @param element
+     * @return The properties map
+     * @throws CmsException if something goes wrong
+     */
+    public static Map<String, CmsXmlContentProperty> getPropertyConfiguration(CmsObject cms, CmsResource element)
+    throws CmsException {
+
+        return CmsXmlContentDefinition.getContentHandlerForResource(cms, element).getProperties();
+    }
+
+    /**
+     * Returns the client side id including the property-hash.<p>
+     * 
+     * @return the id
+     */
+    public String getClientId() {
+
+        return m_clientId;
+    }
+
+    /**
+     * Returns the container element used to save favorite and recent-list entries.<p>
+     * 
+     * @return the CmsContainerElement representing this element bean
+     */
+    public CmsContainerElement getContainerElement() {
+
+        Map<String, String> properties = new HashMap<String, String>();
+        Iterator<String> itProperties = m_properties.keySet().iterator();
+        while (itProperties.hasNext()) {
+            String propertyName = itProperties.next();
+            CmsProperty property = m_properties.get(propertyName);
+            if (property.getStructureValue() != null) {
+                properties.put(propertyName, property.getStructureValue());
+            }
+        }
+        return new CmsContainerElement(m_element.getStructureId(), properties);
+    }
+
+    /**
+     * Returns the element.<p>
+     *
+     * @return the element
+     */
+    public CmsResource getElement() {
+
+        return m_element;
+    }
+
+    /**
+     * Returns the formatter.<p>
+     *
+     * @return the formatter
+     */
+    public CmsResource getFormatter() {
+
+        return m_formatter;
+    }
+
+    /**
+     * Returns the properties. If no properties are set, an empty Map will be returned.<p>
+     *
+     * @return the properties
+     */
+    public Map<String, CmsProperty> getProperties() {
+
+        return m_properties;
     }
 
     /**
@@ -177,16 +250,6 @@ public class CmsContainerElementBean {
             return 0;
         }
         return propertyString.hashCode();
-    }
-
-    /**
-     * Returns the client side id including the property-hash.<p>
-     * 
-     * @return the id
-     */
-    public String getClientId() {
-
-        return m_clientId;
     }
 
     /**
@@ -232,68 +295,5 @@ public class CmsContainerElementBean {
                 Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
                 cms.getSitePath(m_element)), e);
         }
-    }
-
-    /**
-     * Returns the property configuration for a given resource.<p>
-     * 
-     * @param cms
-     * @param element
-     * @return The properties map
-     * @throws CmsException if something goes wrong
-     */
-    public static Map<String, CmsXmlContentProperty> getPropertyConfiguration(CmsObject cms, CmsResource element)
-    throws CmsException {
-
-        return CmsXmlContentDefinition.getContentHandlerForResource(cms, element).getProperties();
-    }
-
-    /**
-     * Returns the element.<p>
-     *
-     * @return the element
-     */
-    public CmsResource getElement() {
-
-        return m_element;
-    }
-
-    /**
-     * Returns the formatter.<p>
-     *
-     * @return the formatter
-     */
-    public CmsResource getFormatter() {
-
-        return m_formatter;
-    }
-
-    /**
-     * Returns the properties. If no properties are set, an empty Map will be returned.<p>
-     *
-     * @return the properties
-     */
-    public Map<String, CmsProperty> getProperties() {
-
-        return m_properties;
-    }
-
-    /**
-     * Returns the container element used to save favorite and recent-list entries.<p>
-     * 
-     * @return the CmsContainerElement representing this element bean
-     */
-    public CmsContainerElement getContainerElement() {
-
-        Map<String, String> properties = new HashMap<String, String>();
-        Iterator<String> itProperties = m_properties.keySet().iterator();
-        while (itProperties.hasNext()) {
-            String propertyName = itProperties.next();
-            CmsProperty property = m_properties.get(propertyName);
-            if (property.getStructureValue() != null) {
-                properties.put(propertyName, property.getStructureValue());
-            }
-        }
-        return new CmsContainerElement(m_element.getStructureId(), properties);
     }
 }
