@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/09/08 16:41:03 $
- * Version: $Revision: 1.51.2.3 $
+ * Date   : $Date: 2009/10/13 13:47:56 $
+ * Version: $Revision: 1.51.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,6 +64,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.containerpage.CmsADECacheSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,7 +85,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51.2.3 $
+ * @version $Revision: 1.51.2.4 $
  * 
  * @since 6.0.0
  */
@@ -99,8 +100,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "mode" attribute. */
     public static final String A_MODE = "mode";
 
+    /** The "offline" attribute. */
+    public static final String A_OFFLINE = "offline";
+
     /** The attribute name for the alias offset. */
     public static final String A_OFFSET = "offset";
+
+    /** The "online" attribute. */
+    public static final String A_ONLINE = "online";
 
     /** The "server" attribute. */
     public static final String A_SERVER = "server";
@@ -114,6 +121,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the job "active" value. */
     public static final String N_ACTIVE = "active";
 
+    /** The ade node name. */
+    public static final String N_ADE = "ade";
+
     /** The node name for the alias node. */
     public static final String N_ALIAS = "alias";
 
@@ -126,8 +136,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the browser-based node. */
     public static final String N_BROWSER_BASED = "browser-based";
 
-    /** the result cache node. */
-    public static final String N_CACHE = "resultcache";
+    /** The cache node name. */
+    public static final String N_CACHE = "cache";
 
     /** The node name for the cache-enabled node. */
     public static final String N_CACHE_ENABLED = "cache-enabled";
@@ -137,6 +147,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for a job class. */
     public static final String N_CLASS = "class";
+
+    /** The configuration node name. */
+    public static final String N_CONFIGURATION = "configuration";
+
+    /** The containerpages node name. */
+    public static final String N_CONTAINERPAGES = "containerpages";
 
     /** The duration after which responsible resource owners will be notified about out-dated content. */
     public static final String N_CONTENT_NOTIFICATION = "content-notification";
@@ -161,6 +177,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the login account lock minutes.  */
     public static final String N_DISABLEMINUTES = "disableMinutes";
+
+    /** The elements node name. */
+    public static final String N_ELEMENTS = "elements";
 
     /** The node name for the email-interval node. */
     public static final String N_EMAIL_INTERVAL = "email-interval";
@@ -330,6 +349,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the resource init classes. */
     public static final String N_RESOURCEINITHANDLER = "resourceinithandler";
 
+    /** the result cache node. */
+    public static final String N_RESULTCACHE = "resultcache";
+
     /** The node name for the job "reuseinstance" value. */
     public static final String N_REUSEINSTANCE = "reuseinstance";
 
@@ -449,6 +471,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
+
+    /** The ADE cache settings. */
+    private CmsADECacheSettings m_adeCacheSettings;
+
+    private String m_adeConfiguration;
 
     /** The authorization handler. */
     private String m_authorizationHandler;
@@ -963,39 +990,51 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_HTTP_AUTHENTICATION, "setHttpAuthenticationSettings");
 
         // cache rules
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_CACHE, CmsCacheSettings.class);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_KEYGENERATOR, "setCacheKeyGenerator", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_USERS, "setUserCacheSize", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_GROUPS, "setGroupCacheSize", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ORGUNITS, "setOrgUnitCacheSize", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_USERGROUPS, "setUserGroupsCacheSize", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROJECTS, "setProjectCacheSize", 0);
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_RESULTCACHE, CmsCacheSettings.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_KEYGENERATOR, "setCacheKeyGenerator", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_USERS, "setUserCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_GROUPS, "setGroupCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_ORGUNITS, "setOrgUnitCacheSize", 0);
         digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROJECTRESOURCES,
+            "*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_USERGROUPS,
+            "setUserGroupsCacheSize",
+            0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_PROJECTS, "setProjectCacheSize", 0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_PROJECTRESOURCES,
             "setProjectResourcesCacheSize",
             0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCES, "setResourceCacheSize", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ROLES, "setRolesCacheSize", 0);
         digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCELISTS,
+            "*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_RESOURCES,
+            "setResourceCacheSize",
+            0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_ROLES, "setRolesCacheSize", 0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_RESOURCELISTS,
             "setResourcelistCacheSize",
             0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROPERTIES, "setPropertyCacheSize", 0);
         digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROPERTYLISTS,
+            "*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_PROPERTIES,
+            "setPropertyCacheSize",
+            0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_PROPERTYLISTS,
             "setPropertyListsCacheSize",
             0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ACLS, "setAclCacheSize", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PERMISSIONS, "setPermissionCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_ACLS, "setAclCacheSize", 0);
         digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_CONTAINERPAGE_OFFLINE,
+            "*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_PERMISSIONS,
+            "setPermissionCacheSize",
+            0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_CONTAINERPAGE_OFFLINE,
             "setContainerPageOfflineSize",
             0);
         digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_CONTAINERPAGE_ONLINE,
+            "*/" + N_SYSTEM + "/" + N_RESULTCACHE + "/" + N_SIZE_CONTAINERPAGE_ONLINE,
             "setContainerPageOnlineSize",
             0);
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_CACHE, "setCacheSettings");
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_RESULTCACHE, "setCacheSettings");
 
         // set the notification time
         digester.addCallMethod(
@@ -1054,6 +1093,28 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS, "setServletContainerSettingsMode", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS, 0, A_MODE);
+
+        // add rule for ADE configuration class
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CONFIGURATION, "setAdeConfiguration", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CONFIGURATION, 0, A_CLASS);
+
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE, CmsADECacheSettings.class);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_CONTAINERPAGES,
+            "setContainerPageOfflineSize",
+            1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_CONTAINERPAGES, 0, A_OFFLINE);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_CONTAINERPAGES,
+            "setContainerPageOnlineSize",
+            1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_CONTAINERPAGES, 0, A_ONLINE);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_ELEMENTS,
+            "setContainerElementOfflineSize",
+            1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_ELEMENTS, 0, A_OFFLINE);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE, "setAdeCacheSettings");
     }
 
     /**
@@ -1353,7 +1414,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
 
         // cache settings
-        Element cacheElement = systemElement.addElement(N_CACHE);
+        Element cacheElement = systemElement.addElement(N_RESULTCACHE);
         cacheElement.addElement(N_KEYGENERATOR).setText(m_cacheSettings.getCacheKeyGenerator());
         cacheElement.addElement(N_SIZE_USERS).setText(Integer.toString(m_cacheSettings.getUserCacheSize()));
         cacheElement.addElement(N_SIZE_GROUPS).setText(Integer.toString(m_cacheSettings.getGroupCacheSize()));
@@ -1381,14 +1442,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
         cacheElement.addElement(N_SIZE_ACLS).setText(Integer.toString(m_cacheSettings.getAclCacheSize()));
         cacheElement.addElement(N_SIZE_PERMISSIONS).setText(Integer.toString(m_cacheSettings.getPermissionCacheSize()));
-        if (m_cacheSettings.getConfiguredContainerPageOfflineSize() > -1) {
-            cacheElement.addElement(N_SIZE_CONTAINERPAGE_OFFLINE).setText(
-                Integer.toString(m_cacheSettings.getConfiguredContainerPageOfflineSize()));
-        }
-        if (m_cacheSettings.getConfiguredContainerPageOnlineSize() > -1) {
-            cacheElement.addElement(N_SIZE_CONTAINERPAGE_ONLINE).setText(
-                Integer.toString(m_cacheSettings.getConfiguredContainerPageOnlineSize()));
-        }
 
         // content notification settings
         if ((m_notificationTime != null) || (m_notificationProject != null)) {
@@ -1447,8 +1500,45 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
         }
 
+        // ADE settings
+        if ((getAdeConfiguration() != null) || (getAdeCacheSettings() != null)) {
+            Element adeElem = systemElement.addElement(N_ADE);
+            if (getAdeConfiguration() != null) {
+                adeElem.addElement(N_CONFIGURATION).addAttribute(A_CLASS, getAdeConfiguration());
+            }
+            if (getAdeCacheSettings() != null) {
+                Element cacheElem = adeElem.addElement(N_CACHE);
+                Element cntPageCacheElem = cacheElem.addElement(N_CONTAINERPAGES);
+                cntPageCacheElem.addAttribute(A_OFFLINE, "" + getAdeCacheSettings().getContainerPageOfflineSize());
+                cntPageCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getContainerPageOnlineSize());
+                cacheElem.addElement(N_ELEMENTS).addAttribute(
+                    A_OFFLINE,
+                    "" + getAdeCacheSettings().getContainerElementOfflineSize());
+            }
+        }
+
         // return the system node
         return systemElement;
+    }
+
+    /**
+     * Returns the settings of the ADE cache.<p>
+     *
+     * @return the settings of the ADE cache
+     */
+    public CmsADECacheSettings getAdeCacheSettings() {
+
+        return m_adeCacheSettings;
+    }
+
+    /**
+     * Returns the ade configuration class name.<p>
+     *
+     * @return the ade configuration class name
+     */
+    public String getAdeConfiguration() {
+
+        return m_adeConfiguration;
     }
 
     /**
@@ -1831,6 +1921,26 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public boolean isHistoryEnabled() {
 
         return m_historyEnabled;
+    }
+
+    /**
+     * Sets the cache settings for ADE.<p>
+     *
+     * @param settings the cache settings for ADE
+     */
+    public void setAdeCacheSettings(CmsADECacheSettings settings) {
+
+        m_adeCacheSettings = settings;
+    }
+
+    /**
+     * Sets the ADE configuration class name.<p>
+     *
+     * @param className the class name to set
+     */
+    public void setAdeConfiguration(String className) {
+
+        m_adeConfiguration = className;
     }
 
     /**

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerPageCache.java,v $
- * Date   : $Date: 2009/10/13 11:59:41 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADECache.java,v $
+ * Date   : $Date: 2009/10/13 13:47:55 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -31,7 +31,6 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.db.CmsCacheSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -64,10 +63,10 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6 
  */
-public final class CmsContainerPageCache implements I_CmsEventListener {
+public final class CmsADECache implements I_CmsEventListener {
 
     /** The log to use (static for performance reasons).<p> */
-    private static final Log LOG = CmsLog.getLog(CmsContainerPageCache.class);
+    private static final Log LOG = CmsLog.getLog(CmsADECache.class);
 
     /** Cache for ADE recent lists. */
     private Map<String, List<CmsContainerListElement>> m_adeRecentLists;
@@ -92,22 +91,22 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
      * 
      * @see org.opencms.main.OpenCmsCore#initConfiguration
      */
-    public CmsContainerPageCache(CmsMemoryMonitor memMonitor, CmsCacheSettings cacheSettings) {
+    public CmsADECache(CmsMemoryMonitor memMonitor, CmsADECacheSettings cacheSettings) {
 
-        Map<String, Map<Locale, I_CmsContainerPageBean>> lruMapCntPage = CmsMapGenericWrapper.createLRUMap(cacheSettings.getPermissionCacheSize());
+        Map<String, Map<Locale, I_CmsContainerPageBean>> lruMapCntPage;
         // container page caches
         lruMapCntPage = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
         m_containerPagesOffline = Collections.synchronizedMap(lruMapCntPage);
-        memMonitor.register(CmsContainerPageCache.class.getName() + ".containerPagesOffline", lruMapCntPage);
+        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOffline", lruMapCntPage);
 
         lruMapCntPage = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
         m_containerPagesOnline = Collections.synchronizedMap(lruMapCntPage);
-        memMonitor.register(CmsContainerPageCache.class.getName() + ".containerPagesOnline", lruMapCntPage);
+        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", lruMapCntPage);
 
         // container element caches
         Map<String, I_CmsContainerElementBean> lruMapCntElem = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerElementOfflineSize());
         m_containerElementsOffline = Collections.synchronizedMap(lruMapCntElem);
-        memMonitor.register(CmsContainerPageCache.class.getName() + ".containerElementsOffline", lruMapCntElem);
+        memMonitor.register(CmsADECache.class.getName() + ".containerElementsOffline", lruMapCntElem);
 
         // ADE search options
         Map<String, CmsSearchOptions> adeSearchOptions = new HashMap<String, CmsSearchOptions>();

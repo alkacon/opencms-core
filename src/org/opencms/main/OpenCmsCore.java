@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/10/13 11:59:46 $
- * Version: $Revision: 1.245.2.4 $
+ * Date   : $Date: 2009/10/13 13:47:56 $
+ * Version: $Revision: 1.245.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,9 +94,11 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
+import org.opencms.xml.containerpage.CmsADECache;
+import org.opencms.xml.containerpage.CmsADECacheSettings;
 import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.containerpage.CmsADEManager;
-import org.opencms.xml.containerpage.CmsContainerPageCache;
+import org.opencms.xml.containerpage.I_CmsADEConfiguration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -144,7 +146,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.245.2.4 $ 
+ * @version $Revision: 1.245.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,6 +163,12 @@ public final class OpenCmsCore {
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
+
+    /** The ade cache. */
+    private CmsADECache m_adeCache;
+
+    /** The ade configuration. */
+    private I_CmsADEConfiguration m_adeConfiguration;
 
     /** The configured authorization handler. */
     private I_CmsAuthorizationHandler m_authorizationHandler;
@@ -264,9 +272,6 @@ public final class OpenCmsCore {
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
 
-    /** The container page cache. */
-    private CmsContainerPageCache m_cntPageCache;
-
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
      * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
@@ -361,6 +366,20 @@ public final class OpenCmsCore {
                     handler.getClass().getName()));
             }
         }
+    }
+
+    /**
+     * Returns the advanced direct edit manager for the given container page.<p>
+     * 
+     * @param cms the cms context 
+     * @param cntPageUri the container page uri
+     * @param request the request itself
+     * 
+     * @return the advanced direct edit
+     */
+    protected CmsADEManager getADEManager(CmsObject cms, String cntPageUri, ServletRequest request) {
+
+        return new CmsADEManager(cms, cntPageUri, request, m_adeCache, m_adeConfiguration);
     }
 
     /**
@@ -493,22 +512,6 @@ public final class OpenCmsCore {
     protected CmsModuleManager getModuleManager() {
 
         return m_moduleManager;
-    }
-
-    /**
-     * Returns the advanced direct edit.<p>
-     * 
-     * @param cms the cms context 
-     * @param cntPageUri the container page uri
-     * @param request the request itself
-     * 
-     * @return the advanced direct edit
-     */
-    protected CmsADEManager getADEManager(CmsObject cms, String cntPageUri, ServletRequest request) {
-
-        // initialize the ADE manager
-        // TODO: make this configurable in opencms-workplace.xml
-        return new CmsADEManager(cms, cntPageUri, request, m_cntPageCache, new CmsADEDefaultConfiguration());
     }
 
     /**
@@ -1170,8 +1173,28 @@ public final class OpenCmsCore {
         // initialize the session storage provider
         I_CmsSessionStorageProvider sessionStorageProvider = systemConfiguration.getSessionStorageProvider();
 
-        // initialize the container page cache
-        m_cntPageCache = new CmsContainerPageCache(m_memoryMonitor, systemConfiguration.getCacheSettings());
+        // initialize the ade cache
+        CmsADECacheSettings adeCacheSettings = systemConfiguration.getAdeCacheSettings();
+        if (adeCacheSettings == null) {
+            adeCacheSettings = new CmsADECacheSettings();
+        }
+        m_adeCache = new CmsADECache(m_memoryMonitor, adeCacheSettings);
+
+        // initialize the ade configuration
+        String adeConfigurationClassName = systemConfiguration.getAdeConfiguration();
+        if (adeConfigurationClassName == null) {
+            // use default implementation
+            m_adeConfiguration = new CmsADEDefaultConfiguration();
+        } else {
+            // use configured ade configuration
+            try {
+                m_adeConfiguration = (I_CmsADEConfiguration)Class.forName(adeConfigurationClassName).newInstance();
+            } catch (Exception e) {
+                throw new CmsInitException(org.opencms.main.Messages.get().container(
+                    org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
+                    adeConfigurationClassName), e);
+            }
+        }
 
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms;
@@ -1649,8 +1672,8 @@ public final class OpenCmsCore {
                         e.getMessage()), e);
                 }
                 try {
-                    if (m_cntPageCache != null) {
-                        m_cntPageCache.shutdown();
+                    if (m_adeCache != null) {
+                        m_adeCache.shutdown();
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(
@@ -2182,11 +2205,6 @@ public final class OpenCmsCore {
 
             private CmsObject m_adminCms;
 
-            public void setCmsObject(CmsObject adminCms) {
-
-                m_adminCms = adminCms;
-            }
-
             public CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException {
 
                 try {
@@ -2204,6 +2222,11 @@ public final class OpenCmsCore {
                 } finally {
                     m_adminCms = null;
                 }
+            }
+
+            public void setCmsObject(CmsObject adminCms) {
+
+                m_adminCms = adminCms;
             }
         };
         loginAction.setCmsObject(initCmsObject(req, res, OpenCms.getDefaultUsers().getUserAdmin(), null, null));

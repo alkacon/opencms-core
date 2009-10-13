@@ -102,5 +102,12 @@
 		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 		<permissionhandler class="org.opencms.security.CmsDefaultPermissionHandler" />
 		<servletcontainer-settings mode="auto" />
+        <ade>
+            <configuration class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
+            <cache>
+                <containerpages offline="1024" online="1024" />
+                <elements offline="1024" />
+            </cache>
+        </ade>
 	</system>
 </opencms>

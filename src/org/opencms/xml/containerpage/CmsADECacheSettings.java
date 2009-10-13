@@ -1,0 +1,154 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADECacheSettings.java,v $
+ * Date   : $Date: 2009/10/13 13:47:55 $
+ * Version: $Revision: 1.1.2.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.xml.containerpage;
+
+/**
+ * The cache settings for ADE.<p>
+ * 
+ * @author Michael Moossen
+ * 
+ * @version $Revision: 1.1.2.1 $
+ * 
+ * @since 7.9.2
+ */
+public class CmsADECacheSettings {
+
+    /** Default size for container element caches. */
+    private static final int DEFAULT_CONTAINER_ELEMENT_SIZE = 1024;
+
+    /** Default size for container page caches. */
+    private static final int DEFAULT_CONTAINER_PAGE_SIZE = 128;
+
+    /** The size of the container element offline cache. */
+    private int m_containerElementOfflineSize;
+
+    /** The size of the container page offline cache. */
+    private int m_containerPageOfflineSize;
+
+    /** The size of the container page online cache. */
+    private int m_containerPageOnlineSize;
+
+    /**
+     * Default constructor.<p>
+     */
+    public CmsADECacheSettings() {
+
+        super();
+    }
+
+    /**
+     * Returns the size of the container element offline cache.<p>
+     * 
+     * @return the size of the container element offline cache
+     */
+    public int getContainerElementOfflineSize() {
+
+        if (m_containerElementOfflineSize <= 0) {
+            return DEFAULT_CONTAINER_ELEMENT_SIZE;
+        }
+        return m_containerElementOfflineSize;
+    }
+
+    /**
+     * Returns the size of the container page offline cache.<p>
+     * 
+     * @return the size of the container page offline cache
+     */
+    public int getContainerPageOfflineSize() {
+
+        if (m_containerPageOfflineSize <= 0) {
+            return DEFAULT_CONTAINER_PAGE_SIZE;
+        }
+        return m_containerPageOfflineSize;
+    }
+
+    /**
+     * Returns the size of the container page online cache.<p>
+     * 
+     * @return the size of the container page online cache
+     */
+    public int getContainerPageOnlineSize() {
+
+        if (m_containerPageOnlineSize <= 0) {
+            return DEFAULT_CONTAINER_PAGE_SIZE;
+        }
+        return m_containerPageOnlineSize;
+    }
+
+    /**
+     * Sets the size of the cache for offline container pages.<p>
+     *
+     * @param size the size of the cache for offline container pages
+     */
+    public void setContainerElementOfflineSize(String size) {
+
+        m_containerElementOfflineSize = getIntValue(size, DEFAULT_CONTAINER_ELEMENT_SIZE);
+    }
+
+    /**
+     * Sets the size of the cache for offline container pages.<p>
+     *
+     * @param size the size of the cache for offline container pages
+     */
+    public void setContainerPageOfflineSize(String size) {
+
+        m_containerPageOfflineSize = getIntValue(size, DEFAULT_CONTAINER_PAGE_SIZE);
+    }
+
+    /**
+     * Sets the size of the cache for online container pages.<p>
+     *
+     * @param size the size of the cache for online container pages
+     */
+    public void setContainerPageOnlineSize(String size) {
+
+        m_containerPageOnlineSize = getIntValue(size, DEFAULT_CONTAINER_PAGE_SIZE);
+    }
+
+    /**
+     * Turns a string into an int.<p>
+     * 
+     * @param str the string to be converted
+     * @param defaultValue a default value to be returned in case the string could not be parsed or the parsed int value is <= 0
+     * @return the int value of the string
+     */
+    private int getIntValue(String str, int defaultValue) {
+
+        try {
+            int intValue = Integer.parseInt(str);
+            return (intValue > 0) ? intValue : defaultValue;
+        } catch (NumberFormatException e) {
+            // intentionally left blank
+        }
+        return defaultValue;
+    }
+}

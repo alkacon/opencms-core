@@ -34,7 +34,8 @@
 	publishmanager?,
 	session-storageprovider?,
 	permissionhandler?,
-	servletcontainer-settings?)>
+	servletcontainer-settings?,
+	ade?)>
 
 <!--
 # Version history settings.
@@ -555,3 +556,33 @@ Each job can have an optional list of parameters.
 <!ELEMENT prevent-response-flush (#PCDATA)>
 <!ELEMENT release-tags-after-end (#PCDATA)>
 <!ELEMENT request-error-page-attribute (#PCDATA)>
+
+<!--
+# The advanced direct edit settings. 
+-->		
+<!ELEMENT ade (configuration,
+			   cache)>								   
+
+<!--
+# Configuration class for ADE. 
+-->
+<!ELEMENT configuration EMPTY >
+<!ATTLIST configuration class CDATA #REQUIRED>
+
+<!--
+# Cache sizes for ADE. 
+-->
+<!ELEMENT cache (containerpages, elements) >
+
+<!--
+# Container page caches. 
+-->
+<!ELEMENT containerpages EMPTY >
+<!ATTLIST containerpages offline CDATA #REQUIRED>
+<!ATTLIST containerpages online CDATA #REQUIRED>
+
+<!--
+# Element caches. 
+-->
+<!ELEMENT elements EMPTY >
+<!ATTLIST elements offline CDATA #REQUIRED>

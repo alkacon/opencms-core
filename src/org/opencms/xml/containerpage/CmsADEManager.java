@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/13 11:59:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/13 13:47:55 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.6
  */
@@ -93,7 +93,7 @@ public class CmsADEManager {
      * 
      * @throws CmsException if something goes wrong
      *
-     * @see org.opencms.xml.containerpage.CmsContainerPageCache#setCache(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.xml.containerpage.CmsXmlContainerPage)
+     * @see org.opencms.xml.containerpage.CmsADECache#setCache(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.xml.containerpage.CmsXmlContainerPage)
      */
     public void setCache(CmsObject cms, CmsResource resource, CmsXmlContainerPage content) throws CmsException {
 
@@ -101,7 +101,7 @@ public class CmsADEManager {
     }
 
     /** The cache instance. */
-    protected CmsContainerPageCache m_cache;
+    protected CmsADECache m_cache;
 
     /** The current cms context. */
     protected CmsObject m_cms;
@@ -131,7 +131,7 @@ public class CmsADEManager {
         CmsObject cms,
         String cntPageUri,
         ServletRequest request,
-        CmsContainerPageCache cache,
+        CmsADECache cache,
         I_CmsADEConfiguration configuration) {
 
         m_cms = cms;

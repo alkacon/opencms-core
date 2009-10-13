@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheSettings.java,v $
- * Date   : $Date: 2009/10/12 10:14:52 $
- * Version: $Revision: 1.8.2.2 $
+ * Date   : $Date: 2009/10/13 13:47:57 $
+ * Version: $Revision: 1.8.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,35 +37,17 @@ package org.opencms.db;
  * @author Thomas Weckert 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.2.2 $
+ * @version $Revision: 1.8.2.3 $
  * 
  * @since 6.0.0
  */
 public class CmsCacheSettings {
-
-    /** Default size for container page caches. */
-    private static final int DEFAULT_CONTAINER_PAGE_SIZE = 128;
-
-    /** Default size for container element caches. */
-    private static final int DEFAULT_CONTAINER_ELEMENT_SIZE = 1024;
 
     /** The size of the memory monitor's cache for ACLs. */
     private int m_aclCacheSize;
 
     /** The name of the class to generate cache keys. */
     private String m_cacheKeyGenerator;
-
-    /** The size of the container page offline cache. */
-    private int m_containerPageOfflineSize = -1; // this configuration entry is optional 
-
-    /** The size of the container page online cache. */
-    private int m_containerPageOnlineSize = -1; // this configuration entry is optional 
-
-    /** The size of the container element offline cache. */
-    private int m_containerElementOfflineSize = -1; // this configuration entry is optional 
-
-    /** The size of the container element online cache. */
-    private int m_containerElementOnlineSize = -1; // this configuration entry is optional 
 
     /** The size of the memory monitor's cache for groups. */
     private int m_groupCacheSize;
@@ -132,30 +114,6 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the container page offline cache.<p>
-     * 
-     * Might be <code>-1</code> if configuration entry is missing.<p>
-     *
-     * @return the size of the container page offline cache
-     */
-    public int getConfiguredContainerPageOfflineSize() {
-
-        return m_containerPageOfflineSize;
-    }
-
-    /**
-     * Returns the size of the container page online cache.<p>
-     * 
-     * Might be <code>-1</code> if configuration entry is missing.<p>
-     *
-     * @return the size of the container page online cache
-     */
-    public int getConfiguredContainerPageOnlineSize() {
-
-        return m_containerPageOnlineSize;
-    }
-
-    /**
      * Returns the size of the memory monitor's cache for organizational units.<p>
      *
      * Might be <code>-1</code> if configuration entry is missing.<p>
@@ -201,58 +159,6 @@ public class CmsCacheSettings {
     public int getConfiguredRolesCacheSize() {
 
         return m_rolesCacheSize;
-    }
-
-    /**
-     * Returns the size of the container page offline cache.<p>
-     * 
-     * @return the size of the container page offline cache
-     */
-    public int getContainerPageOfflineSize() {
-
-        if (m_containerPageOfflineSize < 0) {
-            return DEFAULT_CONTAINER_PAGE_SIZE;
-        }
-        return m_containerPageOfflineSize;
-    }
-
-    /**
-     * Returns the size of the container page online cache.<p>
-     * 
-     * @return the size of the container page online cache
-     */
-    public int getContainerPageOnlineSize() {
-
-        if (m_containerPageOnlineSize < 0) {
-            return DEFAULT_CONTAINER_PAGE_SIZE;
-        }
-        return m_containerPageOnlineSize;
-    }
-
-    /**
-     * Returns the size of the container element offline cache.<p>
-     * 
-     * @return the size of the container element offline cache
-     */
-    public int getContainerElementOfflineSize() {
-
-        if (m_containerElementOfflineSize < 0) {
-            return DEFAULT_CONTAINER_ELEMENT_SIZE;
-        }
-        return m_containerElementOfflineSize;
-    }
-
-    /**
-     * Returns the size of the container element online cache.<p>
-     * 
-     * @return the size of the container element online cache
-     */
-    public int getContainerElementOnlineSize() {
-
-        if (m_containerElementOnlineSize < 0) {
-            return DEFAULT_CONTAINER_ELEMENT_SIZE;
-        }
-        return m_containerElementOnlineSize;
     }
 
     /**
@@ -405,26 +311,6 @@ public class CmsCacheSettings {
     public void setCacheKeyGenerator(String classname) {
 
         m_cacheKeyGenerator = classname;
-    }
-
-    /**
-     * Sets the size of the memory monitor's cache for offline container pages.<p>
-     *
-     * @param size the size of the memory monitor's cache for offline container pages
-     */
-    public void setContainerPageOfflineSize(String size) {
-
-        m_containerPageOfflineSize = getIntValue(size, 64);
-    }
-
-    /**
-     * Sets the size of the memory monitor's cache for online container pages.<p>
-     *
-     * @param size the size of the memory monitor's cache for online container pages
-     */
-    public void setContainerPageOnlineSize(String size) {
-
-        m_containerPageOnlineSize = getIntValue(size, 128);
     }
 
     /**

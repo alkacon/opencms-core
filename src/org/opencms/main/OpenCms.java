@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2009/10/13 11:59:45 $
- * Version: $Revision: 1.68.2.3 $
+ * Date   : $Date: 2009/10/13 13:47:56 $
+ * Version: $Revision: 1.68.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.68.2.3 $ 
+ * @version $Revision: 1.68.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,7 +173,7 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the advanced direct edit manager.<p>
+     * Returns the advanced direct edit manager for the given container page.<p>
      * 
      * @param cms the cms context 
      * @param cntPageUri the container page uri

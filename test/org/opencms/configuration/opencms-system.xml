@@ -160,5 +160,12 @@
 			<release-tags-after-end>false</release-tags-after-end>
 			<request-error-page-attribute>servlet.container.test</request-error-page-attribute>
 		</servletcontainer-settings>
+        <ade>
+            <configuration class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
+            <cache>
+                <containerpages offline="1024" online="1024" />
+                <elements offline="1024" />
+            </cache>
+        </ade>
 	</system>
 </opencms>
