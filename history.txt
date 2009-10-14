@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/10/12 08:12:00 $
- * Version: $Revision: 1.1119.2.9 $
+ * Date   : $Date: 2009/10/14 07:45:39 $
+ * Version: $Revision: 1.1119.2.10 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -22,6 +22,8 @@ Legend:
 OpenCms 7.9.1 - xxxx, 2009
 ! Added support for xsd:choice in XML content API and editor
 ! Added new feature: Advanced Direct Edit
+* If an error occurs while changing the user password in the preferences tab, so the error dialog can be closed with the close button
+- Improved handling for writing additional infos of a cms user
 
 OpenCms 7.5.1 - October 1, 2009
 
