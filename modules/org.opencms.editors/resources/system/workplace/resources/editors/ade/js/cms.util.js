@@ -67,7 +67,7 @@
    
    /**
     * Calculates dimensions of the visible children of the given element.<p>
-    * 
+    *
     * @param {object} elem jquery-object
     * @param {integer} minHeight default height
     * @return {object} hashmap containing dimension-data as left, top, bottom, right, height, width
@@ -119,7 +119,7 @@
    
    /**
     * Calculates dimensions for the following siblings of the given element.<p>
-    * 
+    *
     * @param {object} elem jquery-object
     * @param {integer} minHeight default height
     * @param {string} stopAtClass only calculate dimensions until next sibling with this class
@@ -326,6 +326,35 @@
       });
    }
    
+   var addToElementList = cms.util.addToElementList = function(list, item, maxLen) {
+      var rId = getResourceId(item);
+      var pos = findFirstWithPrefix(list, rId);
+      if (pos != -1) {
+         list.splice(pos, 1);
+      }
+      list.splice(0, 0, item);
+      if (list.length > maxLen) {
+         list.splice(maxLen, list.length - maxLen);
+      }
+   }
+   
+   var findFirstWithPrefix = function(list, prefix) {
+      for (var i = 0; i < list.length; i++) {
+         if (list[i].match('^' + prefix)) {
+            return i;
+         }
+      }
+      return -1;
+   };
+   
+   var getResourceId = function(id) {
+      var sepPos = id.indexOf('#');
+      if (sepPos == -1) {
+         return id;
+      } else {
+         return id.substring(0, sepPos);
+      }
+   }
    
    /**
     * Checks whether Firebug is active.

@@ -96,10 +96,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>22eba3e7-b241-11de-b05c-99487bd5b80a</uuidstructure>
-			<datelastmodified>Tue, 06 Oct 2009 06:26:09 GMT</datelastmodified>
+			<uuidstructure>a482044b-81a3-11de-9b82-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 05 Aug 2009 09:37:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 06 Oct 2009 06:26:09 GMT</datecreated>
+			<datecreated>Wed, 05 Aug 2009 09:37:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -195,7 +195,7 @@
 			<type>jsp</type>
 			<uuidstructure>66952e44-9df3-11de-a97b-dd9f629b113b</uuidstructure>
 			<uuidresource>66952e45-9df3-11de-a97b-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 13 Oct 2009 10:17:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 10 Sep 2009 10:26:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 10 Sep 2009 10:19:19 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -295,7 +295,7 @@
 			<type>plain</type>
 			<uuidstructure>d07366ab-81ae-11de-9e2b-dd9f629b113b</uuidstructure>
 			<uuidresource>d07366ac-81ae-11de-9e2b-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 13 Oct 2009 15:36:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 08:55:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 10:57:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -310,7 +310,7 @@
 			<type>plain</type>
 			<uuidstructure>b9abe241-81a5-11de-9b82-dd9f629b113b</uuidstructure>
 			<uuidresource>b9abe242-81a5-11de-9b82-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 13 Oct 2009 15:36:06 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 08:55:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -340,7 +340,7 @@
 			<type>plain</type>
 			<uuidstructure>b9b0c444-81a5-11de-9b82-dd9f629b113b</uuidstructure>
 			<uuidresource>b9b0c445-81a5-11de-9b82-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 13 Oct 2009 15:36:12 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 08:55:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -370,7 +370,7 @@
 			<type>plain</type>
 			<uuidstructure>f4f0f7cd-914f-11de-9f57-dd9f629b113b</uuidstructure>
 			<uuidresource>f4f0f7ce-914f-11de-9f57-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 13 Oct 2009 15:36:17 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 08:54:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -385,7 +385,7 @@
 			<type>plain</type>
 			<uuidstructure>f5315b30-914f-11de-9f57-dd9f629b113b</uuidstructure>
 			<uuidresource>f5315b31-914f-11de-9f57-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 13 Oct 2009 15:36:23 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 08:54:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -400,7 +400,7 @@
 			<type>plain</type>
 			<uuidstructure>3bacc1d1-9314-11de-ac14-dd9f629b113b</uuidstructure>
 			<uuidresource>3bacc1d2-9314-11de-ac14-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 13 Oct 2009 15:36:30 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 08:54:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 27 Aug 2009 14:16:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1942,7 +1942,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		<file>
+        <file>
 			<source>system/workplace/resources/editors/ade/css/images/load.gif</source>
 			<destination>system/workplace/resources/editors/ade/css/images/load.gif</destination>
 			<type>image</type>
@@ -3191,7 +3191,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		<file>
+        <file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_a.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_a.png</destination>
 			<type>image</type>
@@ -3231,6 +3231,67 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+  		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_prop_a.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_prop_a.png</destination>
+			<type>image</type>
+			<uuidstructure>b901e9e6-af48-11de-b3ce-e17d6ea63d7e</uuidstructure>
+			<uuidresource>b901e9e7-af48-11de-b3ce-e17d6ea63d7e</uuidresource>
+			<datelastmodified>Fri, 02 Oct 2009 11:42:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 02 Oct 2009 11:42:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_prop_i.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_prop_i.png</destination>
+			<type>image</type>
+			<uuidstructure>ba8dba4d-af48-11de-b3ce-e17d6ea63d7e</uuidstructure>
+			<uuidresource>ba8dba4e-af48-11de-b3ce-e17d6ea63d7e</uuidresource>
+			<datelastmodified>Fri, 02 Oct 2009 11:42:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 02 Oct 2009 11:42:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_prop_sw.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_prop_sw.png</destination>
+			<type>image</type>
+			<uuidstructure>bc315888-af48-11de-b3ce-e17d6ea63d7e</uuidstructure>
+			<uuidresource>bc315889-af48-11de-b3ce-e17d6ea63d7e</uuidresource>
+			<datelastmodified>Fri, 02 Oct 2009 11:42:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 02 Oct 2009 11:42:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
 		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_i.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_i.png</destination>
@@ -3792,6 +3853,47 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+  		<file>
+			<source>system/workplace/resources/editors/ade/css/images/24x24/ade_prop.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/24x24/ade_prop.png</destination>
+			<type>image</type>
+			<uuidstructure>382e270d-b18c-11de-94f8-e17d6ea63d7e</uuidstructure>
+			<uuidresource>382e270e-b18c-11de-94f8-e17d6ea63d7e</uuidresource>
+			<datelastmodified>Mon, 05 Oct 2009 08:51:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Oct 2009 08:51:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/css/images/24x24/ade_prop_sw.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/24x24/ade_prop_sw.png</destination>
+			<type>image</type>
+			<uuidstructure>364a2486-b18c-11de-94f8-e17d6ea63d7e</uuidstructure>
+			<uuidresource>364a2487-b18c-11de-94f8-e17d6ea63d7e</uuidresource>
+			<datelastmodified>Mon, 05 Oct 2009 08:51:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Oct 2009 08:51:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
 		<file>
 			<destination>system/workplace/resources/editors/ade/css/images/32x32</destination>
 			<type>folder</type>
@@ -3910,6 +4012,27 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+  		<file>
+			<source>system/workplace/resources/editors/ade/js/cms.property.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.property.js</destination>
+			<type>plain</type>
+			<uuidstructure>19c28604-8747-11de-83d4-dd9f629f113b</uuidstructure>
+			<uuidresource>19c28605-8747-11de-83d4-dd9f629f113b</uuidresource>
+			<datelastmodified>Thu, 10 Sep 2009 11:58:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[cms.property]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
 		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.html.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.html.js</destination>
@@ -3971,26 +4094,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/ade/js/cms.search.js</source>
-			<destination>system/workplace/resources/editors/ade/js/cms.search.js</destination>
-			<type>plain</type>
-			<uuidstructure>19d7e2d3-8747-11de-83d4-dd9f629c113b</uuidstructure>
-			<uuidresource>19d7e2d4-8747-11de-83d4-dd9f629c113b</uuidresource>
-			<datelastmodified>Mon, 07 Sep 2009 07:19:13 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[cms.search]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.sitemap.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.sitemap.js</destination>
 			<type>plain</type>
@@ -4030,6 +4133,29 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        
+        <file>
+			<source>system/workplace/resources/editors/ade/js/cms.search.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.search.js</destination>
+			<type>plain</type>
+			<uuidstructure>19d7e2d3-8747-11de-83d4-dd9f629c113b</uuidstructure>
+			<uuidresource>19d7e2d4-8747-11de-83d4-dd9f629c113b</uuidresource>
+			<datelastmodified>Mon, 07 Sep 2009 07:19:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[cms.search]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        
+        
 		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.util.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.util.js</destination>
@@ -4118,7 +4244,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		<file>
+        <file>
 			<source>system/workplace/resources/editors/ade/lib/jquery-ui-1.8a1.js</source>
 			<destination>system/workplace/resources/editors/ade/lib/jquery-ui-1.8a1.js</destination>
 			<type>plain</type>

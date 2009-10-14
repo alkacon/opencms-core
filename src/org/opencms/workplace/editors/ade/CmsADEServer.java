@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/13 11:59:44 $
- * Version: $Revision: 1.1.2.28 $
+ * Date   : $Date: 2009/10/14 12:14:35 $
+ * Version: $Revision: 1.1.2.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.28 $
+ * @version $Revision: 1.1.2.29 $
  * 
  * @since 7.6
  */
@@ -518,6 +518,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 String clientId = element.getClientId();
                 m_manager.setCachedElement(clientId, element);
                 resElements.put(clientId, elemUtil.getElementData(element, cntPage.getTypes()));
+                result.put(P_ELEMENTS, resElements);
             } catch (Exception e) {
                 if (!LOG.isDebugEnabled()) {
                     LOG.warn(e.getLocalizedMessage());

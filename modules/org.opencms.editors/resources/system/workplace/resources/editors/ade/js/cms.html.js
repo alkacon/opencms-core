@@ -25,14 +25,11 @@
     <div class="connect ui-corner-top"></div>\
     <div class="ui-widget-shadow ui-corner-all"></div>\
     <div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
-        <ul id="' +
-   recentListId +
-   '" class="cms-item-list"></ul>\
+        <ul id="' +   recentListId +    '" class="cms-item-list"></ul>\
     </div></div>';
    
    var subcontainerItemStartHtml = '<li class="cms-subcontainer-item cms-item"><a class="cms-handle cms-move"></a><ul>';
    var subcontainerItemEndHtml = '</ul></li>';
-   
    
    var favoriteList = cms.html.favoriteList = '<div id="' + favoriteMenuId + '" class="cms-menu">\
 	<div class="connect ui-corner-top"></div>\
@@ -203,20 +200,11 @@
       }
    }
    
+   
    var toolbar = cms.html.toolbar = '<div id="' + toolbarId + '">\
     <div class="ui-widget-shadow"></div>\
 	<div id="toolbar_background" class="ui-widget-header cms-toolbar-background">\
-	    <div id="toolbar_content" class="cms-toolbar-content">\
-	        <button name="Reset" title="Reset" class="cms-left ui-state-default ui-corner-all cms-deactivated"><span class="ui-icon cms-icon-reset"></span>&nbsp;</button>\
-	        <button name="Edit" title="Edit" class="cms-left ui-state-default ui-corner-all"><span class="ui-icon cms-icon-edit"></span>&nbsp;</button>\
-		    <button name="Move" title="Move" class="cms-left ui-state-default ui-corner-all"><span class="ui-icon cms-icon-move"></span>&nbsp;</button>\
-            <button name="Delete" title="Delete" class="cms-left ui-state-default ui-corner-all"><span class="ui-icon cms-icon-delete"></span>&nbsp;</button>\
-            <button name="Add" title="Add" class="cms-left cms-button-wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-add"></span><span class="cms-button-text">Add</span></button>\
-            <button name="New" title="New" class="cms-left cms-button-wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-new"></span><span class="cms-button-text">New</span></button>\
-            <button name="Favorites" title="Favorites" class="cms-left cms-button-wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-favorites" /><span class="cms-button-text">Favorites</span></button>\
-            <button name="Recent" title="Recent" class="cms-left cms-button-wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-recent" /><span class="cms-button-text">Recent</span></button>\
-            <button name="Save" title="Save"  class="cms-right ui-state-default ui-corner-all cms-deactivated"><span class="ui-icon cms-icon-save"/>&nbsp;</button>\
-        </div>\
+	    <div id="toolbar_content" class="cms-toolbar-content"></div>\
      </div></div>';
    
    var toolbarOverlay = cms.html.toolbarOverlay = '<div id="' + toolbarOverlayId + '"></div>';
@@ -229,13 +217,15 @@
                        <label for="cms-search-query">Query <span class="ade-required">*</span></label>\
                        <input type="text" name="cms-search-query" class="cms-search-query" id="cms-search-query"></input>\
                    </li>\
-                   <li>\
+                   <li><a href="#" class="cms-advanced-search cms-to-basic-search" style="display:none; text-decoration:underline">Basic search</a></li>\
+                   <li><a href="#" class="cms-basic-search cms-to-advanced-search" style="text-decoration:underline">Advanced search</a></li>\
+                   <li class="cms-advanced-search" style="display:none">\
                       <label for="cms-search-path">Path</label>\
                       <input type="text" name="cms-search-path" class="cms-search-path" id="cms-search-path"></input>\
                    </li>\
                    <br>\
-                   <li><b>Resource Types</b><span class="ade-required">*</span></li>\
-                   <li class="ade-required ade-grouping">\
+                   <li class="cms-advanced-search" style="display:none"><b>Resource Types</b><span class="ade-required">*</span></li>\
+                   <li class="cms-advanced-search ade-required ade-grouping" style="display:none">\
                        <div class="cms-search-type-list">'];
       
       $.each(types, function() {
@@ -246,15 +236,6 @@
       html.push('</div></li></ol></form></div>');
       return html.join('');
    }
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
 })(cms);

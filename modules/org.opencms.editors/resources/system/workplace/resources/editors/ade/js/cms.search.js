@@ -235,6 +235,18 @@
       }
    };
    
+   var _setSearchMode = function(isAdvanced) {
+       var $basic = $('#cms-search-dialog .cms-basic-search');
+       var $advanced = $('#cms-search-dialog .cms-advanced-search');
+       if (isAdvanced) {
+           $basic.hide();
+           $advanced.show();
+       } else {
+           $advanced.hide();
+           $basic.show();
+       }
+   } 
+   
    /**
     * Initialize everything needed for the search.
     */
@@ -271,6 +283,13 @@
          }
       });
       
+      $('#cms-search-dialog .cms-to-basic-search').click(function() {
+          _setSearchMode(false);
+      });
+      
+      $('#cms-search-dialog .cms-to-advanced-search').click(function() {
+          _setSearchMode(true);
+      });
       
       $('#cms-search-dialog').dialog({
          autoOpen: false,

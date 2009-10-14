@@ -179,6 +179,17 @@ button.cms-deactivated span.cms-icon-save {
 	background-image: url(images/24x24/ade_delete.png)
 }
 
+.ui-state-default span.cms-icon-prop {
+	background-image: url(images/24x24/ade_prop_sw.png);
+}
+
+
+.ui-state-hover span.cms-icon-prop {
+	background-image: url(images/24x24/ade_prop.png);
+}
+
+
+
 .ui-state-hover span.cms-icon-add {
 	background-image: url(images/24x24/ade_add.png)
 }
@@ -495,6 +506,8 @@ div.ui-widget-header a.cms-move {
 	background-image: url(images/16x16/ocms_de_move_a.png);
 }
 
+
+
 .cms-delete {
 	background: transparent url(images/16x16/ocms_de_delete_i.png) no-repeat
 		scroll 50% 50%;
@@ -507,6 +520,25 @@ div.ui-widget-header a.cms-delete {
 .cms-delete:hover,div.ui-widget-header a.cms-delete:hover {
 	background-image: url(images/16x16/ocms_de_delete_a.png);
 }
+
+
+
+
+
+
+.cms-properties {
+	background: transparent url(images/16x16/ocms_de_prop_i.png) no-repeat scroll 50% 50%;
+}
+
+div.ui-widget-header a.cms-properties {
+	background-image: url(images/16x16/ocms_de_prop_sw.png);
+}
+
+.cms-properties:hover,div.ui-widget-header a.cms-properties:hover {
+	background-image: url(images/16x16/ocms_de_prop_a.png);
+}
+
+
 
 .cms-new{
     background: transparent url(images/16x16/ocms_de_new_i.png) no-repeat scroll 50% 50%;
@@ -706,7 +738,7 @@ li.jTreePlacement, li.jTreePlaceholder {
 }
 
 #appendBox,#cms_appendbox {
-	position: fixed;
+	position: absolute;
 	top: 0px;
 	left: 0px;
 }
@@ -939,7 +971,7 @@ ol.ade-forms fieldset {
 }
 
 #favorite-drop {
-	left: 97px;
+	/*left: 97px;*/
 }
 
 #favorite-drop .connect {
@@ -962,3 +994,11 @@ ol.ade-forms fieldset {
 	right: 3px;
 	top: 2px;
 }	
+
+
+#cms-property-dialog table td, #cms-property-dialog table th {
+	padding: 5px !important;
+}
+	
+
+

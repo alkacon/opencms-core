@@ -338,12 +338,13 @@
          'elem': id
       }, function(ok, data) {
          if (ok) {
-            cms.data.elements[id] = data.elements[id];
-            if (restoreState) {
-               // keep the state of client-side created
-               cms.data.elements[id].status = STATUS_CREATED;
+            for (var id in data.elements) {
+               cms.data.elements[id] = data.elements[id];
+               if (restoreState) {
+                  // keep the state of client-side created
+                  cms.data.elements[id].status = STATUS_CREATED;
+               }
             }
-            fillContainers();
          }
          afterReload(ok, data);
       });
@@ -704,6 +705,26 @@
       'Container': Container
    }
    
+   var getProperties = cms.data.getProperties = function(id, callback) {
+      loadJSON({
+         action: 'props',
+         elem: id
+      }, callback);
+   }
+   
+   var getElementWithProperties = cms.data.getElementWithProperties = function(id, properties, callback) {
+      loadJSON({
+         action: 'elemProps',
+         elem: id,
+         properties: JSON.stringify(properties)
+      }, function(ok, data) {
+         for (var elemId in data.elements) {
+            cms.data.elements[elemId] = data.elements[elemId];
+         }
+         callback(ok, data);
+      });
+   }
+   
    /**
     * JSON "revive" function which replaces JSON data structures that represent
     * objects with methods with the actual objects.
@@ -715,6 +736,7 @@
       }
       return value;
    }
+   
    
 })(cms);
 
