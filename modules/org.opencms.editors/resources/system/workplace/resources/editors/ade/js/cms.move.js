@@ -9,7 +9,7 @@
    /**
     * Status of the current move-process.<p>
     */
-   var moveState=null;
+   var moveState = null;
    cms.move.zIndexMap = {};
    
    /**
@@ -49,7 +49,7 @@
    
    /**
     * Checks whether given id matches a menu-container.<p>
-    * 
+    *
     * @param {string} id
     * @return boolean
     */
@@ -60,7 +60,7 @@
    
    /**
     * Checks whether the given container has reached its max-elements number.<p>
-    * 
+    *
     * @param {Object} container container-object
     */
    var isOverflowContainer = cms.move.isOverflowContainer = function(container) {
@@ -73,7 +73,7 @@
    
    /**
     * Things to do after element dragging is done.<p>
-    * 
+    *
     * @param {Object} event
     * @param {Object} ui
     */
@@ -99,7 +99,7 @@
    
    /**
     * Puts z-index of given container into the z-index-map
-    * 
+    *
     * @param {Object} containerId
     */
    var saveZIndex = cms.move.saveZIndex = function(containerId) {
@@ -135,7 +135,7 @@
    
    /**
     * Creates the sortable-helper elment for the given container.<p>
-    * 
+    *
     * @param {Object} sortable
     * @param {Object} container
     */
@@ -190,11 +190,11 @@
    
    /**
     * Preparations for a drag from the menu.<p>
-    * 
+    *
     * @param {Object} sortable
     */
    var startDragFromMenu = cms.move.startDragFromMenu = function(sortable) {
-      sortable.scrollParent=$(document);
+      sortable.scrollParent = $(document);
       moveState.helpers[moveState.startId] = sortable.helper;
       var elem = $(document.createElement('div')).addClass("placeholder" + " ui-sortable-placeholder box").css('display', 'none');
       sortable.placeholder.replaceWith(elem);
@@ -211,7 +211,7 @@
    
    /**
     * Preparations for dragging from a container.<p>
-    * 
+    *
     * @param {Object} sortable
     */
    var startDragFromNormalContainer = cms.move.startDragFromNormalContainer = function(sortable) {
@@ -248,7 +248,7 @@
    
    /**
     * Initializing the move/drag-process.<p>
-    * 
+    *
     * @param {Object} event
     * @param {Object} ui
     */
@@ -336,7 +336,7 @@
    
    /**
     * Sets the cancel-flag if dragging stops outside the containers.<p>
-    * 
+    *
     * @param {Object} event
     * @param {Object} ui
     */
@@ -346,7 +346,7 @@
    
    /**
     * Gets all element-ids from the given container an updates the container-object with these.<p>
-    * 
+    *
     * @param {Object} id container-id
     */
    var updateContainer = cms.move.updateContainer = function(id) {
@@ -364,7 +364,7 @@
    
    /**
     * Removes the helpers after a move operation.<p>
-    * 
+    *
     * @param {Object} helpers the helpers map
     * @param {Object} startContainer the name of the start container
     * @param {Object} endContainer the name of the end container
@@ -387,7 +387,7 @@
    
    /**
     * Finishing the drag process.<p>
-    * 
+    *
     * @param {Object} event
     * @param {Object} ui
     */
@@ -408,6 +408,7 @@
          $(this).sortable('cancel');
          origPlaceholder.remove();
       } else {
+         var changed = false;
          if (moveState.isMoveFromMenu()) {
             // replace placeholder in the menu with the helper, i.e. the original item
             var startHelper = helpers[startContainer];
@@ -416,7 +417,12 @@
             cms.util.clearAttributes(startHelper.get(0).style, ['width', 'height', 'top', 'left', 'position', 'opacity', 'zIndex', 'display']);
             $('div.cms-handle', currentItem).remove();
             $('button.ui-state-active').trigger('click');
+            changed = true;
          } else {
+             // check if there has been a real change. if the item has not moved to another container and is next to the original-placeholder, the page hasn't changed
+            if (startContainer != endContainer || !((currentItem.next('.cms-placeholder').length > 0) || (currentItem.prev('.cms-placeholder').length > 0))) {
+               changed = true;
+            }
             origPlaceholder.remove();
          }
          
@@ -428,6 +434,11 @@
                               // TODO
                }
             });
+         }
+         
+         if (changed) {
+            // page has changed, enable saveButton
+            cms.toolbar.setPageChanged(true);
          }
          if (moveState.shouldAddToRecent()) {
             cms.toolbar.addToRecent(moveState.currentResourceId);
@@ -484,9 +495,9 @@
          updateContainer(endContainer);
       }
       
-      if (!moveState.isMoveToFavorites()) {
-         cms.toolbar.setPageChanged(true);
-      }
+      //      if (!moveState.cancel || !moveState.isMoveToFavorites()) {
+      //         cms.toolbar.setPageChanged(true);
+      //      }
       
       if (moveState.isMoveFromNew() && !moveState.cancel) {
          $('button[name="Edit"]').trigger('click');
@@ -501,8 +512,8 @@
    }
    
    /**
-    * Dom-operations necessary to show the appropriate helper and place-holder while dragging over a container.<p> 
-    * 
+    * Dom-operations necessary to show the appropriate helper and place-holder while dragging over a container.<p>
+    *
     * @param {Object} event
     * @param {Object} ui
     */
@@ -571,7 +582,7 @@
    
    /**
     * Dom-operations necessary to show the appropriate helper and place-holder while dragging outside the containers.<p>
-    * 
+    *
     * @param {Object} event
     * @param {Object} ui
     */
@@ -605,7 +616,7 @@
    
    /**
     * Highlighting of the given elment.<p>
-    * 
+    *
     * @param {Object} elem dom-elment
     * @param {Object} hOff highlighting-offset
     */
@@ -784,7 +795,7 @@
    
    /**
     * Drawing a border around all visible elements inside the given element.<p>
-    * 
+    *
     * @param {Object} elem
     * @param {Object} hOff
     * @param {Object} showBackground
@@ -813,7 +824,7 @@
    
    /**
     * Removes the highlighting within a given context.<p>
-    * 
+    *
     * @param {Object} context
     */
    var hoverOut = cms.move.hoverOut = function(context) {
@@ -835,7 +846,7 @@
    
    /**
     * Switches helpers in the dragging process.<p>
-    * 
+    *
     * @param {Object} sortable
     * @param {Object} id
     */
@@ -846,11 +857,11 @@
       sortable.placeholder.attr('class', sortable.currentItem.attr('class') + ' cms-placeholder').removeClass('ui-sortable-helper');
       refreshHelperPositions(sortable);
    };
-
+   
    
    /**
     * Forces a recalculation of the helper-position in the dragging-process.<p>
-    * 
+    *
     * @param {Object} sortable
     */
    var refreshHelperPositions = cms.move.refreshHelperPositions = function(sortable) {
