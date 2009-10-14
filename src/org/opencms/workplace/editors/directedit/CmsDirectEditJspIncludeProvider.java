@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditJspIncludeProvider.java,v $
- * Date   : $Date: 2009/06/04 14:29:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/10/14 14:38:06 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.2.3
  */
@@ -152,7 +152,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
         element = element + "_" + editPermissions;
 
         // set request parameters required by the included direct edit JSP 
-        Map parameterMap = new HashMap();
+        Map<String, String[]> parameterMap = new HashMap<String, String[]>();
         CmsJspTagInclude.addParameter(parameterMap, I_CmsResourceLoader.PARAMETER_ELEMENT, element, true);
         CmsJspTagInclude.addParameter(parameterMap, DIRECT_EDIT_PARAM_TARGET, editTarget, true);
         CmsJspTagInclude.addParameter(
@@ -177,7 +177,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
         }
 
         // save old parameters from current request
-        Map oldParameterMap = controller.getCurrentRequest().getParameterMap();
+        Map<String, String[]> oldParameterMap = controller.getCurrentRequest().getParameterMap();
 
         try {
 
@@ -214,6 +214,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
     /**
      * @see org.opencms.workplace.editors.directedit.A_CmsDirectEditProvider#init(org.opencms.file.CmsObject, org.opencms.workplace.editors.directedit.CmsDirectEditMode, java.lang.String)
      */
+    @Override
     public void init(CmsObject cms, CmsDirectEditMode mode, String fileName) {
 
         m_cms = cms;
@@ -303,6 +304,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
      * 
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#isManual(org.opencms.workplace.editors.directedit.CmsDirectEditMode)
      */
+    @Override
     public boolean isManual(CmsDirectEditMode mode) {
 
         return false;

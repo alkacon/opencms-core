@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/I_CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/10/13 11:59:41 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/14 14:38:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 
 import java.util.Map;
@@ -41,7 +40,7 @@ import java.util.Map;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.9.2 
  */
@@ -53,13 +52,6 @@ public interface I_CmsContainerElementBean {
      * @return the id
      */
     String getClientId();
-
-    /**
-     * Returns the container element used to save favorite and recent-list entries.<p>
-     * 
-     * @return the CmsContainerElement representing this element bean
-     */
-    CmsContainerListElement getContainerElement();
 
     /**
      * Returns the element.<p>
@@ -80,12 +72,5 @@ public interface I_CmsContainerElementBean {
      *
      * @return the properties
      */
-    Map<String, CmsProperty> getProperties();
-
-    /**
-     * Returns a hash-code of all properties.<p>
-     * 
-     * @return the hash-code (0 if no properties are set)
-     */
-    int getPropertyHash();
+    Map<String, String> getProperties();
 }

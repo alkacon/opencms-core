@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/I_CmsADEConfiguration.java,v $
- * Date   : $Date: 2009/10/13 11:59:40 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/14 14:38:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
@@ -53,76 +53,91 @@ public interface I_CmsADEConfiguration {
     /**
      * Creates a new element of a given type at the configured location.<p>
      * 
+     * @param cms the current opencms context
+     * @param cntPageUri the container page uri
+     * @param request the current request
      * @param type the type of the element to be created
      * 
      * @return the CmsResource representing the newly created element
      * 
      * @throws CmsException if something goes wrong
      */
-    CmsResource createNewElement(String type) throws CmsException;
+    CmsResource createNewElement(CmsObject cms, String cntPageUri, ServletRequest request, String type)
+    throws CmsException;
 
     /**
      * Returns the list of creatable elements.<p>
+     * 
+     * @param cms the current opencms context
+     * @param cntPageUri the container page uri
+     * @param request the current request
      * 
      * @return the list of creatable elements
      * 
      * @throws CmsException if something goes wrong 
      */
-    List<CmsResource> getCreatableElements() throws CmsException;
+    List<CmsResource> getCreatableElements(CmsObject cms, String cntPageUri, ServletRequest request)
+    throws CmsException;
 
     /**
      * Returns the maximal size of the favorite list.<p>
+     * 
+     * @param cms the current opencms context
      * 
      * @return the maximal size of the favorite list
      * 
      * @throws CmsException if something goes wrong 
      */
-    int getFavoriteListMaxSize() throws CmsException;
+    int getFavoriteListMaxSize(CmsObject cms) throws CmsException;
 
     /**
      * Returns the name of the next new file of the given type to be created.<p>
      * 
+     * @param cms the current opencms context
+     * @param cntPageUri the container page uri
+     * @param request the current request
      * @param type the resource type name
      * 
      * @return the name of the next new file of the given type to be created
      * 
      * @throws CmsException if something goes wrong
      */
-    String getNextNewFileName(String type) throws CmsException;
+    String getNextNewFileName(CmsObject cms, String cntPageUri, ServletRequest request, String type)
+    throws CmsException;
 
     /**
      * Returns the maximal size of the recent list.<p>
+     * 
+     * @param cms the current opencms context
      * 
      * @return the maximal size of the recent list
      * 
      * @throws CmsException if something goes wrong 
      */
-    int getRecentListMaxSize() throws CmsException;
+    int getRecentListMaxSize(CmsObject cms) throws CmsException;
 
     /**
      * Returns the list of searchable resource types.<p>
+     * 
+     * @param cms the current opencms context
+     * @param cntPageUri the container page uri
+     * @param request the current request
      * 
      * @return the list of searchable resource types
      * 
      * @throws CmsException if something goes wrong 
      */
-    List<String> getSearchableResourceTypes() throws CmsException;
+    List<String> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
+    throws CmsException;
 
     /**
      * Returns the size of a search page.<p>
+     * 
+     * @param cms the current opencms context
      * 
      * @return the maximal size of the favorite list
      * 
      * @throws CmsException if something goes wrong 
      */
-    int getSearchPageSize() throws CmsException;
-
-    /**
-     * Initializes the current configuration.<p>
-     * 
-     * @param cms the current opencms context
-     * @param cntPageUri the container page uri
-     * @param request the current request
-     */
-    void init(CmsObject cms, String cntPageUri, ServletRequest request);
+    int getSearchPageSize(CmsObject cms) throws CmsException;
 }

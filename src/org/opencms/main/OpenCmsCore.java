@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/10/13 13:47:56 $
- * Version: $Revision: 1.245.2.5 $
+ * Date   : $Date: 2009/10/14 14:38:05 $
+ * Version: $Revision: 1.245.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
-import org.opencms.xml.containerpage.CmsADECache;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
 import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.containerpage.CmsADEManager;
@@ -115,7 +114,6 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -146,7 +144,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.245.2.5 $ 
+ * @version $Revision: 1.245.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,11 +162,8 @@ public final class OpenCmsCore {
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
 
-    /** The ade cache. */
-    private CmsADECache m_adeCache;
-
-    /** The ade configuration. */
-    private I_CmsADEConfiguration m_adeConfiguration;
+    /** The ade manager. */
+    private CmsADEManager m_adeManager;
 
     /** The configured authorization handler. */
     private I_CmsAuthorizationHandler m_authorizationHandler;
@@ -369,17 +364,13 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the advanced direct edit manager for the given container page.<p>
+     * Returns the advanced direct edit manager.<p>
      * 
-     * @param cms the cms context 
-     * @param cntPageUri the container page uri
-     * @param request the request itself
-     * 
-     * @return the advanced direct edit
+     * @return the advanced direct edit manager
      */
-    protected CmsADEManager getADEManager(CmsObject cms, String cntPageUri, ServletRequest request) {
+    protected CmsADEManager getADEManager() {
 
-        return new CmsADEManager(cms, cntPageUri, request, m_adeCache, m_adeConfiguration);
+        return m_adeManager;
     }
 
     /**
@@ -1173,29 +1164,6 @@ public final class OpenCmsCore {
         // initialize the session storage provider
         I_CmsSessionStorageProvider sessionStorageProvider = systemConfiguration.getSessionStorageProvider();
 
-        // initialize the ade cache
-        CmsADECacheSettings adeCacheSettings = systemConfiguration.getAdeCacheSettings();
-        if (adeCacheSettings == null) {
-            adeCacheSettings = new CmsADECacheSettings();
-        }
-        m_adeCache = new CmsADECache(m_memoryMonitor, adeCacheSettings);
-
-        // initialize the ade configuration
-        String adeConfigurationClassName = systemConfiguration.getAdeConfiguration();
-        if (adeConfigurationClassName == null) {
-            // use default implementation
-            m_adeConfiguration = new CmsADEDefaultConfiguration();
-        } else {
-            // use configured ade configuration
-            try {
-                m_adeConfiguration = (I_CmsADEConfiguration)Class.forName(adeConfigurationClassName).newInstance();
-            } catch (Exception e) {
-                throw new CmsInitException(org.opencms.main.Messages.get().container(
-                    org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
-                    adeConfigurationClassName), e);
-            }
-        }
-
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms;
         try {
@@ -1244,6 +1212,31 @@ public final class OpenCmsCore {
 
             // everything is initialized, now start publishing
             m_publishManager.startPublishing();
+
+            // initialize the ade cache
+            CmsADECacheSettings adeCacheSettings = systemConfiguration.getAdeCacheSettings();
+            if (adeCacheSettings == null) {
+                adeCacheSettings = new CmsADECacheSettings();
+            }
+
+            // initialize the ade configuration
+            I_CmsADEConfiguration adeConfiguration;
+            String adeConfigurationClassName = systemConfiguration.getAdeConfiguration();
+            if (adeConfigurationClassName == null) {
+                // use default implementation
+                adeConfiguration = new CmsADEDefaultConfiguration();
+            } else {
+                // use configured ade configuration
+                try {
+                    adeConfiguration = (I_CmsADEConfiguration)Class.forName(adeConfigurationClassName).newInstance();
+                } catch (Exception e) {
+                    throw new CmsInitException(org.opencms.main.Messages.get().container(
+                        org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
+                        adeConfigurationClassName), e);
+                }
+            }
+            m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, adeCacheSettings, adeConfiguration);
+
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
@@ -1672,12 +1665,12 @@ public final class OpenCmsCore {
                         e.getMessage()), e);
                 }
                 try {
-                    if (m_adeCache != null) {
-                        m_adeCache.shutdown();
+                    if (m_adeManager != null) {
+                        m_adeManager.shutdown();
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_CNTPAGE_CACHE_SHUTDOWN_1,
+                        Messages.LOG_ERROR_ADE_MANAGER_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2009/09/11 11:13:37 $
- * Version: $Revision: 1.33.2.2 $
+ * Date   : $Date: 2009/10/14 14:38:05 $
+ * Version: $Revision: 1.33.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsMapGenericWrapper;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.ByteArrayInputStream;
@@ -63,7 +63,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33.2.2 $ 
+ * @version $Revision: 1.33.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -159,20 +159,20 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private static void initCaches() {
 
         if (m_cacheTemporary == null) {
-            Map<String, byte[]> cacheTemporary = CmsMapGenericWrapper.createLRUMap(128);
+            Map<String, byte[]> cacheTemporary = CmsCollectionsGenericWrapper.createLRUMap(128);
             m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
 
             Map<String, byte[]> cachePermanent = new HashMap<String, byte[]>(32);
             m_cachePermanent = Collections.synchronizedMap(cachePermanent);
 
-            Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsMapGenericWrapper.createLRUMap(64);
+            Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(64);
             m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
         }
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             if ((OpenCms.getMemoryMonitor() != null)
                 && !OpenCms.getMemoryMonitor().isMonitoring(CmsXmlEntityResolver.class.getName() + ".cacheTemporary")) {
                 // reinitialize the caches after the memory monitor is set up                
-                Map<String, byte[]> cacheTemporary = CmsMapGenericWrapper.createLRUMap(128);
+                Map<String, byte[]> cacheTemporary = CmsCollectionsGenericWrapper.createLRUMap(128);
                 cacheTemporary.putAll(m_cacheTemporary);
                 m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
                 // map must be of type "LRUMap" so that memory monitor can access all information
@@ -188,7 +188,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                     CmsXmlEntityResolver.class.getName() + ".cachePermanent",
                     cachePermanent);
 
-                Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsMapGenericWrapper.createLRUMap(64);
+                Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(64);
                 cacheContentDefinitions.putAll(m_cacheContentDefinitions);
                 m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
                 // map must be of type "LRUMap" so that memory monitor can access all information

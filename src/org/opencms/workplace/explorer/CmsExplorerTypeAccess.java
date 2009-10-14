@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2009/09/11 11:13:36 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2009/10/14 14:38:03 $
+ * Version: $Revision: 1.18.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsMapGenericWrapper;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.18.2.1 $ 
+ * @version $Revision: 1.18.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,7 +120,7 @@ public class CmsExplorerTypeAccess {
             return;
         }
         if (m_permissionsCache == null) {
-            Map lruMap = CmsMapGenericWrapper.createLRUMap(2048);
+            Map lruMap = CmsCollectionsGenericWrapper.createLRUMap(2048);
             m_permissionsCache = Collections.synchronizedMap(lruMap);
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + resourceType, lruMap);
         } else {

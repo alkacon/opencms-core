@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/10/13 11:59:42 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2009/10/14 14:38:03 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsCntPageManager;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 7.6 
  */
@@ -59,8 +59,8 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     /** The element's resource. */
     private CmsResource m_resource;
 
-    /** The ADE manager. */
-    private CmsADEManager m_manager;
+    /** The container page manager. */
+    private CmsCntPageManager m_manager;
 
     /**
      * Constructor, with parameters.
@@ -99,7 +99,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
         if (!isNew()) {
             return "";
         }
-        return getADEManager().getNextNewFileName(getType());
+        return getManager().getNextNewFileName(getType());
     }
 
     /**
@@ -124,8 +124,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     public CmsResource getResource() throws CmsException {
 
         if (m_resource == null) {
-            m_resource = CmsADEManager.getCurrentElement(getRequest()).getElement();
-
+            m_resource = OpenCms.getADEManager().getCurrentElement(getRequest()).getElement();
         }
         return m_resource;
     }
@@ -165,20 +164,20 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      */
     public boolean isNew() throws CmsException {
 
-        List<CmsResource> elems = getADEManager().getCreatableElements();
+        List<CmsResource> elems = getManager().getCreatableElements();
         return elems.contains(getResource());
     }
 
     /**
-     * Returns the ADE manager.<p>
+     * Returns the container page manager.<p>
      * 
-     * @return the ADE manager
+     * @return the container page manager
      */
-    public CmsADEManager getADEManager() {
+    public CmsCntPageManager getManager() {
 
         if (m_manager == null) {
             CmsObject cms = getCmsObject();
-            m_manager = OpenCms.getADEManager(cms, cms.getRequestContext().getUri(), getRequest());
+            m_manager = OpenCms.getADEManager().getCntPageManager(cms, cms.getRequestContext().getUri(), getRequest());
         }
         return m_manager;
     }

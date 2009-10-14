@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsContainerPageLoader.java,v $
- * Date   : $Date: 2009/10/13 11:59:44 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2009/10/14 14:38:06 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.ServletRequest;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 7.6
  */
@@ -111,7 +111,8 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
     throws CmsException {
 
         CmsXmlContainerPage cntPage = CmsXmlContainerPageFactory.unmarshal(cms, resource, req);
-        OpenCms.getADEManager(cms, cms.getSitePath(resource), req).setCache(cms, resource, cntPage);
+        // this should be in the factory
+        OpenCms.getADEManager().setCache(cms, resource, cntPage);
         return cntPage;
     }
 }

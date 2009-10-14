@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/14 09:42:27 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2009/10/14 14:38:03 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,20 +43,17 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEManager;
-import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.I_CmsContainerBean;
 import org.opencms.xml.containerpage.I_CmsContainerElementBean;
 import org.opencms.xml.containerpage.I_CmsContainerPageBean;
@@ -79,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.15 $
+ * @version $Revision: 1.1.2.16 $
  * 
  * @since 7.6
  */
@@ -127,32 +124,8 @@ public final class CmsElementUtil {
     /** JSON property constant file. */
     public static final String P_ELEMENT_USER = "user";
 
-    /** JSON property constant properties. */
-    public static final String P_PROPERTY_PROPERTIES = "properties";
-
-    /** JSON property constant type. */
-    public static final String P_PROPERTY_TYPE = "type";
-
-    /** JSON property constant widget. */
-    public static final String P_PROPERTY_WIDGET = "widget";
-
-    /** JSON property constant widgetConf. */
-    public static final String P_PROPERTY_WIDGET_CONF = "widgetConf";
-
-    /** JSON property constant ruleType. */
-    public static final String P_PROPERTY_RULE_TYPE = "ruleType";
-
-    /** JSON property constant ruleType. */
-    public static final String P_PROPERTY_RULE_REGEX = "ruleRegex";
-
-    /** JSON property constant value. */
-    public static final String P_PROPERTY_VALUE = "value";
-
     /** JSON property constant defaultValue. */
     public static final String P_PROPERTY_DEFAULT_VALUE = "defaultValue";
-
-    /** JSON property constant niceName. */
-    public static final String P_PROPERTY_NICE_NAME = "niceName";
 
     /** JSON property constant description. */
     public static final String P_PROPERTY_DESCRIPTION = "description";
@@ -160,13 +133,40 @@ public final class CmsElementUtil {
     /** JSON property constant error. */
     public static final String P_PROPERTY_ERROR = "error";
 
+    /** JSON property constant niceName. */
+    public static final String P_PROPERTY_NICE_NAME = "niceName";
+
+    /** JSON property constant properties. */
+    public static final String P_PROPERTY_PROPERTIES = "properties";
+
+    /** JSON property constant ruleType. */
+    public static final String P_PROPERTY_RULE_REGEX = "ruleRegex";
+
+    /** JSON property constant ruleType. */
+    public static final String P_PROPERTY_RULE_TYPE = "ruleType";
+
+    /** JSON property constant type. */
+    public static final String P_PROPERTY_TYPE = "type";
+
+    /** JSON property constant value. */
+    public static final String P_PROPERTY_VALUE = "value";
+
+    /** JSON property constant widget. */
+    public static final String P_PROPERTY_WIDGET = "widget";
+
+    /** JSON property constant widgetConf. */
+    public static final String P_PROPERTY_WIDGET_CONF = "widgetConf";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementUtil.class);
 
     /** The cms context. */
     private CmsObject m_cms;
 
-    /** The ADE manager. */
+    /** The actual container page uri. */
+    private String m_cntPageUri;
+
+    /** The container page manager. */
     private CmsADEManager m_manager;
 
     /** The http request. */
@@ -174,9 +174,6 @@ public final class CmsElementUtil {
 
     /** The http response. */
     private HttpServletResponse m_res;
-
-    /** The actual container page uri. */
-    private String m_cntPageUri;
 
     /**
      * Creates a new instance.<p>
@@ -192,7 +189,7 @@ public final class CmsElementUtil {
         m_req = req;
         m_res = res;
         m_cntPageUri = cntPageUri;
-        m_manager = OpenCms.getADEManager(cms, cntPageUri, req);
+        m_manager = OpenCms.getADEManager();
     }
 
     /**
@@ -221,13 +218,15 @@ public final class CmsElementUtil {
         try {
             cms.getRequestContext().setUri(m_cntPageUri);
 
-            // to enable 'old' direct edit features for content-collector-elements, set the direct-edit-provider-attribute in the request
+            // to enable 'old' direct edit features for content-collector-elements, 
+            // set the direct-edit-provider-attribute in the request
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
             eb.init(cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(element.getElement()));
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
-            Object currentElement = m_req.getAttribute(CmsJspTagContainer.ATTR_CURRENT_ELEMENT);
-            m_req.setAttribute(CmsJspTagContainer.ATTR_CURRENT_ELEMENT, element);
+
             // TODO: is this going to be cached? most likely not! any alternative?
+            Object currentElement = m_req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
+            m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
             try {
                 return new String(loaderFacade.getLoader().dump(
                     m_cms,
@@ -237,7 +236,7 @@ public final class CmsElementUtil {
                     m_req,
                     m_res), CmsLocaleManager.getResourceEncoding(cms, element.getElement()));
             } finally {
-                m_req.setAttribute(CmsJspTagContainer.ATTR_CURRENT_ELEMENT, currentElement);
+                m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
             }
         } finally {
             cms.getRequestContext().setUri(oldUri);
@@ -284,6 +283,7 @@ public final class CmsElementUtil {
         // add formatter uris
         JSONObject formatters = new JSONObject();
         resElement.put(P_ELEMENT_FORMATTERS, formatters);
+
         if (resource.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
             // set empty entries to prevent client side problems
             Iterator<String> itTypes = types.iterator();
@@ -334,72 +334,13 @@ public final class CmsElementUtil {
     }
 
     /**
-     * Returns the data for an element.<p>
-     * 
-     * @param resource the resource
-     * @param types the types supported by the container page
-     * 
-     * @return the data for an element
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if something goes wrong in the json manipulation
-     */
-    public JSONObject getElementData(CmsResource resource, Collection<String> types) throws CmsException, JSONException {
-
-        return getElementData(getElementBeanForResource(resource), types);
-    }
-
-    /**
-     * Returns the data for an element.<p>
-     * 
-     * @param structureId the element structure id
-     * @param types the types supported by the container page
-     * 
-     * @return the data for an element
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if something goes wrong in the json manipulation
-     */
-    public JSONObject getElementData(CmsUUID structureId, Collection<String> types) throws CmsException, JSONException {
-
-        return getElementData(m_cms.readResource(structureId), types);
-    }
-
-    /**
-     * Returns the data for an element.<p>
-     * 
-     * @param elementUri the element uri
-     * @param types the types supported by the container page
-     * 
-     * @return the data for an element
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if something goes wrong in the json manipulation
-     */
-    public JSONObject getElementData(String elementUri, Collection<String> types) throws CmsException, JSONException {
-
-        return getElementData(m_cms.readResource(elementUri), types);
-    }
-
-    /**
-     * Creates an element-bean for the given resource.<p>
-     * 
-     * @param resource the resource
-     * 
-     * @return the element-bean
-     */
-    public I_CmsContainerElementBean getElementBeanForResource(CmsResource resource) {
-
-        return new CmsContainerElementBean(m_cms, resource);
-    }
-
-    /**
      * Returns the property information for the given element as a JSON object.<p>
      * 
      * @param element the element
      * @return the property information
-     * @throws CmsException - if something goes wrong
-     * @throws JSONException - if something goes wrong generating the JSON
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if something goes wrong generating the JSON
      */
     public JSONObject getElementPropertyInfo(I_CmsContainerElementBean element) throws CmsException, JSONException {
 
@@ -408,16 +349,15 @@ public final class CmsElementUtil {
             settings.getLocale());
         JSONObject result = new JSONObject();
         JSONObject jSONProperties = new JSONObject();
-        Map<String, CmsXmlContentProperty> propertiesConf = CmsContainerElementBean.getPropertyConfiguration(
-            m_cms,
-            element.getElement());
-        Map<String, CmsProperty> properties = element.getProperties();
-        Iterator<String> itProperties = propertiesConf.keySet().iterator();
+        Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(element.getElement());
+        Map<String, CmsProperty> properties = m_manager.getElementProperties(element);
+        Iterator<Map.Entry<String, CmsXmlContentProperty>> itProperties = propertiesConf.entrySet().iterator();
         while (itProperties.hasNext()) {
-            JSONObject jSONProperty = new JSONObject();
-            String propertyName = itProperties.next();
-            CmsXmlContentProperty conf = propertiesConf.get(propertyName);
+            Map.Entry<String, CmsXmlContentProperty> entry = itProperties.next();
+            String propertyName = entry.getKey();
+            CmsXmlContentProperty conf = entry.getValue();
             CmsMacroResolver.resolveMacros(conf.getWidgetConfiguration(), m_cms, Messages.get().getBundle());
+            JSONObject jSONProperty = new JSONObject();
             jSONProperty.put(P_PROPERTY_VALUE, properties.get(propertyName).getStructureValue());
             jSONProperty.put(P_PROPERTY_DEFAULT_VALUE, conf.getDefault());
             jSONProperty.put(P_PROPERTY_TYPE, conf.getPropertyType());

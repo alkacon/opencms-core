@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2009/09/11 11:13:36 $
- * Version: $Revision: 1.30.2.1 $
+ * Date   : $Date: 2009/10/14 14:38:05 $
+ * Version: $Revision: 1.30.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,12 +41,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.30.2.1 $ 
+ * @version $Revision: 1.30.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -357,7 +359,7 @@ public final class CmsRequestUtil {
     public static String encodeParams(HttpServletRequest req) {
 
         StringBuffer result = new StringBuffer(512);
-        Map<String, String[]> params = req.getParameterMap();
+        Map<String, String[]> params = CmsCollectionsGenericWrapper.map(req.getParameterMap());
         Iterator<Map.Entry<String, String[]>> i = params.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry<String, String[]> entry = i.next();
@@ -462,6 +464,25 @@ public final class CmsRequestUtil {
         }
         // forward the request
         f_req.getRequestDispatcher(target).forward(f_req, res);
+    }
+
+    /**
+     * Returns a map with all request attributes.<p>
+     * 
+     * @param req the request
+     * 
+     * @return the attribute map
+     */
+    public static Map<String, Object> getAtrributeMap(ServletRequest req) {
+
+        Map<String, Object> attrs = new HashMap<String, Object>();
+        Enumeration<String> atrrEnum = CmsCollectionsGenericWrapper.enumeration(req.getAttributeNames());
+        while (atrrEnum.hasMoreElements()) {
+            String key = atrrEnum.nextElement();
+            Object value = req.getAttribute(key);
+            attrs.put(key, value);
+        }
+        return attrs;
     }
 
     /**
@@ -585,7 +606,7 @@ public final class CmsRequestUtil {
         fu.setHeaderEncoding(request.getCharacterEncoding());
         List<FileItem> result = new ArrayList<FileItem>();
         try {
-            List<FileItem> items = fu.parseRequest(request);
+            List<FileItem> items = CmsCollectionsGenericWrapper.list(fu.parseRequest(request));
             if (items != null) {
                 result = items;
             }

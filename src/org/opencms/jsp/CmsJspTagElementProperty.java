@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagElementProperty.java,v $
- * Date   : $Date: 2009/10/13 11:59:45 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/14 14:38:06 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,11 +35,12 @@ import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.I_CmsContainerElementBean;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -54,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.6
  */
@@ -93,15 +94,18 @@ public class CmsJspTagElementProperty extends TagSupport {
         // get the element
         I_CmsContainerElementBean element = null;
         try {
-            element = CmsADEManager.getCurrentElement(req);
+            element = OpenCms.getADEManager().getCurrentElement(req);
         } catch (CmsException e) {
-            LOG.warn(e);
+            LOG.warn(e.getLocalizedMessage());
+            LOG.debug(e.getLocalizedMessage(), e);
+            return;
         }
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(defaultValue)) {
             propValue = defaultValue;
         }
-        if ((element != null) && element.getProperties().containsKey(propertyName)) {
-            CmsProperty property = element.getProperties().get(propertyName);
+        Map<String, CmsProperty> properties = OpenCms.getADEManager().getElementProperties(element);
+        if ((element != null) && properties.containsKey(propertyName)) {
+            CmsProperty property = properties.get(propertyName);
             if (property != null) {
                 propValue = property.getValue(defaultValue);
             }

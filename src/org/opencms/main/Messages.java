@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2009/10/13 11:59:46 $
- * Version: $Revision: 1.39.2.2 $
+ * Date   : $Date: 2009/10/14 14:38:05 $
+ * Version: $Revision: 1.39.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.2 $ 
+ * @version $Revision: 1.39.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -357,7 +357,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DUPLICATE_REQUEST_HANDLER_1 = "LOG_DUPLICATE_REQUEST_HANDLER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERROR_CNTPAGE_CACHE_SHUTDOWN_1 = "LOG_ERROR_CNTPAGE_CACHE_SHUTDOWN_1";
+    public static final String LOG_ERROR_ADE_MANAGER_SHUTDOWN_1 = "LOG_ERROR_ADE_MANAGER_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_EXPORT_1 = "LOG_ERROR_EXPORT_1";

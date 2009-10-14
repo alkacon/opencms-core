@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/10/13 11:59:45 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2009/10/14 14:38:06 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.14 $ 
+ * @version $Revision: 1.1.2.15 $ 
  * 
  * @since 7.6 
  */
@@ -73,9 +73,6 @@ public class CmsJspTagContainer extends TagSupport {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1228397990961282556L;
-
-    /** The request attribute name for the current element-bean. */
-    public static final String ATTR_CURRENT_ELEMENT = "__currentElement";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagContainer.class);
@@ -142,7 +139,7 @@ public class CmsJspTagContainer extends TagSupport {
         } else if (req.getParameter(I_CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
             actAsTemplate = true;
         }
-        CmsADEManager manager = OpenCms.getADEManager(cms, cms.getSitePath(containerPage), req);
+        CmsADEManager manager = OpenCms.getADEManager();
         I_CmsContainerPageBean cntPage = manager.getCache(cms, containerPage, cms.getRequestContext().getLocale());
         Locale locale = cntPage.getLocale();
 
@@ -240,17 +237,16 @@ public class CmsJspTagContainer extends TagSupport {
                 }
                 // execute the formatter jsp for the given element uri
                 I_CmsContainerElementBean element = new CmsContainerElementBean(
-                    cms,
                     resUri,
                     cms.readResource(elementFormatter),
-                    null);
+                    null); // when used as template element there are no properties
 
-                Object currentElement = req.getAttribute(ATTR_CURRENT_ELEMENT);
-                req.setAttribute(ATTR_CURRENT_ELEMENT, element);
+                Object currentElement = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
+                req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
                 try {
                     CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, null, false, null, req, res);
                 } finally {
-                    req.setAttribute(ATTR_CURRENT_ELEMENT, currentElement);
+                    req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
                 }
             }
         }
@@ -290,24 +286,24 @@ public class CmsJspTagContainer extends TagSupport {
                     }
 
                     // execute the formatter jsp for the given element uri
-                    Object currentElement = req.getAttribute(ATTR_CURRENT_ELEMENT);
-                    req.setAttribute(ATTR_CURRENT_ELEMENT, subelement);
+                    Object currentElement = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
+                    req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, subelement);
                     try {
                         CmsJspTagInclude.includeTagAction(pageContext, subelementFormatter, null, false, null, req, res);
                     } finally {
-                        req.setAttribute(ATTR_CURRENT_ELEMENT, currentElement);
+                        req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
                     }
                 }
             } else {
                 String elementFormatter = cms.getSitePath(element.getFormatter());
 
                 // execute the formatter jsp for the given element uri
-                Object currentElement = req.getAttribute(ATTR_CURRENT_ELEMENT);
-                req.setAttribute(ATTR_CURRENT_ELEMENT, element);
+                Object currentElement = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
+                req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
                 try {
                     CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, null, false, null, req, res);
                 } finally {
-                    req.setAttribute(ATTR_CURRENT_ELEMENT, currentElement);
+                    req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
                 }
             }
         }

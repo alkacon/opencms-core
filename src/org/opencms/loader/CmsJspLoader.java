@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2009/09/11 11:13:37 $
- * Version: $Revision: 1.116.2.2 $
+ * Date   : $Date: 2009/10/14 14:38:06 $
+ * Version: $Revision: 1.116.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsMapGenericWrapper;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 
@@ -118,7 +118,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.116.2.2 $ 
+ * @version $Revision: 1.116.2.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -187,8 +187,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     // TODO: This is a hack, investigate this issue with different runtime environments
     private boolean m_errorPagesAreNotCommitted; // default false should work for Tomcat > 4.1
 
-    private Map m_offlineJsps = Collections.synchronizedMap(CmsMapGenericWrapper.createLRUMap(1000));
-    private Map m_onlineJsps = Collections.synchronizedMap(CmsMapGenericWrapper.createLRUMap(1000));
+    private Map m_offlineJsps = Collections.synchronizedMap(CmsCollectionsGenericWrapper.createLRUMap(1000));
+    private Map m_onlineJsps = Collections.synchronizedMap(CmsCollectionsGenericWrapper.createLRUMap(1000));
 
     /**
      * The constructor of the class is empty, the initial instance will be 
@@ -414,8 +414,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             cacheSize = Integer.parseInt(cacheSizeStr);
         }
         if (cacheSize > 0) {
-            m_offlineJsps = Collections.synchronizedMap(CmsMapGenericWrapper.createLRUMap(cacheSize));
-            m_onlineJsps = Collections.synchronizedMap(CmsMapGenericWrapper.createLRUMap(cacheSize));
+            m_offlineJsps = Collections.synchronizedMap(CmsCollectionsGenericWrapper.createLRUMap(cacheSize));
+            m_onlineJsps = Collections.synchronizedMap(CmsCollectionsGenericWrapper.createLRUMap(cacheSize));
         }
 
         // output setup information

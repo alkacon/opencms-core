@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/13 11:59:42 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/14 14:38:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -71,7 +72,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.5.2
  */
@@ -109,6 +110,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContainerPage.class);
+
+    /** The container page objects. */
+    private Map<Locale, I_CmsContainerPageBean> m_cntPages;
 
     /**
      * Hides the public constructor.<p>
@@ -160,7 +164,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         // initialize macro resolver to use on model file values
         CmsMacroResolver macroResolver = CmsMacroResolver.newInstance().setCmsObject(cms);
 
-        // content defition must be set here since it's used during document creation
+        // content definition must be set here since it's used during document creation
         m_contentDefinition = model.getContentDefinition();
         // get the document from the default content
         Document document = (Document)model.m_document.clone();
@@ -195,7 +199,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         String encoding,
         CmsXmlContentDefinition contentDefinition) {
 
-        // content defition must be set here since it's used during document creation
+        // content definition must be set here since it's used during document creation
         m_contentDefinition = contentDefinition;
         // create the XML document according to the content definition
         Document document = m_contentDefinition.createDocument(cms, this, locale);
@@ -215,22 +219,99 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         m_elementLocales = new HashMap<String, Set<Locale>>();
         m_elementNames = new HashMap<Locale, Set<String>>();
         m_locales = new HashSet<Locale>();
+        m_cntPages = new HashMap<Locale, I_CmsContainerPageBean>();
         clearBookmarks();
 
         // initialize the bookmarks
-        for (Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); i.hasNext();) {
-            Element node = i.next();
+        for (Iterator<Element> itCntPages = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); itCntPages.hasNext();) {
+            Element cntPage = itCntPages.next();
+
             try {
-                Locale locale = CmsLocaleManager.getLocale(node.attribute(
+                Locale locale = CmsLocaleManager.getLocale(cntPage.attribute(
                     CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
 
                 addLocale(locale);
-                processSchemaNode(node, null, locale, definition);
+                processSchemaNode(cntPage, null, locale, definition);
+                if (m_locales.contains(locale)) {
+                    continue;
+                }
+                CmsContainerPageBean cntPageBean = new CmsContainerPageBean(locale);
+                for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(cntPage, N_CONTAINER); itCnts.hasNext();) {
+                    Element container = itCnts.next();
+
+                    // container itself
+                    int cntIndex = CmsXmlUtils.getXpathIndexInt(container.getUniquePath(cntPage));
+                    String cntPath = CmsXmlUtils.createXpathElement(container.getName(), cntIndex);
+                    I_CmsXmlSchemaType cntSchemaType = definition.getSchemaType(container.getName());
+                    I_CmsXmlContentValue cntValue = cntSchemaType.createValue(this, container, locale);
+                    addBookmark(cntPath, locale, true, cntValue);
+                    CmsXmlContentDefinition cntDef = ((CmsXmlNestedContentDefinition)cntSchemaType).getNestedContentDefinition();
+
+                    // name
+                    Element name = container.element(N_NAME);
+                    createBookmark(name, locale, container, cntPath, cntDef);
+
+                    // type
+                    Element type = container.element(N_TYPE);
+                    createBookmark(type, locale, container, cntPath, cntDef);
+
+                    CmsContainerBean cntBean = new CmsContainerBean(name.getText(), type.getText(), -1);
+
+                    // Elements
+                    for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(container, N_ELEMENT); itElems.hasNext();) {
+                        Element element = itElems.next();
+
+                        // element itself
+                        int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(container));
+                        String elemPath = CmsXmlUtils.createXpathElement(element.getName(), elemIndex);
+                        I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
+                        I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
+                        addBookmark(elemPath, locale, true, elemValue);
+                        CmsXmlContentDefinition elemDef = ((CmsXmlNestedContentDefinition)elemSchemaType).getNestedContentDefinition();
+
+                        // uri
+                        Element uri = container.element(N_URI);
+                        createBookmark(uri, locale, element, elemPath, elemDef);
+
+                        // formatter
+                        Element formatter = container.element(N_FORMATTER);
+                        createBookmark(formatter, locale, element, elemPath, elemDef);
+
+                        //CmsContainerElementBean elemBean = new CmsContainerElementBean();
+                    }
+
+                    cntPageBean.addContainer(cntBean);
+                }
+                m_cntPages.put(locale, cntPageBean);
             } catch (NullPointerException e) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
             }
         }
+    }
 
+    /**
+     * Creates a new bookmark for the given element.<p>
+     * 
+     * @param element the element to create the bookmark for 
+     * @param locale the locale
+     * @param parent the parent node of the element
+     * @param parentPath the parent's path
+     * @param parentDef the parent's content definition
+     */
+    protected void createBookmark(
+        Element element,
+        Locale locale,
+        Element parent,
+        String parentPath,
+        CmsXmlContentDefinition parentDef) {
+
+        int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(parent));
+        String elemPath = CmsXmlUtils.concatXpath(parentPath, CmsXmlUtils.createXpathElement(
+            element.getName(),
+            elemIndex));
+        I_CmsXmlSchemaType elemSchemaType = parentDef.getSchemaType(element.getName());
+        I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
+        addBookmark(elemPath, locale, true, elemValue);
     }
 
     /**
@@ -301,7 +382,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     @Override
     protected void setFile(CmsFile file) {
 
-        // TODO: Auto-generated method stub
+        // just for visibility from the factory
         super.setFile(file);
     }
 }

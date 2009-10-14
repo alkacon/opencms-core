@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMapGenericWrapper.java,v $
- * Date   : $Date: 2009/09/11 11:13:36 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsCollectionsGenericWrapper.java,v $
+ * Date   : $Date: 2009/10/14 14:38:04 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -31,7 +31,9 @@
 
 package org.opencms.util;
 
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
@@ -47,12 +49,12 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @since 8.0.0 
  */
-public final class CmsMapGenericWrapper {
+public final class CmsCollectionsGenericWrapper {
 
     /**
      * Hides the public constructor.<p> 
      */
-    private CmsMapGenericWrapper() {
+    private CmsCollectionsGenericWrapper() {
 
         // empty
     }
@@ -99,5 +101,48 @@ public final class CmsMapGenericWrapper {
     public static <K, V> Map<K, V> createLRUMap(int size) {
 
         return new LRUMap(size);
+    }
+
+    /**
+     * Provides a wrapper to convert an object into an enumeration that avoids warnings with Java 1.5 generic code.<p> 
+     * 
+     * @param <K> the type of the returned enumeration elements
+     * @param o the object to be converted
+     * 
+     * @return a {@link Enumeration} with the required generic type
+     */
+    @SuppressWarnings("unchecked")
+    public static <K> Enumeration<K> enumeration(Object o) {
+
+        return (Enumeration<K>)o;
+    }
+
+    /**
+     * Provides a wrapper to convert an object into a list that avoids warnings with Java 1.5 generic code.<p> 
+     * 
+     * @param <K> the type of the returned list elements
+     * @param o the object to be converted
+     * 
+     * @return a {@link List} with the required generic type
+     */
+    @SuppressWarnings("unchecked")
+    public static <K> List<K> list(Object o) {
+
+        return (List<K>)o;
+    }
+
+    /**
+     * Provides a wrapper to convert an object into a map that avoids warnings with Java 1.5 generic code.<p> 
+     * 
+     * @param <K> the type of keys maintained by the returned map
+     * @param <V> the type of mapped values
+     * @param o the object to be converted
+     * 
+     * @return a {@link Map} of the required generic type
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V> Map<K, V> map(Object o) {
+
+        return (Map<K, V>)o;
     }
 }

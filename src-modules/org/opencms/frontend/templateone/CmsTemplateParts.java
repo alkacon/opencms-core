@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2009/09/11 11:13:35 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2009/10/14 14:38:05 $
+ * Version: $Revision: 1.24.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsMapGenericWrapper;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24.2.1 $ 
+ * @version $Revision: 1.24.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -243,7 +243,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      */
     private synchronized Map initPartsMap() {
 
-        Map cacheParts = CmsMapGenericWrapper.createLRUMap(512);
+        Map cacheParts = CmsCollectionsGenericWrapper.createLRUMap(512);
         Map oldParts = m_parts;
         m_parts = Collections.synchronizedMap(cacheParts);
         if (oldParts != null) {

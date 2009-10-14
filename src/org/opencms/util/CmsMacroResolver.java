@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2009/10/13 11:59:47 $
- * Version: $Revision: 1.28.2.3 $
+ * Date   : $Date: 2009/10/14 14:38:04 $
+ * Version: $Revision: 1.28.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
-import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.I_CmsContainerElementBean;
 
 import java.util.Arrays;
@@ -66,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28.2.3 $ 
+ * @version $Revision: 1.28.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -172,13 +171,13 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     };
 
     /** The "magic" commands wrapped in a List. */
-    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
+    public static final List<String> VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMacroResolver.class);
 
     /** A map of additional values provided by the calling class. */
-    protected Map m_additionalMacros;
+    protected Map<String, String> m_additionalMacros;
 
     /** The OpenCms user context to use for resolving macros. */
     protected CmsObject m_cms;
@@ -465,7 +464,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         if (m_additionalMacros == null) {
             // use lazy initializing
-            m_additionalMacros = new HashMap();
+            m_additionalMacros = new HashMap<String, String>();
         }
         m_additionalMacros.put(key, value);
     }
@@ -604,10 +603,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         break;
                     case 8:
                         // element
-
                         if (m_jspPageContext != null) {
                             try {
-                                I_CmsContainerElementBean element = CmsADEManager.getCurrentElement(m_jspPageContext.getRequest());
+                                I_CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(
+                                    m_jspPageContext.getRequest());
                                 value = m_cms.getSitePath(element.getElement());
                             } catch (CmsException ex) {
                                 LOG.warn(ex);
@@ -738,7 +737,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         }
 
         if (m_additionalMacros != null) {
-            return (String)m_additionalMacros.get(macro);
+            return m_additionalMacros.get(macro);
         }
 
         return null;
@@ -788,7 +787,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      * 
      * @return this instance of the macro resolver
      */
-    public CmsMacroResolver setAdditionalMacros(Map additionalMacros) {
+    public CmsMacroResolver setAdditionalMacros(Map<String, String> additionalMacros) {
 
         m_additionalMacros = additionalMacros;
         return this;

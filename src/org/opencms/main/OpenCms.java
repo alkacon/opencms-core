@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2009/10/13 13:47:56 $
- * Version: $Revision: 1.68.2.4 $
+ * Date   : $Date: 2009/10/14 14:38:05 $
+ * Version: $Revision: 1.68.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -99,7 +98,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.68.2.4 $ 
+ * @version $Revision: 1.68.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,17 +172,13 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the advanced direct edit manager for the given container page.<p>
-     * 
-     * @param cms the cms context 
-     * @param cntPageUri the container page uri
-     * @param request the request itself
+     * Returns the advanced direct edit manager.<p>
      * 
      * @return the advanced direct edit manager
      */
-    public static CmsADEManager getADEManager(CmsObject cms, String cntPageUri, ServletRequest request) {
+    public static CmsADEManager getADEManager() {
 
-        return OpenCmsCore.getInstance().getADEManager(cms, cntPageUri, request);
+        return OpenCmsCore.getInstance().getADEManager();
     }
 
     /**

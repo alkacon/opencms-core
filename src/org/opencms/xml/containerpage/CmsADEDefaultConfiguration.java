@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2009/10/13 11:59:40 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/14 14:38:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
@@ -88,45 +88,38 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsADEDefaultConfiguration.class);
 
-    /** The current cms context. */
-    protected CmsObject m_cms;
-
-    /** The container page uri. */
-    protected String m_cntPageUri;
-
-    /** The request itself. */
-    protected ServletRequest m_request;
-
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(String)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(CmsObject, String, ServletRequest, String)
      */
-    public CmsResource createNewElement(String type) throws CmsException {
+    public CmsResource createNewElement(CmsObject cms, String cntPageUri, ServletRequest request, String type)
+    throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(m_cms, m_cntPageUri);
-        CmsConfigurationParser parser = new CmsConfigurationParser(m_cms, cfg);
-        String newFileName = getNextNewFileName(type);
-        m_cms.copyResource(parser.getConfiguration().get(type).getSourceFile(), newFileName);
-        return m_cms.readResource(newFileName);
+        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
+        CmsConfigurationParser parser = new CmsConfigurationParser(cms, cfg);
+        String newFileName = getNextNewFileName(cms, cntPageUri, request, type);
+        cms.copyResource(parser.getConfiguration().get(type).getSourceFile(), newFileName);
+        return cms.readResource(newFileName);
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getCreatableElements()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getCreatableElements(CmsObject, String, ServletRequest)
      */
-    public List<CmsResource> getCreatableElements() throws CmsException {
+    public List<CmsResource> getCreatableElements(CmsObject cms, String cntPageUri, ServletRequest request)
+    throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(m_cms, m_request.getParameter(CmsADEManager.PARAMETER_CNTPAGE));
+        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
         if (cfg == null) {
             return new ArrayList<CmsResource>();
         }
-        return new CmsConfigurationParser(m_cms, cfg).getNewElements();
+        return new CmsConfigurationParser(cms, cfg).getNewElements();
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFavoriteListMaxSize()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getFavoriteListMaxSize(CmsObject)
      */
-    public int getFavoriteListMaxSize() {
+    public int getFavoriteListMaxSize(CmsObject cms) {
 
-        Integer maxElems = (Integer)m_cms.getRequestContext().currentUser().getAdditionalInfo(
+        Integer maxElems = (Integer)cms.getRequestContext().currentUser().getAdditionalInfo(
             ADDINFO_ADE_FAVORITE_LIST_SIZE);
         if (maxElems == null) {
             maxElems = new Integer(DEFAULT_FAVORITE_LIST_SIZE);
@@ -135,21 +128,22 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getNextNewFileName(java.lang.String)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getNextNewFileName(CmsObject, String, ServletRequest, String)
      */
-    public synchronized String getNextNewFileName(String type) throws CmsException {
+    public synchronized String getNextNewFileName(CmsObject cms, String cntPageUri, ServletRequest request, String type)
+    throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(m_cms, m_cntPageUri);
-        CmsConfigurationParser parser = new CmsConfigurationParser(m_cms, cfg);
-        return parser.getNewFileName(m_cms, parser.getConfiguration().get(type).getDestination());
+        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
+        CmsConfigurationParser parser = new CmsConfigurationParser(cms, cfg);
+        return parser.getNewFileName(cms, parser.getConfiguration().get(type).getDestination());
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getRecentListMaxSize()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getRecentListMaxSize(CmsObject)
      */
-    public int getRecentListMaxSize() {
+    public int getRecentListMaxSize(CmsObject cms) {
 
-        Integer maxElems = (Integer)m_cms.getRequestContext().currentUser().getAdditionalInfo(
+        Integer maxElems = (Integer)cms.getRequestContext().currentUser().getAdditionalInfo(
             ADDINFO_ADE_RECENT_LIST_SIZE);
         if (maxElems == null) {
             maxElems = new Integer(DEFAULT_RECENT_LIST_SIZE);
@@ -158,43 +152,34 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchableResourceTypes()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchableResourceTypes(CmsObject, String, ServletRequest)
      */
-    public List<String> getSearchableResourceTypes() throws CmsException {
+    public List<String> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
+    throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(m_cms, m_request.getParameter(CmsADEManager.PARAMETER_CNTPAGE));
+        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
         if (cfg == null) {
             return new ArrayList<String>();
         }
         CmsResourceManager manager = OpenCms.getResourceManager();
         ArrayList<String> result = new ArrayList<String>();
-        for (CmsResource resource : new CmsConfigurationParser(m_cms, cfg).getNewElements()) {
+        for (CmsResource resource : new CmsConfigurationParser(cms, cfg).getNewElements()) {
             result.add(manager.getResourceType(resource).getTypeName());
         }
         return result;
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchPageSize()
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchPageSize(CmsObject)
      */
-    public int getSearchPageSize() {
+    public int getSearchPageSize(CmsObject cms) {
 
-        Integer maxElems = (Integer)m_cms.getRequestContext().currentUser().getAdditionalInfo(
+        Integer maxElems = (Integer)cms.getRequestContext().currentUser().getAdditionalInfo(
             ADDINFO_ADE_SEARCH_PAGE_SIZE);
         if (maxElems == null) {
             maxElems = new Integer(DEFAULT_SEARCH_PAGE_SIZE);
         }
         return maxElems.intValue();
-    }
-
-    /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#init(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest)
-     */
-    public void init(CmsObject cms, String cntPageUri, ServletRequest request) {
-
-        m_cms = cms;
-        m_cntPageUri = cntPageUri;
-        m_request = request;
     }
 
     /**

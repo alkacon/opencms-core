@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADECache.java,v $
- * Date   : $Date: 2009/10/13 13:47:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/14 14:38:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -40,7 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
-import org.opencms.util.CmsMapGenericWrapper;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -59,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
@@ -69,7 +68,7 @@ public final class CmsADECache implements I_CmsEventListener {
     private static final Log LOG = CmsLog.getLog(CmsADECache.class);
 
     /** Cache for ADE recent lists. */
-    private Map<String, List<CmsContainerListElement>> m_adeRecentLists;
+    private Map<String, List<I_CmsContainerElementBean>> m_adeRecentLists;
 
     /** Cache for ADE search options. */
     private Map<String, CmsSearchOptions> m_adeSearchOptions;
@@ -95,16 +94,16 @@ public final class CmsADECache implements I_CmsEventListener {
 
         Map<String, Map<Locale, I_CmsContainerPageBean>> lruMapCntPage;
         // container page caches
-        lruMapCntPage = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
+        lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
         m_containerPagesOffline = Collections.synchronizedMap(lruMapCntPage);
         memMonitor.register(CmsADECache.class.getName() + ".containerPagesOffline", lruMapCntPage);
 
-        lruMapCntPage = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
+        lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
         m_containerPagesOnline = Collections.synchronizedMap(lruMapCntPage);
         memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", lruMapCntPage);
 
         // container element caches
-        Map<String, I_CmsContainerElementBean> lruMapCntElem = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerElementOfflineSize());
+        Map<String, I_CmsContainerElementBean> lruMapCntElem = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerElementOfflineSize());
         m_containerElementsOffline = Collections.synchronizedMap(lruMapCntElem);
         memMonitor.register(CmsADECache.class.getName() + ".containerElementsOffline", lruMapCntElem);
 
@@ -114,7 +113,7 @@ public final class CmsADECache implements I_CmsEventListener {
         memMonitor.register(CmsADEManager.class.getName(), adeSearchOptions);
 
         // ADE recent lists
-        Map<String, List<CmsContainerListElement>> adeRecentList = new HashMap<String, List<CmsContainerListElement>>();
+        Map<String, List<I_CmsContainerElementBean>> adeRecentList = new HashMap<String, List<I_CmsContainerElementBean>>();
         m_adeRecentLists = Collections.synchronizedMap(adeRecentList);
         memMonitor.register(CmsADEManager.class.getName(), adeRecentList);
 
@@ -137,7 +136,7 @@ public final class CmsADECache implements I_CmsEventListener {
      * @param key the cache key
      * @param list the recent list to cache
      */
-    public void cacheADERecentList(String key, List<CmsContainerListElement> list) {
+    public void cacheADERecentList(String key, List<I_CmsContainerElementBean> list) {
 
         m_adeRecentLists.put(key, list);
     }
@@ -186,7 +185,6 @@ public final class CmsADECache implements I_CmsEventListener {
      * 
      * @param event the event to handle
      */
-    @SuppressWarnings("unchecked")
     public void cmsEvent(CmsEvent event) {
 
         CmsResource resource = null;
@@ -204,14 +202,14 @@ public final class CmsADECache implements I_CmsEventListener {
 
             case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
                 // a list of resources and all of their properties have been modified
-                resources = (List<CmsResource>)event.getData().get(I_CmsEventListener.KEY_RESOURCES);
+                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                 uncacheResources(resources);
                 break;
 
             case I_CmsEventListener.EVENT_RESOURCE_DELETED:
             case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
                 // a list of resources has been modified
-                resources = (List<CmsResource>)event.getData().get(I_CmsEventListener.KEY_RESOURCES);
+                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                 uncacheResources(resources);
                 break;
 
@@ -281,7 +279,7 @@ public final class CmsADECache implements I_CmsEventListener {
      * 
      * @return the cached recent list with the given cache key
      */
-    public List<CmsContainerListElement> getADERecentList(String key) {
+    public List<I_CmsContainerElementBean> getADERecentList(String key) {
 
         return m_adeRecentLists.get(key);
     }
@@ -566,7 +564,8 @@ public final class CmsADECache implements I_CmsEventListener {
                         locale).getStringValue(cms);
                     CmsResource formatterRes = cms.readResource(formatter);
 
-                    HashMap<String, CmsProperty> properties = new HashMap<String, CmsProperty>();
+                    // get properties
+                    HashMap<String, String> properties = new HashMap<String, String>();
                     Iterator<I_CmsXmlContentValue> itProperties = content.getValues(
                         CmsXmlUtils.concatXpath(elementPath, CmsXmlContainerPage.N_PROPERTIES),
                         locale).iterator();
@@ -584,11 +583,10 @@ public final class CmsADECache implements I_CmsEventListener {
                             propertyValue = propertyValues.get(0).getStringValue(cms);
                         }
                         if (propertyValue != null) {
-                            properties.put(propertyName, new CmsProperty(propertyName, propertyValue, null));
+                            properties.put(propertyName, propertyValue);
                         }
-
                     }
-                    I_CmsContainerElementBean elem = new CmsContainerElementBean(cms, elemRes, formatterRes, properties);
+                    I_CmsContainerElementBean elem = new CmsContainerElementBean(elemRes, formatterRes, properties);
                     cacheContainerElement(elem.getClientId(), elem);
                     // add element to container
                     cnt.addElement(elem);
