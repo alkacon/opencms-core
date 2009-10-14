@@ -636,7 +636,7 @@
       editorDialog.dialog({
          width: dialogWidth - 50,
          height: dialogHeight - 60,
-         title: "Editor - " + (newLink) ? "new resource" : path, // mmoossen: resource name in title
+         title: "Editor - " + ((newLink) ? "new resource" : path), // mmoossen: resource name in title
          modal: true,
          autoOpen: true,
          closeOnEscape: false,
@@ -650,7 +650,10 @@
          },
          position: ['center', 0],
          open: function(event) {
-            $('#cms_appendbox').css('z-index', 10005).append(editorDialog.parent());
+            cms.toolbar.dom.appendBox.css({
+                zIndex: 10100,
+                position: 'fixed'
+            }).append(editorDialog.parent());
             $('a.ui-dialog-titlebar-close').hide();
             editorDialog.parent().css('top', '0px')
          },

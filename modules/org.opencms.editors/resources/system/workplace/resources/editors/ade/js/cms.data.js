@@ -162,10 +162,10 @@
             }
             
             if (jsonData.favorites) {
-               favorites = cms.toolbar.favorites = jsonData.favorites;
+               cms.toolbar.favorites = jsonData.favorites;
             }
             if (jsonData.recent) {
-               recent = cms.toolbar.recent = jsonData.recent;
+               cms.toolbar.recent = jsonData.recent;
             }
             if (jsonData.containers) {
                containers = cms.data.containers = jsonData.containers;

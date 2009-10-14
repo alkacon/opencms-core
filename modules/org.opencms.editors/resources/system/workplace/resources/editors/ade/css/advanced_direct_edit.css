@@ -706,7 +706,7 @@ li.jTreePlacement, li.jTreePlaceholder {
 }
 
 #appendBox,#cms_appendbox {
-	position: absolute;
+	position: fixed;
 	top: 0px;
 	left: 0px;
 }

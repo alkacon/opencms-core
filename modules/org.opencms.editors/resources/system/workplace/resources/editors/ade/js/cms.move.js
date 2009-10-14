@@ -194,6 +194,7 @@
     * @param {Object} sortable
     */
    var startDragFromMenu = cms.move.startDragFromMenu = function(sortable) {
+      sortable.scrollParent=$(document);
       moveState.helpers[moveState.startId] = sortable.helper;
       var elem = $(document.createElement('div')).addClass("placeholder" + " ui-sortable-placeholder box").css('display', 'none');
       sortable.placeholder.replaceWith(elem);
@@ -201,8 +202,8 @@
       
       $('.cms-additional', sortable.currentItem).hide();
       
-      sortable.helper.appendTo('#cms_appendbox');
-      
+      sortable.helper.appendTo(cms.toolbar.dom.appendBox);
+      cms.toolbar.dom.appendBox.css('position', 'absolute');
       $('#' + moveState.startId).closest('.cms-menu').css('display', 'none');
       moveState.over = false;
    }
@@ -747,7 +748,7 @@
       };
       $('div.cms-directedit-buttons', elem).css({
          top: inner.top + hOff,
-         left: inner.left + inner.width - 60,
+         left: inner.left + inner.width - 60
       }).hover(function() {
          $(this).nextAll('.cms-hovering').css('display', 'block');
       }, function() {
