@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2009/06/04 14:29:18 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/10/14 07:39:00 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,12 +43,15 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Wraps context information to access the OpenCms database.<p> 
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.18.2.1 $
  * 
  * @since 6.0.0
  */
@@ -62,6 +65,35 @@ public class CmsDbContext {
 
     /** The wrapped user request context. */
     protected CmsRequestContext m_requestContext;
+
+    /** Context attributes. */
+    protected Map<String, Object> m_attributes;
+
+    /**
+     * Get an attribute from the dbc
+     * @param key the attrbute key
+     * @return the attribute value or null if the attribute does not exist
+     */
+    public Object getAttribute(String key) {
+
+        if (m_attributes == null) {
+            return null;
+        }
+        return m_attributes.get(key);
+    }
+
+    /**
+     * Sets an attribute in the dbc
+     * @param key the attribute key
+     * @param value the attribute value
+     */
+    public void setAttribute(String key, Object value) {
+
+        if (m_attributes == null) {
+            m_attributes = new HashMap<String, Object>(4);
+        }
+        m_attributes.put(key, value);
+    }
 
     /**
      * Creates a new, empty database context.<p> 

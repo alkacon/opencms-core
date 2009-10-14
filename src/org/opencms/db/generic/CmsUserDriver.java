@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/10/12 08:12:00 $
- * Version: $Revision: 1.129.2.3 $
+ * Date   : $Date: 2009/10/14 07:39:00 $
+ * Version: $Revision: 1.129.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.129.2.3 $
+ * @version $Revision: 1.129.2.4 $
  * 
  * @since 6.0.0 
  */
@@ -1874,28 +1874,53 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
 
+        // get the login attribute
+        String att_login = (String)dbc.getAttribute(CmsDriverManager.ATTRIBUTE_LOGIN);
+
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        try {
-            conn = getSqlManager().getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE_6");
-            // write data to database
-            stmt.setString(1, m_sqlManager.validateEmpty(user.getFirstname()));
-            stmt.setString(2, m_sqlManager.validateEmpty(user.getLastname()));
-            stmt.setString(3, m_sqlManager.validateEmpty(user.getEmail()));
-            stmt.setLong(4, user.getLastlogin());
-            stmt.setInt(5, user.getFlags());
-            stmt.setString(6, user.getId().toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        // if the login attribute is set, do only update the last login information of this user
+        // otherweise write the complete user data
+        if (CmsStringUtil.isNotEmpty(att_login)) {
+
+            try {
+                conn = getSqlManager().getConnection(dbc);
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE_2");
+                // write data to database
+                stmt.setLong(1, user.getLastlogin());
+                stmt.setString(2, user.getId().toString());
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
+
+        } else {
+
+            try {
+                conn = getSqlManager().getConnection(dbc);
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE_6");
+                // write data to database
+                stmt.setString(1, m_sqlManager.validateEmpty(user.getFirstname()));
+                stmt.setString(2, m_sqlManager.validateEmpty(user.getLastname()));
+                stmt.setString(3, m_sqlManager.validateEmpty(user.getEmail()));
+                stmt.setLong(4, user.getLastlogin());
+                stmt.setInt(5, user.getFlags());
+                stmt.setString(6, user.getId().toString());
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
+            internalWriteUserInfos(dbc, user.getId(), user.getAdditionalInfo());
         }
-        internalWriteUserInfos(dbc, user.getId(), user.getAdditionalInfo());
     }
 
     /**
@@ -1903,26 +1928,17 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     public void writeUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value) throws CmsDataAccessException {
 
-        PreparedStatement stmt = null;
-        Connection conn = null;
+        // analyse the dbc attribute what to do here
+        String mode = (String)dbc.getAttribute(CmsDriverManager.ATTRIBUTE_USERADDINFO);
 
-        try {
-            conn = getSqlManager().getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_WRITE_4");
-            // write data to database
-            stmt.setString(1, userId.toString());
-            stmt.setString(2, key);
-            m_sqlManager.setBytes(stmt, 3, CmsDataTypeUtil.dataSerialize(value));
-            stmt.setString(4, value.getClass().getName());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        // delete the user info
+        if (CmsStringUtil.isNotEmpty(mode) && mode.equals(CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_DELETE)) {
+            internalDeleteUserInfo(dbc, userId, key);
+        } else if (CmsStringUtil.isNotEmpty(mode) && mode.equals(CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_UPDATE)) {
+            internalUpdateUserInfo(dbc, userId, key, value);
+        } else {
+            // default is to insert or update a new value
+            internalWriteUserInfo(dbc, userId, key, value);
         }
     }
 
@@ -2614,6 +2630,40 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
+     * Writes a new additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user id to add the user info for
+     * @param key the name of the additional user info
+     * @param value the value of the additional user info
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = getSqlManager().getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_WRITE_4");
+            // write data to database
+            stmt.setString(1, userId.toString());
+            stmt.setString(2, key);
+            m_sqlManager.setBytes(stmt, 3, CmsDataTypeUtil.dataSerialize(value));
+            stmt.setString(4, value.getClass().getName());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } catch (IOException e) {
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
      * Updates the user additional information map.<p>
      * 
      * @param dbc the current database context
@@ -2622,19 +2672,112 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * 
      * @throws CmsDataAccessException if user data could not be written
      */
+    @SuppressWarnings("unchecked")
     protected void internalWriteUserInfos(CmsDbContext dbc, CmsUUID userId, Map<String, Object> additionalInfo)
     throws CmsDataAccessException {
 
-        deleteUserInfos(dbc, userId);
-        if (additionalInfo == null) {
-            return;
-        }
-        Iterator<Map.Entry<String, Object>> itEntries = additionalInfo.entrySet().iterator();
+        // get the map of existing additional infos to compare it new additional infos
+        Map existingInfos = readUserInfos(dbc, userId);
+
+        // loop over all entries of the existing additional infos
+        Iterator itEntries = existingInfos.entrySet().iterator();
         while (itEntries.hasNext()) {
-            Map.Entry<String, Object> entry = itEntries.next();
+            Map.Entry entry = (Map.Entry)itEntries.next();
             if ((entry.getKey() != null) && (entry.getValue() != null)) {
-                writeUserInfo(dbc, userId, entry.getKey(), entry.getValue());
+                // entry does not exist in new additional infos -> delete it
+                if (!additionalInfo.containsKey(entry.getKey())) {
+                    dbc.setAttribute(
+                        CmsDriverManager.ATTRIBUTE_USERADDINFO,
+                        CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_DELETE);
+                    writeUserInfo(dbc, userId, (String)entry.getKey(), entry.getValue());
+                } else {
+                    Object newValue = additionalInfo.get(entry.getKey());
+                    // entry does exist but has different value -> update it
+                    if ((newValue != null) && !newValue.equals(entry.getValue())) {
+                        dbc.setAttribute(
+                            CmsDriverManager.ATTRIBUTE_USERADDINFO,
+                            CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_UPDATE);
+                        writeUserInfo(dbc, userId, (String)entry.getKey(), newValue);
+                    }
+                }
             }
+        }
+
+        // loop over all entries of the new additional infos
+        Iterator itNewEntries = additionalInfo.entrySet().iterator();
+        while (itNewEntries.hasNext()) {
+            Map.Entry entry = (Map.Entry)itNewEntries.next();
+            if ((entry.getKey() != null) && (entry.getValue() != null)) {
+                // entry doews not exist in the existing additional infos -> create a new one
+                if (!existingInfos.containsKey(entry.getKey())) {
+                    dbc.setAttribute(
+                        CmsDriverManager.ATTRIBUTE_USERADDINFO,
+                        CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_INSERT);
+                    writeUserInfo(dbc, userId, (String)entry.getKey(), entry.getValue());
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user id to add the user info for
+     * @param key the name of the additional user info
+     * @param value the value of the additional user info
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalUpdateUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = getSqlManager().getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_UPDATE_4");
+            // write data to database
+            m_sqlManager.setBytes(stmt, 1, CmsDataTypeUtil.dataSerialize(value));
+            stmt.setString(2, value.getClass().getName());
+            stmt.setString(3, userId.toString());
+            stmt.setString(4, key);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } catch (IOException e) {
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
+     * Deletes an additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user to delete additional info from
+     * @param key the additional info to delete 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalDeleteUserInfo(CmsDbContext dbc, CmsUUID userId, String key) throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = getSqlManager().getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_DELETE_2");
+            // write data to database
+            stmt.setString(1, userId.toString());
+            stmt.setString(2, key);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
 }
