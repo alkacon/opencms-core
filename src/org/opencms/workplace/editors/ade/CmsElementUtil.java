@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/13 11:59:43 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2009/10/14 09:42:27 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.14 $
+ * @version $Revision: 1.1.2.15 $
  * 
  * @since 7.6
  */
@@ -126,6 +126,9 @@ public final class CmsElementUtil {
 
     /** JSON property constant file. */
     public static final String P_ELEMENT_USER = "user";
+
+    /** JSON property constant properties. */
+    public static final String P_PROPERTY_PROPERTIES = "properties";
 
     /** JSON property constant type. */
     public static final String P_PROPERTY_TYPE = "type";
@@ -404,6 +407,7 @@ public final class CmsElementUtil {
         CmsMessages messages = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, element.getElement()).getMessages(
             settings.getLocale());
         JSONObject result = new JSONObject();
+        JSONObject jSONProperties = new JSONObject();
         Map<String, CmsXmlContentProperty> propertiesConf = CmsContainerElementBean.getPropertyConfiguration(
             m_cms,
             element.getElement());
@@ -430,8 +434,9 @@ public final class CmsElementUtil {
                 m_cms,
                 messages));
             jSONProperty.put(P_PROPERTY_ERROR, CmsMacroResolver.resolveMacros(conf.getError(), m_cms, messages));
-            result.put(propertyName, jSONProperty);
+            jSONProperties.put(propertyName, jSONProperty);
         }
+        result.put(P_PROPERTY_PROPERTIES, jSONProperties);
         return result;
     }
 }
