@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/languagecopy/CmsMultiplexReport.java,v $
- * Date   : $Date: 2009/10/14 07:45:08 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/14 11:03:08 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * @author Achim Westermann
  * @author Mario Jaeger 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.5.1
  */

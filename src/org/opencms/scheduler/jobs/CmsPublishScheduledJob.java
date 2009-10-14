@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/Attic/CmsTimeShiftPublishJob.java,v $
- * Date   : $Date: 2009/09/08 12:52:22 $
- * Version: $Revision: 1.2.2.1 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishScheduledJob.java,v $
+ * Date   : $Date: 2009/10/14 11:03:11 $
+ * Version: $Revision: 1.2.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
 /**
  * Scheduled job for time based publishing.<p>
  *
- * This class is called via the front end to time shift publish a file at a given time.<p>
+ * This class is called via the front end to publish scheduled a file at a given time.<p>
  * 
  * Per default, it publishes all new, edited and deleted resources in the project which are locked in 
  * the current project. For all resources in the project which are not locked by the current user is the
@@ -65,11 +65,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2.2.1 $ 
+ * @version $Revision: 1.2.2.2 $ 
  * 
- * @since 7.5.0
+ * @since 7.5.1
  */
-public class CmsTimeShiftPublishJob implements I_CmsScheduledJob {
+public class CmsPublishScheduledJob implements I_CmsScheduledJob {
 
     /** Job name parameter. */
     public static final String PARAM_JOBNAME = "jobname";
@@ -81,19 +81,20 @@ public class CmsTimeShiftPublishJob implements I_CmsScheduledJob {
     public static final String PARAM_USER = "mail-to-user";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsTimeShiftPublishJob.class);
+    private static final Log LOG = CmsLog.getLog(CmsPublishScheduledJob.class);
 
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
-    public synchronized String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
+    @SuppressWarnings("unchecked")
+    public synchronized String launch(CmsObject cms, Map parameters) throws Exception {
 
         Date jobStart = new Date();
         String finishMessage;
-        String linkcheck = parameters.get(PARAM_LINKCHECK);
-        String jobName = parameters.get(PARAM_JOBNAME);
+        String linkcheck = (String)parameters.get(PARAM_LINKCHECK);
+        String jobName = (String)parameters.get(PARAM_JOBNAME);
         CmsProject project = cms.getRequestContext().currentProject();
-        CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsTimeShiftPublishJob.class);
+        CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsPublishScheduledJob.class);
 
         try {
 
@@ -163,7 +164,7 @@ public class CmsTimeShiftPublishJob implements I_CmsScheduledJob {
             // send publish notification
             if (report.hasWarning() || report.hasError()) {
                 try {
-                    String userName = parameters.get(PARAM_USER);
+                    String userName = (String)parameters.get(PARAM_USER);
                     CmsUser user = cms.readUser(userName);
 
                     CmsPublishNotification notification = new CmsPublishNotification(cms, user, report);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/propertyviewer/CmsPropertyviewList.java,v $
- * Date   : $Date: 2009/10/13 14:23:05 $
- * Version: $Revision: 1.2.2.2 $
+ * Date   : $Date: 2009/10/14 11:03:14 $
+ * Version: $Revision: 1.2.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2.2.2 $
+ * @version $Revision: 1.2.2.3 $
  * 
  * @since 7.5.1
  */

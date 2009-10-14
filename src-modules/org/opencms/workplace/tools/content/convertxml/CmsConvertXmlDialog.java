@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/convertxml/CmsConvertXmlDialog.java,v $
- * Date   : $Date: 2009/10/14 07:45:09 $
- * Version: $Revision: 1.2.2.2 $
+ * Date   : $Date: 2009/10/14 11:03:09 $
+ * Version: $Revision: 1.2.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,14 +37,14 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
-import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.widgets.CmsSelectWidget;
+import org.opencms.widgets.CmsSelectWidgetOption;
+import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
-import org.opencms.widgets.CmsSelectWidgetOption;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2.2.2 $
+ * @version $Revision: 1.2.2.3 $
  * 
  * @since 7.0.5
  */
@@ -173,17 +173,17 @@ public class CmsConvertXmlDialog extends CmsWidgetDialog {
         // add the widgets to show
         addWidget(new CmsWidgetDialogParameter(m_settings, "resourceType", PAGES[0], new CmsSelectWidget(
             buildResourceTypeSelectWidgetList())));
-        
+
         addWidget(new CmsWidgetDialogParameter(m_settings, "vfsFolder", "/", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot()), 1, 1));
-        
+
         addWidget(new CmsWidgetDialogParameter(m_settings, "includeSubFolders", PAGES[0], new CmsCheckboxWidget("")));
-       
+
         addWidget(new CmsWidgetDialogParameter(m_settings, "xslFile", "/", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot()), 1, 1));
-        
+
         addWidget(new CmsWidgetDialogParameter(m_settings, "onlyCountFiles", PAGES[0], new CmsCheckboxWidget("")));
     }
 
@@ -249,14 +249,14 @@ public class CmsConvertXmlDialog extends CmsWidgetDialog {
         // values)
         setDialogObject(m_settings);
     }
-    
+
     /**
      * Builds the file format select widget list.<p>
      * 
      * @return File format select widget list
      */
     private List buildResourceTypeSelectWidgetList() {
-        
+
         List fileFormats = new ArrayList();
         // get all OpenCms resource types
         List resourceTypes = OpenCms.getResourceManager().getResourceTypes();
@@ -266,7 +266,10 @@ public class CmsConvertXmlDialog extends CmsWidgetDialog {
             I_CmsResourceType type = (I_CmsResourceType)iter.next();
             // only xml resource types
             if (type.isDirectEditable() && !type.getTypeName().toUpperCase().equals("JSP")) {
-                CmsSelectWidgetOption option = new CmsSelectWidgetOption(new Integer(type.getTypeId()).toString(), false, type.getTypeName());
+                CmsSelectWidgetOption option = new CmsSelectWidgetOption(
+                    new Integer(type.getTypeId()).toString(),
+                    false,
+                    type.getTypeName());
                 fileFormats.add(option);
             }
         }
