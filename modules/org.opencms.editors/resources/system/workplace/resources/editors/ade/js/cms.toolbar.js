@@ -877,9 +877,9 @@
     */
    var showSaveDialog = function() {
       if ($(this).hasClass('cms-deactivated')) {
-          return;
+         return;
       }
-       
+      
       if ($('#cms-save-dialog').size() == 0) {
          $('<div id="cms-save-dialog" style="display:none;" title="Save page"></div>').appendTo('body');
       }
@@ -1061,20 +1061,19 @@
     * Shared method that toggles a mode (enables or disables it depending on the state of the mode's button).
     * @param {Object} button the button of the mode
     */
-   var toggleMode = cms.toolbar.toggleMode = /** void */ function(button) {
+   var toggleMode = cms.toolbar.toggleMode = /** void */ function(modeObject) {
       if (!cms.toolbar.toolbarReady) {
          return;
       }
-      var buttonMode = button.attr('name').toLowerCase();
-      if (button.hasClass('ui-state-active')) {
-         this.disable();
+      if (modeObject.name==cms.toolbar.mode) {
+         modeObject.disable();
          cms.toolbar.mode = '';
          doHideShowHackForIE();
-         markAsInactive(cms.toolbar.dom.buttons[this.name]);
+         markAsInactive(modeObject.button);
       } else {
-         this.enable(button);
-         cms.toolbar.mode = buttonMode;
-         markAsActive(cms.toolbar.dom.buttons[cms.toolbar.mode]);
+         modeObject.enable(modeObject.button);
+         cms.toolbar.mode = modeObject.name;
+         markAsActive(modeObject.button);
       }
    };
    
@@ -1263,11 +1262,11 @@
       name: 'favorites',
       createButton: function() {
          var self = this;
-         var $button = makeWideButton('favorites', 'Favorites', 'cms-icon-favorites');
-         $button.click(function() {
-            self.click($button);
+         self.button = makeWideButton('favorites', 'Favorites', 'cms-icon-favorites');
+         self.button.click(function() {
+            toggleMode(self);
          })
-         return $button;
+         return self.button;
       },
       menuId: cms.html.favoriteMenuId,
       load: cms.data.loadFavorites,
@@ -1279,19 +1278,18 @@
          cms.toolbar.dom.favoritesDrop = $(cms.html.createFavDrop()).appendTo(cms.toolbar.dom.toolbarContent);
          cms.toolbar.dom.favoritesDialog = $(cms.html.favoriteDialog).appendTo(_bodyEl);
          initFavDialog();
-      },
-      click: toggleMode
+      }
    }
    
    var AddListMode = {
       name: 'add',
       createButton: function() {
          var self = this;
-         var $button = makeWideButton('add', 'Add', 'cms-icon-add');
-         $button.click(function() {
-            self.click($button)
+         self.button = makeWideButton('add', 'Add', 'cms-icon-add');
+         self.button.click(function() {
+            toggleMode(self);
          });
-         return $button;
+         return self.button;
       },
       menuId: cms.html.searchMenuId,
       load: cms.search.checkLastSearch,
@@ -1300,18 +1298,17 @@
       disable: _disableListMode,
       initialize: function() {
          cms.toolbar.dom.addMenu = $(cms.html.searchMenu).appendTo(cms.toolbar.dom.toolbarContent);
-      },
-      click: toggleMode
+      }
    }
    
    var RecentListMode = {
       name: 'recent',
       createButton: function() {
          var self = this;
-         var $button = makeWideButton('recent', 'Recent', 'cms-icon-recent').click(function() {
-            self.click($button)
+         self.button = makeWideButton('recent', 'Recent', 'cms-icon-recent').click(function() {
+            toggleMode(self);
          });
-         return $button;
+         return self.button;
          
       },
       menuId: cms.html.recentMenuId,
@@ -1321,9 +1318,7 @@
       enable: _enableListMode,
       initialize: function() {
          cms.toolbar.dom.recentMenu = $(cms.html.createMenu(cms.html.recentMenuId)).appendTo(cms.toolbar.dom.toolbarContent);
-      },
-      click: toggleMode
-   
+      }
    }
    
    var NewListMode = {
@@ -1331,17 +1326,16 @@
       menuId: cms.html.newMenuId,
       createButton: function() {
          var self = this;
-         var $button = makeWideButton('new', 'New', 'cms-icon-new').click(function() {
-            self.click($button);
+         self.button = makeWideButton('new', 'New', 'cms-icon-new').click(function() {
+            toggleMode(self);
          });
-         return $button;
+         return self.button;
       },
       prepareAfterLoad: doNothing,
       
       load: function(callback) {
          callback(true, null);
       },
-      click: toggleMode,
       disable: _disableListMode,
       enable: _enableListMode,
       initialize: function() {
@@ -1352,13 +1346,12 @@
    var PropertyMode = {
       name: 'properties',
       isEdit: true,
-      click: toggleMode,
       createButton: function() {
          var self = this;
-         var $button = makeModeButton(this.name, 'Properties', 'cms-icon-prop').click(function() {
-            self.click($button);
+         self.button = makeModeButton(this.name, 'Properties', 'cms-icon-prop').click(function() {
+            toggleMode(self);
          });
-         return $button;
+         return self.button;
       },
       
       isCompatibleWith: function(elemId) {
@@ -1380,13 +1373,12 @@
    var DeleteMode = {
       name: 'delete',
       isEdit: true,
-      click: toggleMode,
       createButton: function() {
          var self = this;
-         var $button = makeModeButton(this.name, 'Delete', 'cms-icon-delete').click(function() {
-            self.click($button);
+         self.button = makeModeButton(this.name, 'Delete', 'cms-icon-delete').click(function() {
+            toggleMode(self);
          });
-         return $button;
+         return self.button;
       },
       
       isCompatibleWith: function(elem) {
@@ -1408,13 +1400,12 @@
    var EditMode = {
       name: 'edit',
       isEdit: true,
-      click: toggleMode,
       createButton: function() {
          var self = this;
-         var $button = makeModeButton(this.name, 'Edit', 'cms-icon-edit').click(function() {
-            self.click($button);
+         self.button = makeModeButton(this.name, 'Edit', 'cms-icon-edit').click(function() {
+            toggleMode(self);
          });
-         return $button;
+         return self.button;
       },
       
       isCompatibleWith: function(elem) {
@@ -1441,15 +1432,12 @@
    var MoveMode = {
       name: 'move',
       isEdit: true,
-      click: toggleMode,
-      
       createButton: function() {
          var self = this;
-         var $button = makeModeButton(this.name, 'Move', 'cms-icon-move');
-         $button.click(function() {
-            self.click($button);
+         self.button = makeModeButton(this.name, 'Move', 'cms-icon-move').click(function() {
+            toggleMode(self);
          });
-         return $button;
+         return self.button;
       },
       
       isCompatibleWith: function(elem) {
@@ -1476,47 +1464,42 @@
       name: 'reset',
       createButton: function() {
          var self = this;
-         var $button = makeModeButton(this.name, 'Reset', 'cms-icon-reset').click(function() {
-            self.click($button);
-         });
-         $button.addClass('cms-deactivated');
-         this.$button = $button;
-         return $button;
-      },
-      
-      initialize: doNothing,
-      
-      click: function() {
-         if ($('#cms-reset-dialog').size() == 0) {
-            $('<div id="cms-reset-dialog" style="display:none">Do you really want to discard your changes and reset the page?</div>').appendTo('body');
-         }
-         var $dlg = $('#cms-reset-dialog');
-         if (this.$button.hasClass('cms-deactivated')) {
-            return;
-         }
-         var buttons = {};
-         buttons['Reset'] = function() {
-            $(this).dialog('destroy');
-            setPageChanged(false);
-            window.location.reload();
-         }
-         
-         buttons['Cancel'] = function() {
-            $(this).dialog('destroy');
-         }
-         
-         $('#cms-reset-dialog').dialog({
-            autoOpen: true,
-            modal: true,
-            zIndex: 9999,
-            title: 'Reset',
-            buttons: buttons,
-            close: function() {
+         self.button = makeModeButton(this.name, 'Reset', 'cms-icon-reset').click(function() {
+            if ($('#cms-reset-dialog').size() == 0) {
+               $('<div id="cms-reset-dialog" style="display:none">Do you really want to discard your changes and reset the page?</div>').appendTo('body');
+            }
+            var $dlg = $('#cms-reset-dialog');
+            if (self.button.hasClass('cms-deactivated')) {
+               return;
+            }
+            var buttons = {};
+            buttons['Reset'] = function() {
+               $(this).dialog('destroy');
+               setPageChanged(false);
+               window.location.reload();
+            }
+            
+            buttons['Cancel'] = function() {
                $(this).dialog('destroy');
             }
+            
+            $('#cms-reset-dialog').dialog({
+               autoOpen: true,
+               modal: true,
+               zIndex: 9999,
+               title: 'Reset',
+               buttons: buttons,
+               close: function() {
+                  $(this).dialog('destroy');
+               }
+            });
+            return false;
          });
-         return false;
-      }
+         self.button.addClass('cms-deactivated');
+         return self.button;
+      },
+      
+      initialize: doNothing
    }
    
    

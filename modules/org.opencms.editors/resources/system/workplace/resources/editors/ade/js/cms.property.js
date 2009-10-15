@@ -439,7 +439,7 @@
       var containerType = cms.data.containers[$container.attr('id')].type;
       var id = $element.attr('rel');
       cms.data.getProperties(id, function(ok, data) {
-         var properties = data;
+         var properties = data.properties;
          delete properties['state'];
          if (!ok) {
             return;
