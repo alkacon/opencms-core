@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/14 14:38:02 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/10/16 08:25:37 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 7.6
  */
@@ -183,26 +183,22 @@ public class CmsADEManager {
      */
     public I_CmsContainerElementBean getCachedElement(String clientId) throws CmsException {
 
-        try {
-            return m_cache.getCacheContainerElement(clientId);
-        } catch (Exception e) {
-            // may happen if element was not cached
-        }
+        String id = clientId;
         I_CmsContainerElementBean element = null;
-        if (clientId.contains("#")) {
-            String id = clientId.substring(0, clientId.indexOf("#"));
-            try {
-                element = m_cache.getCacheContainerElement(id);
-            } catch (Exception e) {
-                // may happen if element was not cached
-            }
+        element = m_cache.getCacheContainerElement(id);
+        if (element != null) {
+            return element;
+        }
+        if (id.contains("#")) {
+            id = id.substring(0, id.indexOf("#"));
+            element = m_cache.getCacheContainerElement(id);
             if (element != null) {
                 return element;
             }
         }
-        // TODO: this is out of question! remove it
-        element = new CmsContainerElementBean(m_adminCms.readResource(convertToServerId(clientId)), null, null);
-        m_cache.cacheContainerElement(clientId, element);
+        // this is necessary if the element has not been cached yet
+        element = new CmsContainerElementBean(m_adminCms.readResource(convertToServerId(id)), null, null);
+        m_cache.cacheContainerElement(id, element);
         return element;
     }
 
