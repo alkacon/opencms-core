@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/09/09 15:54:52 $
- * Version: $Revision: 1.55.2.1 $
+ * Date   : $Date: 2009/10/16 10:09:07 $
+ * Version: $Revision: 1.55.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.55.2.1 $ 
+ * @version $Revision: 1.55.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +79,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** Macro for the folder path of the current resource. */
     public static final String MACRO_RESOURCE_FOLDER_PATH = "resource.folder.path";
+
+    /** Macro for the folder path of the current resource, with touch enabled for the copied resources. */
+    public static final String MACRO_RESOURCE_FOLDER_PATH_TOUCH = "resource.folder.path.touch";
 
     /** Macro for the name of the current resource. */
     public static final String MACRO_RESOURCE_NAME = "resource.name";
@@ -873,6 +876,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         result.addMacro(MACRO_RESOURCE_ROOT_PATH, cms.getRequestContext().addSiteRoot(resourcename));
         result.addMacro(MACRO_RESOURCE_SITE_PATH, resourcename);
         result.addMacro(MACRO_RESOURCE_FOLDER_PATH, CmsResource.getFolderPath(resourcename));
+        result.addMacro(MACRO_RESOURCE_FOLDER_PATH_TOUCH, CmsResource.getFolderPath(resourcename));
         result.addMacro(MACRO_RESOURCE_PARENT_PATH, CmsResource.getParentFolder(resourcename));
         result.addMacro(MACRO_RESOURCE_NAME, CmsResource.getName(resourcename));
 
@@ -907,18 +911,40 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         while (i.hasNext()) {
             CmsConfigurationCopyResource copyResource = i.next();
 
-            String target = copyResource.getTarget();
-            if (copyResource.isTargetWasNull() || CmsMacroResolver.isMacro(target, MACRO_RESOURCE_FOLDER_PATH)) {
+            String oriTarget = copyResource.getTarget();
+            String target = oriTarget;
+            if (copyResource.isTargetWasNull()
+                || CmsMacroResolver.isMacro(target, MACRO_RESOURCE_FOLDER_PATH)
+                || CmsMacroResolver.isMacro(target, MACRO_RESOURCE_FOLDER_PATH_TOUCH)) {
                 // target is just the resource folder, must add source file name to target
                 target = target.concat(CmsResource.getName(copyResource.getSource()));
             }
             // now resolve the macros in the target name
             target = resolver.resolveMacros(target);
-            // now resolve possible releative paths in the target
+            // now resolve possible relative paths in the target
             target = CmsFileUtil.normalizePath(CmsLinkManager.getAbsoluteUri(target, resourcename), '/');
 
             try {
+                // copy the resource
                 cms.copyResource(copyResource.getSource(), target, copyResource.getType());
+                if (CmsMacroResolver.isMacro(oriTarget, MACRO_RESOURCE_FOLDER_PATH_TOUCH)) {
+                    // copied resources should be touched in order to be able to do additional stuff
+                    CmsResource res = cms.readResource(target);
+                    if (res.isFile()) {
+                        // single file, just rewrite it
+                        CmsFile file = cms.readFile(res);
+                        cms.writeFile(file);
+                    } else {
+                        // folder, get all sub resources that are files
+                        Iterator<CmsResource> it = cms.readResources(target, CmsResourceFilter.DEFAULT_FILES, true).iterator();
+                        while (it.hasNext()) {
+                            // rewrite the sub resource
+                            CmsResource subRes = it.next();
+                            CmsFile file = cms.readFile(subRes);
+                            cms.writeFile(file);
+                        }
+                    }
+                }
             } catch (Exception e) {
                 // CmsIllegalArgumentException as well as CmsException
                 // log the error and continue with the other copy resources
