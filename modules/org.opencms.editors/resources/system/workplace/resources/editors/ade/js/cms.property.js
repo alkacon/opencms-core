@@ -17,19 +17,18 @@
    /**
     * Builds a row of the property editor table and stores the row's widget in another object.
     *
-    * @param {Object} widgetClass the widget constructor function to use
     * @param {Object} name the name of the property
-    * @param {Object} currentValue the current value of the property
-    * @param {Object} defaultValue the default value of the property
-    * @param {Object} isDefault true if the property is set to default
-    * @param {String} configuration the widget configuration
+    * @param {Object} entry the property entry 
     * @param {Object} widgets the object in which this row's widget should be stored
     */
-   var buildRow = function(widgetClass, name, currentValue, defaultValue, isDefault, configuration, widgets) {
+   var buildRow = function(name, entry, widgets) {
       var $row = $('<tr></tr>');
-      $('<td></td>').text(name).appendTo($row);
-      var widget = new widgetClass(configuration);
-      var widgetWrapper = new WidgetWrapper(widget, name, currentValue, defaultValue, isDefault);
+      var widgetClass = widgetTypes[entry.widget];
+      var niceName = entry.niceName ? entry.niceName : name;
+      var isDefault = !(entry.value);
+      $('<td></td>').text(niceName).appendTo($row);
+      var widget = new widgetClass(entry.widgetConf);
+      var widgetWrapper = new WidgetWrapper(widget, name, entry, $row);
       var $widget = widget.$widget;
       $('<td></td>').append($widget).appendTo($row);
       var $checkbox = $('<input type="checkbox"></input>').attr('checked', isDefault).click(function() {
@@ -39,6 +38,7 @@
       widgets[name] = widgetWrapper;
       return $row;
    };
+   
    
    /**
     * Constructor for the basic text input widget.
@@ -202,7 +202,7 @@
       }
    }
    
-   /*transfer*/
+   
    var RadioWidget = function(configuration) {
       this.name = "cms-radio-" + Math.floor(Math.random() * 10000000000000001);
       var options = parseSelectOptions(configuration);
@@ -243,6 +243,33 @@
       }
    }
    
+   var DateWidget = function(configuration) {
+      var $widget = this.$widget = $('<input></input>').datepicker();
+   }
+   
+   DateWidget.prototype = {
+      setValue: function(newValue) {
+         this.$widget.val(newValue);
+      },
+      
+      getValue: function() {
+         return this.$widget.val();
+      },
+      
+      setEnabled: function(enabled) {
+         this.$widget.attr('disabled', !enabled);
+      }
+   }
+   
+   
+   var validateString = function(validation, s) {
+      if (validation.substring(0, 1) == '!') {
+         return !s.match('^'+validation.substring(1)+'$');
+      } else {
+         return s.match('^'+validation+'$');
+      }
+   }
+   
    
    /**
     * Wrapper class for widgets which keeps track of the default state and default value.<p>
@@ -255,18 +282,21 @@
     *
     * @param {Object} widget the underlying widget
     * @param {Object} name the name of the edited property
-    * @param {Object} value the initial value of the property (will be ignored if isDefault == true)
-    * @param {Object} defaultValue the default value of the property
-    * @param {Object} isDefault true if the wrapper should be in the 'default' state initially
+    * @param {Object} entry the property entry
+    * @param {Object} $row the table row for the property
     */
-   var WidgetWrapper = cms.property.WidgetWrapper = function(widget, name, value, defaultValue, isDefault) {
+   var WidgetWrapper = cms.property.WidgetWrapper = function(widget, name, entry, $row) {
+      this.$row = $row;
       this.widget = widget;
-      this.value = isDefault ? defaultValue : value;
+      var isDefault = !entry.value;
+      this.value = isDefault ? entry.defaultValue : entry.value;
       this.name = name;
-      this.defaultValue = defaultValue;
+      this.defaultValue = entry.defaultValue;
       this.isDefault = isDefault;
       this.widget.setEnabled(!isDefault);
       this.widget.setValue(this.value);
+      this.validation = entry.ruleRegex;
+      this.validationError = entry.error;
    }
    
    WidgetWrapper.prototype = {
@@ -284,6 +314,20 @@
          } else {
             properties[this.name] = this.widget.getValue();
          }
+      },
+      
+      validate: function() {
+         var validationOK = !this.validation || this.isDefault || validateString(this.validation, this.widget.getValue());
+         this.$row.next('.cms-validation-error').remove();
+         
+         if (!validationOK) {
+             var $validationRow = $('<tr class="cms-validation-error"></tr>').css('color', '#ff0000');
+             $validationRow.append('<td>&#x25B2;</td>');
+             var $validationError = $('<td colspan="2"></td>').text(this.validationError);
+             $validationRow.append($validationError);
+             this.$row.after($validationRow);
+         }
+         return validationOK;
       }
    };
    
@@ -294,9 +338,9 @@
     */
    var widgetTypes = {
       'string': StringWidget,
-      'sel': SelectorWidget,
+      'selector': SelectorWidget,
       'chk': CheckboxWidget,
-      'col': ColorWidget
+      'color': ColorWidget
    
    }
    
@@ -309,7 +353,7 @@
     * @param {Object} widgets the object in which the widget objects should be stored
     */
    var buildPropertyTable = function(properties, widgets) {
-      var $table = $('<table border="1" cellspacing="0" cellpadding="3"></table>');
+      var $table = $('<table cellspacing="0" cellpadding="3" align="left"></table>');
       $table.append('<tr><th><b>Property</b></th><th><b>Edit</b></th><th><b>Default</b></th></tr>');
       for (var propName in properties) {
          var defaultEntry = properties[propName];
@@ -322,10 +366,11 @@
             value = defaultEntry.value;
             isDefault = false;
          }
-         var $row = buildRow(widgetClass, propName, value, defaultValue, isDefault, configuration, widgets);
+         var $row = buildRow(propName, properties[propName], widgets);
          $row.appendTo($table);
       }
       return $table;
+      
    }
    
    /**
@@ -337,6 +382,14 @@
    var _saveWidgetValues = function(props, widgets) {
       for (widgetName in widgets) {
          widgets[widgetName].save(props);
+      }
+   }
+   
+   var setDialogButtonEnabled = function($button, enabled) {
+      if (enabled) {
+         $button.attr('disabled', false).css('color', '#000000');
+      } else {
+         $button.attr('disabled', true).css('color', '#aaaaaa');
       }
    }
    
@@ -358,11 +411,6 @@
       }
       
       var buttons = {};
-      buttons['Ok'] = function() {
-         _saveWidgetValues(newProps, widgets);
-         callback(newProps);
-         _destroy();
-      };
       buttons['Cancel'] = function() {
          _destroy();
       };
@@ -377,6 +425,42 @@
       }
       
       $dlg.dialog(options);
+      
+      
+      var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text('OK');
+      
+      var validateAll = function() {
+         var result = true;
+         setDialogButtonEnabled($ok, true);
+         for (var key in widgets) {
+            if (!widgets[key].validate()) {
+               setDialogButtonEnabled($ok, false);
+               result = false;
+            }
+         }
+         return result;
+      }
+      
+      $dlg.click(function() {
+          validateAll();
+          return true;
+      });
+      $dlg.nextAll().click(validateAll);
+      $dlg.keydown(function(e) {
+         // user pressed Tab key
+         if (e.keyCode == 9) {
+            validateAll();
+         }
+      });
+      
+      $ok.click(function() {
+         if (validateAll()) {
+            _destroy();
+            _saveWidgetValues(newProps, widgets);
+            callback(newProps);
+         }
+      });
+      $dlg.nextAll('.ui-dialog-buttonpane').append($ok);
    }
    
    /**
@@ -399,26 +483,6 @@
       return defaultEntry.widgetConf;
    }
    
-   //   var properties = {
-   //      'foo': '42'
-   //   };
-   //   var colors = '#440000;#880000;#cc0000|#004400;#008800;#00cc00|#000044;#000088;#0000cc';
-   //   var defaults = {
-   //      foo: ['23', 'str', null],
-   //      bar: ['999', 'str', null],
-   //      baz: ['a', 'sel', 'a|b|c|d'],
-   //      qux: ['true', 'chk', ''],
-   //      co: ['#ff0000', 'col', colors]
-   //   };
-   //   
-   //   
-   //   $(document).ready(function() {
-   //      showPropertyEditor(properties, defaults, function(newProperties) {
-   //         dump(newProperties);
-   //      });
-   //      
-   //   });
-   
    var _getKey = function(obj) {
       for (var key in obj) {
          return key;
@@ -440,7 +504,6 @@
       var id = $element.attr('rel');
       cms.data.getProperties(id, function(ok, data) {
          var properties = data.properties;
-         delete properties['state'];
          if (!ok) {
             return;
          }
@@ -455,7 +518,6 @@
                cms.move.updateContainer($container.attr('id'));
                $('#toolbar_content button.ui-state-active').trigger('click').trigger('click');
             });
-            
          });
       });
    }
@@ -533,6 +595,5 @@
       };
       return $select;
    }
-   
    
 })(cms);
