@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/14 14:38:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/19 06:46:37 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.5.2
  */
@@ -235,6 +235,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 if (m_locales.contains(locale)) {
                     continue;
                 }
+                // TODO: If you add a locale to the map and check right afterwards if this map contains the locale, will the following code ever be executed???
                 CmsContainerPageBean cntPageBean = new CmsContainerPageBean(locale);
                 for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(cntPage, N_CONTAINER); itCnts.hasNext();) {
                     Element container = itCnts.next();
