@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>7.0.3</opencms_version>
+		<createdate>Thu, 31 Jan 2008 18:05:13 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<files>
+		<file>
+			<destination>containerpage</destination>
+			<type>folder</type>
+			<uuidstructure>469c4a44-bc8a-11de-ad02-99487bd5b80a</uuidstructure>
+			<datelastmodified>Mon, 19 Oct 2009 08:34:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Oct 2009 08:34:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>containerpage/content.html</source>
+			<destination>containerpage/content.html</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>539c8987-bc8a-11de-ad02-99487bd5b80a</uuidstructure>
+			<uuidresource>539c8988-bc8a-11de-ad02-99487bd5b80a</uuidresource>
+			<datelastmodified>Mon, 19 Oct 2009 08:36:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Oct 2009 08:35:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations>
+				<relation>
+					<id>53af9c5a-bc8a-11de-ad02-99487bd5b80a</id>
+					<path>/containerpage/content.xsd</path>
+					<type>XSD</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>containerpage/content.xsd</source>
+			<destination>containerpage/content.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>53af9c5a-bc8a-11de-ad02-99487bd5b80a</uuidstructure>
+			<uuidresource>53af9c5b-bc8a-11de-ad02-99487bd5b80a</uuidresource>
+			<datelastmodified>Mon, 19 Oct 2009 08:35:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Oct 2009 08:35:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>containerpage/formatter.jsp</source>
+			<destination>containerpage/formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>53b6c84d-bc8a-11de-ad02-99487bd5b80a</uuidstructure>
+			<uuidresource>53b6c84e-bc8a-11de-ad02-99487bd5b80a</uuidresource>
+			<datelastmodified>Mon, 19 Oct 2009 08:35:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Oct 2009 08:35:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>containerpage/index.html</source>
+			<destination>containerpage/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>53c2af31-bc8a-11de-ad02-99487bd5b80a</uuidstructure>
+			<uuidresource>53c2af32-bc8a-11de-ad02-99487bd5b80a</uuidresource>
+			<datelastmodified>Mon, 19 Oct 2009 08:37:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Oct 2009 08:35:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations>
+				<relation>
+					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
+					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
+					<type>XSD</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

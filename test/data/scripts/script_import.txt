@@ -1,0 +1,17 @@
+#
+# Script: import data
+
+# Turn echo on
+echo on
+
+# Login the Admin user
+login Admin admin
+
+# Create the temp file project
+createTempfileProject
+
+# Switch to the setup project
+setCurrentProject "tempFileProject"
+
+# Switch to the root context
+setSiteRoot "/"

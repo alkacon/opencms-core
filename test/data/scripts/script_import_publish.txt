@@ -1,0 +1,9 @@
+#
+# Script: Publish the temp file project
+
+# Switch to the setup project
+setCurrentProject "tempFileProject"
+
+# Publish the project
+unlockCurrentProject
+publishProjectAndWait

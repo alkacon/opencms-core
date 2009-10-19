@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2009/09/11 15:29:16 $
- * Version: $Revision: 1.109.2.2 $
+ * Date   : $Date: 2009/10/19 11:09:29 $
+ * Version: $Revision: 1.109.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.109.2.2 $
+ * @version $Revision: 1.109.2.3 $
  * 
  * @since 6.0.0
  */
@@ -502,6 +502,68 @@ public class OpenCmsTestCase extends TestCase {
     public static String getDbProduct() {
 
         return m_dbProduct;
+    }
+
+    public static void importData(String importFolder, String targetFolder) {
+
+        String configFolder = getTestDataPath("WEB-INF/config." + m_dbProduct + "/");
+        // turn off exceptions after error logging during setup (won't work otherwise)
+        OpenCmsTestLogAppender.setBreakOnError(false);
+        // output a message 
+        System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
+
+        // kill any old shell that might have remained from a previous test 
+        if (m_shell != null) {
+            try {
+                m_shell.exit();
+                m_shell = null;
+            } catch (Throwable t) {
+                // ignore
+            }
+        }
+
+        // create a shell instance
+        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+
+        // open the test script 
+        File script;
+        FileInputStream stream = null;
+        CmsObject cms = null;
+
+        try {
+            // start the shell with the base script
+            script = new File(getTestDataPath("scripts/script_import.txt"));
+            stream = new FileInputStream(script);
+            m_shell.start(stream);
+
+            // log in the Admin user and switch to the setup project
+            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+            cms.loginUser("Admin", "admin");
+            cms.getRequestContext().setCurrentProject(cms.readProject("tempFileProject"));
+
+            if (importFolder != null) {
+                // import the "simpletest" files
+                importResources(cms, importFolder, targetFolder);
+            }
+
+            // publish the current project by script
+            script = new File(getTestDataPath("scripts/script_import_publish.txt"));
+            stream = new FileInputStream(script);
+            m_shell.start(stream);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            // switch to the "Offline" project
+            cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+            cms.getRequestContext().setSiteRoot("/sites/default/");
+
+            // output a message 
+            System.out.println("----- Starting test cases -----");
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
+            fail("Unable to setup OpenCms\n" + CmsException.getStackTraceAsString(t));
+        }
+        // turn on exceptions after error logging
+        OpenCmsTestLogAppender.setBreakOnError(true);
     }
 
     /**

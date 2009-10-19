@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>7.0.3</opencms_version>
+		<createdate>Thu, 31 Jan 2008 18:05:13 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>efa7aa1c-d017-11dc-a010-d55d0ba2b9d3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/editors</destination>
+			<type>folder</type>
+			<uuidstructure>896ef88a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/editors/ade</destination>
+			<type>folder</type>
+			<uuidstructure>b97c46ab-81a5-11de-9b82-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 05 Aug 2009 09:52:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 09:52:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/editors/ade/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>b9a7274f-81a5-11de-9b82-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 05 Aug 2009 09:52:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.Guest</uuidprincipal>
+					<flags>18</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/container.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/container.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>d07366ab-81ae-11de-9e2b-dd9f629b113b</uuidstructure>
+			<uuidresource>d07366ac-81ae-11de-9e2b-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:55:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 10:57:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/container_element.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/container_element.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>b9abe241-81a5-11de-9b82-dd9f629b113b</uuidstructure>
+			<uuidresource>b9abe242-81a5-11de-9b82-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:55:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/container_element_property.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/container_element_property.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>95986e4d-b1c2-11de-be9a-65ba8ac698cf</uuidstructure>
+			<uuidresource>95986e4e-b1c2-11de-be9a-65ba8ac698cf</uuidresource>
+			<datelastmodified>Tue, 06 Oct 2009 08:42:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Oct 2009 15:20:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/container_page.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/container_page.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>b9b0c444-81a5-11de-9b82-dd9f629b113b</uuidstructure>
+			<uuidresource>b9b0c445-81a5-11de-9b82-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:55:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/property_value_choice.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/property_value_choice.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>51ddae1a-b24a-11de-91b3-65ba8ac698cf</uuidstructure>
+			<uuidresource>51ddae1b-b24a-11de-91b3-65ba8ac698cf</uuidresource>
+			<datelastmodified>Tue, 06 Oct 2009 07:54:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 06 Oct 2009 07:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/type.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/type.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f4f0f7cd-914f-11de-9f57-dd9f629b113b</uuidstructure>
+			<uuidresource>f4f0f7ce-914f-11de-9f57-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:54:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/type_config.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/type_config.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f5315b30-914f-11de-9f57-dd9f629b113b</uuidstructure>
+			<uuidresource>f5315b31-914f-11de-9f57-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:54:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/type_destination.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/type_destination.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>3bacc1d1-9314-11de-ac14-dd9f629b113b</uuidstructure>
+			<uuidresource>3bacc1d2-9314-11de-ac14-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:54:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 27 Aug 2009 14:16:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
