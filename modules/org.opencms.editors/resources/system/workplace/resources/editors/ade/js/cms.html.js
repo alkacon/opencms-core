@@ -1,5 +1,5 @@
 (function(cms) {
-
+   var M = cms.messages;
    var recentMenuId = cms.html.recentMenuId = 'recentlist';
    var recentListId = cms.html.recentListId = 'recent_list_items';
    var favoriteMenuId = cms.html.favoriteMenuId = 'favoritelist';
@@ -38,7 +38,7 @@
 	    <ul id="' +
    favoriteListId +
    '" class="cms-item-list">\
-	        <button id="fav-edit" name="Edit_Favorites" title="Edit Favorites" class="ui-state-default ui-corner-all">Edit Favorites</button>\
+	        <button id="fav-edit" name="Edit_Favorites" title="'+M.EDIT_FAVORITES_BUTTON+'" class="ui-state-default ui-corner-all">'+M.EDIT_FAVORITES_BUTTON+'</button>\
 	    </ul>\
 	</div></div>';
    
@@ -115,7 +115,7 @@
       var addMenuItem = '';
       if (menuId == favoriteMenuId) {
          listId = favoriteListId;
-         addMenuItem = '<button id="fav-edit" name="Edit_Favorites" title="Edit Favorites" class="ui-state-default ui-corner-all cms-edit-favorites">Edit Favorites</button>';
+         addMenuItem = '<button id="fav-edit" name="Edit_Favorites" title="'+M.EDIT_FAVORITES_BUTTON+'" class="ui-state-default ui-corner-all cms-edit-favorites">'+M.EDIT_FAVORITES_BUTTON+'</button>';
       } else if (menuId == recentMenuId) {
          listId = recentListId;
       } else {
@@ -142,12 +142,12 @@
           <div class="connect ui-corner-top"></div>\
           <div class="ui-widget-shadow ui-corner-all" style="width: 345px"></div>\
           <div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
-              <button class="cms-search-button ui-corner-all ui-state-default">Search</button>\
+              <button class="cms-search-button ui-corner-all ui-state-default">'+M.SEARCH_BUTTON+'</button>\
               <div class="cms-scrolling" style="display:none">\
                   <ul id="cms-search-list"  class="cms-scrolling-inner cms-item-list">\
                   </ul>\
               </div>\
-              <div class="cms-loading">Please start your search</div>\
+              <div class="cms-loading">'+M.PLEASE_START_SEARCH+'</div>\
           </div>\
       </div>';
    
@@ -214,17 +214,17 @@
           <form>\
               <ol class="ade-forms">\
                    <li class="ade-required">\
-                       <label for="cms-search-query">Query <span class="ade-required">*</span></label>\
+                       <label for="cms-search-query">'+M.SEARCH_DIALOG_QUERY+'<span class="ade-required">*</span></label>\
                        <input type="text" name="cms-search-query" class="cms-search-query" id="cms-search-query"></input>\
                    </li>\
-                   <li><a href="#" class="cms-advanced-search cms-to-basic-search" style="display:none; text-decoration:underline">Basic search</a></li>\
-                   <li><a href="#" class="cms-basic-search cms-to-advanced-search" style="text-decoration:underline">Advanced search</a></li>\
+                   <li><a href="#" class="cms-advanced-search cms-to-basic-search" style="display:none; text-decoration:underline">'+M.SEARCH_DIALOG_BASIC+'</a></li>\
+                   <li><a href="#" class="cms-basic-search cms-to-advanced-search" style="text-decoration:underline">'+M.SEARCH_DIALOG_ADVANCED+'</a></li>\
                    <li class="cms-advanced-search" style="display:none">\
-                      <label for="cms-search-path">Path</label>\
+                      <label for="cms-search-path">'+M.SEARCH_DIALOG_PATH+'</label>\
                       <input type="text" name="cms-search-path" class="cms-search-path" id="cms-search-path"></input>\
                    </li>\
                    <br>\
-                   <li class="cms-advanced-search" style="display:none"><b>Resource Types</b><span class="ade-required">*</span></li>\
+                   <li class="cms-advanced-search" style="display:none"><b>'+M.SEARCH_DIALOG_TYPES+'</b><span class="ade-required">*</span></li>\
                    <li class="cms-advanced-search ade-required ade-grouping" style="display:none">\
                        <div class="cms-search-type-list">'];
       

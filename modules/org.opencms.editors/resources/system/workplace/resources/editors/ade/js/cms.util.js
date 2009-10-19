@@ -1,4 +1,6 @@
 (function(cms) {
+   var M = cms.messages;
+   
    /*util*/
    var log = cms.util.log = function(s) {
       $("body").append("<p>" + s + "</p>");
@@ -271,14 +273,14 @@
             if (numSelected == 0) {
                var labelText = $('legend', $item).text();
                labelText = labelText.replace(' *', '');
-               $item.append('<span class="ade-error">' + labelText + ' can not be empty.</span>');
+               $item.append('<span class="ade-error">' + cms.util.format(M.FIELD_CANT_BE_EMPTY, labelText) + '</span>');
                hasError = true;
             }
          } else {
             if (jQuery.trim($('input, textarea', $item).val()) == '') {
                var labelText = $('label', $item).text();
                labelText = labelText.replace(' *', '');
-               $item.append('<span class="ade-error">' + labelText + ' can not be empty.</span>');
+               $item.append('<span class="ade-error">' + cms.util.format(M.FIELD_CANT_BE_EMPTY, labelText) + '</span>');
                hasError = true;
             }
          }
@@ -309,6 +311,11 @@
       var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
       $dialog.appendTo('body');
       $dialog.text(text);
+      var buttons = {};
+      buttons[M.ALERT_OK] = function() {
+         $dialog.dialog('destroy');
+         $dialog.remove();
+      }
       $dialog.dialog({
          zIndex: 9999,
          title: title,
@@ -317,12 +324,7 @@
             $dialog.dialog('destroy');
             $dialog.remove();
          },
-         buttons: {
-            'OK': function() {
-               $dialog.dialog('destroy');
-               $dialog.remove();
-            }
-         }
+         buttons: buttons
       });
    }
    
@@ -364,7 +366,17 @@
       return $('#_firebugConsole').size() > 0;
    }
    
-   
-   
+   /**
+    * Inserts other strings into a message string.
+    * If you call this function with the parameters format(message, arg0, arg1,...,argN),
+    * the occurrences of {i} in the message, where i is a number, will be replaced by arg_i
+    */
+   var format = cms.util.format = function() {
+      var message = arguments[0];
+      for (var i = 0; i < arguments.length - 1; i++) {
+         message = message.replace('{' + i + '}', arguments[i + 1]);
+      }
+      return message;
+   }
    
 })(cms);

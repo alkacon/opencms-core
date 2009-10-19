@@ -1,5 +1,6 @@
 (function(cms) {
    var $ = jQuery;
+   var M = cms.messages;
    
    /** class for normal move-related hover borders */
    var HOVER_NORMAL = cms.move.HOVER_NORMAL = 'cms-hover-normal';
@@ -119,7 +120,7 @@
          for (var i = 0; i < subItems.length; i++) {
             var element = cms.data.elements[subItems[i]];
             if (!element) {
-               alert("ERROR: subcontainer elements not loaded");
+               alert(M.ERR_SUBCONTAINER_ELEMENTS_NOT_LOADED);
                return false;
             }
             if (!element.contents[containerType]) {
@@ -382,8 +383,8 @@
          }
          
          if (isMenuContainer(containerName)) {
-             // don't remove helper from menu
-             continue;
+            // don't remove helper from menu
+            continue;
          }
          helper.remove();
       }
@@ -424,7 +425,7 @@
             $('button.ui-state-active').trigger('click');
             changed = true;
          } else {
-             // check if there has been a real change. if the item has not moved to another container and is next to the original-placeholder, the page hasn't changed
+            // check if there has been a real change. if the item has not moved to another container and is next to the original-placeholder, the page hasn't changed
             if (startContainer != endContainer || !((currentItem.next('.cms-placeholder').length > 0) || (currentItem.prev('.cms-placeholder').length > 0))) {
                changed = true;
             }
@@ -432,7 +433,7 @@
          }
          
          if (moveState.isMoveToFavorites()) {
-             changed=false;
+            changed = false;
             $('#' + cms.html.favoriteDropListId).children().remove();
             cms.util.addToElementList(cms.toolbar.favorites, moveState.currentResourceId, 9999);
             cms.data.persistFavorites(function(ok) {
@@ -500,11 +501,6 @@
          updateContainer(startContainer);
          updateContainer(endContainer);
       }
-      
-      //      if (!moveState.cancel || !moveState.isMoveToFavorites()) {
-      //         cms.toolbar.setPageChanged(true);
-      //      }
-      
       if (moveState.isMoveFromNew() && !moveState.cancel) {
          $('button[name="Edit"]').trigger('click');
       }

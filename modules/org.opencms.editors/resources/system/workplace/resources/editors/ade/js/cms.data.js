@@ -85,13 +85,13 @@
    var /** String */ SERVER_SET_URL = cms.data.SERVER_SET_URL;
    
    /** Generic error message for json parse errors. */
-   var /** String */ JSON_PARSE_ERROR = 'ERROR: Couldn\'t parse JSON data';
+   var /** String */ JSON_PARSE_ERROR = cms.messages.JSON_PARSE_ERROR;
    
    /** Generic error message for ajax load errors. */
-   var /** String */ AJAX_LOAD_ERROR = 'ERROR: couldn\'t load data from server';
+   var /** String */ AJAX_LOAD_ERROR = cms.messages.AJAX_LOAD_ERROR;
    
    /** Generic error message for ajax post errors. */
-   var /** String */ AJAX_SENT_ERROR = 'ERROR: couldn\'t send data to server';
+   var /** String */ AJAX_SENT_ERROR = cms.messages.AJAX_SENT_ERROR;
    
    /** Centralized repository for element objects. */
    var /** Object */ elements = cms.data.elements = {};

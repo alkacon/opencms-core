@@ -1,4 +1,5 @@
 (function(cms) {
+   var M = cms.messages;
 
 
    var dump = function(obj) {
@@ -169,7 +170,7 @@
          $dlg.empty();
          var options = {
             autoOpen: true,
-            title: 'Select color',
+            title: M.COLOR_SELECT_TITLE,
             modal: true,
             stack: true,
             zIndex: 10999,
@@ -354,7 +355,7 @@
     */
    var buildPropertyTable = function(properties, widgets) {
       var $table = $('<table cellspacing="0" cellpadding="3" align="left"></table>');
-      $table.append('<tr><th><b>Property</b></th><th><b>Edit</b></th><th><b>Default</b></th></tr>');
+      $table.append('<tr><th><b>'+M.PROPERTIES_HEADING_NAME+'</b></th><th><b>'+M.PROPERTIES_HEADING_EDIT+'</b></th><th><b>'+M.PROPERTIES_HEADING_DEFAULT+'</b></th></tr>');
       for (var propName in properties) {
          var defaultEntry = properties[propName];
          var widgetClass = widgetTypes[_getWidgetType(defaultEntry)];
@@ -411,11 +412,11 @@
       }
       
       var buttons = {};
-      buttons['Cancel'] = function() {
+      buttons[M.EDIT_PROPERTIES_CANCEL] = function() {
          _destroy();
       };
       var options = {
-         title: 'Edit Properties',
+         title: M.EDIT_PROPERTIES_TITLE,
          modal: true,
          autoOpen: true,
          width: 440,
@@ -427,7 +428,7 @@
       $dlg.dialog(options);
       
       
-      var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text('OK');
+      var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text(M.EDIT_PROPERTIES_OK);
       
       var validateAll = function() {
          var result = true;

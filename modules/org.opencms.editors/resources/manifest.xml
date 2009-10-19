@@ -4032,6 +4032,27 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+   		<file>
+			<source>system/workplace/resources/editors/ade/js/cms.messages.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.messages.js</destination>
+			<type>plain</type>
+			<uuidstructure>19c28604-8747-f3f4-83d4-dd9f629f113b</uuidstructure>
+			<uuidresource>19c28605-8747-f3f4-83d4-dd9f629f113b</uuidresource>
+			<datelastmodified>Thu, 10 Sep 2009 11:58:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[cms.messages]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
 
 		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.html.js</source>

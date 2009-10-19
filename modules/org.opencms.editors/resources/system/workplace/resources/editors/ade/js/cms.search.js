@@ -1,4 +1,5 @@
 (function(cms) {
+   var M = cms.messages;
    var loadingSign = null;
    searchResultList = []
    var /** Object */ searchParams = cms.search.searchParams = {
@@ -236,16 +237,16 @@
    };
    
    var _setSearchMode = function(isAdvanced) {
-       var $basic = $('#cms-search-dialog .cms-basic-search');
-       var $advanced = $('#cms-search-dialog .cms-advanced-search');
-       if (isAdvanced) {
-           $basic.hide();
-           $advanced.show();
-       } else {
-           $advanced.hide();
-           $basic.show();
-       }
-   } 
+      var $basic = $('#cms-search-dialog .cms-basic-search');
+      var $advanced = $('#cms-search-dialog .cms-advanced-search');
+      if (isAdvanced) {
+         $basic.hide();
+         $advanced.show();
+      } else {
+         $advanced.hide();
+         $basic.show();
+      }
+   }
    
    /**
     * Initialize everything needed for the search.
@@ -284,27 +285,28 @@
       });
       
       $('#cms-search-dialog .cms-to-basic-search').click(function() {
-          _setSearchMode(false);
+         _setSearchMode(false);
       });
       
       $('#cms-search-dialog .cms-to-advanced-search').click(function() {
-          _setSearchMode(true);
+         _setSearchMode(true);
       });
+      var buttons = [];
+      buttons[M.SEARCH_DIALOG_BUTTON_SEARCH] = _submitSearch;
+      buttons[M.SEARCH_DIALOG_BUTTON_CANCEL] = function() {
+         $(this).dialog('close');
+         $('form span.ade-error', $('#cms-search-dialog')).remove();
+      };
+      
       
       $('#cms-search-dialog').dialog({
          autoOpen: false,
          modal: true,
          zIndex: 99999,
          width: 340,
-         title: 'Search',
+         title: M.SEARCH_DIALOG_TITLE,
          resizable: false,
-         buttons: {
-            'Search': _submitSearch,
-            'Cancel': function() {
-               $(this).dialog('close');
-               $('form span.ade-error', $('#cms-search-dialog')).remove();
-            }
-         }
+         buttons: buttons
       });
       $('input', $('#cms-search-dialog')).customInput();
       
@@ -367,14 +369,14 @@
     * Show the 'LOADING' text for the search menu.
     */
    var _showLoading = function() {
-      $('.cms-loading').text('LOADING');
+      $('.cms-loading').text(M.SEARCH_LOADING_SIGN);
    }
    
    /**
     * Hide the LOADING text for the search menu and display the number of search results loaded instead.
     */
    var _hideLoading = function() {
-      $('.cms-loading').text(cms.search.getNumberOfResults() + " of ~" + cms.search.getTotalNumberOfResults() + " results loaded");
+      $('.cms-loading').text(cms.util.format(M.SEARCH_NUM_RESULTS, cms.search.getNumberOfResults(), cms.search.getTotalNumberOfResults()));
    }
    
    

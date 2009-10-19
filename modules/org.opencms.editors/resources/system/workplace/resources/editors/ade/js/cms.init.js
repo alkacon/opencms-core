@@ -1,16 +1,18 @@
+
+
 /**
  * Certain functions of ui.sortable need to be extended for better performance within OpenCms Advanced Direct Edit.<p>
- * 
- * First of all the _uiHash function is replaced by a version that will grant access to the private plugin-functions and properties. 
+ *
+ * First of all the _uiHash function is replaced by a version that will grant access to the private plugin-functions and properties.
  * The other extended functions deal with special cases and scenarios of the Advanced Direct Edit use-case.<p>
- * 
+ *
  */
 $.extend($.ui.sortable.prototype, {
-    /**
-     * Returns the ui-object used with event-handlers.<p>
-     * 
-     * @param {Object} inst
-     */
+   /**
+    * Returns the ui-object used with event-handlers.<p>
+    *
+    * @param {Object} inst
+    */
    _uiHash: function(inst) {
       var self = inst || this;
       
@@ -30,7 +32,7 @@ $.extend($.ui.sortable.prototype, {
    /**
     * Internal event-handler for the mouse-stop-event. Adjusted to show a reverting animation to the original position of the item
     * in case of a canceled sorting indicated by a hidden placeholder.<p>.
-    * 
+    *
     * @param {Object} event
     * @param {Object} noPropagation
     */
@@ -72,7 +74,7 @@ $.extend($.ui.sortable.prototype, {
    },
    /**
     * Check whether the pointer intersects with a certain item.<p>
-    * 
+    *
     * @param {Object} item
     */
    _intersectsWithPointer: function(item) {
@@ -105,62 +107,61 @@ $.extend($.ui.sortable.prototype, {
    },
    /**
     * Refreshes the list of sortable items.<p>
-    * 
+    *
     * @param {Object} event
     */
    _refreshItems: function(event) {
-        /*
-         * cms-addition:
-         * the arrays this.containers and queries are filled in a different order to avoid problems with favorites-dropzone
-         */
-        this.items = [];
-        this.containers = [];
-        var items = this.items;
-        var self = this;
-        var queries = [];
-        var connectWith = this._connectWith();
-        
-        if(connectWith) {
-            for (var i = connectWith.length - 1; i >= 0; i--){
-                var cur = $(connectWith[i]);
-                for (var j = cur.length - 1; j >= 0; j--){
-                    var inst = $.data(cur[j], 'sortable');
-                    if(inst && !inst.options.disabled) {
-                  		queries.push([$.isFunction(inst.options.items) ? inst.options.items.call(inst.element[0], event, {
-                     		item: this.currentItem
-                  		}) : $(inst.options.items, inst.element), inst]);
-                        this.containers.push(inst);
-                    }
-                };
+      /*
+       * cms-addition:
+       * the arrays this.containers and queries are filled in a different order to avoid problems with favorites-dropzone
+       */
+      this.items = [];
+      this.containers = [];
+      var items = this.items;
+      var self = this;
+      var queries = [];
+      var connectWith = this._connectWith();
+      
+      if (connectWith) {
+         for (var i = connectWith.length - 1; i >= 0; i--) {
+            var cur = $(connectWith[i]);
+            for (var j = cur.length - 1; j >= 0; j--) {
+               var inst = $.data(cur[j], 'sortable');
+               if (inst && !inst.options.disabled) {
+                  queries.push([$.isFunction(inst.options.items) ? inst.options.items.call(inst.element[0], event, {
+                     item: this.currentItem
+                  }) : $(inst.options.items, inst.element), inst]);
+                  this.containers.push(inst);
+               }
             };
-        }else{
-            this.containers = [this];
-         	queries = [[$.isFunction(this.options.items) ? this.options.items.call(this.element[0], event, {
-            	item: this.currentItem
-         	}) : $(this.options.items, this.element), this]];
-        }
-
-		for (var i = queries.length - 1; i >= 0; i--) {
-			var targetData = queries[i][1];
-			var _queries = queries[i][0];
-
-			for (var j=0, queriesLength = _queries.length; j < queriesLength; j++) {
-				var item = $(_queries[j]);
-
-				item.data('sortable-item', targetData); // Data for target checking (mouse manager)
-
-				items.push({
-					item: item,
-					instance: targetData,
-               		width: 0,
-              		height: 0,
-               		left: 0,
-               		top: 0
-				});
-			};
-		};
-
-	}
+                     };
+               } else {
+         this.containers = [this];
+         queries = [[$.isFunction(this.options.items) ? this.options.items.call(this.element[0], event, {
+            item: this.currentItem
+         }) : $(this.options.items, this.element), this]];
+      }
+      
+      for (var i = queries.length - 1; i >= 0; i--) {
+         var targetData = queries[i][1];
+         var _queries = queries[i][0];
+         
+         for (var j = 0, queriesLength = _queries.length; j < queriesLength; j++) {
+            var item = $(_queries[j]);
+            
+            item.data('sortable-item', targetData); // Data for target checking (mouse manager)
+            items.push({
+               item: item,
+               instance: targetData,
+               width: 0,
+               height: 0,
+               left: 0,
+               top: 0
+            });
+         };
+               };
+      
+         }
 })
 
 
@@ -183,14 +184,15 @@ $('document').ready(function() {
    });
    cms.toolbar.dom.toolbar.css('cursor', 'wait');
    cms.data.loadAllData(function(ok) {
+      var M = cms.messages;
       if (ok) {
          cms.data.fillContainers();
          cms.toolbar.resetNewList();
          if (!cms.data.allowEdit) {
             if (cms.data.lockedBy) {
-               cms.util.dialogAlert('You can\'t edit this page. It is locked by the user "' + cms.data.lockedBy + '"', 'Page locked');
+               cms.util.dialogAlert(cms.util.format(M.CANT_EDIT_LOCKED, cms.data.lockedBy), M.CANT_EDIT_LOCKED_TITLE);
             } else {
-               cms.util.dialogAlert('You do not have the necessary permissions to edit this page.', 'Can\'t edit');
+               cms.util.dialogAlert(M.CANT_EDIT_PERMISSIONS, M.CANT_EDIT_PERMISSIONS_TITLE);
             }
             var $buttons = $(cms.util.makeCombinedSelector(['Move', 'Delete', 'Add', 'New', 'Favorites', 'Recent'], 'button[name="%"]'));
             $buttons.unbind('click').unbind('mouseover').css('color', '#aaaaaa');
@@ -204,10 +206,10 @@ $('document').ready(function() {
                });
             }
          }
-         cms.toolbar.toolbarReady=true;
+         cms.toolbar.toolbarReady = true;
          cms.toolbar.dom.toolbar.css('cursor', '');
          if (cms.util.isFirebugActive()) {
-            cms.util.dialogAlert('The Firefox Firebug plug-in is active. It is advised to deactivate it, as it may degrade the performance of OpenCms Advanced Direct Edit.', 'Firebug is active')
+            cms.util.dialogAlert(M.FIREBUG_ACTIVE, M.FIREBUG_ACTIVE_TITLE)
          }
          
          $(document).trigger("cms-data-loaded");
