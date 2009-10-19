@@ -78,6 +78,7 @@ button {
 
 #toolbar div.cms-toolbar-content button {
 	height: 30px;
+    cursor: inherit;
 }
 
 button.cms-button-wide {
@@ -179,12 +180,12 @@ button.cms-deactivated span.cms-icon-save {
 	background-image: url(images/24x24/ade_delete.png)
 }
 
-.ui-state-default span.cms-icon-prop {
+.ui-state-default span.cms-icon-prop, .ui-state-default span.cms-icon-properties {
 	background-image: url(images/24x24/ade_prop_sw.png);
 }
 
 
-.ui-state-hover span.cms-icon-prop {
+.ui-state-hover span.cms-icon-prop, .ui-state-hover span.cms-icon-properties {
 	background-image: url(images/24x24/ade_prop.png);
 }
 
@@ -310,9 +311,9 @@ div.cms-highlight-container {
 		50% !important;
 }
 
-.hovered,#still-in-use {
+/**.hovered,#still-in-use {
 	margin: 2px !important;
-}
+}**/
 
 /** sortable placeholder **/
 .cms-placeholder {

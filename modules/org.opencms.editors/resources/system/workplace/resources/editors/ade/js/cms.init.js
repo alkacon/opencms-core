@@ -181,7 +181,7 @@ $('document').ready(function() {
       opacity: 0.8,
       live: true
    });
-   
+   cms.toolbar.dom.toolbar.css('cursor', 'wait');
    cms.data.loadAllData(function(ok) {
       if (ok) {
          cms.data.fillContainers();
@@ -205,6 +205,7 @@ $('document').ready(function() {
             }
          }
          cms.toolbar.toolbarReady=true;
+         cms.toolbar.dom.toolbar.css('cursor', '');
          if (cms.util.isFirebugActive()) {
             cms.util.dialogAlert('The Firefox Firebug plug-in is active. It is advised to deactivate it, as it may degrade the performance of OpenCms Advanced Direct Edit.', 'Firebug is active')
          }

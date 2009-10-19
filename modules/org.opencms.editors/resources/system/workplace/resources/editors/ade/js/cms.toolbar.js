@@ -1244,12 +1244,13 @@
    /**
     * Save action.
     */
-   SaveMode = {
+   var SaveMode = {
       name: 'save',
       createButton: function() {
-         var $button = $('<button name="Save" title="Save"  class="cms-right ui-state-default ui-corner-all cms-deactivated"><span class="ui-icon cms-icon-save"/>&nbsp;</button>');
-         $button.click(showSaveDialog);
-         return $button;
+         var self = this;
+         self.button = $('<button name="Save" title="Save"  class="cms-right ui-state-default ui-corner-all cms-deactivated"><span class="ui-icon cms-icon-save"/>&nbsp;</button>');
+         self.button.click(showSaveDialog);
+         return self.button;
       },
       
       initialize: doNothing
@@ -1524,9 +1525,9 @@
          var modeName = modeNames[i];
          var modeObj = modeMap[modeName];
          modeObj.initialize();
-         var $button = modeObj.createButton();
-         $button.appendTo('#toolbar_content');
-         cms.toolbar.dom.buttons[modeName] = $button;
+         modeObj.createButton();
+         cms.toolbar.dom.toolbarContent.append(modeObj.button);
+         cms.toolbar.dom.buttons[modeName] = modeObj.button;
       }
       
       cms.toolbar.dom.showToolbar = $('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>').appendTo(_bodyEl);
