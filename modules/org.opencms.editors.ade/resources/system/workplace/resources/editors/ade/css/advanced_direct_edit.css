@@ -539,13 +539,15 @@ div.ui-widget-header a.cms-properties {
 	background-image: url(images/16x16/ocms_de_prop_a.png);
 }
 
-
-
 .cms-new{
     background: transparent url(images/16x16/ocms_de_new_i.png) no-repeat scroll 50% 50%;
 }
 
-a.cms-new:hover{
+div.ui-widget-header a.cms-new{
+    background-image: url(images/16x16/ocms_de_new_sw.png);
+}
+
+a.cms-new:hover, div.ui-widget-header a.cms-new:hover {
     background-image: url(images/16x16/ocms_de_new_a.png);
 }
 
