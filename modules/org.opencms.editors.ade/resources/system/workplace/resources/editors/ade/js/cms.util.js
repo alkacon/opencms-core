@@ -360,7 +360,6 @@
    
    /**
     * Checks whether Firebug is active.
-    *
     */
    var isFirebugActive = cms.util.isFirebugActive = function() {
       return $('#_firebugConsole').size() > 0;

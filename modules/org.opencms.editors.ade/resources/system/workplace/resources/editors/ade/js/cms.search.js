@@ -1,7 +1,7 @@
 (function(cms) {
    var M = cms.messages;
    var loadingSign = null;
-   searchResultList = []
+   var searchResultList = [];
    var /** Object */ searchParams = cms.search.searchParams = {
       'page': -1,
       'query': '',
@@ -10,6 +10,8 @@
       'hasMore': false,
       'totalResults': 0
    };
+   /** The list of searchable resource types. */
+   var /** Array */ searchTypes = cms.search.searchTypes = null;
    
    /**
     * Handler for search results, but not for the first page of results of a new search
@@ -258,10 +260,8 @@
       // which could cause multiple search result pages to be reloaded 
       $('#cms-search-list').closest('.cms-scrolling').scrollTop(0);
       
-      
-      
-      var nt = cms.data.newTypes;
-      bodyEl.append(cms.html.searchDialog(nt));
+      var st = cms.search.searchTypes;
+      bodyEl.append(cms.html.searchDialog(st));
       
       var $dialog = $('#cms-search-dialog');
       

@@ -388,7 +388,6 @@
       });
    }
    
-   
    /**
     * Click-event-handler for edit-handles.<p>
     * Opens the content-editor-dialog.<p>
@@ -849,12 +848,8 @@
    var resetNewList = cms.toolbar.resetNewList = function() {
       $('#' + cms.html.newMenuId + " li.cms-item").remove();
       var $newlist = $('#' + cms.html.newMenuId + " ul");
-      for (var key in cms.data.elements) {
-         if (cms.data.elements[key].status != cms.data.STATUS_NEWCONFIG) {
-            continue;
-         }
-         
-         $newlist.append(cms.html.createItemFavListHtml(key));
+      for (var i = 0; i < cms.data.newTypes.length; i++) {
+         $newlist.append(cms.html.createItemFavListHtml(cms.data.newTypes[i].type));
       }
    }
    

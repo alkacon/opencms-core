@@ -183,8 +183,11 @@ $('document').ready(function() {
       live: true
    });
    cms.toolbar.dom.toolbar.css('cursor', 'wait');
+   var M = cms.messages;
+   if (cms.util.isFirebugActive()) {
+      cms.util.dialogAlert(M.FIREBUG_ACTIVE, M.FIREBUG_ACTIVE_TITLE)
+   }
    cms.data.loadAllData(function(ok) {
-      var M = cms.messages;
       if (ok) {
          cms.data.fillContainers();
          cms.toolbar.resetNewList();
@@ -197,7 +200,7 @@ $('document').ready(function() {
             var $buttons = $(cms.util.makeCombinedSelector(['Move', 'Delete', 'Add', 'New', 'Favorites', 'Recent'], 'button[name="%"]'));
             $buttons.unbind('click').unbind('mouseover').css('color', '#aaaaaa');
             if (cms.data.lockedBy) {
-               $buttons.attr('alt', 'Page locked by ' + cms.data.lockedBy);
+               $buttons.attr('alt', cms.util.format(M.LOCKED_BY, cms.data.lockedBy));
                $buttons.jHelperTip({
                   trigger: "hover",
                   source: "attribute",
@@ -208,9 +211,6 @@ $('document').ready(function() {
          }
          cms.toolbar.toolbarReady = true;
          cms.toolbar.dom.toolbar.css('cursor', '');
-         if (cms.util.isFirebugActive()) {
-            cms.util.dialogAlert(M.FIREBUG_ACTIVE, M.FIREBUG_ACTIVE_TITLE)
-         }
          
          $(document).trigger("cms-data-loaded");
          

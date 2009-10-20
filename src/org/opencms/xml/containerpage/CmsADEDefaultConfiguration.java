@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2009/10/14 14:38:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/20 15:25:51 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,9 @@ package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -58,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6 
  */
@@ -154,19 +152,10 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     /**
      * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchableResourceTypes(CmsObject, String, ServletRequest)
      */
-    public List<String> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
+    public List<CmsResource> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
-        if (cfg == null) {
-            return new ArrayList<String>();
-        }
-        CmsResourceManager manager = OpenCms.getResourceManager();
-        ArrayList<String> result = new ArrayList<String>();
-        for (CmsResource resource : new CmsConfigurationParser(cms, cfg).getNewElements()) {
-            result.add(manager.getResourceType(resource).getTypeName());
-        }
-        return result;
+        return getCreatableElements(cms, cntPageUri, request);
     }
 
     /**

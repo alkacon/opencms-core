@@ -6,7 +6,7 @@
    /** Element state 'created' constant. */
    var /** String */ STATUS_CREATED = cms.data.STATUS_CREATED = 'X';
    
-   /** Element state 'new config' constant. */
+   /** Element state 'new/search config' constant. */
    var /** String */ STATUS_NEWCONFIG = cms.data.STATUS_NEWCONFIG = 'NC';
    
    /** Element state 'unchanged' constant. */
@@ -173,18 +173,51 @@
             if (jsonData.elements) {
             
                elements = cms.data.elements = jsonData.elements;
-               cms.search.searchParams.types = [];
+               
+               var newOrder = cms.data.elements.newOrder;
+               delete cms.data.elements.newOrder;
                cms.data.newTypes = [];
+               var newPos = -1;
+               
+               var searchOrder = cms.data.elements.searchOrder;
+               delete cms.data.elements.searchOrder;
+               cms.search.searchParams.types = [];
+               cms.search.searchTypes = [];
+               var searchPos = -1;
+               
                $.each(cms.data.elements, function() {
                   if (this.status == cms.data.STATUS_NEWCONFIG) {
-                     cms.data.newTypes.push({
-                        'type': this.type,
-                        'name': this.typename
-                     });
-                     cms.search.searchParams.types.push({
-                        'name': this.type,
-                        'checked': true
-                     });
+                     if (newOrder == undefined) {
+                        newPos++;
+                     } else {
+                        newPos = newOrder.indexOf(this.type);
+                     }
+                     if (newPos < 0) {
+                                          // this element is not a creatable type
+                     } else {
+                        cms.data.newTypes[newPos] = {
+                           'type': this.type,
+                           'name': this.typename
+                        };
+                     }
+                     
+                     if (searchOrder == undefined) {
+                        searchPos++;
+                     } else {
+                        searchPos = searchOrder.indexOf(this.type);
+                     }
+                     if (searchPos < 0) {
+                                          // this element is not a searchable type
+                     } else {
+                        cms.search.searchParams.types.push({
+                           'name': this.type,
+                           'checked': true
+                        });
+                        cms.search.searchTypes.push({
+                           'type': this.type,
+                           'name': this.typename
+                        });
+                     }
                   }
                });
                _initNewCounter(elements);
@@ -200,6 +233,9 @@
             }
             if (jsonData.locked) {
                lockedBy = cms.data.lockedBy = jsonData.locked;
+            }
+            if (jsonData.recentListSize) {
+               cms.toolbar.recentSize = jsonData.recentListSize;
             }
             afterLoad(true);
          }

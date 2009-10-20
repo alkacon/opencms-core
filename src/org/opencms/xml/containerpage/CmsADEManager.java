@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/20 09:06:25 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2009/10/20 15:25:51 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 7.6
  */
@@ -441,13 +441,13 @@ public class CmsADEManager {
      * @param cntPageUri the container page uri
      * @param request the current request
      * 
-     * @return the list of searchable resource types
+     * @return the list of searchable resource types, identified by a sample resource
      * 
      * @throws CmsException if something goes wrong 
      *
      * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchableResourceTypes(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest)
      */
-    public List<String> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
+    public List<CmsResource> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException {
 
         return m_configuration.getSearchableResourceTypes(cms, cntPageUri, request);

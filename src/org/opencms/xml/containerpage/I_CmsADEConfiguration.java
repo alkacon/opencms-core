@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/I_CmsADEConfiguration.java,v $
- * Date   : $Date: 2009/10/14 14:38:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/20 15:25:51 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6 
  */
@@ -123,11 +123,11 @@ public interface I_CmsADEConfiguration {
      * @param cntPageUri the container page uri
      * @param request the current request
      * 
-     * @return the list of searchable resource types
+     * @return the list of searchable resource types, identified by a sample resource
      * 
      * @throws CmsException if something goes wrong 
      */
-    List<String> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
+    List<CmsResource> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException;
 
     /**

@@ -82,6 +82,7 @@
    //cms.init.js
    M.CANT_EDIT_LOCKED = 'You can\'t edit this page because it is locked by "{0}".';
    M.CANT_EDIT_LOCKED_TITLE = 'Page locked';
+   M.LOCKED_BY = 'Page locked by "{0}"';
    M.CANT_EDIT_PERMISSIONS = 'You do not have the necessary permissions to edit this page.'
    M.CANT_EDIT_PERMISSIONS_TITLE = 'Permission denied';
    M.FIREBUG_ACTIVE = 'The Firefox Firebug plug-in is active. It is advised to deactivate it, as it may degrade the performance of OpenCms Advanced Direct Edit.';

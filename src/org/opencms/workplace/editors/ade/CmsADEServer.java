@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/20 13:43:08 $
- * Version: $Revision: 1.1.2.33 $
+ * Date   : $Date: 2009/10/20 15:25:51 $
+ * Version: $Revision: 1.1.2.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.33 $
+ * @version $Revision: 1.1.2.34 $
  * 
  * @since 7.6
  */
@@ -175,20 +175,26 @@ public class CmsADEServer extends CmsJspActionElement {
     /** JSON property constant maxElem. */
     public static final String P_MAXELEMENTS = "maxElem";
 
+    /** JSON property constant newOrder. */
+    public static final String P_NEWORDER = "newOrder";
+
     /** JSON property constant objtype. */
     public static final String P_OBJTYPE = "objtype";
 
-    /** JSON property constant order. */
-    public static final String P_ORDER = "__order__";
-
     /** JSON property constant recent. */
     public static final String P_RECENT = "recent";
+
+    /** JSON property constant recentListSize. */
+    public static final String P_RECENT_LIST_SIZE = "recentListSize";
 
     /** JSON property constant count. */
     public static final String P_SEARCH_COUNT = "count";
 
     /** JSON property constant hasmore. */
     public static final String P_SEARCH_HASMORE = "hasmore";
+
+    /** JSON property constant searchOrder. */
+    public static final String P_SEARCHORDER = "searchOrder";
 
     /** JSON property constant subItems. */
     public static final String P_SUBITEMS = "subItems";
@@ -729,6 +735,7 @@ public class CmsADEServer extends CmsJspActionElement {
         result.put(P_ELEMENTS, resElements);
         result.put(P_CONTAINERS, resContainers);
         result.put(P_CNTPAGE_LOCALE, cms.getRequestContext().getLocale().toString());
+        result.put(P_RECENT_LIST_SIZE, m_manager.getRecentListMaxSize(cms));
 
         // get the container page itself
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
@@ -740,8 +747,10 @@ public class CmsADEServer extends CmsJspActionElement {
             && resUtil.isEditable());
         result.put(CmsADEServer.P_CNTPAGE_LOCKED, resUtil.getLockedByName());
 
-        // collect new resource type elements
+        // collect creatable type elements
         resElements.merge(getNewResourceTypes(cms.getSitePath(resource), types), true, false);
+        // collect searchable type elements
+        resElements.merge(getSearchResourceTypes(cms.getSitePath(resource), types), true, false);
 
         // collect page elements
         CmsElementUtil elemUtil = new CmsElementUtil(
@@ -926,7 +935,7 @@ public class CmsADEServer extends CmsJspActionElement {
     protected JSONObject getNewResourceTypes(String cntPageUri, Set<String> types) throws CmsException, JSONException {
 
         JSONObject resElements = new JSONObject();
-        resElements.append(P_ORDER, new JSONArray());
+        resElements.put(P_NEWORDER, new JSONArray());
         HttpServletRequest request = getRequest();
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
@@ -949,7 +958,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 type));
             resElements.put(type, resElement);
             // additional array to keep track of the order
-            resElements.accumulate(P_ORDER, type);
+            resElements.accumulate(P_NEWORDER, type);
         }
         return resElements;
     }
@@ -995,6 +1004,49 @@ public class CmsADEServer extends CmsJspActionElement {
         }
 
         return result;
+    }
+
+    /**
+     * Returns the data for searchable resource types from the given configuration file.<p>
+     * 
+     * @param cntPageUri the container page uri
+     * @param types the supported container page types
+     * 
+     * @return the data for the given container page
+     * 
+     * @throws CmsException if something goes wrong with the cms context
+     * @throws JSONException if something goes wrong with the JSON manipulation
+     */
+    protected JSONObject getSearchResourceTypes(String cntPageUri, Set<String> types)
+    throws CmsException, JSONException {
+
+        JSONObject resElements = new JSONObject();
+        resElements.put(P_SEARCHORDER, new JSONArray());
+        HttpServletRequest request = getRequest();
+        CmsObject cms = getCmsObject();
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
+
+        List<CmsResource> creatableElements = m_manager.getSearchableResourceTypes(
+            cms,
+            request.getParameter(PARAMETER_CNTPAGE),
+            request);
+        for (CmsResource searchableElement : creatableElements) {
+            String type = OpenCms.getResourceManager().getResourceType(searchableElement).getTypeName();
+            JSONObject resElement = elemUtil.getElementData(
+                new CmsContainerElementBean(searchableElement, null, null),
+                types);
+            // overwrite some special fields for new elements
+            resElement.put(CmsElementUtil.P_ELEMENT_ID, type);
+            resElement.put(CmsElementUtil.P_ELEMENT_STATUS, ELEMENT_NEWCONFIG);
+            resElement.put(CmsElementUtil.P_ELEMENT_TYPE, type);
+            resElement.put(CmsElementUtil.P_ELEMENT_TYPENAME, CmsWorkplaceMessages.getResourceName(
+                cms.getRequestContext().getLocale(),
+                type));
+            resElements.put(type, resElement);
+            // additional array to keep track of the order
+            resElements.accumulate(P_SEARCHORDER, type);
+        }
+        return resElements;
     }
 
     /**
