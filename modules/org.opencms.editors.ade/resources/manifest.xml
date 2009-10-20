@@ -157,6 +157,27 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/editors/ade/cms.messages.jsp</source>
+			<destination>system/workplace/editors/ade/cms.messages.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>66952e44-9df3-11de-a97b-dd9f629b1111</uuidstructure>
+			<uuidresource>66952e45-9df3-11de-a97b-dd9f629b1111</uuidresource>
+			<datelastmodified>Tue, 13 Oct 2009 10:17:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 10:19:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
 			<source>system/workplace/editors/ade/get.jsp</source>
 			<destination>system/workplace/editors/ade/get.jsp</destination>
 			<type>jsp</type>
