@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/10/14 14:38:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/20 07:38:53 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,11 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6 
  */
-public class CmsContainerElementBean implements I_CmsContainerElementBean {
+public class CmsContainerElementBean {
 
     /** The client id including properties-hash. */
     private transient String m_clientId;
@@ -74,11 +74,10 @@ public class CmsContainerElementBean implements I_CmsContainerElementBean {
         m_formatter = formatter;
         m_properties = (properties == null ? new HashMap<String, String>() : properties);
         m_properties = Collections.unmodifiableMap(m_properties);
-        if (m_properties.isEmpty()) {
-            m_clientId = OpenCms.getADEManager().convertToClientId(m_element.getStructureId());
-        } else {
+        m_clientId = OpenCms.getADEManager().convertToClientId(m_element.getStructureId());
+        if (!m_properties.isEmpty()) {
             int hash = m_properties.toString().hashCode();
-            m_clientId = OpenCms.getADEManager().convertToClientId(m_element.getStructureId()) + "#" + hash;
+            m_clientId += "#" + hash;
         }
     }
 

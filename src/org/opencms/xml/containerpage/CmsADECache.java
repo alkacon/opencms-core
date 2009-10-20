@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADECache.java,v $
- * Date   : $Date: 2009/10/14 14:38:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/20 07:38:54 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,24 +31,18 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsCollectionsGenericWrapper;
-import org.opencms.xml.CmsXmlUtils;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -58,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6 
  */
@@ -68,19 +62,19 @@ public final class CmsADECache implements I_CmsEventListener {
     private static final Log LOG = CmsLog.getLog(CmsADECache.class);
 
     /** Cache for ADE recent lists. */
-    private Map<String, List<I_CmsContainerElementBean>> m_adeRecentLists;
+    private Map<String, List<CmsContainerElementBean>> m_adeRecentLists;
 
     /** Cache for ADE search options. */
     private Map<String, CmsSearchOptions> m_adeSearchOptions;
 
     /** Cache for offline container elements. */
-    private Map<String, I_CmsContainerElementBean> m_containerElementsOffline;
+    private Map<String, CmsContainerElementBean> m_containerElementsOffline;
 
     /** Cache for offline container pages. */
-    private Map<String, Map<Locale, I_CmsContainerPageBean>> m_containerPagesOffline;
+    private Map<String, CmsXmlContainerPage> m_containerPagesOffline;
 
     /** Cache for online container pages. */
-    private Map<String, Map<Locale, I_CmsContainerPageBean>> m_containerPagesOnline;
+    private Map<String, CmsXmlContainerPage> m_containerPagesOnline;
 
     /**
      * Initializes the cache. Only intended to be called during startup.<p>
@@ -92,18 +86,17 @@ public final class CmsADECache implements I_CmsEventListener {
      */
     public CmsADECache(CmsMemoryMonitor memMonitor, CmsADECacheSettings cacheSettings) {
 
-        Map<String, Map<Locale, I_CmsContainerPageBean>> lruMapCntPage;
         // container page caches
-        lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
+        Map<String, CmsXmlContainerPage> lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
         m_containerPagesOffline = Collections.synchronizedMap(lruMapCntPage);
         memMonitor.register(CmsADECache.class.getName() + ".containerPagesOffline", lruMapCntPage);
 
-        lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
+        lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOnlineSize());
         m_containerPagesOnline = Collections.synchronizedMap(lruMapCntPage);
         memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", lruMapCntPage);
 
-        // container element caches
-        Map<String, I_CmsContainerElementBean> lruMapCntElem = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerElementOfflineSize());
+        // container element cache
+        Map<String, CmsContainerElementBean> lruMapCntElem = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerElementOfflineSize());
         m_containerElementsOffline = Collections.synchronizedMap(lruMapCntElem);
         memMonitor.register(CmsADECache.class.getName() + ".containerElementsOffline", lruMapCntElem);
 
@@ -113,7 +106,7 @@ public final class CmsADECache implements I_CmsEventListener {
         memMonitor.register(CmsADEManager.class.getName(), adeSearchOptions);
 
         // ADE recent lists
-        Map<String, List<I_CmsContainerElementBean>> adeRecentList = new HashMap<String, List<I_CmsContainerElementBean>>();
+        Map<String, List<CmsContainerElementBean>> adeRecentList = new HashMap<String, List<CmsContainerElementBean>>();
         m_adeRecentLists = Collections.synchronizedMap(adeRecentList);
         memMonitor.register(CmsADEManager.class.getName(), adeRecentList);
 
@@ -128,56 +121,6 @@ public final class CmsADECache implements I_CmsEventListener {
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
             I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
-    }
-
-    /**
-     * Caches the given ADE recent list under the given cache key.<p>
-     * 
-     * @param key the cache key
-     * @param list the recent list to cache
-     */
-    public void cacheADERecentList(String key, List<I_CmsContainerElementBean> list) {
-
-        m_adeRecentLists.put(key, list);
-    }
-
-    /**
-     * Caches the given ADE search options under the given cache key.<p>
-     * 
-     * @param key the cache key
-     * @param opts the search options to cache
-     */
-    public void cacheADESearchOptions(String key, CmsSearchOptions opts) {
-
-        m_adeSearchOptions.put(key, opts);
-    }
-
-    /**
-     * Caches the given container element under the given key and for the given project.<p>
-     * 
-     * @param key the cache key
-     * @param containerElement the object to cache
-     */
-    public void cacheContainerElement(String key, I_CmsContainerElementBean containerElement) {
-
-        m_containerElementsOffline.put(key, containerElement);
-
-    }
-
-    /**
-     * Caches the given container page under the given key and for the given project.<p>
-     * 
-     * @param key the cache key
-     * @param containerPage the object to cache
-     * @param online if to cache in online or offline project
-     */
-    public void cacheContainerPages(String key, Map<Locale, I_CmsContainerPageBean> containerPage, boolean online) {
-
-        if (online) {
-            m_containerPagesOnline.put(key, containerPage);
-        } else {
-            m_containerPagesOffline.put(key, containerPage);
-        }
     }
 
     /**
@@ -279,7 +222,7 @@ public final class CmsADECache implements I_CmsEventListener {
      * 
      * @return the cached recent list with the given cache key
      */
-    public List<I_CmsContainerElementBean> getADERecentList(String key) {
+    public List<CmsContainerElementBean> getADERecentList(String key) {
 
         return m_adeRecentLists.get(key);
     }
@@ -297,70 +240,15 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
-     * Returns the cached container page object for the given resource.<p>
-     * 
-     * @param cms the cms context
-     * @param resource the resource to look for
-     * @param locale the locale
-     *  
-     * @return the cached container page object
-     */
-    public I_CmsContainerPageBean getCache(CmsObject cms, CmsResource resource, Locale locale) {
-
-        // get the cached content
-        Map<Locale, I_CmsContainerPageBean> containerPageBean = get(cms, resource);
-        if (containerPageBean == null) {
-            // container page not yet in cache
-            try {
-                // try to load it
-                CmsXmlContainerPage content = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(resource));
-                setCache(cms, resource, content);
-            } catch (CmsException e) {
-                // something really bad happened
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_CONTAINER_PAGE_NOT_FOUND_1,
-                    cms.getSitePath(resource)), e);
-                return null;
-            }
-            containerPageBean = get(cms, resource);
-            if (containerPageBean == null) {
-                // container page is still not in cache, should never happen
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_CONTAINER_PAGE_NOT_FOUND_1,
-                    cms.getSitePath(resource)));
-                return null;
-            }
-        }
-        // get the locale data
-        if (!containerPageBean.containsKey(locale)) {
-            LOG.warn(Messages.get().container(
-                Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
-                cms.getSitePath(resource),
-                locale.toString()).key());
-            locale = OpenCms.getLocaleManager().getDefaultLocales(cms, resource).get(0);
-            if (!containerPageBean.containsKey(locale)) {
-                // locale not found!!
-                LOG.error(Messages.get().container(
-                    Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
-                    cms.getSitePath(resource),
-                    locale).key());
-                return null;
-            }
-        }
-        return containerPageBean.get(locale);
-    }
-
-    /**
      * Returns the cached container element under the given key and for the given project.<p>
      * 
      * @param key the cache key
      * 
      * @return  the cached container element or <code>null</code> if not found
      */
-    public I_CmsContainerElementBean getCacheContainerElement(String key) {
+    public CmsContainerElementBean getCacheContainerElement(String key) {
 
         return m_containerElementsOffline.get(key);
-
     }
 
     /**
@@ -369,31 +257,100 @@ public final class CmsADECache implements I_CmsEventListener {
      * @param key the cache key
      * @param online if cached in online or offline project
      * 
-     * @return  the cached container page or <code>null</code> if not found
+     * @return the cached container page or <code>null</code> if not found
      */
-    public Map<Locale, I_CmsContainerPageBean> getCacheContainerPage(String key, boolean online) {
+    public CmsXmlContainerPage getCacheContainerPage(String key, boolean online) {
 
+        CmsXmlContainerPage retValue;
         if (online) {
-            return m_containerPagesOnline.get(key);
+            retValue = m_containerPagesOnline.get(key);
+            if (LOG.isDebugEnabled()) {
+                if (retValue == null) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_MISSED_ONLINE_1,
+                        new Object[] {key}));
+
+                } else {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_MATCHED_ONLINE_2,
+                        new Object[] {key, retValue}));
+                }
+            }
         } else {
-            return m_containerPagesOffline.get(key);
+            retValue = m_containerPagesOffline.get(key);
+            if (LOG.isDebugEnabled()) {
+                if (retValue == null) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_MISSED_OFFLINE_1,
+                        new Object[] {key}));
+
+                } else {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_MATCHED_OFFLINE_2,
+                        new Object[] {key, retValue}));
+                }
+            }
         }
+        return retValue;
     }
 
     /**
-     * It first checks if the given container page is already cached, and only if not
-     * the container page will be cached.<p>
+     * Caches the given ADE recent list under the given cache key.<p>
      * 
-     * @param cms the current cms context
-     * @param resource the container page itself
-     * @param content the xml content of the container page
-     * 
-     * @throws CmsException if something goes wrong
+     * @param key the cache key
+     * @param list the recent list to cache
      */
-    public void setCache(CmsObject cms, CmsResource resource, CmsXmlContainerPage content) throws CmsException {
+    public void setCacheADERecentList(String key, List<CmsContainerElementBean> list) {
 
-        if (get(cms, resource) == null) {
-            set(cms, resource, serialize(cms, content));
+        m_adeRecentLists.put(key, list);
+    }
+
+    /**
+     * Caches the given ADE search options under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param opts the search options to cache
+     */
+    public void setCacheADESearchOptions(String key, CmsSearchOptions opts) {
+
+        m_adeSearchOptions.put(key, opts);
+    }
+
+    /**
+     * Caches the given container element under the given key and for the given project.<p>
+     * 
+     * @param key the cache key
+     * @param containerElement the object to cache
+     */
+    public void setCacheContainerElement(String key, CmsContainerElementBean containerElement) {
+
+        m_containerElementsOffline.put(key, containerElement);
+
+    }
+
+    /**
+     * Caches the given container page under the given key and for the given project.<p>
+     * 
+     * @param key the cache key
+     * @param containerPage the object to cache
+     * @param online if to cache in online or offline project
+     */
+    public void setCacheContainerPages(String key, CmsXmlContainerPage containerPage, boolean online) {
+
+        if (online) {
+            m_containerPagesOnline.put(key, containerPage);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_DEBUG_CACHE_SET_ONLINE_2,
+                    new Object[] {key, containerPage}));
+            }
+        } else {
+            m_containerPagesOffline.put(key, containerPage);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
+                    new Object[] {key, containerPage}));
+            }
         }
     }
 
@@ -428,225 +385,19 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
-     * Removes the container page identified by the given cache key from the cache.<p>
+     * Removes the container page identified by its structure id from the cache.<p>
      * 
-     * @param cacheKey the cache key to identify the container page to remove
+     * @param structureId the container page's structure id
      * @param online if online or offline
      */
-    public void uncacheContainerPage(String cacheKey, boolean online) {
+    public void uncacheContainerPage(CmsUUID structureId, boolean online) {
 
         if (online) {
-            m_containerPagesOnline.remove(cacheKey);
+            m_containerPagesOnline.remove(getCacheKey(structureId, true));
+            m_containerPagesOnline.remove(getCacheKey(structureId, false));
         } else {
-            m_containerPagesOffline.remove(cacheKey);
-        }
-    }
-
-    /**
-     * Returns the cached object for the given resource.<p>
-     * 
-     * @param cms the cms context
-     * @param resource the resource to look for
-     *  
-     * @return the cached object
-     */
-    protected Map<Locale, I_CmsContainerPageBean> get(CmsObject cms, CmsResource resource) {
-
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            return lookupOnline(resource.getStructureId().toString());
-        } else {
-            return lookupOffline(resource.getStructureId().toString());
-        }
-    }
-
-    /**
-     * Lookups for the given key in the offline cache.<p>
-     * 
-     * @param cacheKey key to lookup
-     * 
-     * @return the cached object or <code>null</code> if not cached
-     */
-    protected Map<Locale, I_CmsContainerPageBean> lookupOffline(String cacheKey) {
-
-        Map<Locale, I_CmsContainerPageBean> retValue = getCacheContainerPage(cacheKey, false);
-        if (LOG.isDebugEnabled()) {
-            if (retValue == null) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_CACHE_MISSED_OFFLINE_1,
-                    new Object[] {cacheKey}));
-
-            } else {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_CACHE_MATCHED_OFFLINE_2,
-                    new Object[] {cacheKey, retValue}));
-            }
-        }
-        return retValue;
-    }
-
-    /**
-     * Lookups for the given key in the online cache.<p>
-     * 
-     * @param cacheKey key to lookup
-     * 
-     * @return the cached object or <code>null</code> if not cached
-     */
-    protected Map<Locale, I_CmsContainerPageBean> lookupOnline(String cacheKey) {
-
-        Map<Locale, I_CmsContainerPageBean> retValue = getCacheContainerPage(cacheKey, true);
-        if (LOG.isDebugEnabled()) {
-            if (retValue == null) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_CACHE_MISSED_ONLINE_1,
-                    new Object[] {cacheKey}));
-
-            } else {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_CACHE_MATCHED_ONLINE_2,
-                    new Object[] {cacheKey, retValue}));
-            }
-        }
-        return retValue;
-    }
-
-    /**
-     * Creates a new cachable object from the xml content.<p>
-     * 
-     * @param cms the cms context
-     * @param content the xml content
-     * 
-     * @return the cachable object for the given content 
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected Map<Locale, I_CmsContainerPageBean> serialize(CmsObject cms, CmsXmlContent content) throws CmsException {
-
-        Map<Locale, I_CmsContainerPageBean> result = new HashMap<Locale, I_CmsContainerPageBean>();
-
-        // iterate over every locale
-        Iterator<Locale> itLocales = content.getLocales().iterator();
-        while (itLocales.hasNext()) {
-            Locale locale = itLocales.next();
-
-            CmsContainerPageBean cntPage = new CmsContainerPageBean(locale);
-
-            // iterate over every container in the given locale
-            Iterator<I_CmsXmlContentValue> itContainers = content.getValues(CmsXmlContainerPage.N_CONTAINER, locale).iterator();
-            while (itContainers.hasNext()) {
-                I_CmsXmlContentValue container = itContainers.next();
-                String containerPath = container.getPath();
-                // get the name and type
-                String name = content.getValue(
-                    CmsXmlUtils.concatXpath(containerPath, CmsXmlContainerPage.N_NAME),
-                    locale).getStringValue(cms);
-                String type = content.getValue(
-                    CmsXmlUtils.concatXpath(containerPath, CmsXmlContainerPage.N_TYPE),
-                    locale).getStringValue(cms);
-
-                // HACK: maxElem will be updated later while executing the template
-                CmsContainerBean cnt = new CmsContainerBean(name, type, -1);
-
-                // iterate over the container elements
-                Iterator<I_CmsXmlContentValue> itElements = content.getValues(
-                    CmsXmlUtils.concatXpath(containerPath, CmsXmlContainerPage.N_ELEMENT),
-                    locale).iterator();
-                while (itElements.hasNext()) {
-                    I_CmsXmlContentValue element = itElements.next();
-                    String elementPath = element.getPath();
-                    // get uri and formatter
-                    String elemUri = content.getValue(
-                        CmsXmlUtils.concatXpath(elementPath, CmsXmlContainerPage.N_URI),
-                        locale).getStringValue(cms);
-                    CmsResource elemRes = cms.readResource(elemUri);
-
-                    String formatter = content.getValue(
-                        CmsXmlUtils.concatXpath(elementPath, CmsXmlContainerPage.N_FORMATTER),
-                        locale).getStringValue(cms);
-                    CmsResource formatterRes = cms.readResource(formatter);
-
-                    // get properties
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    Iterator<I_CmsXmlContentValue> itProperties = content.getValues(
-                        CmsXmlUtils.concatXpath(elementPath, CmsXmlContainerPage.N_PROPERTIES),
-                        locale).iterator();
-                    while (itProperties.hasNext()) {
-                        I_CmsXmlContentValue property = itProperties.next();
-                        String propertyPath = property.getPath();
-                        String propertyName = content.getValue(
-                            CmsXmlUtils.concatXpath(propertyPath, CmsXmlContainerPage.N_NAME),
-                            locale).getStringValue(cms);
-                        List<I_CmsXmlContentValue> propertyValues = content.getSubValues(CmsXmlUtils.concatXpath(
-                            propertyPath,
-                            CmsXmlContainerPage.N_VALUE), locale);
-                        String propertyValue = null;
-                        if (propertyValues.size() >= 1) {
-                            propertyValue = propertyValues.get(0).getStringValue(cms);
-                        }
-                        if (propertyValue != null) {
-                            properties.put(propertyName, propertyValue);
-                        }
-                    }
-                    I_CmsContainerElementBean elem = new CmsContainerElementBean(elemRes, formatterRes, properties);
-                    cacheContainerElement(elem.getClientId(), elem);
-                    // add element to container
-                    cnt.addElement(elem);
-                }
-                // add container to container page
-                cntPage.addContainer(cnt);
-            }
-
-            // collect containers
-            result.put(locale, cntPage);
-        }
-
-        return result;
-    }
-
-    /**
-     * Sets the cached object for the given resource.<p>
-     * 
-     * @param cms the cms context
-     * @param resource the resource to set the cache for
-     * @param object the object to cache
-     */
-    protected void set(CmsObject cms, CmsResource resource, Map<Locale, I_CmsContainerPageBean> object) {
-
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            setCacheOnline(resource.getStructureId().toString(), object);
-        } else {
-            setCacheOffline(resource.getStructureId().toString(), object);
-        }
-    }
-
-    /**
-     * Sets a new cached value for the given key in the offline project.<p>
-     * 
-     * @param cacheKey key to lookup
-     * @param data the value to cache
-     */
-    protected void setCacheOffline(String cacheKey, Map<Locale, I_CmsContainerPageBean> data) {
-
-        cacheContainerPages(cacheKey, data, false);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
-                new Object[] {cacheKey, data}));
-        }
-    }
-
-    /**
-     * Sets a new cached value for the given key in the online project.<p>
-     * 
-     * @param cacheKey key to lookup
-     * @param data the value to cache
-     */
-    protected void setCacheOnline(String cacheKey, Map<Locale, I_CmsContainerPageBean> data) {
-
-        cacheContainerPages(cacheKey, data, true);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_DEBUG_CACHE_SET_ONLINE_2,
-                new Object[] {cacheKey, data}));
+            m_containerPagesOffline.remove(getCacheKey(structureId, true));
+            m_containerPagesOffline.remove(getCacheKey(structureId, false));
         }
     }
 
@@ -665,7 +416,7 @@ public final class CmsADECache implements I_CmsEventListener {
         }
 
         // remove the resource cached by it's structure ID
-        uncacheContainerPage(resource.getStructureId().toString(), false);
+        uncacheContainerPage(resource.getStructureId(), false);
     }
 
     /**
@@ -687,5 +438,18 @@ public final class CmsADECache implements I_CmsEventListener {
             // remove the resource
             uncacheResource(resources.get(i));
         }
+    }
+
+    /**
+     * Returns the cache key for the given parameters.<p>
+     * 
+     * @param structureId the container page's structure id
+     * @param keepEncoding if to keep the encoding while unmarshalling
+     * 
+     * @return the cached container page, or <code>null</code> if not found
+     */
+    public String getCacheKey(CmsUUID structureId, boolean keepEncoding) {
+
+        return structureId.toString() + "_" + keepEncoding;
     }
 }

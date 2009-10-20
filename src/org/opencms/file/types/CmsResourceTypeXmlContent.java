@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2009/09/09 15:54:53 $
- * Version: $Revision: 1.32.2.1 $
+ * Date   : $Date: 2009/10/20 07:38:54 $
+ * Version: $Revision: 1.32.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.2.1 $ 
+ * @version $Revision: 1.32.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -309,5 +309,15 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
         // now write the file
         return super.writeFile(cms, securityManager, resource);
+    }
+
+    /**
+     * Returns the configured xsd schema uri.<p>
+     * 
+     * @return the configured xsd schema uri, or <code>null</code> if not set
+     */
+    protected String getSchema() {
+
+        return m_schema;
     }
 }

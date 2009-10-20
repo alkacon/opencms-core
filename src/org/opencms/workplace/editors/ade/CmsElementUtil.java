@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/14 14:38:03 $
- * Version: $Revision: 1.1.2.16 $
+ * Date   : $Date: 2009/10/20 07:38:54 $
+ * Version: $Revision: 1.1.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,9 +54,11 @@ import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEManager;
-import org.opencms.xml.containerpage.I_CmsContainerBean;
-import org.opencms.xml.containerpage.I_CmsContainerElementBean;
-import org.opencms.xml.containerpage.I_CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.containerpage.CmsContainerBean;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -76,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.16 $
+ * @version $Revision: 1.1.2.17 $
  * 
  * @since 7.6
  */
@@ -204,7 +206,7 @@ public final class CmsElementUtil {
      * @throws ServletException if a jsp related error occurs
      * @throws IOException if a jsp related error occurs
      */
-    public String getElementContent(I_CmsContainerElementBean element, CmsResource formatter)
+    public String getElementContent(CmsContainerElementBean element, CmsResource formatter)
     throws CmsException, ServletException, IOException {
 
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
@@ -254,7 +256,7 @@ public final class CmsElementUtil {
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong in the json manipulation
      */
-    public JSONObject getElementData(I_CmsContainerElementBean element, Collection<String> types)
+    public JSONObject getElementData(CmsContainerElementBean element, Collection<String> types)
     throws CmsException, JSONException {
 
         // create new json object for the element
@@ -293,14 +295,15 @@ public final class CmsElementUtil {
                 resContents.put(type, ""); // empty contents
             }
             // this container page should contain exactly one container
-            I_CmsContainerPageBean cntPage = m_manager.getCache(m_cms, resource, m_cms.getRequestContext().getLocale());
-            I_CmsContainerBean container = cntPage.getContainers().values().iterator().next();
+            CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(m_cms, resource, m_req);
+            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(m_cms, m_cms.getRequestContext().getLocale());
+            CmsContainerBean container = cntPage.getContainers().values().iterator().next();
 
             // add subitems
             JSONArray subitems = new JSONArray();
             resElement.put(P_ELEMENT_SUBITEMS, subitems);
             // iterate the elements
-            for (I_CmsContainerElementBean subElement : container.getElements()) {
+            for (CmsContainerElementBean subElement : container.getElements()) {
                 // collect ids
                 subitems.put(subElement.getClientId());
             }
@@ -342,7 +345,7 @@ public final class CmsElementUtil {
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong generating the JSON
      */
-    public JSONObject getElementPropertyInfo(I_CmsContainerElementBean element) throws CmsException, JSONException {
+    public JSONObject getElementPropertyInfo(CmsContainerElementBean element) throws CmsException, JSONException {
 
         CmsUserSettings settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
         CmsMessages messages = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, element.getElement()).getMessages(

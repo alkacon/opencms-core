@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/19 06:46:37 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/10/20 07:38:53 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -45,14 +47,16 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
-import org.opencms.xml.content.Messages;
+import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -72,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.5.2
  */
@@ -93,9 +97,6 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     /** Xml content node constant properties. */
     public static final String N_PROPERTIES = "Properties";
 
-    /** Xml content node constant property. */
-    public static final String N_PROPERTY = "Property";
-
     /** Xml content node constant string. */
     public static final String N_STRING = "String";
 
@@ -112,7 +113,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     private static final Log LOG = CmsLog.getLog(CmsXmlContainerPage.class);
 
     /** The container page objects. */
-    private Map<Locale, I_CmsContainerPageBean> m_cntPages;
+    private Map<Locale, CmsContainerPageBean> m_cntPages;
 
     /**
      * Hides the public constructor.<p>
@@ -208,86 +209,32 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     }
 
     /**
-     * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
+     * Returns the container page bean for the given locale.<p>
+     *
+     * @param cms the cms context
+     * @param locale the locale to use
+     *
+     * @return the container page bean
      */
-    @Override
-    protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
+    public CmsContainerPageBean getCntPage(CmsObject cms, Locale locale) {
 
-        m_document = document;
-        m_contentDefinition = definition;
-        m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
-        m_elementLocales = new HashMap<String, Set<Locale>>();
-        m_elementNames = new HashMap<Locale, Set<String>>();
-        m_locales = new HashSet<Locale>();
-        m_cntPages = new HashMap<Locale, I_CmsContainerPageBean>();
-        clearBookmarks();
-
-        // initialize the bookmarks
-        for (Iterator<Element> itCntPages = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); itCntPages.hasNext();) {
-            Element cntPage = itCntPages.next();
-
-            try {
-                Locale locale = CmsLocaleManager.getLocale(cntPage.attribute(
-                    CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
-
-                addLocale(locale);
-                processSchemaNode(cntPage, null, locale, definition);
-                if (m_locales.contains(locale)) {
-                    continue;
-                }
-                // TODO: If you add a locale to the map and check right afterwards if this map contains the locale, will the following code ever be executed???
-                CmsContainerPageBean cntPageBean = new CmsContainerPageBean(locale);
-                for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(cntPage, N_CONTAINER); itCnts.hasNext();) {
-                    Element container = itCnts.next();
-
-                    // container itself
-                    int cntIndex = CmsXmlUtils.getXpathIndexInt(container.getUniquePath(cntPage));
-                    String cntPath = CmsXmlUtils.createXpathElement(container.getName(), cntIndex);
-                    I_CmsXmlSchemaType cntSchemaType = definition.getSchemaType(container.getName());
-                    I_CmsXmlContentValue cntValue = cntSchemaType.createValue(this, container, locale);
-                    addBookmark(cntPath, locale, true, cntValue);
-                    CmsXmlContentDefinition cntDef = ((CmsXmlNestedContentDefinition)cntSchemaType).getNestedContentDefinition();
-
-                    // name
-                    Element name = container.element(N_NAME);
-                    createBookmark(name, locale, container, cntPath, cntDef);
-
-                    // type
-                    Element type = container.element(N_TYPE);
-                    createBookmark(type, locale, container, cntPath, cntDef);
-
-                    CmsContainerBean cntBean = new CmsContainerBean(name.getText(), type.getText(), -1);
-
-                    // Elements
-                    for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(container, N_ELEMENT); itElems.hasNext();) {
-                        Element element = itElems.next();
-
-                        // element itself
-                        int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(container));
-                        String elemPath = CmsXmlUtils.createXpathElement(element.getName(), elemIndex);
-                        I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
-                        I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
-                        addBookmark(elemPath, locale, true, elemValue);
-                        CmsXmlContentDefinition elemDef = ((CmsXmlNestedContentDefinition)elemSchemaType).getNestedContentDefinition();
-
-                        // uri
-                        Element uri = container.element(N_URI);
-                        createBookmark(uri, locale, element, elemPath, elemDef);
-
-                        // formatter
-                        Element formatter = container.element(N_FORMATTER);
-                        createBookmark(formatter, locale, element, elemPath, elemDef);
-
-                        //CmsContainerElementBean elemBean = new CmsContainerElementBean();
-                    }
-
-                    cntPageBean.addContainer(cntBean);
-                }
-                m_cntPages.put(locale, cntPageBean);
-            } catch (NullPointerException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+        Locale theLocale = locale;
+        if (!m_cntPages.containsKey(theLocale)) {
+            LOG.warn(Messages.get().container(
+                Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
+                cms.getSitePath(getFile()),
+                theLocale.toString()).key());
+            theLocale = OpenCms.getLocaleManager().getDefaultLocales(cms, getFile()).get(0);
+            if (!m_cntPages.containsKey(theLocale)) {
+                // locale not found!!
+                LOG.error(Messages.get().container(
+                    Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
+                    cms.getSitePath(getFile()),
+                    theLocale).key());
+                return null;
             }
         }
+        return m_cntPages.get(theLocale);
     }
 
     /**
@@ -313,6 +260,142 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         I_CmsXmlSchemaType elemSchemaType = parentDef.getSchemaType(element.getName());
         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
         addBookmark(elemPath, locale, true, elemValue);
+    }
+
+    /**
+     * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
+     */
+    @Override
+    protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
+
+        CmsObject cms = OpenCms.getADEManager().m_adminCms;
+        m_document = document;
+        m_contentDefinition = definition;
+        m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
+        m_elementLocales = new HashMap<String, Set<Locale>>();
+        m_elementNames = new HashMap<Locale, Set<String>>();
+        m_locales = new HashSet<Locale>();
+        m_cntPages = new HashMap<Locale, CmsContainerPageBean>();
+        clearBookmarks();
+
+        // initialize the bookmarks
+        for (Iterator<Element> itCntPages = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); itCntPages.hasNext();) {
+            Element cntPage = itCntPages.next();
+
+            try {
+                Locale locale = CmsLocaleManager.getLocale(cntPage.attribute(
+                    CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
+
+                addLocale(locale);
+
+                List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
+                for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(cntPage, N_CONTAINER); itCnts.hasNext();) {
+                    Element container = itCnts.next();
+
+                    // container itself
+                    int cntIndex = CmsXmlUtils.getXpathIndexInt(container.getUniquePath(cntPage));
+                    String cntPath = CmsXmlUtils.createXpathElement(container.getName(), cntIndex);
+                    I_CmsXmlSchemaType cntSchemaType = definition.getSchemaType(container.getName());
+                    I_CmsXmlContentValue cntValue = cntSchemaType.createValue(this, container, locale);
+                    addBookmark(cntPath, locale, true, cntValue);
+                    CmsXmlContentDefinition cntDef = ((CmsXmlNestedContentDefinition)cntSchemaType).getNestedContentDefinition();
+
+                    // name
+                    Element name = container.element(N_NAME);
+                    createBookmark(name, locale, container, cntPath, cntDef);
+
+                    // type
+                    Element type = container.element(N_TYPE);
+                    createBookmark(type, locale, container, cntPath, cntDef);
+
+                    List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
+                    // Elements
+                    for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(container, N_ELEMENT); itElems.hasNext();) {
+                        Element element = itElems.next();
+
+                        // element itself
+                        int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(container));
+                        String elemPath = CmsXmlUtils.createXpathElement(element.getName(), elemIndex);
+                        I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
+                        I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
+                        addBookmark(elemPath, locale, true, elemValue);
+                        CmsXmlContentDefinition elemDef = ((CmsXmlNestedContentDefinition)elemSchemaType).getNestedContentDefinition();
+
+                        // uri
+                        Element uri = element.element(N_URI);
+                        createBookmark(uri, locale, element, elemPath, elemDef);
+                        String elementUri = new CmsLink(uri.element(CmsXmlPage.NODE_LINK)).getUri(); // root path
+
+                        // formatter
+                        Element formatter = element.element(N_FORMATTER);
+                        createBookmark(formatter, locale, element, elemPath, elemDef);
+                        String formatterUri = new CmsLink(formatter.element(CmsXmlPage.NODE_LINK)).getUri(); // root path
+
+                        Map<String, String> propertiesMap = new HashMap<String, String>();
+
+                        // Properties
+                        for (Iterator<Element> itProps = CmsXmlGenericWrapper.elementIterator(element, N_PROPERTIES); itProps.hasNext();) {
+                            Element property = itProps.next();
+
+                            // property itself
+                            int propIndex = CmsXmlUtils.getXpathIndexInt(property.getUniquePath(element));
+                            String propPath = CmsXmlUtils.createXpathElement(property.getName(), propIndex);
+                            I_CmsXmlSchemaType propSchemaType = elemDef.getSchemaType(property.getName());
+                            I_CmsXmlContentValue propValue = propSchemaType.createValue(this, property, locale);
+                            addBookmark(propPath, locale, true, propValue);
+                            CmsXmlContentDefinition propDef = ((CmsXmlNestedContentDefinition)propSchemaType).getNestedContentDefinition();
+
+                            // name
+                            Element propName = property.element(N_NAME);
+                            createBookmark(propName, locale, property, propPath, propDef);
+
+                            // choice value 
+                            Element value = property.element(N_VALUE);
+                            int valueIndex = CmsXmlUtils.getXpathIndexInt(value.getUniquePath(property));
+                            String valuePath = CmsXmlUtils.createXpathElement(value.getName(), valueIndex);
+                            I_CmsXmlSchemaType valueSchemaType = propDef.getSchemaType(value.getName());
+                            I_CmsXmlContentValue valueValue = propSchemaType.createValue(this, value, locale);
+                            addBookmark(valuePath, locale, true, valueValue);
+                            CmsXmlContentDefinition valueDef = ((CmsXmlNestedContentDefinition)valueSchemaType).getNestedContentDefinition();
+
+                            String val = null;
+                            Element string = value.element(N_STRING);
+                            if (string != null) {
+                                // string value
+                                createBookmark(string, locale, value, valuePath, valueDef);
+                                val = string.getTextTrim();
+                            } else {
+                                // uri value
+                                Element valueUri = value.element(N_URI);
+                                createBookmark(valueUri, locale, value, valuePath, valueDef);
+                                val = new CmsLink(valueUri.element(CmsXmlPage.NODE_LINK)).getUri(); // root path
+                            }
+
+                            propertiesMap.put(propName.getTextTrim(), val);
+                        }
+
+                        try {
+                            elements.add(new CmsContainerElementBean(
+                                cms.readResource(elementUri),
+                                cms.readResource(formatterUri),
+                                propertiesMap));
+                        } catch (CmsException e) {
+                            if (!LOG.isDebugEnabled()) {
+                                LOG.warn(e.getLocalizedMessage());
+                            }
+                            LOG.debug(e.getLocalizedMessage(), e);
+                        }
+                    }
+
+                    containers.add(new CmsContainerBean(name.getText(), type.getText(), -1, elements));
+                }
+
+                m_cntPages.put(locale, new CmsContainerPageBean(locale, containers));
+            } catch (NullPointerException e) {
+                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
+                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+            }
+        }
     }
 
     /**
@@ -367,8 +450,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 } else {
                     // unknown XML node name according to schema
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
+                        LOG.warn(org.opencms.xml.content.Messages.get().getBundle().key(
+                            org.opencms.xml.content.Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
                             name,
                             definition.getSchemaLocation()));
                     }

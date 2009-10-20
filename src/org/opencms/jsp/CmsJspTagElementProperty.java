@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagElementProperty.java,v $
- * Date   : $Date: 2009/10/19 06:46:37 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/10/20 07:38:55 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.containerpage.I_CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.io.IOException;
 import java.util.Map;
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 7.6
  */
@@ -92,11 +92,13 @@ public class CmsJspTagElementProperty extends TagSupport {
 
         String propValue = "";
         // get the element
-        I_CmsContainerElementBean element = null;
+        CmsContainerElementBean element = null;
         try {
             element = OpenCms.getADEManager().getCurrentElement(req);
         } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage());
+            if (!LOG.isDebugEnabled()) {
+                LOG.warn(e.getLocalizedMessage());
+            }
             LOG.debug(e.getLocalizedMessage(), e);
             return;
         }

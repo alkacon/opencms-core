@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerPageBean.java,v $
- * Date   : $Date: 2009/10/13 11:59:40 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/20 07:38:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -34,6 +34,7 @@ package org.opencms.xml.containerpage;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -43,14 +44,20 @@ import java.util.Set;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6
  */
-public class CmsContainerPageBean implements I_CmsContainerPageBean {
+public class CmsContainerPageBean {
+
+    /** The template container element parameter name. */
+    public static final String TEMPLATE_ELEMENT_PARAMETER = "id";
+
+    /** The template container type. */
+    public static final String TYPE_TEMPLATE = "template";
 
     /** The containers. */
-    private Map<String, I_CmsContainerBean> m_containers;
+    private Map<String, CmsContainerBean> m_containers;
 
     /** The locale. */
     private Locale m_locale;
@@ -62,35 +69,33 @@ public class CmsContainerPageBean implements I_CmsContainerPageBean {
      * Creates a new container page bean.<p> 
      * 
      * @param locale the locale
+     * @param containers the containers
      **/
-    public CmsContainerPageBean(Locale locale) {
+    public CmsContainerPageBean(Locale locale, List<CmsContainerBean> containers) {
 
         m_locale = locale;
-        m_containers = new HashMap<String, I_CmsContainerBean>();
+        m_containers = new HashMap<String, CmsContainerBean>();
         m_types = new HashSet<String>();
+        for (CmsContainerBean container : containers) {
+            m_containers.put(container.getName(), container);
+            m_types.add(container.getType());
+        }
     }
 
     /**
-     * Adds a new container to the container page.<p>
-     * 
-     * @param container the container to add
+     * Returns the containers.<p>
+     *
+     * @return the containers
      */
-    public void addContainer(I_CmsContainerBean container) {
-
-        m_containers.put(container.getName(), container);
-        m_types.add(container.getType());
-    }
-
-    /**
-     * @see org.opencms.xml.containerpage.I_CmsContainerPageBean#getContainers()
-     */
-    public Map<String, I_CmsContainerBean> getContainers() {
+    public Map<String, CmsContainerBean> getContainers() {
 
         return Collections.unmodifiableMap(m_containers);
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsContainerPageBean#getLocale()
+     * Returns the locale.<p>
+     *
+     * @return the locale
      */
     public Locale getLocale() {
 
@@ -98,7 +103,9 @@ public class CmsContainerPageBean implements I_CmsContainerPageBean {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsContainerPageBean#getTypes()
+     * Returns the types.<p>
+     *
+     * @return the types
      */
     public Set<String> getTypes() {
 

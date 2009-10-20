@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/10/14 14:38:05 $
- * Version: $Revision: 1.245.2.6 $
+ * Date   : $Date: 2009/10/20 07:38:56 $
+ * Version: $Revision: 1.245.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,6 +94,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
+import org.opencms.xml.containerpage.CmsADECache;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
 import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.containerpage.CmsADEManager;
@@ -144,7 +145,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.245.2.6 $ 
+ * @version $Revision: 1.245.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,6 +162,9 @@ public final class OpenCmsCore {
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
+
+    /** The ade cache instance. */
+    private CmsADECache m_adeCache;
 
     /** The ade manager. */
     private CmsADEManager m_adeManager;
@@ -328,7 +332,7 @@ public final class OpenCmsCore {
             LOG.error(errorCondition.key(), new CmsException(errorCondition));
             m_instance = null;
         } else if (m_instance != null) {
-            // OpenCms already was successfull initialized
+            // OpenCms already was successful initialized
             LOG.warn(Messages.get().getBundle().key(
                 Messages.LOG_INIT_INVALID_ERROR_2,
                 new Integer(m_instance.getRunLevel()),
@@ -1235,7 +1239,8 @@ public final class OpenCmsCore {
                         adeConfigurationClassName), e);
                 }
             }
-            m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, adeCacheSettings, adeConfiguration);
+            m_adeCache = new CmsADECache(m_memoryMonitor, adeCacheSettings);
+            m_adeManager = new CmsADEManager(adminCms, m_adeCache, adeConfiguration);
 
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
@@ -1665,8 +1670,8 @@ public final class OpenCmsCore {
                         e.getMessage()), e);
                 }
                 try {
-                    if (m_adeManager != null) {
-                        m_adeManager.shutdown();
+                    if (m_adeCache != null) {
+                        m_adeCache.shutdown();
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(

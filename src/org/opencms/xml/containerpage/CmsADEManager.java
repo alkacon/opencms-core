@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/16 08:25:37 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/10/20 07:38:53 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,13 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -56,7 +58,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -71,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 7.6
  */
@@ -102,20 +103,15 @@ public class CmsADEManager {
      * Creates a new ADE manager.<p>
      * 
      * @param adminCms the admin cms context
-     * @param memoryMonitor the memory monitor
-     * @param cacheSettings the cache settings
+     * @param cache the ADE ache instance
      * @param configuration the configured configuration object
      * 
      * @throws CmsException if something goes wrong 
      */
-    public CmsADEManager(
-        CmsObject adminCms,
-        CmsMemoryMonitor memoryMonitor,
-        CmsADECacheSettings cacheSettings,
-        I_CmsADEConfiguration configuration)
+    public CmsADEManager(CmsObject adminCms, CmsADECache cache, I_CmsADEConfiguration configuration)
     throws CmsException {
 
-        m_cache = new CmsADECache(memoryMonitor, cacheSettings);
+        m_cache = cache;
         m_configuration = configuration;
         m_adminCms = OpenCms.initCmsObject(adminCms);
     }
@@ -161,45 +157,70 @@ public class CmsADEManager {
     }
 
     /**
-     * Returns the cached container page object for the given resource.<p>
+     * Creates an element from its serialized data.<p> 
      * 
-     * @param cms the cms context
-     * @param resource the resource to look for
-     * @param locale the locale
-     *  
-     * @return the cached container page object
+     * @param data the serialized data
+     * 
+     * @return the restored element bean
+     * 
+     * @throws JSONException if the serialized data got corrupted
+     * @throws CmsException if the stored resources no longer exist
      */
-    public I_CmsContainerPageBean getCache(CmsObject cms, CmsResource resource, Locale locale) {
+    public CmsContainerElementBean elementFromJson(JSONObject data) throws JSONException, CmsException {
 
-        return m_cache.getCache(cms, resource, locale);
+        CmsResource element = m_adminCms.readResource(new CmsUUID(data.getString("element")));
+        CmsResource formatter = m_adminCms.readResource(new CmsUUID(data.getString("formatter")));
+        Map<String, String> properties = new HashMap<String, String>();
+
+        JSONObject props = data.getJSONObject("properties");
+        Iterator<String> keys = props.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            properties.put(key, props.getString(key));
+        }
+
+        return new CmsContainerElementBean(element, formatter, properties);
     }
 
     /**
-     * Reads the cached element-bean for the given client-side-id from cache.<p>
+     * Converts the given element to JSON.<p>
      * 
-     * @param clientId the client-side-id
-     * @return the CmsContainerElementBean
-     * @throws CmsException - if the resource could not be read for any reason
+     * @param element the element to convert
+     * 
+     * @return the JSON representation
      */
-    public I_CmsContainerElementBean getCachedElement(String clientId) throws CmsException {
+    public JSONObject elementToJson(CmsContainerElementBean element) {
 
-        String id = clientId;
-        I_CmsContainerElementBean element = null;
-        element = m_cache.getCacheContainerElement(id);
-        if (element != null) {
-            return element;
-        }
-        if (id.contains("#")) {
-            id = id.substring(0, id.indexOf("#"));
-            element = m_cache.getCacheContainerElement(id);
-            if (element != null) {
-                return element;
+        JSONObject data = null;
+        try {
+            data = new JSONObject();
+            data.put("element", element.getElement().getStructureId().toString());
+            data.put("formatter", element.getFormatter().getStructureId().toString());
+
+            JSONObject properties = new JSONObject();
+            for (Map.Entry<String, String> entry : element.getProperties().entrySet()) {
+                properties.put(entry.getKey(), entry.getValue());
             }
+            data.put("properties", properties);
+        } catch (JSONException e) {
+            // should never happen
+            if (!LOG.isDebugEnabled()) {
+                LOG.warn(e.getLocalizedMessage());
+            }
+            LOG.debug(e.getLocalizedMessage(), e);
+            return null;
         }
-        // this is necessary if the element has not been cached yet
-        element = new CmsContainerElementBean(m_adminCms.readResource(convertToServerId(id)), null, null);
-        m_cache.cacheContainerElement(id, element);
-        return element;
+        return data;
+    }
+
+    /**
+     * Returns the ade cache instance.<p>
+     * 
+     * @return the ade cache instance
+     */
+    public CmsADECache getCache() {
+
+        return m_cache;
     }
 
     /**
@@ -225,11 +246,11 @@ public class CmsADEManager {
      * 
      * @throws CmsException if attribute {@value #ATTR_CURRENT_ELEMENT} not set, or if a type cast exception occurs
      */
-    public I_CmsContainerElementBean getCurrentElement(ServletRequest req) throws CmsException {
+    public CmsContainerElementBean getCurrentElement(ServletRequest req) throws CmsException {
 
-        I_CmsContainerElementBean element = null;
+        CmsContainerElementBean element = null;
         try {
-            element = (I_CmsContainerElementBean)req.getAttribute(ATTR_CURRENT_ELEMENT);
+            element = (CmsContainerElementBean)req.getAttribute(ATTR_CURRENT_ELEMENT);
         } catch (Exception e) {
             throw new CmsException(Messages.get().container(Messages.ERR_READING_ELEMENT_FROM_REQUEST_0), e);
         }
@@ -246,7 +267,7 @@ public class CmsADEManager {
      * 
      * @return the element properties
      */
-    public Map<String, CmsProperty> getElementProperties(I_CmsContainerElementBean element) {
+    public Map<String, CmsProperty> getElementProperties(CmsContainerElementBean element) {
 
         Map<String, CmsProperty> properties = new HashMap<String, CmsProperty>();
         Iterator<Map.Entry<String, String>> itProperties = element.getProperties().entrySet().iterator();
@@ -300,27 +321,38 @@ public class CmsADEManager {
      * 
      * @throws CmsException if something goes wrong 
      */
-    @SuppressWarnings("cast")
-    public List<I_CmsContainerElementBean> getFavoriteList(CmsObject cms) throws CmsException {
+    public List<CmsContainerElementBean> getFavoriteList(CmsObject cms) throws CmsException {
 
         CmsUser user = cms.getRequestContext().currentUser();
-        List<I_CmsContainerElementBean> favList = null;
-        try {
-            favList = CmsCollectionsGenericWrapper.list(user.getAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST));
-            if ((favList != null) && !favList.isEmpty()) {
-                // this can happen when a list of CmsUUID was saved with an older version
-                if (!(favList.get(0) instanceof I_CmsContainerElementBean)) {
-                    favList = null;
+        Object obj = user.getAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST);
+
+        List<CmsContainerElementBean> favList = new ArrayList<CmsContainerElementBean>();
+        if (obj instanceof String) {
+            try {
+                JSONArray array = new JSONArray((String)obj);
+                for (int i = 0; i < array.length(); i++) {
+                    try {
+                        favList.add(elementFromJson(array.getJSONObject(i)));
+                    } catch (Throwable e) {
+                        // should never happen, catches wrong or no longer existing values
+                        if (!LOG.isDebugEnabled()) {
+                            LOG.warn(e.getLocalizedMessage());
+                        }
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
                 }
+            } catch (Throwable e) {
+                // should never happen, catches json parsing
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
             }
-        } catch (Throwable e) {
-            // should never happen
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        if (favList == null) {
-            favList = new ArrayList<I_CmsContainerElementBean>();
+        } else {
+            // save to be better next time
             saveFavoriteList(cms, favList);
         }
+
         return favList;
     }
 
@@ -349,14 +381,14 @@ public class CmsADEManager {
      * 
      * @throws CmsException if something goes wrong 
      */
-    public List<I_CmsContainerElementBean> getRecentList(CmsObject cms) throws CmsException {
+    public List<CmsContainerElementBean> getRecentList(CmsObject cms) throws CmsException {
 
         CmsUser user = cms.getRequestContext().currentUser();
-        List<I_CmsContainerElementBean> recentList = m_cache.getADERecentList(user.getId().toString());
+        List<CmsContainerElementBean> recentList = m_cache.getADERecentList(user.getId().toString());
         if (recentList == null) {
             int maxElems = getRecentListMaxSize(cms);
             recentList = CmsCollectionsGenericWrapper.list(new NodeCachingLinkedList(maxElems));
-            m_cache.cacheADERecentList(user.getId().toString(), recentList);
+            m_cache.setCacheADERecentList(user.getId().toString(), recentList);
         }
         return recentList;
     }
@@ -450,10 +482,14 @@ public class CmsADEManager {
      * 
      * @throws CmsException if something goes wrong 
      */
-    public void saveFavoriteList(CmsObject cms, List<I_CmsContainerElementBean> favoriteList) throws CmsException {
+    public void saveFavoriteList(CmsObject cms, List<CmsContainerElementBean> favoriteList) throws CmsException {
 
+        JSONArray data = new JSONArray();
+        for (CmsContainerElementBean element : favoriteList) {
+            data.put(elementToJson(element));
+        }
         CmsUser user = cms.getRequestContext().currentUser();
-        user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, favoriteList);
+        user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, data.toString());
         cms.writeUser(user);
     }
 
@@ -463,10 +499,10 @@ public class CmsADEManager {
      * @param cms the cms context
      * @param recentList the element id list
      */
-    public void saveRecentList(CmsObject cms, List<I_CmsContainerElementBean> recentList) {
+    public void saveRecentList(CmsObject cms, List<CmsContainerElementBean> recentList) {
 
         CmsUser user = cms.getRequestContext().currentUser();
-        m_cache.cacheADERecentList(user.getId().toString(), recentList);
+        m_cache.setCacheADERecentList(user.getId().toString(), recentList);
     }
 
     /**
@@ -479,43 +515,6 @@ public class CmsADEManager {
 
         CmsUser user = cms.getRequestContext().currentUser();
         // cache the search options, but with page=0
-        m_cache.cacheADESearchOptions(user.getId().toString(), searchOptions.resetPage());
-    }
-
-    /**
-     * It first checks if the given container page is already cached, and only if not
-     * the container page will be cached.<p>
-     * 
-     * @param cms the cms context
-     * @param resource the container page itself
-     * @param content the xml content of the container page
-     * 
-     * @throws CmsException if something goes wrong
-     *
-     * @see org.opencms.xml.containerpage.CmsADECache#setCache(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.xml.containerpage.CmsXmlContainerPage)
-     */
-    public void setCache(CmsObject cms, CmsResource resource, CmsXmlContainerPage content) throws CmsException {
-
-        m_cache.setCache(cms, resource, content);
-    }
-
-    /**
-     * Caches the given element.<p>
-     * 
-     * @param element the element to cache
-     */
-    public void setCachedElement(I_CmsContainerElementBean element) {
-
-        m_cache.cacheContainerElement(element.getClientId(), element);
-    }
-
-    /**
-     * Clean up at shutdown time. Only intended to be called at system shutdown.<p>
-     * 
-     * @see org.opencms.main.OpenCmsCore#shutDown
-     */
-    public void shutdown() {
-
-        m_cache.shutdown();
+        m_cache.setCacheADESearchOptions(user.getId().toString(), searchOptions.resetPage());
     }
 }

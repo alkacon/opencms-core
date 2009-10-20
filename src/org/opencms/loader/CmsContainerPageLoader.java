@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsContainerPageLoader.java,v $
- * Date   : $Date: 2009/10/14 14:38:06 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2009/10/20 07:38:55 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 import org.opencms.xml.I_CmsXmlDocument;
-import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
 import javax.servlet.ServletRequest;
@@ -45,11 +43,11 @@ import javax.servlet.ServletRequest;
 /**
  * OpenCms loader for resources of type <code>{@link org.opencms.file.types.CmsResourceTypeContainerPage}</code>.<p>
  *
- * It is just a xml-content loader with special object caching.<p>
+ * It is just a xml-content loader.<p>
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 7.6
  */
@@ -110,9 +108,6 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
     protected I_CmsXmlDocument unmarshalXmlDocument(CmsObject cms, CmsResource resource, ServletRequest req)
     throws CmsException {
 
-        CmsXmlContainerPage cntPage = CmsXmlContainerPageFactory.unmarshal(cms, resource, req);
-        // this should be in the factory
-        OpenCms.getADEManager().setCache(cms, resource, cntPage);
-        return cntPage;
+        return CmsXmlContainerPageFactory.unmarshal(cms, resource, req);
     }
 }

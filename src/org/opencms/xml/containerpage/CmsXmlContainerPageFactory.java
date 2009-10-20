@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlContainerPageFactory.java,v $
- * Date   : $Date: 2009/10/13 11:59:41 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/20 07:38:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -61,11 +60,14 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.5.2
  */
 public final class CmsXmlContainerPageFactory {
+
+    /** The ADE cache. */
+    private static CmsADECache m_cache = OpenCms.getADEManager().m_cache;
 
     /**
      * No instances of this class should be created.<p> 
@@ -195,6 +197,13 @@ public final class CmsXmlContainerPageFactory {
     public static CmsXmlContainerPage unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding)
     throws CmsXmlException {
 
+        // check the cache
+        CmsXmlContainerPage content = getCache(cms, file, keepEncoding);
+        if (content != null) {
+            return content;
+        }
+
+        // not found in cache, read as normally
         byte[] contentBytes = file.getContents();
         String filename = cms.getSitePath(file);
 
@@ -213,7 +222,6 @@ public final class CmsXmlContainerPageFactory {
             }
         }
 
-        CmsXmlContainerPage content;
         if (contentBytes.length > 0) {
             // content is initialized
             if (keepEncoding) {
@@ -239,7 +247,46 @@ public final class CmsXmlContainerPageFactory {
         // set the file
         content.setFile(file);
         // call prepare for use content handler and return the result 
-        return (CmsXmlContainerPage)content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
+        CmsXmlContainerPage xmlCntPage = (CmsXmlContainerPage)content.getContentDefinition().getContentHandler().prepareForUse(
+            cms,
+            content);
+
+        // set the cache
+        setCache(cms, xmlCntPage, keepEncoding);
+
+        return xmlCntPage;
+    }
+
+    /**
+     * Factory method to unmarshal (read) a container page instance from a OpenCms VFS resource
+     * that contains XML data.<p>
+     * 
+     * <b>Warning:</b><br/>
+     * This method does not support requested historic versions, it always loads the 
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * for history support.<p>
+     * 
+     * @param cms the current cms object
+     * @param resource the resource with the XML data to unmarshal
+     * 
+     * @return a container page instance unmarshalled from the provided resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsXmlContainerPage unmarshal(CmsObject cms, CmsResource resource) throws CmsException {
+
+        // check the cache
+        CmsXmlContainerPage content = getCache(cms, resource, true);
+        if (content != null) {
+            return content;
+        }
+
+        content = unmarshal(cms, cms.readFile(resource), true);
+
+        // set the cache
+        setCache(cms, content, true);
+
+        return content;
     }
 
     /**
@@ -261,8 +308,7 @@ public final class CmsXmlContainerPageFactory {
 
         String rootPath = resource.getRootPath();
 
-        if (!CmsResourceTypeXmlContent.isXmlContent(resource)
-            && !CmsResourceTypeContainerPage.isContainerPage(resource)) {
+        if (!CmsResourceTypeContainerPage.isContainerPage(resource)) {
             // sanity check: resource must be of type XML content
             throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_XMLCONTENT_INVALID_TYPE_1,
@@ -275,7 +321,7 @@ public final class CmsXmlContainerPageFactory {
 
         if (content == null) {
             // unmarshal XML structure from the file content
-            content = unmarshal(cms, cms.readFile(resource));
+            content = unmarshal(cms, resource);
             // store the content as request attribute for future read requests
             req.setAttribute(rootPath, content);
         }
@@ -340,29 +386,46 @@ public final class CmsXmlContainerPageFactory {
     }
 
     /**
-     * Factory method to unmarshal (generate) a container page instance from a String
-     * that contains XML data.<p>
+     * Returns the cached container page.<p>
      * 
-     * The given encoding is used when marshalling the XML again later.<p>
+     * @param cms the cms context
+     * @param resource the container page resource
+     * @param keepEncoding if to keep the encoding while unmarshalling
      * 
-     * Since no {@link CmsObject} is available, no link validation is performed!<p>
-     * 
-     * <b>Warning:</b><br/>
-     * This method does not support requested historic versions, it always loads the 
-     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
-     * for history support.<p>
-     * 
-     * @param xmlData the XML data in a String
-     * @param encoding the encoding to use when marshalling the container page later
-     * @param resolver the XML entity resolver to use
-     * 
-     * @return a container page instance unmarshalled from the String
-     * 
-     * @throws CmsXmlException if something goes wrong
+     * @return the cached container page, or <code>null</code> if not found
      */
-    public static CmsXmlContainerPage unmarshal(String xmlData, String encoding, EntityResolver resolver)
-    throws CmsXmlException {
+    private static CmsXmlContainerPage getCache(CmsObject cms, CmsResource resource, boolean keepEncoding) {
 
-        return unmarshal(null, xmlData, encoding, resolver);
+        return m_cache.getCacheContainerPage(
+            m_cache.getCacheKey(resource.getStructureId(), keepEncoding),
+            cms.getRequestContext().currentProject().isOnlineProject());
+    }
+
+    /**
+     * Stores the given container page in the cache.<p>
+     * 
+     * @param cms the cms context
+     * @param xmlCntPage the container page to cache
+     * @param keepEncoding if the encoding was kept while unmarshalling
+     */
+    private static void setCache(CmsObject cms, CmsXmlContainerPage xmlCntPage, boolean keepEncoding) {
+
+        boolean online = cms.getRequestContext().currentProject().isOnlineProject();
+        m_cache.setCacheContainerPages(
+            m_cache.getCacheKey(xmlCntPage.getFile().getStructureId(), keepEncoding),
+            xmlCntPage,
+            online);
+        if (online) {
+            return;
+        }
+        // cache elements only in offline project
+        for (Locale locale : xmlCntPage.getLocales()) {
+            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, locale);
+            for (CmsContainerBean cnt : cntPage.getContainers().values()) {
+                for (CmsContainerElementBean elem : cnt.getElements()) {
+                    m_cache.setCacheContainerElement(elem.getClientId(), elem);
+                }
+            }
+        }
     }
 }

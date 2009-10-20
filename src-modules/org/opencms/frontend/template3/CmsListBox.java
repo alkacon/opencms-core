@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBox.java,v $
- * Date   : $Date: 2009/10/14 14:38:07 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/10/20 07:38:55 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
-import org.opencms.xml.containerpage.I_CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  */
 public class CmsListBox extends CmsJspActionElement {
 
@@ -206,7 +206,7 @@ public class CmsListBox extends CmsJspActionElement {
 
         // collect the configuration information 
         try {
-            I_CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(req);
+            CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(req);
             CmsFile file = getCmsObject().readFile(element.getElement());
             m_content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
 
