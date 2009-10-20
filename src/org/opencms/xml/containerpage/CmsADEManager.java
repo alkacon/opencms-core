@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/20 07:38:53 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/10/20 09:06:25 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -62,7 +61,6 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
-import org.apache.commons.collections.list.NodeCachingLinkedList;
 import org.apache.commons.logging.Log;
 
 /**
@@ -72,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 7.6
  */
@@ -86,6 +84,15 @@ public class CmsADEManager {
 
     /** HTML id prefix constant. */
     protected static final String ADE_ID_PREFIX = "ade_";
+
+    /** JSON property name constant. */
+    private static final String JSON_ELEMENT = "element";
+
+    /** JSON property name constant. */
+    private static final String JSON_FORMATTER = "formatter";
+
+    /** JSON property name constant. */
+    private static final String JSON_PROPERTIES = "properties";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
@@ -157,6 +164,26 @@ public class CmsADEManager {
     }
 
     /**
+     * Creates a new element of a given type at the configured location.<p>
+     * 
+     * @param cms the current opencms context
+     * @param cntPageUri the container page uri
+     * @param request the current request
+     * @param type the type of the element to be created
+     * 
+     * @return the CmsResource representing the newly created element
+     * 
+     * @throws CmsException if something goes wrong
+     *
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest, java.lang.String)
+     */
+    public CmsResource createNewElement(CmsObject cms, String cntPageUri, ServletRequest request, String type)
+    throws CmsException {
+
+        return m_configuration.createNewElement(cms, cntPageUri, request, type);
+    }
+
+    /**
      * Creates an element from its serialized data.<p> 
      * 
      * @param data the serialized data
@@ -168,11 +195,14 @@ public class CmsADEManager {
      */
     public CmsContainerElementBean elementFromJson(JSONObject data) throws JSONException, CmsException {
 
-        CmsResource element = m_adminCms.readResource(new CmsUUID(data.getString("element")));
-        CmsResource formatter = m_adminCms.readResource(new CmsUUID(data.getString("formatter")));
+        CmsResource element = m_adminCms.readResource(new CmsUUID(data.getString(JSON_ELEMENT)));
+        CmsResource formatter = null;
+        if (data.has(JSON_FORMATTER)) {
+            formatter = m_adminCms.readResource(new CmsUUID(data.getString(JSON_FORMATTER)));
+        }
         Map<String, String> properties = new HashMap<String, String>();
 
-        JSONObject props = data.getJSONObject("properties");
+        JSONObject props = data.getJSONObject(JSON_PROPERTIES);
         Iterator<String> keys = props.keys();
         while (keys.hasNext()) {
             String key = keys.next();
@@ -194,14 +224,15 @@ public class CmsADEManager {
         JSONObject data = null;
         try {
             data = new JSONObject();
-            data.put("element", element.getElement().getStructureId().toString());
-            data.put("formatter", element.getFormatter().getStructureId().toString());
-
+            data.put(JSON_ELEMENT, element.getElement().getStructureId().toString());
+            if (element.getFormatter() != null) {
+                data.put(JSON_FORMATTER, element.getFormatter().getStructureId().toString());
+            }
             JSONObject properties = new JSONObject();
             for (Map.Entry<String, String> entry : element.getProperties().entrySet()) {
                 properties.put(entry.getKey(), entry.getValue());
             }
-            data.put("properties", properties);
+            data.put(JSON_PROPERTIES, properties);
         } catch (JSONException e) {
             // should never happen
             if (!LOG.isDebugEnabled()) {
@@ -214,27 +245,22 @@ public class CmsADEManager {
     }
 
     /**
-     * Returns the ade cache instance.<p>
+     * Returns the list of creatable elements.<p>
      * 
-     * @return the ade cache instance
-     */
-    public CmsADECache getCache() {
-
-        return m_cache;
-    }
-
-    /**
-     * Returns the container page manager.<p>
-     * 
-     * @param cms the current cms context
+     * @param cms the current opencms context
      * @param cntPageUri the container page uri
      * @param request the current request
      * 
-     * @return the container page manager for the given container page
+     * @return the list of creatable elements
+     * 
+     * @throws CmsException if something goes wrong 
+     *
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getCreatableElements(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest)
      */
-    public CmsCntPageManager getCntPageManager(CmsObject cms, String cntPageUri, ServletRequest request) {
+    public List<CmsResource> getCreatableElements(CmsObject cms, String cntPageUri, ServletRequest request)
+    throws CmsException {
 
-        return new CmsCntPageManager(cms, cntPageUri, request, m_configuration);
+        return m_configuration.getCreatableElements(cms, cntPageUri, request);
     }
 
     /**
@@ -373,24 +399,23 @@ public class CmsADEManager {
     }
 
     /**
-     * Returns the recent list, or creates it if not available.<p>
+     * Returns the name of the next new file of the given type to be created.<p>
      * 
-     * @param cms the cms context
+     * @param cms the current opencms context
+     * @param cntPageUri the container page uri
+     * @param request the current request
+     * @param type the resource type name
      * 
-     * @return the recent list
+     * @return the name of the next new file of the given type to be created
      * 
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
+     *
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getNextNewFileName(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest, java.lang.String)
      */
-    public List<CmsContainerElementBean> getRecentList(CmsObject cms) throws CmsException {
+    public String getNextNewFileName(CmsObject cms, String cntPageUri, ServletRequest request, String type)
+    throws CmsException {
 
-        CmsUser user = cms.getRequestContext().currentUser();
-        List<CmsContainerElementBean> recentList = m_cache.getADERecentList(user.getId().toString());
-        if (recentList == null) {
-            int maxElems = getRecentListMaxSize(cms);
-            recentList = CmsCollectionsGenericWrapper.list(new NodeCachingLinkedList(maxElems));
-            m_cache.setCacheADERecentList(user.getId().toString(), recentList);
-        }
-        return recentList;
+        return m_configuration.getNextNewFileName(cms, cntPageUri, request, type);
     }
 
     /**
@@ -410,17 +435,22 @@ public class CmsADEManager {
     }
 
     /**
-     * Returns the cached search options.<p>
+     * Returns the list of searchable resource types.<p>
      * 
-     * @param cms the cms context
+     * @param cms the current opencms context
+     * @param cntPageUri the container page uri
+     * @param request the current request
      * 
-     * @return the cached search options
+     * @return the list of searchable resource types
+     * 
+     * @throws CmsException if something goes wrong 
+     *
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchableResourceTypes(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest)
      */
-    public CmsSearchOptions getSearchOptions(CmsObject cms) {
+    public List<String> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
+    throws CmsException {
 
-        CmsUser user = cms.getRequestContext().currentUser();
-        CmsSearchOptions searchOptions = m_cache.getADESearchOptions(user.getId().toString());
-        return searchOptions;
+        return m_configuration.getSearchableResourceTypes(cms, cntPageUri, request);
     }
 
     /**
@@ -491,30 +521,5 @@ public class CmsADEManager {
         CmsUser user = cms.getRequestContext().currentUser();
         user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, data.toString());
         cms.writeUser(user);
-    }
-
-    /**
-     * Saves the recent list, user based.<p>
-     * 
-     * @param cms the cms context
-     * @param recentList the element id list
-     */
-    public void saveRecentList(CmsObject cms, List<CmsContainerElementBean> recentList) {
-
-        CmsUser user = cms.getRequestContext().currentUser();
-        m_cache.setCacheADERecentList(user.getId().toString(), recentList);
-    }
-
-    /**
-     * Saves the search options, user based.<p>
-     * 
-     * @param cms the cms context
-     * @param searchOptions the search options to save
-     */
-    public void saveSearchOptions(CmsObject cms, CmsSearchOptions searchOptions) {
-
-        CmsUser user = cms.getRequestContext().currentUser();
-        // cache the search options, but with page=0
-        m_cache.setCacheADESearchOptions(user.getId().toString(), searchOptions.resetPage());
     }
 }

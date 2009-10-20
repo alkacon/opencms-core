@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlContainerPageFactory.java,v $
- * Date   : $Date: 2009/10/20 07:38:53 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/20 09:06:25 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.5.2
  */
@@ -415,17 +415,5 @@ public final class CmsXmlContainerPageFactory {
             m_cache.getCacheKey(xmlCntPage.getFile().getStructureId(), keepEncoding),
             xmlCntPage,
             online);
-        if (online) {
-            return;
-        }
-        // cache elements only in offline project
-        for (Locale locale : xmlCntPage.getLocales()) {
-            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, locale);
-            for (CmsContainerBean cnt : cntPage.getContainers().values()) {
-                for (CmsContainerElementBean elem : cnt.getElements()) {
-                    m_cache.setCacheContainerElement(elem.getClientId(), elem);
-                }
-            }
-        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/10/14 14:38:03 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2009/10/20 09:06:26 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.containerpage.CmsCntPageManager;
+import org.opencms.xml.containerpage.CmsADEManager;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 7.6 
  */
@@ -59,8 +59,8 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     /** The element's resource. */
     private CmsResource m_resource;
 
-    /** The container page manager. */
-    private CmsCntPageManager m_manager;
+    /** The ade manager. */
+    private CmsADEManager m_manager;
 
     /**
      * Constructor, with parameters.
@@ -99,7 +99,8 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
         if (!isNew()) {
             return "";
         }
-        return getManager().getNextNewFileName(getType());
+        CmsObject cms = getCmsObject();
+        return getManager().getNextNewFileName(cms, cms.getRequestContext().getUri(), getRequest(), getType());
     }
 
     /**
@@ -164,7 +165,8 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      */
     public boolean isNew() throws CmsException {
 
-        List<CmsResource> elems = getManager().getCreatableElements();
+        CmsObject cms = getCmsObject();
+        List<CmsResource> elems = getManager().getCreatableElements(cms, cms.getRequestContext().getUri(), getRequest());
         return elems.contains(getResource());
     }
 
@@ -173,11 +175,10 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      * 
      * @return the container page manager
      */
-    public CmsCntPageManager getManager() {
+    public CmsADEManager getManager() {
 
         if (m_manager == null) {
-            CmsObject cms = getCmsObject();
-            m_manager = OpenCms.getADEManager().getCntPageManager(cms, cms.getRequestContext().getUri(), getRequest());
+            m_manager = OpenCms.getADEManager();
         }
         return m_manager;
     }

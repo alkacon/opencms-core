@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/10/13 13:47:56 $
- * Version: $Revision: 1.51.2.4 $
+ * Date   : $Date: 2009/10/20 09:06:25 $
+ * Version: $Revision: 1.51.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51.2.4 $
+ * @version $Revision: 1.51.2.5 $
  * 
  * @since 6.0.0
  */
@@ -177,9 +177,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the login account lock minutes.  */
     public static final String N_DISABLEMINUTES = "disableMinutes";
-
-    /** The elements node name. */
-    public static final String N_ELEMENTS = "elements";
 
     /** The node name for the email-interval node. */
     public static final String N_EMAIL_INTERVAL = "email-interval";
@@ -1109,11 +1106,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             "setContainerPageOnlineSize",
             1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_CONTAINERPAGES, 0, A_ONLINE);
-        digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_ELEMENTS,
-            "setContainerElementOfflineSize",
-            1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_ELEMENTS, 0, A_OFFLINE);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE, "setAdeCacheSettings");
     }
 
@@ -1511,9 +1503,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 Element cntPageCacheElem = cacheElem.addElement(N_CONTAINERPAGES);
                 cntPageCacheElem.addAttribute(A_OFFLINE, "" + getAdeCacheSettings().getContainerPageOfflineSize());
                 cntPageCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getContainerPageOnlineSize());
-                cacheElem.addElement(N_ELEMENTS).addAttribute(
-                    A_OFFLINE,
-                    "" + getAdeCacheSettings().getContainerElementOfflineSize());
             }
         }
 

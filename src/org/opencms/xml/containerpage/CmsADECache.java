@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADECache.java,v $
- * Date   : $Date: 2009/10/20 07:38:54 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/10/20 09:06:25 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
@@ -60,15 +59,6 @@ public final class CmsADECache implements I_CmsEventListener {
 
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsADECache.class);
-
-    /** Cache for ADE recent lists. */
-    private Map<String, List<CmsContainerElementBean>> m_adeRecentLists;
-
-    /** Cache for ADE search options. */
-    private Map<String, CmsSearchOptions> m_adeSearchOptions;
-
-    /** Cache for offline container elements. */
-    private Map<String, CmsContainerElementBean> m_containerElementsOffline;
 
     /** Cache for offline container pages. */
     private Map<String, CmsXmlContainerPage> m_containerPagesOffline;
@@ -94,21 +84,6 @@ public final class CmsADECache implements I_CmsEventListener {
         lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOnlineSize());
         m_containerPagesOnline = Collections.synchronizedMap(lruMapCntPage);
         memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", lruMapCntPage);
-
-        // container element cache
-        Map<String, CmsContainerElementBean> lruMapCntElem = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerElementOfflineSize());
-        m_containerElementsOffline = Collections.synchronizedMap(lruMapCntElem);
-        memMonitor.register(CmsADECache.class.getName() + ".containerElementsOffline", lruMapCntElem);
-
-        // ADE search options
-        Map<String, CmsSearchOptions> adeSearchOptions = new HashMap<String, CmsSearchOptions>();
-        m_adeSearchOptions = Collections.synchronizedMap(adeSearchOptions);
-        memMonitor.register(CmsADEManager.class.getName(), adeSearchOptions);
-
-        // ADE recent lists
-        Map<String, List<CmsContainerElementBean>> adeRecentList = new HashMap<String, List<CmsContainerElementBean>>();
-        m_adeRecentLists = Collections.synchronizedMap(adeRecentList);
-        memMonitor.register(CmsADEManager.class.getName(), adeRecentList);
 
         // add this class as an event handler to the cms event listener
         OpenCms.addCmsEventListener(this, new int[] {
@@ -177,31 +152,6 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
-     * Flushes the ADE recent list cache.<p>
-     */
-    public void flushADERecentLists() {
-
-        m_adeRecentLists.clear();
-    }
-
-    /**
-     * Flushes the ADE search options cache.<p>
-     */
-    public void flushADESearchOptions() {
-
-        m_adeSearchOptions.clear();
-    }
-
-    /**
-     * Flushes the container elements cache.<p>
-     */
-    public void flushContainerElements() {
-
-        m_containerElementsOffline.clear();
-
-    }
-
-    /**
      * Flushes the container pages cache.<p>
      * 
      * @param online if to flush the online or offline cache
@@ -213,42 +163,6 @@ public final class CmsADECache implements I_CmsEventListener {
         } else {
             m_containerPagesOffline.clear();
         }
-    }
-
-    /**
-     * Returns the ADE recent list cached with the given cache key or <code>null</code> if not found.<p>
-     * 
-     * @param key the cache key to look for, this may be the user's uuid
-     * 
-     * @return the cached recent list with the given cache key
-     */
-    public List<CmsContainerElementBean> getADERecentList(String key) {
-
-        return m_adeRecentLists.get(key);
-    }
-
-    /**
-     * Returns the ADE search options cached with the given cache key or <code>null</code> if not found.<p>
-     * 
-     * @param key the cache key to look for, this may be the user's uuid
-     * 
-     * @return the cached search options with the given cache key
-     */
-    public CmsSearchOptions getADESearchOptions(String key) {
-
-        return m_adeSearchOptions.get(key);
-    }
-
-    /**
-     * Returns the cached container element under the given key and for the given project.<p>
-     * 
-     * @param key the cache key
-     * 
-     * @return  the cached container element or <code>null</code> if not found
-     */
-    public CmsContainerElementBean getCacheContainerElement(String key) {
-
-        return m_containerElementsOffline.get(key);
     }
 
     /**
@@ -295,40 +209,6 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
-     * Caches the given ADE recent list under the given cache key.<p>
-     * 
-     * @param key the cache key
-     * @param list the recent list to cache
-     */
-    public void setCacheADERecentList(String key, List<CmsContainerElementBean> list) {
-
-        m_adeRecentLists.put(key, list);
-    }
-
-    /**
-     * Caches the given ADE search options under the given cache key.<p>
-     * 
-     * @param key the cache key
-     * @param opts the search options to cache
-     */
-    public void setCacheADESearchOptions(String key, CmsSearchOptions opts) {
-
-        m_adeSearchOptions.put(key, opts);
-    }
-
-    /**
-     * Caches the given container element under the given key and for the given project.<p>
-     * 
-     * @param key the cache key
-     * @param containerElement the object to cache
-     */
-    public void setCacheContainerElement(String key, CmsContainerElementBean containerElement) {
-
-        m_containerElementsOffline.put(key, containerElement);
-
-    }
-
-    /**
      * Caches the given container page under the given key and for the given project.<p>
      * 
      * @param key the cache key
@@ -368,20 +248,6 @@ public final class CmsADECache implements I_CmsEventListener {
         }
         flushContainerPages(true);
         flushContainerPages(false);
-        flushContainerElements();
-        flushADERecentLists();
-        flushADESearchOptions();
-    }
-
-    /**
-     * Removes the container element identified by the given cache key from the cache.<p>
-     * 
-     * @param cacheKey the cache key to identify the container element to remove
-     */
-    public void uncacheContainerElement(String cacheKey) {
-
-        m_containerElementsOffline.remove(cacheKey);
-
     }
 
     /**

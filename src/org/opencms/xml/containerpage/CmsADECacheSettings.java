@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADECacheSettings.java,v $
- * Date   : $Date: 2009/10/13 13:47:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/20 09:06:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,20 +36,14 @@ package org.opencms.xml.containerpage;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.9.2
  */
 public class CmsADECacheSettings {
 
-    /** Default size for container element caches. */
-    private static final int DEFAULT_CONTAINER_ELEMENT_SIZE = 1024;
-
     /** Default size for container page caches. */
     private static final int DEFAULT_CONTAINER_PAGE_SIZE = 128;
-
-    /** The size of the container element offline cache. */
-    private int m_containerElementOfflineSize;
 
     /** The size of the container page offline cache. */
     private int m_containerPageOfflineSize;
@@ -63,19 +57,6 @@ public class CmsADECacheSettings {
     public CmsADECacheSettings() {
 
         super();
-    }
-
-    /**
-     * Returns the size of the container element offline cache.<p>
-     * 
-     * @return the size of the container element offline cache
-     */
-    public int getContainerElementOfflineSize() {
-
-        if (m_containerElementOfflineSize <= 0) {
-            return DEFAULT_CONTAINER_ELEMENT_SIZE;
-        }
-        return m_containerElementOfflineSize;
     }
 
     /**
@@ -102,16 +83,6 @@ public class CmsADECacheSettings {
             return DEFAULT_CONTAINER_PAGE_SIZE;
         }
         return m_containerPageOnlineSize;
-    }
-
-    /**
-     * Sets the size of the cache for offline container pages.<p>
-     *
-     * @param size the size of the cache for offline container pages
-     */
-    public void setContainerElementOfflineSize(String size) {
-
-        m_containerElementOfflineSize = getIntValue(size, DEFAULT_CONTAINER_ELEMENT_SIZE);
     }
 
     /**

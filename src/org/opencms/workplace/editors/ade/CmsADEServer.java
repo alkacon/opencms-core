@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/20 07:38:54 $
- * Version: $Revision: 1.1.2.31 $
+ * Date   : $Date: 2009/10/20 09:06:26 $
+ * Version: $Revision: 1.1.2.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,9 +55,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlUtils;
-import org.opencms.xml.containerpage.CmsADECache;
 import org.opencms.xml.containerpage.CmsADEManager;
-import org.opencms.xml.containerpage.CmsCntPageManager;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -93,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.31 $
+ * @version $Revision: 1.1.2.32 $
  * 
  * @since 7.6
  */
@@ -249,17 +247,17 @@ public class CmsADEServer extends CmsJspActionElement {
     /** JSON response state value constant. */
     public static final String RES_STATE_OK = "ok";
 
+    /** Session attribute name constant. */
+    public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEServer.class);
 
-    /** The cache instance. */
-    private CmsADECache m_cache;
-
-    /** The cnt page manager instance. */
-    private CmsCntPageManager m_cntPageManager;
-
     /** The ADE manager instance. */
     private CmsADEManager m_manager;
+
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
 
     /**
      * Constructor.<p>
@@ -272,8 +270,11 @@ public class CmsADEServer extends CmsJspActionElement {
 
         super(context, req, res);
         m_manager = OpenCms.getADEManager();
-        m_cntPageManager = m_manager.getCntPageManager(getCmsObject(), req.getParameter(PARAMETER_CNTPAGE), req);
-        m_cache = m_manager.getCache();
+        m_sessionCache = (CmsADESessionCache)req.getSession().getAttribute(SESSION_ATTR_ADE_CACHE);
+        if (m_sessionCache == null) {
+            m_sessionCache = new CmsADESessionCache(getCmsObject());
+            req.getSession().setAttribute(SESSION_ATTR_ADE_CACHE, m_sessionCache);
+        }
     }
 
     /**
@@ -405,18 +406,6 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
-     * Creates an element-bean for the given resource.<p>
-     * 
-     * @param resource the resource
-     * 
-     * @return the element-bean
-     */
-    protected CmsContainerElementBean createElement(CmsResource resource) {
-
-        return new CmsContainerElementBean(resource, null, null);
-    }
-
-    /**
      * Creates a new CmsContainerElementBean for a structure-id and given properties.<p> 
      * 
      * @param structureId the structure-id
@@ -442,22 +431,6 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
-     * Creates a new CmsContainerElementBean for a structure-id and given properties.<p> 
-     * 
-     * @param structureId the structure-id
-     * @param properties the properties-map
-     * 
-     * @return the element bean
-     * 
-     * @throws CmsException if something goes wrong reading the element resource
-     */
-    protected CmsContainerElementBean createElement(CmsUUID structureId, Map<String, String> properties)
-    throws CmsException {
-
-        return new CmsContainerElementBean(getCmsObject().readResource(structureId), null, properties);
-    }
-
-    /**
      * Deletes the given elements from server.<p>
      * 
      * @param elems the array of client-side element ids
@@ -469,10 +442,10 @@ public class CmsADEServer extends CmsJspActionElement {
         CmsObject cms = getCmsObject();
         for (int i = 0; i < elems.length(); i++) {
             CmsResource res = cms.readResource(m_manager.convertToServerId(elems.optString(i)));
-            if (cms.getLock(res).isUnlocked()) {
-                cms.lockResource(cms.getSitePath(res));
-            }
-            cms.deleteResource(cms.getSitePath(res), CmsResource.DELETE_PRESERVE_SIBLINGS);
+            String path = cms.getSitePath(res);
+            cms.lockResource(path);
+            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            cms.unlockResource(path);
         }
     }
 
@@ -564,7 +537,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 JSONObject properties = new JSONObject(propertiesParam);
                 CmsContainerElementBean element = createElement(m_manager.convertToServerId(elemParam), properties);
                 String clientId = element.getClientId();
-                setCachedElement(element);
+                m_sessionCache.setCacheContainerElement(element.getClientId(), element);
                 resElements.put(clientId, elemUtil.getElementData(element, cntPage.getTypes()));
                 result.put(P_ELEMENTS, resElements);
             } catch (Exception e) {
@@ -590,7 +563,7 @@ public class CmsADEServer extends CmsJspActionElement {
             JSONObject searchResult = getLastSearchResult(cntPageParam, searchOptions, cntPage.getTypes());
 
             // we need those on the client side to make scrolling work
-            CmsSearchOptions oldOptions = m_manager.getSearchOptions(cms);
+            CmsSearchOptions oldOptions = m_sessionCache.getADESearchOptions();
             if (oldOptions != null) {
                 result.put(PARAMETER_TYPE, oldOptions.getTypes());
                 result.put(PARAMETER_TEXT, oldOptions.getText());
@@ -605,7 +578,11 @@ public class CmsADEServer extends CmsJspActionElement {
             String dataParam = request.getParameter(PARAMETER_DATA);
             String type = dataParam;
 
-            CmsResource newResource = m_cntPageManager.createNewElement(type);
+            CmsResource newResource = m_manager.createNewElement(
+                cms,
+                request.getParameter(PARAMETER_CNTPAGE),
+                request,
+                type);
             result.put(CmsElementUtil.P_ELEMENT_ID, m_manager.convertToClientId(newResource.getStructureId()));
             result.put(P_URI, cms.getSitePath(newResource));
         } else if (actionParam.equals(ACTION_PROPS)) {
@@ -673,7 +650,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
-            m_manager.saveRecentList(cms, arrayToElementList(list));
+            m_sessionCache.setCacheADERecentList(arrayToElementList(list));
         } else if (actionParam.equals(ACTION_CNT)) {
             // save the container page
             if (!checkParameters(request, result, PARAMETER_CNTPAGE, PARAMETER_DATA)) {
@@ -684,7 +661,7 @@ public class CmsADEServer extends CmsJspActionElement {
             JSONObject cntPage = new JSONObject(dataParam);
             setContainerPage(cntPageParam, cntPage);
         } else if (actionParam.equals(ACTION_DEL)) {
-            // save the container page
+            // delete elements
             if (!checkParameters(request, result, PARAMETER_DATA)) {
                 return result;
             }
@@ -711,20 +688,20 @@ public class CmsADEServer extends CmsJspActionElement {
 
         String id = clientId;
         CmsContainerElementBean element = null;
-        element = m_cache.getCacheContainerElement(id);
+        element = m_sessionCache.getCacheContainerElement(id);
         if (element != null) {
             return element;
         }
         if (id.contains("#")) {
             id = id.substring(0, id.indexOf("#"));
-            element = m_cache.getCacheContainerElement(id);
+            element = m_sessionCache.getCacheContainerElement(id);
             if (element != null) {
                 return element;
             }
         }
         // this is necessary if the element has not been cached yet
         element = new CmsContainerElementBean(getCmsObject().readResource(m_manager.convertToServerId(id)), null, null);
-        m_cache.setCacheContainerElement(id, element);
+        m_sessionCache.setCacheContainerElement(id, element);
         return element;
     }
 
@@ -795,7 +772,8 @@ public class CmsADEServer extends CmsJspActionElement {
                 renderElems--;
 
                 CmsResource elemRes = cms.readResource(elemUri);
-                CmsContainerElementBean element = createElement(elemRes);
+                CmsContainerElementBean element = new CmsContainerElementBean(elemRes, null, null);
+                m_sessionCache.setCacheContainerElement(element.getClientId(), element);
                 // check if the element already exists
                 String id = element.getClientId();
                 // collect ids
@@ -808,11 +786,10 @@ public class CmsADEServer extends CmsJspActionElement {
                 // store element data
                 ids.add(id);
                 resElements.put(id, resElement);
-
             }
+
             // iterate the elements
             for (CmsContainerElementBean element : container.getElements()) {
-
                 if (renderElems < 1) {
                     // just collect as many elements as allowed in the template
                     break;
@@ -825,6 +802,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 if (ids.contains(id)) {
                     continue;
                 }
+                m_sessionCache.setCacheContainerElement(element.getClientId(), element);
                 // get the element data
                 JSONObject resElement = elemUtil.getElementData(element, types);
 
@@ -895,6 +873,7 @@ public class CmsADEServer extends CmsJspActionElement {
             if ((resElements != null) && !resElements.has(id)) {
                 try {
                     resElements.put(id, elemUtil.getElementData(element, types));
+                    m_sessionCache.setCacheContainerElement(element.getClientId(), element);
                     result.put(id);
                 } catch (Exception e) {
                     // ignore any problems
@@ -926,7 +905,7 @@ public class CmsADEServer extends CmsJspActionElement {
     protected JSONObject getLastSearchResult(String cntPageUri, CmsSearchOptions options, Set<String> types)
     throws JSONException, CmsException {
 
-        CmsSearchOptions lastOptions = m_manager.getSearchOptions(getCmsObject());
+        CmsSearchOptions lastOptions = m_sessionCache.getADESearchOptions();
         if ((lastOptions == null) || compareSearchOptions(lastOptions, options)) {
             return new JSONObject();
         }
@@ -948,18 +927,25 @@ public class CmsADEServer extends CmsJspActionElement {
 
         JSONObject resElements = new JSONObject();
         resElements.append(P_ORDER, new JSONArray());
-        CmsElementUtil elemUtil = new CmsElementUtil(getCmsObject(), cntPageUri, getRequest(), getResponse());
+        HttpServletRequest request = getRequest();
+        CmsObject cms = getCmsObject();
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
 
-        List<CmsResource> creatableElements = m_cntPageManager.getCreatableElements();
+        List<CmsResource> creatableElements = m_manager.getCreatableElements(
+            cms,
+            request.getParameter(PARAMETER_CNTPAGE),
+            request);
         for (CmsResource creatableElement : creatableElements) {
             String type = OpenCms.getResourceManager().getResourceType(creatableElement).getTypeName();
-            JSONObject resElement = elemUtil.getElementData(createElement(creatableElement), types);
+            JSONObject resElement = elemUtil.getElementData(
+                new CmsContainerElementBean(creatableElement, null, null),
+                types);
             // overwrite some special fields for new elements
             resElement.put(CmsElementUtil.P_ELEMENT_ID, type);
             resElement.put(CmsElementUtil.P_ELEMENT_STATUS, ELEMENT_NEWCONFIG);
             resElement.put(CmsElementUtil.P_ELEMENT_TYPE, type);
             resElement.put(CmsElementUtil.P_ELEMENT_TYPENAME, CmsWorkplaceMessages.getResourceName(
-                getCmsObject().getRequestContext().getLocale(),
+                cms.getRequestContext().getLocale(),
                 type));
             resElements.put(type, resElement);
             // additional array to keep track of the order
@@ -975,10 +961,8 @@ public class CmsADEServer extends CmsJspActionElement {
      * @param types the supported container types
      * 
      * @return the current user's recent list
-     * 
-     * @throws CmsException if something goes wrong 
      */
-    protected JSONArray getRecentList(JSONObject resElements, Collection<String> types) throws CmsException {
+    protected JSONArray getRecentList(JSONObject resElements, Collection<String> types) {
 
         JSONArray result = new JSONArray();
         CmsElementUtil elemUtil = new CmsElementUtil(
@@ -988,12 +972,10 @@ public class CmsADEServer extends CmsJspActionElement {
             getResponse());
 
         // get the cached list
-        List<CmsContainerElementBean> recentList = m_manager.getRecentList(getCmsObject());
+        List<CmsContainerElementBean> recentList = m_sessionCache.getADERecentList();
         // iterate the list and create the missing elements
         for (CmsContainerElementBean element : recentList) {
-
             String id = element.getClientId();
-            setCachedElement(element);
             if ((resElements != null) && !resElements.has(id)) {
                 try {
                     resElements.put(id, elemUtil.getElementData(element, types));
@@ -1073,7 +1055,10 @@ public class CmsADEServer extends CmsJspActionElement {
                     String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
                     try {
                         CmsResource resource = cms.readResource(uri);
-                        JSONObject resElement = elemUtil.getElementData(createElement(resource), types);
+                        JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
+                            resource,
+                            null,
+                            null), types);
                         // store element data
                         elements.put(resElement);
                     } catch (Exception e) {
@@ -1095,19 +1080,9 @@ public class CmsADEServer extends CmsJspActionElement {
             result.put(CmsADEServer.P_SEARCH_COUNT, 0);
         }
 
-        m_manager.saveSearchOptions(cms, options);
+        m_sessionCache.setCacheADESearchOptions(options);
 
         return result;
-    }
-
-    /**
-     * Caches the given element.<p>
-     * 
-     * @param element the element to cache
-     */
-    protected void setCachedElement(CmsContainerElementBean element) {
-
-        m_cache.setCacheContainerElement(element.getClientId(), element);
     }
 
     /**
