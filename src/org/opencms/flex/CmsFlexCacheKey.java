@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2009/09/14 14:29:46 $
- * Version: $Revision: 1.32.2.1 $
+ * Date   : $Date: 2009/10/20 13:43:07 $
+ * Version: $Revision: 1.32.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.2.1 $ 
+ * @version $Revision: 1.32.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,6 +117,12 @@ public class CmsFlexCacheKey {
     /** Flex cache keyword: site. */
     private static final String CACHE_17_SITE = "site";
 
+    /** Flex cache keyword: attrs. */
+    private static final String CACHE_18_ATTRS = "attrs";
+
+    /** Flex cache keyword: no-attrs. */
+    private static final String CACHE_19_NO_ATTRS = "no-attrs";
+
     /** The list of keywords of the Flex cache language. */
     private static final List<String> CACHE_COMMANDS = Arrays.asList(new String[] {
         CACHE_00_ALWAYS,
@@ -136,7 +142,9 @@ public class CmsFlexCacheKey {
         CACHE_14_ELEMENT,
         CACHE_15_LOCALE,
         CACHE_16_ENCODING,
-        CACHE_17_SITE});
+        CACHE_17_SITE,
+        CACHE_18_ATTRS,
+        CACHE_19_NO_ATTRS});
 
     /** Marker to identify use of certain String key members (uri, ip etc.). */
     private static final String IS_USED = "/ /";
@@ -162,8 +170,14 @@ public class CmsFlexCacheKey {
     /** Cache key variable: List of "blocking" parameters. */
     private Set<String> m_noparams;
 
+    /** Cache key variable: List of "blocking" attributes. */
+    private Set<String> m_noattrs;
+
     /** Cache key variable: List of parameters. */
     private Set<String> m_params;
+
+    /** Cache key variable: List of attributes. */
+    private Set<String> m_attrs;
 
     /** Flag raised in case a key parse error occurred. */
     private boolean m_parseError;
@@ -312,6 +326,21 @@ public class CmsFlexCacheKey {
             }
         }
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CHECK_NO_ATTRS_0));
+        }
+        if ((m_noattrs != null) && (key.getAttributes() != null)) {
+            if ((m_noattrs.size() == 0) && (key.getAttributes().size() > 0)) {
+                return null;
+            }
+            Iterator<String> i = key.getAttributes().keySet().iterator();
+            while (i.hasNext()) {
+                if (m_noattrs.contains(i.next())) {
+                    return null;
+                }
+            }
+        }
+
         if (m_always > 0) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CACHE_ALWAYS_0));
@@ -376,9 +405,47 @@ public class CmsFlexCacheKey {
                         Map.Entry<String, String[]> entry = i.next();
                         str.append(entry.getKey());
                         str.append("=");
-                        // TODO: handle multiple occurances of the same parameter value
+                        // TODO: handle multiple occurrences of the same parameter value
                         String[] values = entry.getValue();
                         str.append(values[0]);
+                        if (i.hasNext()) {
+                            str.append(",");
+                        }
+                    }
+                }
+            }
+            str.append(");");
+        }
+
+        if (m_attrs != null) {
+            str.append(CACHE_18_ATTRS);
+            str.append("=(");
+            Map<String, Object> keyAttrs = key.getAttributes();
+            if (keyAttrs != null) {
+                if (m_attrs.size() > 0) {
+                    // match only attributes listed in cache directives
+                    Iterator<String> i = m_attrs.iterator();
+                    while (i.hasNext()) {
+                        String s = i.next();
+                        if (keyAttrs.containsKey(s)) {
+                            str.append(s);
+                            str.append("=");
+                            Object value = keyAttrs.get(s);
+                            str.append(value.toString());
+                            if (i.hasNext()) {
+                                str.append(",");
+                            }
+                        }
+                    }
+                } else {
+                    // match all request attributes
+                    Iterator<Map.Entry<String, Object>> i = keyAttrs.entrySet().iterator();
+                    while (i.hasNext()) {
+                        Map.Entry<String, Object> entry = i.next();
+                        str.append(entry.getKey());
+                        str.append("=");
+                        Object value = entry.getValue();
+                        str.append(value.toString());
                         if (i.hasNext()) {
                             str.append(",");
                         }
@@ -486,6 +553,24 @@ public class CmsFlexCacheKey {
                 str.append(");");
             }
         }
+        if (m_noattrs != null) {
+            // add "no-cachable" attributes
+            str.append(CACHE_19_NO_ATTRS);
+            if (m_noattrs.size() == 0) {
+                str.append(";");
+            } else {
+                str.append("=(");
+                Iterator<String> i = m_noattrs.iterator();
+                while (i.hasNext()) {
+                    String s = i.next();
+                    str.append(s);
+                    if (i.hasNext()) {
+                        str.append(",");
+                    }
+                }
+                str.append(");");
+            }
+        }
         if (m_always > 0) {
             str.append(CACHE_00_ALWAYS);
             if (m_parseError) {
@@ -536,6 +621,24 @@ public class CmsFlexCacheKey {
                         continue;
                     }
                     str.append(o);
+                    if (i.hasNext()) {
+                        str.append(",");
+                    }
+                }
+                str.append(");");
+            }
+        }
+        if (m_attrs != null) {
+            // add attributes
+            str.append(CACHE_18_ATTRS);
+            if (m_attrs.size() == 0) {
+                str.append(";");
+            } else {
+                str.append("=(");
+                Iterator<String> i = m_attrs.iterator();
+                while (i.hasNext()) {
+                    String s = i.next();
+                    str.append(s);
                     if (i.hasNext()) {
                         str.append(",");
                     }
@@ -755,6 +858,22 @@ public class CmsFlexCacheKey {
                         break;
                     case 17: // site
                         m_site = IS_USED;
+                        break;
+                    case 18: // attrs
+                        if (v != null) {
+                            m_attrs = parseValueList(v);
+                        } else {
+                            m_attrs = Collections.emptySet();
+                        }
+                        break;
+                    case 19: // no-attrs
+                        if (v != null) {
+                            // no-attrs are present
+                            m_noattrs = parseValueList(v);
+                        } else {
+                            // never cache with attributes
+                            m_noattrs = Collections.emptySet();
+                        }
                         break;
                     default: // unknown directive, throw error
                         m_parseError = true;

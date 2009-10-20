@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2009/09/14 14:29:46 $
- * Version: $Revision: 1.48.2.1 $
+ * Date   : $Date: 2009/10/20 13:43:07 $
+ * Version: $Revision: 1.48.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,8 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsRequestUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48.2.1 $ 
+ * @version $Revision: 1.48.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,6 +77,12 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexRequest.class);
+
+    /** JSP Loader instance. */
+    private static CmsJspLoader m_jspLoader;
+
+    /** Map of attributes from the original request. */
+    private Map<String, Object> m_attributes;
 
     /** Flag to decide if this request can be cached or not. */
     private boolean m_canCache;
@@ -96,9 +104,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /** Flag to check if this request is in the online project or not. */
     private boolean m_isOnline;
-
-    /** JSP Loader instance. */
-    private static CmsJspLoader m_jspLoader;
 
     /** The CmsFlexRequestKey for this request. */
     private CmsFlexRequestKey m_key;
@@ -128,7 +133,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_elementUri = cms.getSitePath(m_controller.getCmsResource());
         m_elementUriSiteRoot = cms.getRequestContext().getSiteRoot();
         m_includeCalls = new Vector<String>();
-        m_parameters = req.getParameterMap();
+        m_parameters = CmsCollectionsGenericWrapper.map(req.getParameterMap());
+        m_attributes = CmsRequestUtil.getAtrributeMap(req);
         m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
         String[] params = req.getParameterValues(PARAMETER_FLEX);
         boolean nocachepara = CmsHistoryResourceHandler.isHistoryRequest(req);
@@ -186,7 +192,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                 }
             }
         }
-        m_canCache = (((m_isOnline || m_controller.getCmsCache().cacheOffline()) && !nocachepara) || dorecompile);
+        m_canCache = ((((m_isOnline && m_controller.getCmsCache().isEnabled()) || (!m_isOnline && m_controller.getCmsCache().cacheOffline())) && !nocachepara) || dorecompile);
         m_doRecompile = dorecompile;
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUEST_CREATED_NEW_REQUEST_1, m_elementUri));
@@ -210,10 +216,46 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_canCache = m_controller.getCurrentRequest().isCacheable();
         m_doRecompile = m_controller.getCurrentRequest().isDoRecompile();
         m_includeCalls = m_controller.getCurrentRequest().getCmsIncludeCalls();
-        m_parameters = req.getParameterMap();
+        m_parameters = CmsCollectionsGenericWrapper.map(req.getParameterMap());
+        m_attributes = CmsRequestUtil.getAtrributeMap(req);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUEST_REUSING_FLEX_REQUEST_1, m_elementUri));
         }
+    }
+
+    /**
+     * Adds the specified Map to the attributes of the request,
+     * added attributes will not overwrite existing attributes in the 
+     * request.<p> 
+     * 
+     * @param map the map to add
+     * 
+     * @return the merged map of attributes
+     */
+    public Map<String, Object> addAttributeMap(Map<String, Object> map) {
+
+        if (map == null) {
+            return m_attributes;
+        }
+        if ((m_attributes == null) || (m_attributes.size() == 0)) {
+            m_attributes = new HashMap<String, Object>(map);
+        } else {
+            Map<String, Object> attributes = new HashMap<String, Object>();
+            attributes.putAll(m_attributes);
+            Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Object> entry = it.next();
+                String key = entry.getKey();
+                // Check if the attribute name (key) exists
+                if (!attributes.containsKey(key)) {
+                    // No: Add new value
+                    attributes.put(key, entry.getValue());
+                }
+            }
+            m_attributes = new HashMap<String, Object>(attributes);
+        }
+
+        return m_attributes;
     }
 
     /**
@@ -228,6 +270,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * parameter are also possible.<p>
      * 
      * @param map the map to add
+     * 
      * @return the merged map of parameters
      */
     public Map<String, String[]> addParameterMap(Map<String, String[]> map) {
@@ -265,6 +308,52 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         }
 
         return m_parameters;
+    }
+
+    /**
+     * Return the value of the specified request attribute, if any; otherwise,
+     * return <code>null</code>.<p>
+     * 
+     * @param name the name of the desired request attribute
+     * 
+     * @return the value of the specified request attribute
+     * 
+     * @see javax.servlet.ServletRequest#getAttribute(java.lang.String)
+     */
+    @Override
+    public Object getAttribute(String name) {
+
+        Object object = m_attributes.get(name);
+        if (object == null) {
+            object = super.getAttribute(name);
+        }
+        return object;
+    }
+
+    /**
+     * Returns a <code>Map</code> of the attributes of this request.<p>
+     * 
+     * @return a <code>Map</code> containing attribute names as keys
+     *  and attribute values as map values
+     */
+    public Map<String, Object> getAttributeMap() {
+
+        return m_attributes;
+    }
+
+    /**
+     * Return the names of all defined request attributes for this request.<p>
+     * 
+     * @return the names of all defined request attributes for this request
+     * 
+     * @see javax.servlet.ServletRequest#getAttributeNames
+     */
+    @Override
+    public Enumeration<String> getAttributeNames() {
+
+        Vector<String> v = new Vector<String>();
+        v.addAll(m_attributes.keySet());
+        return v.elements();
     }
 
     /** 
@@ -527,12 +616,47 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     }
 
     /**
+     * @see javax.servlet.ServletRequestWrapper#removeAttribute(java.lang.String)
+     */
+    @Override
+    public void removeAttribute(String name) {
+
+        m_attributes.remove(name);
+    }
+
+    /**
+     * @see javax.servlet.ServletRequestWrapper#setAttribute(java.lang.String, java.lang.Object)
+     */
+    @Override
+    public void setAttribute(String name, Object value) {
+
+        m_attributes.put(name, value);
+    }
+
+    /**
+     * Sets the specified Map as attribute map of the request.<p>
+     * 
+     * The map should be immutable. 
+     * This will completely replace the attribute map. 
+     * Use this in combination with {@link #getAttributeMap()} and
+     * {@link #addAttributeMap(Map)} in case you want to set the old status
+     * of the attribute map after you have modified it for
+     * a specific operation.<p>
+     * 
+     * @param map the map to set
+     */
+    public void setAttributeMap(Map<String, Object> map) {
+
+        m_attributes = new HashMap<String, Object>(map);
+    }
+
+    /**
      * Sets the specified Map as parameter map of the request.<p>
      * 
-     * The map set should be immutable. 
+     * The map should be immutable. 
      * This will completely replace the parameter map. 
-     * Use this in combination with getParameterMap() and
-     * addParameterMap() in case you want to set the old status
+     * Use this in combination with {@link #getParameterMap()} and
+     * {@link #addParameterMap(Map)} in case you want to set the old status
      * of the parameter map after you have modified it for
      * a specific operation.<p>
      * 

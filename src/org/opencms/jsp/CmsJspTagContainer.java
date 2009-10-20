@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/10/20 07:38:55 $
- * Version: $Revision: 1.1.2.16 $
+ * Date   : $Date: 2009/10/20 13:43:08 $
+ * Version: $Revision: 1.1.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
+import java.util.Collections;
 import java.util.Locale;
 
 import javax.servlet.ServletRequest;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.16 $ 
+ * @version $Revision: 1.1.2.17 $ 
  * 
  * @since 7.6 
  */
@@ -227,13 +228,15 @@ public class CmsJspTagContainer extends TagSupport {
                     cms.readResource(elementFormatter),
                     null); // when used as template element there are no properties
 
-                Object currentElement = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
-                req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
-                try {
-                    CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, null, false, null, req, res);
-                } finally {
-                    req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
-                }
+                CmsJspTagInclude.includeTagAction(
+                    pageContext,
+                    elementFormatter,
+                    null,
+                    false,
+                    null,
+                    Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)element),
+                    req,
+                    res);
             }
         }
 
@@ -274,25 +277,29 @@ public class CmsJspTagContainer extends TagSupport {
                     }
 
                     // execute the formatter jsp for the given element uri
-                    Object currentElement = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
-                    req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, subelement);
-                    try {
-                        CmsJspTagInclude.includeTagAction(pageContext, subelementFormatter, null, false, null, req, res);
-                    } finally {
-                        req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
-                    }
+                    CmsJspTagInclude.includeTagAction(
+                        pageContext,
+                        subelementFormatter,
+                        null,
+                        false,
+                        null,
+                        Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)subelement),
+                        req,
+                        res);
                 }
             } else {
                 String elementFormatter = cms.getSitePath(element.getFormatter());
 
                 // execute the formatter jsp for the given element uri
-                Object currentElement = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
-                req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
-                try {
-                    CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, null, false, null, req, res);
-                } finally {
-                    req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
-                }
+                CmsJspTagInclude.includeTagAction(
+                    pageContext,
+                    elementFormatter,
+                    null,
+                    false,
+                    null,
+                    Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)element),
+                    req,
+                    res);
             }
         }
     }

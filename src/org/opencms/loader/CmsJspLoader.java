@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2009/10/14 14:38:06 $
- * Version: $Revision: 1.116.2.3 $
+ * Date   : $Date: 2009/10/20 13:43:06 $
+ * Version: $Revision: 1.116.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,8 +55,8 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 
@@ -118,7 +118,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.116.2.3 $ 
+ * @version $Revision: 1.116.2.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -175,20 +175,20 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private static String m_jspWebAppRepository;
 
     /** Help variable to keep synchronized the jsp writing process. */
-    private static Set m_processingFiles = Collections.synchronizedSet(new HashSet());
+    private static Set<String> m_processingFiles = Collections.synchronizedSet(new HashSet<String>());
 
     /** The CmsFlexCache used to store generated cache entries in. */
     private CmsFlexCache m_cache;
 
     /** The resource loader configuration. */
-    private Map m_configuration;
+    private Map<String, String> m_configuration;
 
     /** Flag to indicate if error pages are marked as "committed". */
     // TODO: This is a hack, investigate this issue with different runtime environments
     private boolean m_errorPagesAreNotCommitted; // default false should work for Tomcat > 4.1
 
-    private Map m_offlineJsps = Collections.synchronizedMap(CmsCollectionsGenericWrapper.createLRUMap(1000));
-    private Map m_onlineJsps = Collections.synchronizedMap(CmsCollectionsGenericWrapper.createLRUMap(1000));
+    private Map<String, Boolean> m_offlineJsps;
+    private Map<String, Boolean> m_onlineJsps;
 
     /**
      * The constructor of the class is empty, the initial instance will be 
@@ -198,11 +198,13 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public CmsJspLoader() {
 
-        m_configuration = new TreeMap();
+        m_configuration = new TreeMap<String, String>();
         OpenCms.addCmsEventListener(this, new int[] {
             EVENT_CLEAR_CACHES,
             EVENT_CLEAR_OFFLINE_CACHES,
             EVENT_CLEAR_ONLINE_CACHES});
+
+        initCaches(1000);
     }
 
     /**
@@ -280,9 +282,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             if (element != null) {
                 // add the element parameter to the included request
                 String[] value = new String[] {element};
-                Map parameters = Collections.singletonMap(I_CmsResourceLoader.PARAMETER_ELEMENT, value);
+                Map<String, String[]> parameters = Collections.singletonMap(
+                    I_CmsResourceLoader.PARAMETER_ELEMENT,
+                    value);
                 controller.getCurrentRequest().addParameterMap(parameters);
             }
+            controller.getCurrentRequest().addAttributeMap(CmsRequestUtil.getAtrributeMap(req));
             // dispatch to the JSP
             result = dispatchJsp(controller);
             // remove temporary controller
@@ -321,7 +326,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         // return the configuration in an immutable form
         return Collections.unmodifiableMap(m_configuration);
@@ -414,8 +419,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             cacheSize = Integer.parseInt(cacheSizeStr);
         }
         if (cacheSize > 0) {
-            m_offlineJsps = Collections.synchronizedMap(CmsCollectionsGenericWrapper.createLRUMap(cacheSize));
-            m_onlineJsps = Collections.synchronizedMap(CmsCollectionsGenericWrapper.createLRUMap(cacheSize));
+            initCaches(cacheSize);
         }
 
         // output setup information
@@ -504,7 +508,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 // once in forward mode, always in forward mode (for this request)
                 controller.setForwardMode(true);
                 // bypass Flex cache for this page, update the JSP first if necessary            
-                String target = updateJsp(file, controller, new HashSet());
+                String target = updateJsp(file, controller, new HashSet<String>());
                 // dispatch to external JSP
                 req.getRequestDispatcher(target).forward(controller.getCurrentRequest(), res);
             } else {
@@ -527,7 +531,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public void removeFromCache(Set<String> rootPaths, boolean online) {
 
-        Map cache;
+        Map<String, Boolean> cache;
         if (online) {
             cache = m_onlineJsps;
         } else {
@@ -548,7 +552,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         CmsFlexController controller = CmsFlexController.getController(req);
         // get JSP target name on "real" file system
-        String target = updateJsp(resource, controller, new HashSet(8));
+        String target = updateJsp(resource, controller, new HashSet<String>(8));
         // important: Indicate that all output must be buffered
         controller.getCurrentResponse().setOnlyBuffering(true);
         // dispatch to external file
@@ -589,7 +593,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @throws IOException might be thrown in the process of including the JSP 
      * @throws CmsLoaderException if the resource type can not be read
      */
-    public String updateJsp(CmsResource resource, CmsFlexController controller, Set updatedFiles)
+    public String updateJsp(CmsResource resource, CmsFlexController controller, Set<String> updatedFiles)
     throws IOException, ServletException, CmsLoaderException {
 
         String jspVfsName = resource.getRootPath();
@@ -801,7 +805,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 includeResource = readJspResource(controller, jspUri);
             }
             // make sure the jsp referenced file is generated
-            updateJsp(includeResource, controller, new HashSet(8));
+            updateJsp(includeResource, controller, new HashSet<String>(8));
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e.getLocalizedMessage(), e);
@@ -958,6 +962,19 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     }
 
     /**
+     * Initializes the caches.<p>
+     * 
+     * @param cacheSize the cache size 
+     */
+    protected void initCaches(int cacheSize) {
+
+        Map<String, Boolean> map = CmsCollectionsGenericWrapper.createLRUMap(cacheSize);
+        m_offlineJsps = Collections.synchronizedMap(map);
+        map = CmsCollectionsGenericWrapper.createLRUMap(cacheSize);
+        m_onlineJsps = Collections.synchronizedMap(map);
+    }
+
+    /**
      * Parses the JSP and modifies OpenCms critical directive information.<p>
      * 
      * @param byteContent the original JSP content
@@ -972,7 +989,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         byte[] byteContent,
         String encoding,
         CmsFlexController controller,
-        Set updatedFiles,
+        Set<String> updatedFiles,
         boolean isHardInclude) {
 
         String content;
@@ -1019,7 +1036,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * 
      * @return the parsed JSP content
      */
-    protected String parseJspCmsTag(String content, CmsFlexController controller, Set updatedFiles) {
+    protected String parseJspCmsTag(String content, CmsFlexController controller, Set<String> updatedFiles) {
 
         // check if a JSP directive occurs in the file
         int i1 = content.indexOf(DIRECTIVE_START);
@@ -1247,7 +1264,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * 
      * @return the parsed JSP content
      */
-    protected String parseJspIncludes(String content, CmsFlexController controller, Set updatedFiles) {
+    protected String parseJspIncludes(String content, CmsFlexController controller, Set<String> updatedFiles) {
 
         // check if a JSP directive occurs in the file
         int i1 = content.indexOf(DIRECTIVE_START);
@@ -1421,7 +1438,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * 
      * @return the file name of the updated JSP in the "real" FS
      */
-    protected String updateJsp(String vfsName, CmsFlexController controller, Set updatedFiles) {
+    protected String updateJsp(String vfsName, CmsFlexController controller, Set<String> updatedFiles) {
 
         String jspVfsName = CmsLinkManager.getAbsoluteUri(vfsName, controller.getCurrentRequest().getElementRootPath());
         if (LOG.isDebugEnabled()) {
@@ -1466,13 +1483,13 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @throws IOException might be thrown in the process of including the JSP 
      * @throws CmsLoaderException if the resource type can not be read
      */
-    protected boolean updateStrongLinks(CmsResource resource, CmsFlexController controller, Set updatedFiles)
+    protected boolean updateStrongLinks(CmsResource resource, CmsFlexController controller, Set<String> updatedFiles)
     throws CmsLoaderException, IOException, ServletException {
 
         int numberOfUpdates = updatedFiles.size();
         CmsObject cms = controller.getCmsObject();
         CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterType(CmsRelationType.JSP_STRONG);
-        Iterator it;
+        Iterator<CmsRelation> it;
         try {
             it = cms.getRelationsForResource(resource, filter).iterator();
         } catch (CmsException e) {
@@ -1483,7 +1500,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             return false;
         }
         while (it.hasNext()) {
-            CmsRelation relation = (CmsRelation)it.next();
+            CmsRelation relation = it.next();
             CmsResource target = null;
             try {
                 target = relation.getTarget(cms, CmsResourceFilter.DEFAULT);

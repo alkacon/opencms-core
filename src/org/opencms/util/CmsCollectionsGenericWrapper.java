@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsCollectionsGenericWrapper.java,v $
- * Date   : $Date: 2009/10/14 14:38:04 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/20 13:43:06 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -104,17 +104,17 @@ public final class CmsCollectionsGenericWrapper {
     }
 
     /**
-     * Provides a wrapper to convert an object into an enumeration that avoids warnings with Java 1.5 generic code.<p> 
+     * Provides a wrapper to convert an enumeration that avoids warnings with Java 1.5 generic code.<p> 
      * 
      * @param <K> the type of the returned enumeration elements
-     * @param o the object to be converted
+     * @param enumeration the enumeration to be converted
      * 
      * @return a {@link Enumeration} with the required generic type
      */
     @SuppressWarnings("unchecked")
-    public static <K> Enumeration<K> enumeration(Object o) {
+    public static <K> Enumeration<K> enumeration(Enumeration enumeration) {
 
-        return (Enumeration<K>)o;
+        return enumeration;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2009/09/14 14:29:47 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2009/10/20 13:43:07 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsRequestUtil;
 
 import java.util.Map;
 
@@ -48,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,6 +100,20 @@ public class CmsFlexRequestKey {
     }
 
     /**
+     * Returns the request attributes.<p>
+     * 
+     * @return the request attributes
+     */
+    public Map<String, Object> getAttributes() {
+
+        Map<String, Object> attrs = CmsRequestUtil.getAtrributeMap(m_request);
+        if (attrs.size() == 0) {
+            return null;
+        }
+        return attrs;
+    }
+
+    /**
      * Returns the element.<p>
      *
      * @return the element
@@ -138,14 +154,14 @@ public class CmsFlexRequestKey {
     }
 
     /**
-     * Returns the params.<p>
+     * Returns the parameters.<p>
      *
-     * @return the params
+     * @return the parameters
      */
     public Map<String, String[]> getParams() {
 
         // get the params
-        Map<String, String[]> params = m_request.getParameterMap();
+        Map<String, String[]> params = CmsCollectionsGenericWrapper.map(m_request.getParameterMap());
         if (params.size() == 0) {
             return null;
         }

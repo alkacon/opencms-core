@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2009/10/14 14:38:05 $
- * Version: $Revision: 1.30.2.2 $
+ * Date   : $Date: 2009/10/20 13:43:06 $
+ * Version: $Revision: 1.30.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.30.2.2 $ 
+ * @version $Revision: 1.30.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -475,6 +475,9 @@ public final class CmsRequestUtil {
      */
     public static Map<String, Object> getAtrributeMap(ServletRequest req) {
 
+        if (req instanceof CmsFlexRequest) {
+            return ((CmsFlexRequest)req).getAttributeMap();
+        }
         Map<String, Object> attrs = new HashMap<String, Object>();
         Enumeration<String> atrrEnum = CmsCollectionsGenericWrapper.enumeration(req.getAttributeNames());
         while (atrrEnum.hasMoreElements()) {

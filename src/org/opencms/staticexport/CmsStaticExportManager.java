@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2009/10/14 14:38:06 $
- * Version: $Revision: 1.134.2.3 $
+ * Date   : $Date: 2009/10/20 13:43:09 $
+ * Version: $Revision: 1.134.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,9 +53,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.134.2.3 $ 
+ * @version $Revision: 1.134.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -2342,9 +2342,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             vfsName = rfsName;
             match = true;
         } catch (Throwable t) {
-            // resource not found          
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(Messages.ERR_EXPORT_FILE_FAILED_1, new String[] {rfsName}), t);
+            // resource not found
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_EXPORT_FILE_FAILED_1, new String[] {rfsName}), t);
             }
         }
 

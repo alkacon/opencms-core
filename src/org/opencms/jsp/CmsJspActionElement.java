@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/10/20 13:43:08 $
+ * Version: $Revision: 1.32.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsDirectEditJspIncludeProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
@@ -82,7 +83,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.32.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -483,9 +484,10 @@ public class CmsJspActionElement extends CmsJspBean {
         if (isNotInitialized()) {
             return;
         }
+        Map<String, String[]> modParameterMap = null;
         if (parameterMap != null) {
             try {
-                HashMap modParameterMap = new HashMap(parameterMap.size());
+                modParameterMap = new HashMap<String, String[]>(parameterMap.size());
                 // ensure parameters are always of type String[] not just String
                 Iterator i = parameterMap.entrySet().iterator();
                 while (i.hasNext()) {
@@ -493,7 +495,7 @@ public class CmsJspActionElement extends CmsJspBean {
                     String key = (String)entry.getKey();
                     Object value = entry.getValue();
                     if (value instanceof String[]) {
-                        modParameterMap.put(key, value);
+                        modParameterMap.put(key, (String[])value);
                     } else {
                         if (value == null) {
                             value = "null";
@@ -502,7 +504,6 @@ public class CmsJspActionElement extends CmsJspBean {
                         modParameterMap.put(key, newValue);
                     }
                 }
-                parameterMap = modParameterMap;
             } catch (UnsupportedOperationException e) {
                 // parameter map is immutable, just use it "as is"
             }
@@ -512,7 +513,8 @@ public class CmsJspActionElement extends CmsJspBean {
             target,
             element,
             editable,
-            parameterMap,
+            modParameterMap,
+            CmsRequestUtil.getAtrributeMap(getRequest()),
             getRequest(),
             getResponse());
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditJspIncludeProvider.java,v $
- * Date   : $Date: 2009/10/14 14:38:06 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2009/10/20 13:43:05 $
+ * Version: $Revision: 1.7.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.flex.CmsFlexResponse;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagInclude;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -67,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.7.2.2 $ 
  * 
  * @since 6.2.3
  */
@@ -180,14 +181,14 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
         Map<String, String[]> oldParameterMap = controller.getCurrentRequest().getParameterMap();
 
         try {
-
             controller.getCurrentRequest().addParameterMap(parameterMap);
             context.getOut().print(CmsFlexResponse.FLEX_CACHE_DELIMITER);
-            controller.getCurrentResponse().addToIncludeList(jspIncludeFile, parameterMap);
+            controller.getCurrentResponse().addToIncludeList(
+                jspIncludeFile,
+                parameterMap,
+                CmsRequestUtil.getAtrributeMap(req));
             controller.getCurrentRequest().getRequestDispatcher(jspIncludeFile).include(req, res);
-
         } catch (ServletException e) {
-
             Throwable t;
             if (e.getRootCause() != null) {
                 t = e.getRootCause();
@@ -197,11 +198,9 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
             t = controller.setThrowable(t, jspIncludeFile);
             throw new JspException(t);
         } catch (IOException e) {
-
             Throwable t = controller.setThrowable(e, jspIncludeFile);
             throw new JspException(t);
         } finally {
-
             // restore old parameter map (if required)
             if (oldParameterMap != null) {
                 controller.getCurrentRequest().setParameterMap(oldParameterMap);
@@ -258,6 +257,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
                 m_fileName,
                 DIRECT_EDIT_INCLUDES,
                 false,
+                null,
                 null,
                 context.getRequest(),
                 context.getResponse());

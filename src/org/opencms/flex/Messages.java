@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/10/20 13:43:07 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Thomas Weckert 
  *   
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,6 +158,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXCACHEKEY_KEYMATCH_CACHE_NEVER_0 = "LOG_FLEXCACHEKEY_KEYMATCH_CACHE_NEVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_FLEXCACHEKEY_KEYMATCH_CHECK_NO_ATTRS_0 = "LOG_FLEXCACHEKEY_KEYMATCH_CHECK_NO_ATTRS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXCACHEKEY_KEYMATCH_CHECK_NO_PARAMS_0 = "LOG_FLEXCACHEKEY_KEYMATCH_CHECK_NO_PARAMS_0";

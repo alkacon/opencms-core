@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/20 09:06:26 $
- * Version: $Revision: 1.1.2.32 $
+ * Date   : $Date: 2009/10/20 13:43:08 $
+ * Version: $Revision: 1.1.2.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.32 $
+ * @version $Revision: 1.1.2.33 $
  * 
  * @since 7.6
  */
@@ -961,8 +961,10 @@ public class CmsADEServer extends CmsJspActionElement {
      * @param types the supported container types
      * 
      * @return the current user's recent list
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    protected JSONArray getRecentList(JSONObject resElements, Collection<String> types) {
+    protected JSONArray getRecentList(JSONObject resElements, Collection<String> types) throws CmsException {
 
         JSONArray result = new JSONArray();
         CmsElementUtil elemUtil = new CmsElementUtil(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2009/09/14 14:29:46 $
- * Version: $Revision: 1.35.2.1 $
+ * Date   : $Date: 2009/10/20 13:43:06 $
+ * Version: $Revision: 1.35.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.35.2.1 $ 
+ * @version $Revision: 1.35.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -159,8 +160,9 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
      *
      * @param resource a name of a resource in the OpenCms VFS
      * @param parameters a map of parameters specific to this include call
+     * @param attrs a map of request attributes specific to this include call
      */
-    public void add(String resource, Map<String, String[]> parameters) {
+    public void add(String resource, Map<String, String[]> parameters, Map<String, Object> attrs) {
 
         if (m_completed) {
             return;
@@ -168,11 +170,17 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(resource);
+            m_byteSize += CmsMemoryMonitor.getMemorySize(resource);
             if (parameters == null) {
                 parameters = Collections.emptyMap();
             }
             m_elements.add(parameters);
-            m_byteSize += CmsMemoryMonitor.getMemorySize(resource);
+            m_byteSize += CmsMemoryMonitor.getValueSize(parameters);
+            if (attrs == null) {
+                attrs = Collections.emptyMap();
+            }
+            m_elements.add(attrs);
+            m_byteSize += CmsMemoryMonitor.getValueSize(attrs);
         }
     }
 
@@ -355,17 +363,29 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
                 if (o instanceof String) {
                     // handle cached parameters
                     i++;
-                    Map<String, String[]> map = (Map<String, String[]>)m_elements.get(i);
-                    Map<String, String[]> oldMap = null;
-                    if (map.size() > 0) {
-                        oldMap = req.getParameterMap();
-                        req.addParameterMap(map);
+                    Map<String, String[]> paramMap = CmsCollectionsGenericWrapper.map(m_elements.get(i));
+                    Map<String, String[]> oldParamMap = null;
+                    if (paramMap.size() > 0) {
+                        oldParamMap = req.getParameterMap();
+                        req.addParameterMap(paramMap);
+                    }
+                    // handle cached attributes
+                    i++;
+                    Map<String, Object> attrMap = CmsCollectionsGenericWrapper.map(m_elements.get(i));
+                    Map<String, Object> oldAttrMap = null;
+                    if (attrMap.size() > 0) {
+                        oldAttrMap = req.getAttributeMap();
+                        req.addAttributeMap(attrMap);
                     }
                     // do the include call
                     req.getRequestDispatcher((String)o).include(req, res);
                     // reset parameters if necessary
-                    if (oldMap != null) {
-                        req.setParameterMap(oldMap);
+                    if (oldParamMap != null) {
+                        req.setParameterMap(oldParamMap);
+                    }
+                    // reset attributes if necessary
+                    if (oldAttrMap != null) {
+                        req.setAttributeMap(oldAttrMap);
                     }
                 } else {
                     try {

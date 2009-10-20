@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/20 07:38:54 $
- * Version: $Revision: 1.1.2.17 $
+ * Date   : $Date: 2009/10/20 13:43:08 $
+ * Version: $Revision: 1.1.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
-import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
@@ -54,11 +53,11 @@ import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEManager;
-import org.opencms.xml.containerpage.CmsXmlContainerPage;
-import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -78,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.17 $
+ * @version $Revision: 1.1.2.18 $
  * 
  * @since 7.6
  */
@@ -184,10 +183,13 @@ public final class CmsElementUtil {
      * @param cntPageUri the container page uri
      * @param req the http request
      * @param res the http response
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public CmsElementUtil(CmsObject cms, String cntPageUri, HttpServletRequest req, HttpServletResponse res) {
+    public CmsElementUtil(CmsObject cms, String cntPageUri, HttpServletRequest req, HttpServletResponse res)
+    throws CmsException {
 
-        m_cms = cms;
+        m_cms = OpenCms.initCmsObject(cms);
         m_req = req;
         m_res = res;
         m_cntPageUri = cntPageUri;
@@ -214,16 +216,14 @@ public final class CmsElementUtil {
 
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
 
-        // get the current Flex controller
-        CmsObject cms = CmsFlexController.getController(m_req).getCmsObject();
-        String oldUri = cms.getRequestContext().getUri();
+        String oldUri = m_cms.getRequestContext().getUri();
         try {
-            cms.getRequestContext().setUri(m_cntPageUri);
+            m_cms.getRequestContext().setUri(m_cntPageUri);
 
             // to enable 'old' direct edit features for content-collector-elements, 
             // set the direct-edit-provider-attribute in the request
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
-            eb.init(cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(element.getElement()));
+            eb.init(m_cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(element.getElement()));
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
 
             // TODO: is this going to be cached? most likely not! any alternative?
@@ -236,12 +236,12 @@ public final class CmsElementUtil {
                     null,
                     m_cms.getRequestContext().getLocale(),
                     m_req,
-                    m_res), CmsLocaleManager.getResourceEncoding(cms, element.getElement()));
+                    m_res), CmsLocaleManager.getResourceEncoding(m_cms, element.getElement()));
             } finally {
                 m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
             }
         } finally {
-            cms.getRequestContext().setUri(oldUri);
+            m_cms.getRequestContext().setUri(oldUri);
         }
     }
 

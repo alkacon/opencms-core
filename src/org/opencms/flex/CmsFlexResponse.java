@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2009/09/14 14:29:46 $
- * Version: $Revision: 1.49.2.1 $
+ * Date   : $Date: 2009/10/20 13:43:07 $
+ * Version: $Revision: 1.49.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.49.2.1 $ 
+ * @version $Revision: 1.49.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -214,6 +214,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
     /** A list of include calls that origin from this page, i.e. these are sub elements of this element. */
     private List<String> m_includeList;
+
+    /** A list of attributes that belong to the include calls. */
+    private List<Map<String, Object>> m_includeListAttributes;
 
     /** A list of parameters that belong to the include calls. */
     private List<Map<String, String[]>> m_includeListParameters;
@@ -471,13 +474,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @param target the include target name to add
      * @param parameterMap the map of parameters given with the include command
+     * @param attributeMap the map of attributes given with the include command
      */
-    public void addToIncludeList(String target, Map<String, String[]> parameterMap) {
+    public void addToIncludeList(String target, Map<String, String[]> parameterMap, Map<String, Object> attributeMap) {
 
         if (m_includeList == null) {
             m_includeList = new ArrayList<String>(10);
             m_includeListParameters = new ArrayList<Map<String, String[]>>(10);
+            m_includeListAttributes = new ArrayList<Map<String, Object>>(10);
         }
+        m_includeListAttributes.add(attributeMap);
         m_includeListParameters.add(parameterMap);
         m_includeList.add(target);
     }
@@ -1068,7 +1074,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
             // work through result and split this with include list calls            
             int i = 0;
-            int j = 0;
             while ((i < m_includeList.size()) && (pos < max)) {
                 // look for the first FLEX_CACHE_DELIMITER char
                 while ((pos < max) && (result[pos] != FLEX_CACHE_DELIMITER)) {
@@ -1089,7 +1094,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                     }
                     last = ++pos;
                     // add an include call to the cache entry
-                    m_cachedEntry.add(m_includeList.get(i++), m_includeListParameters.get(j++));
+                    m_cachedEntry.add(
+                        m_includeList.get(i),
+                        m_includeListParameters.get(i),
+                        m_includeListAttributes.get(i));
+                    i++;
                 }
             }
             if (pos < max) {
@@ -1104,10 +1113,12 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 // clear the include list if all include calls are handled
                 m_includeList = null;
                 m_includeListParameters = null;
+                m_includeListAttributes = null;
             } else {
                 // if something is left, remove the processed entries
                 m_includeList = m_includeList.subList(count, m_includeList.size());
                 m_includeListParameters = m_includeListParameters.subList(count, m_includeListParameters.size());
+                m_includeListAttributes = m_includeListAttributes.subList(count, m_includeListAttributes.size());
             }
         }
     }
@@ -1149,7 +1160,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                         res.getOutputStream().write(m_includeResults.get(count));
                         count++;
                     }
-                    // skip next entry, which is the parameter list for this include call
+                    // skip next entry, which is the parameter map for this include call
+                    i++;
+                    // skip next entry, which is the attribute map for this include call
                     i++;
                 }
             }

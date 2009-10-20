@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2009/09/10 16:26:22 $
- * Version: $Revision: 1.46.2.1 $
+ * Date   : $Date: 2009/10/20 13:43:08 $
+ * Version: $Revision: 1.46.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,8 @@ import org.opencms.loader.I_CmsResourceStringDumpLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 
@@ -65,7 +67,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46.2.1 $ 
+ * @version $Revision: 1.46.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,8 +88,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /** The value of the "element" attribute. */
     private String m_element;
 
-    /** Hashmap to save parameters to the include in. */
-    private Map m_parameterMap;
+    /** Map to save parameters to the include in. */
+    private Map<String, String[]> m_parameterMap;
 
     /** The value of the "property" attribute. */
     private String m_property;
@@ -117,7 +119,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      *      a parameter with the same name, otherwise the request will have multiple parameters 
      *      with the same name (which is possible in http requests)
      */
-    public static void addParameter(Map parameters, String name, String value, boolean overwrite) {
+    public static void addParameter(Map<String, String[]> parameters, String name, String value, boolean overwrite) {
 
         // No null values allowed in parameters
         if ((parameters == null) || (name == null) || (value == null)) {
@@ -127,7 +129,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         // Check if the parameter name (key) exists
         if (parameters.containsKey(name) && (!overwrite)) {
             // Yes: Check name values if value exists, if so do nothing, else add new value
-            String[] values = (String[])parameters.get(name);
+            String[] values = parameters.get(name);
             String[] newValues = new String[values.length + 1];
             System.arraycopy(values, 0, newValues, 0, values.length);
             newValues[values.length] = value;
@@ -148,6 +150,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param editable flag to indicate if the target is editable
      * @param paramMap a map of parameters for the include, will be merged with the request 
      *      parameters, might be <code>null</code>
+     * @param attrMap a map of attributes for the include, will be merged with the request 
+     *      attributes, might be <code>null</code>
      * @param req the current request
      * @param res the current response
      *
@@ -158,12 +162,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         String target,
         String element,
         boolean editable,
-        Map paramMap,
+        Map<String, String[]> paramMap,
+        Map<String, Object> attrMap,
         ServletRequest req,
         ServletResponse res) throws JspException {
 
         // no locale and no cachable parameter are used by default
-        includeTagAction(context, target, element, null, editable, true, paramMap, req, res);
+        includeTagAction(context, target, element, null, editable, true, paramMap, attrMap, req, res);
     }
 
     /**
@@ -177,6 +182,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param cacheable flag to indicate if the target should be cacheable in the Flex cache
      * @param paramMap a map of parameters for the include, will be merged with the request 
      *      parameters, might be <code>null</code>
+     * @param attrMap a map of attributes for the include, will be merged with the request 
+     *      attributes, might be <code>null</code>
      * @param req the current request
      * @param res the current response
      *
@@ -189,7 +196,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         Locale locale,
         boolean editable,
         boolean cacheable,
-        Map paramMap,
+        Map<String, String[]> paramMap,
+        Map<String, Object> attrMap,
         ServletRequest req,
         ServletResponse res) throws JspException {
 
@@ -209,19 +217,29 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             && CmsJspTagEditable.startDirectEdit(context, new CmsDirectEditParams(target, element));
 
         // save old parameters from request
-        Map oldParameterMap = req.getParameterMap();
+        Map<String, String[]> oldParameterMap = CmsCollectionsGenericWrapper.map(req.getParameterMap());
+        // save old attributes from request
+        Map<String, Object> oldAttributeMap = CmsRequestUtil.getAtrributeMap(req);
         try {
             // each include will have it's unique map of parameters
-            Map parameterMap = (paramMap == null) ? new HashMap() : new HashMap(paramMap);
+            Map<String, String[]> parameterMap = (paramMap == null)
+            ? new HashMap<String, String[]>()
+            : new HashMap<String, String[]>(paramMap);
             if (cacheable && (element != null)) {
                 // add template element selector for JSP templates (only required if cacheable)
                 addParameter(parameterMap, I_CmsResourceLoader.PARAMETER_ELEMENT, element, true);
             }
             // add parameters to set the correct element
             controller.getCurrentRequest().addParameterMap(parameterMap);
+            // each include will have it's unique map of attributes
+            Map<String, Object> attributeMap = (attrMap == null)
+            ? new HashMap<String, Object>()
+            : new HashMap<String, Object>(attrMap);
+            // add attributes to set the correct element
+            controller.getCurrentRequest().addAttributeMap(attributeMap);
             if (cacheable) {
                 // use include with cache
-                includeActionWithCache(controller, context, target, parameterMap, req, res);
+                includeActionWithCache(controller, context, target, parameterMap, attributeMap, req, res);
             } else {
                 // no cache required
                 includeActionNoCache(controller, context, target, element, locale, req, res);
@@ -230,6 +248,10 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // restore old parameter map (if required)
             if (oldParameterMap != null) {
                 controller.getCurrentRequest().setParameterMap(oldParameterMap);
+            }
+            // restore old attribute map (if required)
+            if (oldAttributeMap != null) {
+                controller.getCurrentRequest().setAttributeMap(oldAttributeMap);
             }
         }
 
@@ -325,6 +347,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param context the current JSP page context
      * @param target the target for the include, might be <code>null</code>
      * @param parameterMap a map of parameters for the include
+     * @param attributeMap a map of request attributes for the include
      * @param req the current request
      * @param res the current response
      *
@@ -334,15 +357,16 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         CmsFlexController controller,
         PageContext context,
         String target,
-        Map parameterMap,
+        Map<String, String[]> parameterMap,
+        Map<String, Object> attributeMap,
         ServletRequest req,
         ServletResponse res) throws JspException {
 
         try {
-            // write out a FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
+            // write out a FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimiter later
             context.getOut().print(CmsFlexResponse.FLEX_CACHE_DELIMITER);
             // add the target to the include list (the list will be initialized if it is currently empty)
-            controller.getCurrentResponse().addToIncludeList(target, parameterMap);
+            controller.getCurrentResponse().addToIncludeList(target, parameterMap, attributeMap);
             // now use the Flex dispatcher to include the target (this will also work for targets in the OpenCms VFS)
             controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);
         } catch (ServletException e) {
@@ -383,7 +407,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
 
         // Check if internal map exists, create new one if not
         if (m_parameterMap == null) {
-            m_parameterMap = new HashMap();
+            m_parameterMap = new HashMap<String, String[]>();
         }
 
         addParameter(m_parameterMap, name, value, false);
@@ -396,6 +420,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * 
      * @throws JspException by interface default
      */
+    @Override
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -452,7 +477,17 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             }
 
             // now perform the include action
-            includeTagAction(pageContext, target, m_element, null, m_editable, m_cacheable, m_parameterMap, req, res);
+            includeTagAction(
+                pageContext,
+                target,
+                m_element,
+                null,
+                m_editable,
+                m_cacheable,
+                m_parameterMap,
+                CmsRequestUtil.getAtrributeMap(req),
+                req,
+                res);
 
             if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
                 // must call release here manually to make sure m_parameterMap is cleared
@@ -472,6 +507,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * 
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() {
 
         return EVAL_BODY_BUFFERED;
@@ -561,6 +597,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         super.release();
