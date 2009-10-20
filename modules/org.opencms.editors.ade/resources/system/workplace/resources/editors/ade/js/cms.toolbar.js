@@ -299,7 +299,7 @@
          clearTimeout(timer.id);
          timer.id = null;
       }
-      cms.move.hoverOut();
+      
       
       // sometimes out is triggered without over being triggered before, especially in IE
       if (!timer.handleDiv) {
@@ -326,7 +326,7 @@
          startHoverTimeout(handleDiv, cms.toolbar.mode);
          $('body').children('.' + cms.move.HOVER_NEW).remove();
       }, function() {
-      
+         cms.move.hoverOut();
          stopHover();
          if ($(elem).find('.' + cms.move.HOVER_NEW).size() == 0 && $(elem).hasClass('cms-new-element')) {
             cms.move.drawBorder(elem, 2, cms.move.HOVER_NEW);
