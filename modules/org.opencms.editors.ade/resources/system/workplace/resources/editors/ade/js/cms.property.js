@@ -1,4 +1,4 @@
-(function(cms) {
+﻿(function(cms) {
    var M = cms.messages;
 
 
@@ -395,6 +395,17 @@
    }
    
    /**
+    * Checks whether an object has no properties.
+    * @param {Object} obj
+    */
+   var _isEmpty = function(obj) {
+       for (var key in obj) {
+           return false;
+       }
+       return true;
+   }
+   
+   /**
     * Displays the property editor.
     *
     * @param {Object} properties the current non-default properties
@@ -403,6 +414,10 @@
    var showPropertyEditor = cms.property.showPropertyEditor = function(properties, callback) {
       var widgets = {}
       var newProps = {};
+      if (_isEmpty(properties)) {
+          cms.util.dialogAlert(M.NO_PROPERTIES, M.NO_PROPERTIES_TITLE);
+          return;
+      }
       var $table = buildPropertyTable(properties, widgets);
       var $dlg = makeDialogDiv('cms-property-dialog');
       $dlg.empty().append($table);
