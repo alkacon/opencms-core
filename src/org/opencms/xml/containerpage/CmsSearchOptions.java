@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsSearchOptions.java,v $
- * Date   : $Date: 2009/10/13 11:59:41 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/21 16:07:38 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.xml.containerpage;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editors.ade.CmsADEServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +45,43 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
 public class CmsSearchOptions {
+
+    /** Request parameter name constants for searching. */
+    public enum ParamSearch {
+
+        /** The search location. */
+        LOCATION("location"),
+        /** The search page. */
+        PAGE("page"),
+        /** Search query. */
+        TEXT("text"),
+        /** The resource type(s). */
+        TYPE("type");
+
+        /** Parameter name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private ParamSearch(String name) {
+
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+    }
 
     /** The vfs location to search. */
     private String m_location;
@@ -71,12 +102,12 @@ public class CmsSearchOptions {
      **/
     public CmsSearchOptions(HttpServletRequest request) {
 
-        String location = request.getParameter(CmsADEServer.PARAMETER_LOCATION);
-        String text = request.getParameter(CmsADEServer.PARAMETER_TEXT);
-        String type = request.getParameter(CmsADEServer.PARAMETER_TYPE);
+        String location = request.getParameter(ParamSearch.LOCATION.getName());
+        String text = request.getParameter(ParamSearch.TEXT.getName());
+        String type = request.getParameter(ParamSearch.TYPE.getName());
         int page = 0;
         try {
-            page = Integer.parseInt(request.getParameter(CmsADEServer.PARAMETER_PAGE));
+            page = Integer.parseInt(request.getParameter(ParamSearch.PAGE.getName()));
         } catch (Throwable e) {
             // ignore
         }

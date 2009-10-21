@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/20 13:43:08 $
- * Version: $Revision: 1.1.2.18 $
+ * Date   : $Date: 2009/10/21 16:07:38 $
+ * Version: $Revision: 1.1.2.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.workplace.editors.ade;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.i18n.CmsLocaleManager;
@@ -77,86 +76,107 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.18 $
+ * @version $Revision: 1.1.2.19 $
  * 
  * @since 7.6
  */
 public final class CmsElementUtil {
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_ALLOWEDIT = "allowEdit";
+    /** Element json property constants. */
+    public enum JsonElement {
 
-    /** JSON property constant contents. */
-    public static final String P_ELEMENT_CONTENTS = "contents";
+        /** Boolean value indicating if edition is allowed. */
+        ALLOWEDIT("allowEdit"),
+        /** Array of HTML code resulting from formatter execution. */
+        CONTENTS("contents"),
+        /** The last modification date. */
+        DATE("date"),
+        /** The URI. */
+        FILE("file"),
+        /** Array of formatter URIs. */
+        FORMATTERS("formatters"),
+        /** Element's structure id. */
+        ID("id"),
+        /** The name of the user that has locked the resource. */
+        LOCKED("locked"),
+        /** Element's navigation text. */
+        NAVTEXT("navText"),
+        /** The object type, container or element. */
+        OBJTYPE("objtype"),
+        /** The element property information. */
+        PROPERTIES("properties"),
+        /** Element's status. */
+        STATUS("status"),
+        /** Element's subelements in case of a subcontainer, as list of client IDs. */
+        SUBITEMS("subItems"),
+        /** Element's title. */
+        TITLE("title"),
+        /** The name of the user that last modified the element. */
+        USER("user");
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_DATE = "date";
+        /** Property name. */
+        private String m_name;
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_FILE = "file";
+        /** Constructor.<p> */
+        private JsonElement(String name) {
 
-    /** JSON property constant formatters. */
-    public static final String P_ELEMENT_FORMATTERS = "formatters";
+            m_name = name;
+        }
 
-    /** JSON property constant id. */
-    public static final String P_ELEMENT_ID = "id";
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_LOCKED = "locked";
+            return m_name;
+        }
+    }
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_NAVTEXT = "navText";
+    /** Element Property json property constants. */
+    public enum JsonProperty {
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_STATUS = "status";
+        /** Property's default value. */
+        DEFAULT_VALUE("defaultValue"),
+        /** Property's description. */
+        DESCRIPTION("description"),
+        /** Property's error message. */
+        ERROR("error"),
+        /** Property's nice name. */
+        NICE_NAME("niceName"),
+        /** Property's validation regular expression. */
+        RULE_REGEX("ruleRegex"),
+        /** Property's validation rule type. */
+        RULE_TYPE("ruleType"),
+        /** Property's type. */
+        TYPE("type"),
+        /** Property's value. */
+        VALUE("value"),
+        /** Property's widget. */
+        WIDGET("widget"),
+        /** Property's widget configuration. */
+        WIDGET_CONF("widgetConf");
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_SUBITEMS = "subItems";
+        /** Property name. */
+        private String m_name;
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_TITLE = "title";
+        /** Constructor.<p> */
+        private JsonProperty(String name) {
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_TYPE = "type";
+            m_name = name;
+        }
 
-    /** JSON response property constant. */
-    public static final String P_ELEMENT_TYPENAME = "typename";
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
 
-    /** JSON property constant file. */
-    public static final String P_ELEMENT_USER = "user";
-
-    /** JSON property constant defaultValue. */
-    public static final String P_PROPERTY_DEFAULT_VALUE = "defaultValue";
-
-    /** JSON property constant description. */
-    public static final String P_PROPERTY_DESCRIPTION = "description";
-
-    /** JSON property constant error. */
-    public static final String P_PROPERTY_ERROR = "error";
-
-    /** JSON property constant niceName. */
-    public static final String P_PROPERTY_NICE_NAME = "niceName";
-
-    /** JSON property constant properties. */
-    public static final String P_PROPERTY_PROPERTIES = "properties";
-
-    /** JSON property constant ruleType. */
-    public static final String P_PROPERTY_RULE_REGEX = "ruleRegex";
-
-    /** JSON property constant ruleType. */
-    public static final String P_PROPERTY_RULE_TYPE = "ruleType";
-
-    /** JSON property constant type. */
-    public static final String P_PROPERTY_TYPE = "type";
-
-    /** JSON property constant value. */
-    public static final String P_PROPERTY_VALUE = "value";
-
-    /** JSON property constant widget. */
-    public static final String P_PROPERTY_WIDGET = "widget";
-
-    /** JSON property constant widgetConf. */
-    public static final String P_PROPERTY_WIDGET_CONF = "widgetConf";
+            return m_name;
+        }
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementUtil.class);
@@ -262,29 +282,25 @@ public final class CmsElementUtil {
         // create new json object for the element
         JSONObject resElement = new JSONObject();
         CmsResource resource = element.getElement();
-        resElement.put(CmsADEServer.P_OBJTYPE, CmsADEServer.ELEMENT_TYPE);
-        resElement.put(P_ELEMENT_ID, element.getClientId());
-        resElement.put(P_ELEMENT_FILE, m_cms.getSitePath(resource));
-        resElement.put(P_ELEMENT_DATE, resource.getDateLastModified());
-        resElement.put(P_ELEMENT_USER, m_cms.readUser(resource.getUserLastModified()).getName());
-        resElement.put(P_ELEMENT_NAVTEXT, m_cms.readPropertyObject(
-            resource,
-            CmsPropertyDefinition.PROPERTY_NAVTEXT,
-            false).getValue(""));
-        resElement.put(
-            P_ELEMENT_TITLE,
-            m_cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(""));
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
-        resElement.put(P_ELEMENT_ALLOWEDIT, resUtil.getLock().isLockableBy(m_cms.getRequestContext().currentUser())
+        resElement.put(JsonElement.OBJTYPE.getName(), TYPE_ELEMENT);
+        resElement.put(JsonElement.ID.getName(), element.getClientId());
+        resElement.put(JsonElement.FILE.getName(), resUtil.getFullPath());
+        resElement.put(JsonElement.DATE.getName(), resource.getDateLastModified());
+        resElement.put(JsonElement.USER.getName(), m_cms.readUser(resource.getUserLastModified()).getName());
+        resElement.put(JsonElement.NAVTEXT.getName(), resUtil.getNavText());
+        resElement.put(JsonElement.TITLE.getName(), resUtil.getTitle());
+        resElement.put(JsonElement.ALLOWEDIT.getName(), resUtil.getLock().isLockableBy(
+            m_cms.getRequestContext().currentUser())
             && resUtil.isEditable());
-        resElement.put(P_ELEMENT_LOCKED, resUtil.getLockedByName());
-        resElement.put(P_ELEMENT_STATUS, "" + resUtil.getStateAbbreviation());
+        resElement.put(JsonElement.LOCKED.getName(), resUtil.getLockedByName());
+        resElement.put(JsonElement.STATUS.getName(), "" + resUtil.getStateAbbreviation());
         // add formatted elements
         JSONObject resContents = new JSONObject();
-        resElement.put(P_ELEMENT_CONTENTS, resContents);
+        resElement.put(JsonElement.CONTENTS.getName(), resContents);
         // add formatter uris
         JSONObject formatters = new JSONObject();
-        resElement.put(P_ELEMENT_FORMATTERS, formatters);
+        resElement.put(JsonElement.FORMATTERS.getName(), formatters);
 
         if (resource.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
             // set empty entries to prevent client side problems
@@ -301,7 +317,7 @@ public final class CmsElementUtil {
 
             // add subitems
             JSONArray subitems = new JSONArray();
-            resElement.put(P_ELEMENT_SUBITEMS, subitems);
+            resElement.put(JsonElement.SUBITEMS.getName(), subitems);
             // iterate the elements
             for (CmsContainerElementBean subElement : container.getElements()) {
                 // collect ids
@@ -336,6 +352,9 @@ public final class CmsElementUtil {
         return resElement;
     }
 
+    /** JSON response state value constant. */
+    public static final String TYPE_ELEMENT = "Element";
+
     /**
      * Returns the property information for the given element as a JSON object.<p>
      * 
@@ -361,25 +380,31 @@ public final class CmsElementUtil {
             CmsXmlContentProperty conf = entry.getValue();
             CmsMacroResolver.resolveMacros(conf.getWidgetConfiguration(), m_cms, Messages.get().getBundle());
             JSONObject jSONProperty = new JSONObject();
-            jSONProperty.put(P_PROPERTY_VALUE, properties.get(propertyName).getStructureValue());
-            jSONProperty.put(P_PROPERTY_DEFAULT_VALUE, conf.getDefault());
-            jSONProperty.put(P_PROPERTY_TYPE, conf.getPropertyType());
-            jSONProperty.put(P_PROPERTY_WIDGET, conf.getWidget());
-            jSONProperty.put(P_PROPERTY_WIDGET_CONF, CmsMacroResolver.resolveMacros(
+            jSONProperty.put(JsonProperty.VALUE.getName(), properties.get(propertyName).getStructureValue());
+            jSONProperty.put(JsonProperty.DEFAULT_VALUE.getName(), conf.getDefault());
+            jSONProperty.put(JsonProperty.TYPE.getName(), conf.getPropertyType());
+            jSONProperty.put(JsonProperty.WIDGET.getName(), conf.getWidget());
+            jSONProperty.put(JsonProperty.WIDGET_CONF.getName(), CmsMacroResolver.resolveMacros(
                 conf.getWidgetConfiguration(),
                 m_cms,
                 messages));
-            jSONProperty.put(P_PROPERTY_RULE_TYPE, conf.getRuleType());
-            jSONProperty.put(P_PROPERTY_RULE_REGEX, conf.getRuleRegex());
-            jSONProperty.put(P_PROPERTY_NICE_NAME, CmsMacroResolver.resolveMacros(conf.getNiceName(), m_cms, messages));
-            jSONProperty.put(P_PROPERTY_DESCRIPTION, CmsMacroResolver.resolveMacros(
+            jSONProperty.put(JsonProperty.RULE_TYPE.getName(), conf.getRuleType());
+            jSONProperty.put(JsonProperty.RULE_REGEX.getName(), conf.getRuleRegex());
+            jSONProperty.put(JsonProperty.NICE_NAME.getName(), CmsMacroResolver.resolveMacros(
+                conf.getNiceName(),
+                m_cms,
+                messages));
+            jSONProperty.put(JsonProperty.DESCRIPTION.getName(), CmsMacroResolver.resolveMacros(
                 conf.getDescription(),
                 m_cms,
                 messages));
-            jSONProperty.put(P_PROPERTY_ERROR, CmsMacroResolver.resolveMacros(conf.getError(), m_cms, messages));
+            jSONProperty.put(JsonProperty.ERROR.getName(), CmsMacroResolver.resolveMacros(
+                conf.getError(),
+                m_cms,
+                messages));
             jSONProperties.put(propertyName, jSONProperty);
         }
-        result.put(P_PROPERTY_PROPERTIES, jSONProperties);
+        result.put(JsonElement.PROPERTIES.getName(), jSONProperties);
         return result;
     }
 }
