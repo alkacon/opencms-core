@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/json/JSONObject.java,v $
- * Date   : $Date: 2009/08/27 14:45:14 $
- * Version: $Revision: 1.2.2.1 $
+ * Date   : $Date: 2009/10/21 08:05:57 $
+ * Version: $Revision: 1.2.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -182,14 +182,14 @@ public class JSONObject {
     /**
      * The map where the JSONObject's properties are kept.
      */
-    private Map m_map;
+    private Map<String, Object> m_map;
 
     /**
      * Construct an empty JSONObject.<p>
      */
     public JSONObject() {
 
-        this.m_map = new HashMap();
+        this.m_map = new HashMap<String, Object>();
     }
 
     /**
@@ -278,9 +278,9 @@ public class JSONObject {
      * 
      * @param map a map object that can be used to initialize the contents of the JSONObject
      */
-    public JSONObject(Map map) {
+    public JSONObject(Map<String, Object> map) {
 
-        this.m_map = (map == null) ? new HashMap() : map;
+        this.m_map = (map == null) ? new HashMap<String, Object>() : map;
     }
 
     /**
@@ -291,12 +291,12 @@ public class JSONObject {
      * @param map a map with Key-Bean data
      * @param includeSuperClass tell whether to include the super class properties.
      */
-    public JSONObject(Map map, boolean includeSuperClass) {
+    public JSONObject(Map<String, Object> map, boolean includeSuperClass) {
 
-        this.m_map = new HashMap();
+        this.m_map = new HashMap<String, Object>();
         if (map != null) {
-            for (Iterator i = map.entrySet().iterator(); i.hasNext();) {
-                Map.Entry e = (Map.Entry)i.next();
+            for (Iterator<Map.Entry<String, Object>> i = map.entrySet().iterator(); i.hasNext();) {
+                Map.Entry<String, Object> e = i.next();
                 this.m_map.put(e.getKey(), new JSONObject(e.getValue(), includeSuperClass));
             }
         }
@@ -425,11 +425,11 @@ public class JSONObject {
         if (length == 0) {
             return null;
         }
-        Iterator i = jo.keys();
+        Iterator<String> i = jo.keys();
         String[] names = new String[length];
         int j = 0;
         while (i.hasNext()) {
-            names[j] = (String)i.next();
+            names[j] = i.next();
             j += 1;
         }
         return names;
@@ -901,7 +901,7 @@ public class JSONObject {
      *
      * @return an iterator of the keys
      */
-    public Iterator keys() {
+    public Iterator<String> keys() {
 
         return this.m_map.keySet().iterator();
     }
@@ -931,9 +931,9 @@ public class JSONObject {
      */
     public void merge(JSONObject jo, boolean overwrite, boolean deep) throws JSONException {
 
-        Iterator it = jo.keys();
+        Iterator<String> it = jo.keys();
         while (it.hasNext()) {
-            String key = (String)it.next();
+            String key = it.next();
             if (!has(key)) {
                 put(key, jo.get(key));
                 continue;
@@ -957,7 +957,7 @@ public class JSONObject {
     public JSONArray names() {
 
         JSONArray ja = new JSONArray();
-        Iterator keys = keys();
+        Iterator<String> keys = keys();
         while (keys.hasNext()) {
             ja.put(keys.next());
         }
@@ -1195,7 +1195,7 @@ public class JSONObject {
      * @return      this
      * @throws JSONException if something goes wrong
      */
-    public JSONObject put(String key, Collection value) throws JSONException {
+    public JSONObject put(String key, Collection<Object> value) throws JSONException {
 
         put(key, new JSONArray(value));
         return this;
@@ -1252,7 +1252,7 @@ public class JSONObject {
      * @return      this
      * @throws JSONException if something goes wrong
      */
-    public JSONObject put(String key, Map value) throws JSONException {
+    public JSONObject put(String key, Map<String, Object> value) throws JSONException {
 
         put(key, new JSONObject(value));
         return this;
@@ -1324,9 +1324,9 @@ public class JSONObject {
      *
      * @return an iterator of the keys
      */
-    public Iterator sortedKeys() {
+    public Iterator<String> sortedKeys() {
 
-        return new TreeSet(this.m_map.keySet()).iterator();
+        return new TreeSet<String>(this.m_map.keySet()).iterator();
     }
 
     /**
@@ -1364,10 +1364,11 @@ public class JSONObject {
      *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
      */
+    @Override
     public String toString() {
 
         try {
-            Iterator keys = keys();
+            Iterator<String> keys = keys();
             StringBuffer sb = new StringBuffer("{");
 
             while (keys.hasNext()) {
@@ -1418,14 +1419,14 @@ public class JSONObject {
 
         try {
             boolean b = false;
-            Iterator keys = keys();
+            Iterator<String> keys = keys();
             writer.write('{');
 
             while (keys.hasNext()) {
                 if (b) {
                     writer.write(',');
                 }
-                Object k = keys.next();
+                String k = keys.next();
                 writer.write(quote(k.toString()));
                 writer.write(':');
                 Object v = this.m_map.get(k);
@@ -1466,18 +1467,18 @@ public class JSONObject {
         if (n == 0) {
             return "{}";
         }
-        Iterator keys = sortedKeys();
+        Iterator<String> keys = sortedKeys();
         StringBuffer sb = new StringBuffer("{");
         int newindent = indent + indentFactor;
-        Object o;
+        String key;
         if (n == 1) {
-            o = keys.next();
-            sb.append(quote(o.toString()));
+            key = keys.next();
+            sb.append(quote(key));
             sb.append(": ");
-            sb.append(valueToString(this.m_map.get(o), indentFactor, indent));
+            sb.append(valueToString(this.m_map.get(key), indentFactor, indent));
         } else {
             while (keys.hasNext()) {
-                o = keys.next();
+                key = keys.next();
                 if (sb.length() > 1) {
                     sb.append(",\n");
                 } else {
@@ -1486,9 +1487,9 @@ public class JSONObject {
                 for (j = 0; j < newindent; j += 1) {
                     sb.append(' ');
                 }
-                sb.append(quote(o.toString()));
+                sb.append(quote(key));
                 sb.append(": ");
-                sb.append(valueToString(this.m_map.get(o), indentFactor, newindent));
+                sb.append(valueToString(this.m_map.get(key), indentFactor, newindent));
             }
             if (sb.length() > 1) {
                 sb.append('\n');
