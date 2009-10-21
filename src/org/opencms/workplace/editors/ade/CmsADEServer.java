@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/20 15:25:51 $
- * Version: $Revision: 1.1.2.34 $
+ * Date   : $Date: 2009/10/21 12:11:32 $
+ * Version: $Revision: 1.1.2.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -91,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.34 $
+ * @version $Revision: 1.1.2.35 $
  * 
  * @since 7.6
  */
@@ -125,6 +126,12 @@ public class CmsADEServer extends CmsJspActionElement {
     public static final String ACTION_PROPS = "props";
 
     /** Request parameter action value constant. */
+    public static final String ACTION_PUB_LIST = "publish-list";
+
+    /** Request parameter action value constant. */
+    public static final String ACTION_PUBLISH = "publish";
+
+    /** Request parameter action value constant. */
     public static final String ACTION_REC = "rec";
 
     /** Request parameter action value constant. */
@@ -138,6 +145,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** JSON response state value constant. */
     public static final String ELEMENT_TYPE = "Element";
+
+    /** Additional info key constant. */
+    public static final String INFO_PUBLISH_LIST = "__INFO_PUBLISH_LIST__";
 
     /** Mime type constant. */
     public static final String MIMETYPE_APPLICATION_JSON = "application/json";
@@ -169,8 +179,20 @@ public class CmsADEServer extends CmsJspActionElement {
     /** JSON property constant formatter. */
     public static final String P_FORMATTER = "formatter";
 
+    /** JSON property constant icon. */
+    public static final String P_ICON = "icon";
+
     /** JSON property constant id. */
     public static final String P_ID = "id";
+
+    /** JSON property constant infoName. */
+    public static final String P_INFO_NAME = "infoName";
+
+    /** JSON property constant infoValue. */
+    public static final String P_INFO_VALUE = "infoValue";
+
+    /** JSON property constant lockedBy. */
+    public static final String P_LOCKED_BY = "lockedBy";
 
     /** JSON property constant maxElem. */
     public static final String P_MAXELEMENTS = "maxElem";
@@ -181,11 +203,17 @@ public class CmsADEServer extends CmsJspActionElement {
     /** JSON property constant objtype. */
     public static final String P_OBJTYPE = "objtype";
 
+    /** JSON property constant reason. */
+    public static final String P_REASON = "reason";
+
     /** JSON property constant recent. */
     public static final String P_RECENT = "recent";
 
     /** JSON property constant recentListSize. */
     public static final String P_RECENT_LIST_SIZE = "recentListSize";
+
+    /** JSON property constant recent. */
+    public static final String P_RESOURCES = "resources";
 
     /** JSON property constant count. */
     public static final String P_SEARCH_COUNT = "count";
@@ -196,8 +224,14 @@ public class CmsADEServer extends CmsJspActionElement {
     /** JSON property constant searchOrder. */
     public static final String P_SEARCHORDER = "searchOrder";
 
+    /** JSON property constant state. */
+    public static final String P_STATE = "state";
+
     /** JSON property constant subItems. */
     public static final String P_SUBITEMS = "subItems";
+
+    /** JSON property constant title. */
+    public static final String P_TITLE = "title";
 
     /** JSON property constant uri. */
     public static final String P_URI = "uri";
@@ -227,6 +261,18 @@ public class CmsADEServer extends CmsJspActionElement {
     public static final String PARAMETER_PROPERTIES = "properties";
 
     /** Request parameter name constant. */
+    public static final String PARAMETER_RELATED = "related";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_REMOVE_RESOURCES = "resources";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_RESOURCES = "resources";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_SIBLINGS = "siblings";
+
+    /** Request parameter name constant. */
     public static final String PARAMETER_TEXT = "text";
 
     /** Request parameter action value constant. */
@@ -234,6 +280,12 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** Request parameter name constant. */
     public static final String PARAMETER_URI = "uri";
+
+    /** Reason value constant. */
+    public static final String REASON_PERMISSIONS = "perm";
+
+    /** Reason value constant. */
+    public static final String REASON_PUBLISHED = "pub";
 
     /** Request path constant. */
     public static final String REQUEST_GET = "/system/workplace/editors/ade/get.jsp";
@@ -361,9 +413,11 @@ public class CmsADEServer extends CmsJspActionElement {
      * If this isn't the case, an error message is written to the JSON result object.
      * 
      * @param request the request which contains the parameters
-     * @param result the JSON object which the error message should be written into
+     * @param result the JSON object which the error message should be written into, can be <code>null</code>
      * @param params the array of parameter names which should be checked
+     * 
      * @return true if and only if all parameters are present in the request
+     * 
      * @throws JSONException if something goes wrong with JSON
      */
     protected boolean checkParameters(HttpServletRequest request, JSONObject result, String... params)
@@ -372,7 +426,9 @@ public class CmsADEServer extends CmsJspActionElement {
         for (String param : params) {
             String value = request.getParameter(param);
             if (value == null) {
-                storeErrorMissingParam(result, param);
+                if (result != null) {
+                    storeErrorMissingParam(result, param);
+                }
                 return false;
             }
         }
@@ -469,10 +525,59 @@ public class CmsADEServer extends CmsJspActionElement {
 
         HttpServletRequest request = getRequest();
 
-        if (!checkParameters(request, result, PARAMETER_ACTION, PARAMETER_CNTPAGE, PARAMETER_LOCALE, PARAMETER_URI)) {
+        if (!checkParameters(request, result, PARAMETER_ACTION)) {
             return result;
         }
         String actionParam = request.getParameter(PARAMETER_ACTION);
+        if (actionParam.equals(ACTION_PUB_LIST)) {
+            if (checkParameters(request, null, PARAMETER_REMOVE_RESOURCES)) {
+                // remove the resources from the user's publish list
+                String remResParam = request.getParameter(PARAMETER_REMOVE_RESOURCES);
+                JSONArray resourcesToRemove = new JSONArray(remResParam);
+                removeResourcesFromPublishList(resourcesToRemove);
+            }
+            if (checkParameters(request, null, PARAMETER_RELATED, PARAMETER_SIBLINGS)) {
+                // get list of resources to publish
+                String relatedParam = request.getParameter(PARAMETER_RELATED);
+                String siblingsParam = request.getParameter(PARAMETER_SIBLINGS);
+                boolean related = Boolean.parseBoolean(relatedParam);
+                boolean siblings = Boolean.parseBoolean(siblingsParam);
+                JSONArray resourcesToPublish = getPublishList(related, siblings);
+                result.put(P_RESOURCES, resourcesToPublish);
+            } else {
+                // get list of resources that can not be published
+                boolean related = true;
+                boolean siblings = false;
+
+                JSONArray resources = getResourcesToPublishWithProblems(related, siblings);
+                if (resources.length() == 0) {
+                    // if no problems just get the list of resources to publish
+                    resources = getPublishList(related, siblings);
+                }
+                result.put(P_RESOURCES, resources);
+            }
+            return result;
+        } else if (actionParam.equals(ACTION_PUBLISH)) {
+            if (!checkParameters(request, result, PARAMETER_RESOURCES)) {
+                return result;
+            }
+            // resources to publish
+            String resourcesParam = request.getParameter(PARAMETER_RESOURCES);
+            JSONArray resourcesToPublish = new JSONArray(resourcesParam);
+            // get the resources with link check problems
+            JSONArray resources = getResourcesWithLinkCheck(resourcesToPublish);
+            if (resources.length() == 0) {
+                // publish resources
+                publishResources(resourcesToPublish);
+            } else {
+                // return resources with problems
+                result.put(P_RESOURCES, resources);
+            }
+            return result;
+        }
+        if (!checkParameters(request, result, PARAMETER_CNTPAGE, PARAMETER_LOCALE, PARAMETER_URI)) {
+            return result;
+        }
         String cntPageParam = request.getParameter(PARAMETER_CNTPAGE);
         String localeParam = request.getParameter(PARAMETER_LOCALE);
         String uriParam = request.getParameter(PARAMETER_URI);
@@ -964,6 +1069,35 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
+     * Returns the list of resources that can be published.<p>
+     * 
+     * @param related to include related resources
+     * @param siblings to include siblings
+     * 
+     * @return a list of resources that can be published
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws JSONException if something goes wrong 
+     */
+    protected JSONArray getPublishList(boolean related, boolean siblings) throws CmsException, JSONException {
+
+        JSONArray resources = new JSONArray();
+
+        // TODO: this is just a skeleton
+        JSONObject jsonRes = resourceToJson(getCmsObject().readResource("/demo_t3/_content/events/event_0003.html"));
+        jsonRes.put(P_INFO_NAME, "Unpublished related resource, will be published :");
+        jsonRes.put(P_INFO_VALUE, "/demo_t3/images/Rose.jpg");
+        resources.put(jsonRes);
+
+        JSONObject jsonRes2 = resourceToJson(getCmsObject().readResource("/demo_t3/images/Rose.jpg"));
+        jsonRes2.put(P_INFO_NAME, "Resource related to :");
+        jsonRes2.put(P_INFO_VALUE, "/demo_t3/_content/events/event_0003.html");
+        resources.put(jsonRes2);
+
+        return resources;
+    }
+
+    /**
      * Returns the current user's recent list.<p>
      * 
      * @param resElements the current page's element list
@@ -1004,6 +1138,63 @@ public class CmsADEServer extends CmsJspActionElement {
         }
 
         return result;
+    }
+
+    /**
+     * Returns a list of resources that should be published but can not.<p>
+     * This can be due to several reasons:<br>
+     * <ul>
+     *  <li>Locks</li>
+     *  <li>Permissions</li>
+     *  <li>Already published</li>
+     * </ul>
+     * 
+     * @param related to include related resources
+     * @param siblings to include siblings
+     * 
+     * @return a list of resources that should be published but can not
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws JSONException if something goes wrong 
+     */
+    protected JSONArray getResourcesToPublishWithProblems(boolean related, boolean siblings)
+    throws JSONException, CmsException {
+
+        JSONArray resources = new JSONArray();
+
+        // TODO: this is just a skeleton
+        JSONObject jsonRes = resourceToJson(getCmsObject().readResource("/demo_t3/_content/events/event_0003.html"));
+        jsonRes.put(P_REASON, REASON_PERMISSIONS);
+        resources.put(jsonRes);
+
+        JSONObject jsonRes2 = resourceToJson(getCmsObject().readResource("/demo_t3/images/Rose.jpg"));
+        jsonRes2.put(P_REASON, REASON_PUBLISHED);
+        resources.put(jsonRes2);
+
+        return resources;
+    }
+
+    /**
+     * Checks for possible broken links when the given list of resources would be published.<p>
+     * 
+     * @param ids list of structure ids identifying the resources to be published
+     * 
+     * @return a sublist of JSON resources that would produce broken links when published 
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws JSONException if something goes wrong 
+     */
+    protected JSONArray getResourcesWithLinkCheck(JSONArray ids) throws JSONException, CmsException {
+
+        JSONArray resources = new JSONArray();
+
+        // TODO: this is just a skeleton
+        JSONObject jsonRes = resourceToJson(getCmsObject().readResource("/demo_t3/index.html"));
+        jsonRes.put(P_INFO_NAME, "Broken link sources :");
+        jsonRes.put(P_INFO_VALUE, "/demo_t3/_content/articles/intro.html (Html link)");
+        resources.put(jsonRes);
+
+        return resources;
     }
 
     /**
@@ -1137,6 +1328,78 @@ public class CmsADEServer extends CmsJspActionElement {
         m_sessionCache.setCacheADESearchOptions(options);
 
         return result;
+    }
+
+    /**
+     * Publishes the given list of resources.<p>
+     * 
+     * @param ids list of structure ids identifying the resources to publish
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if something goes wrong
+     */
+    protected void publishResources(JSONArray ids) throws CmsException, JSONException {
+
+        List<CmsResource> resources = new ArrayList<CmsResource>(ids.length());
+        CmsObject cms = getCmsObject();
+        for (int i = 0; i < ids.length(); i++) {
+            resources.add(cms.readResource(new CmsUUID(ids.optString(i))));
+        }
+        // TODO: publish the resources
+        // OpenCms.getPublishManager().publishProject(cms, report, publishList);
+        removeResourcesFromPublishList(ids);
+    }
+
+    /**
+     * Removes the given resources from the user's publish list.<p>
+     * 
+     * @param ids list of structure ids identifying the resources to be removed
+     * 
+     * @throws JSONException if something goes wrong
+     * @throws CmsException if something goes wrong
+     */
+    protected void removeResourcesFromPublishList(JSONArray ids) throws JSONException, CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsUser user = cms.readUser(cms.getRequestContext().currentUser().getId());
+        String info = (String)user.getAdditionalInfo(INFO_PUBLISH_LIST);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(info)) {
+            // publish list is empty, nothing to do
+            return;
+        }
+        JSONArray userPubList = new JSONArray(info);
+        JSONArray newPubList = new JSONArray();
+        for (int i = 0; i < userPubList.length(); i++) {
+            String id = userPubList.optString(i);
+            if (!ids.containsString(id)) {
+                newPubList.put(id);
+            }
+        }
+        cms.getRequestContext().currentUser().setAdditionalInfo(INFO_PUBLISH_LIST, newPubList.toString());
+        cms.writeUser(user);
+    }
+
+    /**
+     * Converts a resource to a JSON object.<p>
+     * 
+     * @param resource the resource to convert
+     * 
+     * @return a JSON object representing the resource
+     * 
+     * @throws JSONException if something goes wrong
+     */
+    protected JSONObject resourceToJson(CmsResource resource) throws JSONException {
+
+        CmsObject cms = getCmsObject();
+        JSONObject jsonRes = new JSONObject();
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+        jsonRes.put(P_ID, resource.getStructureId());
+        jsonRes.put(P_URI, resUtil.getFullPath());
+        jsonRes.put(P_TITLE, resUtil.getTitle());
+        jsonRes.put(P_ICON, resUtil.getIconPathExplorer());
+        jsonRes.put(P_STATE, resUtil.getStateAbbreviation());
+        jsonRes.put(P_LOCKED_BY, resUtil.getLockedByName());
+        return jsonRes;
     }
 
     /**
