@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/21 12:11:32 $
- * Version: $Revision: 1.1.2.35 $
+ * Date   : $Date: 2009/10/21 12:55:00 $
+ * Version: $Revision: 1.1.2.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,50 +92,16 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.35 $
+ * @version $Revision: 1.1.2.36 $
  * 
  * @since 7.6
  */
 public class CmsADEServer extends CmsJspActionElement {
 
-    /** Request parameter action value constant. */
-    public static final String ACTION_ALL = "all";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_CNT = "cnt";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_DEL = "del";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_ELEM = "elem";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_ELEM_PROPS = "elemProps";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_FAV = "fav";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_LS = "ls";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_NEW = "new";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_PROPS = "props";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_PUB_LIST = "publish-list";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_PUBLISH = "publish";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_REC = "rec";
-
-    /** Request parameter action value constant. */
-    public static final String ACTION_SEARCH = "search";
+    /** Request parameter action value constants. */
+    private enum Action {
+        ALL, CNT, DEL, ELEM, ELEMPROPS, FAV, LS, NEW, PROPS, PUBLISH, PUBLISH_LIST, REC, SEARCH;
+    }
 
     /** JSON response state value constant. */
     public static final String CONTAINER_TYPE = "Container";
@@ -529,7 +495,8 @@ public class CmsADEServer extends CmsJspActionElement {
             return result;
         }
         String actionParam = request.getParameter(PARAMETER_ACTION);
-        if (actionParam.equals(ACTION_PUB_LIST)) {
+        Action action = Action.valueOf(actionParam.toUpperCase());
+        if (action.equals(Action.PUBLISH_LIST)) {
             if (checkParameters(request, null, PARAMETER_REMOVE_RESOURCES)) {
                 // remove the resources from the user's publish list
                 String remResParam = request.getParameter(PARAMETER_REMOVE_RESOURCES);
@@ -557,7 +524,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 result.put(P_RESOURCES, resources);
             }
             return result;
-        } else if (actionParam.equals(ACTION_PUBLISH)) {
+        } else if (action.equals(Action.PUBLISH)) {
             if (!checkParameters(request, result, PARAMETER_RESOURCES)) {
                 return result;
             }
@@ -588,16 +555,15 @@ public class CmsADEServer extends CmsJspActionElement {
         CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
         CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
 
-        if (actionParam.equals(ACTION_ALL)) {
+        if (action.equals(Action.ALL)) {
             // first load, get everything
             result = getContainerPage(cntPageRes, cntPage, uriParam.equals(cntPageParam) ? null : uriParam);
-        } else if (actionParam.equals(ACTION_ELEM)) {
+        } else if (action.equals(Action.ELEM)) {
             // get element data
-            String elemParam = request.getParameter(PARAMETER_ELEM);
-            if (elemParam == null) {
-                storeErrorMissingParam(result, PARAMETER_ELEM);
+            if (!checkParameters(request, result, PARAMETER_ELEM)) {
                 return result;
             }
+            String elemParam = request.getParameter(PARAMETER_ELEM);
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
             JSONObject resElements = new JSONObject();
             if (elemParam.startsWith("[")) {
@@ -630,18 +596,13 @@ public class CmsADEServer extends CmsJspActionElement {
                 }
             }
             result.put(P_ELEMENTS, resElements);
-        } else if (actionParam.equals(ACTION_ELEM_PROPS)) {
-
+        } else if (action.equals(Action.ELEMPROPS)) {
+            // element properties
+            if (!checkParameters(request, result, PARAMETER_ELEM, PARAMETER_PROPERTIES)) {
+                return result;
+            }
             String elemParam = request.getParameter(PARAMETER_ELEM);
             String propertiesParam = request.getParameter(PARAMETER_PROPERTIES);
-            if (elemParam == null) {
-                storeErrorMissingParam(result, PARAMETER_ELEM);
-                return result;
-            }
-            if (propertiesParam == null) {
-                storeErrorMissingParam(result, PARAMETER_PROPERTIES);
-                return result;
-            }
             try {
                 CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
                 JSONObject resElements = new JSONObject();
@@ -657,18 +618,18 @@ public class CmsADEServer extends CmsJspActionElement {
                 }
                 LOG.debug(e.getLocalizedMessage(), e);
             }
-        } else if (actionParam.equals(ACTION_FAV)) {
+        } else if (action.equals(Action.FAV)) {
             // get the favorite list
             result.put(P_FAVORITES, getFavoriteList(null, cntPage.getTypes()));
-        } else if (actionParam.equals(ACTION_REC)) {
+        } else if (action.equals(Action.REC)) {
             // get recent list
             result.put(P_RECENT, getRecentList(null, cntPage.getTypes()));
-        } else if (actionParam.equals(ACTION_SEARCH)) {
+        } else if (action.equals(Action.SEARCH)) {
             // new search
             CmsSearchOptions searchOptions = new CmsSearchOptions(request);
             JSONObject searchResult = getSearchResult(cntPageParam, searchOptions, cntPage.getTypes());
             result.merge(searchResult, true, false);
-        } else if (actionParam.equals(ACTION_LS)) {
+        } else if (action.equals(Action.LS)) {
             // last search
             CmsSearchOptions searchOptions = new CmsSearchOptions(request);
             JSONObject searchResult = getLastSearchResult(cntPageParam, searchOptions, cntPage.getTypes());
@@ -681,7 +642,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 result.put(PARAMETER_LOCATION, oldOptions.getLocation());
             }
             result.merge(searchResult, true, false);
-        } else if (actionParam.equals(ACTION_NEW)) {
+        } else if (action.equals(Action.NEW)) {
             // get a new element
             if (!checkParameters(request, result, PARAMETER_DATA)) {
                 return result;
@@ -696,14 +657,12 @@ public class CmsADEServer extends CmsJspActionElement {
                 type);
             result.put(CmsElementUtil.P_ELEMENT_ID, m_manager.convertToClientId(newResource.getStructureId()));
             result.put(P_URI, cms.getSitePath(newResource));
-        } else if (actionParam.equals(ACTION_PROPS)) {
+        } else if (action.equals(Action.PROPS)) {
             // get property dialog information
-            // get element data
-            String elemParam = request.getParameter(PARAMETER_ELEM);
-            if (elemParam == null) {
-                storeErrorMissingParam(result, PARAMETER_ELEM);
+            if (!checkParameters(request, result, PARAMETER_ELEM)) {
                 return result;
             }
+            String elemParam = request.getParameter(PARAMETER_ELEM);
             try {
                 CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
                 CmsContainerElementBean element = getCachedElement(elemParam);
@@ -739,30 +698,28 @@ public class CmsADEServer extends CmsJspActionElement {
             return result;
         }
         String actionParam = request.getParameter(PARAMETER_ACTION);
+        Action action = Action.valueOf(actionParam.toUpperCase());
         String localeParam = request.getParameter(PARAMETER_LOCALE);
 
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
-        if (actionParam.equals(ACTION_FAV)) {
+        if (action.equals(Action.FAV)) {
             // save the favorite list
-            String dataParam = request.getParameter(PARAMETER_DATA);
-            if (dataParam == null) {
-                storeErrorMissingParam(result, PARAMETER_DATA);
+            if (!checkParameters(request, result, PARAMETER_DATA)) {
                 return result;
             }
+            String dataParam = request.getParameter(PARAMETER_DATA);
             JSONArray list = new JSONArray(dataParam);
-
             m_manager.saveFavoriteList(cms, arrayToElementList(list));
-        } else if (actionParam.equals(ACTION_REC)) {
+        } else if (action.equals(Action.REC)) {
             // save the recent list
-            String dataParam = request.getParameter(PARAMETER_DATA);
-            if (dataParam == null) {
-                storeErrorMissingParam(result, PARAMETER_DATA);
+            if (!checkParameters(request, result, PARAMETER_DATA)) {
                 return result;
             }
+            String dataParam = request.getParameter(PARAMETER_DATA);
             JSONArray list = new JSONArray(dataParam);
             m_sessionCache.setCacheADERecentList(arrayToElementList(list));
-        } else if (actionParam.equals(ACTION_CNT)) {
+        } else if (action.equals(Action.CNT)) {
             // save the container page
             if (!checkParameters(request, result, PARAMETER_CNTPAGE, PARAMETER_DATA)) {
                 return result;
@@ -771,7 +728,7 @@ public class CmsADEServer extends CmsJspActionElement {
             String dataParam = request.getParameter(PARAMETER_DATA);
             JSONObject cntPage = new JSONObject(dataParam);
             setContainerPage(cntPageParam, cntPage);
-        } else if (actionParam.equals(ACTION_DEL)) {
+        } else if (action.equals(Action.DEL)) {
             // delete elements
             if (!checkParameters(request, result, PARAMETER_DATA)) {
                 return result;
