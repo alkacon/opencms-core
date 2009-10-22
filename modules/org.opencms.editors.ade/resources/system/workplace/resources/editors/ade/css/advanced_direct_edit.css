@@ -7,6 +7,11 @@
 	float: right;
 }
 
+.cms-clearer{
+    clear: both;
+    line-height: 0px;
+}
+
 /** Toolbar **/
 #toolbar {
 	height: 34px;
@@ -93,8 +98,7 @@ button.cms-button-wide {
 	z-index: 10100;
 }
 
-#toolbar button.cms-left {
-	float: left;
+#toolbar button {
 	z-index: 10100;
 	position: relative;
 }
@@ -770,9 +774,8 @@ li.jTreePlacement, li.jTreePlaceholder {
 
 .cms-scrolling {
 	max-height: 300px;
-	overflow: auto;
+	overflow: auto; 
 	width: 328px;
-	position: relative;
 	padding: 2px 0px;
 	background-color: #6e9ce0;
 	margin-left: 7px;

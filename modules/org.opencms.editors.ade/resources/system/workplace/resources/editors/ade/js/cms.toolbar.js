@@ -388,6 +388,7 @@
       });
    }
    
+   
    /**
     * Click-event-handler for edit-handles.<p>
     * Opens the content-editor-dialog.<p>
@@ -1558,7 +1559,7 @@
    /**
     * The mode objects in the order in which the buttons should appear in the toolbar.
     */
-   var modes = [ResetMode, MoveMode, EditMode, DeleteMode, PropertyMode, AddListMode, NewListMode, FavoritesListMode, RecentListMode, SaveMode];
+   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, AddListMode, NewListMode, FavoritesListMode, RecentListMode, SaveMode];
    
    /**
     * Gets a mode by mode name.
