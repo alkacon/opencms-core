@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/21 16:07:38 $
- * Version: $Revision: 1.1.2.37 $
+ * Date   : $Date: 2009/10/22 06:45:28 $
+ * Version: $Revision: 1.1.2.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.37 $
+ * @version $Revision: 1.1.2.38 $
  * 
  * @since 7.6
  */
@@ -311,12 +311,16 @@ public class CmsADEServer extends CmsJspActionElement {
 
         /** List of elements. */
         ELEMENTS("elements"),
+        /** The error message. */
+        ERROR("error"),
         /** The favorites list. */
         FAVORITES("favorites"),
         /** The recent list. */
         RECENT("recent"),
         /** A list of resources. */
-        RESOURCES("resources");
+        RESOURCES("resources"),
+        /** The response state. */
+        STATE("state");
 
         /** Property name. */
         private String m_name;
@@ -400,6 +404,34 @@ public class CmsADEServer extends CmsJspActionElement {
         }
     }
 
+    /** Json property name constants for response status. */
+    protected enum JsonState {
+
+        /** An error occurred. */
+        ERROR("error"),
+        /** The request was executed with any problems. */
+        OK("ok");
+
+        /** Property name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private JsonState(String name) {
+
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+    }
+
     /** Reason value constants, when resources can not be published. */
     protected enum NoPubReason {
 
@@ -415,6 +447,38 @@ public class CmsADEServer extends CmsJspActionElement {
 
         /** Constructor.<p> */
         private NoPubReason(String name) {
+
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+    }
+
+    /** Request parameter name constants for publishing. */
+    protected enum ParamPublish {
+
+        /** Flag to indicate if to publish with related resources. */
+        RELATED("related"),
+        /** The resources to remove from the publish list. */
+        REMOVE_RESOURCES("remove-resources"),
+        /** The resources to publish. */
+        RESOURCES("resources"),
+        /** Flag to indicate if to publish with siblings. */
+        SIBLINGS("siblings");
+
+        /** Parameter name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private ParamPublish(String name) {
 
             m_name = name;
         }
@@ -468,23 +532,19 @@ public class CmsADEServer extends CmsJspActionElement {
         }
     }
 
-    /** Request parameter name constants for publishing. */
-    protected enum ParamPublish {
+    /** Request URIs. */
+    protected enum RequestURI {
 
-        /** Flag to indicate if to publish with related resources. */
-        RELATED("related"),
-        /** The resources to remove from the publish list. */
-        REMOVE_RESOURCES("remove-resources"),
-        /** The resources to publish. */
-        RESOURCES("resources"),
-        /** Flag to indicate if to publish with siblings. */
-        SIBLINGS("siblings");
+        /** URI for get operations. */
+        GET("/system/workplace/editors/ade/get.jsp"),
+        /** URI for set operations. */
+        SET("/system/workplace/editors/ade/set.jsp");
 
-        /** Parameter name. */
+        /** Property name. */
         private String m_name;
 
         /** Constructor.<p> */
-        private ParamPublish(String name) {
+        private RequestURI(String name) {
 
             m_name = name;
         }
@@ -508,24 +568,6 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** Mime type constant. */
     public static final String MIMETYPE_APPLICATION_JSON = "application/json";
-
-    /** Request path constant. */
-    public static final String REQUEST_GET = "/system/workplace/editors/ade/get.jsp";
-
-    /** Request path constant. */
-    public static final String REQUEST_SET = "/system/workplace/editors/ade/set.jsp";
-
-    /** JSON response property constant. */
-    public static final String RES_ERROR = "error";
-
-    /** JSON response property constant. */
-    public static final String RES_STATE = "state";
-
-    /** JSON response state value constant. */
-    public static final String RES_STATE_ERROR = "error";
-
-    /** JSON response state value constant. */
-    public static final String RES_STATE_OK = "ok";
 
     /** Session attribute name constant. */
     public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
@@ -576,16 +618,18 @@ public class CmsADEServer extends CmsJspActionElement {
         try {
             // handle request depending on the requested jsp
             String action = getRequest().getPathInfo();
-            if (action.equals(REQUEST_GET)) {
+            if (action.equals(RequestURI.GET.getName())) {
                 result = executeActionGet();
-            } else if (action.equals(REQUEST_SET)) {
+            } else if (action.equals(RequestURI.SET.getName())) {
                 result = executeActionSet();
             } else {
-                result.put(RES_ERROR, Messages.get().getBundle().key(Messages.ERR_JSON_INVALID_ACTION_URL_1, action));
+                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+                    Messages.ERR_JSON_INVALID_ACTION_URL_1,
+                    action));
             }
         } catch (Exception e) {
             // a serious error occurred, should not...
-            result.put(RES_ERROR, e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
+            result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
             LOG.error(Messages.get().getBundle().key(
                 Messages.ERR_SERVER_EXCEPTION_1,
                 CmsRequestUtil.appendParameters(
@@ -594,12 +638,12 @@ public class CmsADEServer extends CmsJspActionElement {
                     false)), e);
         }
         // add state info
-        if (result.has(RES_ERROR)) {
+        if (result.has(JsonResponse.ERROR.getName())) {
             // add state=error in case an error occurred 
-            result.put(RES_STATE, RES_STATE_ERROR);
-        } else if (!result.has(RES_STATE)) {
+            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
+        } else if (!result.has(JsonResponse.STATE.getName())) {
             // add state=ok i case no error occurred
-            result.put(RES_STATE, RES_STATE_OK);
+            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
         }
         // write the result
         result.write(getResponse().getWriter());
@@ -639,21 +683,51 @@ public class CmsADEServer extends CmsJspActionElement {
      * 
      * @param request the request which contains the parameters
      * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameter names which should be checked
+     * @param params the array of parameters which should be checked
      * 
      * @return true if and only if all parameters are present in the request
      * 
      * @throws JSONException if something goes wrong with JSON
      */
-    protected boolean checkParameters(HttpServletRequest request, JSONObject result, String... params)
+    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ParamPublish... params)
     throws JSONException {
 
-        for (String param : params) {
-            String value = request.getParameter(param);
+        for (ParamPublish param : params) {
+            String value = request.getParameter(param.getName());
             if (value == null) {
                 if (result != null) {
-                    storeErrorMissingParam(result, param);
+                    result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+                        Messages.ERR_JSON_MISSING_PARAMETER_1,
+                        param.getName()));
                 }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether a list of parameters are present as attributes of a request.<p>
+     * 
+     * If this isn't the case, an error message is written to the JSON result object.
+     * 
+     * @param request the request which contains the parameters
+     * @param result the JSON object which the error message should be written into, can be <code>null</code>
+     * @param params the array of parameters which should be checked
+     * 
+     * @return true if and only if all parameters are present in the request
+     * 
+     * @throws JSONException if something goes wrong with JSON
+     */
+    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ReqParam... params)
+    throws JSONException {
+
+        for (ReqParam param : params) {
+            String value = request.getParameter(param.getName());
+            if (value == null) {
+                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    param.getName()));
                 return false;
             }
         }
@@ -750,19 +824,19 @@ public class CmsADEServer extends CmsJspActionElement {
 
         HttpServletRequest request = getRequest();
 
-        if (!checkParameters(request, result, ReqParam.ACTION.getName())) {
+        if (!checkParameters(request, result, ReqParam.ACTION)) {
             return result;
         }
         String actionParam = request.getParameter(ReqParam.ACTION.getName());
         Action action = Action.valueOf(actionParam.toUpperCase());
         if (action.equals(Action.PUBLISH_LIST)) {
-            if (checkParameters(request, null, ParamPublish.REMOVE_RESOURCES.getName())) {
+            if (checkParameters(request, null, ParamPublish.REMOVE_RESOURCES)) {
                 // remove the resources from the user's publish list
                 String remResParam = request.getParameter(ParamPublish.REMOVE_RESOURCES.getName());
                 JSONArray resourcesToRemove = new JSONArray(remResParam);
                 removeResourcesFromPublishList(resourcesToRemove);
             }
-            if (checkParameters(request, null, ParamPublish.RELATED.getName(), ParamPublish.SIBLINGS.getName())) {
+            if (checkParameters(request, null, ParamPublish.RELATED, ParamPublish.SIBLINGS)) {
                 // get list of resources to publish
                 String relatedParam = request.getParameter(ParamPublish.RELATED.getName());
                 String siblingsParam = request.getParameter(ParamPublish.SIBLINGS.getName());
@@ -784,7 +858,7 @@ public class CmsADEServer extends CmsJspActionElement {
             }
             return result;
         } else if (action.equals(Action.PUBLISH)) {
-            if (!checkParameters(request, result, ParamPublish.RESOURCES.getName())) {
+            if (!checkParameters(request, result, ParamPublish.RESOURCES)) {
                 return result;
             }
             // resources to publish
@@ -801,12 +875,7 @@ public class CmsADEServer extends CmsJspActionElement {
             }
             return result;
         }
-        if (!checkParameters(
-            request,
-            result,
-            ReqParam.CNTPAGE.getName(),
-            ReqParam.LOCALE.getName(),
-            ReqParam.URI.getName())) {
+        if (!checkParameters(request, result, ReqParam.CNTPAGE, ReqParam.LOCALE, ReqParam.URI)) {
             return result;
         }
         String cntPageParam = request.getParameter(ReqParam.CNTPAGE.getName());
@@ -824,7 +893,7 @@ public class CmsADEServer extends CmsJspActionElement {
             result = getContainerPage(cntPageRes, cntPage, uriParam.equals(cntPageParam) ? null : uriParam);
         } else if (action.equals(Action.ELEM)) {
             // get element data
-            if (!checkParameters(request, result, ReqParam.ELEM.getName())) {
+            if (!checkParameters(request, result, ReqParam.ELEM)) {
                 return result;
             }
             String elemParam = request.getParameter(ReqParam.ELEM.getName());
@@ -846,7 +915,7 @@ public class CmsADEServer extends CmsJspActionElement {
             result.put(JsonResponse.ELEMENTS.getName(), resElements);
         } else if (action.equals(Action.ELEMPROPS)) {
             // element formatted with the given properties
-            if (!checkParameters(request, result, ReqParam.ELEM.getName(), ReqParam.PROPERTIES.getName())) {
+            if (!checkParameters(request, result, ReqParam.ELEM, ReqParam.PROPERTIES)) {
                 return result;
             }
             String elemParam = request.getParameter(ReqParam.ELEM.getName());
@@ -885,7 +954,7 @@ public class CmsADEServer extends CmsJspActionElement {
             result.merge(searchResult, true, false);
         } else if (action.equals(Action.NEW)) {
             // get a new element
-            if (!checkParameters(request, result, ReqParam.DATA.getName())) {
+            if (!checkParameters(request, result, ReqParam.DATA)) {
                 return result;
             }
             String dataParam = request.getParameter(ReqParam.DATA.getName());
@@ -896,7 +965,7 @@ public class CmsADEServer extends CmsJspActionElement {
             result.put(JsonNewRes.URI.getName(), cms.getSitePath(newResource));
         } else if (action.equals(Action.PROPS)) {
             // get property dialog information
-            if (!checkParameters(request, result, ReqParam.ELEM.getName())) {
+            if (!checkParameters(request, result, ReqParam.ELEM)) {
                 return result;
             }
             String elemParam = request.getParameter(ReqParam.ELEM.getName());
@@ -904,7 +973,7 @@ public class CmsADEServer extends CmsJspActionElement {
             CmsContainerElementBean element = getCachedElement(elemParam);
             result = elemUtil.getElementPropertyInfo(element);
         } else {
-            result.put(RES_ERROR, Messages.get().getBundle().key(
+            result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
                 ReqParam.ACTION.getName(),
                 actionParam));
@@ -924,7 +993,7 @@ public class CmsADEServer extends CmsJspActionElement {
 
         JSONObject result = new JSONObject();
         HttpServletRequest request = getRequest();
-        if (!checkParameters(request, result, ReqParam.ACTION.getName(), ReqParam.LOCALE.getName())) {
+        if (!checkParameters(request, result, ReqParam.ACTION, ReqParam.LOCALE)) {
             return result;
         }
         String actionParam = request.getParameter(ReqParam.ACTION.getName());
@@ -935,7 +1004,7 @@ public class CmsADEServer extends CmsJspActionElement {
         cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
         if (action.equals(Action.FAV)) {
             // save the favorite list
-            if (!checkParameters(request, result, ReqParam.DATA.getName())) {
+            if (!checkParameters(request, result, ReqParam.DATA)) {
                 return result;
             }
             String dataParam = request.getParameter(ReqParam.DATA.getName());
@@ -943,7 +1012,7 @@ public class CmsADEServer extends CmsJspActionElement {
             m_manager.saveFavoriteList(cms, arrayToElementList(list));
         } else if (action.equals(Action.REC)) {
             // save the recent list
-            if (!checkParameters(request, result, ReqParam.DATA.getName())) {
+            if (!checkParameters(request, result, ReqParam.DATA)) {
                 return result;
             }
             String dataParam = request.getParameter(ReqParam.DATA.getName());
@@ -951,7 +1020,7 @@ public class CmsADEServer extends CmsJspActionElement {
             m_sessionCache.setCacheADERecentList(arrayToElementList(list));
         } else if (action.equals(Action.CNT)) {
             // save the container page
-            if (!checkParameters(request, result, ReqParam.CNTPAGE.getName(), ReqParam.DATA.getName())) {
+            if (!checkParameters(request, result, ReqParam.CNTPAGE, ReqParam.DATA)) {
                 return result;
             }
             String cntPageParam = request.getParameter(ReqParam.CNTPAGE.getName());
@@ -960,14 +1029,14 @@ public class CmsADEServer extends CmsJspActionElement {
             setContainerPage(cntPageParam, cntPage);
         } else if (action.equals(Action.DEL)) {
             // delete elements
-            if (!checkParameters(request, result, ReqParam.DATA.getName())) {
+            if (!checkParameters(request, result, ReqParam.DATA)) {
                 return result;
             }
             String dataParam = request.getParameter(ReqParam.DATA.getName());
             JSONArray elems = new JSONArray(dataParam);
             deleteElements(elems);
         } else {
-            result.put(RES_ERROR, Messages.get().getBundle().key(
+            result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
                 ReqParam.ACTION.getName(),
                 actionParam));
@@ -1701,17 +1770,5 @@ public class CmsADEServer extends CmsJspActionElement {
         }
         containerPage.setContents(xmlCnt.marshal());
         cms.writeFile(containerPage);
-    }
-
-    /**
-     * Stores an error message for a missing parameter in a JSON object.
-     * 
-     * @param result the JSON object in which the error message should be stored
-     * @param parameterName the name of the missing parameter
-     * @throws JSONException if something goes wrong.
-     */
-    protected void storeErrorMissingParam(JSONObject result, String parameterName) throws JSONException {
-
-        result.put(RES_ERROR, Messages.get().getBundle().key(Messages.ERR_JSON_MISSING_PARAMETER_1, parameterName));
     }
 }
