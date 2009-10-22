@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/20 07:38:53 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/10/22 07:26:34 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,43 +71,59 @@ import org.xml.sax.EntityResolver;
 /**
  * Implementation of a object used to access and manage the xml data of a container page.<p>
  * 
- * This implementation consists of several named elements optionally available for 
- * various languages. The data of each element is accessible via its name and language. 
+ * In addition to the XML content interface. It also provides access to more comfortable beans. 
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.5.2
+ * 
+ * @see #getCntPage(CmsObject, Locale)
  */
 public class CmsXmlContainerPage extends CmsXmlContent {
 
-    /** Xml content node constant name. */
-    public static final String N_CONTAINER = "Containers";
+    /** XML node name constants. */
+    public enum XmlNode {
 
-    /** Xml content node constant element. */
-    public static final String N_ELEMENT = "Elements";
+        /** Main node name. */
+        CONTAINER("Containers"),
+        /** Container elements node name. */
+        ELEMENT("Elements"),
+        /** Element formatter node name. */
+        FORMATTER("Formatter"),
+        /** Container or property name node name. */
+        NAME("Name"),
+        /** Element properties node name. */
+        PROPERTIES("Properties"),
+        /** Value string node name. */
+        STRING("String"),
+        /** Container type node name. */
+        TYPE("Type"),
+        /** Value URI node name. */
+        URI("Uri"),
+        /** Property value node name. */
+        VALUE("Value");
 
-    /** Xml content node constant formatter. */
-    public static final String N_FORMATTER = "Formatter";
+        /** Property name. */
+        private String m_name;
 
-    /** Xml content node constant name. */
-    public static final String N_NAME = "Name";
+        /** Constructor.<p> */
+        private XmlNode(String name) {
 
-    /** Xml content node constant properties. */
-    public static final String N_PROPERTIES = "Properties";
+            m_name = name;
+        }
 
-    /** Xml content node constant string. */
-    public static final String N_STRING = "String";
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
 
-    /** Xml content node constant type. */
-    public static final String N_TYPE = "Type";
-
-    /** Xml content node constant uri. */
-    public static final String N_URI = "Uri";
-
-    /** Xml content node constant value. */
-    public static final String N_VALUE = "Value";
+            return m_name;
+        }
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContainerPage.class);
@@ -289,7 +305,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 addLocale(locale);
 
                 List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
-                for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(cntPage, N_CONTAINER); itCnts.hasNext();) {
+                for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(
+                    cntPage,
+                    XmlNode.CONTAINER.getName()); itCnts.hasNext();) {
                     Element container = itCnts.next();
 
                     // container itself
@@ -301,16 +319,18 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     CmsXmlContentDefinition cntDef = ((CmsXmlNestedContentDefinition)cntSchemaType).getNestedContentDefinition();
 
                     // name
-                    Element name = container.element(N_NAME);
+                    Element name = container.element(XmlNode.NAME.getName());
                     createBookmark(name, locale, container, cntPath, cntDef);
 
                     // type
-                    Element type = container.element(N_TYPE);
+                    Element type = container.element(XmlNode.TYPE.getName());
                     createBookmark(type, locale, container, cntPath, cntDef);
 
                     List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
                     // Elements
-                    for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(container, N_ELEMENT); itElems.hasNext();) {
+                    for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(
+                        container,
+                        XmlNode.ELEMENT.getName()); itElems.hasNext();) {
                         Element element = itElems.next();
 
                         // element itself
@@ -322,19 +342,21 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         CmsXmlContentDefinition elemDef = ((CmsXmlNestedContentDefinition)elemSchemaType).getNestedContentDefinition();
 
                         // uri
-                        Element uri = element.element(N_URI);
+                        Element uri = element.element(XmlNode.URI.getName());
                         createBookmark(uri, locale, element, elemPath, elemDef);
                         String elementUri = new CmsLink(uri.element(CmsXmlPage.NODE_LINK)).getUri(); // root path
 
                         // formatter
-                        Element formatter = element.element(N_FORMATTER);
+                        Element formatter = element.element(XmlNode.FORMATTER.getName());
                         createBookmark(formatter, locale, element, elemPath, elemDef);
                         String formatterUri = new CmsLink(formatter.element(CmsXmlPage.NODE_LINK)).getUri(); // root path
 
                         Map<String, String> propertiesMap = new HashMap<String, String>();
 
                         // Properties
-                        for (Iterator<Element> itProps = CmsXmlGenericWrapper.elementIterator(element, N_PROPERTIES); itProps.hasNext();) {
+                        for (Iterator<Element> itProps = CmsXmlGenericWrapper.elementIterator(
+                            element,
+                            XmlNode.PROPERTIES.getName()); itProps.hasNext();) {
                             Element property = itProps.next();
 
                             // property itself
@@ -346,11 +368,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             CmsXmlContentDefinition propDef = ((CmsXmlNestedContentDefinition)propSchemaType).getNestedContentDefinition();
 
                             // name
-                            Element propName = property.element(N_NAME);
+                            Element propName = property.element(XmlNode.NAME.getName());
                             createBookmark(propName, locale, property, propPath, propDef);
 
                             // choice value 
-                            Element value = property.element(N_VALUE);
+                            Element value = property.element(XmlNode.VALUE.getName());
                             int valueIndex = CmsXmlUtils.getXpathIndexInt(value.getUniquePath(property));
                             String valuePath = CmsXmlUtils.createXpathElement(value.getName(), valueIndex);
                             I_CmsXmlSchemaType valueSchemaType = propDef.getSchemaType(value.getName());
@@ -359,14 +381,14 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             CmsXmlContentDefinition valueDef = ((CmsXmlNestedContentDefinition)valueSchemaType).getNestedContentDefinition();
 
                             String val = null;
-                            Element string = value.element(N_STRING);
+                            Element string = value.element(XmlNode.STRING.getName());
                             if (string != null) {
                                 // string value
                                 createBookmark(string, locale, value, valuePath, valueDef);
                                 val = string.getTextTrim();
                             } else {
                                 // uri value
-                                Element valueUri = value.element(N_URI);
+                                Element valueUri = value.element(XmlNode.URI.getName());
                                 createBookmark(valueUri, locale, value, valuePath, valueDef);
                                 val = new CmsLink(valueUri.element(CmsXmlPage.NODE_LINK)).getUri(); // root path
                             }

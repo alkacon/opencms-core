@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/Attic/TestCmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/19 11:09:30 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/22 07:26:34 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,15 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -48,7 +54,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
@@ -103,10 +109,82 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
     public void testUnmarshall() throws Exception {
 
         CmsObject cms = getCmsObject();
+
+        // prepare locales
+        List<Locale> locales = new ArrayList<Locale>();
+        locales.add(Locale.ENGLISH);
+
+        // prepare container types
+        Map<Locale, List<String>> typesMap = new HashMap<Locale, List<String>>();
+        List<String> types = new ArrayList<String>();
+        types.add("test");
+        typesMap.put(Locale.ENGLISH, types);
+
+        // prepare container names
+        Map<String, String> namesMap = new HashMap<String, String>();
+        namesMap.put(Locale.ENGLISH.toString() + "test", "test");
+
+        // prepare elements
+        Map<String, List<CmsContainerElementBean>> elemMap = new HashMap<String, List<CmsContainerElementBean>>();
+        List<CmsContainerElementBean> elems = new ArrayList<CmsContainerElementBean>();
+        Map<String, String> props = new HashMap<String, String>();
+        props.put("abc", "abc");
+        props.put("test", "/sites/default/containerpage/content.html");
+        CmsContainerElementBean elem = new CmsContainerElementBean(
+            cms.readResource("/containerpage/content.html"),
+            cms.readResource("/containerpage/formatter.jsp"),
+            props);
+        elems.add(elem);
+        elemMap.put(Locale.ENGLISH.toString() + "test", elems);
+
         CmsFile file = cms.readFile("containerpage/index.html");
-        CmsXmlContainerPage cntPage = CmsXmlContainerPageFactory.unmarshal(cms, file);
-        List<Locale> locales = cntPage.getLocales();
-        assertEquals(1, locales.size());
-        assertEquals(Locale.ENGLISH, locales.get(0));
+        CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, file);
+
+        // check xml
+        assertEquals(locales, xmlCntPage.getLocales());
+        for (Locale locale : locales) {
+            List<String> expectedTypes = typesMap.get(locale);
+            for (int i = 0; i < expectedTypes.size(); i++) {
+                String expectedType = expectedTypes.get(i);
+                I_CmsXmlContentValue cnt = xmlCntPage.getValue(
+                    CmsXmlContainerPage.XmlNode.CONTAINER.getName(),
+                    locale,
+                    i);
+                String name = xmlCntPage.getStringValue(cms, CmsXmlUtils.concatXpath(
+                    cnt.getPath(),
+                    CmsXmlContainerPage.XmlNode.NAME.getName()), locale);
+                assertEquals(namesMap.get(locale.toString() + expectedType), name);
+                String type = xmlCntPage.getStringValue(cms, CmsXmlUtils.concatXpath(
+                    cnt.getPath(),
+                    CmsXmlContainerPage.XmlNode.TYPE.getName()), locale);
+                assertEquals(expectedType, type);
+            }
+        }
+
+        // check beans
+        for (Locale locale : locales) {
+            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, locale);
+            assertEquals(cntPage.getLocale(), locale);
+            types = typesMap.get(locale);
+            assertEquals(new HashSet<String>(types), cntPage.getTypes());
+            assertEquals(types.size(), cntPage.getContainers().size());
+            for (String type : types) {
+                assertTrue(cntPage.getContainers().containsKey(type));
+                CmsContainerBean cnt = cntPage.getContainers().get(type);
+                assertEquals(-1, cnt.getMaxElements());
+                assertEquals(type, cnt.getType());
+                assertEquals(namesMap.get(locale.toString() + type), cnt.getName());
+                assertEquals(elemMap.get(locale.toString() + type).size(), cnt.getElements().size());
+                for (int i = 0; i < cnt.getElements().size(); i++) {
+                    CmsContainerElementBean element = cnt.getElements().get(i);
+                    CmsContainerElementBean expected = elemMap.get(locale.toString() + type).get(i);
+
+                    assertEquals(expected.getClientId(), element.getClientId());
+                    assertEquals(expected.getElement(), element.getElement());
+                    assertEquals(expected.getFormatter(), element.getFormatter());
+                    assertEquals(expected.getProperties(), element.getProperties());
+                }
+            }
+        }
     }
 }

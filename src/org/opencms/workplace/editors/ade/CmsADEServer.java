@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/22 06:45:28 $
- * Version: $Revision: 1.1.2.38 $
+ * Date   : $Date: 2009/10/22 07:26:34 $
+ * Version: $Revision: 1.1.2.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.38 $
+ * @version $Revision: 1.1.2.39 $
  * 
  * @since 7.6
  */
@@ -1683,20 +1683,25 @@ public class CmsADEServer extends CmsJspActionElement {
             String cntKey = itCnt.next();
             JSONObject cnt = cnts.getJSONObject(cntKey);
 
-            I_CmsXmlContentValue cntValue = xmlCnt.getValue(CmsXmlContainerPage.N_CONTAINER, locale, cntCount);
+            I_CmsXmlContentValue cntValue = xmlCnt.getValue(
+                CmsXmlContainerPage.XmlNode.CONTAINER.getName(),
+                locale,
+                cntCount);
             if (cntValue == null) {
-                cntValue = xmlCnt.addValue(cms, CmsXmlContainerPage.N_CONTAINER, locale, cntCount);
+                cntValue = xmlCnt.addValue(cms, CmsXmlContainerPage.XmlNode.CONTAINER.getName(), locale, cntCount);
             }
 
             String name = cnt.getString(JsonContainer.NAME.getName());
-            xmlCnt.getValue(CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.N_NAME), locale, 0).setStringValue(
-                cms,
-                name);
+            xmlCnt.getValue(
+                CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
+                locale,
+                0).setStringValue(cms, name);
 
             String type = cnt.getString(JsonContainer.TYPE.getName());
-            xmlCnt.getValue(CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.N_TYPE), locale, 0).setStringValue(
-                cms,
-                type);
+            xmlCnt.getValue(
+                CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.XmlNode.TYPE.getName()),
+                locale,
+                0).setStringValue(cms, type);
 
             JSONArray elems = cnt.getJSONArray(JsonCntPage.ELEMENTS.getName());
             for (int i = 0; i < elems.length(); i++) {
@@ -1711,12 +1716,13 @@ public class CmsADEServer extends CmsJspActionElement {
                 String clientId = elem.getString(JsonCntElem.ID.getName());
                 I_CmsXmlContentValue elemValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
                     cntValue.getPath(),
-                    CmsXmlContainerPage.N_ELEMENT), locale, i);
-                xmlCnt.getValue(CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.N_URI), locale, 0).setStringValue(
-                    cms,
-                    elemUri);
+                    CmsXmlContainerPage.XmlNode.ELEMENT.getName()), locale, i);
                 xmlCnt.getValue(
-                    CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.N_FORMATTER),
+                    CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.XmlNode.URI.getName()),
+                    locale,
+                    0).setStringValue(cms, elemUri);
+                xmlCnt.getValue(
+                    CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.XmlNode.FORMATTER.getName()),
                     locale,
                     0).setStringValue(cms, formatter);
 
@@ -1739,24 +1745,28 @@ public class CmsADEServer extends CmsJspActionElement {
                             && propertiesConf.containsKey(propertyName)) {
                             I_CmsXmlContentValue propValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
                                 elemValue.getPath(),
-                                CmsXmlContainerPage.N_PROPERTIES), locale, j);
+                                CmsXmlContainerPage.XmlNode.PROPERTIES.getName()), locale, j);
                             xmlCnt.getValue(
-                                CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlContainerPage.N_NAME),
+                                CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
                                 locale,
                                 0).setStringValue(cms, propertyName);
                             I_CmsXmlContentValue valValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
                                 propValue.getPath(),
-                                CmsXmlContainerPage.N_VALUE), locale, 0);
+                                CmsXmlContainerPage.XmlNode.VALUE.getName()), locale, 0);
                             if (propertiesConf.get(propertyName).getPropertyType() == CmsXmlContentProperty.T_URI) {
                                 xmlCnt.addValue(
                                     cms,
-                                    CmsXmlUtils.concatXpath(valValue.getPath(), CmsXmlContainerPage.N_URI),
+                                    CmsXmlUtils.concatXpath(
+                                        valValue.getPath(),
+                                        CmsXmlContainerPage.XmlNode.URI.getName()),
                                     locale,
                                     0).setStringValue(cms, properties.get(propertyName).getStructureValue());
                             } else {
                                 xmlCnt.addValue(
                                     cms,
-                                    CmsXmlUtils.concatXpath(valValue.getPath(), CmsXmlContainerPage.N_STRING),
+                                    CmsXmlUtils.concatXpath(
+                                        valValue.getPath(),
+                                        CmsXmlContainerPage.XmlNode.STRING.getName()),
                                     locale,
                                     0).setStringValue(cms, properties.get(propertyName).getStructureValue());
                             }
