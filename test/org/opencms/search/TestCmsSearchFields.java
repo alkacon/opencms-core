@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchFields.java,v $
- * Date   : $Date: 2009/08/26 07:49:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/10/22 15:50:05 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,13 +32,17 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -51,7 +55,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in special fields of extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestCmsSearchFields extends OpenCmsTestCase {
 
@@ -89,7 +93,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearchFields("testSearchWithCombinedFieldQuery"));
         suite.addTest(new TestCmsSearchFields("testExcerptCreationWithFieldQuery"));
         suite.addTest(new TestCmsSearchFields("testSearchWithResouceTypeLimitaion"));
-
+        suite.addTest(new TestCmsSearchFields("testSearchWithFieldQueryInExtension"));
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
@@ -221,6 +225,86 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field with NOT option:");
         TestCmsSearch.printResults(searchResult, cms);
         assertEquals(3, searchResult.size());
+    }
+
+    /**
+     * Tests searching with a field query, 
+     * that is a query over multiple fields with different search terms per field.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchWithFieldQueryInExtension() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing search with a specific field query in fields extension and filename");
+
+        // create test folder
+        cms.createResource("/test/", CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
+        cms.unlockResource("/test/");
+
+        // create master resource
+        importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            "/test/master.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.EMPTY_LIST);
+
+        // publish the project and update the search index
+        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, report);
+
+        // perform a search on the newly generated index
+        CmsSearch searchBeanOne = new CmsSearch();
+        List<CmsSearchResult> searchResultOne;
+
+        searchBeanOne.init(cms);
+        searchBeanOne.setIndex(INDEX_OFFLINE);
+        searchBeanOne.setSearchRoot("/");
+
+        // search for ".zip" in the "extension" field
+        searchBeanOne.addFieldQueryMust("myExtension", ".zip");
+
+        searchResultOne = searchBeanOne.getSearchResult();
+        assertNotNull(searchResultOne);
+        System.out.println("\n\nResults found with field query .zip searching in 'extension' index field:");
+        TestCmsSearch.printResults(searchResultOne, cms);
+        assertEquals(2, searchResultOne.size());
+
+        // perform a search on the newly generated index
+        CmsSearch searchBeanTwo = new CmsSearch();
+        List<CmsSearchResult> searchResultTwo;
+
+        searchBeanTwo.init(cms);
+        searchBeanTwo.setIndex(INDEX_OFFLINE);
+        searchBeanTwo.setSearchRoot("/");
+
+        // search for ".pdf" in the "extension" field
+        searchBeanTwo.addFieldQueryMust("myExtension", ".pdf");
+
+        searchResultTwo = searchBeanTwo.getSearchResult();
+        assertNotNull(searchResultTwo);
+        System.out.println("\n\nResults found with field query .pdf searching in 'extension' index field:");
+        TestCmsSearch.printResults(searchResultTwo, cms);
+        assertEquals(1, searchResultTwo.size());
+
+        // perform a search on the newly generated index
+        CmsSearch searchBeanThird = new CmsSearch();
+        List<CmsSearchResult> searchResultThird;
+
+        searchBeanThird.init(cms);
+        searchBeanThird.setIndex(INDEX_OFFLINE);
+        searchBeanThird.setSearchRoot("/");
+
+        // search for "image1.gif" in the "filename" field
+        searchBeanThird.addFieldQueryMust("myFilename", "image1.gif");
+
+        searchResultThird = searchBeanThird.getSearchResult();
+        assertNotNull(searchResultThird);
+        System.out.println("\n\nResults found with field query image1.gif searching in 'filename' index field:");
+        TestCmsSearch.printResults(searchResultThird, cms);
+        assertEquals(4, searchResultThird.size());
+
     }
 
     /**

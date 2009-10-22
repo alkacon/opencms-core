@@ -247,9 +247,12 @@
 						<mapping type="property">NavText</mapping>
 						<mapping type="property-search">search.special</mapping>
 					</field>
-					<field name="specialTwo" store="false" index="true" boost="0.1" analyzer="WhitespaceAnalyzer">
-						<mapping type="dynamic" class="org.opencms.search.fields.CmsSearchFieldMapping">specialTwo</mapping>
-					</field>						
+					<field name="myExtension" store="true" index="untokenized" boost="0.1" analyzer="WhitespaceAnalyzer">
+						<mapping type="dynamic" class="org.opencms.search.TestCmsSearchFieldMapping">extension</mapping>
+					</field>
+					<field name="myFilename" store="true" index="untokenized" boost="0.1">
+						<mapping type="dynamic" class="org.opencms.search.TestCmsSearchFieldMapping">filename</mapping>						
+					</field>															
 				</fields>
 			</fieldconfiguration>			
 		</fieldconfigurations>			
