@@ -10,7 +10,8 @@
 	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsTemplateMenu.java
 
 	CmsTemplateMenu cms = new CmsTemplateMenu(pageContext, request, response);
-	cms.setElements(cms.getNavigation().getNavigationTreeForFolder(cms.getRequestContext().getUri(), 1, 3));
+	int navStartLevel = Integer.parseInt(cms.property("NavStartLevel", "search", "0")) + 1;
+	cms.setElements(cms.getNavigation().getNavigationTreeForFolder(cms.getRequestContext().getUri(), navStartLevel, navStartLevel + 2));
 	pageContext.setAttribute("cms", cms);
 %>
 
