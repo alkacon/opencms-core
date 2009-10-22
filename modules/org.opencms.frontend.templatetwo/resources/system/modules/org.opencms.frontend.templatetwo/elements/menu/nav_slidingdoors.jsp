@@ -1,4 +1,4 @@
-<%@page session="false" import="org.opencms.frontend.templatetwo.*"%>
+<%@page session="false" import="org.opencms.frontend.templatetwo.*, org.opencms.file.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%
 
@@ -14,7 +14,9 @@
 	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsTemplateMenu.java
 
 	CmsTemplateMenu cms = new CmsTemplateMenu(pageContext, request, response);
-	cms.setElements(cms.getNavigation().getNavigationForFolder("/"));
+	//in order to omit folder levels, set the NavStartLevel property to the level number where 0 is the root "/" level
+	int navStartLevel = Integer.parseInt(cms.property("NavStartLevel", "search", "0"));
+	cms.setElements(cms.getNavigation().getNavigationForFolder(CmsResource.getPathPart(cms.getRequestContext().getFolderUri(), navStartLevel)));
 	pageContext.setAttribute("cms", cms);
 %>
 
