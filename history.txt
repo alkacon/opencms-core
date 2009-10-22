@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/10/16 10:50:19 $
- * Version: $Revision: 1.1152 $
+ * Date   : $Date: 2009/10/22 16:43:59 $
+ * Version: $Revision: 1.1153 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ OpenCms 7.5.1 - October 1, 2009
 - Updated FCKeditor to version 2.6.5
 - Updated Lucene to version 2.4.1
 - Full text search in documents: exceptions are now catched while extracting the text from documents
+* Fixed issue #1751: Static Export: export-resources doesn't match a file resource
 * Fixed issue #1708: User creation settings 'enabled' and 'selfManaged' were not saved
 * Fixed issue #1711: HtmlDecorater problem with html-entities 
 * Fixed issue #1734: normalizePath will now remove leading double slashes of the path
