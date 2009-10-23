@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/03/06 13:38:01 $
- * Version: $Revision: 1.818.2.10 $
+ * Date   : $Date: 2009/10/23 08:22:05 $
+ * Version: $Revision: 1.818.2.11 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,6 +21,7 @@ Legend:
 
 OpenCms 6.2.4 - xxxx, 2009
 
+* Fixed issue #1751: Static Export: export-resources doesn't match a file resource
 ! Added option in export to export only those files modifed in the current project
 * Static export works with links containing a "&amp;"
 ! Added new event EVENT_FULLSTATIC_EXPORT fired by CmsStaticExportThread and CmsStaticExportJob

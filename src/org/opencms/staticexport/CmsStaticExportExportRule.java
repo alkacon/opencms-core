@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportExportRule.java,v $
- * Date   : $Date: 2006/09/21 09:34:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/10/23 08:21:47 $
+ * Version: $Revision: 1.2.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * Help class for storing of export-rules.<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.2.1 $
  * @since 6.0.0
  */
 public class CmsStaticExportExportRule {
@@ -155,16 +155,21 @@ public class CmsStaticExportExportRule {
         Iterator itExpRes = m_exportResources.iterator();
         while (itExpRes.hasNext()) {
             String exportRes = (String)itExpRes.next();
-			// read all from the configured node path, exclude resources flagged as internal        
-            List vfsResources = cms.readResources(
-                exportRes,
-                CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
-            // loop through the list and create the list of CmsPublishedResources
-            Iterator itRes = vfsResources.iterator();
-            while (itRes.hasNext()) {
-                CmsResource vfsResource = (CmsResource)itRes.next();
-                CmsPublishedResource resource = new CmsPublishedResource(vfsResource);
-                resources.add(resource);
+            CmsResource res = cms.readResource(exportRes);
+            if (res.isFile()) {
+                resources.add(new CmsPublishedResource(res));
+            } else {
+                // read all from the configured node path, exclude resources flagged as internal        
+                List vfsResources = cms.readResources(
+                    exportRes,
+                    CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
+                // loop through the list and create the list of CmsPublishedResources
+                Iterator itRes = vfsResources.iterator();
+                while (itRes.hasNext()) {
+                    CmsResource vfsResource = (CmsResource)itRes.next();
+                    CmsPublishedResource resource = new CmsPublishedResource(vfsResource);
+                    resources.add(resource);
+                }
             }
         }
         return resources;
