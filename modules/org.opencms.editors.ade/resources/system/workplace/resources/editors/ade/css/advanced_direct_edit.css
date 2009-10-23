@@ -780,6 +780,7 @@ li.jTreePlacement, li.jTreePlaceholder {
 	background-color: #6e9ce0;
 	margin-left: 7px;
     margin-bottom: 7px;
+    position: relative;
 }
 
 .cms-scrolling ul.cms-scrolling-inner {
