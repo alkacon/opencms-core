@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/10/16 10:51:38 $
- * Version: $Revision: 1.1119.2.11 $
+ * Date   : $Date: 2009/10/23 08:32:54 $
+ * Version: $Revision: 1.1119.2.12 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -22,8 +22,9 @@ Legend:
 OpenCms 7.9.1 - xxxx, 2009
 ! Added support for xsd:choice in XML content API and editor
 ! Added new feature: Advanced Direct Edit
-* If an error occurs while changing the user password in the preferences tab, so the error dialog can be closed with the close button
 - Improved handling for writing additional infos of a cms user
+* Fixed issue #1751: Static Export: export-resources doesn't match a file resource
+* If an error occurs while changing the user password in the preferences tab, so the error dialog can be closed with the close button
 * Fixed issue #1782: Publish dialog in Project overview list hangs
 
 OpenCms 7.5.1 - October 1, 2009
