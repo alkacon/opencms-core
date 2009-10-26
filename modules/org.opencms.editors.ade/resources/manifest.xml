@@ -2574,6 +2574,30 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_sw.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_new_sw.png</destination>
+			<type>image</type>
+			<uuidstructure>e2dbaf68-c225-11de-afce-0dd88dd14685</uuidstructure>
+			<uuidresource>e2dbaf69-c225-11de-afce-0dd88dd14685</uuidresource>
+			<datelastmodified>Mon, 26 Oct 2009 11:51:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 26 Oct 2009 11:51:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ocms_de_new_sw]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_prop_a.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_prop_a.png</destination>
@@ -2638,6 +2662,26 @@
 					<name>Title</name>
 					<value><![CDATA[ocms_de_prop_sw]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/text_tree.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/text_tree.png</destination>
+			<type>image</type>
+			<uuidstructure>ab9ccd54-bfd6-11de-ba50-0dd88dd14685</uuidstructure>
+			<uuidresource>ab9ccd55-bfd6-11de-ba50-0dd88dd14685</uuidresource>
+			<datelastmodified>Fri, 23 Oct 2009 13:19:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 23 Oct 2009 13:19:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
