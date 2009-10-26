@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/10/26 08:11:57 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/26 10:46:10 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.9.3
  */
@@ -840,54 +840,54 @@ public class CmsADEPublish {
      */
     protected ResourcesAndRelated getPublishResources() {
 
+        CmsObject cms = getCmsObject();
         if (m_resourceList != null) {
             return m_resourceList;
-        } else {
+        } else if (m_resourceList == null) {
             // TODO: this is just here for the moment to get something to publish
             m_resourceList = new ResourcesAndRelated();
             try {
-                m_resourceList.getResources().addAll(
-                    OpenCms.getPublishManager().getPublishList(getCmsObject()).getAllResources());
+                m_resourceList.getResources().addAll(OpenCms.getPublishManager().getPublishList(cms).getAllResources());
             } catch (CmsException e) {
                 e.printStackTrace();
             }
-        }
-        m_resourceList = new ResourcesAndRelated();
-        CmsObject cms = getCmsObject();
-        CmsUser user;
-        try {
-            user = cms.readUser(cms.getRequestContext().currentUser().getId());
-        } catch (CmsException e) {
-            // error reading a user, should usually never happen
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-            return m_resourceList;
-        }
-        String info = (String)user.getAdditionalInfo(INFO_PUBLISH_LIST);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(info)) {
-            return m_resourceList;
-        }
-        // publish list is empty, nothing to do
-        JSONArray userPubList;
-        try {
-            userPubList = new JSONArray(info);
-        } catch (JSONException e) {
-            // corrupt data, should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            return m_resourceList;
-        }
-        for (int i = 0; i < userPubList.length(); i++) {
-            String id = userPubList.optString(i);
+        } else {
+            m_resourceList = new ResourcesAndRelated();
+            CmsUser user;
             try {
-                CmsResource resource = cms.readResource(new CmsUUID(id), CmsResourceFilter.ALL);
-                m_resourceList.getResources().add(resource);
+                user = cms.readUser(cms.getRequestContext().currentUser().getId());
             } catch (CmsException e) {
-                // error reading a resource, should usually never happen
+                // error reading a user, should usually never happen
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
-                continue;
+                return m_resourceList;
+            }
+            String info = (String)user.getAdditionalInfo(INFO_PUBLISH_LIST);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(info)) {
+                return m_resourceList;
+            }
+            // publish list is empty, nothing to do
+            JSONArray userPubList;
+            try {
+                userPubList = new JSONArray(info);
+            } catch (JSONException e) {
+                // corrupt data, should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+                return m_resourceList;
+            }
+            for (int i = 0; i < userPubList.length(); i++) {
+                String id = userPubList.optString(i);
+                try {
+                    CmsResource resource = cms.readResource(new CmsUUID(id), CmsResourceFilter.ALL);
+                    m_resourceList.getResources().add(resource);
+                } catch (CmsException e) {
+                    // error reading a resource, should usually never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    continue;
+                }
             }
         }
         if (m_includeSiblings) {
