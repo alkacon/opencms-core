@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationPublishValidator.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/10/26 07:54:44 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.2.1 $
  * 
  * @since 6.5.5
  */
@@ -62,7 +62,7 @@ public class CmsRelationPublishValidator {
     private static final Log LOG = CmsLog.getLog(CmsRelationPublishValidator.class);
 
     /** The internal computed broken relations map. */
-    protected Map m_brokenRelations;
+    protected Map<String, List<CmsRelation>> m_brokenRelations;
 
     /** the cms context object. */
     private CmsObject m_cms;
@@ -129,7 +129,7 @@ public class CmsRelationPublishValidator {
             resName,
             siteName,
             siteRoot,
-            Collections.unmodifiableList((List)m_brokenRelations.get(resourceName)));
+            Collections.unmodifiableList(m_brokenRelations.get(resourceName)));
     }
 
     /**
@@ -147,7 +147,7 @@ public class CmsRelationPublishValidator {
      * 
      * @return the broken relations key set
      */
-    public Set keySet() {
+    public Set<String> keySet() {
 
         return m_brokenRelations.keySet();
     }
@@ -157,7 +157,7 @@ public class CmsRelationPublishValidator {
      * 
      * @return the broken relations value set
      */
-    public Collection values() {
+    public Collection<List<CmsRelation>> values() {
 
         return m_brokenRelations.values();
     }

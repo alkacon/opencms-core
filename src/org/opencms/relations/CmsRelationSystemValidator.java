@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2009/09/09 14:26:37 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2009/10/26 07:54:44 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.6.2.2 $ 
  * 
  * @since 6.3.0 
  */
@@ -107,7 +107,10 @@ public class CmsRelationSystemValidator {
      *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
      *          keyed by root paths
      */
-    public Map<String, CmsRelation> validateResources(CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report) {
+    public Map<String, List<CmsRelation>> validateResources(
+        CmsDbContext dbc,
+        CmsPublishList publishList,
+        I_CmsReport report) {
 
         // check if progress should be set in the thread
         CmsProgressThread thread = null;
@@ -115,18 +118,18 @@ public class CmsRelationSystemValidator {
             thread = (CmsProgressThread)Thread.currentThread();
         }
 
-        Map invalidResources = new HashMap();
+        Map<String, List<CmsRelation>> invalidResources = new HashMap<String, List<CmsRelation>>();
         boolean interProject = (publishList != null);
         if (report != null) {
             report.println(
                 Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_BEGIN_0),
                 I_CmsReport.FORMAT_HEADLINE);
         }
-        List resources = new ArrayList();
+        List<CmsResource> resources = new ArrayList<CmsResource>();
         if (publishList == null) {
             CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-            List resTypes = OpenCms.getResourceManager().getResourceTypes();
-            Iterator itTypes = resTypes.iterator();
+            List<I_CmsResourceType> resTypes = OpenCms.getResourceManager().getResourceTypes();
+            Iterator<I_CmsResourceType> itTypes = resTypes.iterator();
             int count = 0;
             while (itTypes.hasNext()) {
 
@@ -141,7 +144,7 @@ public class CmsRelationSystemValidator {
                     thread.setProgress(count * 10 / resTypes.size());
                 }
 
-                I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
+                I_CmsResourceType type = itTypes.next();
                 if (type instanceof I_CmsLinkParseable) {
                     filter = filter.addRequireType(type.getTypeId());
                     try {
@@ -163,9 +166,9 @@ public class CmsRelationSystemValidator {
         // populate a lookup map with the project resources that 
         // actually get published keyed by their resource names.
         // second, resources that don't get validated are ignored.
-        Map offlineFilesLookup = new HashMap();
-        List validatableResources = new ArrayList();
-        Iterator itResources = resources.iterator();
+        Map<String, CmsResource> offlineFilesLookup = new HashMap<String, CmsResource>();
+        List<CmsResource> validatableResources = new ArrayList<CmsResource>();
+        Iterator<CmsResource> itResources = resources.iterator();
         int count = 0;
         while (itResources.hasNext()) {
 
@@ -180,7 +183,7 @@ public class CmsRelationSystemValidator {
                 thread.setProgress((count * 10 / resources.size()) + 10);
             }
 
-            CmsResource resource = (CmsResource)itResources.next();
+            CmsResource resource = itResources.next();
             offlineFilesLookup.put(resource.getRootPath(), resource);
             try {
                 I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
@@ -217,7 +220,7 @@ public class CmsRelationSystemValidator {
                 thread.setProgress((index * 20 / resources.size()) + 20);
             }
 
-            CmsResource resource = (CmsResource)validatableResources.get(index);
+            CmsResource resource = validatableResources.get(index);
             String resourceName = resource.getRootPath();
 
             if (report != null) {
@@ -231,7 +234,7 @@ public class CmsRelationSystemValidator {
                     dbc.removeSiteRoot(resourceName)));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             }
-            List brokenLinks = validateLinks(dbc, resource, offlineFilesLookup, project, report);
+            List<CmsRelation> brokenLinks = validateLinks(dbc, resource, offlineFilesLookup, project, report);
             if (brokenLinks.size() > 0) {
                 // the resource contains broken links
                 invalidResources.put(resourceName, brokenLinks);
@@ -272,18 +275,18 @@ public class CmsRelationSystemValidator {
      * @return a list with the broken links as {@link CmsRelation} objects for the specified resource, 
      *          or an empty list if no broken links were found
      */
-    protected List validateLinks(
+    protected List<CmsRelation> validateLinks(
         CmsDbContext dbc,
         CmsResource resource,
-        Map fileLookup,
+        Map<String, CmsResource> fileLookup,
         CmsProject project,
         I_CmsReport report) {
 
-        List brokenRelations = new ArrayList();
-        Map validatedLinks = new HashMap();
+        List<CmsRelation> brokenRelations = new ArrayList<CmsRelation>();
+        Map<String, Boolean> validatedLinks = new HashMap<String, Boolean>();
 
         // get the relations
-        List relations = null;
+        List<CmsRelation> relations = null;
         try {
             if (!resource.getState().isDeleted()) {
                 // search the target of links in the current (offline) project
@@ -310,9 +313,9 @@ public class CmsRelationSystemValidator {
 
         // check the relations
         boolean first = true;
-        Iterator itRelations = relations.iterator();
+        Iterator<CmsRelation> itRelations = relations.iterator();
         while (itRelations.hasNext()) {
-            CmsRelation relation = (CmsRelation)itRelations.next();
+            CmsRelation relation = itRelations.next();
             String link;
             if (!resource.getState().isDeleted()) {
                 link = relation.getTargetPath();
@@ -326,7 +329,7 @@ public class CmsRelationSystemValidator {
             }
             if (validatedLinks.keySet().contains(link)) {
                 // skip already validated links
-                if (((Boolean)validatedLinks.get(link)).booleanValue()) {
+                if (validatedLinks.get(link).booleanValue()) {
                     // add broken relation of different type
                     brokenRelations.add(relation);
                 }
@@ -361,7 +364,7 @@ public class CmsRelationSystemValidator {
                     // check if the linked resource is also to be deleted
                     isValidLink = false;
                     if (fileLookup.containsKey(link)) {
-                        CmsResource offlineResource = (CmsResource)fileLookup.get(link);
+                        CmsResource offlineResource = fileLookup.get(link);
                         if (offlineResource.getState().isDeleted()) {
                             isValidLink = true;
                         }
@@ -386,7 +389,7 @@ public class CmsRelationSystemValidator {
             } finally {
                 // ... and if the linked resource to be published get deleted
                 if (!resource.getState().isDeleted() && fileLookup.containsKey(link)) {
-                    CmsResource offlineResource = (CmsResource)fileLookup.get(link);
+                    CmsResource offlineResource = fileLookup.get(link);
                     if (offlineResource.getState().isDeleted()) {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(Messages.get().getBundle().key(

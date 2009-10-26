@@ -8,7 +8,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.8.1 $ 
  * 
  * @since 6.5.5
  */
@@ -17,7 +17,7 @@ public final class CmsRelationValidatorInfoEntry {
     /** The original entry name. */
     private String m_entryName;
     /** The broken relation sources. */
-    private List m_relations;
+    private List<CmsRelation> m_relations;
     /** The resource name. */
     private String m_resourceName;
     /** The site name. */
@@ -39,7 +39,7 @@ public final class CmsRelationValidatorInfoEntry {
         String resourceName,
         String siteName,
         String siteRoot,
-        List relations) {
+        List<CmsRelation> relations) {
 
         m_entryName = entryName;
         m_resourceName = resourceName;
@@ -63,7 +63,7 @@ public final class CmsRelationValidatorInfoEntry {
      * 
      * @return a list of {@link CmsRelation} objects
      */
-    public List getRelations() {
+    public List<CmsRelation> getRelations() {
 
         return m_relations;
     }
