@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/10/26 07:55:05 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.5.5 
  */
@@ -170,7 +170,8 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
                 CmsRelationValidatorInfoEntry infoEntry = m_validator.getInfoEntry(resourceName);
                 Iterator itRelations = infoEntry.getRelations().iterator();
 
-                if (getResourceUtil(item).getResource().getState().isDeleted()) {
+                boolean isDeleted = getResourceUtil(item).getResource().getState().isDeleted();
+                if (isDeleted) {
                     html.append(CmsPublishBrokenRelationFormatter.PREFIX_SOURCES);
                 } else {
                     html.append(CmsPublishBrokenRelationFormatter.PREFIX_TARGETS);
@@ -179,7 +180,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
                 while (itRelations.hasNext()) {
                     CmsRelation relation = (CmsRelation)itRelations.next();
                     String relationName;
-                    if (getResourceUtil(item).getResource().getState().isDeleted()) {
+                    if (isDeleted) {
                         relationName = relation.getSourcePath();
                     } else {
                         relationName = relation.getTargetPath();
