@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/10/20 09:06:26 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2009/10/26 10:45:13 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 7.6 
  */
@@ -125,7 +125,8 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     public CmsResource getResource() throws CmsException {
 
         if (m_resource == null) {
-            m_resource = OpenCms.getADEManager().getCurrentElement(getRequest()).getElement();
+            m_resource = getCmsObject().readResource(
+                OpenCms.getADEManager().getCurrentElement(getRequest()).getElementId());
         }
         return m_resource;
     }

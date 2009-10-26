@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/22 07:26:34 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/10/26 10:45:13 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlGenericWrapper;
@@ -75,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.5.2
  * 
@@ -284,7 +285,6 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     @Override
     protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
 
-        CmsObject cms = OpenCms.getADEManager().m_adminCms;
         m_document = document;
         m_contentDefinition = definition;
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
@@ -344,12 +344,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         // uri
                         Element uri = element.element(XmlNode.URI.getName());
                         createBookmark(uri, locale, element, elemPath, elemDef);
-                        String elementUri = new CmsLink(uri.element(CmsXmlPage.NODE_LINK)).getUri(); // root path
+                        CmsUUID elementId = new CmsLink(uri.element(CmsXmlPage.NODE_LINK)).getStructureId();
 
                         // formatter
                         Element formatter = element.element(XmlNode.FORMATTER.getName());
                         createBookmark(formatter, locale, element, elemPath, elemDef);
-                        String formatterUri = new CmsLink(formatter.element(CmsXmlPage.NODE_LINK)).getUri(); // root path
+                        CmsUUID formatterId = new CmsLink(formatter.element(CmsXmlPage.NODE_LINK)).getStructureId();
 
                         Map<String, String> propertiesMap = new HashMap<String, String>();
 
@@ -390,23 +390,13 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                                 // uri value
                                 Element valueUri = value.element(XmlNode.URI.getName());
                                 createBookmark(valueUri, locale, value, valuePath, valueDef);
-                                val = new CmsLink(valueUri.element(CmsXmlPage.NODE_LINK)).getUri(); // root path
+                                val = new CmsLink(valueUri.element(CmsXmlPage.NODE_LINK)).getStructureId().toString(); // uuid
                             }
 
                             propertiesMap.put(propName.getTextTrim(), val);
                         }
 
-                        try {
-                            elements.add(new CmsContainerElementBean(
-                                cms.readResource(elementUri),
-                                cms.readResource(formatterUri),
-                                propertiesMap));
-                        } catch (CmsException e) {
-                            if (!LOG.isDebugEnabled()) {
-                                LOG.warn(e.getLocalizedMessage());
-                            }
-                            LOG.debug(e.getLocalizedMessage(), e);
-                        }
+                        elements.add(new CmsContainerElementBean(elementId, formatterId, propertiesMap));
                     }
 
                     containers.add(new CmsContainerBean(name.getText(), type.getText(), -1, elements));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/10/20 13:43:08 $
- * Version: $Revision: 1.1.2.17 $
+ * Date   : $Date: 2009/10/26 10:45:13 $
+ * Version: $Revision: 1.1.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.17 $ 
+ * @version $Revision: 1.1.2.18 $ 
  * 
  * @since 7.6 
  */
@@ -224,8 +224,8 @@ public class CmsJspTagContainer extends TagSupport {
                 }
                 // execute the formatter jsp for the given element uri
                 CmsContainerElementBean element = new CmsContainerElementBean(
-                    resUri,
-                    cms.readResource(elementFormatter),
+                    resUri.getStructureId(),
+                    cms.readResource(elementFormatter).getStructureId(),
                     null); // when used as template element there are no properties
 
                 CmsJspTagInclude.includeTagAction(
@@ -247,7 +247,7 @@ public class CmsJspTagContainer extends TagSupport {
             }
             renderElems--;
 
-            CmsResource resUri = element.getElement();
+            CmsResource resUri = cms.readResource(element.getElementId());
             if (resUri.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
                 // get the subcontainer data from cache
                 CmsXmlContainerPage subXmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, resUri, req);
@@ -257,16 +257,17 @@ public class CmsJspTagContainer extends TagSupport {
                 CmsContainerBean subcontainer = subcntPage.getContainers().values().iterator().next();
                 // iterate the subelements
                 for (CmsContainerElementBean subelement : subcontainer.getElements()) {
-                    String subelementUri = cms.getSitePath(subelement.getElement());
+                    CmsResource subelementRes = cms.readResource(subelement.getElementId());
+                    String subelementUri = cms.getSitePath(subelementRes);
                     // get the content definition
                     CmsXmlContentDefinition contentDef = CmsXmlContentDefinition.getContentDefinitionForResource(
                         cms,
-                        subelement.getElement());
+                        subelementRes);
 
                     //String subelementFormatter = cms.getSitePath(subelement.getFormatter());
                     String subelementFormatter = contentDef.getContentHandler().getFormatters().get(containerType);
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter)) {
-                        subelementFormatter = cms.getSitePath(subelement.getFormatter());
+                        subelementFormatter = cms.getSitePath(cms.readResource(subelement.getFormatterId()));
                     }
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter)) {
                         throw new CmsIllegalStateException(Messages.get().container(
@@ -288,7 +289,7 @@ public class CmsJspTagContainer extends TagSupport {
                         res);
                 }
             } else {
-                String elementFormatter = cms.getSitePath(element.getFormatter());
+                String elementFormatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
 
                 // execute the formatter jsp for the given element uri
                 CmsJspTagInclude.includeTagAction(

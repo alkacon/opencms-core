@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2009/10/20 07:38:55 $
- * Version: $Revision: 1.28.2.5 $
+ * Date   : $Date: 2009/10/26 10:45:14 $
+ * Version: $Revision: 1.28.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28.2.5 $ 
+ * @version $Revision: 1.28.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -607,7 +607,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                             try {
                                 CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(
                                     m_jspPageContext.getRequest());
-                                value = m_cms.getSitePath(element.getElement());
+                                value = m_cms.getSitePath(m_cms.readResource(element.getElementId()));
                             } catch (CmsException ex) {
                                 LOG.warn(ex);
                                 LOG.debug(ex.getLocalizedMessage(), ex);

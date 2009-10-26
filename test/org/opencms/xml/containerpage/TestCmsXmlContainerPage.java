@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/Attic/TestCmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/22 07:26:34 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/26 10:45:14 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
@@ -131,8 +131,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         props.put("abc", "abc");
         props.put("test", "/sites/default/containerpage/content.html");
         CmsContainerElementBean elem = new CmsContainerElementBean(
-            cms.readResource("/containerpage/content.html"),
-            cms.readResource("/containerpage/formatter.jsp"),
+            cms.readResource("/containerpage/content.html").getStructureId(),
+            cms.readResource("/containerpage/formatter.jsp").getStructureId(),
             props);
         elems.add(elem);
         elemMap.put(Locale.ENGLISH.toString() + "test", elems);
@@ -180,8 +180,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
                     CmsContainerElementBean expected = elemMap.get(locale.toString() + type).get(i);
 
                     assertEquals(expected.getClientId(), element.getClientId());
-                    assertEquals(expected.getElement(), element.getElement());
-                    assertEquals(expected.getFormatter(), element.getFormatter());
+                    assertEquals(expected.getElementId(), element.getElementId());
+                    assertEquals(expected.getFormatterId(), element.getFormatterId());
                     assertEquals(expected.getProperties(), element.getProperties());
                 }
             }

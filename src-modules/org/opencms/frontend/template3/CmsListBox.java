@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBox.java,v $
- * Date   : $Date: 2009/10/20 07:38:55 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/10/26 10:45:13 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.frontend.template3;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  */
 public class CmsListBox extends CmsJspActionElement {
 
@@ -207,8 +208,9 @@ public class CmsListBox extends CmsJspActionElement {
         // collect the configuration information 
         try {
             CmsContainerElementBean element = OpenCms.getADEManager().getCurrentElement(req);
-            CmsFile file = getCmsObject().readFile(element.getElement());
-            m_content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
+            CmsObject cms = getCmsObject();
+            CmsFile file = cms.readFile(cms.readResource(element.getElementId()));
+            m_content = CmsXmlContentFactory.unmarshal(cms, file);
 
             // process the default mappings (if set / available)
             m_mapping = null;
@@ -219,26 +221,27 @@ public class CmsListBox extends CmsJspActionElement {
                     String basePath = CmsXmlUtils.createXpath(NODE_MAPPING, i);
 
                     String field = m_content.getStringValue(
-                        getCmsObject(),
+                        cms,
                         CmsXmlUtils.concatXpath(basePath, "Field"),
                         getRequestContext().getLocale());
-                    String defaultValue = m_content.getStringValue(getCmsObject(), CmsXmlUtils.concatXpath(
-                        basePath,
-                        "Default"), getRequestContext().getLocale());
-                    String maxLenghtStr = m_content.getStringValue(getCmsObject(), CmsXmlUtils.concatXpath(
-                        basePath,
-                        "MaxLength"), getRequestContext().getLocale());
+                    String defaultValue = m_content.getStringValue(
+                        cms,
+                        CmsXmlUtils.concatXpath(basePath, "Default"),
+                        getRequestContext().getLocale());
+                    String maxLenghtStr = m_content.getStringValue(
+                        cms,
+                        CmsXmlUtils.concatXpath(basePath, "MaxLength"),
+                        getRequestContext().getLocale());
                     List<I_CmsXmlContentValue> xmlNodes = m_content.getValues(CmsXmlUtils.concatXpath(
                         basePath,
                         "XmlNode"), getRequestContext().getLocale());
                     List<String> nodes = new ArrayList<String>(xmlNodes.size());
                     for (int j = 0; j < xmlNodes.size(); j++) {
-                        nodes.add(xmlNodes.get(j).getStringValue(getCmsObject()));
+                        nodes.add(xmlNodes.get(j).getStringValue(cms));
                     }
                     m_mapping.addListBoxFieldMapping(nodes, field, maxLenghtStr, defaultValue);
                 }
-                m_mapping.setFacade(m_content.getValue(NODE_FACADE, getRequestContext().getLocale()).getStringValue(
-                    getCmsObject()));
+                m_mapping.setFacade(m_content.getValue(NODE_FACADE, getRequestContext().getLocale()).getStringValue(cms));
             }
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {

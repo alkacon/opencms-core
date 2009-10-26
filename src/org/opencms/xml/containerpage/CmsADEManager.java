@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/26 07:59:09 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2009/10/26 10:45:12 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -70,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 7.6
  */
@@ -97,9 +96,6 @@ public class CmsADEManager {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
 
-    /** The admin cms context. */
-    protected CmsObject m_adminCms;
-
     /** The cache instance. */
     protected CmsADECache m_cache;
 
@@ -109,18 +105,13 @@ public class CmsADEManager {
     /**
      * Creates a new ADE manager.<p>
      * 
-     * @param adminCms the admin cms context
      * @param cache the ADE ache instance
      * @param configuration the configured configuration object
-     * 
-     * @throws CmsException if something goes wrong 
      */
-    public CmsADEManager(CmsObject adminCms, CmsADECache cache, I_CmsADEConfiguration configuration)
-    throws CmsException {
+    public CmsADEManager(CmsADECache cache, I_CmsADEConfiguration configuration) {
 
         m_cache = cache;
         m_configuration = configuration;
-        m_adminCms = OpenCms.initCmsObject(adminCms);
     }
 
     /**
@@ -186,20 +177,18 @@ public class CmsADEManager {
     /**
      * Creates an element from its serialized data.<p> 
      * 
-     * @param cms the cms context
      * @param data the serialized data
      * 
      * @return the restored element bean
      * 
      * @throws JSONException if the serialized data got corrupted
-     * @throws CmsException if the stored resources no longer exist
      */
-    public CmsContainerElementBean elementFromJson(CmsObject cms, JSONObject data) throws JSONException, CmsException {
+    public CmsContainerElementBean elementFromJson(JSONObject data) throws JSONException {
 
-        CmsResource element = cms.readResource(new CmsUUID(data.getString(JSON_ELEMENT)));
-        CmsResource formatter = null;
+        CmsUUID element = new CmsUUID(data.getString(JSON_ELEMENT));
+        CmsUUID formatter = null;
         if (data.has(JSON_FORMATTER)) {
-            formatter = cms.readResource(new CmsUUID(data.getString(JSON_FORMATTER)));
+            formatter = new CmsUUID(data.getString(JSON_FORMATTER));
         }
         Map<String, String> properties = new HashMap<String, String>();
 
@@ -225,9 +214,9 @@ public class CmsADEManager {
         JSONObject data = null;
         try {
             data = new JSONObject();
-            data.put(JSON_ELEMENT, element.getElement().getStructureId().toString());
-            if (element.getFormatter() != null) {
-                data.put(JSON_FORMATTER, element.getFormatter().getStructureId().toString());
+            data.put(JSON_ELEMENT, element.getElementId().toString());
+            if (element.getFormatterId() != null) {
+                data.put(JSON_FORMATTER, element.getFormatterId().toString());
             }
             JSONObject properties = new JSONObject();
             for (Map.Entry<String, String> entry : element.getProperties().entrySet()) {
@@ -306,7 +295,9 @@ public class CmsADEManager {
             properties.put(propertyName, property);
         }
         try {
-            Map<String, CmsXmlContentProperty> propertyDefs = getElementPropertyConfiguration(cms, element.getElement());
+            Map<String, CmsXmlContentProperty> propertyDefs = getElementPropertyConfiguration(
+                cms,
+                cms.readResource(element.getElementId()));
             Iterator<Map.Entry<String, CmsXmlContentProperty>> itPropertyDefs = propertyDefs.entrySet().iterator();
             while (itPropertyDefs.hasNext()) {
                 Map.Entry<String, CmsXmlContentProperty> entry = itPropertyDefs.next();
@@ -321,7 +312,7 @@ public class CmsADEManager {
         } catch (Exception e) {
             LOG.error(Messages.get().getBundle().key(
                 Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
-                element.getElement().getRootPath()), e);
+                element.getElementId()), e);
         }
         return properties;
     }
@@ -362,7 +353,7 @@ public class CmsADEManager {
                 JSONArray array = new JSONArray((String)obj);
                 for (int i = 0; i < array.length(); i++) {
                     try {
-                        favList.add(elementFromJson(cms, array.getJSONObject(i)));
+                        favList.add(elementFromJson(array.getJSONObject(i)));
                     } catch (Throwable e) {
                         // should never happen, catches wrong or no longer existing values
                         if (!LOG.isDebugEnabled()) {

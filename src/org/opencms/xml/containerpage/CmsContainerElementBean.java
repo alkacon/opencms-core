@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/10/20 07:38:53 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/10/26 10:45:13 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
@@ -52,11 +52,11 @@ public class CmsContainerElementBean {
     /** The client id including properties-hash. */
     private transient String m_clientId;
 
-    /** The element. */
-    private CmsResource m_element;
+    /** The element's structure id. */
+    private CmsUUID m_elementId;
 
-    /** The formatter. */
-    private CmsResource m_formatter;
+    /** The formatter's structure id. */
+    private CmsUUID m_formatterId;
 
     /** The configured properties. */
     private Map<String, String> m_properties;
@@ -64,17 +64,17 @@ public class CmsContainerElementBean {
     /**
      * Creates a new container page element bean.<p> 
      *  
-     * @param element the element 
-     * @param formatter the formatter
+     * @param elementId the element's structure id
+     * @param formatterId the formatter's structure id, could be <code>null</code>
      * @param properties the properties as a map of name/value pairs
      **/
-    public CmsContainerElementBean(CmsResource element, CmsResource formatter, Map<String, String> properties) {
+    public CmsContainerElementBean(CmsUUID elementId, CmsUUID formatterId, Map<String, String> properties) {
 
-        m_element = element;
-        m_formatter = formatter;
+        m_elementId = elementId;
+        m_formatterId = formatterId;
         m_properties = (properties == null ? new HashMap<String, String>() : properties);
         m_properties = Collections.unmodifiableMap(m_properties);
-        m_clientId = OpenCms.getADEManager().convertToClientId(m_element.getStructureId());
+        m_clientId = OpenCms.getADEManager().convertToClientId(m_elementId);
         if (!m_properties.isEmpty()) {
             int hash = m_properties.toString().hashCode();
             m_clientId += "#" + hash;
@@ -104,23 +104,23 @@ public class CmsContainerElementBean {
     }
 
     /**
-     * Returns the element.<p>
+     * Returns the element's structure id.<p>
      *
-     * @return the element
+     * @return the element's structure id
      */
-    public CmsResource getElement() {
+    public CmsUUID getElementId() {
 
-        return m_element;
+        return m_elementId;
     }
 
     /**
-     * Returns the formatter.<p>
+     * Returns the formatter's structure id.<p>
      *
-     * @return the formatter
+     * @return the formatter's structure id
      */
-    public CmsResource getFormatter() {
+    public CmsUUID getFormatterId() {
 
-        return m_formatter;
+        return m_formatterId;
     }
 
     /**

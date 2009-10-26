@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/26 07:59:09 $
- * Version: $Revision: 1.1.2.40 $
+ * Date   : $Date: 2009/10/26 10:45:13 $
+ * Version: $Revision: 1.1.2.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.40 $
+ * @version $Revision: 1.1.2.41 $
  * 
  * @since 7.6
  */
@@ -736,9 +736,8 @@ public class CmsADEServer extends CmsJspActionElement {
      * @return a list of resource ids
      * 
      * @throws JSONException if something goes wrong
-     * @throws CmsException 
      */
-    protected List<CmsContainerElementBean> arrayToElementList(JSONArray array) throws JSONException, CmsException {
+    protected List<CmsContainerElementBean> arrayToElementList(JSONArray array) throws JSONException {
 
         List<CmsContainerElementBean> result = new ArrayList<CmsContainerElementBean>(array.length());
         for (int i = 0; i < array.length(); i++) {
@@ -823,11 +822,9 @@ public class CmsADEServer extends CmsJspActionElement {
      * 
      * @return the element bean
      * 
-     * @throws CmsException if something goes wrong reading the element resource
      * @throws JSONException if something goes wrong parsing JSON
      */
-    protected CmsContainerElementBean createElement(CmsUUID structureId, JSONObject properties)
-    throws CmsException, JSONException {
+    protected CmsContainerElementBean createElement(CmsUUID structureId, JSONObject properties) throws JSONException {
 
         Map<String, String> cnfProps = new HashMap<String, String>();
         if (properties != null) {
@@ -837,7 +834,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 cnfProps.put(propertyName, properties.getString(propertyName));
             }
         }
-        return new CmsContainerElementBean(getCmsObject().readResource(structureId), null, cnfProps);
+        return new CmsContainerElementBean(structureId, null, cnfProps);
     }
 
     /**
@@ -863,10 +860,10 @@ public class CmsADEServer extends CmsJspActionElement {
      * Reads the cached element-bean for the given client-side-id from cache.<p>
      * 
      * @param clientId the client-side-id
-     * @return the CmsContainerElementBean
-     * @throws CmsException - if the resource could not be read for any reason
+     * 
+     * @return the cached container element bean
      */
-    protected CmsContainerElementBean getCachedElement(String clientId) throws CmsException {
+    protected CmsContainerElementBean getCachedElement(String clientId) {
 
         String id = clientId;
         CmsContainerElementBean element = null;
@@ -882,7 +879,7 @@ public class CmsADEServer extends CmsJspActionElement {
             }
         }
         // this is necessary if the element has not been cached yet
-        element = new CmsContainerElementBean(getCmsObject().readResource(m_manager.convertToServerId(id)), null, null);
+        element = new CmsContainerElementBean(m_manager.convertToServerId(id), null, null);
         m_sessionCache.setCacheContainerElement(id, element);
         return element;
     }
@@ -957,7 +954,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 renderElems--;
 
                 CmsResource elemRes = cms.readResource(elemUri);
-                CmsContainerElementBean element = new CmsContainerElementBean(elemRes, null, null);
+                CmsContainerElementBean element = new CmsContainerElementBean(elemRes.getStructureId(), null, null);
                 m_sessionCache.setCacheContainerElement(element.getClientId(), element);
                 // check if the element already exists
                 String id = element.getClientId();
@@ -994,16 +991,17 @@ public class CmsADEServer extends CmsJspActionElement {
                 // get subcontainer elements
                 if (resElement.has(CmsElementUtil.JsonElement.SUBITEMS.getName())) {
                     // this container page should contain exactly one container
+                    CmsResource elementRes = cms.readResource(element.getElementId());
                     CmsXmlContainerPage subXmlCntPage = CmsXmlContainerPageFactory.unmarshal(
                         cms,
-                        element.getElement(),
+                        elementRes,
                         getRequest());
                     CmsContainerPageBean subCntPage = subXmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
                     CmsContainerBean subContainer = subCntPage.getContainers().values().iterator().next();
 
                     // adding all sub-items to the elements data
                     for (CmsContainerElementBean subElement : subContainer.getElements()) {
-                        if (!ids.contains(subElement.getElement().getStructureId())) {
+                        if (!ids.contains(subElement.getElementId())) {
                             String subId = subElement.getClientId();
                             if (ids.contains(subId)) {
                                 continue;
@@ -1119,9 +1117,10 @@ public class CmsADEServer extends CmsJspActionElement {
         List<CmsResource> creatableElements = m_manager.getCreatableElements(cms, cntPageUri, request);
         for (CmsResource creatableElement : creatableElements) {
             String type = OpenCms.getResourceManager().getResourceType(creatableElement).getTypeName();
-            JSONObject resElement = elemUtil.getElementData(
-                new CmsContainerElementBean(creatableElement, null, null),
-                types);
+            JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
+                creatableElement.getStructureId(),
+                null,
+                null), types);
             // overwrite some special fields for new elements
             resElement.put(CmsElementUtil.JsonElement.ID.getName(), type);
             resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
@@ -1202,9 +1201,10 @@ public class CmsADEServer extends CmsJspActionElement {
         List<CmsResource> creatableElements = m_manager.getSearchableResourceTypes(cms, cntPageUri, request);
         for (CmsResource searchableElement : creatableElements) {
             String type = OpenCms.getResourceManager().getResourceType(searchableElement).getTypeName();
-            JSONObject resElement = elemUtil.getElementData(
-                new CmsContainerElementBean(searchableElement, null, null),
-                types);
+            JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
+                searchableElement.getStructureId(),
+                null,
+                null), types);
             // overwrite some special fields for searchable elements
             resElement.put(CmsElementUtil.JsonElement.ID.getName(), type);
             resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
@@ -1280,7 +1280,7 @@ public class CmsADEServer extends CmsJspActionElement {
                     try {
                         CmsResource resource = cms.readResource(uri);
                         JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
-                            resource,
+                            resource.getStructureId(),
                             null,
                             null), types);
                         // store element data
@@ -1389,7 +1389,7 @@ public class CmsADEServer extends CmsJspActionElement {
                     Map<String, CmsProperty> properties = m_manager.getElementProperties(cms, element);
                     Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(
                         cms,
-                        element.getElement());
+                        cms.readResource(element.getElementId()));
                     Iterator<String> itProps = properties.keySet().iterator();
 
                     // index of the property

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/26 07:59:09 $
- * Version: $Revision: 1.1.2.20 $
+ * Date   : $Date: 2009/10/26 10:45:13 $
+ * Version: $Revision: 1.1.2.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.20 $
+ * @version $Revision: 1.1.2.21 $
  * 
  * @since 7.6
  */
@@ -231,8 +231,9 @@ public final class CmsElementUtil {
     public String getElementContent(CmsContainerElementBean element, CmsResource formatter)
     throws CmsException, ServletException, IOException {
 
+        CmsResource elementRes = m_cms.readResource(element.getElementId());
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
-            formatter), element.getElement(), formatter);
+            formatter), elementRes, formatter);
 
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
 
@@ -243,7 +244,7 @@ public final class CmsElementUtil {
             // to enable 'old' direct edit features for content-collector-elements, 
             // set the direct-edit-provider-attribute in the request
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
-            eb.init(m_cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(element.getElement()));
+            eb.init(m_cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(elementRes));
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
 
             // TODO: is this going to be cached? most likely not! any alternative?
@@ -256,7 +257,7 @@ public final class CmsElementUtil {
                     null,
                     m_cms.getRequestContext().getLocale(),
                     m_req,
-                    m_res), CmsLocaleManager.getResourceEncoding(m_cms, element.getElement()));
+                    m_res), CmsLocaleManager.getResourceEncoding(m_cms, elementRes));
             } finally {
                 m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
             }
@@ -281,7 +282,7 @@ public final class CmsElementUtil {
 
         // create new json object for the element
         JSONObject resElement = new JSONObject();
-        CmsResource resource = element.getElement();
+        CmsResource resource = m_cms.readResource(element.getElementId());
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
         resElement.put(JsonElement.OBJTYPE.getName(), TYPE_ELEMENT);
         resElement.put(JsonElement.ID.getName(), element.getClientId());
@@ -366,14 +367,13 @@ public final class CmsElementUtil {
      */
     public JSONObject getElementPropertyInfo(CmsContainerElementBean element) throws CmsException, JSONException {
 
+        CmsResource elementRes = m_cms.readResource(element.getElementId());
         CmsUserSettings settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
-        CmsMessages messages = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, element.getElement()).getMessages(
+        CmsMessages messages = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, elementRes).getMessages(
             settings.getLocale());
         JSONObject result = new JSONObject();
         JSONObject jSONProperties = new JSONObject();
-        Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(
-            m_cms,
-            element.getElement());
+        Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(m_cms, elementRes);
         Map<String, CmsProperty> properties = m_manager.getElementProperties(m_cms, element);
         Iterator<Map.Entry<String, CmsXmlContentProperty>> itProperties = propertiesConf.entrySet().iterator();
         while (itProperties.hasNext()) {

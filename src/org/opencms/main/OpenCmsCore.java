@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/10/20 07:38:56 $
- * Version: $Revision: 1.245.2.7 $
+ * Date   : $Date: 2009/10/26 10:45:14 $
+ * Version: $Revision: 1.245.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -145,7 +145,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.245.2.7 $ 
+ * @version $Revision: 1.245.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -1240,7 +1240,7 @@ public final class OpenCmsCore {
                 }
             }
             m_adeCache = new CmsADECache(m_memoryMonitor, adeCacheSettings);
-            m_adeManager = new CmsADEManager(adminCms, m_adeCache, adeConfiguration);
+            m_adeManager = new CmsADEManager(m_adeCache, adeConfiguration);
 
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
