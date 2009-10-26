@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportExportRule.java,v $
- * Date   : $Date: 2009/10/23 08:32:28 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2009/10/26 08:14:12 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * Help class for storing of export-rules.<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.6.2.1 $
+ * @version $Revision: 1.6.2.2 $
  * @since 6.0.0
  */
 public class CmsStaticExportExportRule {
@@ -155,12 +155,13 @@ public class CmsStaticExportExportRule {
         Iterator itExpRes = m_exportResources.iterator();
         while (itExpRes.hasNext()) {
             String exportRes = (String)itExpRes.next();
-            CmsResource res = cms.readResource(exportRes);
-            if (res.isFile()) {
+            // read all from the configured node path, exclude resources flagged as internal  
+            if (cms.existsResource(exportRes)) {
+                // first add the resource itself
+                CmsResource res = cms.readResource(exportRes);
                 resources.add(new CmsPublishedResource(res));
-            } else {
-                // read all from the configured node path, exclude resources flagged as internal  
-                if (cms.existsResource(exportRes)) {
+                if (res.isFolder()) {
+                    // if the resource is a folder add also all sub-resources 
                     List vfsResources = cms.readResources(
                         exportRes,
                         CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
