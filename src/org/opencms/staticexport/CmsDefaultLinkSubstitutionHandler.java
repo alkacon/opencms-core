@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/10/26 13:16:37 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 7.0.2
  * 
@@ -113,6 +113,13 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         } else {
             vfsName = absoluteLink;
             parameters = null;
+        }
+
+        String anchor = null;
+        pos = vfsName.indexOf('#');
+        if (pos >= 0) {
+            anchor = vfsName.substring(pos);
+            vfsName = vfsName.substring(0, pos);
         }
 
         String resultLink = null;
@@ -257,6 +264,11 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             }
 
         }
+
+        if ((anchor != null) && (resultLink != null)) {
+            resultLink = resultLink.concat(anchor);
+        }
+
         return serverPrefix.concat(resultLink);
     }
 
