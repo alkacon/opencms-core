@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/10/14 07:38:59 $
- * Version: $Revision: 1.639.2.3 $
+ * Date   : $Date: 2009/10/26 07:52:10 $
+ * Version: $Revision: 1.639.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3792,6 +3792,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         Collections.sort(lockedResources);
         return lockedResources;
+    }
+
+    /**
+     * Returns all locked resources in a given folder.<p>
+     *
+     * @param dbc the current database context
+     * @param resource the folder to search in
+     * @param filter the lock filter
+     * 
+     * @return a list of locked resources
+     * 
+     * @throws CmsException if the current project is locked
+     */
+    public List<CmsResource> getLockedResourcesObjects(CmsDbContext dbc, CmsResource resource, CmsLockFilter filter)
+    throws CmsException {
+
+        return m_lockManager.getLockedResources(dbc, resource, filter);
     }
 
     /**
@@ -7893,8 +7910,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws Exception if something goes wrong
      */
-    public Map<String, CmsRelation> validateRelations(CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report)
-    throws Exception {
+    public Map<String, List<CmsRelation>> validateRelations(
+        CmsDbContext dbc,
+        CmsPublishList publishList,
+        I_CmsReport report) throws Exception {
 
         return m_htmlLinkValidator.validateResources(dbc, publishList, report);
     }

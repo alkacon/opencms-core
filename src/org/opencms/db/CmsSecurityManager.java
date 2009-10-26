@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2009/09/09 14:26:34 $
- * Version: $Revision: 1.123.2.1 $
+ * Date   : $Date: 2009/10/26 07:52:10 $
+ * Version: $Revision: 1.123.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1896,6 +1896,38 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
             result = m_driverManager.getLockedResources(dbc, resource, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1,
+                context.getSitePath(resource)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns all locked resources in a given folder.<p>
+     *
+     * @param context the current request context
+     * @param resource the folder to search in
+     * @param filter the lock filter
+     * 
+     * @return a list of locked resource paths (relative to current site)
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> getLockedResourcesObjects(
+        CmsRequestContext context,
+        CmsResource resource,
+        CmsLockFilter filter) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        List<CmsResource> result = null;
+        try {
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
+            result = m_driverManager.getLockedResourcesObjects(dbc, resource, filter);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1,
@@ -4991,12 +5023,12 @@ public final class CmsSecurityManager {
      * 
      * @throws Exception if something goes wrong
      */
-    public Map<String, CmsRelation> validateRelations(
+    public Map<String, List<CmsRelation>> validateRelations(
         CmsRequestContext context,
         CmsPublishList publishList,
         I_CmsReport report) throws Exception {
 
-        Map<String, CmsRelation> result = null;
+        Map<String, List<CmsRelation>> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.validateRelations(dbc, publishList, report);

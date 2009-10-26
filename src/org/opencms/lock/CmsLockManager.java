@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2009/09/10 16:26:21 $
- * Version: $Revision: 1.50.2.2 $
+ * Date   : $Date: 2009/10/26 07:52:09 $
+ * Version: $Revision: 1.50.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.I_CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -63,7 +64,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.50.2.2 $ 
+ * @version $Revision: 1.50.2.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -224,6 +225,49 @@ public final class CmsLockManager {
             lock = lock.getEditionLock();
         }
         return lock;
+    }
+
+    /**
+     * Returns all exclusive locked resources matching the given resource and filter.<p>
+     * 
+     * @param dbc the database context
+     * @param resource the resource
+     * @param filter the lock filter
+     * 
+     * @return a list of resources
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsResource> getLockedResources(CmsDbContext dbc, CmsResource resource, CmsLockFilter filter)
+    throws CmsException {
+
+        List<CmsResource> lockedResources = new ArrayList<CmsResource>();
+        Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+        while (itLocks.hasNext()) {
+            CmsLock lock = itLocks.next();
+            CmsResource lockedResource;
+            try {
+                lockedResource = m_driverManager.readResource(dbc, lock.getResourceName(), CmsResourceFilter.ALL);
+            } catch (CmsVfsResourceNotFoundException e) {
+                OpenCms.getMemoryMonitor().uncacheLock(lock.getResourceName());
+                continue;
+            }
+            if (filter.isSharedExclusive() && (lockedResource.getSiblingCount() > 1)) {
+                Iterator<CmsResource> itSiblings = internalReadSiblings(dbc, lockedResource).iterator();
+                while (itSiblings.hasNext()) {
+                    CmsResource sibling = itSiblings.next();
+                    CmsLock siblingLock = internalSiblingLock(lock, sibling.getRootPath());
+                    if (filter.match(resource.getRootPath(), siblingLock)) {
+                        lockedResources.add(sibling);
+                    }
+                }
+            }
+            if (filter.match(resource.getRootPath(), lock)) {
+                lockedResources.add(lockedResource);
+            }
+        }
+        Collections.sort(lockedResources, I_CmsResource.COMPARE_ROOT_PATH);
+        return lockedResources;
     }
 
     /**

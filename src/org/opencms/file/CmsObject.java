@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2009/09/09 14:26:35 $
- * Version: $Revision: 1.166.2.1 $
+ * Date   : $Date: 2009/10/26 07:52:11 $
+ * Version: $Revision: 1.166.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.166.2.1 $
+ * @version $Revision: 1.166.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -1080,18 +1080,33 @@ public final class CmsObject {
     }
 
     /**
-     * Returns all locked resources within a folder.<p>
+     * Returns all locked resources within a folder or matches the lock of the given resource.<p>
      *
-     * @param foldername the name of the folder
+     * @param resource the resource to check
+     * @param filter the lock filter
+     * 
+     * @return a list of locked resources
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List<CmsResource> getLockedResources(CmsResource resource, CmsLockFilter filter) throws CmsException {
+
+        return m_securityManager.getLockedResourcesObjects(m_context, resource, filter);
+    }
+
+    /**
+     * Returns all locked resources within a folder or matches the lock of the given resource.<p>
+     *
+     * @param resourceName the name of the resource to check
      * @param filter the lock filter
      * 
      * @return a list of locked resource paths (relative to current site)
      *
      * @throws CmsException if operation was not successful
      */
-    public List<String> getLockedResources(String foldername, CmsLockFilter filter) throws CmsException {
+    public List<String> getLockedResources(String resourceName, CmsLockFilter filter) throws CmsException {
 
-        CmsResource resource = readResource(foldername, CmsResourceFilter.ALL);
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
         return m_securityManager.getLockedResources(m_context, resource, filter);
     }
 
