@@ -1,4 +1,4 @@
-﻿(function(cms) {
+﻿﻿(function(cms) {
 
    /** Element state 'new' constant. */
    var /** String */ STATUS_NEW = cms.data.STATUS_NEW = 'N';
@@ -196,8 +196,8 @@
                                           // this element is not a creatable type
                      } else {
                         cms.data.newTypes[newPos] = {
-                           'type': this.type,
-                           'name': this.typename
+                        'type': this.type,
+                        'name': this.typename
                         };
                      }
                      
@@ -209,15 +209,15 @@
                      if (searchPos < 0) {
                                           // this element is not a searchable type
                      } else {
-                        cms.search.searchParams.types.push({
-                           'name': this.type,
-                           'checked': true
-                        });
+                     cms.search.searchParams.types.push({
+                        'name': this.type,
+                        'checked': true
+                     });
                         cms.search.searchTypes.push({
                            'type': this.type,
                            'name': this.typename
                         });
-                     }
+                  }
                   }
                });
                _initNewCounter(elements);
@@ -773,6 +773,51 @@
       return value;
    }
    
+   /**
+   * AJAX call for getting the publish problem list from the server
+   */
+   var getPublishProblemList = cms.data.getPublishProblemList = function(callback) {
+       loadJSON({
+           action: 'publish_list'
+       }, callback);
+   }
+   
+   /**
+   * AJAX call for getting the publish list from the server 
+   */
+   var getPublishList = cms.data.getPublishList = function(related, siblings, resourcesToRemove, callback) {
+       var params = {
+           action: 'publish_list',
+           related: JSON.stringify(related),
+           siblings: JSON.stringify(siblings)
+       }
+       if (resourcesToRemove) {
+           params['remove_resources'] = JSON.stringify(resourcesToRemove);
+       }
+       loadJSON(params, callback)
+   }
+   
+   /**
+   * AJAX call for publishing resources.
+   */
+   var publishResources = cms.data.publishResources = function(resources, callback) {
+       var params = {
+           action: 'publish',
+           resources: JSON.stringify(resources)
+       }
+       loadJSON(params, callback);
+   }
+   
+   /**
+   * AJAX call for removing items from the publish list.
+   */
+   var removeFromPublishList = cms.data.removeFromPublishList = function(id, callback) {
+       var params = {
+           action: 'publish_list',
+           remove_resources: JSON.stringify([id])
+       }
+       loadJSON(params, callback);
+   }
    
 })(cms);
 

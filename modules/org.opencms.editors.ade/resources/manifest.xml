@@ -3454,6 +3454,27 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/ade/js/cms.publish.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.publish.js</destination>
+			<type>plain</type>
+			<uuidstructure>334433ce-bc8a-13de-ad02-99487bd5b80a</uuidstructure>
+			<uuidresource>334433cf-bc8a-13de-ad02-99487bd5b80a</uuidresource>
+			<datelastmodified>Mon, 19 Oct 2009 16:01:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Oct 2009 08:34:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[cms.publish]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.search.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.search.js</destination>
 			<type>plain</type>

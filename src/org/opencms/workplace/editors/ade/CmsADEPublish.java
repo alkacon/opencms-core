@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/10/26 07:59:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/26 08:11:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.9.3
  */
@@ -1053,7 +1054,7 @@ public class CmsADEPublish {
         jsonRes.put(JsonResource.ID.getName(), resource.getStructureId());
         jsonRes.put(JsonResource.URI.getName(), resUtil.getFullPath());
         jsonRes.put(JsonResource.TITLE.getName(), resUtil.getTitle());
-        jsonRes.put(JsonResource.ICON.getName(), resUtil.getIconPathExplorer());
+        jsonRes.put(JsonResource.ICON.getName(), CmsWorkplace.getResourceUri(resUtil.getIconPathExplorer()));
         jsonRes.put(JsonResource.STATE.getName(), "" + resUtil.getStateAbbreviation());
         jsonRes.put(JsonResource.LOCKED_BY.getName(), resUtil.getLockedByName());
         return jsonRes;

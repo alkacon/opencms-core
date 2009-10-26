@@ -851,8 +851,8 @@
       var $newlist = $('#' + cms.html.newMenuId + " ul");
       for (var i = 0; i < cms.data.newTypes.length; i++) {
          $newlist.append(cms.html.createItemFavListHtml(cms.data.newTypes[i].type));
+         }
       }
-   }
    
    /**
     * Adds item to recent list.<p>
@@ -1258,6 +1258,23 @@
    
    }
    
+   var PublishMode = {
+       name: 'publish',
+       createButton: function() {
+           var self = this;
+           self.button = $('<button name="publish" title="Publish" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button>');
+           self.button.click(function() {
+               var publishDialog = new cms.publish.PublishDialog();
+               publishDialog.start();
+           });
+           return self.button;
+       },
+       initialize: doNothing
+       
+       
+       
+   }
+   
    
    var FavoritesListMode = {
       name: 'favorites',
@@ -1559,7 +1576,7 @@
    /**
     * The mode objects in the order in which the buttons should appear in the toolbar.
     */
-   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, AddListMode, NewListMode, FavoritesListMode, RecentListMode, SaveMode];
+   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, AddListMode, NewListMode, FavoritesListMode, RecentListMode, SaveMode, PublishMode];
    
    /**
     * Gets a mode by mode name.

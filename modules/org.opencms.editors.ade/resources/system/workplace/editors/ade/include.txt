@@ -5,7 +5,10 @@
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery-1.3.2.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery-ui-1.8a1.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.jHelperTip.1.0.js"></script>
+    
+    /*DEBUG*/ 
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.dump.js"></script>
+    
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/json2.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/customInput.js"></script>
     <script type="text/javascript">
@@ -17,7 +20,7 @@
           "CURRENT_CNT_PAGE": "%(currentContainerPage)",
           "CURRENT_URI"     : "%(currentUri)",
           "LOCALE"          : "%(currentLocale)"
-        }, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}, search :{}, property: {}, messages: {}};
+        }, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}, search :{}, property: {}, messages: {}, publish: {}};
     </script>
     <script type="text/javascript" src="%(messagesUri)"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.data.js"></script>
@@ -29,3 +32,4 @@
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.toolbar.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.property.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.sitemap.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.publish.js"></script>
