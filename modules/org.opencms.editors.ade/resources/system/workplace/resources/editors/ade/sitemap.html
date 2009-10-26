@@ -32,10 +32,10 @@ $(document).ready(function(){
 		list-style-type:none;
 		margin:0 0 0 20px;
         padding: 0px;
-	}
+    }
 	li{
 	 display: block;
-	float: left;
+    float: left;
     clear: left;
 		margin: 0px;
 		padding: 0px;
@@ -48,24 +48,51 @@ $(document).ready(function(){
 		position: relative;
 		
 	}
-    #toolbar li div.item{
-		margin: 3px auto;
+    #toolbar .cms-scrolling li div.item{
+		margin: 3px 0px;
+        position: static;
 	}
-	li div.dropzone{
+    #toolbar ul{
+        width: 290px;
+        margin: auto;
+    }
+    
+    #toolbar .cms-scrolling li div.dropzone, #toolbar .cms-scrolling li ul, #toolbar .cms-scrolling span.opener{
+        display: none;
+    }
+    
+    li div.dropzone{
 		width: 300px;
 		height: 6px;
         margin-left: 15px;
 	}
-    #toolbar li div.dropzone{
-        display: none;
+    
+    #toolbar .cms-scrolling{
+        position: static;
     }
+    
+    #toolbar .cms-scrolling div.item{
+        position: static;
+    }
+    
     #favorite-drop-list{
-        height: 40px;
+        height:25px;
+        margin-bottom:15px !important;
     }
+    
+    #favorite-drop-list.hovered{
+        background-color:#6E9CE0;
+    }
+    
 	.item h3{
 		margin-left: 2px;
         line-height: 23px;
 	}
+    
+    #toolbar  .cms-scrolling li.subtree h3{
+        background: transparent url(css/images/16x16/text_tree.png) no-repeat scroll 98% 70%;
+    }
+    
 	.item a.cms-move{
 		cursor: move;
 	}
@@ -85,7 +112,7 @@ $(document).ready(function(){
         -moz-user-select: none;
         background: transparent url(css/images/collapsable.gif) no-repeat scroll 50% 50%;
 	}
-    .closed span.opener{
+    .closed span.opener, .force-closed span.opener{
         background-image: url(css/images/expandable.gif);
     }
 	div.dragging{
@@ -105,20 +132,34 @@ $(document).ready(function(){
     #main{
         margin: 50px auto;
         width: 950px;
+    }
+    
+    #main h1.headline{
+        font-size: 30px;
+        font-weight: normal;
+        margin-bottom: 5px;
+    }
+    
+    #main div.box{
         border: 2px solid #A9A9A9;
         padding: 10px 0px 60px 0px;
         background: #ffffff;
     }
+    
 	#sitemap div.hovered{
 		background: #CCCCCC url(custom-theme/images/ui-bg_glass_75_cccccc_1x400.png) repeat-x scroll 50% 50%;
     }
-	.closed ul{
+	.closed ul, .force-closed ul{
 		display: none;
 	}
+    
+    
 	</style>
 	</head>
 	<body>
-	    <div id="main" class="ui-corner-all">
+	    <div id="main">
+	    <h1 class="headline">Sitemap-Editor</h1>
+	    <div class="box ui-corner-all">
 		<ul id="sitemap">
 			<li>
 				<div class="ui-state-hover ui-corner-all item"><h3>Item 01</h3></div>
@@ -151,6 +192,7 @@ $(document).ready(function(){
 			</li>
 		</ul>
         <div class="cms-clearer"></div>
+        </div>
      </div>
 	</body>
 </html>
