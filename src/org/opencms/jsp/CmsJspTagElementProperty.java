@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagElementProperty.java,v $
- * Date   : $Date: 2009/10/20 07:38:55 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/10/26 07:59:09 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 7.6
  */
@@ -106,7 +107,8 @@ public class CmsJspTagElementProperty extends TagSupport {
             propValue = defaultValue;
         }
         if (element != null) {
-            Map<String, CmsProperty> properties = OpenCms.getADEManager().getElementProperties(element);
+            CmsObject cms = CmsFlexController.getCmsObject(req);
+            Map<String, CmsProperty> properties = OpenCms.getADEManager().getElementProperties(cms, element);
             if (properties.containsKey(propertyName)) {
                 CmsProperty property = properties.get(propertyName);
                 if (property != null) {

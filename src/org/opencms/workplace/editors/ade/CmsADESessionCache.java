@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADESessionCache.java,v $
- * Date   : $Date: 2009/10/20 09:06:26 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/10/26 07:59:09 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.9.2
  */
@@ -69,6 +69,9 @@ public final class CmsADESessionCache {
 
     /** Cache for container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;
+
+    /** Session attribute name constant. */
+    public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
 
     /**
      * Initializes the session cache.<p>

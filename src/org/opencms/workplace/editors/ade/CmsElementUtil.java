@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/21 16:07:38 $
- * Version: $Revision: 1.1.2.19 $
+ * Date   : $Date: 2009/10/26 07:59:09 $
+ * Version: $Revision: 1.1.2.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.19 $
+ * @version $Revision: 1.1.2.20 $
  * 
  * @since 7.6
  */
@@ -324,7 +324,7 @@ public final class CmsElementUtil {
                 subitems.put(subElement.getClientId());
             }
         } else {
-            Iterator<Map.Entry<String, String>> it = m_manager.getXmlContentFormatters(resource).entrySet().iterator();
+            Iterator<Map.Entry<String, String>> it = m_manager.getXmlContentFormatters(m_cms, resource).entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, String> entry = it.next();
                 String type = entry.getKey();
@@ -371,8 +371,10 @@ public final class CmsElementUtil {
             settings.getLocale());
         JSONObject result = new JSONObject();
         JSONObject jSONProperties = new JSONObject();
-        Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(element.getElement());
-        Map<String, CmsProperty> properties = m_manager.getElementProperties(element);
+        Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(
+            m_cms,
+            element.getElement());
+        Map<String, CmsProperty> properties = m_manager.getElementProperties(m_cms, element);
         Iterator<Map.Entry<String, CmsXmlContentProperty>> itProperties = propertiesConf.entrySet().iterator();
         while (itProperties.hasNext()) {
             Map.Entry<String, CmsXmlContentProperty> entry = itProperties.next();

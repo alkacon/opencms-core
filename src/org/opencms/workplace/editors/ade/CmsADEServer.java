@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/22 07:26:34 $
- * Version: $Revision: 1.1.2.39 $
+ * Date   : $Date: 2009/10/26 07:59:09 $
+ * Version: $Revision: 1.1.2.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,6 @@ import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.util.CmsRequestUtil;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -90,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.39 $
+ * @version $Revision: 1.1.2.40 $
  * 
  * @since 7.6
  */
@@ -264,48 +263,6 @@ public class CmsADEServer extends CmsJspActionElement {
         }
     }
 
-    /** Json property name constants for resources. */
-    protected enum JsonResource {
-
-        /** The resource type icon path. */
-        ICON("icon"),
-        /** The structure id. */
-        ID("id"),
-        /** The additional information name. */
-        INFO_NAME("infoName"),
-        /** The additional information value. */
-        INFO_VALUE("infoValue"),
-        /** The name of the user that has locked the resource. */
-        LOCKED_BY("lockedBy"),
-        /** The reason a resource can not be published. */
-        REASON("reason"),
-        /** The resource state. */
-        STATE("state"),
-        /** Resource title. */
-        TITLE("title"),
-        /** Resource uri. */
-        URI("uri");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonResource(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
     /** Json property name constants for responses. */
     protected enum JsonResponse {
 
@@ -317,8 +274,6 @@ public class CmsADEServer extends CmsJspActionElement {
         FAVORITES("favorites"),
         /** The recent list. */
         RECENT("recent"),
-        /** A list of resources. */
-        RESOURCES("resources"),
         /** The response state. */
         STATE("state");
 
@@ -432,68 +387,6 @@ public class CmsADEServer extends CmsJspActionElement {
         }
     }
 
-    /** Reason value constants, when resources can not be published. */
-    protected enum NoPubReason {
-
-        /** Resource is locked by another user. */
-        LOCKED("locked"),
-        /** User does not have enough permissions. */
-        PERMISSIONS("perm"),
-        /** Resource has been already published. */
-        PUBLISHED("pub");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private NoPubReason(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
-    /** Request parameter name constants for publishing. */
-    protected enum ParamPublish {
-
-        /** Flag to indicate if to publish with related resources. */
-        RELATED("related"),
-        /** The resources to remove from the publish list. */
-        REMOVE_RESOURCES("remove-resources"),
-        /** The resources to publish. */
-        RESOURCES("resources"),
-        /** Flag to indicate if to publish with siblings. */
-        SIBLINGS("siblings");
-
-        /** Parameter name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private ParamPublish(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
     /** Request parameter name constants. */
     protected enum ReqParam {
 
@@ -563,14 +456,8 @@ public class CmsADEServer extends CmsJspActionElement {
     /** State Constant for client-side element type 'new element configuration'. */
     public static final String ELEMENT_NEWCONFIG = "NC";
 
-    /** Additional info key constant. */
-    public static final String INFO_PUBLISH_LIST = "__INFO_PUBLISH_LIST__";
-
     /** Mime type constant. */
     public static final String MIMETYPE_APPLICATION_JSON = "application/json";
-
-    /** Session attribute name constant. */
-    public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
 
     /** JSON response state value constant. */
     public static final String TYPE_CONTAINER = "Container";
@@ -595,218 +482,10 @@ public class CmsADEServer extends CmsJspActionElement {
 
         super(context, req, res);
         m_manager = OpenCms.getADEManager();
-        m_sessionCache = (CmsADESessionCache)req.getSession().getAttribute(SESSION_ATTR_ADE_CACHE);
+        m_sessionCache = (CmsADESessionCache)req.getSession().getAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
         if (m_sessionCache == null) {
             m_sessionCache = new CmsADESessionCache(getCmsObject());
-            req.getSession().setAttribute(SESSION_ATTR_ADE_CACHE, m_sessionCache);
-        }
-    }
-
-    /**
-     * Main method that handles all requests.<p>
-     * 
-     * @throws IOException if there is any problem while writing the result to the response 
-     * @throws JSONException if there is any problem with JSON
-     */
-    public void serve() throws JSONException, IOException {
-
-        // set the mime type to application/json
-        CmsFlexController controller = CmsFlexController.getController(getRequest());
-        controller.getTopResponse().setContentType(MIMETYPE_APPLICATION_JSON);
-
-        JSONObject result = new JSONObject();
-        try {
-            // handle request depending on the requested jsp
-            String action = getRequest().getPathInfo();
-            if (action.equals(RequestURI.GET.getName())) {
-                result = executeActionGet();
-            } else if (action.equals(RequestURI.SET.getName())) {
-                result = executeActionSet();
-            } else {
-                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                    Messages.ERR_JSON_INVALID_ACTION_URL_1,
-                    action));
-            }
-        } catch (Exception e) {
-            // a serious error occurred, should not...
-            result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_SERVER_EXCEPTION_1,
-                CmsRequestUtil.appendParameters(
-                    getRequest().getRequestURL().toString(),
-                    CmsRequestUtil.createParameterMap(getRequest().getQueryString()),
-                    false)), e);
-        }
-        // add state info
-        if (result.has(JsonResponse.ERROR.getName())) {
-            // add state=error in case an error occurred 
-            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
-        } else if (!result.has(JsonResponse.STATE.getName())) {
-            // add state=ok i case no error occurred
-            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
-        }
-        // write the result
-        result.write(getResponse().getWriter());
-    }
-
-    /**
-     * Returns a list of container elements from a json array with client ids.<p>
-     * 
-     * @param array the json array
-     * 
-     * @return a list of resource ids
-     * 
-     * @throws JSONException if something goes wrong
-     * @throws CmsException 
-     */
-    protected List<CmsContainerElementBean> arrayToElementList(JSONArray array) throws JSONException, CmsException {
-
-        List<CmsContainerElementBean> result = new ArrayList<CmsContainerElementBean>(array.length());
-        for (int i = 0; i < array.length(); i++) {
-            String id = array.getString(i);
-            try {
-                result.add(getCachedElement(id));
-            } catch (CmsIllegalArgumentException e) {
-                if (!LOG.isDebugEnabled()) {
-                    LOG.warn(e.getLocalizedMessage());
-                }
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param request the request which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return true if and only if all parameters are present in the request
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ParamPublish... params)
-    throws JSONException {
-
-        for (ParamPublish param : params) {
-            String value = request.getParameter(param.getName());
-            if (value == null) {
-                if (result != null) {
-                    result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                        Messages.ERR_JSON_MISSING_PARAMETER_1,
-                        param.getName()));
-                }
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param request the request which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return true if and only if all parameters are present in the request
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ReqParam... params)
-    throws JSONException {
-
-        for (ReqParam param : params) {
-            String value = request.getParameter(param.getName());
-            if (value == null) {
-                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    param.getName()));
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Compares two search option objects.<p>
-     * 
-     * Better than to implement the {@link CmsSearchOptions#equals(Object)} method,
-     * since the page number is not considered in this comparison.<p>
-     * 
-     * @param o1 the first search option object
-     * @param o2 the first search option object
-     * 
-     * @return <code>true</code> if they are equal
-     */
-    protected boolean compareSearchOptions(CmsSearchOptions o1, CmsSearchOptions o2) {
-
-        if (o1 == o2) {
-            return true;
-        }
-        if ((o1 == null) || (o2 == null)) {
-            return false;
-        }
-        if (!o1.getLocation().equals(o2.getLocation())) {
-            return false;
-        }
-        if (!o1.getText().equals(o2.getText())) {
-            return false;
-        }
-        if (!o1.getType().equals(o2.getType())) {
-            return false;
-        }
-        return true;
-
-    }
-
-    /**
-     * Creates a new CmsContainerElementBean for a structure-id and given properties.<p> 
-     * 
-     * @param structureId the structure-id
-     * @param properties the properties-map
-     * 
-     * @return the element bean
-     * 
-     * @throws CmsException if something goes wrong reading the element resource
-     * @throws JSONException if something goes wrong parsing JSON
-     */
-    protected CmsContainerElementBean createElement(CmsUUID structureId, JSONObject properties)
-    throws CmsException, JSONException {
-
-        Map<String, String> cnfProps = new HashMap<String, String>();
-        if (properties != null) {
-            Iterator<String> itProperties = properties.keys();
-            while (itProperties.hasNext()) {
-                String propertyName = itProperties.next();
-                cnfProps.put(propertyName, properties.getString(propertyName));
-            }
-        }
-        return new CmsContainerElementBean(getCmsObject().readResource(structureId), null, cnfProps);
-    }
-
-    /**
-     * Deletes the given elements from server.<p>
-     * 
-     * @param elems the array of client-side element ids
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    protected void deleteElements(JSONArray elems) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        for (int i = 0; i < elems.length(); i++) {
-            CmsResource res = cms.readResource(m_manager.convertToServerId(elems.optString(i)));
-            String path = cms.getSitePath(res);
-            cms.lockResource(path);
-            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
-            cms.unlockResource(path);
+            req.getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, m_sessionCache);
         }
     }
 
@@ -818,7 +497,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws JSONException if there is any problem with JSON
      * @throws CmsException if there is a problem with the cms context
      */
-    protected JSONObject executeActionGet() throws CmsException, JSONException {
+    public JSONObject executeActionGet() throws CmsException, JSONException {
 
         JSONObject result = new JSONObject();
 
@@ -829,51 +508,9 @@ public class CmsADEServer extends CmsJspActionElement {
         }
         String actionParam = request.getParameter(ReqParam.ACTION.getName());
         Action action = Action.valueOf(actionParam.toUpperCase());
-        if (action.equals(Action.PUBLISH_LIST)) {
-            if (checkParameters(request, null, ParamPublish.REMOVE_RESOURCES)) {
-                // remove the resources from the user's publish list
-                String remResParam = request.getParameter(ParamPublish.REMOVE_RESOURCES.getName());
-                JSONArray resourcesToRemove = new JSONArray(remResParam);
-                removeResourcesFromPublishList(resourcesToRemove);
-            }
-            if (checkParameters(request, null, ParamPublish.RELATED, ParamPublish.SIBLINGS)) {
-                // get list of resources to publish
-                String relatedParam = request.getParameter(ParamPublish.RELATED.getName());
-                String siblingsParam = request.getParameter(ParamPublish.SIBLINGS.getName());
-                boolean related = Boolean.parseBoolean(relatedParam);
-                boolean siblings = Boolean.parseBoolean(siblingsParam);
-                JSONArray resourcesToPublish = getPublishList(related, siblings);
-                result.put(JsonResponse.RESOURCES.getName(), resourcesToPublish);
-            } else {
-                // get list of resources that can not be published
-                boolean related = true;
-                boolean siblings = false;
-
-                JSONArray resources = getResourcesToPublishWithProblems(related, siblings);
-                if (resources.length() == 0) {
-                    // if no problems just get the list of resources to publish
-                    resources = getPublishList(related, siblings);
-                }
-                result.put(JsonResponse.RESOURCES.getName(), resources);
-            }
-            return result;
-        } else if (action.equals(Action.PUBLISH)) {
-            if (!checkParameters(request, result, ParamPublish.RESOURCES)) {
-                return result;
-            }
-            // resources to publish
-            String resourcesParam = request.getParameter(ParamPublish.RESOURCES.getName());
-            JSONArray resourcesToPublish = new JSONArray(resourcesParam);
-            // get the resources with link check problems
-            JSONArray resources = getResourcesWithLinkCheck(resourcesToPublish);
-            if (resources.length() == 0) {
-                // publish resources
-                publishResources(resourcesToPublish);
-            } else {
-                // return resources with problems
-                result.put(JsonResponse.RESOURCES.getName(), resources);
-            }
-            return result;
+        if (action.equals(Action.PUBLISH_LIST) || action.equals(Action.PUBLISH)) {
+            CmsADEPublish pubHelper = new CmsADEPublish(this);
+            return pubHelper.handleRequest(action, result);
         }
         if (!checkParameters(request, result, ReqParam.CNTPAGE, ReqParam.LOCALE, ReqParam.URI)) {
             return result;
@@ -989,7 +626,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws JSONException if there is any problem with JSON
      * @throws CmsException if there is a problem with the cms context
      */
-    protected JSONObject executeActionSet() throws JSONException, CmsException {
+    public JSONObject executeActionSet() throws JSONException, CmsException {
 
         JSONObject result = new JSONObject();
         HttpServletRequest request = getRequest();
@@ -1042,6 +679,184 @@ public class CmsADEServer extends CmsJspActionElement {
                 actionParam));
         }
         return result;
+    }
+
+    /**
+     * Main method that handles all requests.<p>
+     * 
+     * @throws IOException if there is any problem while writing the result to the response 
+     * @throws JSONException if there is any problem with JSON
+     */
+    public void serve() throws JSONException, IOException {
+
+        // set the mime type to application/json
+        CmsFlexController controller = CmsFlexController.getController(getRequest());
+        controller.getTopResponse().setContentType(MIMETYPE_APPLICATION_JSON);
+
+        JSONObject result = new JSONObject();
+        try {
+            // handle request depending on the requested jsp
+            String action = getRequest().getPathInfo();
+            if (action.equals(RequestURI.GET.getName())) {
+                result = executeActionGet();
+            } else if (action.equals(RequestURI.SET.getName())) {
+                result = executeActionSet();
+            } else {
+                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+                    Messages.ERR_JSON_INVALID_ACTION_URL_1,
+                    action));
+            }
+        } catch (Exception e) {
+            // a serious error occurred, should not...
+            result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
+            LOG.error(Messages.get().getBundle().key(
+                Messages.ERR_SERVER_EXCEPTION_1,
+                CmsRequestUtil.appendParameters(
+                    getRequest().getRequestURL().toString(),
+                    CmsRequestUtil.createParameterMap(getRequest().getQueryString()),
+                    false)), e);
+        }
+        // add state info
+        if (result.has(JsonResponse.ERROR.getName())) {
+            // add state=error in case an error occurred 
+            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
+        } else if (!result.has(JsonResponse.STATE.getName())) {
+            // add state=ok i case no error occurred
+            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
+        }
+        // write the result
+        result.write(getResponse().getWriter());
+    }
+
+    /**
+     * Returns a list of container elements from a json array with client ids.<p>
+     * 
+     * @param array the json array
+     * 
+     * @return a list of resource ids
+     * 
+     * @throws JSONException if something goes wrong
+     * @throws CmsException 
+     */
+    protected List<CmsContainerElementBean> arrayToElementList(JSONArray array) throws JSONException, CmsException {
+
+        List<CmsContainerElementBean> result = new ArrayList<CmsContainerElementBean>(array.length());
+        for (int i = 0; i < array.length(); i++) {
+            String id = array.getString(i);
+            try {
+                result.add(getCachedElement(id));
+            } catch (CmsIllegalArgumentException e) {
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Checks whether a list of parameters are present as attributes of a request.<p>
+     * 
+     * If this isn't the case, an error message is written to the JSON result object.
+     * 
+     * @param request the request which contains the parameters
+     * @param result the JSON object which the error message should be written into, can be <code>null</code>
+     * @param params the array of parameters which should be checked
+     * 
+     * @return true if and only if all parameters are present in the request
+     * 
+     * @throws JSONException if something goes wrong with JSON
+     */
+    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ReqParam... params)
+    throws JSONException {
+
+        for (ReqParam param : params) {
+            String value = request.getParameter(param.getName());
+            if (value == null) {
+                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    param.getName()));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Compares two search option objects.<p>
+     * 
+     * Better than to implement the {@link CmsSearchOptions#equals(Object)} method,
+     * since the page number is not considered in this comparison.<p>
+     * 
+     * @param o1 the first search option object
+     * @param o2 the first search option object
+     * 
+     * @return <code>true</code> if they are equal
+     */
+    protected boolean compareSearchOptions(CmsSearchOptions o1, CmsSearchOptions o2) {
+
+        if (o1 == o2) {
+            return true;
+        }
+        if ((o1 == null) || (o2 == null)) {
+            return false;
+        }
+        if (!o1.getLocation().equals(o2.getLocation())) {
+            return false;
+        }
+        if (!o1.getText().equals(o2.getText())) {
+            return false;
+        }
+        if (!o1.getType().equals(o2.getType())) {
+            return false;
+        }
+        return true;
+
+    }
+
+    /**
+     * Creates a new CmsContainerElementBean for a structure-id and given properties.<p> 
+     * 
+     * @param structureId the structure-id
+     * @param properties the properties-map
+     * 
+     * @return the element bean
+     * 
+     * @throws CmsException if something goes wrong reading the element resource
+     * @throws JSONException if something goes wrong parsing JSON
+     */
+    protected CmsContainerElementBean createElement(CmsUUID structureId, JSONObject properties)
+    throws CmsException, JSONException {
+
+        Map<String, String> cnfProps = new HashMap<String, String>();
+        if (properties != null) {
+            Iterator<String> itProperties = properties.keys();
+            while (itProperties.hasNext()) {
+                String propertyName = itProperties.next();
+                cnfProps.put(propertyName, properties.getString(propertyName));
+            }
+        }
+        return new CmsContainerElementBean(getCmsObject().readResource(structureId), null, cnfProps);
+    }
+
+    /**
+     * Deletes the given elements from server.<p>
+     * 
+     * @param elems the array of client-side element ids
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void deleteElements(JSONArray elems) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        for (int i = 0; i < elems.length(); i++) {
+            CmsResource res = cms.readResource(m_manager.convertToServerId(elems.optString(i)));
+            String path = cms.getSitePath(res);
+            cms.lockResource(path);
+            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            cms.unlockResource(path);
+        }
     }
 
     /**
@@ -1322,35 +1137,6 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
-     * Returns the list of resources that can be published.<p>
-     * 
-     * @param related to include related resources
-     * @param siblings to include siblings
-     * 
-     * @return a list of resources that can be published
-     * 
-     * @throws CmsException if something goes wrong 
-     * @throws JSONException if something goes wrong 
-     */
-    protected JSONArray getPublishList(boolean related, boolean siblings) throws CmsException, JSONException {
-
-        JSONArray resources = new JSONArray();
-
-        // TODO: this is just a skeleton
-        JSONObject jsonRes = resourceToJson(getCmsObject().readResource("/demo_t3/_content/events/event_0003.html"));
-        jsonRes.put(JsonResource.INFO_NAME.getName(), "Unpublished related resource, will be published :");
-        jsonRes.put(JsonResource.INFO_VALUE.getName(), "/demo_t3/images/Rose.jpg");
-        resources.put(jsonRes);
-
-        JSONObject jsonRes2 = resourceToJson(getCmsObject().readResource("/demo_t3/images/Rose.jpg"));
-        jsonRes2.put(JsonResource.INFO_NAME.getName(), "Resource related to :");
-        jsonRes2.put(JsonResource.INFO_VALUE.getName(), "/demo_t3/_content/events/event_0003.html");
-        resources.put(jsonRes2);
-
-        return resources;
-    }
-
-    /**
      * Returns the current user's recent list.<p>
      * 
      * @param resElements the current page's element list
@@ -1391,63 +1177,6 @@ public class CmsADEServer extends CmsJspActionElement {
         }
 
         return result;
-    }
-
-    /**
-     * Returns a list of resources that should be published but can not.<p>
-     * This can be due to several reasons:<br>
-     * <ul>
-     *  <li>Locks</li>
-     *  <li>Permissions</li>
-     *  <li>Already published</li>
-     * </ul>
-     * 
-     * @param related to include related resources
-     * @param siblings to include siblings
-     * 
-     * @return a list of resources that should be published but can not
-     * 
-     * @throws CmsException if something goes wrong 
-     * @throws JSONException if something goes wrong 
-     */
-    protected JSONArray getResourcesToPublishWithProblems(boolean related, boolean siblings)
-    throws JSONException, CmsException {
-
-        JSONArray resources = new JSONArray();
-
-        // TODO: this is just a skeleton
-        JSONObject jsonRes = resourceToJson(getCmsObject().readResource("/demo_t3/_content/events/event_0003.html"));
-        jsonRes.put(JsonResource.REASON.getName(), NoPubReason.PERMISSIONS.getName());
-        resources.put(jsonRes);
-
-        JSONObject jsonRes2 = resourceToJson(getCmsObject().readResource("/demo_t3/images/Rose.jpg"));
-        jsonRes2.put(JsonResource.REASON.getName(), NoPubReason.PUBLISHED.getName());
-        resources.put(jsonRes2);
-
-        return resources;
-    }
-
-    /**
-     * Checks for possible broken links when the given list of resources would be published.<p>
-     * 
-     * @param ids list of structure ids identifying the resources to be published
-     * 
-     * @return a sublist of JSON resources that would produce broken links when published 
-     * 
-     * @throws CmsException if something goes wrong 
-     * @throws JSONException if something goes wrong 
-     */
-    protected JSONArray getResourcesWithLinkCheck(JSONArray ids) throws JSONException, CmsException {
-
-        JSONArray resources = new JSONArray();
-
-        // TODO: this is just a skeleton
-        JSONObject jsonRes = resourceToJson(getCmsObject().readResource("/demo_t3/index.html"));
-        jsonRes.put(JsonResource.INFO_NAME.getName(), "Broken link sources :");
-        jsonRes.put(JsonResource.INFO_VALUE.getName(), "/demo_t3/_content/articles/intro.html (Html link)");
-        resources.put(jsonRes);
-
-        return resources;
     }
 
     /**
@@ -1581,78 +1310,6 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
-     * Publishes the given list of resources.<p>
-     * 
-     * @param ids list of structure ids identifying the resources to publish
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if something goes wrong
-     */
-    protected void publishResources(JSONArray ids) throws CmsException, JSONException {
-
-        List<CmsResource> resources = new ArrayList<CmsResource>(ids.length());
-        CmsObject cms = getCmsObject();
-        for (int i = 0; i < ids.length(); i++) {
-            resources.add(cms.readResource(new CmsUUID(ids.optString(i))));
-        }
-        // TODO: publish the resources
-        // OpenCms.getPublishManager().publishProject(cms, report, publishList);
-        removeResourcesFromPublishList(ids);
-    }
-
-    /**
-     * Removes the given resources from the user's publish list.<p>
-     * 
-     * @param ids list of structure ids identifying the resources to be removed
-     * 
-     * @throws JSONException if something goes wrong
-     * @throws CmsException if something goes wrong
-     */
-    protected void removeResourcesFromPublishList(JSONArray ids) throws JSONException, CmsException {
-
-        CmsObject cms = getCmsObject();
-        CmsUser user = cms.readUser(cms.getRequestContext().currentUser().getId());
-        String info = (String)user.getAdditionalInfo(INFO_PUBLISH_LIST);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(info)) {
-            // publish list is empty, nothing to do
-            return;
-        }
-        JSONArray userPubList = new JSONArray(info);
-        JSONArray newPubList = new JSONArray();
-        for (int i = 0; i < userPubList.length(); i++) {
-            String id = userPubList.optString(i);
-            if (!ids.containsString(id)) {
-                newPubList.put(id);
-            }
-        }
-        cms.getRequestContext().currentUser().setAdditionalInfo(INFO_PUBLISH_LIST, newPubList.toString());
-        cms.writeUser(user);
-    }
-
-    /**
-     * Converts a resource to a JSON object.<p>
-     * 
-     * @param resource the resource to convert
-     * 
-     * @return a JSON object representing the resource
-     * 
-     * @throws JSONException if something goes wrong
-     */
-    protected JSONObject resourceToJson(CmsResource resource) throws JSONException {
-
-        CmsObject cms = getCmsObject();
-        JSONObject jsonRes = new JSONObject();
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
-        jsonRes.put(JsonResource.ID.getName(), resource.getStructureId());
-        jsonRes.put(JsonResource.URI.getName(), resUtil.getFullPath());
-        jsonRes.put(JsonResource.TITLE.getName(), resUtil.getTitle());
-        jsonRes.put(JsonResource.ICON.getName(), resUtil.getIconPathExplorer());
-        jsonRes.put(JsonResource.STATE.getName(), "" + resUtil.getStateAbbreviation());
-        jsonRes.put(JsonResource.LOCKED_BY.getName(), resUtil.getLockedByName());
-        return jsonRes;
-    }
-
-    /**
      * Saves the new state of the container page.<p>
      * 
      * @param uri the uri of the container page to save
@@ -1729,8 +1386,10 @@ public class CmsADEServer extends CmsJspActionElement {
                 // checking if there are any properties to set
                 if (clientId.contains("#")) {
                     CmsContainerElementBean element = getCachedElement(clientId);
-                    Map<String, CmsProperty> properties = m_manager.getElementProperties(element);
-                    Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(element.getElement());
+                    Map<String, CmsProperty> properties = m_manager.getElementProperties(cms, element);
+                    Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(
+                        cms,
+                        element.getElement());
                     Iterator<String> itProps = properties.keySet().iterator();
 
                     // index of the property

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/20 15:25:51 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2009/10/26 07:59:09 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 7.6
  */
@@ -186,6 +186,7 @@ public class CmsADEManager {
     /**
      * Creates an element from its serialized data.<p> 
      * 
+     * @param cms the cms context
      * @param data the serialized data
      * 
      * @return the restored element bean
@@ -193,12 +194,12 @@ public class CmsADEManager {
      * @throws JSONException if the serialized data got corrupted
      * @throws CmsException if the stored resources no longer exist
      */
-    public CmsContainerElementBean elementFromJson(JSONObject data) throws JSONException, CmsException {
+    public CmsContainerElementBean elementFromJson(CmsObject cms, JSONObject data) throws JSONException, CmsException {
 
-        CmsResource element = m_adminCms.readResource(new CmsUUID(data.getString(JSON_ELEMENT)));
+        CmsResource element = cms.readResource(new CmsUUID(data.getString(JSON_ELEMENT)));
         CmsResource formatter = null;
         if (data.has(JSON_FORMATTER)) {
-            formatter = m_adminCms.readResource(new CmsUUID(data.getString(JSON_FORMATTER)));
+            formatter = cms.readResource(new CmsUUID(data.getString(JSON_FORMATTER)));
         }
         Map<String, String> properties = new HashMap<String, String>();
 
@@ -289,11 +290,12 @@ public class CmsADEManager {
     /**
      * Returns an element properties, taking into account default values.<p>
      * 
+     * @param cms the current cms context
      * @param element the element to get the properties for
      * 
      * @return the element properties
      */
-    public Map<String, CmsProperty> getElementProperties(CmsContainerElementBean element) {
+    public Map<String, CmsProperty> getElementProperties(CmsObject cms, CmsContainerElementBean element) {
 
         Map<String, CmsProperty> properties = new HashMap<String, CmsProperty>();
         Iterator<Map.Entry<String, String>> itProperties = element.getProperties().entrySet().iterator();
@@ -304,7 +306,7 @@ public class CmsADEManager {
             properties.put(propertyName, property);
         }
         try {
-            Map<String, CmsXmlContentProperty> propertyDefs = getElementPropertyConfiguration(element.getElement());
+            Map<String, CmsXmlContentProperty> propertyDefs = getElementPropertyConfiguration(cms, element.getElement());
             Iterator<Map.Entry<String, CmsXmlContentProperty>> itPropertyDefs = propertyDefs.entrySet().iterator();
             while (itPropertyDefs.hasNext()) {
                 Map.Entry<String, CmsXmlContentProperty> entry = itPropertyDefs.next();
@@ -327,15 +329,17 @@ public class CmsADEManager {
     /**
      * Returns the property configuration for a given resource.<p>
      * 
+     * @param cms the current cms context
      * @param resource the resource
      * 
      * @return the property configuration
      * 
      * @throws CmsException if something goes wrong
      */
-    public Map<String, CmsXmlContentProperty> getElementPropertyConfiguration(CmsResource resource) throws CmsException {
+    public Map<String, CmsXmlContentProperty> getElementPropertyConfiguration(CmsObject cms, CmsResource resource)
+    throws CmsException {
 
-        return CmsXmlContentDefinition.getContentHandlerForResource(m_adminCms, resource).getProperties();
+        return CmsXmlContentDefinition.getContentHandlerForResource(cms, resource).getProperties();
     }
 
     /**
@@ -358,7 +362,7 @@ public class CmsADEManager {
                 JSONArray array = new JSONArray((String)obj);
                 for (int i = 0; i < array.length(); i++) {
                     try {
-                        favList.add(elementFromJson(array.getJSONObject(i)));
+                        favList.add(elementFromJson(cms, array.getJSONObject(i)));
                     } catch (Throwable e) {
                         // should never happen, catches wrong or no longer existing values
                         if (!LOG.isDebugEnabled()) {
@@ -472,25 +476,26 @@ public class CmsADEManager {
     /**
      * Returns all formatters for a given (xml content) resource.<p>
      * 
+     * @param cms the current cms context
      * @param resource the xml content to get the formatters for
      * 
      * @return a map where the keys are the formatter type names and the values the uris
      * 
      * @throws CmsException if something goes wrong
      */
-    public Map<String, String> getXmlContentFormatters(CmsResource resource) throws CmsException {
+    public Map<String, String> getXmlContentFormatters(CmsObject cms, CmsResource resource) throws CmsException {
 
         // get the content definition
-        List<CmsRelation> relations = m_adminCms.getRelationsForResource(
+        List<CmsRelation> relations = cms.getRelationsForResource(
             resource,
             CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
         CmsXmlContentDefinition contentDef = null;
         if ((relations != null) && !relations.isEmpty()) {
-            String xsd = m_adminCms.getSitePath(relations.get(0).getTarget(m_adminCms, CmsResourceFilter.ALL));
-            contentDef = new CmsXmlEntityResolver(m_adminCms).getCachedContentDefinition(xsd);
+            String xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
+            contentDef = new CmsXmlEntityResolver(cms).getCachedContentDefinition(xsd);
         }
         if (contentDef == null) {
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_adminCms, m_adminCms.readFile(resource));
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
             contentDef = content.getContentDefinition();
         }
 
