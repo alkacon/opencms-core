@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2009/09/11 15:29:15 $
- * Version: $Revision: 1.40.2.1 $
+ * Date   : $Date: 2009/10/27 11:42:19 $
+ * Version: $Revision: 1.40.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * @author Michael Moossen 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.40.2.1 $ 
+ * @version $Revision: 1.40.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,7 +72,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
     }
 
     /**
-     * Creates a new localized Exception that also containes a root cause.<p>
+     * Creates a new localized Exception that also containers a root cause.<p>
      * 
      * @param message the localized message container to use
      * @param cause the Exception root cause
