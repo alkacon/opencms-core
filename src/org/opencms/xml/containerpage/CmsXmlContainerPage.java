@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/26 10:45:13 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2009/10/27 11:44:24 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,6 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
 
 /**
@@ -76,7 +75,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 7.5.2
  * 
@@ -335,7 +334,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                         // element itself
                         int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(container));
-                        String elemPath = CmsXmlUtils.createXpathElement(element.getName(), elemIndex);
+                        String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
+                            element.getName(),
+                            elemIndex));
                         I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
                         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                         addBookmark(elemPath, locale, true, elemValue);
@@ -344,12 +345,26 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         // uri
                         Element uri = element.element(XmlNode.URI.getName());
                         createBookmark(uri, locale, element, elemPath, elemDef);
-                        CmsUUID elementId = new CmsLink(uri.element(CmsXmlPage.NODE_LINK)).getStructureId();
+                        Element uriLink = uri.element(CmsXmlPage.NODE_LINK);
+                        CmsUUID elementId = null;
+                        if (uriLink == null) {
+                            // this can happen when adding the elements node to the xml content
+                            // it is not dangerous since the link has to be set before saving 
+                        } else {
+                            elementId = new CmsLink(uriLink).getStructureId();
+                        }
 
                         // formatter
                         Element formatter = element.element(XmlNode.FORMATTER.getName());
                         createBookmark(formatter, locale, element, elemPath, elemDef);
-                        CmsUUID formatterId = new CmsLink(formatter.element(CmsXmlPage.NODE_LINK)).getStructureId();
+                        Element formatterLink = formatter.element(CmsXmlPage.NODE_LINK);
+                        CmsUUID formatterId = null;
+                        if (formatterLink == null) {
+                            // this can happen when adding the elements node to the xml content
+                            // it is not dangerous since the link has to be set before saving 
+                        } else {
+                            formatterId = new CmsLink(formatterLink).getStructureId();
+                        }
 
                         Map<String, String> propertiesMap = new HashMap<String, String>();
 
@@ -361,7 +376,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                             // property itself
                             int propIndex = CmsXmlUtils.getXpathIndexInt(property.getUniquePath(element));
-                            String propPath = CmsXmlUtils.createXpathElement(property.getName(), propIndex);
+                            String propPath = CmsXmlUtils.concatXpath(elemPath, CmsXmlUtils.createXpathElement(
+                                property.getName(),
+                                propIndex));
                             I_CmsXmlSchemaType propSchemaType = elemDef.getSchemaType(property.getName());
                             I_CmsXmlContentValue propValue = propSchemaType.createValue(this, property, locale);
                             addBookmark(propPath, locale, true, propValue);
@@ -374,9 +391,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             // choice value 
                             Element value = property.element(XmlNode.VALUE.getName());
                             int valueIndex = CmsXmlUtils.getXpathIndexInt(value.getUniquePath(property));
-                            String valuePath = CmsXmlUtils.createXpathElement(value.getName(), valueIndex);
+                            String valuePath = CmsXmlUtils.concatXpath(propPath, CmsXmlUtils.createXpathElement(
+                                value.getName(),
+                                valueIndex));
                             I_CmsXmlSchemaType valueSchemaType = propDef.getSchemaType(value.getName());
-                            I_CmsXmlContentValue valueValue = propSchemaType.createValue(this, value, locale);
+                            I_CmsXmlContentValue valueValue = valueSchemaType.createValue(this, value, locale);
                             addBookmark(valuePath, locale, true, valueValue);
                             CmsXmlContentDefinition valueDef = ((CmsXmlNestedContentDefinition)valueSchemaType).getNestedContentDefinition();
 
@@ -390,13 +409,15 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                                 // uri value
                                 Element valueUri = value.element(XmlNode.URI.getName());
                                 createBookmark(valueUri, locale, value, valuePath, valueDef);
-                                val = new CmsLink(valueUri.element(CmsXmlPage.NODE_LINK)).getStructureId().toString(); // uuid
+                                Element valueUriLink = valueUri.element(CmsXmlPage.NODE_LINK);
+                                val = new CmsLink(valueUriLink).getStructureId().toString();
                             }
 
                             propertiesMap.put(propName.getTextTrim(), val);
                         }
-
-                        elements.add(new CmsContainerElementBean(elementId, formatterId, propertiesMap));
+                        if (elementId != null) {
+                            elements.add(new CmsContainerElementBean(elementId, formatterId, propertiesMap));
+                        }
                     }
 
                     containers.add(new CmsContainerBean(name.getText(), type.getText(), -1, elements));
@@ -406,68 +427,6 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             } catch (NullPointerException e) {
                 LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
                     org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
-            }
-        }
-    }
-
-    /**
-     * Processes a document node and extracts the values of the node according to the provided XML
-     * content definition.<p> 
-     * 
-     * @param root the root node element to process
-     * @param rootPath the Xpath of the root node in the document
-     * @param locale the locale 
-     * @param definition the XML content definition to use for processing the values
-     */
-    @Override
-    protected void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
-
-        // iterate all XML nodes 
-        for (Iterator<Node> i = CmsXmlGenericWrapper.content(root).iterator(); i.hasNext();) {
-            Node node = i.next();
-            if (!(node instanceof Element)) {
-                // this node is not an element, so it must be a white space text node, remove it
-                node.detach();
-            } else {
-                // node must be an element 
-                Element element = (Element)node;
-                String name = element.getName();
-                int xpathIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(root));
-
-                // build the Xpath expression for the current node
-                String path;
-                if (rootPath != null) {
-                    StringBuffer b = new StringBuffer(rootPath.length() + name.length() + 6);
-                    b.append(rootPath);
-                    b.append('/');
-                    b.append(CmsXmlUtils.createXpathElement(name, xpathIndex));
-                    path = b.toString();
-                } else {
-                    path = CmsXmlUtils.createXpathElement(name, xpathIndex);
-                }
-
-                // create a XML content value element
-                I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
-
-                if (schemaType != null) {
-                    // directly add simple type to schema
-                    I_CmsXmlContentValue value = schemaType.createValue(this, element, locale);
-                    addBookmark(path, locale, true, value);
-
-                    if (!schemaType.isSimpleType()) {
-                        // recurse for nested schema
-                        CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)schemaType;
-                        processSchemaNode(element, path, locale, nestedSchema.getNestedContentDefinition());
-                    }
-                } else {
-                    // unknown XML node name according to schema
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(org.opencms.xml.content.Messages.get().getBundle().key(
-                            org.opencms.xml.content.Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
-                            name,
-                            definition.getSchemaLocation()));
-                    }
-                }
             }
         }
     }
