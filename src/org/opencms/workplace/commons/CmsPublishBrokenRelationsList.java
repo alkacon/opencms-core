@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2009/10/26 07:55:05 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2009/10/27 11:43:53 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.10.2.2 $ 
  * 
  * @since 6.5.5 
  */
@@ -188,9 +188,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
                     if (relationName.startsWith(infoEntry.getSiteRoot())) {
                         // same site
                         relationName = relationName.substring(infoEntry.getSiteRoot().length());
-                        if (detailId.equals(LIST_DETAIL_RELATIONS)) {
-                            relationName = CmsStringUtil.formatResourceName(relationName, 50);
-                        }
+                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
                     } else {
                         // other site
                         String site = OpenCms.getSiteManager().getSiteRoot(relationName);
@@ -201,9 +199,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
                         } else {
                             siteName = "/";
                         }
-                        if (detailId.equals(LIST_DETAIL_RELATIONS)) {
-                            relationName = CmsStringUtil.formatResourceName(relationName, 50);
-                        }
+                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
                         relationName = key(Messages.GUI_PUBLISH_SITE_RELATION_2, new Object[] {siteName, relationName});
                     }
                     html.append(relationName);
