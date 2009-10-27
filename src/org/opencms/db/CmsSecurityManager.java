@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2009/10/26 07:52:10 $
- * Version: $Revision: 1.123.2.2 $
+ * Date   : $Date: 2009/10/27 11:42:51 $
+ * Version: $Revision: 1.123.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,6 +87,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -2365,6 +2366,33 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns the current user's publish list.<p>
+     * 
+     * @param context the request context
+     * 
+     * @return the current user's publish list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> getUsersPubList(CmsRequestContext context) throws CmsException {
+
+        List<CmsResource> result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.getUsersPubList(dbc, context.currentUser().getId());
+        } catch (Exception e) {
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_USER_PUBLIST_1, context.currentUser().getName()),
+                e);
+
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Performs a non-blocking permission check on a resource.<p>
      * 
      * This test will not throw an exception in case the required permissions are not
@@ -4447,6 +4475,31 @@ public final class CmsSecurityManager {
                 Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
                 context.getSitePath(resource),
                 context.currentProject().getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Removes the given resource to the given user's publish list.<p>
+     * 
+     * @param context the request context
+     * @param structureIds the collection of structure IDs to remove
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void removeResourceFromUsersPubList(CmsRequestContext context, Collection<CmsUUID> structureIds)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.removeResourceFromUsersPubList(dbc, context.currentUser().getId(), structureIds);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_REMOVE_RESOURCE_FROM_PUBLIST_2,
+                context.currentUser().getName(),
+                structureIds), e);
+
         } finally {
             dbc.clear();
         }

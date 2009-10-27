@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2009/10/27 11:42:52 $
+ * Version: $Revision: 1.52.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.52.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -514,6 +514,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_USER_FOR_NAME_1 = "ERR_READ_USER_FOR_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_USER_PUBLIST_1 = "ERR_READ_USER_PUBLIST_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_USER_WEB_1 = "ERR_READ_USER_WEB_1";
 
     /** Message constant for key in the resource bundle. */
@@ -536,6 +539,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REMOVE_RESOURCE_FROM_ORGUNIT_2 = "ERR_REMOVE_RESOURCE_FROM_ORGUNIT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REMOVE_RESOURCE_FROM_PUBLIST_2 = "ERR_REMOVE_RESOURCE_FROM_PUBLIST_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REMOVE_USER_FROM_GROUP_2 = "ERR_REMOVE_USER_FROM_GROUP_2";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/10/12 08:11:59 $
- * Version: $Revision: 1.255.2.1 $
+ * Date   : $Date: 2009/10/27 11:42:53 $
+ * Version: $Revision: 1.255.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,6 +82,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -98,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.255.2.1 $
+ * @version $Revision: 1.255.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -115,6 +116,30 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#addResourceToUsersPubList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public void addResourceToUsersPubList(CmsDbContext dbc, CmsUUID userId, CmsUUID structureId) {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USER_PUBLIST_ADD_2");
+
+            stmt.setString(1, userId.toString());
+            stmt.setString(2, structureId.toString());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            // ignore
+            // often we try to write the same data since we do not check before
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, CmsProject.CmsProjectType)
@@ -668,12 +693,43 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.opencms.db.CmsDbContext, org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsProjectDriver#getUsersPubList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
+     */
+    public List<CmsResource> getUsersPubList(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+
+        List<CmsResource> result = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject().getUuid(), "C_USER_PUBLIST_READ_1");
+            stmt.setString(1, userId.toString());
+            res = stmt.executeQuery();
+
+            result = new ArrayList<CmsResource>();
+            while (res.next()) {
+                result.add(m_driverManager.getVfsDriver().createResource(res, dbc.currentProject().getUuid()));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        return result;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsDriver#init(CmsDbContext, CmsConfigurationManager, List, CmsDriverManager)
      */
     public void init(
         CmsDbContext dbc,
         CmsConfigurationManager configurationManager,
-        List successiveDrivers,
+        List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
         Map configuration = configurationManager.getConfiguration();
@@ -1336,7 +1392,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int publishedFolderCount = 0;
         int deletedFolderCount = 0;
         int publishedFileCount = 0;
-        Set publishedContentIds = new HashSet();
+        Set<CmsUUID> publishedContentIds = new HashSet<CmsUUID>();
+        Set<CmsUUID> publishedIds = new HashSet<CmsUUID>();
 
         try {
 
@@ -1373,9 +1430,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     I_CmsReport.FORMAT_HEADLINE);
             }
 
-            Iterator itFolders = publishList.getFolderList().iterator();
+            Iterator<CmsResource> itFolders = publishList.getFolderList().iterator();
             while (itFolders.hasNext()) {
-                CmsResource currentFolder = (CmsResource)itFolders.next();
+                CmsResource currentFolder = itFolders.next();
                 try {
                     if (currentFolder.getState().isNew() || currentFolder.getState().isChanged()) {
                         // bounce the current publish task through all project drivers
@@ -1390,6 +1447,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                             publishTag);
 
                         dbc.pop();
+
+                        publishedIds.add(currentFolder.getStructureId());
+
                         // delete old historical entries
                         m_driverManager.getHistoryDriver().deleteEntries(
                             dbc,
@@ -1447,9 +1507,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     I_CmsReport.FORMAT_HEADLINE);
             }
 
-            Iterator itFiles = publishList.getFileList().iterator();
+            Iterator<CmsResource> itFiles = publishList.getFileList().iterator();
             while (itFiles.hasNext()) {
-                CmsResource currentResource = (CmsResource)itFiles.next();
+                CmsResource currentResource = itFiles.next();
                 try {
                     // bounce the current publish task through all project drivers
                     m_driverManager.getProjectDriver().publishFile(
@@ -1470,6 +1530,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                     m_driverManager.unlockResource(dbc, currentResource, true, true);
 
+                    publishedIds.add(currentResource.getStructureId());
+
                     dbc.pop();
                 } catch (Throwable t) {
                     dbc.report(report, Messages.get().container(
@@ -1485,7 +1547,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             ////////////////////////////////////////////////////////////////////////////////////////
 
             // publish deleted folders
-            List deletedFolders = publishList.getDeletedFolderList();
+            List<CmsResource> deletedFolders = publishList.getDeletedFolderList();
             if (deletedFolders.isEmpty()) {
                 return;
             }
@@ -1498,9 +1560,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     I_CmsReport.FORMAT_HEADLINE);
             }
 
-            Iterator itDeletedFolders = deletedFolders.iterator();
+            Iterator<CmsResource> itDeletedFolders = deletedFolders.iterator();
             while (itDeletedFolders.hasNext()) {
-                CmsResource currentFolder = (CmsResource)itDeletedFolders.next();
+                CmsResource currentFolder = itDeletedFolders.next();
 
                 try {
                     // bounce the current publish task through all project drivers
@@ -1522,6 +1584,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion(),
                         -1);
 
+                    publishedIds.add(currentFolder.getStructureId());
+
                     m_driverManager.unlockResource(dbc, currentFolder, true, true);
 
                     dbc.pop();
@@ -1537,7 +1601,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
         } catch (OutOfMemoryError o) {
             // clear all caches to reclaim memory
-            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
+            OpenCms.fireCmsEvent(new CmsEvent(
+                I_CmsEventListener.EVENT_CLEAR_CACHES,
+                Collections.<String, Object> emptyMap()));
 
             CmsMessageContainer message = Messages.get().container(Messages.ERR_OUT_OF_MEMORY_0);
             if (LOG.isErrorEnabled()) {
@@ -1552,6 +1618,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 String.valueOf(publishedFolderCount),
                 String.valueOf(deletedFolderCount),
                 report.formatRuntime()};
+
+            CmsUUID userId = dbc.currentUser().getId();
+            removeResourceFromUsersPubList(dbc, userId, publishedIds);
+
             CmsMessageContainer message = Messages.get().container(Messages.RPT_PUBLISH_STAT_4, msgArgs);
             if (LOG.isInfoEnabled()) {
                 LOG.info(message.key());
@@ -2198,6 +2268,46 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsProjectDriver#removeResourceFromUsersPubList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.util.Collection)
+     */
+    public void removeResourceFromUsersPubList(CmsDbContext dbc, CmsUUID userId, Collection<CmsUUID> structureIds)
+    throws CmsDataAccessException {
+
+        if (structureIds.isEmpty()) {
+            // nothing to do
+            return;
+        }
+
+        // execute
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+
+            StringBuffer queryBuf = new StringBuffer(256);
+            queryBuf.append(m_sqlManager.readQuery(dbc.getProjectId(), "C_USER_PUBLIST_REMOVE_2"));
+            queryBuf.append(getParameterString(structureIds));
+
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
+            // create the statement
+            stmt.setString(1, userId.toString());
+            // set the parameters
+            int i = 2;
+            for (CmsUUID id : structureIds) {
+                stmt.setString(i, id.toString());
+                i++;
+            }
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#unmarkProjectResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject)
      */
     public void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
@@ -2537,6 +2647,29 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         return offlineResource.getState().isDeleted()
         ? CmsResource.STATE_DELETED
         : CmsPublishedResource.STATE_MOVED_DESTINATION;
+    }
+
+    /**
+     * Returns a SQL parameter string for the given data.<p>
+     * 
+     * @param data the data
+     * 
+     * @return the SQL parameter
+     */
+    protected String getParameterString(Collection<?> data) {
+
+        StringBuffer conditions = new StringBuffer();
+        conditions.append(BEGIN_CONDITION);
+        Iterator<?> it = data.iterator();
+        while (it.hasNext()) {
+            it.next();
+            conditions.append("?");
+            if (it.hasNext()) {
+                conditions.append(", ");
+            }
+        }
+        conditions.append(END_CONDITION);
+        return conditions.toString();
     }
 
     /**
@@ -3097,5 +3230,4 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         m_driverManager.getVfsDriver().updateRelations(dbc, onlineProject, offlineResource);
     }
-
 }

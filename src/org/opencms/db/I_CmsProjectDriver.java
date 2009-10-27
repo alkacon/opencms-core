@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2009/09/09 14:26:33 $
- * Version: $Revision: 1.81.2.1 $
+ * Date   : $Date: 2009/10/27 11:42:52 $
+ * Version: $Revision: 1.81.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -55,20 +56,31 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.81.2.1 $
+ * @version $Revision: 1.81.2.2 $
  * 
  * @since 6.0.0 
  */
 public interface I_CmsProjectDriver {
 
-    /** Name of the setup project. */
-    String SETUP_PROJECT_NAME = "_setupProject";
-
     /** The type ID to identify project driver implementations. */
     int DRIVER_TYPE_ID = 1;
 
+    /** Name of the setup project. */
+    String SETUP_PROJECT_NAME = "_setupProject";
+
     /** The name of the temp file project. */
     String TEMP_FILE_PROJECT_NAME = "tempFileProject";
+
+    /**
+     * Adds a resource to the given user's publish list.<p>
+     * 
+     * @param dbc the database context
+     * @param userId the user's id
+     * @param structureId the resource's structure id
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void addResourceToUsersPubList(CmsDbContext dbc, CmsUUID userId, CmsUUID structureId) throws CmsDataAccessException;
 
     /**
      * Creates a new project.<p>
@@ -237,6 +249,18 @@ public interface I_CmsProjectDriver {
      * @return the SqlManager of this driver
      */
     CmsSqlManager getSqlManager();
+
+    /**
+     * Returns the given user's publish list.<p>
+     * 
+     * @param dbc the database context
+     * @param userId the user's id
+     * 
+     * @return the given user's publish list
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List<CmsResource> getUsersPubList(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -482,6 +506,19 @@ public interface I_CmsProjectDriver {
     List<CmsProject> readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
 
     /**
+     * Reads the resources that were published during a publish process for a given publish history ID.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishHistoryId unique int ID to identify the publish process in the publish history
+     * 
+     * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List<org.opencms.db.CmsPublishedResource> readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId)
+    throws CmsDataAccessException;
+
+    /**
      * Reads a single publish job identified by its publish history id.<p>
      * 
      * @param dbc the current database context
@@ -527,19 +564,6 @@ public interface I_CmsProjectDriver {
     byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
 
     /**
-     * Reads the resources that were published during a publish process for a given publish history ID.<p>
-     * 
-     * @param dbc the current database context
-     * @param publishHistoryId unique int ID to identify the publish process in the publish history
-     * 
-     * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    List<org.opencms.db.CmsPublishedResource> readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId)
-    throws CmsDataAccessException;
-
-    /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
      *
      * @param dbc the current database context
@@ -563,6 +587,18 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     List<String> readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
+    throws CmsDataAccessException;
+
+    /**
+     * Removes the given resource to the given user's publish list.<p>
+     * 
+     * @param dbc the database context
+     * @param userId the user's id
+     * @param structureIds the collection of structure IDs to remove
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void removeResourceFromUsersPubList(CmsDbContext dbc, CmsUUID userId, Collection<CmsUUID> structureIds)
     throws CmsDataAccessException;
 
     /**
@@ -656,5 +692,4 @@ public interface I_CmsProjectDriver {
         int linkType,
         String linkParameter,
         long timestamp) throws CmsDataAccessException;
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/10/26 07:52:10 $
- * Version: $Revision: 1.639.2.4 $
+ * Date   : $Date: 2009/10/27 11:42:52 $
+ * Version: $Revision: 1.639.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -308,6 +308,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The lock manager. */
     private CmsLockManager m_lockManager;
 
+    /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singelton. */
+    private CmsMemoryMonitor m_monitor;
+
     /** The project driver. */
     private I_CmsProjectDriver m_projectDriver;
 
@@ -328,9 +331,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** The VFS driver. */
     private I_CmsVfsDriver m_vfsDriver;
-
-    /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singelton. */
-    private CmsMemoryMonitor m_monitor;
 
     /**
      * Private constructor, initializes some required member variables.<p> 
@@ -530,6 +530,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (!importCase) {
             setDateLastModified(dbc, resource, System.currentTimeMillis());
         }
+        addResourceToUsersPubList(dbc, resource);
     }
 
     /**
@@ -897,9 +898,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Copies the access control entries of a given resource to a destination resorce.<p>
+     * Copies the access control entries of a given resource to a destination resource.<p>
      *
      * Already existing access control entries of the destination resource are removed.<p>
+     * 
      * @param dbc the current database context
      * @param source the resource to copy the access control entries from
      * @param destination the resource to which the access control entries are copied
@@ -1726,6 +1728,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         new Object[] {dbc.removeSiteRoot(newResource.getRootPath())}));
                 }
             }
+
+            addResourceToUsersPubList(dbc, newResource);
         } finally {
             // clear the internal caches
             m_monitor.clearAccessControlListCache();
@@ -2783,6 +2787,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         dbc.currentProject(),
                         dbc.currentProject().getUuid(),
                         currentResource);
+
+                    addResourceToUsersPubList(dbc, currentResource);
                 }
             }
         }
@@ -4386,6 +4392,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the given user's publish list.<p>
+     * 
+     * @param dbc the database context
+     * @param userId the user's id
+     * 
+     * @return the given user's publish list
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    public List<CmsResource> getUsersPubList(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
+
+        return m_projectDriver.getUsersPubList(dbc, userId);
+    }
+
+    /**
      * Returns the VFS driver.<p>
      * 
      * @return the VFS driver
@@ -4575,14 +4596,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * is a sibling in a "labeled" site folder.<p>
      * 
      * This method is used when creating a new sibling 
-     * (use the newResource parameter & action = 1) 
-     * or deleting/importing a resource (call with action = 2).<p> 
+     * (use the <code>newResource</code> parameter & <code>action = 1</code>) 
+     * or deleting/importing a resource (call with <code>action = 2</code>).<p> 
      *   
      * @param dbc the current database context
      * @param resource the resource
      * @param newResource absolute path for a resource sibling which will be created
-     * @param action the action which has to be performed (1 = create VFS link, 2 all other actions)
-     * @return true if the flag should be set for the resource, otherwise false
+     * @param action the action which has to be performed (1: create VFS link, 2: all other actions)
+     * 
+     * @return <code>true</code> if the flag should be set for the resource, otherwise <code>false</code>
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
     public boolean labelResource(CmsDbContext dbc, CmsResource resource, String newResource, int action)
@@ -4966,6 +4989,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 source,
                 CmsDriverManager.UPDATE_STRUCTURE_STATE,
                 false);
+            // safe since this operation always uses the ids instead of the resource path
+            addResourceToUsersPubList(dbc, source);
         }
 
         CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
@@ -6949,6 +6974,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Removes the given resource to the given user's publish list.<p>
+     * 
+     * @param dbc the database context
+     * @param userId the user's id
+     * @param structureIds the collection of structure IDs to remove
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    public void removeResourceFromUsersPubList(CmsDbContext dbc, CmsUUID userId, Collection<CmsUUID> structureIds)
+    throws CmsDataAccessException {
+
+        m_projectDriver.removeResourceFromUsersPubList(dbc, userId, structureIds);
+    }
+
+    /**
      * Removes a user from a group.<p>
      *
      * @param dbc the current database context
@@ -7385,6 +7425,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // modify the last modified project reference
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
+        addResourceToUsersPubList(dbc, resource);
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7422,6 +7463,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resource.setUserLastModified(dbc.currentUser().getId());
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
 
+        addResourceToUsersPubList(dbc, resource);
+
         // clear the cache
         m_monitor.clearResourceCache();
 
@@ -7456,6 +7499,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // modify the last modified project reference
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
+        addResourceToUsersPubList(dbc, resource);
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7574,6 +7618,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // perform the changes
         updateState(dbc, resource, false);
 
+        addResourceToUsersPubList(dbc, resource);
         // clear the cache
         m_monitor.clearResourceCache();
 
@@ -8107,6 +8152,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         deleteRelationsWithSiblings(dbc, resource);
 
+        addResourceToUsersPubList(dbc, resource);
+
         // update the cache
         m_monitor.clearResourceCache();
 
@@ -8301,7 +8348,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         try {
-
             // the specified list must not contain two or more equal property objects
             for (int i = 0, n = properties.size(); i < n; i++) {
                 Set<String> keyValidationSet = new HashSet<String>();
@@ -8331,6 +8377,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             if (updateStateValue > 0) {
                 updateState(dbc, resource, (updateStateValue == 2));
             }
+
+            addResourceToUsersPubList(dbc, resource);
         } finally {
             // update the driver manager cache
             m_monitor.clearResourceCache();
@@ -8398,6 +8446,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             deleteRelationsWithSiblings(dbc, resource);
         }
 
+        addResourceToUsersPubList(dbc, resource);
+
         // update the cache
         m_monitor.clearResourceCache();
         Map<String, Object> data = new HashMap<String, Object>(2);
@@ -8452,6 +8502,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
         eventData.put("id", user.getId().toString());
         eventData.put("name", user.getName());
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
+    }
+
+    /**
+     * Adds the given resource to the current user's publish list.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to add
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void addResourceToUsersPubList(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+
+        if (dbc == null) {
+            return;
+        }
+        m_projectDriver.addResourceToUsersPubList(dbc, dbc.currentUser().getId(), resource.getStructureId());
     }
 
     /** 
@@ -9554,6 +9620,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
         }
 
+        addResourceToUsersPubList(dbc, offlineResource);
         // update the cache
         m_monitor.clearResourceCache();
         m_monitor.flushProperties();
