@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2009/10/12 08:12:04 $
- * Version: $Revision: 1.34.2.2 $
+ * Date   : $Date: 2009/10/27 11:43:10 $
+ * Version: $Revision: 1.34.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.34.2.2 $ 
+ * @version $Revision: 1.34.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -660,23 +660,23 @@ public final class CmsFileUtil {
      * 
      * @see #removeRedundantResources(List)
      */
-    public static List removeRedundancies(List resourcenames) {
+    public static List<String> removeRedundancies(List<String> resourcenames) {
 
         if ((resourcenames == null) || (resourcenames.isEmpty())) {
-            return new ArrayList();
+            return new ArrayList<String>();
         }
         if (resourcenames.size() == 1) {
             // if there is only one resource name in the list, there can be no redundancies
-            return new ArrayList(resourcenames);
+            return new ArrayList<String>(resourcenames);
         }
         // check all resources names and see if a parent folder name is contained
-        List result = new ArrayList(resourcenames.size());
-        List base = new ArrayList(resourcenames);
+        List<String> result = new ArrayList<String>(resourcenames.size());
+        List<String> base = new ArrayList<String>(resourcenames);
         Collections.sort(base);
-        Iterator i = base.iterator();
+        Iterator<String> i = base.iterator();
         while (i.hasNext()) {
             // check all resource names in the list
-            String resourcename = (String)i.next();
+            String resourcename = i.next();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
                 // skip empty strings
                 continue;
@@ -684,7 +684,7 @@ public final class CmsFileUtil {
             boolean valid = true;
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this resource name is indirectly contained because a parent folder name is contained
-                String check = (String)result.get(j);
+                String check = result.get(j);
                 if ((CmsResource.isFolder(check) && resourcename.startsWith(check)) || resourcename.equals(check)) {
                     valid = false;
                     break;
