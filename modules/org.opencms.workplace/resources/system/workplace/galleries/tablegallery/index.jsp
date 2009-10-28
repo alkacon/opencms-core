@@ -55,7 +55,13 @@ var vfsPathAjaxJsp = "<%= wp.getJsp().link("/system/workplace/galleries/tablegal
 var vfsPathPrefixItems = "<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/img/";
 
 var initValues;
-<% wp.getJsp().includeSilent("js/integrator_" + wp.getParamDialogMode() + ".js", null); %> 
+<%
+String variant = "";
+if (request.getParameter("integrator") != null) {
+	wp.getJsp().includeSilent(request.getParameter("integrator"), null);
+} else {
+	wp.getJsp().includeSilent("js/integrator_" + wp.getParamDialogMode() + variant + ".js", null);
+} %>
 var isAppletUsed = <%=isAppletUsed %>;
 
 </script>

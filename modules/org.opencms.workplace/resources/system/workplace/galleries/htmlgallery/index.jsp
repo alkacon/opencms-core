@@ -54,14 +54,13 @@ var vfsPathAjaxJsp = "<%= wp.getJsp().link("/system/workplace/galleries/htmlgall
 var vfsPathPrefixItems = "<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/img/";
 
 var initValues;
-<%--<% 
-if (wp.isModeView()) {
-	wp.getJsp().includeSilent("../galleryelements/integrator_view.js", null);
+<%
+String variant = "";
+if (request.getParameter("integrator") != null) {
+	wp.getJsp().includeSilent(request.getParameter("integrator"), null);
 } else {
-	wp.getJsp().includeSilent("js/integrator_" + wp.getParamDialogMode() + ".js", null);
-}
-%> --%>
-<% wp.getJsp().includeSilent("js/integrator_" + wp.getParamDialogMode() + ".js", null); %> 
+	wp.getJsp().includeSilent("js/integrator_" + wp.getParamDialogMode() + variant + ".js", null);
+} %>
 var isAppletUsed = <%=isAppletUsed %>;
 
 </script>

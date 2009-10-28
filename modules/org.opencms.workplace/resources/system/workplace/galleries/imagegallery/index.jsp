@@ -52,10 +52,14 @@ var initValues;
 if (wp.isModeView()) {
 	wp.getJsp().includeSilent("../galleryelements/integrator_view.js", null);
 } else {
-	wp.getJsp().includeSilent("js/integrator_" + wp.getParamDialogMode() + ".js", null);
+	String variant = "";
+	if (request.getParameter("integrator") != null) {
+		wp.getJsp().includeSilent(request.getParameter("integrator"), null);
+	} else {
+		wp.getJsp().includeSilent("js/integrator_" + wp.getParamDialogMode() + variant + ".js", null);
+	}
 }
 %> 
-
 
 var isAppletUsed = <%=isAppletUsed %>;
 

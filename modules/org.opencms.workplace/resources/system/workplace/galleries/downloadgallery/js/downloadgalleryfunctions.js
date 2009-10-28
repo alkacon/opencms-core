@@ -507,9 +507,11 @@ function loadActiveItem(data, isInitial) {
 
 		if (initValues.dialogmode == "widget") {
 			okPressed();
-		}else if (initValues.dialogmode == "editor") {
-				Ok();
+		} else if (initValues.dialogmode == "editor") {
+			Ok();
+			try {
 				dialog.CloseDialog();
+			} catch (e) {}
 		}
 	}
 }
