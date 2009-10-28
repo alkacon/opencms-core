@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/09/21 16:11:54 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2009/10/28 16:28:00 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.82 $ 
+ * @version $Revision: 1.83 $ 
  * 
  * @since 6.0.0 
  */
@@ -1126,7 +1126,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                                     excerpt = highlighter.getExcerpt(doc, this, params, fieldsQuery, getAnalyzer());
                                 }
                                 searchResult = new CmsSearchResult(
-                                    Math.round(hits.scoreDocs[i].score * 100f),
+                                    Math.round((hits.scoreDocs[i].score / hits.getMaxScore()) * 100f),
                                     doc,
                                     excerpt);
                                 searchResults.add(searchResult);
