@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerBean.java,v $
- * Date   : $Date: 2009/10/28 11:09:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/28 11:10:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -80,7 +80,7 @@ public class CmsContainerBean {
      */
     public List<CmsContainerElementBean> getElements() {
 
-        return Collections.unmodifiableList(m_elements);
+        return m_elements;
     }
 
     /**
