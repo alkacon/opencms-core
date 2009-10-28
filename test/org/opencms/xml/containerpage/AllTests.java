@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/Attic/AllTests.java,v $
- * Date   : $Date: 2009/10/19 11:09:30 $
- * Version: $Revision: 1.1.2.1 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/AllTests.java,v $
+ * Date   : $Date: 2009/10/28 10:57:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.xml.content.TestCmsXmlContentWithVfs;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -42,7 +41,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.2
  */
@@ -66,7 +65,7 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestCmsXmlContentWithVfs.suite());
+        suite.addTest(TestCmsXmlContainerPage.suite());
         //$JUnit-END$
         return suite;
     }
