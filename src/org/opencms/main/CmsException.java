@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2009/10/27 11:42:19 $
- * Version: $Revision: 1.40.2.2 $
+ * Date   : $Date: 2009/10/28 07:21:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * @author Michael Moossen 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.40.2.2 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */

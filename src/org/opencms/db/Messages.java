@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2009/10/27 11:42:52 $
- * Version: $Revision: 1.52.2.1 $
+ * Date   : $Date: 2009/10/28 07:21:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.52.2.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0.0 
  */

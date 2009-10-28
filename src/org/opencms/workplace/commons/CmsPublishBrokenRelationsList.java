@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2009/10/27 11:43:53 $
- * Version: $Revision: 1.10.2.2 $
+ * Date   : $Date: 2009/10/28 07:21:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10.2.2 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.5.5 
  */

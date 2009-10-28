@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2009/10/27 11:42:52 $
- * Version: $Revision: 1.81.2.2 $
+ * Date   : $Date: 2009/10/28 07:21:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.81.2.2 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0.0 
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2009/10/27 11:43:10 $
- * Version: $Revision: 1.34.2.3 $
+ * Date   : $Date: 2009/10/28 07:21:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.34.2.3 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */

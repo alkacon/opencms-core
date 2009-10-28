@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/10/27 11:44:43 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/10/28 07:21:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.3
  */

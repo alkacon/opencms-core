@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/10/27 11:42:53 $
- * Version: $Revision: 1.255.2.2 $
+ * Date   : $Date: 2009/10/28 07:21:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.255.2.2 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0.0 
  */
