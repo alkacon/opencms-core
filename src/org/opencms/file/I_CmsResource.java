@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResource.java,v $
- * Date   : $Date: 2009/09/14 11:45:33 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/I_CmsResource.java,v $
+ * Date   : $Date: 2009/10/28 15:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,32 @@ import java.util.Comparator;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0 
  */
 public interface I_CmsResource {
+
+    /**
+     * A comparator for the date last modified of two resources.<p>
+     */
+    Comparator<I_CmsResource> COMPARE_DATE_LAST_MODIFIED = new Comparator<I_CmsResource>() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(I_CmsResource r1, I_CmsResource r2) {
+
+            if (r1 == r2) {
+                return 0;
+            }
+
+            long date1 = r1.getDateLastModified();
+            long date2 = r2.getDateLastModified();
+
+            return (date1 > date2) ? -1 : (date1 < date2) ? 1 : 0;
+        }
+    };
 
     /**
      * A comparator for the release date of two resources.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/10/13 11:59:43 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2009/10/28 15:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,6 +64,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_EXCEPTION_1 = "ERR_SERVER_EXCEPTION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKEN_LINK_ONLINE_0 = "GUI_BROKEN_LINK_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_FORMATTER_FILE_0 = "GUI_DEFAULT_FORMATTER_FILE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -83,6 +86,30 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_FORMATTER_TYPE_1 = "GUI_DEFAULT_FORMATTER_TYPE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPNAME_DAY_1 = "GUI_GROUPNAME_DAY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPNAME_EVERYTHING_ELSE_0 = "GUI_GROUPNAME_EVERYTHING_ELSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPNAME_SESSION_2 = "GUI_GROUPNAME_SESSION_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0 = "GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_LOCKED_BY_2 = "GUI_RESOURCE_LOCKED_BY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_MISSING_ONLINE_0 = "GUI_RESOURCE_MISSING_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0 = "GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_PUBLISHED_BY_2 = "GUI_RESOURCE_PUBLISHED_BY_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.editors.ade.messages";

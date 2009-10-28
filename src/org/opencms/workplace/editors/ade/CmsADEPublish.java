@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/10/28 07:21:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/10/28 15:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,13 +33,12 @@ package org.opencms.workplace.editors.ade;
 
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
-import org.opencms.json.JSONArray;
-import org.opencms.json.JSONException;
-import org.opencms.json.JSONObject;
-import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.file.I_CmsResource;
+import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -50,6 +49,7 @@ import org.opencms.relations.CmsRelationPublishValidator;
 import org.opencms.relations.CmsRelationValidatorInfoEntry;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -57,13 +57,15 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -72,175 +74,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.3
  */
 public class CmsADEPublish {
-
-    /** Reason value constants, when resources can not be published. */
-    protected enum BlockingReason {
-
-        /** Resource is locked by another user. */
-        LOCKED("locked"),
-        /** User does not have enough permissions. */
-        PERMISSIONS("permissions"),
-        /** Resource has been already published. */
-        PUBLISHED("published");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private BlockingReason(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
-    /** Dialog value constants for responses. */
-    protected enum Dialog {
-
-        /** Dialog with blocked resources. */
-        BLOCKED("blocked"),
-        /** Publishing has been successfully started. */
-        FINISHED("finished"),
-        /** Dialog with broken links. */
-        LINKCHECK("linkcheck"),
-        /** Dialog with resources to publish. */
-        PUBLISH("publish");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private Dialog(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
-    /** Json property name constants for resources. */
-    protected enum JsonResource {
-
-        /** The resource type icon path. */
-        ICON("icon"),
-        /** The structure id. */
-        ID("id"),
-        /** The additional information name. */
-        INFO_NAME("infoName"),
-        /** The additional information value. */
-        INFO_VALUE("infoValue"),
-        /** The name of the user that has locked the resource. */
-        LOCKED_BY("lockedBy"),
-        /** The reason a resource can not be published. */
-        REASON("reason"),
-        /** The resource state. */
-        STATE("state"),
-        /** Resource title. */
-        TITLE("title"),
-        /** Resource uri. */
-        URI("uri");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonResource(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
-    /** Json property name constants for responses. */
-    protected enum JsonResponse {
-
-        /** The response state. */
-        DIALOG("dialog"),
-        /** A list of resources. */
-        RESOURCES("resources");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonResponse(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
-    /** Request parameter name constants for publishing. */
-    protected enum ParamPublish {
-
-        /** Flag to indicate if to publish with related resources. */
-        RELATED("related"),
-        /** The resources to remove from the publish list. */
-        REMOVE_RESOURCES("remove-resources"),
-        /** The resources to publish. */
-        RESOURCES("resources"),
-        /** Flag to indicate if to publish with siblings. */
-        SIBLINGS("siblings");
-
-        /** Parameter name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private ParamPublish(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
 
     /**
      * Just for passing around resources and their related together but not mixed up.<p>
@@ -294,20 +132,29 @@ public class CmsADEPublish {
         }
     }
 
+    /** The number of day groups. */
+    protected static final int GROUP_DAYS_NUMBER = 3;
+
+    /** The gap between session groups. */
+    protected static final int GROUP_SESSIONS_GAP = 8 * 60 * 60 * 1000;
+
+    /** The number of session groups. */
+    protected static final int GROUP_SESSIONS_NUMBER = 2;
+
     /** Formatted path length. */
     protected static final int PATH_LENGTH = 50;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEPublish.class);
 
-    /** Flag to include related resources. */
-    private boolean m_includeRelated = true;
+    /** The current cms context. */
+    private final CmsObject m_cms;
 
-    /** Flag to include siblings. */
-    private boolean m_includeSiblings;
+    /** The current locale. */
+    private final Locale m_locale;
 
-    /** The current JSP context. */
-    private CmsJspActionElement m_jsp;
+    /** The options. */
+    private final CmsPublishOptions m_options;
 
     /** The user's resource publish list. */
     private ResourcesAndRelated m_resourceList;
@@ -315,312 +162,274 @@ public class CmsADEPublish {
     /**
      * Constructor.<p>
      * 
-     * @param jsp the current JSP context
+     * @param cms the current cms context
      */
-    public CmsADEPublish(CmsJspActionElement jsp) {
+    public CmsADEPublish(CmsObject cms) {
 
-        m_jsp = jsp;
+        m_cms = cms;
+        m_locale = m_cms.getRequestContext().getLocale();
+        m_options = new CmsPublishOptions();
     }
 
     /**
-     * Returns a list of resources that should be published but can not.<p>
-     * This can be due to several reasons:<br>
-     * <ul>
-     *  <li>Locks</li>
-     *  <li>Permissions</li>
-     *  <li>Already published</li>
-     * </ul>
+     * Checks for possible broken links when the given list of resources would be published.<p>
      * 
-     * @return a list of resources that should be published but can not
+     * @param pubResources list of resources to be published
      * 
-     * @throws JSONException if something goes wrong 
-     * 
-     * @see org.opencms.workplace.commons.CmsLock#getBlockingLockedResources()
-     * @see JsonResource#REASON
-     * @see BlockingReason
+     * @return a list of resources that would produce broken links when published 
      */
-    public JSONArray getJsonBlockedResources() throws JSONException {
+    public List<CmsPublishResourceBean> getBrokenResources(List<CmsResource> pubResources) {
 
-        CmsObject cms = getCmsObject();
-        Locale locale = cms.getRequestContext().getLocale();
+        List<CmsPublishResourceBean> resources = new ArrayList<CmsPublishResourceBean>();
 
-        JSONArray resources = new JSONArray();
+        CmsPublishList publishList = new CmsPublishList(pubResources, m_options.isIncludeSiblings(), false);
+
+        CmsRelationPublishValidator validator = new CmsRelationPublishValidator(m_cms, publishList);
+        for (String resourceName : validator.keySet()) {
+            CmsRelationValidatorInfoEntry infoEntry = validator.getInfoEntry(resourceName);
+            try {
+                CmsResource resource = m_cms.readResource(resourceName, CmsResourceFilter.ALL);
+                if (resource.getState().isDeleted()) {
+                    for (CmsRelation relation : infoEntry.getRelations()) {
+                        try {
+                            CmsResource theResource = relation.getSource(m_cms, CmsResourceFilter.ALL);
+                            CmsPublishResourceInfoBean info = new CmsPublishResourceInfoBean(
+                                Messages.get().getBundle(m_locale).key(Messages.GUI_RESOURCE_MISSING_ONLINE_0),
+                                CmsPublishResourceInfoBean.Type.MISSING);
+                            CmsPublishResourceBean pubRes = resourceToBean(
+                                theResource,
+                                info,
+                                false,
+                                Collections.singletonList(resourceToBean(resource, null, false, null)));
+                            resources.add(pubRes);
+                        } catch (CmsException e) {
+                            // should never happen
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                } else {
+                    try {
+                        List<CmsPublishResourceBean> related = new ArrayList<CmsPublishResourceBean>();
+                        for (CmsRelation relation : infoEntry.getRelations()) {
+                            try {
+                                CmsResource theResource = relation.getTarget(m_cms, CmsResourceFilter.ALL);
+                                CmsPublishResourceInfoBean info = new CmsPublishResourceInfoBean(
+                                    Messages.get().getBundle(m_locale).key(Messages.GUI_BROKEN_LINK_ONLINE_0),
+                                    CmsPublishResourceInfoBean.Type.BROKENLINK);
+                                CmsPublishResourceBean pubRes = resourceToBean(theResource, info, false, null);
+                                related.add(pubRes);
+                            } catch (CmsException e) {
+                                // should never happen
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                        CmsPublishResourceBean pubRes = resourceToBean(resource, null, false, related);
+                        resources.add(pubRes);
+                    } catch (Exception e) {
+                        // should never happen
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        return resources;
+    }
+
+    /**
+     * Returns the current user's manageable projects.<p>
+     * 
+     * @return the current user's manageable projects
+     */
+    public List<CmsProjectBean> getManageableProjects() {
+
+        List<CmsProjectBean> manProjs = new ArrayList<CmsProjectBean>();
+
+        List<CmsProject> projects;
+        try {
+            projects = OpenCms.getOrgUnitManager().getAllManageableProjects(m_cms, "", true);
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return manProjs;
+        }
+
+        for (CmsProject project : projects) {
+            CmsProjectBean manProj = new CmsProjectBean(project.getUuid(), getOuAwareName(project.getName()));
+            manProjs.add(manProj);
+        }
+
+        return manProjs;
+    }
+
+    /**
+     * Returns the options.<p>
+     *
+     * @return the options
+     */
+    public CmsPublishOptions getOptions() {
+
+        return m_options;
+    }
+
+    /**
+     * Returns the list of publish groups with resources that can be published.<p>
+     * 
+     * @return the list of publish groups with resources that can be published
+     */
+    public List<CmsPublishGroupBean> getPublishGroups() {
 
         // first look for already published resources
         Set<CmsResource> published = getAlreadyPublishedResources();
-        for (CmsResource resource : published) {
-            JSONObject jsonRes = resourceToJson(resource);
-            jsonRes.put(JsonResource.REASON.getName(), BlockingReason.PUBLISHED.getName());
-            resources.put(jsonRes);
-        }
 
         // then for resources without permission
         Set<CmsResource> exclude = new HashSet<CmsResource>(published);
 
         ResourcesAndRelated permissions = getResourcesWithoutPermissions(exclude);
-        for (CmsResource resource : permissions.getResources()) {
-            JSONObject jsonRes = resourceToJson(resource);
-            jsonRes.put(JsonResource.REASON.getName(), BlockingReason.PERMISSIONS.getName());
-            resources.put(jsonRes);
-        }
 
         // and finally for locked resources
         exclude.addAll(permissions.getResources());
         exclude.addAll(permissions.getRelatedResources());
 
         ResourcesAndRelated locked = getBlockingLockedResources(exclude);
-        for (CmsResource resource : locked.getResources()) {
-            JSONObject jsonRes = resourceToJson(resource);
-            jsonRes.put(JsonResource.REASON.getName(), BlockingReason.LOCKED.getName());
-            resources.put(jsonRes);
-        }
 
-        // update the publish list
+        // all direct resources that can not be published
         exclude.clear();
         exclude.addAll(published);
         exclude.addAll(permissions.getResources());
         exclude.addAll(locked.getResources());
 
-        m_resourceList.getResources().removeAll(exclude);
-        m_resourceList.getRelatedResources().removeAll(permissions.getRelatedResources());
-        m_resourceList.getRelatedResources().removeAll(locked.getRelatedResources());
+        // update the publish list
+        ResourcesAndRelated pubResources = new ResourcesAndRelated();
+        pubResources.getResources().addAll(getPublishResources().getResources());
+        pubResources.getResources().removeAll(exclude);
+        pubResources.getRelatedResources().addAll(getPublishResources().getRelatedResources());
+        pubResources.getRelatedResources().removeAll(permissions.getRelatedResources());
+        pubResources.getRelatedResources().removeAll(locked.getRelatedResources());
 
-        // at the end process related resources
-        String relatedMsg = org.opencms.workplace.commons.Messages.get().getBundle(locale).key(
-            org.opencms.workplace.commons.Messages.GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0);
-        for (CmsResource resource : permissions.getRelatedResources()) {
-            if (exclude.contains(resource)) {
-                // skip related, because it is already in the 'normal' list
-                continue;
-            }
-            JSONArray infoForRelated = getInfoForRelated(cms, locale, resource);
-            if (infoForRelated == null) {
-                // skip related, if source is already blocking
-                continue;
-            }
-            JSONObject jsonRes = resourceToJson(resource);
-            jsonRes.put(JsonResource.REASON.getName(), BlockingReason.PERMISSIONS.getName());
-            jsonRes.put(JsonResource.INFO_NAME.getName(), relatedMsg);
-            jsonRes.put(JsonResource.INFO_VALUE.getName(), infoForRelated);
-            resources.put(jsonRes);
-        }
-        for (CmsResource resource : locked.getRelatedResources()) {
-            if (exclude.contains(resource)) {
-                // skip related, because it is already in the 'normal' list
-                continue;
-            }
-            JSONArray infoForRelated = getInfoForRelated(cms, locale, resource);
-            if (infoForRelated == null) {
-                // skip related, if source is already blocking
-                continue;
-            }
-            JSONObject jsonRes = resourceToJson(resource);
-            jsonRes.put(JsonResource.REASON.getName(), BlockingReason.LOCKED.getName());
-            jsonRes.put(JsonResource.INFO_NAME.getName(), relatedMsg);
-            jsonRes.put(JsonResource.INFO_VALUE.getName(), infoForRelated);
-            resources.put(jsonRes);
+        if (pubResources.getResources().isEmpty()) {
+            // nothing to do
+            return new ArrayList<CmsPublishGroupBean>();
         }
 
-        return resources;
-    }
+        // the resources the user can really publish
+        Set<CmsResource> allPubRes = new HashSet<CmsResource>(pubResources.getRelatedResources());
+        allPubRes.addAll(pubResources.getResources());
 
-    /**
-     * Checks for possible broken links when the given list of resources would be published.<p>
-     * 
-     * @param ids list of structure ids identifying the resources to be published
-     * 
-     * @return a sublist of JSON resources that would produce broken links when published 
-     * 
-     * @throws JSONException if something goes wrong 
-     * @throws CmsException if something goes wrong 
-     */
-    public JSONArray getJsonBrokenResources(JSONArray ids) throws JSONException, CmsException {
+        List<CmsResource> sortedResources = new ArrayList<CmsResource>(pubResources.getResources());
+        Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
 
-        JSONArray resources = new JSONArray();
+        List<CmsResource> pubList = new ArrayList<CmsResource>();
+        try {
+            pubList = OpenCms.getPublishManager().getUsersPubList(m_cms);
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
 
-        CmsObject cms = getCmsObject();
-        Locale locale = cms.getRequestContext().getLocale();
+        int sessions = GROUP_SESSIONS_NUMBER;
+        int days = GROUP_DAYS_NUMBER;
+        List<CmsPublishGroupBean> groups = new ArrayList<CmsPublishGroupBean>();
+        List<CmsPublishResourceBean> resources = new ArrayList<CmsPublishResourceBean>();
+        long groupDate = sortedResources.get(0).getDateLastModified(); // we checked earlier that there is at least one resource
+        ListIterator<CmsResource> itResources = sortedResources.listIterator();
+        while (itResources.hasNext()) {
+            CmsResource resource = itResources.next();
+            try {
+                List<CmsPublishResourceBean> related = getRelatedResources(
+                    resource,
+                    allPubRes,
+                    published,
+                    permissions,
+                    locked);
+                CmsPublishResourceInfoBean info = getResourceInfo(resource, published, permissions, locked);
+                CmsPublishResourceBean pubResource = resourceToBean(resource, info, pubList.contains(resource), related);
+                resources.add(pubResource);
+            } catch (Exception e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            boolean newGroup = !itResources.hasNext();
+            if (!newGroup) {
+                CmsResource nextRes = itResources.next();
+                itResources.previous(); // go back to continue in the right order
+                if (sessions > 0) {
+                    // check the difference is not greater than x hours
+                    newGroup = (resource.getDateLastModified() - nextRes.getDateLastModified() > GROUP_SESSIONS_GAP);
+                } else if (days > 0) {
+                    // check they are not in the same day
+                    Calendar oldCalendar = Calendar.getInstance();
+                    oldCalendar.setTimeInMillis(resource.getDateLastModified());
+                    Calendar newCalendar = Calendar.getInstance();
+                    newCalendar.setTimeInMillis(nextRes.getDateLastModified());
 
-        String sourceMsg = org.opencms.workplace.commons.Messages.get().getBundle(locale).key(
-            org.opencms.workplace.commons.Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_RELATION_SOURCES_0);
-        String targetMsg = org.opencms.workplace.commons.Messages.get().getBundle(locale).key(
-            org.opencms.workplace.commons.Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_RELATION_TARGETS_0);
-        CmsPublishList publishList = new CmsPublishList(resourcesFromJson(ids), m_includeSiblings, false);
-        CmsRelationPublishValidator validator = new CmsRelationPublishValidator(cms, publishList);
-        List<String> resourceList = new ArrayList<String>(validator.keySet());
-        Collections.sort(resourceList);
-        for (String resourceName : validator.keySet()) {
-            CmsRelationValidatorInfoEntry infoEntry = validator.getInfoEntry(resourceName);
-            CmsResource resource = cms.readResource(resourceName);
-            JSONArray info = getInfoForLinkCheck(cms, resource, infoEntry);
-            JSONObject jsonRes = resourceToJson(resource);
-            if (info != null) {
-                if (resource.getState().isDeleted()) {
-                    jsonRes.put(JsonResource.INFO_NAME.getName(), sourceMsg);
-                } else {
-                    jsonRes.put(JsonResource.INFO_NAME.getName(), targetMsg);
+                    newGroup = (oldCalendar.get(Calendar.DAY_OF_MONTH) == newCalendar.get(Calendar.DAY_OF_MONTH));
+                    newGroup &= (oldCalendar.get(Calendar.MONTH) == newCalendar.get(Calendar.MONTH));
+                    newGroup &= (oldCalendar.get(Calendar.YEAR) == newCalendar.get(Calendar.YEAR));
                 }
-                jsonRes.put(JsonResource.INFO_VALUE.getName(), info);
             }
-            resources.put(jsonRes);
-        }
-
-        return resources;
-    }
-
-    /**
-     * Returns the list of resources that can be published.<p>
-     * 
-     * @return a list of resources that can be published
-     * 
-     * @throws JSONException if something goes wrong 
-     */
-    public JSONArray getJsonPublishResources() throws JSONException {
-
-        JSONArray resources = new JSONArray();
-
-        CmsObject cms = getCmsObject();
-        Locale locale = cms.getRequestContext().getLocale();
-
-        ResourcesAndRelated pubResources = getPublishResources();
-
-        String sourceMsg = org.opencms.workplace.commons.Messages.get().getBundle(locale).key(
-            org.opencms.workplace.commons.Messages.GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0);
-        for (CmsResource resource : pubResources.getResources()) {
-            JSONArray infoForSource = getInfoForSource(cms, resource);
-            JSONObject jsonRes = resourceToJson(resource);
-            if (infoForSource != null) {
-                jsonRes.put(JsonResource.INFO_NAME.getName(), sourceMsg);
-                jsonRes.put(JsonResource.INFO_VALUE.getName(), infoForSource);
-            }
-            resources.put(jsonRes);
-        }
-
-        String relatedMsg = org.opencms.workplace.commons.Messages.get().getBundle(locale).key(
-            org.opencms.workplace.commons.Messages.GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0);
-        for (CmsResource resource : pubResources.getRelatedResources()) {
-            JSONArray infoForRelated = getInfoForRelated(cms, locale, resource);
-            if (infoForRelated == null) {
-                // skip related, if source is not going to be published
-                continue;
-            }
-            JSONObject jsonRes = resourceToJson(resource);
-            jsonRes.put(JsonResource.INFO_NAME.getName(), relatedMsg);
-            jsonRes.put(JsonResource.INFO_VALUE.getName(), infoForRelated);
-            resources.put(jsonRes);
-        }
-
-        return resources;
-    }
-
-    /**
-      * Handles all publish related requests.<p>
-      * 
-      * @param action the action to carry out
-      * @param result the JSON object for results
-      * 
-      * @return JSON object
-      * 
-      * @throws CmsException if something goes wrong
-      * @throws JSONException if something goes wrong
-      */
-    public JSONObject handleRequest(CmsADEServer.Action action, JSONObject result) throws JSONException, CmsException {
-
-        HttpServletRequest request = m_jsp.getRequest();
-        if (action.equals(CmsADEServer.Action.PUBLISH_LIST)) {
-            if (checkParameters(request, null, ParamPublish.REMOVE_RESOURCES)) {
-                // remove the resources from the user's publish list
-                String remResParam = request.getParameter(ParamPublish.REMOVE_RESOURCES.getName());
-                JSONArray resourcesToRemove = new JSONArray(remResParam);
-                removeResourcesFromPublishList(resourcesToRemove);
-                // we continue to execute the main action
-            }
-            if (checkParameters(request, null, ParamPublish.RELATED, ParamPublish.SIBLINGS)) {
-                // get list of resources to publish
-                String relatedParam = request.getParameter(ParamPublish.RELATED.getName());
-                String siblingsParam = request.getParameter(ParamPublish.SIBLINGS.getName());
-                m_includeRelated = Boolean.parseBoolean(relatedParam);
-                m_includeSiblings = Boolean.parseBoolean(siblingsParam);
-                JSONArray resourcesToPublish = getJsonPublishResources();
-                result.put(JsonResponse.RESOURCES.getName(), resourcesToPublish);
-                result.put(JsonResponse.DIALOG.getName(), Dialog.PUBLISH.getName());
-            } else {
-                JSONArray resources = getJsonBlockedResources();
-                if (resources.length() == 0) {
-                    // if no problems just get the list of resources to publish
-                    resources = getJsonPublishResources();
-                    result.put(JsonResponse.DIALOG.getName(), Dialog.PUBLISH.getName());
-                } else {
-                    result.put(JsonResponse.DIALOG.getName(), Dialog.BLOCKED.getName());
+            if (newGroup) {
+                try {
+                    String groupName;
+                    if (sessions > 0) {
+                        groupName = Messages.get().getBundle(m_locale).key(
+                            Messages.GUI_GROUPNAME_SESSION_2,
+                            new Date(groupDate),
+                            new Date(resource.getDateLastModified()));
+                        sessions--;
+                    } else if (days > 0) {
+                        groupName = Messages.get().getBundle(m_locale).key(
+                            Messages.GUI_GROUPNAME_DAY_1,
+                            new Date(groupDate));
+                        days--;
+                    } else {
+                        groupName = Messages.get().getBundle(m_locale).key(Messages.GUI_GROUPNAME_EVERYTHING_ELSE_0);
+                    }
+                    if (itResources.hasNext()) {
+                        CmsResource nextRes = itResources.next();
+                        itResources.previous(); // go back to continue in the right order
+                        groupDate = nextRes.getDateLastModified();
+                    }
+                    CmsPublishGroupBean group = new CmsPublishGroupBean(groupName, resources);
+                    groups.add(group);
+                    resources = new ArrayList<CmsPublishResourceBean>();
+                } catch (Exception e) {
+                    // should never happen
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
-                result.put(JsonResponse.RESOURCES.getName(), resources);
-            }
-        } else if (action.equals(CmsADEServer.Action.PUBLISH)) {
-            if (!checkParameters(request, result, ParamPublish.RESOURCES)) {
-                return result;
-            }
-            // resources to publish
-            String resourcesParam = request.getParameter(ParamPublish.RESOURCES.getName());
-            JSONArray resourcesToPublish = new JSONArray(resourcesParam);
-            // get the resources with link check problems
-            JSONArray resources = getJsonBrokenResources(resourcesToPublish);
-            if (resources.length() == 0) {
-                // publish resources
-                publishResources(resourcesToPublish);
-                result.put(JsonResponse.DIALOG.getName(), Dialog.FINISHED.getName());
-            } else {
-                // return resources with problems
-                result.put(JsonResponse.RESOURCES.getName(), resources);
-                result.put(JsonResponse.DIALOG.getName(), Dialog.LINKCHECK.getName());
             }
         }
-        return result;
+
+        return groups;
     }
 
     /**
      * Publishes the given list of resources.<p>
      * 
-     * @param ids list of structure ids identifying the resources to publish
+     * @param resources list of resources to publish
      * 
      * @throws CmsException if something goes wrong
      */
-    public void publishResources(JSONArray ids) throws CmsException {
+    public void publishResources(List<CmsResource> resources) throws CmsException {
 
-        List<CmsResource> resources = resourcesFromJson(ids);
-        I_CmsReport report = new CmsShellReport(getCmsObject().getRequestContext().getLocale());
-        CmsPublishList publishList = new CmsPublishList(resources, m_includeSiblings, false);
-        OpenCms.getPublishManager().publishProject(getCmsObject(), report, publishList);
-        removeResourcesFromPublishList(ids);
+        I_CmsReport report = new CmsShellReport(m_locale);
+        CmsPublishList publishList = new CmsPublishList(resources, m_options.isIncludeSiblings(), false);
+        OpenCms.getPublishManager().publishProject(m_cms, report, publishList);
     }
 
     /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
+     * Removes the given resources from the user's publish list.<p>
      * 
-     * If this isn't the case, an error message is written to the JSON result object.
+     * @param idsToRemove list of structure ids identifying the resources to be removed
      * 
-     * @param request the request which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return true if and only if all parameters are present in the request
-     * 
-     * @throws JSONException if something goes wrong with JSON
+     * @throws CmsException if something goes wrong
      */
-    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ParamPublish... params)
-    throws JSONException {
+    public void removeResourcesFromPublishList(Collection<CmsUUID> idsToRemove) throws CmsException {
 
-        for (ParamPublish param : params) {
-            String value = request.getParameter(param.getName());
-            if (value == null) {
-                if (result != null) {
-                    result.put(CmsADEServer.JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                        Messages.ERR_JSON_MISSING_PARAMETER_1,
-                        param.getName()));
-                }
-                return false;
-            }
-        }
-        return true;
+        OpenCms.getPublishManager().removeResourceFromUsersPubList(m_cms, idsToRemove);
     }
 
     /**
@@ -652,9 +461,7 @@ public class CmsADEPublish {
      */
     protected ResourcesAndRelated getBlockingLockedResources(Set<CmsResource> exclude) {
 
-        CmsObject cms = getCmsObject();
-
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = m_cms.getRequestContext().currentUser();
         CmsLockFilter blockingFilter = CmsLockFilter.FILTER_ALL;
         blockingFilter = blockingFilter.filterNotLockableByUser(user);
 
@@ -665,7 +472,7 @@ public class CmsADEPublish {
                 continue;
             }
             try {
-                result.getResources().addAll(cms.getLockedResources(resource, blockingFilter));
+                result.getResources().addAll(m_cms.getLockedResources(resource, blockingFilter));
             } catch (Exception e) {
                 // error reading the resource list, should usually never happen
                 if (LOG.isErrorEnabled()) {
@@ -679,7 +486,7 @@ public class CmsADEPublish {
                 continue;
             }
             try {
-                result.getRelatedResources().addAll(cms.getLockedResources(resource, blockingFilter));
+                result.getRelatedResources().addAll(m_cms.getLockedResources(resource, blockingFilter));
             } catch (Exception e) {
                 // error reading the resource list, should usually never happen
                 if (LOG.isErrorEnabled()) {
@@ -691,136 +498,19 @@ public class CmsADEPublish {
     }
 
     /**
-     * Returns the current cms context.<p>
+     * Returns the simple name if the ou is the same as the current user's ou.<p>
      * 
-     * @return the current cms context
+     * @param name the fully qualified name to check
+     * 
+     * @return the simple name if the ou is the same as the current user's ou
      */
-    protected CmsObject getCmsObject() {
+    protected String getOuAwareName(String name) {
 
-        return m_jsp.getCmsObject();
-    }
-
-    /**
-     * Returns the links that would get broken when publishing the given resource.<p>
-     * 
-     * @param cms the cms context
-     * @param resource the resource to check
-     * @param infoEntry the link validation information
-     * 
-     * @return the links that would get broken when publishing the given resource
-     */
-    protected JSONArray getInfoForLinkCheck(CmsObject cms, CmsResource resource, CmsRelationValidatorInfoEntry infoEntry) {
-
-        // show all links that will get broken
-        JSONArray infoValue = new JSONArray();
-        for (CmsRelation relation : infoEntry.getRelations()) {
-            String relationName;
-            if (resource.getState().isDeleted()) {
-                relationName = relation.getSourcePath();
-            } else {
-                relationName = relation.getTargetPath();
-            }
-            String siteRoot = infoEntry.getSiteRoot();
-            infoValue.put(getResourceName(cms, relationName, siteRoot));
+        String ou = CmsOrganizationalUnit.getParentFqn(name);
+        if (ou.equals(m_cms.getRequestContext().currentUser().getOuFqn())) {
+            return CmsOrganizationalUnit.getSimpleName(name);
         }
-        return infoValue.length() > 0 ? infoValue : null;
-    }
-
-    /**
-     * Returns a string with a list of resources in the publish list, this resource is related to.<p>
-     * 
-     * @param cms the current cms context
-     * @param locale the current locale
-     * @param resource the related resource to use
-     * 
-     * @return a string with a list of resources in the publish list, this resource is related to, or <code>null</code> if none
-     */
-    protected JSONArray getInfoForRelated(CmsObject cms, Locale locale, CmsResource resource) {
-
-        JSONArray infoValue = new JSONArray();
-        try {
-            String siteRoot = cms.getRequestContext().getSiteRoot();
-            Set<CmsResource> resources = getPublishResources().getResources();
-            // get and iterate over all related resources
-            for (CmsRelation relation : cms.getRelationsForResource(
-                resource,
-                CmsRelationFilter.SOURCES.filterStrong().filterIncludeChildren())) {
-
-                CmsResource source = null;
-                try {
-                    source = relation.getSource(cms, CmsResourceFilter.ALL);
-                } catch (CmsException e) {
-                    // error reading a resource, should usually never happen
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                    continue;
-                }
-                // see if the source is a resource to be published
-                if (resources.contains(source)) {
-                    // HACK: writing HTML code :( 
-                    infoValue.put(getResourceName(cms, source.getRootPath(), siteRoot)
-                        + "&nbsp;<span style='color: #666666;'>("
-                        + relation.getType().getLocalizedName(locale)
-                        + ")</span>");
-                }
-            }
-        } catch (CmsException e) {
-            // error reading a resource relations, should usually never happen
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-        return infoValue.length() > 0 ? infoValue : null;
-    }
-
-    /**
-     * Returns a string with a list of related resources in the publish list.<p>
-     * 
-     * @param cms the current cms context
-     * @param resource the resource to use
-     * 
-     * @return a string with a list of related resources in the publish list, or <code>null</code> if none
-     */
-    protected JSONArray getInfoForSource(CmsObject cms, CmsResource resource) {
-
-        JSONArray infoValue = new JSONArray();
-        try {
-            String siteRoot = cms.getRequestContext().getSiteRoot();
-            Set<CmsResource> resources = getPublishResources().getRelatedResources();
-            // get and iterate over all related resources
-            for (CmsRelation relation : cms.getRelationsForResource(
-                resource,
-                CmsRelationFilter.TARGETS.filterStrong().filterIncludeChildren())) {
-
-                CmsResource target = null;
-                try {
-                    target = relation.getTarget(cms, CmsResourceFilter.ALL);
-                } catch (CmsException e) {
-                    // error reading a resource, should usually never happen
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                    continue;
-                }
-                // see if the source is a resource to be published
-                if (resources.contains(target)) {
-                    infoValue.put(getResourceName(cms, target.getRootPath(), siteRoot));
-                } else if (!target.getState().isUnchanged()) {
-                    // a modified related resource wont be published
-                    // HACK: writing HTML code :( 
-                    infoValue.put("<span style='color: red;'>"
-                        + getResourceName(cms, target.getRootPath(), siteRoot)
-                        + "</span>");
-                }
-            }
-        } catch (CmsException e) {
-            // error reading a resource relations, should usually never happen
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-        return infoValue.length() > 0 ? infoValue : null;
+        return CmsOrganizationalUnit.SEPARATOR + name;
     }
 
     /**
@@ -830,13 +520,31 @@ public class CmsADEPublish {
      */
     protected ResourcesAndRelated getPublishResources() {
 
-        CmsObject cms = getCmsObject();
         if (m_resourceList != null) {
             return m_resourceList;
         }
         m_resourceList = new ResourcesAndRelated();
         try {
-            m_resourceList.getResources().addAll(OpenCms.getPublishManager().getUsersPubList(cms));
+            if (m_options.getProjectId() == null) {
+                // get the users publish list
+                m_resourceList.getResources().addAll(OpenCms.getPublishManager().getUsersPubList(m_cms));
+            } else {
+                CmsProject project = m_cms.getRequestContext().currentProject();
+                try {
+                    project = m_cms.readProject(m_options.getProjectId());
+                } catch (Exception e) {
+                    // can happen if the cached project was deleted
+                    // so ignore and use current project
+                }
+                // get the project publish list
+                CmsProject originalProject = m_cms.getRequestContext().currentProject();
+                try {
+                    m_cms.getRequestContext().setCurrentProject(project);
+                    OpenCms.getPublishManager().getPublishList(m_cms);
+                } finally {
+                    m_cms.getRequestContext().setCurrentProject(originalProject);
+                }
+            }
         } catch (CmsException e) {
             // error reading the publish list, should usually never happen
             if (LOG.isErrorEnabled()) {
@@ -844,7 +552,7 @@ public class CmsADEPublish {
             }
             return m_resourceList;
         }
-        if (m_includeSiblings) {
+        if (m_options.isIncludeSiblings()) {
             for (CmsResource resource : new HashSet<CmsResource>(m_resourceList.getResources())) {
                 // we are interested just in changed resources
                 if (resource.getState().isUnchanged()) {
@@ -852,7 +560,7 @@ public class CmsADEPublish {
                 }
                 try {
                     m_resourceList.getResources().addAll(
-                        cms.readSiblings(cms.getSitePath(resource), CmsResourceFilter.ALL_MODIFIED));
+                        m_cms.readSiblings(m_cms.getSitePath(resource), CmsResourceFilter.ALL_MODIFIED));
                 } catch (CmsException e) {
                     // error reading resource siblings, should usually never happen
                     if (LOG.isErrorEnabled()) {
@@ -862,7 +570,7 @@ public class CmsADEPublish {
                 }
             }
         }
-        if (m_includeRelated) {
+        if (m_options.isIncludeRelated()) {
             for (CmsResource resource : m_resourceList.getResources()) {
                 // we are interested just in changed resources
                 if (resource.getState().isUnchanged()) {
@@ -870,13 +578,13 @@ public class CmsADEPublish {
                 }
                 try {
                     // get and iterate over all related resources
-                    for (CmsRelation relation : cms.getRelationsForResource(
+                    for (CmsRelation relation : m_cms.getRelationsForResource(
                         resource,
                         CmsRelationFilter.TARGETS.filterStrong().filterIncludeChildren())) {
 
                         CmsResource target = null;
                         try {
-                            target = relation.getTarget(cms, CmsResourceFilter.ALL);
+                            target = relation.getTarget(m_cms, CmsResourceFilter.ALL);
                         } catch (CmsException e) {
                             // error reading a resource, should usually never happen
                             if (LOG.isErrorEnabled()) {
@@ -907,17 +615,119 @@ public class CmsADEPublish {
     }
 
     /**
+     * Returns a string with a list of related resources in the publish list.<p>
+     * 
+     * @param resource the resource to use
+     * @param resources the resources the user can really publish
+     * @param published the already published resources
+     * @param permissions the resource the current user does not have publish permissions for
+     * @param locked the locked resources
+     * 
+     * @return a string with a list of related resources in the publish list, or <code>null</code> if none
+     */
+    protected List<CmsPublishResourceBean> getRelatedResources(
+        CmsResource resource,
+        Set<CmsResource> resources,
+        Set<CmsResource> published,
+        ResourcesAndRelated permissions,
+        ResourcesAndRelated locked) {
+
+        List<CmsPublishResourceBean> relatedResources = new ArrayList<CmsPublishResourceBean>();
+        try {
+            // get and iterate over all related resources
+            for (CmsRelation relation : m_cms.getRelationsForResource(
+                resource,
+                CmsRelationFilter.TARGETS.filterStrong().filterIncludeChildren())) {
+
+                CmsResource target = null;
+                try {
+                    target = relation.getTarget(m_cms, CmsResourceFilter.ALL);
+                } catch (CmsException e) {
+                    // error reading a resource, should usually never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    continue;
+                }
+                // see if the source is a resource to be published
+                CmsPublishResourceInfoBean info;
+                if (resources.contains(target)) {
+                    info = getResourceInfo(resource, published, permissions, locked);
+                } else if (!target.getState().isUnchanged()) {
+                    // a modified related resource can not be published
+                    info = new CmsPublishResourceInfoBean(Messages.get().getBundle(m_locale).key(
+                        Messages.GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0), CmsPublishResourceInfoBean.Type.RELATED);
+                } else {
+                    continue;
+                }
+                CmsPublishResourceBean relatedResource = resourceToBean(target, info, false, null);
+                relatedResources.add(relatedResource);
+            }
+        } catch (CmsException e) {
+            // error reading a resource relations, should usually never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return relatedResources;
+    }
+
+    /**
+     * Returns the additional info for the given resource.<p>
+     * 
+     * @param resource the resource to use
+     * @param published the already published resources
+     * @param permissions the resource the current user does not have publish permissions for
+     * @param locked the locked resources
+     * 
+     * @return the additional info for the given resource
+     */
+    protected CmsPublishResourceInfoBean getResourceInfo(
+        CmsResource resource,
+        Set<CmsResource> published,
+        ResourcesAndRelated permissions,
+        ResourcesAndRelated locked) {
+
+        String info = null;
+        CmsPublishResourceInfoBean.Type infoType = null;
+        try {
+            if (published.contains(resource)) {
+                // TODO: get the real publish data
+                String publishUser = getOuAwareName(m_cms.readUser(resource.getUserLastModified()).getName());
+                Date publishDate = new Date(resource.getDateLastModified());
+                info = Messages.get().getBundle(m_locale).key(
+                    Messages.GUI_RESOURCE_PUBLISHED_BY_2,
+                    publishUser,
+                    publishDate);
+                infoType = CmsPublishResourceInfoBean.Type.PUBLISHED;
+            } else if (permissions.contains(resource)) {
+                info = Messages.get().getBundle(m_locale).key(Messages.GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0);
+                infoType = CmsPublishResourceInfoBean.Type.PERMISSIONS;
+            } else if (locked.contains(resource)) {
+                CmsLock lock = m_cms.getLock(resource);
+                info = Messages.get().getBundle(m_locale).key(
+                    Messages.GUI_RESOURCE_LOCKED_BY_2,
+                    getOuAwareName(m_cms.readUser(lock.getUserId()).getName()),
+                    getOuAwareName(lock.getProject().getName()));
+                infoType = CmsPublishResourceInfoBean.Type.LOCKED;
+            }
+        } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return infoType == null ? null : new CmsPublishResourceInfoBean(info, infoType);
+    }
+
+    /**
      * Formats the given resource path depending on the site root.<p>
      * 
-     * @param cms the cms context
      * @param rootPath the resource path to format
      * @param siteRoot the site root
      * 
      * @return the formatted resource path
      */
-    protected String getResourceName(CmsObject cms, String rootPath, String siteRoot) {
+    protected String getResourceName(String rootPath, String siteRoot) {
 
-        Locale locale = cms.getRequestContext().getLocale();
         if (rootPath.startsWith(siteRoot)) {
             // same site
             rootPath = rootPath.substring(siteRoot.length());
@@ -933,7 +743,7 @@ public class CmsADEPublish {
                 siteName = "/";
             }
             rootPath = CmsStringUtil.formatResourceName(rootPath, PATH_LENGTH);
-            rootPath = org.opencms.workplace.commons.Messages.get().getBundle(locale).key(
+            rootPath = org.opencms.workplace.commons.Messages.get().getBundle(m_locale).key(
                 org.opencms.workplace.commons.Messages.GUI_PUBLISH_SITE_RELATION_2,
                 new Object[] {siteName, rootPath});
         }
@@ -949,7 +759,6 @@ public class CmsADEPublish {
      */
     protected ResourcesAndRelated getResourcesWithoutPermissions(Set<CmsResource> exclude) {
 
-        CmsObject cms = getCmsObject();
         ResourcesAndRelated result = new ResourcesAndRelated();
         for (CmsResource resource : getPublishResources().getResources()) {
             // skip already blocking resources
@@ -957,7 +766,7 @@ public class CmsADEPublish {
                 continue;
             }
             try {
-                if (!cms.hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH)) {
+                if (!m_cms.hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH)) {
                     result.getResources().add(resource);
                 }
             } catch (Exception e) {
@@ -973,7 +782,7 @@ public class CmsADEPublish {
                 continue;
             }
             try {
-                if (!cms.hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH)) {
+                if (!m_cms.hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH)) {
                     result.getRelatedResources().add(resource);
                 }
             } catch (Exception e) {
@@ -987,64 +796,31 @@ public class CmsADEPublish {
     }
 
     /**
-     * Removes the given resources from the user's publish list.<p>
+     * Creates a publish resource bean instance from the given parameters.<p>
      * 
-     * @param ids list of structure ids identifying the resources to be removed
+     * @param resource the resource
+     * @param info the publish information, if any
+     * @param removable if removable
+     * @param related the list of related resources
      * 
-     * @throws CmsException if something goes wrong
+     * @return the publish resource bean
      */
-    protected void removeResourcesFromPublishList(JSONArray ids) throws CmsException {
+    protected CmsPublishResourceBean resourceToBean(
+        CmsResource resource,
+        CmsPublishResourceInfoBean info,
+        boolean removable,
+        List<CmsPublishResourceBean> related) {
 
-        CmsObject cms = getCmsObject();
-
-        Set<CmsUUID> idsToRemove = new HashSet<CmsUUID>();
-        for (int i = 0; i < ids.length(); i++) {
-            String id = ids.optString(i);
-            idsToRemove.add(new CmsUUID(id));
-        }
-
-        OpenCms.getPublishManager().removeResourceFromUsersPubList(cms, idsToRemove);
-    }
-
-    /**
-     * Converts a JSON array of structure ids into a list of resources.<p>
-     * 
-     * @param ids the JSON array of structure ids
-     * 
-     * @return a list of resources
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected List<CmsResource> resourcesFromJson(JSONArray ids) throws CmsException {
-
-        List<CmsResource> resources = new ArrayList<CmsResource>(ids.length());
-        CmsObject cms = getCmsObject();
-        for (int i = 0; i < ids.length(); i++) {
-            resources.add(cms.readResource(new CmsUUID(ids.optString(i)), CmsResourceFilter.ALL));
-        }
-        return resources;
-    }
-
-    /**
-     * Converts a resource to a JSON object.<p>
-     * 
-     * @param resource the resource to convert
-     * 
-     * @return a JSON object representing the resource
-     * 
-     * @throws JSONException if something goes wrong
-     */
-    protected JSONObject resourceToJson(CmsResource resource) throws JSONException {
-
-        CmsObject cms = getCmsObject();
-        JSONObject jsonRes = new JSONObject();
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
-        jsonRes.put(JsonResource.ID.getName(), resource.getStructureId());
-        jsonRes.put(JsonResource.URI.getName(), CmsStringUtil.formatResourceName(resUtil.getFullPath(), PATH_LENGTH));
-        jsonRes.put(JsonResource.TITLE.getName(), resUtil.getTitle());
-        jsonRes.put(JsonResource.ICON.getName(), CmsWorkplace.getResourceUri(resUtil.getIconPathExplorer()));
-        jsonRes.put(JsonResource.STATE.getName(), "" + resUtil.getStateAbbreviation());
-        jsonRes.put(JsonResource.LOCKED_BY.getName(), resUtil.getLockedByName());
-        return jsonRes;
+        CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
+        CmsPublishResourceBean pubResource = new CmsPublishResourceBean(
+            resource.getStructureId(),
+            CmsStringUtil.formatResourceName(resUtil.getFullPath(), PATH_LENGTH),
+            resUtil.getTitle(),
+            CmsWorkplace.getResourceUri(resUtil.getIconPathExplorer()),
+            "" + resUtil.getStateAbbreviation(),
+            removable,
+            info,
+            related);
+        return pubResource;
     }
 }

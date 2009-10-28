@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADESessionCache.java,v $
- * Date   : $Date: 2009/10/26 07:59:09 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/10/28 15:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.containerpage.CmsSearchOptions;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.9.2
  */
@@ -61,14 +60,17 @@ public final class CmsADESessionCache {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADESessionCache.class);
 
-    /** Cache for ADE recent lists. */
+    /** The ADE recent list. */
     private List<CmsContainerElementBean> m_adeRecentLists;
 
-    /** Cache for ADE search options. */
+    /** The ADE search options. */
     private CmsSearchOptions m_adeSearchOptions;
 
-    /** Cache for container elements. */
+    /** The container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;
+
+    /** The ADE publish options. */
+    private CmsPublishOptions m_adePublishOptions;
 
     /** Session attribute name constant. */
     public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
@@ -87,6 +89,9 @@ public final class CmsADESessionCache {
         // ADE search options
         m_adeSearchOptions = null;
 
+        // ADE publish options
+        m_adePublishOptions = new CmsPublishOptions();
+
         // ADE recent lists
         int maxElems = 10;
         try {
@@ -97,30 +102,6 @@ public final class CmsADESessionCache {
         List<CmsContainerElementBean> adeRecentList = CmsCollectionsGenericWrapper.list(new NodeCachingLinkedList(
             maxElems));
         m_adeRecentLists = Collections.synchronizedList(adeRecentList);
-    }
-
-    /**
-     * Flushes the ADE recent list cache.<p>
-     */
-    public void flushADERecentLists() {
-
-        m_adeRecentLists.clear();
-    }
-
-    /**
-     * Flushes the ADE search options cache.<p>
-     */
-    public void flushADESearchOptions() {
-
-        m_adeSearchOptions = null;
-    }
-
-    /**
-     * Flushes the container elements cache.<p>
-     */
-    public void flushContainerElements() {
-
-        m_containerElements.clear();
     }
 
     /**
@@ -141,6 +122,16 @@ public final class CmsADESessionCache {
     public CmsSearchOptions getADESearchOptions() {
 
         return m_adeSearchOptions;
+    }
+
+    /**
+     * Returns the ADE publish options.<p>
+     * 
+     * @return the cached publish options or <code>null</code> if not found
+     */
+    public CmsPublishOptions getADEPublishOptions() {
+
+        return m_adePublishOptions;
     }
 
     /**
@@ -180,6 +171,20 @@ public final class CmsADESessionCache {
             m_adeSearchOptions = null;
         } else {
             m_adeSearchOptions = opts.resetPage();
+        }
+    }
+
+    /**
+     * Caches the given ADE publish options.<p>
+     * 
+     * @param opts the publish options to cache
+     */
+    public void setCacheADEPublishOptions(CmsPublishOptions opts) {
+
+        if (opts == null) {
+            m_adePublishOptions = new CmsPublishOptions();
+        } else {
+            m_adePublishOptions = opts;
         }
     }
 

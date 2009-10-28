@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/26 10:45:13 $
- * Version: $Revision: 1.1.2.41 $
+ * Date   : $Date: 2009/10/28 15:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,6 @@ import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsSearchOptions;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -89,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.41 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.6
  */
@@ -117,6 +116,10 @@ public class CmsADEServer extends CmsJspActionElement {
         PROPS,
         /** To publish. */
         PUBLISH,
+        /** To retrieve the stored publish options. */
+        PUBLISH_OPTIONS,
+        /** To retrieve the manageable projects. */
+        PROJECTS,
         /** To retrieve the publish list. */
         PUBLISH_LIST,
         /** To retrieve or save the recent list. */
@@ -502,25 +505,28 @@ public class CmsADEServer extends CmsJspActionElement {
         JSONObject result = new JSONObject();
 
         HttpServletRequest request = getRequest();
+        CmsObject cms = getCmsObject();
 
-        if (!checkParameters(request, result, ReqParam.ACTION)) {
+        if (!checkParameters(request, result, ReqParam.ACTION, ReqParam.LOCALE)) {
             return result;
         }
         String actionParam = request.getParameter(ReqParam.ACTION.getName());
+        String localeParam = request.getParameter(ReqParam.LOCALE.getName());
         Action action = Action.valueOf(actionParam.toUpperCase());
-        if (action.equals(Action.PUBLISH_LIST) || action.equals(Action.PUBLISH)) {
-            CmsADEPublish pubHelper = new CmsADEPublish(this);
+        cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
+        if (action.equals(Action.PUBLISH_LIST)
+            || action.equals(Action.PUBLISH)
+            || action.equals(Action.PROJECTS)
+            || action.equals(Action.PUBLISH_OPTIONS)) {
+            CmsADEPublishServer pubHelper = new CmsADEPublishServer(this);
             return pubHelper.handleRequest(action, result);
         }
-        if (!checkParameters(request, result, ReqParam.CNTPAGE, ReqParam.LOCALE, ReqParam.URI)) {
+        if (!checkParameters(request, result, ReqParam.CNTPAGE, ReqParam.URI)) {
             return result;
         }
         String cntPageParam = request.getParameter(ReqParam.CNTPAGE.getName());
-        String localeParam = request.getParameter(ReqParam.LOCALE.getName());
         String uriParam = request.getParameter(ReqParam.URI.getName());
 
-        CmsObject cms = getCmsObject();
-        cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
         CmsResource cntPageRes = cms.readResource(cntPageParam);
         CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
         CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
