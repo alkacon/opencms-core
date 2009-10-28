@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsGallerySearch.java,v $
- * Date   : $Date: 2009/10/28 13:55:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/10/28 14:24:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,14 +50,8 @@ public class CmsGallerySearch {
     /** Array of requested galleries. */
     private String[] m_galleries;
 
-    /** The URL which leads to the next result page. */
-    private String m_nextUrl;
-
     /** The number of pages for the result list. */
     private int m_pageCount;
-
-    /** The URL which leads to the previous result page. */
-    private String m_prevUrl;
 
     /** Search query. */
     private String m_query;
@@ -65,14 +59,37 @@ public class CmsGallerySearch {
     /** The current search result. */
     private List<CmsSearchResult> m_result;
 
-    /** The current result-page. */
-    private int m_resultPage;
+    /** The current result-page-index. */
+    private int m_pageIndex;
 
     /** The total number of search results matching the query. */
     private int m_searchResultCount;
 
     /** Array of requested types. */
-    private String[] m_types;
+    private int[] m_types;
+
+    /** The number of results per page. */
+    private int m_matchesPerPage;
+
+    /**
+     * Returns the matchesPerPage.<p>
+     *
+     * @return the matchesPerPage
+     */
+    public int getMatchesPerPage() {
+
+        return m_matchesPerPage;
+    }
+
+    /**
+     * Sets the matchesPerPage.<p>
+     *
+     * @param matchesPerPage the matchesPerPage to set
+     */
+    public void setMatchesPerPage(int matchesPerPage) {
+
+        m_matchesPerPage = matchesPerPage;
+    }
 
     /**
      * Returns the categories.<p>
@@ -95,16 +112,6 @@ public class CmsGallerySearch {
     }
 
     /**
-     * Returns the nextUrl.<p>
-     *
-     * @return the nextUrl
-     */
-    public String getNextUrl() {
-
-        return m_nextUrl;
-    }
-
-    /**
      * Returns the pageCount.<p>
      *
      * @return the pageCount
@@ -112,16 +119,6 @@ public class CmsGallerySearch {
     public int getPageCount() {
 
         return m_pageCount;
-    }
-
-    /**
-     * Returns the prevUrl.<p>
-     *
-     * @return the prevUrl
-     */
-    public String getPrevUrl() {
-
-        return m_prevUrl;
     }
 
     /**
@@ -151,7 +148,7 @@ public class CmsGallerySearch {
      */
     public int getResultPage() {
 
-        return m_resultPage;
+        return m_pageIndex;
     }
 
     /**
@@ -169,7 +166,7 @@ public class CmsGallerySearch {
      *
      * @return the types
      */
-    public String[] getTypes() {
+    public int[] getTypes() {
 
         return m_types;
     }
@@ -195,36 +192,6 @@ public class CmsGallerySearch {
     }
 
     /**
-     * Sets the nextUrl.<p>
-     *
-     * @param nextUrl the nextUrl to set
-     */
-    public void setNextUrl(String nextUrl) {
-
-        m_nextUrl = nextUrl;
-    }
-
-    /**
-     * Sets the pageCount.<p>
-     *
-     * @param pageCount the pageCount to set
-     */
-    public void setPageCount(int pageCount) {
-
-        m_pageCount = pageCount;
-    }
-
-    /**
-     * Sets the prevUrl.<p>
-     *
-     * @param prevUrl the prevUrl to set
-     */
-    public void setPrevUrl(String prevUrl) {
-
-        m_prevUrl = prevUrl;
-    }
-
-    /**
      * Sets the query.<p>
      *
      * @param query the query to set
@@ -235,33 +202,13 @@ public class CmsGallerySearch {
     }
 
     /**
-     * Sets the result.<p>
-     *
-     * @param result the result to set
-     */
-    public void setResult(List<CmsSearchResult> result) {
-
-        m_result = result;
-    }
-
-    /**
      * Sets the resultPage.<p>
      *
      * @param resultPage the resultPage to set
      */
     public void setResultPage(int resultPage) {
 
-        m_resultPage = resultPage;
-    }
-
-    /**
-     * Sets the searchResultCount.<p>
-     *
-     * @param searchResultCount the searchResultCount to set
-     */
-    public void setSearchResultCount(int searchResultCount) {
-
-        m_searchResultCount = searchResultCount;
+        m_pageIndex = resultPage;
     }
 
     /**
@@ -269,7 +216,7 @@ public class CmsGallerySearch {
      *
      * @param types the types to set
      */
-    public void setTypes(String[] types) {
+    public void setTypes(int[] types) {
 
         m_types = types;
     }
