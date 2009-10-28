@@ -3,6 +3,10 @@
 	// initialize the workplace class
 	CmsDialog wp = new CmsDialog(pageContext, request, response);
 	wp.setParamIsPopup("true");
+	String editorName = "";
+	if (request.getParameter("editorname") != null) {
+		editorName = request.getParameter("editorname");
+	}
 	
 %><%= wp.htmlStart(null, wp.key(org.opencms.workplace.editors.Messages.GUI_TITLE_NEWLINK_0)) %>
 <script type="text/javascript">
@@ -10,6 +14,7 @@
 
 var linkEditorStyleInputs = <%= request.getParameter("showCss") %>;
 var linkEditorPrefix = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
+var editorName = "<%= editorName %>";
 
 /**
 * Extends Javascript String to have a trim() function.
@@ -39,6 +44,7 @@ function pasteLink() {
 	}
 	var linktitle = document.NEU.linktitle.value;
 
+	linkInformation["editorname"] = editorName;
 	linkInformation["href"] = linkAnchor;
 	linkInformation["name"] = "";
 	linkInformation["target"] = linktarget;
@@ -63,6 +69,7 @@ function pasteLink() {
 * target
 * style
 * class
+* editorname (optional, name of the editor instance)
 */
 function init() {
 	if (window.opener.linkEditorPrefix != null) {

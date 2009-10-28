@@ -57,11 +57,27 @@ String buttonPath = ck.getEditorResourceUri() + "skins/opencms/toolbar/";
 // create the path to the image gallery dialog with some request parameters for the dialog
 function imageGalleryDialogUrl(editor) {
 	var resParam = "";
-	if (top.edit.editedResource != null) {
-		resParam = "&resource=" + top.edit.editedResource;
+	var editFrame = getFrame(self, "edit");
+	if (editFrame.editedResource != null) {
+		resParam = "&resource=" + editFrame.editedResource;
 	} else {
-		resParam = "&resource=" + top.edit.editform.editedResource;
+		resParam = "&resource=" + editFrame.editform.editedResource;
 	}
-	
 	return "<%= cms.link("/system/workplace/galleries/imagegallery/index.jsp") %>?dialogmode=editor&integrator=/system/workplace/editors/ckeditor/plugins/galleries/integrator_imagegallery.js" + resParam;
+}
+
+// searches for a frame by the specified name. Will only return siblings or ancestors.
+function getFrame(startFrame, frameName){
+    if (startFrame == top){
+        if (startFrame.name == frameName){
+            return startFrame;
+        }
+        return null;
+    }
+    for (var i=0; i<startFrame.parent.frames.length; i++){
+        if (startFrame.parent.frames[i].name == frameName) {
+            return startFrame.parent.frames[i];
+        }
+    }
+    return getFrame(startFrame.parent, frameName);
 }
