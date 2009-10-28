@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerBean.java,v $
- * Date   : $Date: 2009/10/28 11:10:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/10/28 11:18:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,23 +39,23 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
 public class CmsContainerBean {
 
     /** The container elements.*/
-    private List<CmsContainerElementBean> m_elements;
+    private final List<CmsContainerElementBean> m_elements;
 
     /** The maximal number of elements in the container.*/
     private int m_maxElements;
 
     /** The container name.*/
-    private String m_name;
+    private final String m_name;
 
     /** The container type.*/
-    private String m_type;
+    private final String m_type;
 
     /** 
      * Creates a new container bean.<p> 

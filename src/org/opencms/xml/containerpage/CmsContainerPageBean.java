@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerPageBean.java,v $
- * Date   : $Date: 2009/10/20 07:38:53 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerPageBean.java,v $
+ * Date   : $Date: 2009/10/28 11:18:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6
  */
@@ -57,13 +57,13 @@ public class CmsContainerPageBean {
     public static final String TYPE_TEMPLATE = "template";
 
     /** The containers. */
-    private Map<String, CmsContainerBean> m_containers;
+    private final Map<String, CmsContainerBean> m_containers;
 
     /** The locale. */
-    private Locale m_locale;
+    private final Locale m_locale;
 
     /** The supported types. */
-    private Set<String> m_types;
+    private final Set<String> m_types;
 
     /** 
      * Creates a new container page bean.<p> 
@@ -74,12 +74,14 @@ public class CmsContainerPageBean {
     public CmsContainerPageBean(Locale locale, List<CmsContainerBean> containers) {
 
         m_locale = locale;
-        m_containers = new HashMap<String, CmsContainerBean>();
-        m_types = new HashSet<String>();
+        Map<String, CmsContainerBean> cnts = new HashMap<String, CmsContainerBean>();
+        Set<String> types = new HashSet<String>();
         for (CmsContainerBean container : containers) {
-            m_containers.put(container.getName(), container);
-            m_types.add(container.getType());
+            cnts.put(container.getName(), container);
+            types.add(container.getType());
         }
+        m_containers = Collections.unmodifiableMap(cnts);
+        m_types = Collections.unmodifiableSet(types);
     }
 
     /**
@@ -89,7 +91,7 @@ public class CmsContainerPageBean {
      */
     public Map<String, CmsContainerBean> getContainers() {
 
-        return Collections.unmodifiableMap(m_containers);
+        return m_containers;
     }
 
     /**
@@ -109,6 +111,6 @@ public class CmsContainerPageBean {
      */
     public Set<String> getTypes() {
 
-        return Collections.unmodifiableSet(m_types);
+        return m_types;
     }
 }

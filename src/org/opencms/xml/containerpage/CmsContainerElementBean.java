@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/10/26 10:45:13 $
- * Version: $Revision: 1.1.2.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
+ * Date   : $Date: 2009/10/28 11:18:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,23 +43,23 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
 public class CmsContainerElementBean {
 
     /** The client id including properties-hash. */
-    private transient String m_clientId;
+    private final transient String m_clientId;
 
     /** The element's structure id. */
-    private CmsUUID m_elementId;
+    private final CmsUUID m_elementId;
 
     /** The formatter's structure id. */
-    private CmsUUID m_formatterId;
+    private final CmsUUID m_formatterId;
 
     /** The configured properties. */
-    private Map<String, String> m_properties;
+    private final Map<String, String> m_properties;
 
     /**
      * Creates a new container page element bean.<p> 
@@ -72,13 +72,14 @@ public class CmsContainerElementBean {
 
         m_elementId = elementId;
         m_formatterId = formatterId;
-        m_properties = (properties == null ? new HashMap<String, String>() : properties);
-        m_properties = Collections.unmodifiableMap(m_properties);
-        m_clientId = OpenCms.getADEManager().convertToClientId(m_elementId);
+        Map<String, String> props = (properties == null ? new HashMap<String, String>() : properties);
+        m_properties = Collections.unmodifiableMap(props);
+        String clientId = OpenCms.getADEManager().convertToClientId(m_elementId);
         if (!m_properties.isEmpty()) {
             int hash = m_properties.toString().hashCode();
-            m_clientId += "#" + hash;
+            clientId += "#" + hash;
         }
+        m_clientId = clientId;
     }
 
     /**
