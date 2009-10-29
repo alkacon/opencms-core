@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishHistory.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/10/29 10:37:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */
@@ -98,6 +98,7 @@ public class CmsPublishHistory {
              * 
              * @see org.apache.commons.collections.buffer.BoundedFifoBuffer#remove()
              */
+            @Override
             public Object remove() {
 
                 CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)super.remove();
@@ -143,13 +144,13 @@ public class CmsPublishHistory {
      * 
      * @return a list of {@link CmsPublishJobFinished} objects
      */
-    protected List asList() {
+    protected List<CmsPublishJobFinished> asList() {
 
-        List cachedPublishJobs = OpenCms.getMemoryMonitor().getAllCachedPublishJobsInHistory();
-        List result = new ArrayList(cachedPublishJobs.size());
-        Iterator it = cachedPublishJobs.iterator();
+        List<CmsPublishJobInfoBean> cachedPublishJobs = OpenCms.getMemoryMonitor().getAllCachedPublishJobsInHistory();
+        List<CmsPublishJobFinished> result = new ArrayList<CmsPublishJobFinished>(cachedPublishJobs.size());
+        Iterator<CmsPublishJobInfoBean> it = cachedPublishJobs.iterator();
         while (it.hasNext()) {
-            CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)it.next();
+            CmsPublishJobInfoBean publishJob = it.next();
             result.add(new CmsPublishJobFinished(publishJob));
         }
         return Collections.unmodifiableList(result);
@@ -166,9 +167,9 @@ public class CmsPublishHistory {
         try {
             OpenCms.getMemoryMonitor().flushPublishJobHistory();
             // read all finished published jobs from the database
-            List publishJobs = driverManager.readPublishJobs(dbc, 1L, Long.MAX_VALUE);
-            for (Iterator i = publishJobs.iterator(); i.hasNext();) {
-                CmsPublishJobInfoBean job = (CmsPublishJobInfoBean)i.next();
+            List<CmsPublishJobInfoBean> publishJobs = driverManager.readPublishJobs(dbc, 1L, Long.MAX_VALUE);
+            for (Iterator<CmsPublishJobInfoBean> i = publishJobs.iterator(); i.hasNext();) {
+                CmsPublishJobInfoBean job = i.next();
                 OpenCms.getMemoryMonitor().cachePublishJobInHistory(job);
             }
         } catch (CmsException exc) {

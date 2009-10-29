@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishListenerCollection.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/10/29 10:37:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */
-public final class CmsPublishListenerCollection extends Vector {
+public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEventListener> {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishListenerCollection.class);
@@ -82,8 +82,8 @@ public final class CmsPublishListenerCollection extends Vector {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_JOB_ABORT_0));
         }
-        for (Iterator it = iterator(); it.hasNext();) {
-            I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
+        for (Iterator<I_CmsPublishEventListener> it = iterator(); it.hasNext();) {
+            I_CmsPublishEventListener listener = it.next();
             try {
                 listener.onAbort(userId, publishJob);
             } catch (Throwable t) {
@@ -120,8 +120,8 @@ public final class CmsPublishListenerCollection extends Vector {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_JOB_ENQUEUE_0));
         }
-        for (Iterator it = iterator(); it.hasNext();) {
-            I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
+        for (Iterator<I_CmsPublishEventListener> it = iterator(); it.hasNext();) {
+            I_CmsPublishEventListener listener = it.next();
             try {
                 listener.onEnqueue(publishJob);
             } catch (Throwable t) {
@@ -148,8 +148,8 @@ public final class CmsPublishListenerCollection extends Vector {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_JOB_FINISH_0));
         }
-        for (Iterator it = iterator(); it.hasNext();) {
-            I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
+        for (Iterator<I_CmsPublishEventListener> it = iterator(); it.hasNext();) {
+            I_CmsPublishEventListener listener = it.next();
             try {
                 listener.onFinish(publishJob);
             } catch (Throwable t) {
@@ -194,8 +194,8 @@ public final class CmsPublishListenerCollection extends Vector {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_JOB_REMOVE_0));
         }
-        for (Iterator it = iterator(); it.hasNext();) {
-            I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
+        for (Iterator<I_CmsPublishEventListener> it = iterator(); it.hasNext();) {
+            I_CmsPublishEventListener listener = it.next();
             try {
                 listener.onRemove(publishJob);
             } catch (Throwable t) {
@@ -222,8 +222,8 @@ public final class CmsPublishListenerCollection extends Vector {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_JOB_START_0));
         }
-        for (Iterator it = iterator(); it.hasNext();) {
-            I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
+        for (Iterator<I_CmsPublishEventListener> it = iterator(); it.hasNext();) {
+            I_CmsPublishEventListener listener = it.next();
             try {
                 listener.onStart(publishJob);
             } catch (Throwable t) {

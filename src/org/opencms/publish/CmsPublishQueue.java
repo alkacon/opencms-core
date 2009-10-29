@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/10/29 10:37:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */
@@ -93,6 +93,7 @@ public class CmsPublishQueue {
              * 
              * @see org.apache.commons.collections.buffer.BoundedFifoBuffer#remove()
              */
+            @Override
             public Object remove() {
 
                 CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)super.remove();
@@ -154,13 +155,13 @@ public class CmsPublishQueue {
      * 
      * @return a list of {@link CmsPublishJobEnqueued} objects
      */
-    protected List asList() {
+    protected List<CmsPublishJobEnqueued> asList() {
 
-        List cachedPublishJobs = OpenCms.getMemoryMonitor().getAllCachedPublishJobs();
-        List result = new ArrayList(cachedPublishJobs.size());
-        Iterator it = cachedPublishJobs.iterator();
+        List<CmsPublishJobInfoBean> cachedPublishJobs = OpenCms.getMemoryMonitor().getAllCachedPublishJobs();
+        List<CmsPublishJobEnqueued> result = new ArrayList<CmsPublishJobEnqueued>(cachedPublishJobs.size());
+        Iterator<CmsPublishJobInfoBean> it = cachedPublishJobs.iterator();
         while (it.hasNext()) {
-            CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)it.next();
+            CmsPublishJobInfoBean publishJob = it.next();
             result.add(new CmsPublishJobEnqueued(publishJob));
         }
         return Collections.unmodifiableList(result);
@@ -175,10 +176,10 @@ public class CmsPublishQueue {
      */
     protected boolean contains(CmsPublishJobInfoBean publishJob) {
 
-        List l = OpenCms.getMemoryMonitor().getAllCachedPublishJobs();
+        List<CmsPublishJobInfoBean> l = OpenCms.getMemoryMonitor().getAllCachedPublishJobs();
         if (l != null) {
             for (int i = 0; i < l.size(); i++) {
-                CmsPublishJobInfoBean b = (CmsPublishJobInfoBean)l.get(i);
+                CmsPublishJobInfoBean b = l.get(i);
                 if (b == publishJob) {
                     return true;
                 }
@@ -202,15 +203,15 @@ public class CmsPublishQueue {
             if (revive) {
                 // read all pending publish jobs from the database
                 CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
-                List publishJobs;
+                List<CmsPublishJobInfoBean> publishJobs;
                 try {
                     publishJobs = driverManager.readPublishJobs(dbc, 0L, 0L);
                 } finally {
                     dbc.clear();
                     dbc = null;
                 }
-                for (Iterator i = publishJobs.iterator(); i.hasNext();) {
-                    CmsPublishJobInfoBean job = (CmsPublishJobInfoBean)i.next();
+                for (Iterator<CmsPublishJobInfoBean> i = publishJobs.iterator(); i.hasNext();) {
+                    CmsPublishJobInfoBean job = i.next();
                     dbc = m_publishEngine.getDbContextFactory().getDbContext();
                     if (!job.isStarted()) {
                         // add jobs not already started to queue again

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2009/10/28 07:21:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/10/29 10:37:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -58,7 +59,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */
@@ -210,7 +211,7 @@ public class CmsPublishManager {
      * 
      * @return a list of {@link CmsPublishJobFinished} objects
      */
-    public List getPublishHistory() {
+    public List<CmsPublishJobFinished> getPublishHistory() {
 
         return m_publishEngine.getPublishHistory().asList();
     }
@@ -222,12 +223,12 @@ public class CmsPublishManager {
      * 
      * @return a list of {@link CmsPublishJobFinished} objects
      */
-    public List getPublishHistory(CmsUser user) {
+    public List<CmsPublishJobFinished> getPublishHistory(CmsUser user) {
 
-        List result = new ArrayList();
-        Iterator it = getPublishHistory().iterator();
+        List<CmsPublishJobFinished> result = new ArrayList<CmsPublishJobFinished>();
+        Iterator<CmsPublishJobFinished> it = getPublishHistory().iterator();
         while (it.hasNext()) {
-            CmsPublishJobFinished publishJob = (CmsPublishJobFinished)it.next();
+            CmsPublishJobFinished publishJob = it.next();
             if (publishJob.getUserId().equals(user.getId())) {
                 result.add(publishJob);
             }
@@ -295,8 +296,10 @@ public class CmsPublishManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsPublishList getPublishList(CmsObject cms, List directPublishResources, boolean directPublishSiblings)
-    throws CmsException {
+    public CmsPublishList getPublishList(
+        CmsObject cms,
+        List<CmsResource> directPublishResources,
+        boolean directPublishSiblings) throws CmsException {
 
         return getPublishList(cms, directPublishResources, directPublishSiblings, true);
     }
@@ -317,7 +320,7 @@ public class CmsPublishManager {
      */
     public CmsPublishList getPublishList(
         CmsObject cms,
-        List directPublishResources,
+        List<CmsResource> directPublishResources,
         boolean directPublishSiblings,
         boolean publishSubResources) throws CmsException {
 
@@ -332,7 +335,7 @@ public class CmsPublishManager {
      * 
      * @return a list of {@link CmsPublishJobEnqueued} objects
      */
-    public List getPublishQueue() {
+    public List<CmsPublishJobEnqueued> getPublishQueue() {
 
         return m_publishEngine.getPublishQueue().asList();
     }
@@ -677,7 +680,10 @@ public class CmsPublishManager {
      * 
      * @throws Exception if something goes wrong
      */
-    public Map validateRelations(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
+    public Map<String, List<CmsRelation>> validateRelations(
+        CmsObject cms,
+        CmsPublishList publishList,
+        I_CmsReport report) throws Exception {
 
         return m_securityManager.validateRelations(cms.getRequestContext(), publishList, report);
     }

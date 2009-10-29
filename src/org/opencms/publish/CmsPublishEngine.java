@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/10/29 10:37:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */
@@ -204,17 +204,17 @@ public final class CmsPublishEngine implements Runnable {
             return new CmsPublishJobRunning(m_currentPublishThread.getPublishJob());
         }
         // try enqueued jobs
-        Iterator itEnqueuedJobs = getPublishQueue().asList().iterator();
+        Iterator<CmsPublishJobEnqueued> itEnqueuedJobs = getPublishQueue().asList().iterator();
         while (itEnqueuedJobs.hasNext()) {
-            CmsPublishJobEnqueued enqueuedJob = (CmsPublishJobEnqueued)itEnqueuedJobs.next();
+            CmsPublishJobEnqueued enqueuedJob = itEnqueuedJobs.next();
             if (enqueuedJob.getPublishList().getPublishHistoryId().equals(publishHistoryId)) {
                 return enqueuedJob;
             }
         }
         // try finished jobs
-        Iterator itFinishedJobs = getPublishHistory().asList().iterator();
+        Iterator<CmsPublishJobFinished> itFinishedJobs = getPublishHistory().asList().iterator();
         while (itFinishedJobs.hasNext()) {
-            CmsPublishJobFinished finishedJob = (CmsPublishJobFinished)itFinishedJobs.next();
+            CmsPublishJobFinished finishedJob = itFinishedJobs.next();
             if (finishedJob.getPublishHistoryId().equals(publishHistoryId)) {
                 return finishedJob;
             }
@@ -604,9 +604,9 @@ public final class CmsPublishEngine implements Runnable {
         // lock them
         CmsDbContext dbc = getDbContextFactory().getDbContext(publishJob.getCmsObject().getRequestContext());
         try {
-            Iterator itResources = publishList.getAllResources().iterator();
+            Iterator<CmsResource> itResources = publishList.getAllResources().iterator();
             while (itResources.hasNext()) {
-                CmsResource resource = (CmsResource)itResources.next();
+                CmsResource resource = itResources.next();
                 m_driverManager.lockResource(dbc, resource, CmsLockType.PUBLISH);
             }
         } finally {
@@ -635,7 +635,7 @@ public final class CmsPublishEngine implements Runnable {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(publishJob.getCmsObject().getRequestContext());
         try {
             // fire an event that a project has been published
-            Map eventData = new HashMap();
+            Map<String, Object> eventData = new HashMap<String, Object>();
             eventData.put(I_CmsEventListener.KEY_REPORT, publishJob.getPublishReport());
             eventData.put(
                 I_CmsEventListener.KEY_PUBLISHID,
@@ -759,13 +759,13 @@ public final class CmsPublishEngine implements Runnable {
     protected void unlockPublishList(CmsPublishJobInfoBean publishJob) throws CmsException {
 
         CmsPublishList publishList = publishJob.getPublishList();
-        List allResources = publishList.getAllResources();
+        List<CmsResource> allResources = publishList.getAllResources();
         // unlock them
         CmsDbContext dbc = getDbContextFactory().getDbContext(publishJob.getCmsObject().getRequestContext());
         try {
-            Iterator itResources = allResources.iterator();
+            Iterator<CmsResource> itResources = allResources.iterator();
             while (itResources.hasNext()) {
-                CmsResource resource = (CmsResource)itResources.next();
+                CmsResource resource = itResources.next();
                 m_driverManager.unlockResource(dbc, resource, true, true);
             }
         } finally {
