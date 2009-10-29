@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsPublishOptions.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/10/29 12:47:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
@@ -155,7 +155,9 @@ public class CmsPublishOptions implements I_CmsJsonifable {
     public JSONObject toJson() throws JSONException {
 
         JSONObject json = new JSONObject();
-        json.put(JsonProperty.PROJECT.toString().toLowerCase(), getProjectId().toString());
+        if (getProjectId() != null) {
+            json.put(JsonProperty.PROJECT.toString().toLowerCase(), getProjectId().toString());
+        }
         json.put(JsonProperty.RELATED.toString().toLowerCase(), String.valueOf(isIncludeRelated()));
         json.put(JsonProperty.SIBLINGS.toString().toLowerCase(), String.valueOf(isIncludeSiblings()));
         return json;

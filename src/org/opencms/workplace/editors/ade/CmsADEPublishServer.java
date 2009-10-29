@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/10/29 12:47:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.3
  */
@@ -170,10 +170,10 @@ public class CmsADEPublishServer {
         // get the cached publish options
         CmsPublishOptions options = ((CmsADESessionCache)request.getSession().getAttribute(
             CmsADESessionCache.SESSION_ATTR_ADE_CACHE)).getADEPublishOptions();
-        if (action.equals(CmsADEServer.Action.PUBLISH_LIST)) {
-            result.merge(options.toJson(), true, false);
-            return result;
-        }
+        //        if (action.equals(CmsADEServer.Action.PUBLISH_LIST)) {
+        //            result.merge(options.toJson(), true, false);
+        //            return result;
+        //        }
 
         // check possible option parameters
         if (checkParameters(request, null, ParamPublish.RELATED)) {
