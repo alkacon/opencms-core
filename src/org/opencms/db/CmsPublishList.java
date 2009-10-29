@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2009/09/11 11:13:38 $
- * Version: $Revision: 1.31.2.2 $
+ * Date   : $Date: 2009/10/29 10:38:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  * 
@@ -225,9 +225,9 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Returns a list of folder resources with the given state.<p>
+     * Returns a list of folder resources with the deleted state.<p>
      * 
-     * @return a list of folder resources with the desired state
+     * @return a list of folder resources with the deleted state
      */
     public List<CmsResource> getDeletedFolderList() {
 
@@ -241,7 +241,7 @@ public class CmsPublishList implements Externalizable {
     /**
      * Returns the list of resources that should be published for a "direct" publish operation.<p>
      * 
-     * Will return <code>null</code> if this publish list was not initilaized for a "direct publish" but
+     * Will return <code>null</code> if this publish list was not initialized for a "direct publish" but
      * for a project publish.<p>
      * 
      * @return the list of resources that should be published for a "direct" publish operation, or <code>null</code>
@@ -256,9 +256,9 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Returns an unmodifiable list of the Cms file resources in this publish list.<p>
+     * Returns an unmodifiable list of the files in this publish list.<p>
      * 
-     * @return the list with the Cms file resources in this publish list
+     * @return the list with the files in this publish list
      */
     public List<CmsResource> getFileList() {
 
@@ -270,9 +270,9 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Returns an unmodifiable list of the new/changed Cms folder resources in this publish list.<p>
+     * Returns an unmodifiable list of the new/changed folders in this publish list.<p>
      * 
-     * @return the list with the new/changed Cms file resources in this publish list
+     * @return the list with the new/changed folders in this publish list
      */
     public List<CmsResource> getFolderList() {
 
@@ -362,7 +362,7 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Revives the publish list by populating the internal resource lists with <code>CmsResource</code> instances.<p>
+     * Revives the publish list by populating the internal resource lists with <code>{@link CmsResource}</code> instances.<p>
      * 
      * @param cms a cms object used to read the resource instances
      */
@@ -606,7 +606,7 @@ public class CmsPublishList implements Externalizable {
                 CmsResource res = cms.readResource(i.next(), CmsResourceFilter.ALL);
                 resList.add(res);
             } catch (CmsException exc) {
-                LOG.error(exc);
+                LOG.error(exc.getLocalizedMessage(), exc);
             }
         }
 
