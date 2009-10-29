@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsPublishResourceBean.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/10/29 10:40:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
@@ -124,7 +124,9 @@ public class CmsPublishResourceBean implements I_CmsJsonifable {
         m_icon = icon;
         m_id = id;
         m_name = name;
-        m_related = Collections.unmodifiableList(related);
+        m_related = ((related == null)
+        ? Collections.<CmsPublishResourceBean> emptyList()
+        : Collections.unmodifiableList(related));
         m_state = state;
         m_title = title;
         m_removable = removable;
@@ -223,8 +225,10 @@ public class CmsPublishResourceBean implements I_CmsJsonifable {
         jsonRes.put(JsonProperty.ICON.name().toLowerCase(), m_icon);
         jsonRes.put(JsonProperty.STATE.name().toLowerCase(), m_state);
         jsonRes.put(JsonProperty.REMOVABLE.name().toLowerCase(), m_removable);
-        jsonRes.put(JsonProperty.INFO.name().toLowerCase(), m_info.getValue());
-        jsonRes.put(JsonProperty.INFOTYPE.name().toLowerCase(), m_info.getType().toString().toLowerCase());
+        if (m_info != null) {
+            jsonRes.put(JsonProperty.INFO.name().toLowerCase(), m_info.getValue());
+            jsonRes.put(JsonProperty.INFOTYPE.name().toLowerCase(), m_info.getType().toString().toLowerCase());
+        }
         JSONArray resources = new JSONArray();
         for (CmsPublishResourceBean related : m_related) {
             resources.put(related.toJson());

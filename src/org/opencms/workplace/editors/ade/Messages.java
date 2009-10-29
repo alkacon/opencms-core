@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/29 10:40:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,6 +92,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPNAME_EVERYTHING_ELSE_0 = "GUI_GROUPNAME_EVERYTHING_ELSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPNAME_SESSION_1 = "GUI_GROUPNAME_SESSION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPNAME_SESSION_2 = "GUI_GROUPNAME_SESSION_2";

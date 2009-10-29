@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsPublishGroupBean.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/10/29 10:40:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
@@ -74,7 +74,9 @@ public class CmsPublishGroupBean implements I_CmsJsonifable {
     public CmsPublishGroupBean(String name, List<CmsPublishResourceBean> resources) {
 
         m_name = name;
-        m_resources = Collections.unmodifiableList(resources);
+        m_resources = ((resources == null)
+        ? Collections.<CmsPublishResourceBean> emptyList()
+        : Collections.unmodifiableList(resources));
     }
 
     /**

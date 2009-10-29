@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/10/29 10:40:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.3
  */
@@ -188,7 +188,9 @@ public class CmsADEPublish {
         for (String resourceName : validator.keySet()) {
             CmsRelationValidatorInfoEntry infoEntry = validator.getInfoEntry(resourceName);
             try {
-                CmsResource resource = m_cms.readResource(resourceName, CmsResourceFilter.ALL);
+                CmsResource resource = m_cms.readResource(
+                    m_cms.getRequestContext().removeSiteRoot(resourceName),
+                    CmsResourceFilter.ALL);
                 if (resource.getState().isDeleted()) {
                     for (CmsRelation relation : infoEntry.getRelations()) {
                         try {
@@ -375,10 +377,16 @@ public class CmsADEPublish {
                 try {
                     String groupName;
                     if (sessions > 0) {
-                        groupName = Messages.get().getBundle(m_locale).key(
-                            Messages.GUI_GROUPNAME_SESSION_2,
-                            new Date(groupDate),
-                            new Date(resource.getDateLastModified()));
+                        if (resources.size() > 1) {
+                            groupName = Messages.get().getBundle(m_locale).key(
+                                Messages.GUI_GROUPNAME_SESSION_2,
+                                new Date(groupDate),
+                                new Date(resource.getDateLastModified()));
+                        } else {
+                            groupName = Messages.get().getBundle(m_locale).key(
+                                Messages.GUI_GROUPNAME_SESSION_1,
+                                new Date(groupDate));
+                        }
                         sessions--;
                     } else if (days > 0) {
                         groupName = Messages.get().getBundle(m_locale).key(
