@@ -1550,6 +1550,10 @@
       cms.toolbar.dom.showToolbar = $('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>').appendTo(_bodyEl);
       
       // initializing dialogs and event-handler
+      window.onbeforeunload = function() {  
+         // DO NOT use jquery to bind this!
+         cms.data.abortAllRequests();
+      }; 
       $(window).unload(onUnload); /* TODO */
       $('button[name="Save"]', cms.toolbar.dom.toolbar).click(showSaveDialog);
       $(document).bind('cms-data-loaded', cms.search.initScrollHandler);

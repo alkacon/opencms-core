@@ -117,12 +117,39 @@
    /** Selector for deletable items. */
    var /** String */ deleteitems = cms.data.deleteitems = '.cms-element';
    
-   
    /** Search result list. */
    var /** Array<String> */ searchResultList = cms.data.searchResultList = [];
    
    /** New element types, with name and nice name. */
    var /** Array */ newTypes = cms.data.newTypes = [];
+   
+   /** Keeping track of requests to be able to abort them. */
+   var /** Array<XMLHttpRequest> */ requests = [];
+   
+   /**
+    * The request did finish, so dismiss it.<p>
+    *
+    * @param {XMLHttpRequest} xhr the request object
+    */
+   var _removeRequest = /** void */ function(/** XMLHttpRequest */ xhr) {
+       var pos = requests.indexOf(xhr);
+       if (pos >= 0) {
+           requests.splice(pos, 1);
+       }       
+   };
+   
+   /**
+    * Aborts all pending requests.<p>
+    */
+   var abortAllRequests = cms.data.abortAllRequests = /** void */ function() {
+       for (i = 0, l = requests.length; i < l; i++) {
+           try {
+               requests[i].abort();
+           } catch(e) {
+               // ignore
+           }
+       }
+   };
    
    /**
     * Initial load function that loads all data needed for ADE to start.
@@ -131,7 +158,7 @@
     */
    var loadAllData = cms.data.loadAllData = /** void */ function(/** void Function(boolean) */afterLoad) {
    
-      $.ajax({
+      var xhr = $.ajax({
          'url': SERVER_GET_URL,
          'data': {
             'action': ACTION_ALL,
@@ -141,6 +168,7 @@
          },
          'timeout': AJAX_TIMEOUT,
          'error': function(xhr, status, error) {
+             _removeRequest(xhr);
             if (cms.toolbar.leavingPage) {
                return;
             }
@@ -148,6 +176,7 @@
             afterLoad(false);
          },
          'success': function(data) {
+             _removeRequest(xhr);
             try {
                var jsonData = JSON.parse(data, _jsonRevive);
             } catch (e) {
@@ -240,6 +269,7 @@
             afterLoad(true);
          }
       });
+      requests.push(xhr);
    }
    
    /**
@@ -255,11 +285,12 @@
          'uri': CURRENT_URI,
          'locale': LOCALE
       });
-      $.ajax({
+      var xhr = $.ajax({
          'url': SERVER_GET_URL,
          'data': data,
          'timeout': AJAX_TIMEOUT,
          'error': function(xhr, status, error) {
+             _removeRequest(xhr);
             if (cms.toolbar.leavingPage) {
                return;
             }
@@ -267,6 +298,7 @@
             afterLoad(false, {});
          },
          'success': function(data) {
+             _removeRequest(xhr);
             try {
                var jsonData = JSON.parse(data, _jsonRevive);
             } catch (e) {
@@ -282,6 +314,7 @@
             afterLoad(true, jsonData);
          }
       });
+      requests.push(xhr);
    }
    
    /**
@@ -293,7 +326,7 @@
     */
    var postJSON = cms.data.postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost) {
    
-      $.ajax({
+      var xhr = $.ajax({
          'url': SERVER_SET_URL,
          'data': {
             'cntpage': CURRENT_CNT_PAGE,
@@ -305,10 +338,12 @@
          'type': 'POST',
          'timeout': AJAX_TIMEOUT,
          'error': function(xhr, status, error) {
+             _removeRequest(xhr);
             alert(AJAX_SENT_ERROR);
             afterPost(false);
          },
          'success': function(data) {
+             _removeRequest(xhr);
             try {
                var jsonData = JSON.parse(data, _jsonRevive);
             } catch (e) {
@@ -324,6 +359,7 @@
             afterPost(true, jsonData);
          }
       });
+      requests.push(xhr);
    }
    
    /**
