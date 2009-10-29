@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/10/29 12:51:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/10/29 13:08:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.9.3
  */
@@ -182,7 +182,18 @@ public class CmsADEPublish {
 
         List<CmsPublishResourceBean> resources = new ArrayList<CmsPublishResourceBean>();
 
-        CmsPublishList publishList = new CmsPublishList(pubResources, m_options.isIncludeSiblings(), false);
+        CmsPublishList publishList;
+        try {
+            publishList = OpenCms.getPublishManager().getPublishList(
+                m_cms,
+                pubResources,
+                m_options.isIncludeSiblings(),
+                false);
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return resources;
+        }
 
         CmsRelationPublishValidator validator = new CmsRelationPublishValidator(m_cms, publishList);
         for (String resourceName : validator.keySet()) {
@@ -424,7 +435,11 @@ public class CmsADEPublish {
     public void publishResources(List<CmsResource> resources) throws CmsException {
 
         I_CmsReport report = new CmsShellReport(m_locale);
-        CmsPublishList publishList = new CmsPublishList(resources, m_options.isIncludeSiblings(), false);
+        CmsPublishList publishList = OpenCms.getPublishManager().getPublishList(
+            m_cms,
+            resources,
+            m_options.isIncludeSiblings(),
+            false);
         OpenCms.getPublishManager().publishProject(m_cms, report, publishList);
     }
 
