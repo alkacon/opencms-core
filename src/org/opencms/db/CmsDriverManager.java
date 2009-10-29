@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/10/28 07:21:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/10/29 11:28:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -7960,6 +7960,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsPublishList publishList,
         I_CmsReport report) throws Exception {
 
+        fillPublishList(dbc, publishList);
         return m_htmlLinkValidator.validateResources(dbc, publishList, report);
     }
 

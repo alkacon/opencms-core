@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2009/10/26 07:54:44 $
- * Version: $Revision: 1.6.2.2 $
+ * Date   : $Date: 2009/10/29 11:28:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.6.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.3.0 
  */
@@ -167,7 +167,6 @@ public class CmsRelationSystemValidator {
         // actually get published keyed by their resource names.
         // second, resources that don't get validated are ignored.
         Map<String, CmsResource> offlineFilesLookup = new HashMap<String, CmsResource>();
-        List<CmsResource> validatableResources = new ArrayList<CmsResource>();
         Iterator<CmsResource> itResources = resources.iterator();
         int count = 0;
         while (itResources.hasNext()) {
@@ -185,17 +184,6 @@ public class CmsRelationSystemValidator {
 
             CmsResource resource = itResources.next();
             offlineFilesLookup.put(resource.getRootPath(), resource);
-            try {
-                I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-                if (resourceType instanceof I_CmsLinkParseable) {
-                    // don't validate links on deleted resources
-                    validatableResources.add(resource);
-                }
-            } catch (CmsException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.LOG_RETRIEVAL_RESOURCETYPE_1, resource.getRootPath()),
-                    e);
-            }
         }
         CmsProject project = dbc.currentProject();
         if (interProject) {
@@ -208,7 +196,7 @@ public class CmsRelationSystemValidator {
         }
 
         boolean foundBrokenLinks = false;
-        for (int index = 0, size = validatableResources.size(); index < size; index++) {
+        for (int index = 0, size = resources.size(); index < size; index++) {
 
             // set progress in thread (next 20 percent; leave rest for creating the list and the html)
             if (thread != null) {
@@ -220,7 +208,7 @@ public class CmsRelationSystemValidator {
                 thread.setProgress((index * 20 / resources.size()) + 20);
             }
 
-            CmsResource resource = validatableResources.get(index);
+            CmsResource resource = resources.get(index);
             String resourceName = resource.getRootPath();
 
             if (report != null) {
