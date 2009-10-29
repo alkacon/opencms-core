@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/10/29 12:47:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/10/29 12:51:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.3
  */
@@ -170,10 +171,10 @@ public class CmsADEPublishServer {
         // get the cached publish options
         CmsPublishOptions options = ((CmsADESessionCache)request.getSession().getAttribute(
             CmsADESessionCache.SESSION_ATTR_ADE_CACHE)).getADEPublishOptions();
-        //        if (action.equals(CmsADEServer.Action.PUBLISH_LIST)) {
-        //            result.merge(options.toJson(), true, false);
-        //            return result;
-        //        }
+        if (action.equals(CmsADEServer.Action.PUBLISH_OPTIONS)) {
+            result.merge(options.toJson(), true, false);
+            return result;
+        }
 
         // check possible option parameters
         if (checkParameters(request, null, ParamPublish.RELATED)) {
@@ -186,7 +187,11 @@ public class CmsADEPublishServer {
         }
         if (checkParameters(request, null, ParamPublish.PROJECT)) {
             String projectParam = request.getParameter(ParamPublish.PROJECT.getName());
-            options.setProjectId(new CmsUUID(projectParam));
+            try {
+                options.setProjectId(new CmsUUID(projectParam));
+            } catch (NumberFormatException e) {
+                // ignore
+            }
         }
 
         CmsADEPublish publish = new CmsADEPublish(m_cms);
@@ -239,9 +244,42 @@ public class CmsADEPublishServer {
             } else {
                 // return resources with problems
                 result.put(JsonResponse.RESOURCES.getName(), resources);
+                // indicate if the user if allowed to publish anyhow
+                result.put(JsonResponse.CANPUBLISH.getName(), isCanPublish());
             }
         }
         return result;
+    }
+
+    /**
+     * Returns <code>true</code> if the current user is allowed 
+     * to publish the selected resources.<p>
+     * 
+     * @return <code>true</code> if the current user is allowed 
+     *          to publish the selected resources
+     */
+    public boolean isCanPublish() {
+
+        return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
+            || OpenCms.getRoleManager().hasRole(m_cms, CmsRole.VFS_MANAGER);
+    }
+
+    /**
+     * Removes the given resources from the user's publish list.<p>
+     * 
+     * @param ids list of structure ids identifying the resources to be removed
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void removeResourcesFromPublishList(JSONArray ids) throws CmsException {
+
+        Set<CmsUUID> idsToRemove = new HashSet<CmsUUID>();
+        for (int i = 0; i < ids.length(); i++) {
+            String id = ids.optString(i);
+            idsToRemove.add(new CmsUUID(id));
+        }
+
+        OpenCms.getPublishManager().removeResourceFromUsersPubList(m_cms, idsToRemove);
     }
 
     /**
@@ -272,24 +310,6 @@ public class CmsADEPublishServer {
             }
         }
         return true;
-    }
-
-    /**
-     * Removes the given resources from the user's publish list.<p>
-     * 
-     * @param ids list of structure ids identifying the resources to be removed
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected void removeResourcesFromPublishList(JSONArray ids) throws CmsException {
-
-        Set<CmsUUID> idsToRemove = new HashSet<CmsUUID>();
-        for (int i = 0; i < ids.length(); i++) {
-            String id = ids.optString(i);
-            idsToRemove.add(new CmsUUID(id));
-        }
-
-        OpenCms.getPublishManager().removeResourceFromUsersPubList(m_cms, idsToRemove);
     }
 
     /**

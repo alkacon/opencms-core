@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/10/29 10:40:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/10/29 12:51:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.9.3
  */
@@ -196,13 +196,13 @@ public class CmsADEPublish {
                         try {
                             CmsResource theResource = relation.getSource(m_cms, CmsResourceFilter.ALL);
                             CmsPublishResourceInfoBean info = new CmsPublishResourceInfoBean(
-                                Messages.get().getBundle(m_locale).key(Messages.GUI_RESOURCE_MISSING_ONLINE_0),
-                                CmsPublishResourceInfoBean.Type.MISSING);
+                                Messages.get().getBundle(m_locale).key(Messages.GUI_BROKEN_LINK_ONLINE_0),
+                                CmsPublishResourceInfoBean.Type.BROKENLINK);
                             CmsPublishResourceBean pubRes = resourceToBean(
                                 theResource,
-                                info,
+                                null,
                                 false,
-                                Collections.singletonList(resourceToBean(resource, null, false, null)));
+                                Collections.singletonList(resourceToBean(resource, info, false, null)));
                             resources.add(pubRes);
                         } catch (CmsException e) {
                             // should never happen
@@ -215,17 +215,17 @@ public class CmsADEPublish {
                         for (CmsRelation relation : infoEntry.getRelations()) {
                             try {
                                 CmsResource theResource = relation.getTarget(m_cms, CmsResourceFilter.ALL);
-                                CmsPublishResourceInfoBean info = new CmsPublishResourceInfoBean(
-                                    Messages.get().getBundle(m_locale).key(Messages.GUI_BROKEN_LINK_ONLINE_0),
-                                    CmsPublishResourceInfoBean.Type.BROKENLINK);
-                                CmsPublishResourceBean pubRes = resourceToBean(theResource, info, false, null);
+                                CmsPublishResourceBean pubRes = resourceToBean(theResource, null, false, null);
                                 related.add(pubRes);
                             } catch (CmsException e) {
                                 // should never happen
                                 LOG.error(e.getLocalizedMessage(), e);
                             }
                         }
-                        CmsPublishResourceBean pubRes = resourceToBean(resource, null, false, related);
+                        CmsPublishResourceInfoBean info = new CmsPublishResourceInfoBean(
+                            Messages.get().getBundle(m_locale).key(Messages.GUI_RESOURCE_MISSING_ONLINE_0),
+                            CmsPublishResourceInfoBean.Type.MISSING);
+                        CmsPublishResourceBean pubRes = resourceToBean(resource, info, false, related);
                         resources.add(pubRes);
                     } catch (Exception e) {
                         // should never happen
