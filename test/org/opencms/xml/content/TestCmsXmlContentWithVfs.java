@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2009/09/04 15:01:19 $
- * Version: $Revision: 1.51.2.1 $
+ * Date   : $Date: 2009/10/29 11:27:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.51.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -334,26 +334,29 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(value.getStringValue(cms), filename + "?a=b&c=d#e");
 
         CmsResource res2 = cms.readResource(filename2);
-        List links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
-        assertEquals(links.size(), 1);
-        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(0));
+        CmsResource schema = cms.readResource("/xmlcontent/article.xsd");
+        List<CmsRelation> links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
+        assertEquals(links.size(), 2);
+        assertRelation(new CmsRelation(file, schema, CmsRelationType.XSD), links.get(0));
+        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), links.get(1));
 
         file.setContents(xmlcontent.toString().getBytes());
         cms.lockResource(filename);
         cms.writeFile(file);
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
-        assertEquals(links.size(), 2);
-        assertRelation(new CmsRelation(file, file, CmsRelationType.XML_WEAK), (CmsRelation)links.get(0));
-        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(1));
+        assertEquals(links.size(), 3);
+        assertRelation(new CmsRelation(file, schema, CmsRelationType.XSD), links.get(0));
+        assertRelation(new CmsRelation(file, file, CmsRelationType.XML_WEAK), links.get(1));
+        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), links.get(2));
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.XML_WEAK));
         assertEquals(links.size(), 1);
-        assertRelation(new CmsRelation(file, file, CmsRelationType.XML_WEAK), (CmsRelation)links.get(0));
+        assertRelation(new CmsRelation(file, file, CmsRelationType.XML_WEAK), links.get(0));
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.HYPERLINK));
         assertEquals(links.size(), 1);
-        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(0));
+        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), links.get(0));
 
         file = cms.readFile(filename);
         content = new String(file.getContents());

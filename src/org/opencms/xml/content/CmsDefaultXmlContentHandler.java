@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/10/13 09:28:40 $
- * Version: $Revision: 1.64.2.10 $
+ * Date   : $Date: 2009/10/29 11:27:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64.2.10 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -747,10 +747,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
             schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
         }
-        cms.addRelationToResource(
-            cms.getSitePath(file),
-            cms.getRequestContext().removeSiteRoot(schema),
-            CmsRelationType.XSD.getName());
+        schema = cms.getRequestContext().removeSiteRoot(schema);
+        if (cms.existsResource(schema)) {
+            cms.addRelationToResource(cms.getSitePath(file), schema, CmsRelationType.XSD.getName());
+        } else {
+            LOG.warn(org.opencms.db.generic.Messages.get().getBundle().key(
+                org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
+                schema));
+        }
         // return the result
         return file;
     }
