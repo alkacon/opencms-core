@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.3</opencms_version>
-		<createdate>Thu, 31 Jan 2008 18:05:13 GMT</createdate>
+		<opencms_version>7.9.1</opencms_version>
+		<createdate>Mon, 02 Nov 2009 16:37:27 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -12,15 +12,24 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>efa7aa1c-d017-11dc-a010-d55d0ba2b9d3</uuidstructure>
-			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<uuidstructure>ed3cc877-c79d-11de-ac5a-ab20365f6268</uuidstructure>
+			<datelastmodified>Mon, 02 Nov 2009 10:53:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<datecreated>Mon, 02 Nov 2009 10:53:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
@@ -124,7 +133,7 @@
 			<type>plain</type>
 			<uuidstructure>d07366ab-81ae-11de-9e2b-dd9f629b113b</uuidstructure>
 			<uuidresource>d07366ac-81ae-11de-9e2b-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 31 Aug 2009 08:55:15 GMT</datelastmodified>
+			<datelastmodified>Mon, 02 Nov 2009 14:36:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 10:57:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -139,7 +148,7 @@
 			<type>plain</type>
 			<uuidstructure>b9abe241-81a5-11de-9b82-dd9f629b113b</uuidstructure>
 			<uuidresource>b9abe242-81a5-11de-9b82-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 31 Aug 2009 08:55:40 GMT</datelastmodified>
+			<datelastmodified>Mon, 02 Nov 2009 14:36:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -152,14 +161,19 @@
 			<source>system/workplace/editors/ade/schemas/container_element_property.xsd</source>
 			<destination>system/workplace/editors/ade/schemas/container_element_property.xsd</destination>
 			<type>plain</type>
-			<uuidstructure>95986e4d-b1c2-11de-be9a-65ba8ac698cf</uuidstructure>
-			<uuidresource>95986e4e-b1c2-11de-be9a-65ba8ac698cf</uuidresource>
-			<datelastmodified>Tue, 06 Oct 2009 08:42:11 GMT</datelastmodified>
+			<uuidstructure>7bf4ac3e-b88f-11de-add3-99487bd5b80a</uuidstructure>
+			<uuidresource>7bf4ac3f-b88f-11de-add3-99487bd5b80a</uuidresource>
+			<datelastmodified>Mon, 02 Nov 2009 14:36:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 05 Oct 2009 15:20:15 GMT</datecreated>
+			<datecreated>Wed, 14 Oct 2009 07:02:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>512</flags>
-			<properties/>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[container_element_property]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -169,7 +183,7 @@
 			<type>plain</type>
 			<uuidstructure>b9b0c444-81a5-11de-9b82-dd9f629b113b</uuidstructure>
 			<uuidresource>b9b0c445-81a5-11de-9b82-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 31 Aug 2009 08:55:56 GMT</datelastmodified>
+			<datelastmodified>Mon, 02 Nov 2009 14:36:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -182,11 +196,31 @@
 			<source>system/workplace/editors/ade/schemas/property_value_choice.xsd</source>
 			<destination>system/workplace/editors/ade/schemas/property_value_choice.xsd</destination>
 			<type>plain</type>
-			<uuidstructure>51ddae1a-b24a-11de-91b3-65ba8ac698cf</uuidstructure>
-			<uuidresource>51ddae1b-b24a-11de-91b3-65ba8ac698cf</uuidresource>
-			<datelastmodified>Tue, 06 Oct 2009 07:54:47 GMT</datelastmodified>
+			<uuidstructure>7bd7fc7a-b88f-11de-add3-99487bd5b80a</uuidstructure>
+			<uuidresource>7bd7fc7b-b88f-11de-add3-99487bd5b80a</uuidresource>
+			<datelastmodified>Mon, 02 Nov 2009 14:36:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 06 Oct 2009 07:31:53 GMT</datecreated>
+			<datecreated>Wed, 14 Oct 2009 07:02:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[property_value_choice]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/property_value_filelist.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/property_value_filelist.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>60898d89-c7bc-11de-8b05-ab20365f6268</uuidstructure>
+			<uuidresource>60898d8a-c7bc-11de-8b05-ab20365f6268</uuidresource>
+			<datelastmodified>Mon, 02 Nov 2009 14:46:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Nov 2009 14:31:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties/>
@@ -199,7 +233,7 @@
 			<type>plain</type>
 			<uuidstructure>f4f0f7cd-914f-11de-9f57-dd9f629b113b</uuidstructure>
 			<uuidresource>f4f0f7ce-914f-11de-9f57-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 31 Aug 2009 08:54:56 GMT</datelastmodified>
+			<datelastmodified>Mon, 02 Nov 2009 14:36:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -214,7 +248,7 @@
 			<type>plain</type>
 			<uuidstructure>f5315b30-914f-11de-9f57-dd9f629b113b</uuidstructure>
 			<uuidresource>f5315b31-914f-11de-9f57-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 31 Aug 2009 08:54:44 GMT</datelastmodified>
+			<datelastmodified>Mon, 02 Nov 2009 14:36:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -229,7 +263,7 @@
 			<type>plain</type>
 			<uuidstructure>3bacc1d1-9314-11de-ac14-dd9f629b113b</uuidstructure>
 			<uuidresource>3bacc1d2-9314-11de-ac14-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 31 Aug 2009 08:54:29 GMT</datelastmodified>
+			<datelastmodified>Mon, 02 Nov 2009 14:36:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 27 Aug 2009 14:16:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/Attic/TestCmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/26 10:45:14 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/TestCmsXmlContainerPage.java,v $
+ * Date   : $Date: 2009/11/02 16:35:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
@@ -129,7 +129,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         List<CmsContainerElementBean> elems = new ArrayList<CmsContainerElementBean>();
         Map<String, String> props = new HashMap<String, String>();
         props.put("abc", "abc");
-        props.put("test", "/sites/default/containerpage/content.html");
+        props.put("test", cms.readResource("/containerpage/content.html").getStructureId().toString());
         CmsContainerElementBean elem = new CmsContainerElementBean(
             cms.readResource("/containerpage/content.html").getStructureId(),
             cms.readResource("/containerpage/formatter.jsp").getStructureId(),

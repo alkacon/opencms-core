@@ -329,12 +329,22 @@
 			<datecreated>Wed, 14 Oct 2009 07:02:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[property_value_choice]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/property_value_filelist.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/property_value_filelist.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>60898d89-c7bc-11de-8b05-ab20365f6268</uuidstructure>
+			<uuidresource>60898d8a-c7bc-11de-8b05-ab20365f6268</uuidresource>
+			<datelastmodified>Mon, 02 Nov 2009 14:46:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Nov 2009 14:31:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>

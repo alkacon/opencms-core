@@ -20,7 +20,7 @@
     
     <xsd:annotation>
         <xsd:appinfo>
-			<resourcebundle name="org.opencms.workplace.editors.ade.messages"/>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<relations>
 				<relation element="Source" type="strong" invalidate="false" />
 			</relations>

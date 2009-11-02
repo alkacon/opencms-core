@@ -22,15 +22,11 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.workplace.editors.ade.messages"/>
-			<mappings/>
-			<layouts/>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<validationrules>
 				<rule element="Name" regex=".+" type="error" message="%(key.err.name.notempty)" />
 				<rule element="Type" regex=".+" type="error" message="%(key.err.type.notempty)" />
 			</validationrules>
-			<defaults/>
 		</xsd:appinfo>
-
 	</xsd:annotation>  
 </xsd:schema>

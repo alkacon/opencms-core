@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2009/10/13 14:23:05 $
- * Version: $Revision: 1.51.2.2 $
+ * Date   : $Date: 2009/11/02 16:35:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.51.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -762,20 +762,44 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Returns a string representation for the given list using the given separator.<p>
+     * 
+     * @param <E> type of list entries
+     * @param list the list to write
+     * @param separator the item separator string
+     * 
+     * @return the string representation for the given map
+     */
+    public static <E> String listAsString(List<E> list, String separator) {
+
+        StringBuffer string = new StringBuffer(128);
+        Iterator<E> it = list.iterator();
+        while (it.hasNext()) {
+            string.append(it.next());
+            if (it.hasNext()) {
+                string.append(separator);
+            }
+        }
+        return string.toString();
+    }
+
+    /**
      * Returns a string representation for the given map using the given separators.<p>
      * 
+     * @param <K> type of map keys
+     * @param <V> type of map values
      * @param map the map to write
      * @param sepItem the item separator string
      * @param sepKeyval the key-value pair separator string
      * 
      * @return the string representation for the given map
      */
-    public static String mapAsString(Map<String, String> map, String sepItem, String sepKeyval) {
+    public static <K, V> String mapAsString(Map<K, V> map, String sepItem, String sepKeyval) {
 
         StringBuffer string = new StringBuffer(128);
-        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+        Iterator<Map.Entry<K, V>> it = map.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<String, String> entry = it.next();
+            Map.Entry<K, V> entry = it.next();
             string.append(entry.getKey());
             string.append(sepKeyval);
             string.append(entry.getValue());

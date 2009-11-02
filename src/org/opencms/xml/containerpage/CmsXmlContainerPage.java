@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/10/28 07:21:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/02 16:35:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -75,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.2
  * 
@@ -90,6 +91,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         CONTAINER("Containers"),
         /** Container elements node name. */
         ELEMENT("Elements"),
+        /** Value file list node name. */
+        FILELIST("FileList"),
         /** Element formatter node name. */
         FORMATTER("Formatter"),
         /** Container or property name node name. */
@@ -100,7 +103,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         STRING("String"),
         /** Container type node name. */
         TYPE("Type"),
-        /** Value URI node name. */
+        /** File list URI node name. */
         URI("Uri"),
         /** Property value node name. */
         VALUE("Value");
@@ -406,11 +409,33 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                                 createBookmark(string, locale, value, valuePath, valueDef);
                                 val = string.getTextTrim();
                             } else {
-                                // uri value
-                                Element valueUri = value.element(XmlNode.URI.getName());
-                                createBookmark(valueUri, locale, value, valuePath, valueDef);
-                                Element valueUriLink = valueUri.element(CmsXmlPage.NODE_LINK);
-                                val = new CmsLink(valueUriLink).getStructureId().toString();
+                                // file list value
+                                Element valueFileList = value.element(XmlNode.FILELIST.getName());
+                                int valueFileListIndex = CmsXmlUtils.getXpathIndexInt(valueFileList.getUniquePath(value));
+                                String valueFileListPath = CmsXmlUtils.concatXpath(
+                                    valuePath,
+                                    CmsXmlUtils.createXpathElement(valueFileList.getName(), valueFileListIndex));
+                                I_CmsXmlSchemaType valueFileListSchemaType = valueDef.getSchemaType(valueFileList.getName());
+                                I_CmsXmlContentValue valueFileListValue = valueFileListSchemaType.createValue(
+                                    this,
+                                    valueFileList,
+                                    locale);
+                                addBookmark(valueFileListPath, locale, true, valueFileListValue);
+                                CmsXmlContentDefinition valueFileListDef = ((CmsXmlNestedContentDefinition)valueFileListSchemaType).getNestedContentDefinition();
+
+                                List<CmsUUID> idList = new ArrayList<CmsUUID>();
+                                // files
+                                for (Iterator<Element> itFiles = CmsXmlGenericWrapper.elementIterator(
+                                    valueFileList,
+                                    XmlNode.URI.getName()); itFiles.hasNext();) {
+
+                                    Element valueUri = itFiles.next();
+                                    createBookmark(valueUri, locale, value, valueFileListPath, valueFileListDef);
+                                    Element valueUriLink = valueUri.element(CmsXmlPage.NODE_LINK);
+                                    idList.add(new CmsLink(valueUriLink).getStructureId());
+                                }
+                                // comma separated list of UUIDs
+                                val = CmsStringUtil.listAsString(idList, ",");
                             }
 
                             propertiesMap.put(propName.getTextTrim(), val);

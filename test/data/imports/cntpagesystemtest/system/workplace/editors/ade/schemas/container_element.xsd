@@ -22,7 +22,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.workplace.editors.ade.messages"/>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<validationrules>
 				<rule element="Uri" regex=".+" type="error" message="%(key.err.uri.notempty)" />
 				<rule element="Formatter" regex=".+" type="error" message="%(key.err.formatter.notempty)" />
