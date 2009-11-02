@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/11/02 08:56:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/02 09:34:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.9.3
  */
@@ -102,6 +102,8 @@ public class CmsADEPublishServer {
     /** Request parameter name constants for publishing. */
     protected enum ParamPublish {
 
+        /** Flag to force publishing with broken links. */
+        FORCE("force"),
         /** The project to publish. */
         PROJECT("project"),
         /** Flag to indicate if to publish with related resources. */
@@ -201,18 +203,7 @@ public class CmsADEPublishServer {
         publish.getOptions().setProjectId(options.getProjectId());
 
         if (action.equals(CmsADEServer.Action.PUBLISH_LIST)) {
-            if (checkParameters(request, null, ParamPublish.REMOVE_RESOURCES)) {
-                // remove the resources from the user's publish list
-                String remResParam = request.getParameter(ParamPublish.REMOVE_RESOURCES.getName());
-                JSONArray resourcesToRemove = new JSONArray(remResParam);
-                Set<CmsUUID> idsToRemove = new HashSet<CmsUUID>();
-                for (int i = 0; i < resourcesToRemove.length(); i++) {
-                    String id = resourcesToRemove.optString(i);
-                    idsToRemove.add(new CmsUUID(id));
-                }
-                publish.removeResourcesFromPublishList(idsToRemove);
-                // we continue to execute the main action
-            }
+            removeFromPublishList(publish);
             // get list of resources to publish
             JSONArray groupsToPublish = toJsonArray(publish.getPublishGroups());
             result.put(JsonResponse.GROUPS.getName(), groupsToPublish);
@@ -220,19 +211,7 @@ public class CmsADEPublishServer {
             JSONArray manageableProjects = toJsonArray(publish.getManageableProjects());
             result.put(JsonResponse.PROJECTS.getName(), manageableProjects);
         } else if (action.equals(CmsADEServer.Action.PUBLISH)) {
-            if (checkParameters(request, null, ParamPublish.REMOVE_RESOURCES)) {
-                // remove the resources from the user's publish list
-                String remResParam = request.getParameter(ParamPublish.REMOVE_RESOURCES.getName());
-                JSONArray resourcesToRemove = new JSONArray(remResParam);
-                Set<CmsUUID> idsToRemove = new HashSet<CmsUUID>();
-                for (int i = 0; i < resourcesToRemove.length(); i++) {
-                    String id = resourcesToRemove.optString(i);
-                    idsToRemove.add(new CmsUUID(id));
-                }
-                publish.removeResourcesFromPublishList(idsToRemove);
-                // we continue to execute the main action
-            }
-
+            removeFromPublishList(publish);
             if (!checkParameters(request, result, ParamPublish.RESOURCES)) {
                 return result;
             }
@@ -249,8 +228,11 @@ public class CmsADEPublishServer {
                 return result;
             }
             Collections.sort(pubResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
-            // get the resources with link check problems
-            JSONArray resources = toJsonArray(publish.getBrokenResources(pubResources));
+            JSONArray resources = new JSONArray();
+            if (!Boolean.parseBoolean(request.getParameter(ParamPublish.FORCE.getName())) || !isCanPublish()) {
+                // get the resources with link check problems
+                resources = toJsonArray(publish.getBrokenResources(pubResources));
+            }
             if (resources.length() == 0) {
                 // publish resources
                 publish.publishResources(pubResources);
@@ -275,6 +257,31 @@ public class CmsADEPublishServer {
 
         return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
             || OpenCms.getRoleManager().hasRole(m_cms, CmsRole.VFS_MANAGER);
+    }
+
+    /**
+     * Removes the resources from the user's publish list.<p>
+     * 
+     * @param publish the publish helper
+     * 
+     * @throws JSONException if something goes wrong
+     * @throws CmsException if something goes wrong
+     */
+    public void removeFromPublishList(CmsADEPublish publish) throws JSONException, CmsException {
+
+        HttpServletRequest request = m_jsp.getRequest();
+        if (checkParameters(request, null, ParamPublish.REMOVE_RESOURCES)) {
+            // remove the resources from the user's publish list
+            String remResParam = request.getParameter(ParamPublish.REMOVE_RESOURCES.getName());
+            JSONArray resourcesToRemove = new JSONArray(remResParam);
+            Set<CmsUUID> idsToRemove = new HashSet<CmsUUID>();
+            for (int i = 0; i < resourcesToRemove.length(); i++) {
+                String id = resourcesToRemove.optString(i);
+                idsToRemove.add(new CmsUUID(id));
+            }
+            publish.removeResourcesFromPublishList(idsToRemove);
+            // we continue to execute the main action
+        }
     }
 
     /**

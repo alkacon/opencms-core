@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/10/29 13:08:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/11/02 09:34:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.9.3
  */
@@ -188,7 +188,7 @@ public class CmsADEPublish {
                 m_cms,
                 pubResources,
                 m_options.isIncludeSiblings(),
-                false);
+                true);
         } catch (CmsException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -323,7 +323,10 @@ public class CmsADEPublish {
         pubResources.getRelatedResources().removeAll(permissions.getRelatedResources());
         pubResources.getRelatedResources().removeAll(locked.getRelatedResources());
 
-        if (pubResources.getResources().isEmpty()) {
+        List<CmsResource> sortedResources = new ArrayList<CmsResource>(getPublishResources().getResources());
+        Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
+
+        if (sortedResources.isEmpty()) {
             // nothing to do
             return new ArrayList<CmsPublishGroupBean>();
         }
@@ -331,9 +334,6 @@ public class CmsADEPublish {
         // the resources the user can really publish
         Set<CmsResource> allPubRes = new HashSet<CmsResource>(pubResources.getRelatedResources());
         allPubRes.addAll(pubResources.getResources());
-
-        List<CmsResource> sortedResources = new ArrayList<CmsResource>(pubResources.getResources());
-        Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
 
         List<CmsResource> pubList = new ArrayList<CmsResource>();
         try {
@@ -439,7 +439,7 @@ public class CmsADEPublish {
             m_cms,
             resources,
             m_options.isIncludeSiblings(),
-            false);
+            true);
         OpenCms.getPublishManager().publishProject(m_cms, report, publishList);
     }
 
@@ -782,6 +782,16 @@ public class CmsADEPublish {
      */
     protected ResourcesAndRelated getResourcesWithoutPermissions(Set<CmsResource> exclude) {
 
+        Set<CmsUUID> projectIds = new HashSet<CmsUUID>();
+        try {
+            for (CmsProject project : OpenCms.getOrgUnitManager().getAllManageableProjects(m_cms, "", true)) {
+                projectIds.add(project.getUuid());
+            }
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
         ResourcesAndRelated result = new ResourcesAndRelated();
         for (CmsResource resource : getPublishResources().getResources()) {
             // skip already blocking resources
@@ -789,7 +799,8 @@ public class CmsADEPublish {
                 continue;
             }
             try {
-                if (!m_cms.hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH)) {
+                if (!projectIds.contains(resource.getProjectLastModified())
+                    && !m_cms.hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH)) {
                     result.getResources().add(resource);
                 }
             } catch (Exception e) {
