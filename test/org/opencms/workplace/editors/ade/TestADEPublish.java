@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/editors/ade/Attic/TestADEPublish.java,v $
- * Date   : $Date: 2009/11/02 10:08:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/02 10:20:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestADEPublish extends OpenCmsTestCase {
 
@@ -458,6 +458,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         resources.add(resource);
         resources.add(resource2);
         adePub.publishResources(resources);
+        OpenCms.getPublishManager().waitWhileRunning();
         OpenCms.getPublishManager().removePublishListener(listener);
 
         // check the publish list
