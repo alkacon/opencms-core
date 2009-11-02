@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/editors/ade/Attic/TestADEPublish.java,v $
- * Date   : $Date: 2009/11/02 09:34:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/02 10:08:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,10 +36,16 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishEventAdapter;
+import org.opencms.publish.CmsPublishJobBase;
+import org.opencms.publish.CmsPublishJobEnqueued;
+import org.opencms.publish.CmsPublishJobRunning;
+import org.opencms.publish.I_CmsPublishEventListener;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,7 +58,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestADEPublish extends OpenCmsTestCase {
 
@@ -197,7 +203,7 @@ public class TestADEPublish extends OpenCmsTestCase {
     }
 
     /**
-     * Tests trying to publish a not lockable resource.<p>
+     * Tests trying to publish a locked resource.<p>
      * 
      * @throws Exception in case something goes wrong
      */
@@ -244,8 +250,6 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertTrue(groups.get(0).getResources().get(0).isRemovable());
         assertEquals(CmsPublishResourceInfoBean.Type.LOCKED, groups.get(0).getResources().get(0).getInfo().getType());
         assertEquals(0, groups.get(0).getResources().get(0).getRelated().size());
-
-        // TODO: this
     }
 
     /**
@@ -373,10 +377,93 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         CmsADEPublish adePub = new CmsADEPublish(cms);
 
+        // first check when empty
         List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
-        // TODO: this
+        // touch resource
+        String resourcename = "/folder1/page1.html";
+        cms.lockResource(resourcename);
+        cms.setDateReleased(resourcename, System.currentTimeMillis(), false);
+        CmsResource resource = cms.readResource(resourcename, CmsResourceFilter.ALL);
+
+        // check the publish list
+        adePub = new CmsADEPublish(cms);
+        groups = adePub.getPublishGroups();
+        assertEquals(1, groups.size());
+        assertEquals(1, groups.get(0).getResources().size());
+        assertEquals(resource.getStructureId(), groups.get(0).getResources().get(0).getId());
+        assertTrue(groups.get(0).getResources().get(0).isRemovable());
+        assertNull(groups.get(0).getResources().get(0).getInfo());
+        assertEquals(0, groups.get(0).getResources().get(0).getRelated().size());
+
+        // change project
+        cms.getRequestContext().setCurrentProject(cms.readProject("test"));
+
+        // add resource to test project
+        String resourcename2 = "/folder1/page2.html";
+        cms.copyResourceToProject(resourcename2);
+
+        // touch 2nd resource
+        cms.lockResource(resourcename2);
+        cms.setDateReleased(resourcename2, System.currentTimeMillis(), false);
+        CmsResource resource2 = cms.readResource(resourcename2, CmsResourceFilter.ALL);
+
+        // check the publish list
+        adePub = new CmsADEPublish(cms);
+        groups = adePub.getPublishGroups();
+        assertEquals(1, groups.size());
+        assertEquals(2, groups.get(0).getResources().size());
+        assertEquals(resource2.getStructureId(), groups.get(0).getResources().get(0).getId());
+        assertTrue(groups.get(0).getResources().get(0).isRemovable());
+        assertNull(groups.get(0).getResources().get(0).getInfo());
+        assertEquals(0, groups.get(0).getResources().get(0).getRelated().size());
+        assertEquals(resource.getStructureId(), groups.get(0).getResources().get(1).getId());
+        assertTrue(groups.get(0).getResources().get(1).isRemovable());
+        assertNull(groups.get(0).getResources().get(1).getInfo());
+        assertEquals(0, groups.get(0).getResources().get(1).getRelated().size());
+
+        // publish
+        I_CmsPublishEventListener listener = new CmsPublishEventAdapter() {
+
+            /**
+             * @see org.opencms.publish.CmsPublishEventAdapter#onEnqueue(org.opencms.publish.CmsPublishJobBase)
+             */
+            @Override
+            public void onEnqueue(CmsPublishJobBase publishJob) {
+
+                assertEquals(2, publishJob.getSize());
+            }
+
+            /**
+             * @see org.opencms.publish.CmsPublishEventAdapter#onFinish(org.opencms.publish.CmsPublishJobRunning)
+             */
+            @Override
+            public void onFinish(CmsPublishJobRunning publishJob) {
+
+                assertEquals(2, publishJob.getSize());
+            }
+
+            /**
+             * @see org.opencms.publish.CmsPublishEventAdapter#onStart(org.opencms.publish.CmsPublishJobEnqueued)
+             */
+            @Override
+            public void onStart(CmsPublishJobEnqueued publishJob) {
+
+                assertEquals(2, publishJob.getSize());
+            }
+        };
+        OpenCms.getPublishManager().addPublishListener(listener);
+        List<CmsResource> resources = new ArrayList<CmsResource>();
+        resources.add(resource);
+        resources.add(resource2);
+        adePub.publishResources(resources);
+        OpenCms.getPublishManager().removePublishListener(listener);
+
+        // check the publish list
+        adePub = new CmsADEPublish(cms);
+        groups = adePub.getPublishGroups();
+        assertEquals(0, groups.size());
     }
 
     /**
