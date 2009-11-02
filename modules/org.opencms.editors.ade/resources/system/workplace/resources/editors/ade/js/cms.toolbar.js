@@ -1264,8 +1264,9 @@
            var self = this;
            self.button = $('<button name="publish" title="Publish" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button>');
            self.button.click(function() {
-               var publishDialog = new cms.publish.PublishDialog();
-               publishDialog.start();
+               if (!$(this).hasClass('cms-deactivated')) {
+                   (new cms.publish.PublishDialog('')).start();
+               }
            });
            return self.button;
        },

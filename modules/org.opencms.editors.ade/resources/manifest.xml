@@ -1974,6 +1974,56 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+   		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/permission.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/permission.png</destination>
+			<type>image</type>
+			<uuidstructure>16b89c0f-8747-11de-83d4-dd9f629b113b</uuidstructure>
+			<uuidresource>16b89c10-8747-11de-83d4-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 12 Aug 2009 13:50:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:50:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[permission]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+  		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/published.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/published.png</destination>
+			<type>image</type>
+			<uuidstructure>16a89d0f-8747-11de-83d4-dd9f629b113b</uuidstructure>
+			<uuidresource>16a89d10-8747-11de-83d4-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 12 Aug 2009 13:50:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:50:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[check]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
+
 		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/check_gray.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/check_gray.png</destination>
@@ -3397,7 +3447,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-        <file>
+		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.directinput.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.directinput.js</destination>
 			<type>plain</type>

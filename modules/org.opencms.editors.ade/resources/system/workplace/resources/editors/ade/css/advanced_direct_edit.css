@@ -990,9 +990,22 @@ ol.ade-forms fieldset {
 	top: 2px;
 }
 
-#cms-property-dialog table td,#cms-property-dialog table th {
-	padding: 5px !important;
+.cms-publish-items .cms-even {
+	background-color: #ffffff;
 }
+
+.cms-publish-items .cms-odd {
+	background-color: #ffffaa;
+}
+
+.cms-publish-items {
+	overflow: auto;
+}
+
+.cms-publish-items-table {
+	width: 100%;
+}
+
 
 /* PUBLISH */
 .cms-publish-items {
@@ -1068,7 +1081,60 @@ ol.ade-forms fieldset {
 	color: #0000aa;
 }
 
+/* Publish 2 */
+.cms-publish-item .ui-widget-content {
+	background-image: none;
+}
+
+.cms-publish-toremove {
+	background-color: #cccccc;
+}
+
+.cms-publish-toremove .ui-widget-content {
+	background-color: #dddddd;
+}
+
+.cms-publish-permission-problem {
+	background-color: #ffff00  !important;
+}
+
+.cms-publish-problem-published {
+	background-color: #cccccc;
+}
+
+.cms-publish-problem-published .ui-widget-content {
+	background-color: #dddddd;
+}
+
+.cms-publish-problem-locked, .cms-publish-problem-permission {
+	background-color: #cc8800;
+}
+
+.cms-publish-problem-locked .ui-widget-content, .cms-publish-problem-permission .ui-widget-content {
+	background-color: #dd9900;
+}
+
+.cms-icon-published {
+	background-image: url(images/16x16/published.png);
+}
+
+.cms-icon-locked {
+	background-image: url(images/16x16/ocms_de_lock_sw.png);
+}
+
+.cms-icon-permission {
+	background-image: url(images/16x16/permission.png);
+}
+
+.cms-icon-brokenlink {
+	background-image: url(../../../buttons/link.png);
+}	
+
+
 	
+	
+	
+
 
 
 

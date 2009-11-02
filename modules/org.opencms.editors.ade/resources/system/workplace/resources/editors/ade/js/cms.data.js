@@ -117,6 +117,7 @@
    /** Selector for deletable items. */
    var /** String */ deleteitems = cms.data.deleteitems = '.cms-element';
    
+   
    /** Search result list. */
    var /** Array<String> */ searchResultList = cms.data.searchResultList = [];
    
@@ -266,6 +267,11 @@
             if (jsonData.recentListSize) {
                cms.toolbar.recentSize = jsonData.recentListSize;
             }
+            getProjects(function(ok, data) {
+                if (ok) {
+                    cms.data.projects = data.projects;
+                }
+            });
             afterLoad(true);
          }
       });
@@ -821,36 +827,41 @@
    /**
    * AJAX call for getting the publish list from the server 
    */
-   var getPublishList = cms.data.getPublishList = function(related, siblings, resourcesToRemove, callback) {
+   var getPublishList = cms.data.getPublishList = function(related, siblings, project, callback) {
        var params = {
            action: 'publish_list',
            related: JSON.stringify(related),
            siblings: JSON.stringify(siblings)
        }
-       if (resourcesToRemove) {
-           params['remove_resources'] = JSON.stringify(resourcesToRemove);
-       }
+       if (project != null && project != '') {
+           params.project = JSON.stringify(project);
+       } 
        loadJSON(params, callback)
    }
    
    /**
    * AJAX call for publishing resources.
    */
-   var publishResources = cms.data.publishResources = function(resources, callback) {
+   var publishResources = cms.data.publishResources = function(resources, removeResources, force, callback) {
        var params = {
            action: 'publish',
-           resources: JSON.stringify(resources)
+           resources: JSON.stringify(resources),
+           remove_resources: JSON.stringify(removeResources),
+           force: JSON.stringify(force)
        }
        loadJSON(params, callback);
    }
    
-   /**
-   * AJAX call for removing items from the publish list.
-   */
-   var removeFromPublishList = cms.data.removeFromPublishList = function(id, callback) {
+   var getProjects = cms.data.getProjects = function(callback) {
        var params = {
-           action: 'publish_list',
-           remove_resources: JSON.stringify([id])
+           action: 'projects'
+       }
+       loadJSON(params, callback);
+   }
+   
+   var getPublishOptions = cms.data.getPublishOptions = function(callback) {
+       var params = {
+           action: 'publish_options'
        }
        loadJSON(params, callback);
    }

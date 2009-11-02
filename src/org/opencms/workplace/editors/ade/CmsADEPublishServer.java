@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/10/29 12:51:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/02 08:56:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.3
  */
@@ -220,6 +220,19 @@ public class CmsADEPublishServer {
             JSONArray manageableProjects = toJsonArray(publish.getManageableProjects());
             result.put(JsonResponse.PROJECTS.getName(), manageableProjects);
         } else if (action.equals(CmsADEServer.Action.PUBLISH)) {
+            if (checkParameters(request, null, ParamPublish.REMOVE_RESOURCES)) {
+                // remove the resources from the user's publish list
+                String remResParam = request.getParameter(ParamPublish.REMOVE_RESOURCES.getName());
+                JSONArray resourcesToRemove = new JSONArray(remResParam);
+                Set<CmsUUID> idsToRemove = new HashSet<CmsUUID>();
+                for (int i = 0; i < resourcesToRemove.length(); i++) {
+                    String id = resourcesToRemove.optString(i);
+                    idsToRemove.add(new CmsUUID(id));
+                }
+                publish.removeResourcesFromPublishList(idsToRemove);
+                // we continue to execute the main action
+            }
+
             if (!checkParameters(request, result, ParamPublish.RESOURCES)) {
                 return result;
             }
