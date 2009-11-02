@@ -3397,6 +3397,21 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/js/cms.directinput.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.directinput.js</destination>
+			<type>plain</type>
+			<uuidstructure>c18409f9-c3e0-11de-a754-2fcb2f73ec6d</uuidstructure>
+			<uuidresource>c18409fa-c3e0-11de-a754-2fcb2f73ec6d</uuidresource>
+			<datelastmodified>Fri, 30 Oct 2009 10:24:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 28 Oct 2009 16:41:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.html.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.html.js</destination>
