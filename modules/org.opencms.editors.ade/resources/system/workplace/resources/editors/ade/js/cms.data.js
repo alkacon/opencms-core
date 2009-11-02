@@ -39,6 +39,9 @@
    /** Parameter 'action' value 'del' constant. */
    var /** String */ ACTION_DEL = 'del';
    
+   /** Parameter 'action' value 'startedit' constant. */
+   var /** String */ ACTION_STARTEDIT = 'startedit';
+   
    /** Parameter 'action' value 'search' constant. */
    var /** String */ ACTION_SEARCH = cms.data.ACTION_SEARCH = 'search';
    
@@ -396,6 +399,18 @@
    
       postJSON(ACTION_DEL, ids, function(ok) {
          afterDelete(ok);
+      });
+   }
+   
+   /**
+    * Locks the container page on the server via AJAX.
+    *
+    * @param {Function} callback the callback that should be called
+    */
+   var startEdit = cms.data.startEdit = /** void */ function(/** void Function(boolean) */ callback) {
+   
+      postJSON(ACTION_STARTEDIT, {}, function(ok) {
+         callback(ok);
       });
    }
    

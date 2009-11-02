@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/02 13:52:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.6
  */
@@ -108,20 +108,22 @@ public class CmsADEServer extends CmsJspActionElement {
         ELEMPROPS,
         /** To get or save the favorites list. */
         FAV,
+        /** To lock the container page. */
+        STARTEDIT,
         /** To get the last search results. */
         LS,
         /** To create a new element. */
         NEW,
+        /** To retrieve the manageable projects. */
+        PROJECTS,
         /** To retrieve the configured properties. */
         PROPS,
         /** To publish. */
         PUBLISH,
-        /** To retrieve the stored publish options. */
-        PUBLISH_OPTIONS,
-        /** To retrieve the manageable projects. */
-        PROJECTS,
         /** To retrieve the publish list. */
         PUBLISH_LIST,
+        /** To retrieve the stored publish options. */
+        PUBLISH_OPTIONS,
         /** To retrieve or save the recent list. */
         REC,
         /** To retrieve search results. */
@@ -670,6 +672,17 @@ public class CmsADEServer extends CmsJspActionElement {
             String dataParam = request.getParameter(ReqParam.DATA.getName());
             JSONObject cntPage = new JSONObject(dataParam);
             setContainerPage(cntPageParam, cntPage);
+        } else if (action.equals(Action.STARTEDIT)) {
+            // lock the container page
+            if (!checkParameters(request, result, ReqParam.CNTPAGE)) {
+                return result;
+            }
+            String cntPageParam = request.getParameter(ReqParam.CNTPAGE.getName());
+            try {
+                cms.lockResourceTemporary(cntPageParam);
+            } catch (CmsException e) {
+                result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage(cms.getRequestContext().getLocale()));
+            }
         } else if (action.equals(Action.DEL)) {
             // delete elements
             if (!checkParameters(request, result, ReqParam.DATA)) {

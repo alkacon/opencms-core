@@ -935,6 +935,9 @@
     * @param {boolean} newValue
     */
    var setPageChanged = cms.toolbar.setPageChanged = function(/** boolean */newValue) {
+       if (!cms.toolbar.pageChanged && newValue) {
+           cms.data.startEdit(function(ok) {});
+       }
       pageChanged = cms.toolbar.pageChanged = newValue;
       if (newValue) {
          $('#toolbar button[name="Save"], #toolbar button[name="reset"]').removeClass('cms-deactivated');
