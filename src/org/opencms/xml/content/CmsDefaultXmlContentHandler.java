@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/10/29 11:27:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/02 17:41:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1134,7 +1134,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             while (itElems.hasNext()) {
                 String element = itElems.next();
                 String path = (schemaType != null) ? CmsXmlUtils.concatXpath(elementPath, element) : element;
-                addDefaultCheckRules(rootContentDefinition, nestedContentDefinition.getSchemaType(element), path);
+                I_CmsXmlSchemaType nestedSchema = nestedContentDefinition.getSchemaType(element);
+                if ((schemaType == null) || !nestedSchema.equals(schemaType)) {
+                    addDefaultCheckRules(rootContentDefinition, nestedSchema, path);
+                }
             }
         }
     }

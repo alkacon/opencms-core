@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2009/10/13 11:59:44 $
- * Version: $Revision: 1.44.2.5 $
+ * Date   : $Date: 2009/11/02 17:41:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44.2.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -834,6 +834,7 @@ public class CmsXmlContentDefinition implements Cloneable {
                 target));
         }
 
+        boolean recursive = false;
         Set<CmsXmlContentDefinition> nestedDefinitions = new HashSet<CmsXmlContentDefinition>();
         if (includes.size() > 1) {
             // resolve additional, nested include calls
@@ -841,14 +842,19 @@ public class CmsXmlContentDefinition implements Cloneable {
 
                 Element inc = includes.get(i);
                 String schemaLoc = validateAttribute(inc, XSD_ATTRIBUTE_SCHEMA_LOCATION, null);
-                InputSource source = null;
-                try {
-                    source = resolver.resolveEntity(null, schemaLoc);
-                } catch (Exception e) {
-                    throw new CmsXmlException(Messages.get().container(Messages.ERR_CD_BAD_INCLUDE_1, schemaLoc));
+                if (!(schemaLoc.equals(schemaLocation))) {
+                    InputSource source = null;
+                    try {
+                        source = resolver.resolveEntity(null, schemaLoc);
+                    } catch (Exception e) {
+                        throw new CmsXmlException(Messages.get().container(Messages.ERR_CD_BAD_INCLUDE_1, schemaLoc));
+                    }
+                    CmsXmlContentDefinition xmlContentDefinition = unmarshal(source, schemaLoc, resolver);
+                    nestedDefinitions.add(xmlContentDefinition);
+                } else {
+                    // recursion
+                    recursive = true;
                 }
-                CmsXmlContentDefinition xmlContentDefinition = unmarshal(source, schemaLoc, resolver);
-                nestedDefinitions.add(xmlContentDefinition);
             }
         }
 
@@ -874,24 +880,8 @@ public class CmsXmlContentDefinition implements Cloneable {
                 new Integer(complexTypes.size())));
         }
 
-        // generate the result XML content definition
-        CmsXmlContentDefinition result = new CmsXmlContentDefinition(name, null, schemaLocation);
-
-        // set the nested definitions
-        result.m_includes = nestedDefinitions;
-        // set the schema document
-        result.m_schemaDocument = document;
-
-        List<CmsXmlComplexTypeSequence> complexTypeData = new ArrayList<CmsXmlComplexTypeSequence>();
-        Iterator<Element> ct = complexTypes.iterator();
-        while (ct.hasNext()) {
-            Element e = ct.next();
-            CmsXmlComplexTypeSequence sequence = validateComplexTypeSequence(e, nestedDefinitions);
-            complexTypeData.add(sequence);
-        }
-
         // get the outer element sequence, this must be the first element 
-        CmsXmlComplexTypeSequence outerSequence = complexTypeData.get(0);
+        CmsXmlComplexTypeSequence outerSequence = validateComplexTypeSequence(complexTypes.get(0), nestedDefinitions);
         CmsXmlNestedContentDefinition outer = (CmsXmlNestedContentDefinition)outerSequence.getSequence().get(0);
 
         // make sure the inner and outer element names are as required
@@ -901,11 +891,22 @@ public class CmsXmlContentDefinition implements Cloneable {
         validateAttribute(complexTypes.get(1), XSD_ATTRIBUTE_NAME, innerTypeName);
         validateAttribute(main, XSD_ATTRIBUTE_TYPE, outerTypeName);
 
+        // generate the result XML content definition
+        CmsXmlContentDefinition result = new CmsXmlContentDefinition(name, null, schemaLocation);
+
+        // set the nested definitions
+        result.m_includes = nestedDefinitions;
+        // set the schema document
+        result.m_schemaDocument = document;
+
         // the inner name is the element name set in the outer sequence
         result.setInnerName(outer.getName());
+        if (recursive) {
+            nestedDefinitions.add(result);
+        }
 
         // get the inner element sequence, this must be the second element 
-        CmsXmlComplexTypeSequence innerSequence = complexTypeData.get(1);
+        CmsXmlComplexTypeSequence innerSequence = validateComplexTypeSequence(complexTypes.get(1), nestedDefinitions);
 
         // add the types from the main sequence node
         Iterator<I_CmsXmlSchemaType> it = innerSequence.getSequence().iterator();
