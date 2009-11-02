@@ -1,5 +1,11 @@
 (function(cms) {
 
+   /** html-class for additional info. */
+   var classAdditionalInfo = 'cms-additional-info';
+   
+   /** html-class to show additional info. */
+   var classAdditionalShow = 'cms-additional-show';
+   
    /** html-class for closed item. */
    var classClosed = 'closed';
    
@@ -32,6 +38,71 @@
       handleDiv: null,
       adeMode: null
    };
+   
+   /**
+    * Adjusts the shadow of the given menu.
+    *
+    * @param {Object} menu the menu jQuery-object
+    */
+   var adjustMenuShadow = cms.sitemap.adjustMenuShadow = function(menu) {
+      $('div.ui-widget-shadow', menu).css({
+         width: menu.outerWidth() + 8,
+         height: menu.outerHeight() + 1
+      });
+   }
+   
+   var setURLs = cms.sitemap.setURLs = function(listItem, parentUrl) {
+      var currentItemDiv = listItem.children('.' + itemClass);
+      var pathName = currentItemDiv.find('span.cms-url-name').attr('alt');
+      setInfoValue(currentItemDiv.find('span.cms-url'), parentUrl + '/' + pathName + '.html', 37, true);
+      listItem.children('ul').children().each(function() {
+         setURLs($(this), parentUrl + '/' + pathName);
+      });
+   }
+   
+   var setURLName = cms.sitemap.setURLName = function(elem, input) {
+      var previous = elem.attr('alt');
+      var current = input.val();
+      if (previous != current) {
+         var currentLi = elem.closest('li');
+         if (currentLi.children('ul').length) {
+            var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
+            $dialog.appendTo('body');
+            $dialog.append('<p style="margin-bottom: 4px;">The page you are editing has subpages. Changing it\'s URL will also change the URLs of those.<br />Do you want to change it anyway?</p>');
+            $dialog.dialog({
+               zIndex: 9999,
+               title: 'New Page',
+               modal: true,
+               close: function() {
+                  $dialog.dialog('destroy');
+                  $dialog.remove();
+               },
+               buttons: {
+                  'OK': function() {
+                     var previousUrl = elem.siblings('span.cms-url').attr('alt');
+                     var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
+                     setInfoValue(elem, current, 37, true);
+                     setURLs(currentLi, parentUrl);
+                     $dialog.dialog('destroy');
+                     $dialog.remove();
+                  },
+                  'Cancel': function() {
+                     $dialog.dialog('destroy');
+                     $dialog.remove();
+                  }
+               }
+            });
+         } else {
+            var previousUrl = elem.siblings('span.cms-url').attr('alt');
+            var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
+            setInfoValue(elem, current, 37, true);
+            setURLs(currentLi, parentUrl);
+         }
+      }
+      elem.css('display', '');
+      input.remove();
+      
+   }
    
    /**
     * Adds handles for the given modes to the given item.
@@ -150,7 +221,7 @@
                   }
                   liItem.prependTo(cms.sitemap.dom.recentMenu.find('ul'));
                },
-               'Chancel': function() {
+               'Cancel': function() {
                   $dialog.dialog('destroy');
                   $dialog.remove();
                }
@@ -271,13 +342,14 @@
             
          }
          dragClone.find('div.' + itemClass).removeClass(dragClass);
+         dragClone.find('.' + classAdditionalShow).removeClass(classAdditionalShow)
          dragClone.appendTo(cms.sitemap.dom.favoriteList);
          return;
       }
       var li = $(this).parent();
       var formerParent = ui.draggable.parent();
       var removeFormerParent = false;
-      
+      var parentURL = '';
       // if the former parent li and the target li are not the same
       // and the former parent is going to lose it's last child 
       // (the currently dragged item will appear twice, once as the original and once as the ui-helper),
@@ -288,7 +360,14 @@
       if ($(this).hasClass(dropzoneClass)) {
          // dropping over dropzone, so insert before
          li.before(ui.draggable);
+         var parentLi = li.parent().closest('li');
+         if (parentLi.length) {
+            parentURL = parentLi.children('div.' + itemClass).find('span.cms-url').attr('alt');
+            parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
+         }
       } else {
+         parentURL = li.children('div.' + itemClass).find('span.cms-url').attr('alt');
+         parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
          // dropping over item, so insert into child-ul
          if (li.children('ul').length == 0) {
             // no child-ul present yet
@@ -299,7 +378,7 @@
          li.children('ul').append(ui.draggable);
          
       }
-      
+      setURLs(ui.draggable, parentURL);
       // remove the now empty former parent ul and the opener span
       if (removeFormerParent) {
          formerParent.siblings('span.' + classOpener).remove();
@@ -318,10 +397,16 @@
    var dropItemMenu = cms.sitemap.dropItemMenu = function(e, ui) {
       var li = $(this).parent();
       var dropClone = ui.draggable.clone();
-      dropClone.removeClass('subtree');
+      dropClone.removeClass(classSubtree);
+      var parentURL = '';
       if ($(this).hasClass(dropzoneClass)) {
          // dropping over dropzone, so insert before
          li.before(dropClone);
+         var parentLi = li.parent().closest('li');
+         if (parentLi.length) {
+            parentURL = parentLi.children('div.' + itemClass).find('span.cms-url').attr('alt');
+            parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
+         }
       } else {
          // dropping over item, so insert into child-ul
          if (li.children('ul').length == 0) {
@@ -331,11 +416,13 @@
          }
          li.removeClass(classClosed);
          li.children('ul').append(dropClone);
-         
+         parentURL = li.children('div.' + itemClass).find('span.cms-url').attr('alt');
+         parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
       }
       dropClone.find('div.cms-handle').remove();
       dropClone.find('div.' + itemClass).removeClass(dragClass);
-      $(this).removeClass('hovered');
+      setURLs(dropClone, parentURL);
+      $(this).removeClass(classHovered);
    }
    
    
@@ -372,7 +459,7 @@
                
                
             },
-            'Chancel': function() {
+            'Cancel': function() {
                $dialog.dialog('destroy');
                $dialog.remove();
             }
@@ -414,6 +501,10 @@
          drop: cms.sitemap.dropItemMenu
       });
       
+      $('#' + sitemapId).children().each(function() {
+         setURLs($(this), '');
+      });
+      
       // generating toolbar
       cms.sitemap.dom.toolbar = $(cms.html.toolbar).appendTo(document.body);
       cms.sitemap.dom.toolbarContent = $('#toolbar_content', cms.sitemap.dom.toolbar);
@@ -439,7 +530,34 @@
       $('a.cms-delete').live('click', deletePage);
       $('a.cms-new').live('click', newPage);
       $('a.cms-edit').live('click', editPage);
+      $('#' + sitemapId + ' div.' + itemClass + ' h3').directInput({
+         marginHack: true,
+         live: true
+      });
       
+      $('#' + sitemapId + ' div.' + itemClass + ' span.cms-url-name').directInput({
+         marginHack: true,
+         live: true,
+         readValue: function(elem) {
+            return elem.attr('alt');
+         },
+         setValue: setURLName
+      });
+      $('a.cms-icon-triangle').live('click', function() {
+         $(this).parent().toggleClass(classAdditionalShow);
+         var menu = $(this).closest('.cms-menu');
+         if (menu.length) {
+            adjustMenuShadow(menu);
+         }
+      });
+      $('.' + classAdditionalInfo + ' span').jHelperTip({
+         trigger: 'hover',
+         source: 'attribute',
+         attrName: 'alt',
+         topOff: -20,
+         opacity: 0.8,
+         live: true
+      });
    }
    
    /**
@@ -512,7 +630,17 @@
     * @param {Object} title item-title
     */
    var newItemHtml = function(title) {
-      return '<li><div class="' + dropzoneClass + '"></div><div class="ui-state-hover ui-corner-all ' + itemClass + '"><h3>' + title + '</h3></div></li>';
+      return '<li><div class="' + dropzoneClass + '"></div><div class="ui-state-hover ui-corner-all ' + itemClass + '"><a class="cms-left ui-icon cms-icon-triangle"></a>\
+              <h3>' +
+      title +
+      '</h3>\
+              <div class="cms-additional-info">\
+                URL-Name:<span class="cms-url-name">' +
+      title.toLowerCase() +
+      '</span><br/>\
+                URL:<span class="cms-url"></span><br/>\
+                VFS-Path:<span class="cms-vfs-path">/demo3/123.xml</span><br/>\
+              </div></div></li>';
    }
    
    /**
@@ -542,7 +670,10 @@
                   }
                   liItem.removeClass(classClosed);
                   var newItem = $(newItemHtml(newTitle)).appendTo(liItem.children('ul'));
-                  
+                  // setting URL
+                  var parentURL = liItem.children('div.' + itemClass).find('span.cms-url').attr('alt');
+                  parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
+                  setURLs(newItem, parentURL);
                   addHandles(newItem.children('div.' + itemClass), sitemapModes);
                   destroyDraggable();
                   initDraggable();
@@ -557,7 +688,7 @@
                
                
             },
-            'Chancel': function() {
+            'Cancel': function() {
                $dialog.dialog('destroy');
                $dialog.remove();
             }
@@ -613,6 +744,17 @@
    var setDirectValue = function(elem, input) {
       elem.text(input.val()).css('display', 'block');
       input.remove();
+   }
+   
+   var setInfoValue = cms.sitemap.setInfoValue = function(elem, value, maxLength, showEnd) {
+      elem.attr('alt', value);
+      var valueLength = value.length;
+      if (valueLength > maxLength) {
+         var shortValue = showEnd ? '... ' + value.substring(valueLength - maxLength + 5) : value.substring(0, maxLength - 5) + ' ...';
+         elem.text(shortValue);
+      } else {
+         elem.text(value);
+      }
    }
    
    /**
@@ -729,10 +871,11 @@
    
    /** Array of mode-objects. These correspond to the buttons shown in the toolbar. */
    var sitemapModes = [{
-      // reset mode
-      name: 'reset',
-      title: 'Reset',
+      // save mode
+      name: 'save',
+      title: 'Save',
       wide: false,
+      floatRight: false,
       create: createButton,
       enable: function() {
          this.button.addClass('ui-state-active');
@@ -754,13 +897,15 @@
          $('#' + sitemapId + ' li div.' + itemClass).each(function() {
             addHandles(this, sitemapModes);
          });
-         $('#' + sitemapId + ' div.' + itemClass + ' h3').click(directInput);
+         //         $('#' + sitemapId + ' div.' + itemClass + ' h3').directInput({marginHack: true});
+         //         $('#' + sitemapId + ' div.' + itemClass + ' h3').click(directInput);
       },
       disable: function() {
          this.button.removeClass('ui-state-active');
          destroyDraggable();
          $('div.cms-handle').remove();
-         $('div.' + itemClass + ' h3').unbind('click', directInput);
+         //         $('div.' + itemClass + ' h3').directInput.destroy();
+         //         $('div.' + itemClass + ' h3').unbind('click', directInput);
       },
       createHandle: function() {
          return $('<a class="cms-edit cms-edit-enabled"></a>');
@@ -815,62 +960,50 @@
       init: function() {
             }
    }, {
-      // save mode
-      name: 'save',
-      title: 'Save',
-      wide: false,
-      floatRight: true,
-      create: createButton,
-      enable: function() {
-         this.button.addClass('ui-state-active');
-      },
-      disable: function() {
-         this.button.removeClass('ui-state-active');
-      },
-      init: function() {
-            }
-   }, {
-      // recent mode
-      name: 'recent',
-      title: 'Recent',
+      // new mode
+      name: 'new',
+      title: 'New',
       wide: true,
-      floatRight: true,
+      floatRight: false,
       create: createButton,
       enable: function() {
          this.button.addClass('ui-state-active');
-         cms.sitemap.dom.currentMenu = cms.sitemap.dom.recentMenu.css({
+         cms.sitemap.dom.currentMenu = cms.sitemap.dom.newMenu.css({
             /* position : 'fixed', */
             top: 35,
             left: this.button.position().left - 1
          }).slideDown(100, function() {
-            $('div.ui-widget-shadow', cms.sitemap.dom.recentMenu).css({
+            $('div.ui-widget-shadow', cms.sitemap.dom.newMenu).css({
                top: 0,
                left: -3,
-               width: cms.sitemap.dom.recentMenu.outerWidth() + 8,
-               height: cms.sitemap.dom.recentMenu.outerHeight() + 1,
+               width: cms.sitemap.dom.newMenu.outerWidth() + 8,
+               height: cms.sitemap.dom.newMenu.outerHeight() + 1,
                border: '0px solid',
                opacity: 0.6
             });
          });
-         $('div.' + itemClass + ', div.' + dropzoneClass).droppable(cms.sitemap.dropOptionsMenu);
-         $('#' + cms.html.recentMenuId + ' li').draggable(cms.sitemap.dragOptionsMenu);
+         $('#' + sitemapId + ' div.' + itemClass + ', #' + sitemapId + ' .' + dropzoneClass).droppable(cms.sitemap.dropOptionsMenu);
+         $('#' + cms.html.newMenuId + ' li').draggable(cms.sitemap.dragOptionsMenu);
       },
       disable: function() {
          this.button.removeClass('ui-state-active');
          destroyDraggable();
-         cms.sitemap.dom.recentMenu.css('display', 'none');
+         cms.sitemap.dom.newMenu.css('display', 'none');
          cms.sitemap.dom.currentMenu = null;
-         
+      },
+      createHandle: function() {
+         return $('<a class="cms-new"></a>');
       },
       init: function() {
-         cms.sitemap.dom.recentMenu = $(cms.html.createMenu(cms.html.recentMenuId)).appendTo(cms.sitemap.dom.toolbarContent);
+         cms.sitemap.dom.newMenu = $(cms.html.createMenu(cms.html.newMenuId)).appendTo(cms.sitemap.dom.toolbarContent);
+         cms.sitemap.dom.newMenu.find('ul').append(newItemHtml('NewPage'));
       }
    }, {
       // favorites mode
       name: 'favorites',
       title: 'Favorites',
       wide: true,
-      floatRight: true,
+      floatRight: false,
       create: createButton,
       enable: function() {
          this.button.addClass('ui-state-active');
@@ -903,44 +1036,73 @@
          cms.sitemap.dom.favoriteList = cms.sitemap.dom.favoriteMenu.find('ul');
       }
    }, {
-      // new mode
-      name: 'new',
-      title: 'New',
+      // recent mode
+      name: 'recent',
+      title: 'Recent',
       wide: true,
-      floatRight: true,
+      floatRight: false,
       create: createButton,
       enable: function() {
          this.button.addClass('ui-state-active');
-         cms.sitemap.dom.currentMenu = cms.sitemap.dom.newMenu.css({
+         cms.sitemap.dom.currentMenu = cms.sitemap.dom.recentMenu.css({
             /* position : 'fixed', */
             top: 35,
             left: this.button.position().left - 1
          }).slideDown(100, function() {
-            $('div.ui-widget-shadow', cms.sitemap.dom.newMenu).css({
+            $('div.ui-widget-shadow', cms.sitemap.dom.recentMenu).css({
                top: 0,
                left: -3,
-               width: cms.sitemap.dom.newMenu.outerWidth() + 8,
-               height: cms.sitemap.dom.newMenu.outerHeight() + 1,
+               width: cms.sitemap.dom.recentMenu.outerWidth() + 8,
+               height: cms.sitemap.dom.recentMenu.outerHeight() + 1,
                border: '0px solid',
                opacity: 0.6
             });
          });
-         $('#' + sitemapId + ' div.' + itemClass + ', #' + sitemapId + ' .' + dropzoneClass).droppable(cms.sitemap.dropOptionsMenu);
-         $('#' + cms.html.newMenuId + ' li').draggable(cms.sitemap.dragOptionsMenu);
+         $('div.' + itemClass + ', div.' + dropzoneClass).droppable(cms.sitemap.dropOptionsMenu);
+         $('#' + cms.html.recentMenuId + ' li').draggable(cms.sitemap.dragOptionsMenu);
       },
       disable: function() {
          this.button.removeClass('ui-state-active');
          destroyDraggable();
-         cms.sitemap.dom.newMenu.css('display', 'none');
+         cms.sitemap.dom.recentMenu.css('display', 'none');
          cms.sitemap.dom.currentMenu = null;
-      },
-      createHandle: function() {
-         return $('<a class="cms-new"></a>');
+         
       },
       init: function() {
-         cms.sitemap.dom.newMenu = $(cms.html.createMenu(cms.html.newMenuId)).appendTo(cms.sitemap.dom.toolbarContent);
-         cms.sitemap.dom.newMenu.find('ul').append('<li><div class="' + dropzoneClass + '"></div><div class="ui-state-hover ui-corner-all ' + itemClass + '"><h3>New Page</h3></div></li>')
+         cms.sitemap.dom.recentMenu = $(cms.html.createMenu(cms.html.recentMenuId)).appendTo(cms.sitemap.dom.toolbarContent);
       }
+   }, {
+      // reset mode
+      name: 'reset',
+      title: 'Reset',
+      wide: false,
+      floatRight: true,
+      create: createButton,
+      enable: function() {
+         this.button.addClass('ui-state-active');
+      },
+      disable: function() {
+         this.button.removeClass('ui-state-active');
+      },
+      init: function() {
+            }
+   }, {
+      // publish mode
+      name: 'publish',
+      title: 'Publish',
+      wide: false,
+      floatRight: true,
+      create: createButton,
+      enable: function() {
+         this.button.addClass('ui-state-active');
+         var publishDialog = new cms.publish.PublishDialog();
+         publishDialog.start();
+      },
+      disable: function() {
+         this.button.removeClass('ui-state-active');
+      },
+      init: function() {
+            }
    }];
    
 
