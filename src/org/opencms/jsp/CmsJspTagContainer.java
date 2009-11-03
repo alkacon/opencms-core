@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/10/26 10:45:13 $
- * Version: $Revision: 1.1.2.18 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
+ * Date   : $Date: 2009/11/03 13:29:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.18 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -113,7 +113,7 @@ public class CmsJspTagContainer extends TagSupport {
 
         // get the container page itself
         CmsResource containerPage = cms.readResource(cms.getRequestContext().getUri());
-        if (containerPage.getTypeId() != CmsResourceTypeContainerPage.getStaticTypeId()) {
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
             // container page is used as template
             String cntPagePath = cms.readPropertyObject(
                 containerPage,
@@ -128,7 +128,7 @@ public class CmsJspTagContainer extends TagSupport {
                     CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
                     cntPagePath), e);
             }
-            if (containerPage.getTypeId() != CmsResourceTypeContainerPage.getStaticTypeId()) {
+            if (CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_CONTAINER_PAGE_NOT_FOUND_3,
                     cms.getRequestContext().getUri(),
@@ -248,7 +248,7 @@ public class CmsJspTagContainer extends TagSupport {
             renderElems--;
 
             CmsResource resUri = cms.readResource(element.getElementId());
-            if (resUri.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
+            if (CmsResourceTypeXmlContainerPage.isContainerPage(resUri)) {
                 // get the subcontainer data from cache
                 CmsXmlContainerPage subXmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, resUri, req);
                 CmsContainerPageBean subcntPage = subXmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());

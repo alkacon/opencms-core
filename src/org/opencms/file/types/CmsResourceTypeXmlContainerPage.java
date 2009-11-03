@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeContainerPage.java,v $
- * Date   : $Date: 2009/10/20 07:38:54 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
+ * Date   : $Date: 2009/11/03 13:29:57 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.loader.CmsContainerPageLoader;
+import org.opencms.loader.CmsXmlContainerPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -57,11 +57,11 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 7.6 
  */
-public class CmsResourceTypeContainerPage extends CmsResourceTypeXmlContent {
+public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;
@@ -78,11 +78,11 @@ public class CmsResourceTypeContainerPage extends CmsResourceTypeXmlContent {
     /**
      * Default constructor that sets the fixed schema for container pages.<p>
      */
-    public CmsResourceTypeContainerPage() {
+    public CmsResourceTypeXmlContainerPage() {
 
         super();
         m_typeName = RESOURCE_TYPE_NAME;
-        m_typeId = CmsResourceTypeContainerPage.RESOURCE_TYPE_ID;
+        m_typeId = CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_ID;
         addConfigurationParameter(CONFIGURATION_SCHEMA, SCHEMA);
     }
 
@@ -189,7 +189,7 @@ public class CmsResourceTypeContainerPage extends CmsResourceTypeXmlContent {
     @Override
     public int getLoaderId() {
 
-        return CmsContainerPageLoader.RESOURCE_LOADER_ID;
+        return CmsXmlContainerPageLoader.RESOURCE_LOADER_ID;
     }
 
     /**

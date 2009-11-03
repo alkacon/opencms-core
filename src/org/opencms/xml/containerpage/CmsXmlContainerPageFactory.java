@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlContainerPageFactory.java,v $
- * Date   : $Date: 2009/10/20 09:06:25 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPageFactory.java,v $
+ * Date   : $Date: 2009/11/03 13:29:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -60,7 +60,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.2
  */
@@ -297,7 +297,7 @@ public final class CmsXmlContainerPageFactory {
      * @param resource the resource to unmarshal
      * @param req the current request
      * 
-     * @return the unmarshaled xml content, or null if the given resource was not of type {@link org.opencms.file.types.CmsResourceTypeContainerPage}
+     * @return the unmarshaled xml content, or null if the given resource was not of type {@link org.opencms.file.types.CmsResourceTypeXmlContainerPage}
      * 
      * @throws CmsException in something goes wrong
      * @throws CmsLoaderException if no loader for the given <code>resource</code> type ({@link CmsResource#getTypeId()}) is available
@@ -308,7 +308,7 @@ public final class CmsXmlContainerPageFactory {
 
         String rootPath = resource.getRootPath();
 
-        if (!CmsResourceTypeContainerPage.isContainerPage(resource)) {
+        if (!CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
             // sanity check: resource must be of type XML content
             throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_XMLCONTENT_INVALID_TYPE_1,

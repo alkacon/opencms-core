@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/10/26 10:45:13 $
- * Version: $Revision: 1.1.2.21 $
+ * Date   : $Date: 2009/11/03 13:29:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.21 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.6
  */
@@ -303,7 +303,7 @@ public final class CmsElementUtil {
         JSONObject formatters = new JSONObject();
         resElement.put(JsonElement.FORMATTERS.getName(), formatters);
 
-        if (resource.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
             // set empty entries to prevent client side problems
             Iterator<String> itTypes = types.iterator();
             while (itTypes.hasNext()) {

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsContainerPageLoader.java,v $
- * Date   : $Date: 2009/10/20 07:38:55 $
- * Version: $Revision: 1.1.2.10 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlContainerPageLoader.java,v $
+ * Date   : $Date: 2009/11/03 13:29:57 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,17 +41,17 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import javax.servlet.ServletRequest;
 
 /**
- * OpenCms loader for resources of type <code>{@link org.opencms.file.types.CmsResourceTypeContainerPage}</code>.<p>
+ * OpenCms loader for resources of type <code>{@link org.opencms.file.types.CmsResourceTypeXmlContainerPage}</code>.<p>
  *
- * It is just a xml-content loader.<p>
+ * It is just a xml-content loader with template capabilities.<p>
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 7.6
  */
-public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
+public class CmsXmlContainerPageLoader extends A_CmsXmlDocumentLoader {
 
     /** The id of this loader. */
     public static final int RESOURCE_LOADER_ID = 11;
@@ -59,7 +59,7 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
     /**
      * Default constructor.<p>
      */
-    public CmsContainerPageLoader() {
+    public CmsXmlContainerPageLoader() {
 
         // empty
     }
