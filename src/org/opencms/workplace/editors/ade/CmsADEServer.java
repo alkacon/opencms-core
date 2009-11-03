@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/11/03 09:28:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/03 09:35:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.6
  */
@@ -501,6 +501,48 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
+     * Creates a new CmsContainerElementBean for a structure-id and given properties.<p> 
+     * 
+     * @param structureId the structure-id
+     * @param properties the properties-map
+     * 
+     * @return the element bean
+     * 
+     * @throws JSONException if something goes wrong parsing JSON
+     */
+    public CmsContainerElementBean createElement(CmsUUID structureId, JSONObject properties) throws JSONException {
+
+        Map<String, String> cnfProps = new HashMap<String, String>();
+        if (properties != null) {
+            Iterator<String> itProperties = properties.keys();
+            while (itProperties.hasNext()) {
+                String propertyName = itProperties.next();
+                cnfProps.put(propertyName, properties.getString(propertyName));
+            }
+        }
+        return new CmsContainerElementBean(structureId, null, cnfProps);
+    }
+
+    /**
+     * Deletes the given elements from server.<p>
+     * 
+     * @param elems the array of client-side element ids
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void deleteElements(JSONArray elems) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        for (int i = 0; i < elems.length(); i++) {
+            CmsResource res = cms.readResource(m_manager.convertToServerId(elems.optString(i)));
+            String path = cms.getSitePath(res);
+            cms.lockResource(path);
+            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            cms.unlockResource(path);
+        }
+    }
+
+    /**
      * Handles all ADE requests.<p>
      * 
      * @return the result
@@ -677,247 +719,6 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
-     * Retrieves the search options from the JSON request.<p>
-     * 
-     * @param data the JSON request
-     * 
-     * @return the search options from the JSON request
-     */
-    public CmsSearchOptions getSearchOptions(JSONObject data) {
-
-        String location = data.optString(JsonSearch.LOCATION.getName());
-        String text = data.optString(JsonSearch.TEXT.getName());
-        String type = data.optString(JsonSearch.TYPE.getName());
-        int page = 0;
-        if (data.has(JsonSearch.PAGE.getName())) {
-            page = data.optInt(JsonSearch.PAGE.getName());
-        }
-        CmsSearchOptions searchOptions = new CmsSearchOptions(location, text, type, page);
-        return searchOptions;
-    }
-
-    /**
-     * Main method that handles all requests.<p>
-     * 
-     * @throws IOException if there is any problem while writing the result to the response 
-     * @throws JSONException if there is any problem with JSON
-     */
-    public void serve() throws JSONException, IOException {
-
-        // set the mime type to application/json
-        CmsFlexController controller = CmsFlexController.getController(getRequest());
-        controller.getTopResponse().setContentType(MIMETYPE_APPLICATION_JSON);
-
-        JSONObject result = new JSONObject();
-        try {
-            result = executeAction();
-        } catch (Exception e) {
-            // a serious error occurred, should not...
-            result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_SERVER_EXCEPTION_1,
-                CmsRequestUtil.appendParameters(
-                    getRequest().getRequestURL().toString(),
-                    CmsRequestUtil.createParameterMap(getRequest().getQueryString()),
-                    false)), e);
-        }
-        // add state info
-        if (result.has(JsonResponse.ERROR.getName())) {
-            // add state=error in case an error occurred 
-            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
-        } else if (!result.has(JsonResponse.STATE.getName())) {
-            // add state=ok i case no error occurred
-            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
-        }
-        // write the result
-        result.write(getResponse().getWriter());
-    }
-
-    /**
-     * Returns a list of container elements from a json array with client ids.<p>
-     * 
-     * @param array the json array
-     * 
-     * @return a list of resource ids
-     * 
-     * @throws JSONException if something goes wrong
-     */
-    protected List<CmsContainerElementBean> arrayToElementList(JSONArray array) throws JSONException {
-
-        List<CmsContainerElementBean> result = new ArrayList<CmsContainerElementBean>(array.length());
-        for (int i = 0; i < array.length(); i++) {
-            String id = array.getString(i);
-            try {
-                result.add(getCachedElement(id));
-            } catch (CmsIllegalArgumentException e) {
-                if (!LOG.isDebugEnabled()) {
-                    LOG.warn(e.getLocalizedMessage());
-                }
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param request the request which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return true if and only if all parameters are present in the request
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ReqParam... params)
-    throws JSONException {
-
-        for (ReqParam param : params) {
-            String value = request.getParameter(param.getName());
-            if (value == null) {
-                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    param.getName()));
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param data the JSONObject data which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return <code>true</code> if and only if all parameters are present in the given data
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(JSONObject data, JSONObject result, JsonRequest... params) throws JSONException {
-
-        for (JsonRequest param : params) {
-            if (!data.has(param.getName())) {
-                if (result != null) {
-                    result.put(CmsADEServer.JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                        Messages.ERR_JSON_MISSING_PARAMETER_1,
-                        param.getName()));
-                }
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Compares two search option objects.<p>
-     * 
-     * Better than to implement the {@link CmsSearchOptions#equals(Object)} method,
-     * since the page number is not considered in this comparison.<p>
-     * 
-     * @param o1 the first search option object
-     * @param o2 the first search option object
-     * 
-     * @return <code>true</code> if they are equal
-     */
-    protected boolean compareSearchOptions(CmsSearchOptions o1, CmsSearchOptions o2) {
-
-        if (o1 == o2) {
-            return true;
-        }
-        if ((o1 == null) || (o2 == null)) {
-            return false;
-        }
-        if (!o1.getLocation().equals(o2.getLocation())) {
-            return false;
-        }
-        if (!o1.getText().equals(o2.getText())) {
-            return false;
-        }
-        if (!o1.getType().equals(o2.getType())) {
-            return false;
-        }
-        return true;
-
-    }
-
-    /**
-     * Creates a new CmsContainerElementBean for a structure-id and given properties.<p> 
-     * 
-     * @param structureId the structure-id
-     * @param properties the properties-map
-     * 
-     * @return the element bean
-     * 
-     * @throws JSONException if something goes wrong parsing JSON
-     */
-    protected CmsContainerElementBean createElement(CmsUUID structureId, JSONObject properties) throws JSONException {
-
-        Map<String, String> cnfProps = new HashMap<String, String>();
-        if (properties != null) {
-            Iterator<String> itProperties = properties.keys();
-            while (itProperties.hasNext()) {
-                String propertyName = itProperties.next();
-                cnfProps.put(propertyName, properties.getString(propertyName));
-            }
-        }
-        return new CmsContainerElementBean(structureId, null, cnfProps);
-    }
-
-    /**
-     * Deletes the given elements from server.<p>
-     * 
-     * @param elems the array of client-side element ids
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    protected void deleteElements(JSONArray elems) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        for (int i = 0; i < elems.length(); i++) {
-            CmsResource res = cms.readResource(m_manager.convertToServerId(elems.optString(i)));
-            String path = cms.getSitePath(res);
-            cms.lockResource(path);
-            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
-            cms.unlockResource(path);
-        }
-    }
-
-    /**
-     * Reads the cached element-bean for the given client-side-id from cache.<p>
-     * 
-     * @param clientId the client-side-id
-     * 
-     * @return the cached container element bean
-     */
-    protected CmsContainerElementBean getCachedElement(String clientId) {
-
-        String id = clientId;
-        CmsContainerElementBean element = null;
-        element = m_sessionCache.getCacheContainerElement(id);
-        if (element != null) {
-            return element;
-        }
-        if (id.contains("#")) {
-            id = id.substring(0, id.indexOf("#"));
-            element = m_sessionCache.getCacheContainerElement(id);
-            if (element != null) {
-                return element;
-            }
-        }
-        // this is necessary if the element has not been cached yet
-        element = new CmsContainerElementBean(m_manager.convertToServerId(id), null, null);
-        m_sessionCache.setCacheContainerElement(id, element);
-        return element;
-    }
-
-    /**
      * Returns the data for the given container page.<p>
      * 
      * @param resource the container page's resource 
@@ -929,7 +730,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    protected JSONObject getContainerPage(CmsResource resource, CmsContainerPageBean cntPage, String elemUri)
+    public JSONObject getContainerPage(CmsResource resource, CmsContainerPageBean cntPage, String elemUri)
     throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
@@ -1073,7 +874,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * 
      * @throws CmsException if something goes wrong 
      */
-    protected JSONArray getFavoriteList(JSONObject resElements, Collection<String> types) throws CmsException {
+    public JSONArray getFavoriteList(JSONObject resElements, Collection<String> types) throws CmsException {
 
         JSONArray result = new JSONArray();
         CmsElementUtil elemUtil = new CmsElementUtil(
@@ -1118,7 +919,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws JSONException if something goes wrong
      * @throws CmsException if something goes wrong
      */
-    protected JSONObject getLastSearchResult(String cntPageUri, CmsSearchOptions options, Set<String> types)
+    public JSONObject getLastSearchResult(String cntPageUri, CmsSearchOptions options, Set<String> types)
     throws JSONException, CmsException {
 
         CmsSearchOptions lastOptions = m_sessionCache.getADESearchOptions();
@@ -1126,46 +927,6 @@ public class CmsADEServer extends CmsJspActionElement {
             return new JSONObject();
         }
         return getSearchResult(cntPageUri, lastOptions, types);
-    }
-
-    /**
-     * Returns the data for new elements from the given configuration file.<p>
-     * 
-     * @param cntPageUri the container page uri
-     * @param types the supported container page types
-     * 
-     * @return the data for the given container page
-     * 
-     * @throws CmsException if something goes wrong with the cms context
-     * @throws JSONException if something goes wrong with the JSON manipulation
-     */
-    protected JSONObject getNewResourceTypes(String cntPageUri, Set<String> types) throws CmsException, JSONException {
-
-        JSONObject resElements = new JSONObject();
-        resElements.put(JsonCntPage.NEWORDER.getName(), new JSONArray());
-        HttpServletRequest request = getRequest();
-        CmsObject cms = getCmsObject();
-        CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
-
-        List<CmsResource> creatableElements = m_manager.getCreatableElements(cms, cntPageUri, request);
-        for (CmsResource creatableElement : creatableElements) {
-            String type = OpenCms.getResourceManager().getResourceType(creatableElement).getTypeName();
-            JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
-                creatableElement.getStructureId(),
-                null,
-                null), types);
-            // overwrite some special fields for new elements
-            resElement.put(CmsElementUtil.JsonElement.ID.getName(), type);
-            resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
-            resElement.put(JsonResType.TYPE.getName(), type);
-            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceName(
-                cms.getRequestContext().getLocale(),
-                type));
-            resElements.put(type, resElement);
-            // additional array to keep track of the order
-            resElements.accumulate(JsonCntPage.NEWORDER.getName(), type);
-        }
-        return resElements;
     }
 
     /**
@@ -1178,7 +939,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * 
      * @throws CmsException if something goes wrong 
      */
-    protected JSONArray getRecentList(JSONObject resElements, Collection<String> types) throws CmsException {
+    public JSONArray getRecentList(JSONObject resElements, Collection<String> types) throws CmsException {
 
         JSONArray result = new JSONArray();
         CmsElementUtil elemUtil = new CmsElementUtil(
@@ -1212,44 +973,23 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
-     * Returns the data for searchable resource types from the given configuration file.<p>
+     * Retrieves the search options from the JSON request.<p>
      * 
-     * @param cntPageUri the container page uri
-     * @param types the supported container page types
+     * @param data the JSON request
      * 
-     * @return the data for the given container page
-     * 
-     * @throws CmsException if something goes wrong with the cms context
-     * @throws JSONException if something goes wrong with the JSON manipulation
+     * @return the search options from the JSON request
      */
-    protected JSONObject getSearchResourceTypes(String cntPageUri, Set<String> types)
-    throws CmsException, JSONException {
+    public CmsSearchOptions getSearchOptions(JSONObject data) {
 
-        JSONObject resElements = new JSONObject();
-        resElements.put(JsonCntPage.SEARCH_ORDER.getName(), new JSONArray());
-        HttpServletRequest request = getRequest();
-        CmsObject cms = getCmsObject();
-        CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
-
-        List<CmsResource> creatableElements = m_manager.getSearchableResourceTypes(cms, cntPageUri, request);
-        for (CmsResource searchableElement : creatableElements) {
-            String type = OpenCms.getResourceManager().getResourceType(searchableElement).getTypeName();
-            JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
-                searchableElement.getStructureId(),
-                null,
-                null), types);
-            // overwrite some special fields for searchable elements
-            resElement.put(CmsElementUtil.JsonElement.ID.getName(), type);
-            resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
-            resElement.put(JsonResType.TYPE.getName(), type);
-            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceName(
-                cms.getRequestContext().getLocale(),
-                type));
-            resElements.put(type, resElement);
-            // additional array to keep track of the order
-            resElements.accumulate(JsonCntPage.SEARCH_ORDER.getName(), type);
+        String location = data.optString(JsonSearch.LOCATION.getName());
+        String text = data.optString(JsonSearch.TEXT.getName());
+        String type = data.optString(JsonSearch.TYPE.getName());
+        int page = 0;
+        if (data.has(JsonSearch.PAGE.getName())) {
+            page = data.optInt(JsonSearch.PAGE.getName());
         }
-        return resElements;
+        CmsSearchOptions searchOptions = new CmsSearchOptions(location, text, type, page);
+        return searchOptions;
     }
 
     /**
@@ -1264,7 +1004,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws JSONException if something goes wrong
      * @throws CmsException if something goes wrong
      */
-    protected JSONObject getSearchResult(String cntPageUri, CmsSearchOptions options, Set<String> types)
+    public JSONObject getSearchResult(String cntPageUri, CmsSearchOptions options, Set<String> types)
     throws JSONException, CmsException {
 
         CmsObject cms = getCmsObject();
@@ -1343,6 +1083,43 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
+     * Main method that handles all requests.<p>
+     * 
+     * @throws IOException if there is any problem while writing the result to the response 
+     * @throws JSONException if there is any problem with JSON
+     */
+    public void serve() throws JSONException, IOException {
+
+        // set the mime type to application/json
+        CmsFlexController controller = CmsFlexController.getController(getRequest());
+        controller.getTopResponse().setContentType(MIMETYPE_APPLICATION_JSON);
+
+        JSONObject result = new JSONObject();
+        try {
+            result = executeAction();
+        } catch (Exception e) {
+            // a serious error occurred, should not...
+            result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
+            LOG.error(Messages.get().getBundle().key(
+                Messages.ERR_SERVER_EXCEPTION_1,
+                CmsRequestUtil.appendParameters(
+                    getRequest().getRequestURL().toString(),
+                    CmsRequestUtil.createParameterMap(getRequest().getQueryString()),
+                    false)), e);
+        }
+        // add state info
+        if (result.has(JsonResponse.ERROR.getName())) {
+            // add state=error in case an error occurred 
+            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
+        } else if (!result.has(JsonResponse.STATE.getName())) {
+            // add state=ok i case no error occurred
+            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
+        }
+        // write the result
+        result.write(getResponse().getWriter());
+    }
+
+    /**
      * Saves the new state of the container page.<p>
      * 
      * @param uri the uri of the container page to save
@@ -1351,7 +1128,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    protected void setContainerPage(String uri, JSONObject cntPage) throws CmsException, JSONException {
+    public void setContainerPage(String uri, JSONObject cntPage) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
         String paramUri = getRequest().getParameter(ReqParam.URI.getName());
@@ -1472,5 +1249,228 @@ public class CmsADEServer extends CmsJspActionElement {
         }
         containerPage.setContents(xmlCnt.marshal());
         cms.writeFile(containerPage);
+    }
+
+    /**
+     * Returns a list of container elements from a json array with client ids.<p>
+     * 
+     * @param array the json array
+     * 
+     * @return a list of resource ids
+     * 
+     * @throws JSONException if something goes wrong
+     */
+    protected List<CmsContainerElementBean> arrayToElementList(JSONArray array) throws JSONException {
+
+        List<CmsContainerElementBean> result = new ArrayList<CmsContainerElementBean>(array.length());
+        for (int i = 0; i < array.length(); i++) {
+            String id = array.getString(i);
+            try {
+                result.add(getCachedElement(id));
+            } catch (CmsIllegalArgumentException e) {
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Checks whether a list of parameters are present as attributes of a request.<p>
+     * 
+     * If this isn't the case, an error message is written to the JSON result object.
+     * 
+     * @param request the request which contains the parameters
+     * @param result the JSON object which the error message should be written into, can be <code>null</code>
+     * @param params the array of parameters which should be checked
+     * 
+     * @return true if and only if all parameters are present in the request
+     * 
+     * @throws JSONException if something goes wrong with JSON
+     */
+    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ReqParam... params)
+    throws JSONException {
+
+        for (ReqParam param : params) {
+            String value = request.getParameter(param.getName());
+            if (value == null) {
+                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    param.getName()));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether a list of parameters are present as attributes of a request.<p>
+     * 
+     * If this isn't the case, an error message is written to the JSON result object.
+     * 
+     * @param data the JSONObject data which contains the parameters
+     * @param result the JSON object which the error message should be written into, can be <code>null</code>
+     * @param params the array of parameters which should be checked
+     * 
+     * @return <code>true</code> if and only if all parameters are present in the given data
+     * 
+     * @throws JSONException if something goes wrong with JSON
+     */
+    protected boolean checkParameters(JSONObject data, JSONObject result, JsonRequest... params) throws JSONException {
+
+        for (JsonRequest param : params) {
+            if (!data.has(param.getName())) {
+                if (result != null) {
+                    result.put(CmsADEServer.JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+                        Messages.ERR_JSON_MISSING_PARAMETER_1,
+                        param.getName()));
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Compares two search option objects.<p>
+     * 
+     * Better than to implement the {@link CmsSearchOptions#equals(Object)} method,
+     * since the page number is not considered in this comparison.<p>
+     * 
+     * @param o1 the first search option object
+     * @param o2 the first search option object
+     * 
+     * @return <code>true</code> if they are equal
+     */
+    protected boolean compareSearchOptions(CmsSearchOptions o1, CmsSearchOptions o2) {
+
+        if (o1 == o2) {
+            return true;
+        }
+        if ((o1 == null) || (o2 == null)) {
+            return false;
+        }
+        if (!o1.getLocation().equals(o2.getLocation())) {
+            return false;
+        }
+        if (!o1.getText().equals(o2.getText())) {
+            return false;
+        }
+        if (!o1.getType().equals(o2.getType())) {
+            return false;
+        }
+        return true;
+
+    }
+
+    /**
+     * Reads the cached element-bean for the given client-side-id from cache.<p>
+     * 
+     * @param clientId the client-side-id
+     * 
+     * @return the cached container element bean
+     */
+    protected CmsContainerElementBean getCachedElement(String clientId) {
+
+        String id = clientId;
+        CmsContainerElementBean element = null;
+        element = m_sessionCache.getCacheContainerElement(id);
+        if (element != null) {
+            return element;
+        }
+        if (id.contains("#")) {
+            id = id.substring(0, id.indexOf("#"));
+            element = m_sessionCache.getCacheContainerElement(id);
+            if (element != null) {
+                return element;
+            }
+        }
+        // this is necessary if the element has not been cached yet
+        element = new CmsContainerElementBean(m_manager.convertToServerId(id), null, null);
+        m_sessionCache.setCacheContainerElement(id, element);
+        return element;
+    }
+
+    /**
+     * Returns the data for new elements from the given configuration file.<p>
+     * 
+     * @param cntPageUri the container page uri
+     * @param types the supported container page types
+     * 
+     * @return the data for the given container page
+     * 
+     * @throws CmsException if something goes wrong with the cms context
+     * @throws JSONException if something goes wrong with the JSON manipulation
+     */
+    protected JSONObject getNewResourceTypes(String cntPageUri, Set<String> types) throws CmsException, JSONException {
+
+        JSONObject resElements = new JSONObject();
+        resElements.put(JsonCntPage.NEWORDER.getName(), new JSONArray());
+        HttpServletRequest request = getRequest();
+        CmsObject cms = getCmsObject();
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
+
+        List<CmsResource> creatableElements = m_manager.getCreatableElements(cms, cntPageUri, request);
+        for (CmsResource creatableElement : creatableElements) {
+            String type = OpenCms.getResourceManager().getResourceType(creatableElement).getTypeName();
+            JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
+                creatableElement.getStructureId(),
+                null,
+                null), types);
+            // overwrite some special fields for new elements
+            resElement.put(CmsElementUtil.JsonElement.ID.getName(), type);
+            resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
+            resElement.put(JsonResType.TYPE.getName(), type);
+            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceName(
+                cms.getRequestContext().getLocale(),
+                type));
+            resElements.put(type, resElement);
+            // additional array to keep track of the order
+            resElements.accumulate(JsonCntPage.NEWORDER.getName(), type);
+        }
+        return resElements;
+    }
+
+    /**
+     * Returns the data for searchable resource types from the given configuration file.<p>
+     * 
+     * @param cntPageUri the container page uri
+     * @param types the supported container page types
+     * 
+     * @return the data for the given container page
+     * 
+     * @throws CmsException if something goes wrong with the cms context
+     * @throws JSONException if something goes wrong with the JSON manipulation
+     */
+    protected JSONObject getSearchResourceTypes(String cntPageUri, Set<String> types)
+    throws CmsException, JSONException {
+
+        JSONObject resElements = new JSONObject();
+        resElements.put(JsonCntPage.SEARCH_ORDER.getName(), new JSONArray());
+        HttpServletRequest request = getRequest();
+        CmsObject cms = getCmsObject();
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
+
+        List<CmsResource> creatableElements = m_manager.getSearchableResourceTypes(cms, cntPageUri, request);
+        for (CmsResource searchableElement : creatableElements) {
+            String type = OpenCms.getResourceManager().getResourceType(searchableElement).getTypeName();
+            JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
+                searchableElement.getStructureId(),
+                null,
+                null), types);
+            // overwrite some special fields for searchable elements
+            resElement.put(CmsElementUtil.JsonElement.ID.getName(), type);
+            resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
+            resElement.put(JsonResType.TYPE.getName(), type);
+            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceName(
+                cms.getRequestContext().getLocale(),
+                type));
+            resElements.put(type, resElement);
+            // additional array to keep track of the order
+            resElements.accumulate(JsonCntPage.SEARCH_ORDER.getName(), type);
+        }
+        return resElements;
     }
 }

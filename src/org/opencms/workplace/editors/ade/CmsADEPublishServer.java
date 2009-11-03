@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/11/03 09:28:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/11/03 09:35:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.9.3
  */
@@ -304,36 +304,6 @@ public class CmsADEPublishServer {
         }
 
         OpenCms.getPublishManager().removeResourceFromUsersPubList(m_cms, idsToRemove);
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param request the request which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return true if and only if all parameters are present in the request
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ParamPublish... params)
-    throws JSONException {
-
-        for (ParamPublish param : params) {
-            String value = request.getParameter(param.getName());
-            if (value == null) {
-                if (result != null) {
-                    result.put(CmsADEServer.JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                        Messages.ERR_JSON_MISSING_PARAMETER_1,
-                        param.getName()));
-                }
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
