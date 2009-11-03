@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/11/02 09:34:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/11/03 14:25:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.9.3
  */
@@ -391,8 +391,8 @@ public class CmsADEPublish {
                         if (resources.size() > 1) {
                             groupName = Messages.get().getBundle(m_locale).key(
                                 Messages.GUI_GROUPNAME_SESSION_2,
-                                new Date(groupDate),
-                                new Date(resource.getDateLastModified()));
+                                new Date(resource.getDateLastModified()),
+                                new Date(groupDate));
                         } else {
                             groupName = Messages.get().getBundle(m_locale).key(
                                 Messages.GUI_GROUPNAME_SESSION_1,
@@ -563,7 +563,8 @@ public class CmsADEPublish {
                 CmsProject originalProject = m_cms.getRequestContext().currentProject();
                 try {
                     m_cms.getRequestContext().setCurrentProject(project);
-                    OpenCms.getPublishManager().getPublishList(m_cms);
+                    m_resourceList.getResources().addAll(
+                        OpenCms.getPublishManager().getPublishList(m_cms).getAllResources());
                 } finally {
                     m_cms.getRequestContext().setCurrentProject(originalProject);
                 }

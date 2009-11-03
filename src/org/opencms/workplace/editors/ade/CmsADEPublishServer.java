@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/11/03 09:35:37 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/11/03 14:25:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.9.3
  */
@@ -193,8 +193,11 @@ public class CmsADEPublishServer {
             try {
                 options.setProjectId(new CmsUUID(projectParam));
             } catch (NumberFormatException e) {
+                options.setProjectId(null);
                 LOG.warn(e.getLocalizedMessage(), e);
             }
+        } else {
+            options.setProjectId(null);
         }
 
         CmsADEPublish publish = new CmsADEPublish(m_cms);
@@ -223,7 +226,10 @@ public class CmsADEPublishServer {
                 return result;
             }
             // save options
-            sessionCache.setCacheADEPublishOptions(publish.getOptions());
+            sessionCache.setCacheADEPublishOptions(new CmsPublishOptions(
+                publish.getOptions().isIncludeRelated(),
+                publish.getOptions().isIncludeSiblings(),
+                publish.getOptions().getProjectId()));
             // resources to publish
             JSONArray idsToPublish = data.optJSONArray(ParamPublish.RESOURCES.getName());
             List<CmsResource> pubResources;
