@@ -16,8 +16,7 @@
       var cms = {
         data:{
           "EDITOR_URL"      : "%(editorUri)",
-          "SERVER_GET_URL"  : "%(serverGetUri)",
-          "SERVER_SET_URL"  : "%(serverSetUri)",
+          "SERVER_URL"      : "%(serverUri)",
           "CURRENT_CNT_PAGE": "%(currentContainerPage)",
           "CURRENT_URI"     : "%(currentUri)",
           "LOCALE"          : "%(currentLocale)",

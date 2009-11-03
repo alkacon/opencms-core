@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/10/29 10:40:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/03 09:28:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,9 +50,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_ID_1 = "ERR_INVALID_ID_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_JSON_INVALID_ACTION_URL_1 = "ERR_JSON_INVALID_ACTION_URL_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_JSON_MISSING_PARAMETER_1 = "ERR_JSON_MISSING_PARAMETER_1";

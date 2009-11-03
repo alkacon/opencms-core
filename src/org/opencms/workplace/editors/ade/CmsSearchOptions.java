@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsSearchOptions.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/03 09:28:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,50 +38,16 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Bean encapsulating all ADE search options.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
 public class CmsSearchOptions {
-
-    /** Request parameter name constants for searching. */
-    public enum ParamSearch {
-
-        /** The search location. */
-        LOCATION("location"),
-        /** The search page. */
-        PAGE("page"),
-        /** Search query. */
-        TEXT("text"),
-        /** The resource type(s). */
-        TYPE("type");
-
-        /** Parameter name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private ParamSearch(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
 
     /** The vfs location to search. */
     private String m_location;
@@ -94,25 +60,6 @@ public class CmsSearchOptions {
 
     /** The type of resources to search. */
     private String m_type;
-
-    /** 
-     * Creates a new search options bean.<p> 
-     * 
-     * @param request the current request
-     **/
-    public CmsSearchOptions(HttpServletRequest request) {
-
-        String location = request.getParameter(ParamSearch.LOCATION.getName());
-        String text = request.getParameter(ParamSearch.TEXT.getName());
-        String type = request.getParameter(ParamSearch.TYPE.getName());
-        int page = 0;
-        try {
-            page = Integer.parseInt(request.getParameter(ParamSearch.PAGE.getName()));
-        } catch (Throwable e) {
-            // ignore
-        }
-        init(location, text, type, page);
-    }
 
     /**
      * Creates a new search options bean.<p> 

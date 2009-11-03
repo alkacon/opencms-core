@@ -21,11 +21,11 @@
    /** Parameter 'action' value 'all' constant. */
    var /** String */ ACTION_ALL = 'all';
    
-   /** Parameter 'action' value 'rec' constant. */
-   var /** String */ ACTION_REC = 'rec';
+   /** Parameter 'action' value 'get' constant. */
+   var /** String */ ACTION_GET = 'get';
    
-   /** Parameter 'action' value 'fav' constant. */
-   var /** String */ ACTION_FAV = 'fav';
+   /** Parameter 'action' value 'set' constant. */
+   var /** String */ ACTION_SET = 'set';
    
    /** Parameter 'action' value 'cnt' constant. */
    var /** String */ ACTION_CNT = 'cnt';
@@ -41,6 +41,9 @@
    
    /** Parameter 'action' value 'startedit' constant. */
    var /** String */ ACTION_STARTEDIT = 'startedit';
+   
+   /** Parameter 'action' value 'stopedit' constant. */
+   var /** String */ ACTION_STOPEDIT = 'stopedit';
    
    /** Parameter 'action' value 'search' constant. */
    var /** String */ ACTION_SEARCH = cms.data.ACTION_SEARCH = 'search';
@@ -76,16 +79,10 @@
    var /** String */ EDITOR_URL = cms.data.EDITOR_URL;
    
    /**  
-    * The url for 'get' requests.
+    * The url for server requests.
     * @see /system/workplace/editors/ade/include.txt
     */
-   var /** String */ SERVER_GET_URL = cms.data.SERVER_GET_URL;
-   
-   /**  
-    * The url for 'set' requests.
-    * @see /system/workplace/editors/ade/include.txt
-    */
-   var /** String */ SERVER_SET_URL = cms.data.SERVER_SET_URL;
+   var /** String */ SERVER_URL = cms.data.SERVER_URL;
    
    /** Generic error message for json parse errors. */
    var /** String */ JSON_PARSE_ERROR = cms.messages.JSON_PARSE_ERROR;
@@ -162,38 +159,8 @@
     */
    var loadAllData = cms.data.loadAllData = /** void */ function(/** void Function(boolean) */afterLoad) {
    
-      var xhr = $.ajax({
-         'url': SERVER_GET_URL,
-         'data': {
-            'action': ACTION_ALL,
-            'cntpage': CURRENT_CNT_PAGE,
-            'uri': CURRENT_URI,
-            'locale': LOCALE
-         },
-         'timeout': AJAX_TIMEOUT,
-         'error': function(xhr, status, error) {
-             _removeRequest(xhr);
-            if (cms.toolbar.leavingPage) {
-               return;
-            }
-            alert(AJAX_LOAD_ERROR);
-            afterLoad(false);
-         },
-         'success': function(data) {
-             _removeRequest(xhr);
-            try {
-               var jsonData = JSON.parse(data, _jsonRevive);
-            } catch (e) {
-               alert(JSON_PARSE_ERROR);
-               afterLoad(false);
-               return;
-            }
-            if (jsonData.state == 'error') {
-               alert(jsonData.error);
-               afterLoad(false);
-               return;
-            }
-            
+        postJSON(ACTION_ALL, {}, function(ok, jsonData) {
+                        
             if (jsonData.favorites) {
                cms.toolbar.favorites = jsonData.favorites;
             }
@@ -226,7 +193,7 @@
                         newPos = newOrder.indexOf(this.type);
                      }
                      if (newPos < 0) {
-                                          // this element is not a creatable type
+                         // this element is not a creatable type
                      } else {
                         cms.data.newTypes[newPos] = {
                         'type': this.type,
@@ -240,7 +207,7 @@
                         searchPos = searchOrder.indexOf(this.type);
                      }
                      if (searchPos < 0) {
-                                          // this element is not a searchable type
+                        // this element is not a searchable type
                      } else {
                      cms.search.searchParams.types.push({
                         'name': this.type,
@@ -271,57 +238,7 @@
                cms.toolbar.recentSize = jsonData.recentListSize;
             }
             afterLoad(true);
-         }
       });
-      requests.push(xhr);
-   }
-   
-   /**
-    * Generic JSON loading function.
-    *
-    * @param {Object} data the request parameters that should be sent to the server
-    * @param {Function} afterLoad the callback that should be called after loading is finished
-    */
-   var loadJSON = cms.data.loadJSON = /** void */ function(/** Object */data, /** void Function(boolean, Object) */ afterLoad, timeout) {
-      if (!timeout) {
-          timeout = AJAX_TIMEOUT;
-      }
-      $.extend(data, {
-         'cntpage': CURRENT_CNT_PAGE,
-         'uri': CURRENT_URI,
-         'locale': LOCALE
-      });
-      var xhr = $.ajax({
-         'type': 'POST',
-         'url': SERVER_GET_URL,
-         'data': data,
-         'timeout': timeout,
-         'error': function(xhr, status, error) {
-             _removeRequest(xhr);
-            if (cms.toolbar.leavingPage) {
-               return;
-            }
-            alert(AJAX_LOAD_ERROR);
-            afterLoad(false, {});
-         },
-         'success': function(data) {
-             _removeRequest(xhr);
-            try {
-               var jsonData = JSON.parse(data, _jsonRevive);
-            } catch (e) {
-               alert(JSON_PARSE_ERROR);
-               afterLoad(false, {});
-               return;
-            }
-            if (jsonData.state == 'error') {
-               alert(jsonData.error);
-               afterLoad(false, jsonData);
-               return;
-            }
-            afterLoad(true, jsonData);
-         }
-      });
-      requests.push(xhr);
    }
    
    /**
@@ -330,10 +247,17 @@
     * @param {String} action a string to tell the server what to do with the data
     * @param {Object} data the JSON data
     * @param {Function} afterPost the callback that should be called after the server replied
+    * @param {boolean} async optional flag to indicate is the request should synchronized or not, by default it is not
+    * @param {int} timeout optional timeout in millisecs, default is #AJAX_TIMEOUT
     */
-   var postJSON = cms.data.postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost) {
+   var postJSON = cms.data.postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost, /** boolean */ sync, /** int */ timeout) {
+   
+      var async = !sync;
+      if (!timeout) {
+          timeout = AJAX_TIMEOUT;
+      }
       var xhr = $.ajax({
-         'url': SERVER_SET_URL,
+         'url': SERVER_URL,
          'data': {
             'cntpage': CURRENT_CNT_PAGE,
             'uri': CURRENT_URI,
@@ -342,9 +266,13 @@
             'data': JSON.stringify(data)
          },
          'type': 'POST',
-         'timeout': AJAX_TIMEOUT,
+         'timeout': timeout,
+         'async': async,
          'error': function(xhr, status, error) {
              _removeRequest(xhr);
+            if (cms.toolbar.leavingPage) {
+               return;
+            }
             alert(AJAX_SENT_ERROR);
             afterPost(false);
          },
@@ -378,9 +306,8 @@
     */
    var createResource = cms.data.createResource = /** void */ function(/** String */type, /** void Function(boolean, String, String) */ afterCreate) {
    
-      loadJSON({
-         'action': ACTION_NEW,
-         'data': type
+      postJSON(ACTION_NEW, {
+          'type': type
       }, function(ok, data) {
          afterCreate(ok, data.id, data.uri);
       });
@@ -394,9 +321,9 @@
     */
    var deleteResources = cms.data.deleteResources = /** void */ function(/** Array */ids, /** void Function(boolean) */ afterDelete) {
    
-      postJSON(ACTION_DEL, ids, function(ok) {
-         afterDelete(ok);
-      });
+      postJSON(ACTION_DEL, {
+          'elem': ids
+      }, afterDelete);
    }
    
    /**
@@ -406,9 +333,17 @@
     */
    var startEdit = cms.data.startEdit = /** void */ function(/** void Function(boolean) */ callback) {
    
-      postJSON(ACTION_STARTEDIT, {}, function(ok) {
-         callback(ok);
-      });
+      postJSON(ACTION_STARTEDIT, {}, callback);
+   }
+   
+   /**
+    * Unlocks the container page on the server via AJAX.
+    *
+    * @param {Function} callback the callback that should be called
+    */
+   var stopEdit = cms.data.stopEdit = /** void */ function(/** void Function(boolean) */ callback) {
+   
+      postJSON(ACTION_STOPEDIT, {}, callback);
    }
    
    /**
@@ -423,9 +358,8 @@
       if (cms.data.elements[id] && (cms.data.elements[id].status == STATUS_CREATED)) {
          restoreState = true;
       }
-      loadJSON({
-         'action': ACTION_ELEM,
-         'elem': id
+      postJSON(ACTION_ELEM, {
+          'elem': id
       }, function(ok, data) {
          if (ok) {
             for (var id in data.elements) {
@@ -448,9 +382,8 @@
     */
    var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, Object) */ afterLoad) {
    
-      loadJSON({
-         'action': ACTION_ELEM,
-         'elem': JSON.stringify(ids)
+      postJSON(ACTION_ELEM, {
+          'elem': ids
       }, function(ok, data) {
          if (ok) {
             for (var id in data.elements) {
@@ -468,9 +401,7 @@
     */
    var loadFavorites = cms.data.loadFavorites = /** void */ function(/** void Function(boolean, Object) */afterFavoritesLoad) {
    
-      loadJSON({
-         'action': ACTION_FAV
-      }, function(ok, data) {
+      postJSON(ACTION_GET, {'fav': true}, function(ok, data) {
          if (ok) {
             cms.toolbar.favorites = data.favorites;
             
@@ -515,9 +446,7 @@
     */
    var loadRecent = cms.data.loadRecent = /** void */ function(/** void Function(boolean, Object) */afterRecentLoad) {
    
-      loadJSON({
-         'action': ACTION_REC
-      }, function(ok, data) {
+      postJSON(ACTION_GET, {'rec': true}, function(ok, data) {
          if (ok) {
             cms.toolbar.recent = data.recent;
             
@@ -582,7 +511,7 @@
     */
    var persistFavorites = cms.data.persistFavorites = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
-      postJSON(ACTION_FAV, cms.toolbar.favorites, afterSave);
+      postJSON(ACTION_SET, {'fav': cms.toolbar.favorites}, afterSave);
    }
    
    /**
@@ -592,7 +521,7 @@
     */
    var persistRecent = cms.data.persistRecent = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
-      postJSON(ACTION_REC, cms.toolbar.recent, afterSave);
+      postJSON(ACTION_SET, {'rec': cms.toolbar.recent}, afterSave);
    }
    
    /**
@@ -796,17 +725,17 @@
    }
    
    var getProperties = cms.data.getProperties = function(id, callback) {
-      loadJSON({
-         action: 'props',
-         elem: id
+
+      postJSON('props', {
+          'elem': id
       }, callback);
    }
    
    var getElementWithProperties = cms.data.getElementWithProperties = function(id, properties, callback) {
-      loadJSON({
-         action: 'elemProps',
+
+      postJSON('elemProps', {
          elem: id,
-         properties: JSON.stringify(properties)
+         properties: properties
       }, function(ok, data) {
          for (var elemId in data.elements) {
             cms.data.elements[elemId] = data.elements[elemId];
@@ -820,6 +749,7 @@
     * objects with methods with the actual objects.
     */
    var _jsonRevive = function(key, value) {
+
       var Type = reviveTypeMap[value.objtype];
       if (Type) {
          return new Type(value);
@@ -831,52 +761,46 @@
    * AJAX call for getting the publish problem list from the server
    */
    var getPublishProblemList = cms.data.getPublishProblemList = function(callback) {
-       loadJSON({
-           action: 'publish_list'
-       }, callback);
+
+       postJSON('publish_list', {}, callback);
    }
    
    /**
    * AJAX call for getting the publish list from the server 
    */
    var getPublishList = cms.data.getPublishList = function(related, siblings, project, callback) {
+
        var params = {
-           action: 'publish_list',
-           related: JSON.stringify(related),
-           siblings: JSON.stringify(siblings)
+           related: related,
+           siblings: siblings
        }
-       if (project != null && project != '') {
-           params.project = JSON.stringify(project);
+       if ((project != null) && (project != '')) {
+           params.project = project;
        } 
-       loadJSON(params, callback, 120000)
+       postJSON('publish_list', params, callback, false, 120000)
    }
    
    /**
    * AJAX call for publishing resources.
    */
    var publishResources = cms.data.publishResources = function(resources, removeResources, force, callback) {
+
        var params = {
-           action: 'publish',
-           resources: JSON.stringify(resources),
-           'remove-resources': JSON.stringify(removeResources),
-           force: JSON.stringify(force)
+           'resources': resources,
+           'remove-resources': removeResources,
+           'force': force
        }
-       loadJSON(params, callback, 120000);
+       postJSON('publish', params, callback, false, 120000);
    }
    
    var getProjects = cms.data.getProjects = function(callback) {
-       var params = {
-           action: 'projects'
-       }
-       loadJSON(params, callback);
+
+       postJSON('projects', {}, callback);
    }
    
    var getPublishOptions = cms.data.getPublishOptions = function(callback) {
-       var params = {
-           action: 'publish_options'
-       }
-       loadJSON(params, callback);
+
+       postJSON('publish_options', {}, callback);
    }
-   
 })(cms);
 

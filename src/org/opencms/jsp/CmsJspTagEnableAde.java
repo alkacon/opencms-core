@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/10/20 09:38:47 $
- * Version: $Revision: 1.1.2.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
+ * Date   : $Date: 2009/11/03 09:28:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -148,10 +148,8 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 resolver.setKeepEmptyMacros(true); // be sure request macros stay there
                 String editorUri = linkMan.substituteLink(cms, "/system/workplace/editors/editor.jsp");
                 resolver.addMacro("editorUri", editorUri);
-                String serverGetUri = linkMan.substituteLink(cms, "/system/workplace/editors/ade/get.jsp");
-                resolver.addMacro("serverGetUri", serverGetUri);
-                String serverSetUri = linkMan.substituteLink(cms, "/system/workplace/editors/ade/set.jsp");
-                resolver.addMacro("serverSetUri", serverSetUri);
+                String serverUri = linkMan.substituteLink(cms, "/system/workplace/editors/ade/server.jsp");
+                resolver.addMacro("serverUri", serverUri);
                 String skinUri = CmsWorkplace.getSkinUri();
                 resolver.addMacro("skinUri", skinUri);
                 resolver.addMacro("messagesUri", linkMan.substituteLink(

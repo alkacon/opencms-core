@@ -178,8 +178,8 @@
 		</file>
 		
 		<file>
-			<source>system/workplace/editors/ade/get.jsp</source>
-			<destination>system/workplace/editors/ade/get.jsp</destination>
+			<source>system/workplace/editors/ade/server.jsp</source>
+			<destination>system/workplace/editors/ade/server.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>dd962f3e-8592-11de-97fc-dd9f629b113b</uuidstructure>
 			<uuidresource>dd962f3f-8592-11de-97fc-dd9f629b113b</uuidresource>
@@ -209,25 +209,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/editors/ade/set.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>a5fe2174-8595-11de-97fc-dd9f629b113b</uuidstructure>
-			<uuidresource>dd962f3f-8592-11de-97fc-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 10 Sep 2009 10:52:38 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Aug 2009 09:47:49 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>

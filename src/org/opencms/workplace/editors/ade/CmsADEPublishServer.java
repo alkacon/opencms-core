@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/11/02 09:34:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/03 09:28:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.9.3
  */
@@ -160,39 +160,40 @@ public class CmsADEPublishServer {
      * 
      * @param action the action to carry out
      * @param result the JSON object for results
+     * @param data the request data
      * 
      * @return JSON object
      * 
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong
      */
-    public JSONObject handleRequest(CmsADEServer.Action action, JSONObject result) throws JSONException, CmsException {
+    public JSONObject handleRequest(CmsADEServer.Action action, JSONObject result, JSONObject data)
+    throws JSONException, CmsException {
 
         HttpServletRequest request = m_jsp.getRequest();
 
         // get the cached publish options
-        CmsPublishOptions options = ((CmsADESessionCache)request.getSession().getAttribute(
-            CmsADESessionCache.SESSION_ATTR_ADE_CACHE)).getADEPublishOptions();
+        CmsADESessionCache sessionCache = (CmsADESessionCache)request.getSession().getAttribute(
+            CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
+        CmsPublishOptions options = sessionCache.getADEPublishOptions();
         if (action.equals(CmsADEServer.Action.PUBLISH_OPTIONS)) {
             result.merge(options.toJson(), true, false);
             return result;
         }
 
         // check possible option parameters
-        if (checkParameters(request, null, ParamPublish.RELATED)) {
-            String relatedParam = request.getParameter(ParamPublish.RELATED.getName());
-            options.setIncludeRelated(Boolean.parseBoolean(relatedParam));
+        if (checkParameters(data, null, ParamPublish.RELATED)) {
+            options.setIncludeRelated(data.optBoolean(ParamPublish.RELATED.getName()));
         }
-        if (checkParameters(request, null, ParamPublish.SIBLINGS)) {
-            String siblingsParam = request.getParameter(ParamPublish.SIBLINGS.getName());
-            options.setIncludeSiblings(Boolean.parseBoolean(siblingsParam));
+        if (checkParameters(data, null, ParamPublish.SIBLINGS)) {
+            options.setIncludeSiblings(data.optBoolean(ParamPublish.SIBLINGS.getName()));
         }
-        if (checkParameters(request, null, ParamPublish.PROJECT)) {
-            String projectParam = request.getParameter(ParamPublish.PROJECT.getName());
+        if (checkParameters(data, null, ParamPublish.PROJECT)) {
+            String projectParam = data.optString(ParamPublish.PROJECT.getName());
             try {
                 options.setProjectId(new CmsUUID(projectParam));
             } catch (NumberFormatException e) {
-                // ignore
+                LOG.warn(e.getLocalizedMessage(), e);
             }
         }
 
@@ -203,7 +204,10 @@ public class CmsADEPublishServer {
         publish.getOptions().setProjectId(options.getProjectId());
 
         if (action.equals(CmsADEServer.Action.PUBLISH_LIST)) {
-            removeFromPublishList(publish);
+            if (data.has(ParamPublish.REMOVE_RESOURCES.getName())) {
+                removeFromPublishList(publish, data.optJSONArray(ParamPublish.REMOVE_RESOURCES.getName()));
+                // we continue to execute the main action
+            }
             // get list of resources to publish
             JSONArray groupsToPublish = toJsonArray(publish.getPublishGroups());
             result.put(JsonResponse.GROUPS.getName(), groupsToPublish);
@@ -211,13 +215,17 @@ public class CmsADEPublishServer {
             JSONArray manageableProjects = toJsonArray(publish.getManageableProjects());
             result.put(JsonResponse.PROJECTS.getName(), manageableProjects);
         } else if (action.equals(CmsADEServer.Action.PUBLISH)) {
-            removeFromPublishList(publish);
-            if (!checkParameters(request, result, ParamPublish.RESOURCES)) {
+            if (data.has(ParamPublish.REMOVE_RESOURCES.getName())) {
+                removeFromPublishList(publish, data.optJSONArray(ParamPublish.REMOVE_RESOURCES.getName()));
+                // we continue to execute the main action
+            }
+            if (!checkParameters(data, result, ParamPublish.RESOURCES)) {
                 return result;
             }
+            // save options
+            sessionCache.setCacheADEPublishOptions(publish.getOptions());
             // resources to publish
-            String resourcesParam = request.getParameter(ParamPublish.RESOURCES.getName());
-            JSONArray idsToPublish = new JSONArray(resourcesParam);
+            JSONArray idsToPublish = data.optJSONArray(ParamPublish.RESOURCES.getName());
             List<CmsResource> pubResources;
             try {
                 pubResources = resourcesFromJson(idsToPublish);
@@ -229,7 +237,9 @@ public class CmsADEPublishServer {
             }
             Collections.sort(pubResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
             JSONArray resources = new JSONArray();
-            if (!Boolean.parseBoolean(request.getParameter(ParamPublish.FORCE.getName())) || !isCanPublish()) {
+            if (!data.has(ParamPublish.FORCE.getName())
+                || !data.optBoolean(ParamPublish.FORCE.getName())
+                || !isCanPublish()) {
                 // get the resources with link check problems
                 resources = toJsonArray(publish.getBrokenResources(pubResources));
             }
@@ -263,25 +273,19 @@ public class CmsADEPublishServer {
      * Removes the resources from the user's publish list.<p>
      * 
      * @param publish the publish helper
+     * @param resourcesToRemove the list of IDs of resources to remove
      * 
-     * @throws JSONException if something goes wrong
      * @throws CmsException if something goes wrong
      */
-    public void removeFromPublishList(CmsADEPublish publish) throws JSONException, CmsException {
+    public void removeFromPublishList(CmsADEPublish publish, JSONArray resourcesToRemove) throws CmsException {
 
-        HttpServletRequest request = m_jsp.getRequest();
-        if (checkParameters(request, null, ParamPublish.REMOVE_RESOURCES)) {
-            // remove the resources from the user's publish list
-            String remResParam = request.getParameter(ParamPublish.REMOVE_RESOURCES.getName());
-            JSONArray resourcesToRemove = new JSONArray(remResParam);
-            Set<CmsUUID> idsToRemove = new HashSet<CmsUUID>();
-            for (int i = 0; i < resourcesToRemove.length(); i++) {
-                String id = resourcesToRemove.optString(i);
-                idsToRemove.add(new CmsUUID(id));
-            }
-            publish.removeResourcesFromPublishList(idsToRemove);
-            // we continue to execute the main action
+        // remove the resources from the user's publish list
+        Set<CmsUUID> idsToRemove = new HashSet<CmsUUID>();
+        for (int i = 0; i < resourcesToRemove.length(); i++) {
+            String id = resourcesToRemove.optString(i);
+            idsToRemove.add(new CmsUUID(id));
         }
+        publish.removeResourcesFromPublishList(idsToRemove);
     }
 
     /**
@@ -321,6 +325,34 @@ public class CmsADEPublishServer {
         for (ParamPublish param : params) {
             String value = request.getParameter(param.getName());
             if (value == null) {
+                if (result != null) {
+                    result.put(CmsADEServer.JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+                        Messages.ERR_JSON_MISSING_PARAMETER_1,
+                        param.getName()));
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether a list of parameters are present as attributes of a request.<p>
+     * 
+     * If this isn't the case, an error message is written to the JSON result object.
+     * 
+     * @param data the JSONObject data which contains the parameters
+     * @param result the JSON object which the error message should be written into, can be <code>null</code>
+     * @param params the array of parameters which should be checked
+     * 
+     * @return <code>true</code> if and only if all parameters are present in the given data
+     * 
+     * @throws JSONException if something goes wrong with JSON
+     */
+    protected boolean checkParameters(JSONObject data, JSONObject result, ParamPublish... params) throws JSONException {
+
+        for (ParamPublish param : params) {
+            if (!data.has(param.getName())) {
                 if (result != null) {
                     result.put(CmsADEServer.JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
                         Messages.ERR_JSON_MISSING_PARAMETER_1,
