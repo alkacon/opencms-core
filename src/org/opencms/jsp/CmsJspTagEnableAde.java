@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/11/03 13:29:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/03 13:54:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -172,7 +172,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         try {
             CmsResource containerPage = cms.readResource(cms.getRequestContext().getUri());
-            if (CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
+            if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
                 resolver.addMacro("currentUri", cms.getRequestContext().getUri());
                 // container page is used as template
                 String cntPagePath = cms.readPropertyObject(

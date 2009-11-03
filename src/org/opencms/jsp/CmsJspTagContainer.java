@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/11/03 13:29:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/03 13:54:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -113,7 +113,7 @@ public class CmsJspTagContainer extends TagSupport {
 
         // get the container page itself
         CmsResource containerPage = cms.readResource(cms.getRequestContext().getUri());
-        if (CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
+        if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
             // container page is used as template
             String cntPagePath = cms.readPropertyObject(
                 containerPage,
@@ -128,7 +128,7 @@ public class CmsJspTagContainer extends TagSupport {
                     CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
                     cntPagePath), e);
             }
-            if (CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
+            if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_CONTAINER_PAGE_NOT_FOUND_3,
                     cms.getRequestContext().getUri(),
