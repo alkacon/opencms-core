@@ -20,7 +20,9 @@
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies/>
+		<dependencies>
+			<dependency name="org.opencms.editors.ade" version="7.9"/>
+		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.frontend.template3/lib/" destination="WEB-INF/lib/"/>
 			<exportpoint uri="/system/modules/org.opencms.frontend.template3/classes/" destination="WEB-INF/classes/"/>
