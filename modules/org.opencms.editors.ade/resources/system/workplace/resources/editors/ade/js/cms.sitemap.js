@@ -51,59 +51,6 @@
       });
    }
    
-   var setURLs = cms.sitemap.setURLs = function(listItem, parentUrl) {
-      var currentItemDiv = listItem.children('.' + itemClass);
-      var pathName = currentItemDiv.find('span.cms-url-name').attr('alt');
-      setInfoValue(currentItemDiv.find('span.cms-url'), parentUrl + '/' + pathName + '.html', 37, true);
-      listItem.children('ul').children().each(function() {
-         setURLs($(this), parentUrl + '/' + pathName);
-      });
-   }
-   
-   var setURLName = cms.sitemap.setURLName = function(elem, input) {
-      var previous = elem.attr('alt');
-      var current = input.val();
-      if (previous != current) {
-         var currentLi = elem.closest('li');
-         if (currentLi.children('ul').length) {
-            var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
-            $dialog.appendTo('body');
-            $dialog.append('<p style="margin-bottom: 4px;">The page you are editing has subpages. Changing it\'s URL will also change the URLs of those.<br />Do you want to change it anyway?</p>');
-            $dialog.dialog({
-               zIndex: 9999,
-               title: 'New Page',
-               modal: true,
-               close: function() {
-                  $dialog.dialog('destroy');
-                  $dialog.remove();
-               },
-               buttons: {
-                  'OK': function() {
-                     var previousUrl = elem.siblings('span.cms-url').attr('alt');
-                     var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
-                     setInfoValue(elem, current, 37, true);
-                     setURLs(currentLi, parentUrl);
-                     $dialog.dialog('destroy');
-                     $dialog.remove();
-                  },
-                  'Cancel': function() {
-                     $dialog.dialog('destroy');
-                     $dialog.remove();
-                  }
-               }
-            });
-         } else {
-            var previousUrl = elem.siblings('span.cms-url').attr('alt');
-            var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
-            setInfoValue(elem, current, 37, true);
-            setURLs(currentLi, parentUrl);
-         }
-      }
-      elem.css('display', '');
-      input.remove();
-      
-   }
-   
    /**
     * Adds handles for the given modes to the given item.
     *
@@ -746,6 +693,14 @@
       input.remove();
    }
    
+   /**
+    * Sets a value in the additional info shortening the string if necessary.
+    * 
+    * @param {Object} elem target element
+    * @param {Object} value the value
+    * @param {Object} maxLength the maximum length of the string
+    * @param {Object} showEnd indicates if the string will be shortened in the beginning or the end
+    */
    var setInfoValue = cms.sitemap.setInfoValue = function(elem, value, maxLength, showEnd) {
       elem.attr('alt', value);
       var valueLength = value.length;
@@ -755,6 +710,71 @@
       } else {
          elem.text(value);
       }
+   }
+   
+   /**
+    * Will set the URL-info for the given and all sub-elements.
+    * 
+    * @param {Object} listItem target element
+    * @param {Object} parentUrl the parent URL
+    */
+   var setURLs = cms.sitemap.setURLs = function(listItem, parentUrl) {
+      var currentItemDiv = listItem.children('.' + itemClass);
+      var pathName = currentItemDiv.find('span.cms-url-name').attr('alt');
+      setInfoValue(currentItemDiv.find('span.cms-url'), parentUrl + '/' + pathName + '.html', 37, true);
+      listItem.children('ul').children().each(function() {
+         setURLs($(this), parentUrl + '/' + pathName);
+      });
+   }
+   
+   /**
+    * Method to set the URL-Name field in the additional info.
+    * 
+    * @param {Object} elem target element
+    * @param {Object} input the URL-name-input-element
+    */
+   var setURLName = cms.sitemap.setURLName = function(elem, input) {
+      var previous = elem.attr('alt');
+      var current = input.val();
+      if (previous != current) {
+         var currentLi = elem.closest('li');
+         if (currentLi.children('ul').length) {
+            var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
+            $dialog.appendTo('body');
+            $dialog.append('<p style="margin-bottom: 4px;">The page you are editing has subpages. Changing it\'s URL will also change the URLs of those.<br />Do you want to change it anyway?</p>');
+            $dialog.dialog({
+               zIndex: 9999,
+               title: 'New Page',
+               modal: true,
+               close: function() {
+                  $dialog.dialog('destroy');
+                  $dialog.remove();
+               },
+               buttons: {
+                  'OK': function() {
+                     var previousUrl = elem.siblings('span.cms-url').attr('alt');
+                     var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
+                     setInfoValue(elem, current, 37, true);
+                     setURLs(currentLi, parentUrl);
+                     $dialog.dialog('destroy');
+                     $dialog.remove();
+                  },
+                  'Cancel': function() {
+                     $dialog.dialog('destroy');
+                     $dialog.remove();
+                  }
+               }
+            });
+         } else {
+            var previousUrl = elem.siblings('span.cms-url').attr('alt');
+            var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
+            setInfoValue(elem, current, 37, true);
+            setURLs(currentLi, parentUrl);
+         }
+      }
+      elem.css('display', '');
+      input.remove();
+      
    }
    
    /**
