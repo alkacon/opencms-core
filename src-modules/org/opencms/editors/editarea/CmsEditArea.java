@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/editarea/CmsEditArea.java,v $
- * Date   : $Date: 2009/08/13 10:47:30 $
- * Version: $Revision: 1.2.2.1 $
+ * Date   : $Date: 2009/11/03 13:30:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.editors.editarea;
 
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
@@ -51,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.5
  */
@@ -146,9 +145,7 @@ public class CmsEditArea extends CmsSimpleEditor {
                 // JSP file
                 return HIGHLIGHT_TYPE_JSP;
             }
-            if (CmsResourceTypeXmlContent.isXmlContent(resource)
-                || (type == CmsResourceTypeXmlPage.getStaticTypeId())
-                || (type == CmsResourceTypeContainerPage.getStaticTypeId())) {
+            if (CmsResourceTypeXmlContent.isXmlContent(resource) || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                 // XML content file or XML page file
                 return HIGHLIGHT_TYPE_XML;
             }

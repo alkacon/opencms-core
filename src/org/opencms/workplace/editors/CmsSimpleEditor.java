@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2009/08/13 10:47:07 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2009/11/03 13:30:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -64,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,7 +144,7 @@ public class CmsSimpleEditor extends CmsEditor {
                     e);
             }
             if (OpenCms.getWorkplaceManager().isXmlContentAutoCorrect()
-                && (CmsResourceTypeXmlContent.isXmlContent(editFile) || CmsResourceTypeContainerPage.isContainerPage(editFile))) {
+                && (CmsResourceTypeXmlContent.isXmlContent(editFile))) {
                 // enable auto correction in case of XML content (if configured)
                 getCms().getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
             }
