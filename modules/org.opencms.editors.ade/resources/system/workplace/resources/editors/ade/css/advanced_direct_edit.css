@@ -1032,34 +1032,20 @@ ol.ade-forms fieldset {
 /* Publish 2 */
 .cms-publish-item .ui-widget-content {
 	background-image: none;
+	background-color: transparent;
+	border: 1px solid #444444;
 }
 
 .cms-publish-toremove {
 	background-color: #cccccc;
 }
 
-.cms-publish-toremove .ui-widget-content {
-	background-color: #dddddd;
+.cms-publish-problem-published.cms-publish-keep {
+	background-color: #a7ff84;
 }
 
-.cms-publish-permission-problem {
-	background-color: #ffff00  !important;
-}
-
-.cms-publish-problem-published {
-	background-color: #cccccc;
-}
-
-.cms-publish-problem-published .ui-widget-content {
-	background-color: #dddddd;
-}
-
-.cms-publish-problem-locked, .cms-publish-problem-permission {
-	background-color: #ffff00;
-}
-
-.cms-publish-problem-locked .ui-widget-content, .cms-publish-problem-permission .ui-widget-content {
-	background-color: #ffff00;
+.cms-publish-problem-locked.cms-publish-keep, .cms-publish-problem-permission.cms-publish-keep {
+	background-color: #ff8282;
 }
 
 .cms-icon-published {

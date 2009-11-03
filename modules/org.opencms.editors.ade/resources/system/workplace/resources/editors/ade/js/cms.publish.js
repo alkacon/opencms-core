@@ -4,7 +4,6 @@
    var STATE_CHANGED = 'C';
    var STATE_DELETED = 'D';
    var STATE_NEW = 'N';
-   FILETYPE_ICON = '/opencms/resources/filetypes/t3item.png';
    WAIT_GIF_URL = cms.data.SKIN_URI + 'commons/wait.gif';
    
    /**
@@ -28,7 +27,11 @@
       published: 'cms-publish-problem-published',
       permissions: 'cms-publish-problem-permission'
    }
-   
+   /**
+    * Returns a DOM object that signalizes a problem status for publishing (wrapped in a jQuery object)
+    * @param {Object} problem the problem keyword
+    * @param {Object} text the title text
+    */
    var _getProblemIndicator = function(problem, text) {
       var $indicator = $('<span></span>').width(20).height(20);
       if (text) {
@@ -89,19 +92,31 @@
       return $item;
       
    }
-   
+   /**
+    * Checks all publish checkboxes inside a DOM element
+    * @param {Object} $parent
+    */
    var _checkAllCheckboxes = function($parent) {
       $('.cms-publish-checkbox', $parent).each(function() {
          this.checked = !this.disabled;
       });
    }
    
+   /**
+    * Unchecks all publish checkboxes inside a DOM element
+    * @param {Object} $parent
+    */
    var _uncheckAllCheckboxes = function($parent) {
       $('.cms-publish-checkbox', $parent).each(function() {
          this.checked = false;
       })
    }
    
+   
+   /**
+    * Collects the rel attributes (which represent resource ids) from the DOM elements in a jQuery object
+    * @param {Object} $items the jQuery object
+    */
    var _collectIds = function($items) {
       var result = [];
       $items.each(function() {
@@ -144,6 +159,9 @@
          });
       },
       
+      /**
+       * Returns the dialog, and creates it if it doesn't already exist
+       */
       getDialog: function() {
          var self = this;
          if (!this.$dialog) {
@@ -227,7 +245,8 @@
          this.$mainPanel = $('<div></div>').addClass('cms-publish-main').css({
             'overflow': 'auto',
             'max-height': '500px',
-            'margin-bottom': '100px'
+            'margin-bottom': '100px',
+            'position': 'relative'
          }).appendTo($dlg);
          
          this.$checkboxes = $('<div></div>').appendTo($dlg);
@@ -295,12 +314,16 @@
             'position': 'relative',
             'width': '700px'
          }).appendTo($parent);
+         $row.addClass('cms-publish-keep');
          $row.attr('rel', resource.id);
          $row.addClass(_getCssClassesForPublishItem(resource));
+         if (problemClasses[resource.infotype]) {
+            $row.addClass(problemClasses[resource.infotype]);
+         }
+         
          var checkboxStyle = {
             'display': 'inline',
             'clear': 'both',
-            'marginTop': '13px',
             'margin-left': '5px',
             'margin-right': '13px'
          };
@@ -316,7 +339,7 @@
          if (isRelated) {
             $publishItem.css('margin-left', '60px');
          }
-         var itemVerticalOffset = 3;
+         var itemVerticalOffset = 1;
          $publishItem.appendTo($row);
          $publishItem.css('margin-top', itemVerticalOffset + 'px');
          var $removeButton = $('<button></button>').addClass('cms-publish-remove-button ui-corner-all ui-state-default').text('Remove').attr('rel', resource.id).css({
@@ -325,17 +348,22 @@
             'margin-top': '-10px',
             'margin-right': '5px'
          });
+         if ($.browser.msie) {
+            $removeButton.css('margin-top', '-30px');
+         }
          
          var removeButtonState = 0;
          $removeButton.click(function() {
             if (removeButtonState == 0) {
                $row.addClass('cms-publish-toremove');
+               $row.removeClass('cms-publish-keep');
                $checkbox.get(0).disabled = true;
                $checkbox.get(0).checked = false;
                
                $removeButton.text('Unremove');
             } else {
                $row.removeClass('cms-publish-toremove');
+               $row.addClass('cms-publish-keep');
                if (!resource.info) {
                   $checkbox.get(0).disabled = false;
                }
@@ -437,7 +465,7 @@
       saveState: function() {
          var self = this;
          var unchecked = _collectIds($('.cms-publish-checkbox:not(:checked)', self.$mainPanel));
-         var toRemove = _collectIds($('.cms-publish-toremove', self.$mainPanel));
+         var toRemove = _collectIds($('.cms-publish-item.cms-publish-toremove', self.$mainPanel));
          self.selectState = {
             unchecked: unchecked,
             toRemove: toRemove
@@ -501,7 +529,10 @@
          $('<img></img>').attr('src', WAIT_GIF_URL).appendTo($dialog);
       },
       
-      
+      /**
+       * Enters the link check state of
+       * @param {Object} data
+       */
       goToLinkCheckState: function(data) {
          var resources = data.resources;
          var self = this;
@@ -545,5 +576,4 @@
          }
       }
    }
-   
 })(cms);
