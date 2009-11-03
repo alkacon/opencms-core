@@ -1,0 +1,65 @@
+/*	CSS for adeized radio buttons and check boxes */
+
+
+.ade-forms legend {
+	font-weight: bold;
+	padding: .2em 5px;
+}
+
+	
+/*	wrapper divs */
+.ade-checkbox, .ade-radio { position: relative; }
+	
+/* input, label positioning */
+.ade-checkbox input, 
+.ade-radio input {
+	position: absolute;
+	left: 2px;
+	top: 3px;
+	margin: 0;
+	z-index: 0;
+}
+
+.ade-checkbox label, 
+.ade-radio label {
+	display: block;
+	position: relative;
+	z-index: 1;
+	padding-right: 1em;
+	line-height: 1;
+	padding: .5em 0 .2em 30px;
+	margin: 0 0 .3em;
+	cursor: pointer;
+}
+
+	
+/* states */
+.ade-checkbox label { background: url(images/checkbox.gif) no-repeat; }
+
+.ade-radio label { background: url(images/radiobutton.gif) no-repeat; }
+
+.ade-checkbox label, .ade-radio label {
+	background-position: -10px -14px;
+}
+
+.ade-checkbox label.ade-hover,
+.ade-checkbox label.ade-focus,
+.ade-radio label.ade-hover,
+.ade-radio label.ade-focus {
+	background-position: -10px -114px;
+}
+
+.ade-checkbox label.ade-checked, 
+.ade-radio label.ade-checked {
+	background-position: -10px -214px;
+}
+
+.ade-checkbox label.ade-checked-hover, 
+.ade-checkbox label.ade-checked-focus {
+	background-position: -10px -314px;
+}
+
+.ade-checkbox label.focus, 
+.ade-radio label.focus {
+	outline: 1px dotted #ccc;
+}

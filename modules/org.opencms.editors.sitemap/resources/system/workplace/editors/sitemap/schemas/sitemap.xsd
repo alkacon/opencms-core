@@ -1,0 +1,27 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/workplace/editors/sitemap/schemas/site-entry.xsd"/>
+		
+	<xsd:element name="AlkaconSitemaps" type="OpenCmsAlkaconSitemaps"/>
+	
+	<xsd:complexType name="OpenCmsAlkaconSitemaps">
+		<xsd:sequence>
+			<xsd:element name="AlkaconSitemap" type="OpenCmsAlkaconSitemap" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsAlkaconSitemap">
+		<xsd:sequence>
+			<xsd:element name="SiteEntry" type="OpenCmsAlkaconSiteEntry" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<!--handler class="org.opencms.xml.sitemap.CmsSiteMapHandler"/-->
+			<resourcebundle name="org.opencms.xml.sitemap.messages"/>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

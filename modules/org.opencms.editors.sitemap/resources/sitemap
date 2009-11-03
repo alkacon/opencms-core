@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AlkaconSitemaps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/sitemap/schemas/sitemap.xsd">
+  <AlkaconSitemap language="en">
+    <SiteEntry>
+      <VfsFile>
+        <link type="STRONG">
+          <target><![CDATA[/sites/default/]]></target>
+          <uuid>eddc8b1c-c79d-11de-ac5a-ab20365f6268</uuid>
+        </link>
+      </VfsFile>
+      <SiteEntry>
+        <VfsFile>
+          <link type="STRONG">
+            <target><![CDATA[/sites/default/demo_t3/]]></target>
+            <uuid>5ae56cfe-9c82-11de-adde-dd9f629b113b</uuid>
+          </link>
+        </VfsFile>
+        <SiteEntry>
+          <VfsFile>
+            <link type="STRONG">
+              <target><![CDATA[/sites/default/demo_t3/_content/]]></target>
+              <uuid>80d88a89-a11a-11de-9057-dd9f629b113b</uuid>
+            </link>
+          </VfsFile>
+          <SiteEntry>
+            <VfsFile>
+              <link type="STRONG">
+                <target><![CDATA[/sites/default/demo_t3/_content/listboxes/]]></target>
+                <uuid>5b50bbcc-a11b-11de-9057-dd9f629b113b</uuid>
+              </link>
+            </VfsFile>
+            <SiteEntry>
+              <VfsFile>
+                <link type="STRONG">
+                  <target><![CDATA[/sites/default/demo_t3/_content/listboxes/news_all]]></target>
+                  <uuid>5d05189b-9c82-11de-adde-dd9f629b113b</uuid>
+                </link>
+              </VfsFile>
+            </SiteEntry>
+            <SiteEntry>
+              <VfsFile>
+                <link type="STRONG">
+                  <target><![CDATA[/sites/default/demo_t3/_content/listboxes/news_recent]]></target>
+                  <uuid>5d09d38e-9c82-11de-adde-dd9f629b113b</uuid>
+                </link>
+              </VfsFile>
+              <Properties>
+                <Name><![CDATA[testString]]></Name>
+                <Value>
+                  <String><![CDATA[string]]></String>
+                </Value>
+              </Properties>
+              <Properties>
+                <Name><![CDATA[testLink]]></Name>
+                <Value>
+                  <FileList>
+                    <Uri>
+                      <link type="WEAK">
+                        <target><![CDATA[/sites/default/demo_t3/search.html]]></target>
+                        <uuid>8ebab265-a127-11de-9057-dd9f629b113b</uuid>
+                      </link>
+                    </Uri>
+                  </FileList>
+                </Value>
+              </Properties>
+            </SiteEntry>
+          </SiteEntry>
+        </SiteEntry>
+      </SiteEntry>
+    </SiteEntry>
+  </AlkaconSitemap>
+</AlkaconSitemaps>

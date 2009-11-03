@@ -1,0 +1,36 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/workplace/editors/sitemap/schemas/site-entry-property.xsd"/>
+	<xsd:include schemaLocation="opencms://system/workplace/editors/sitemap/schemas/site-entry.xsd"/>
+		
+	<xsd:element name="AlkaconSiteEntrys" type="OpenCmsAlkaconSiteEntrys"/>
+	
+	<xsd:complexType name="OpenCmsAlkaconSiteEntrys">
+		<xsd:sequence>
+			<xsd:element name="AlkaconSiteEntry" type="OpenCmsAlkaconSiteEntry" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsAlkaconSiteEntry">
+		<xsd:sequence>
+			<xsd:element name="VfsFile" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Properties" type="OpenCmsAlkaconSiteEntryProperty" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="SiteEntry" type="OpenCmsAlkaconSiteEntry" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.sitemap.messages"/>
+			<validationrules>
+				<rule element="VfsFile" regex=".+" type="error" message="%(key.err.uri.notempty)" />
+			</validationrules>
+			<relations>
+				<relation element="VfsFile" type="strong" invalidate="false" />
+			</relations>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>
