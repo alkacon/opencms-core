@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/03 14:03:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/03 15:28:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
 
@@ -66,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.6
  */
@@ -193,6 +195,19 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchServer.class);
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param context the JSP page context object
+     * @param req the JSP request 
+     * @param res the JSP response 
+     */
+    public CmsGallerySearchServer(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        super(context, req, res);
+
+    }
 
     /**
      * Transforms an <code>JSONArray</code> to an <code>int[]</code>.

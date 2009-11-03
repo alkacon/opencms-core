@@ -998,6 +998,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/galleries/gallerySearch.jsp</source>
+			<destination>system/workplace/galleries/gallerySearch.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>ea5de3df-c889-11de-815f-db6d5b8d55b4</uuidstructure>
+			<uuidresource>ea5de3e0-c889-11de-815f-db6d5b8d55b4</uuidresource>
+			<datelastmodified>Tue, 03 Nov 2009 15:02:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 Nov 2009 15:02:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<destination>system/workplace/galleries/downloadgallery</destination>
 			<type>folder</type>
