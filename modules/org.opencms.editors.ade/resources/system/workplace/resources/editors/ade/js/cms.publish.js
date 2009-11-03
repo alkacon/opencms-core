@@ -5,6 +5,12 @@
    var STATE_DELETED = 'D';
    var STATE_NEW = 'N';
    WAIT_GIF_URL = cms.data.SKIN_URI + 'commons/wait.gif';
+   var classPublishItem = 'cms-publish-item';
+   var classPublishCheckbox = 'cms-publish-checkbox';
+   var classRemoveButton = 'cms-publish-remove-button';
+   var classToRemove = 'cms-publish-toremove';
+   var classKeep = 'cms-publish-keep';
+   var classPublishDialog = 'cms-publish-dialog';
    
    /**
     * Returns the icon for a resource
@@ -69,15 +75,13 @@
     */
    var _formatPublishItem = function(resource) {
    
-      var $item = $('<div></div>').addClass('cms-publish-item cms-item ui-corner-all').css('display', 'inline').css('float', 'left');
+      var $item = $('<div></div>').addClass(classPublishItem + ' cms-item ui-corner-all').css('display', 'inline').css('float', 'left');
       var $content = $('<div></div>').addClass('ui-corner-all ui-widget-content').appendTo($item);
       var $head = $('<div></div>').addClass('cms-head ui-corner-all').appendTo($content);
       var $row1 = $('<div></div>').width(450).appendTo($head);
       var $row2 = $('<div></div>').width(450).appendTo($head);
       $('<div></div>').addClass('cms-publish-item-clear').css('clear', 'both').appendTo($head);
       _getItemIcon(resource).css('float', 'left').appendTo($row1);
-      //var date = "DUMMY DATE";
-      //$('<div></div>').addClass('cms-publish-date').css('float', 'right').text(date).appendTo($row1);
       var title = '(no title)';
       if (resource.title && resource.title.length > 0) {
          title = resource.title;
@@ -97,7 +101,7 @@
     * @param {Object} $parent
     */
    var _checkAllCheckboxes = function($parent) {
-      $('.cms-publish-checkbox', $parent).each(function() {
+      $('.' + classPublishCheckbox, $parent).each(function() {
          this.checked = !this.disabled;
       });
    }
@@ -107,11 +111,10 @@
     * @param {Object} $parent
     */
    var _uncheckAllCheckboxes = function($parent) {
-      $('.cms-publish-checkbox', $parent).each(function() {
+      $('.' + classPublishCheckbox, $parent).each(function() {
          this.checked = false;
       })
    }
-   
    
    /**
     * Collects the rel attributes (which represent resource ids) from the DOM elements in a jQuery object
@@ -165,10 +168,10 @@
       getDialog: function() {
          var self = this;
          if (!this.$dialog) {
-            if ($('#cms-publish-dialog').size() == 0) {
-               $('<div id="cms-publish-dialog"></div>').appendTo('body');
+            if ($('#' + classPublishDialog).size() == 0) {
+               $('<div id="' + classPublishDialog + '"></div>').appendTo('body');
             }
-            var $dlg = $('#cms-publish-dialog');
+            var $dlg = $('#' + classPublishDialog);
             this.$dialog = $dlg;
             $dlg.dialog({
                autoOpen: true,
@@ -314,7 +317,7 @@
             'position': 'relative',
             'width': '700px'
          }).appendTo($parent);
-         $row.addClass('cms-publish-keep');
+         $row.addClass(classKeep);
          $row.attr('rel', resource.id);
          $row.addClass(_getCssClassesForPublishItem(resource));
          if (problemClasses[resource.infotype]) {
@@ -328,7 +331,7 @@
             'margin-right': '13px'
          };
          
-         var $checkbox = $('<input class="cms-publish-checkbox" type="checkbox"></input>').css(checkboxStyle);
+         var $checkbox = $('<input class="' + classPublishCheckbox + '" type="checkbox"></input>').css(checkboxStyle);
          if (resource.info) {
             $checkbox.get(0).disabled = true;
             $checkbox.get(0).checked = false;
@@ -342,7 +345,7 @@
          var itemVerticalOffset = 1;
          $publishItem.appendTo($row);
          $publishItem.css('margin-top', itemVerticalOffset + 'px');
-         var $removeButton = $('<button></button>').addClass('cms-publish-remove-button ui-corner-all ui-state-default').text('Remove').attr('rel', resource.id).css({
+         var $removeButton = $('<button></button>').addClass(classRemoveButton).addClass('ui-corner-all ui-state-default').text('Remove').attr('rel', resource.id).css({
             'display': 'none',
             'width': '80px',
             'margin-top': '-10px',
@@ -355,15 +358,15 @@
          var removeButtonState = 0;
          $removeButton.click(function() {
             if (removeButtonState == 0) {
-               $row.addClass('cms-publish-toremove');
-               $row.removeClass('cms-publish-keep');
+               $row.addClass(classToRemove);
+               $row.removeClass(classKeep);
                $checkbox.get(0).disabled = true;
                $checkbox.get(0).checked = false;
                
                $removeButton.text('Unremove');
             } else {
-               $row.removeClass('cms-publish-toremove');
-               $row.addClass('cms-publish-keep');
+               $row.removeClass(classToRemove);
+               $row.addClass(classKeep);
                if (!resource.info) {
                   $checkbox.get(0).disabled = false;
                }
@@ -442,7 +445,7 @@
        */
       uncheckByRel: function(key) {
          var self = this;
-         $('.cms-publish-checkbox[rel=' + key + ']', self.$mainPanel).each(function() {
+         $('.' + classPublishCheckbox + '[rel=' + key + ']', self.$mainPanel).each(function() {
             if (this.checked) {
                $(this).trigger('click');
             }
@@ -455,7 +458,7 @@
        */
       removeByRel: function(key) {
          var self = this;
-         $('.cms-publish-remove-button[rel=' + key + ']').trigger('click');
+         $('.' + classRemoveButton + '[rel=' + key + ']').trigger('click');
       },
       
       
@@ -464,8 +467,8 @@
        */
       saveState: function() {
          var self = this;
-         var unchecked = _collectIds($('.cms-publish-checkbox:not(:checked)', self.$mainPanel));
-         var toRemove = _collectIds($('.cms-publish-item.cms-publish-toremove', self.$mainPanel));
+         var unchecked = _collectIds($('.' + classPublishCheckbox + ':not(:checked)', self.$mainPanel));
+         var toRemove = _collectIds($('.' + classPublishItem + '.' + classToRemove, self.$mainPanel));
          self.selectState = {
             unchecked: unchecked,
             toRemove: toRemove
@@ -498,7 +501,7 @@
        */
       getResourcesToPublish: function() {
          var $main = this.$mainPanel;
-         var $checkedCheckboxes = $('.cms-publish-checkbox:checked', this.$mainPanel);
+         var $checkedCheckboxes = $('.' + classPublishCheckbox + ':checked', this.$mainPanel);
          var resourcesToPublish = [];
          $checkedCheckboxes.each(function() {
             resourcesToPublish.push($(this).attr('rel'));
@@ -511,7 +514,7 @@
        */
       getResourcesToRemove: function() {
          var $main = this.$mainPanel;
-         var $toRemove = $('.cms-publish-toremove ,  .cms-publish-problem-published', $main);
+         var $toRemove = $('.' + classToRemove + ' ,  .' + problemClasses.published, $main);
          var resourcesToRemove = [];
          $toRemove.each(function() {
             resourcesToRemove.push($(this).attr('rel'));
