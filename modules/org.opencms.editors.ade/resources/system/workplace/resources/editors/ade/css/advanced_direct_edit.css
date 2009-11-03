@@ -1008,25 +1008,11 @@ ol.ade-forms fieldset {
 
 
 /* PUBLISH */
-.cms-publish-items {
-	border: 1px solid #000000;
-}
-
-.cms-publish-items .cms-even {
-	background-color: #ffffff;
-}
-
-.cms-publish-items .cms-odd {
-	background-color: #ffffaa;
-}
 
 .cms-publish-items {
 	overflow: auto;
 }
 
-.cms-publish-items-table {
-	width: 100%;
-}
 
 .cms-fstate-deleted .cms-publish-title,.cms-fstate-deleted .cms-publish-path
 	{
@@ -1041,45 +1027,7 @@ ol.ade-forms fieldset {
 	color: #ff0000;
 }
 
-.cms-publish-problem {
-	position: relative;
-	left: 7px;
-	top: 3px;
-}
 
-.cms-publish-problem-locked {
-	background-image: url('images/16x16/img_locked_.png');
-	background-repeat: no-repeat;
-}
-
-.cms-publish-problem-published {
-	background-image: url('images/16x16/img_locked_.png');
-	background-repeat: no-repeat;
-}
-
-.cms-publish-list-remove {
-	color: #ff0000 !important;
-	text-decoration: underline !important;
-	
-}
-
-.cms-publish-remove-auto {
-	color: #666666;
-	font-style: italic;
-}
-
-.cms-publish-items-table th {
-	background-color: #aaaaaa;
-}
-
-.cms-publish-items-table th, .cms-publish-items-table td {
-	padding: 4px;
-}
-
-.cms-related {
-	font-size: x-small;
-	color: #0000aa;
-}
 
 /* Publish 2 */
 .cms-publish-item .ui-widget-content {
@@ -1107,11 +1055,11 @@ ol.ade-forms fieldset {
 }
 
 .cms-publish-problem-locked, .cms-publish-problem-permission {
-	background-color: #cc8800;
+	background-color: #ffff00;
 }
 
 .cms-publish-problem-locked .ui-widget-content, .cms-publish-problem-permission .ui-widget-content {
-	background-color: #dd9900;
+	background-color: #ffff00;
 }
 
 .cms-icon-published {
@@ -1130,6 +1078,9 @@ ol.ade-forms fieldset {
 	background-image: url(../../../buttons/link.png);
 }	
 
+.cms-publish-item .ui-widget-content {
+	width: 575px !important; 
+}
 
 	
 	

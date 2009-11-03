@@ -463,10 +463,13 @@
       var _afterReload = function(ok) {
          if (ok) {
             cms.data.fillContainers();
-            // to reset the mode we turn it off and on again
-            var activeButton = $("#toolbar button.ui-state-active");
-            activeButton.trigger('click');
-            activeButton.trigger('click');
+            var currentMode = getCurrentMode();
+            if (currentMode != NullMode) {
+               // to reset the mode we turn it off and on again
+               currentMode.disable();
+               currentMode.enable();
+            }
+            
          } else {
                   // TODO
          }
@@ -851,8 +854,8 @@
       var $newlist = $('#' + cms.html.newMenuId + " ul");
       for (var i = 0; i < cms.data.newTypes.length; i++) {
          $newlist.append(cms.html.createItemFavListHtml(cms.data.newTypes[i].type));
-         }
       }
+   }
    
    /**
     * Adds item to recent list.<p>
@@ -1262,21 +1265,30 @@
    }
    
    var PublishMode = {
-       name: 'publish',
-       createButton: function() {
-           var self = this;
-           self.button = $('<button name="publish" title="Publish" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button>');
-           self.button.click(function() {
+      name: 'publish',
+      createButton: function() {
+         var self = this;
+         self.button = $('<button name="publish" title="Publish" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button>');
+         self.button.click(function() {
+            if (!cms.data.projects) {
+               cms.data.getProjects(function(ok, data) {
+                  if (ok) {
+                     cms.data.projects = data.projects;
+                     (new cms.publish.PublishDialog('')).start();
+                  }
+               });
+            } else {
                if (!$(this).hasClass('cms-deactivated')) {
-                   (new cms.publish.PublishDialog('')).start();
+                  (new cms.publish.PublishDialog('')).start();
                }
-           });
-           return self.button;
-       },
-       initialize: doNothing
-       
-       
-       
+            }
+         });
+         return self.button;
+      },
+      initialize: doNothing
+   
+   
+   
    }
    
    
@@ -1554,10 +1566,10 @@
       cms.toolbar.dom.showToolbar = $('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>').appendTo(_bodyEl);
       
       // initializing dialogs and event-handler
-      window.onbeforeunload = function() {  
+      window.onbeforeunload = function() {
          // DO NOT use jquery to bind this!
          cms.data.abortAllRequests();
-      }; 
+      };
       $(window).unload(onUnload); /* TODO */
       $('button[name="Save"]', cms.toolbar.dom.toolbar).click(showSaveDialog);
       $(document).bind('cms-data-loaded', cms.search.initScrollHandler);

@@ -270,11 +270,6 @@
             if (jsonData.recentListSize) {
                cms.toolbar.recentSize = jsonData.recentListSize;
             }
-            getProjects(function(ok, data) {
-                if (ok) {
-                    cms.data.projects = data.projects;
-                }
-            });
             afterLoad(true);
          }
       });
@@ -287,17 +282,20 @@
     * @param {Object} data the request parameters that should be sent to the server
     * @param {Function} afterLoad the callback that should be called after loading is finished
     */
-   var loadJSON = cms.data.loadJSON = /** void */ function(/** Object */data, /** void Function(boolean, Object) */ afterLoad) {
-   
+   var loadJSON = cms.data.loadJSON = /** void */ function(/** Object */data, /** void Function(boolean, Object) */ afterLoad, timeout) {
+      if (!timeout) {
+          timeout = AJAX_TIMEOUT;
+      }
       $.extend(data, {
          'cntpage': CURRENT_CNT_PAGE,
          'uri': CURRENT_URI,
          'locale': LOCALE
       });
       var xhr = $.ajax({
+         'type': 'POST',
          'url': SERVER_GET_URL,
          'data': data,
-         'timeout': AJAX_TIMEOUT,
+         'timeout': timeout,
          'error': function(xhr, status, error) {
              _removeRequest(xhr);
             if (cms.toolbar.leavingPage) {
@@ -334,7 +332,6 @@
     * @param {Function} afterPost the callback that should be called after the server replied
     */
    var postJSON = cms.data.postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost) {
-   
       var xhr = $.ajax({
          'url': SERVER_SET_URL,
          'data': {
@@ -851,7 +848,7 @@
        if (project != null && project != '') {
            params.project = JSON.stringify(project);
        } 
-       loadJSON(params, callback)
+       loadJSON(params, callback, 120000)
    }
    
    /**
@@ -861,10 +858,10 @@
        var params = {
            action: 'publish',
            resources: JSON.stringify(resources),
-           remove_resources: JSON.stringify(removeResources),
+           'remove-resources': JSON.stringify(removeResources),
            force: JSON.stringify(force)
        }
-       loadJSON(params, callback);
+       loadJSON(params, callback, 120000);
    }
    
    var getProjects = cms.data.getProjects = function(callback) {
