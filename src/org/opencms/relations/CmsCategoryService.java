@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2009/09/14 11:45:33 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2009/11/03 14:03:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2
  * 
@@ -325,9 +325,9 @@ public class CmsCategoryService {
      * 
      * @return a list of root paths
      */
-    public List getCategoryRepositories(CmsObject cms, String referencePath) {
+    public List<String> getCategoryRepositories(CmsObject cms, String referencePath) {
 
-        List ret = new ArrayList();
+        List<String> ret = new ArrayList<String>();
         if (referencePath == null) {
             ret.add(CmsCategoryService.CENTRALIZED_REPOSITORY);
             return ret;
@@ -339,9 +339,9 @@ public class CmsCategoryService {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
             path = "/";
         }
-        String base = getRepositoryBaseFolderName(cms);
+        String categoryBase = getRepositoryBaseFolderName(cms);
         do {
-            String repositoryPath = internalCategoryRootPath(path, base);
+            String repositoryPath = internalCategoryRootPath(path, categoryBase);
             if (cms.existsResource(repositoryPath)) {
                 ret.add(repositoryPath);
             }
@@ -437,7 +437,7 @@ public class CmsCategoryService {
      * 
      * @deprecated use {@link #readCategories(CmsObject, String, boolean, String)} instead
      */
-    public List readAllCategories(CmsObject cms, boolean includeSubCats) throws CmsException {
+    public List<CmsCategory> readAllCategories(CmsObject cms, boolean includeSubCats) throws CmsException {
 
         return readCategories(cms, null, includeSubCats, null);
     }
@@ -454,16 +454,38 @@ public class CmsCategoryService {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readCategories(CmsObject cms, String parentCategoryPath, boolean includeSubCats, String referencePath)
-    throws CmsException {
+    public List<CmsCategory> readCategories(
+        CmsObject cms,
+        String parentCategoryPath,
+        boolean includeSubCats,
+        String referencePath) throws CmsException {
+
+        List repositories = getCategoryRepositories(cms, referencePath);
+        return readCategoriesForRepositories(cms, parentCategoryPath, includeSubCats, repositories);
+    }
+
+    /**
+     * Returns all categories given some search parameters.<p>
+     * 
+     * @param cms the current cms context
+     * @param parentCategoryPath the path of the parent category to get the categories for
+     * @param includeSubCats if to include all categories, or first level child categories only
+     * @param repositories a list of root paths
+     * @return a list of {@link CmsCategory} objects
+     * @throws CmsException  if something goes wrong
+     */
+    public List<CmsCategory> readCategoriesForRepositories(
+        CmsObject cms,
+        String parentCategoryPath,
+        boolean includeSubCats,
+        List repositories) throws CmsException {
 
         String catPath = parentCategoryPath;
         if (catPath == null) {
             catPath = "";
         }
-        Set cats = new HashSet();
+        Set<CmsCategory> cats = new HashSet<CmsCategory>();
         // traverse in reverse order, to ensure the set will contain most global categories
-        List repositories = getCategoryRepositories(cms, referencePath);
         Iterator it = repositories.iterator();
         while (it.hasNext()) {
             String repository = (String)it.next();
@@ -477,7 +499,7 @@ public class CmsCategoryService {
                 // just ignore
             }
         }
-        List ret = new ArrayList(cats);
+        List<CmsCategory> ret = new ArrayList<CmsCategory>(cats);
         Collections.sort(ret);
         return ret;
     }
@@ -829,16 +851,17 @@ public class CmsCategoryService {
      * 
      * @throws CmsException if something goes wrong
      */
-    private List internalReadSubCategories(CmsObject cms, String rootPath, boolean includeSubCats) throws CmsException {
+    private List<CmsCategory> internalReadSubCategories(CmsObject cms, String rootPath, boolean includeSubCats)
+    throws CmsException {
 
-        List categories = new ArrayList();
-        List resources = cms.readResources(
+        List<CmsCategory> categories = new ArrayList<CmsCategory>();
+        List<CmsResource> resources = cms.readResources(
             cms.getRequestContext().removeSiteRoot(rootPath),
             CmsResourceFilter.DEFAULT.addRequireType(CmsResourceTypeFolder.RESOURCE_TYPE_ID),
             includeSubCats);
-        Iterator it = resources.iterator();
+        Iterator<CmsResource> it = resources.iterator();
         while (it.hasNext()) {
-            CmsResource resource = (CmsResource)it.next();
+            CmsResource resource = it.next();
             categories.add(getCategory(cms, resource));
         }
         return categories;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2009/10/12 08:11:58 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2009/11/03 14:03:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0 
  */
@@ -1163,6 +1163,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 }
             } catch (NullPointerException e) {
                 // ignore this exception    
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
         }
         return result;

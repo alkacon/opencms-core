@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsGallerySearch.java,v $
- * Date   : $Date: 2009/10/28 14:24:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/03 14:03:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,44 @@ import java.util.List;
  */
 public class CmsGallerySearch {
 
+    /** Sort parameter constants. */
+    public enum SortParam {
+
+        /** Sort ascending. */
+        ASC("asc"),
+
+        /** Sort by change-date. */
+        CHANGEDATE("changedate"),
+
+        /** Sort descending. */
+        DESC("desc"),
+
+        /** Sort by title. */
+        TITLE("title"),
+
+        /** Sort by type. */
+        TYPE("type");
+
+        /** Property name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private SortParam(String name) {
+
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+    }
+
     /** Array of requested categories. */
     private String[] m_categories;
 
@@ -70,6 +108,52 @@ public class CmsGallerySearch {
 
     /** The number of results per page. */
     private int m_matchesPerPage;
+
+    /** The sort-order. */
+    private SortParam m_sortOrder;
+
+    /** The sort-by properties. */
+    private SortParam m_sortBy;
+
+    /**
+     * Returns the sortOrder.<p>
+     *
+     * @return the sortOrder
+     */
+    public SortParam getSortOrder() {
+
+        return m_sortOrder;
+    }
+
+    /**
+     * Sets the sortOrder.<p>
+     *
+     * @param sortOrder the sortOrder to set
+     */
+    public void setSortOrder(SortParam sortOrder) {
+
+        m_sortOrder = sortOrder;
+    }
+
+    /**
+     * Returns the sortBy.<p>
+     *
+     * @return the sortBy
+     */
+    public SortParam getSortBy() {
+
+        return m_sortBy;
+    }
+
+    /**
+     * Sets the sortBy.<p>
+     *
+     * @param sortBy the sortBy to set
+     */
+    public void setSortBy(SortParam sortBy) {
+
+        m_sortBy = sortBy;
+    }
 
     /**
      * Returns the matchesPerPage.<p>
