@@ -21,7 +21,6 @@
    var _handleResults = function(ok, data) {
       if (!ok) {
          loadingSign.stop();
-         return;
       }
       cms.data.loadNecessarySubcontainerElements(data.elements, function(ok2, data2) {
          searchParams.page += 1;
@@ -140,10 +139,10 @@
       searchParams.query = query;
       _clearResults();
       _resetScroll();
-      cms.data.loadJSON({
+      cms.data.postJSON(cms.data.ACTION_SEARCH, {
          'action': cms.data.ACTION_SEARCH,
          'text': query,
-         'type': _stringifySearchTypes(types),
+         'type': _searchTypes(types),
          'location': path,
          'page': 0
       }, _handleNewResults);
@@ -153,10 +152,9 @@
     * Continues the last search, e.g. when scrolling past the last loaded search result.<p>
     */
    var continueSearch = cms.search.continueSearch = function() {
-      cms.data.loadJSON({
-         'action': cms.data.ACTION_SEARCH,
+      cms.data.postJSON(cms.data.ACTION_SEARCH, {
          'text': searchParams.query,
-         'type': _stringifySearchTypes(searchParams.types),
+         'type': _searchTypes(searchParams.types),
          'location': searchParams.path,
          'page': searchParams.page
       }, _handleResults);
@@ -167,7 +165,7 @@
     *
     * @param {Array} searchTypes the search types to convert
     */
-   var _stringifySearchTypes = function(/**Array*/searchTypes) {
+   var _searchTypes = function(/**Array*/searchTypes) {
    
       var/**Array<String>*/ sendTypes = [];
       if (searchTypes) {
@@ -177,7 +175,7 @@
             }
          });
       }
-      return JSON.stringify(sendTypes);
+      return sendTypes;
    }
    
    /**
@@ -188,10 +186,9 @@
     */
    var checkLastSearch = cms.search.checkLastSearch = function(/**Function(boolean,Object)*/callback) {
       _resetScroll();
-      cms.data.loadJSON({
-         'action': cms.data.ACTION_LS,
+      cms.data.postJSON(cms.data.ACTION_LS, {
          'text': searchParams.query,
-         'type': _stringifySearchTypes(searchParams.types),
+         'type': _searchTypes(searchParams.types),
          'location': searchParams.path,
          'page': 0
       }, function(ok, data) {
