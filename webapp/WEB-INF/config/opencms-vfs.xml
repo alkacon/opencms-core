@@ -13,7 +13,8 @@
 				<loader class="org.opencms.loader.CmsJspLoader" />
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
 				<loader class="org.opencms.loader.CmsXmlContentLoader" />
-				<loader class="org.opencms.loader.CmsContainerPageLoader" />
+				<loader class="org.opencms.loader.CmsXmlContainerPageLoader" />
+				<loader class="org.opencms.loader.CmsXmlSitemapLoader" />
 			</resourceloaders>
 			<resourcetypes>
 				<type class="org.opencms.file.types.CmsResourceTypeUnknownFolder" name="unknown_folder" id="-2" />
@@ -79,10 +80,11 @@
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeContainerPage" name="containerpage" id="13" />
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13" />
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
                     <param name="schema">/system/workplace/editors/ade/schemas/type_config.xsd</param>
                 </type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlSitemap" name="sitemap" id="15" />
             </resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
