@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/10/29 13:08:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/03 13:22:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1729,7 +1729,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
 
-            addResourceToUsersPubList(dbc, newResource);
+            if (!importCase) {
+                addResourceToUsersPubList(dbc, newResource);
+            }
         } finally {
             // clear the internal caches
             m_monitor.clearAccessControlListCache();
@@ -8378,7 +8380,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 updateState(dbc, resource, (updateStateValue == 2));
             }
 
-            addResourceToUsersPubList(dbc, resource);
+            if (updateState) {
+                addResourceToUsersPubList(dbc, resource);
+            }
         } finally {
             // update the driver manager cache
             m_monitor.clearResourceCache();
