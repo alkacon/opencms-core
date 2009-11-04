@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/Messages.java,v $
- * Date   : $Date: 2009/11/03 13:30:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/04 13:54:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,38 +39,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DUPLICATE_NAME_1 = "ERR_DUPLICATE_NAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONFIG_NOT_FOUND_3 = "ERR_CONFIG_NOT_FOUND_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONFIG_NOT_SET_2 = "ERR_CONFIG_NOT_SET_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONFIG_WRONG_TYPE_3 = "ERR_CONFIG_WRONG_TYPE_3";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_ID_1 = "ERR_INVALID_ID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_JSON_EXCEPTION_1 = "ERR_JSON_EXCEPTION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_TYPE_CONFIG_1 = "ERR_NO_TYPE_CONFIG_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1 = "ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READING_ELEMENT_FROM_REQUEST_0 = "ERR_READING_ELEMENT_FROM_REQUEST_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SITEMAP_LOCALE_NOT_FOUND_2 = "LOG_SITEMAP_LOCALE_NOT_FOUND_2";
@@ -95,9 +74,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_CACHE_SET_ONLINE_2 = "LOG_DEBUG_CACHE_SET_ONLINE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_WARN_NO_FORMATTERS_DEFINED_1 = "LOG_WARN_NO_FORMATTERS_DEFINED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WARN_UNCACHE_NULL_0 = "LOG_WARN_UNCACHE_NULL_0";

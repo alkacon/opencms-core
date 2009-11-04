@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2009/11/03 13:30:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/04 13:54:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,44 +43,59 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
 public class CmsSiteEntryBean {
 
-    /** The file's structure id. */
-    private final CmsUUID m_elementId;
+    /** The entry name. */
+    private final String m_name;
 
     /** The configured properties. */
     private final Map<String, String> m_properties;
 
+    /** The file's structure id. */
+    private final CmsUUID m_resourceId;
+
     /** The list of sub-entries. */
     private final List<CmsSiteEntryBean> m_subEntries;
 
+    /** The entry title. */
+    private final String m_title;
+
     /**
      * Creates a new sitemap entry bean.<p> 
-     *  
-     * @param elementId the file's structure id
+     * 
+     * @param resourceId the file's structure id
+     * @param name the entry's name
+     * @param title the entry's title
      * @param properties the properties as a map of name/value pairs
      * @param subEntries the list of sub-entries
      **/
-    public CmsSiteEntryBean(CmsUUID elementId, Map<String, String> properties, List<CmsSiteEntryBean> subEntries) {
+    public CmsSiteEntryBean(
+        CmsUUID resourceId,
+        String name,
+        String title,
+        Map<String, String> properties,
+        List<CmsSiteEntryBean> subEntries) {
 
-        m_elementId = elementId;
+        m_resourceId = resourceId;
+        m_name = name;
+        m_title = title;
         Map<String, String> props = (properties == null ? new HashMap<String, String>() : properties);
         m_properties = Collections.unmodifiableMap(props);
         m_subEntries = Collections.unmodifiableList(subEntries);
     }
 
     /**
-     * Returns the file's structure id.<p>
+     * Returns the name.<p>
      *
-     * @return the file's structure id
+     * @return the name
      */
-    public CmsUUID getElementId() {
+    public String getName() {
 
-        return m_elementId;
+        return m_name;
     }
 
     /**
@@ -94,6 +109,16 @@ public class CmsSiteEntryBean {
     }
 
     /**
+     * Returns the file's structure id.<p>
+     *
+     * @return the file's structure id
+     */
+    public CmsUUID getResourceId() {
+
+        return m_resourceId;
+    }
+
+    /**
      * Returns the sub-entries.<p>
      *
      * @return the sub-entries
@@ -101,5 +126,15 @@ public class CmsSiteEntryBean {
     public List<CmsSiteEntryBean> getSubEntries() {
 
         return m_subEntries;
+    }
+
+    /**
+     * Returns the title.<p>
+     *
+     * @return the title
+     */
+    public String getTitle() {
+
+        return m_title;
     }
 }

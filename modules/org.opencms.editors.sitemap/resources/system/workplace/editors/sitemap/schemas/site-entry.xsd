@@ -14,6 +14,8 @@
 
 	<xsd:complexType name="OpenCmsAlkaconSiteEntry">
 		<xsd:sequence>
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Title" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="VfsFile" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="Properties" type="OpenCmsAlkaconSiteEntryProperty" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="SiteEntry" type="OpenCmsAlkaconSiteEntry" minOccurs="0" maxOccurs="unbounded" />
@@ -25,6 +27,8 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.sitemap.messages"/>
 			<validationrules>
+				<rule element="Name" regex=".+" type="error" message="%(key.err.name.notempty)" />
+				<rule element="Title" regex=".+" type="error" message="%(key.err.title.notempty)" />
 				<rule element="VfsFile" regex=".+" type="error" message="%(key.err.uri.notempty)" />
 			</validationrules>
 			<relations>

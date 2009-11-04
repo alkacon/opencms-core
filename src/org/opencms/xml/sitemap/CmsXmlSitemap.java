@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2009/11/03 13:30:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/04 13:54:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.2
  * 
@@ -89,8 +89,10 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         /** Value file list node name. */
         FILELIST("FileList"),
-        /** Container or property name node name. */
+        /** Entry or property name node name. */
         NAME("Name"),
+        /** Title node name. */
+        TITLE("Title"),
         /** Element properties node name. */
         PROPERTIES("Properties"),
         /** A site entry. */
@@ -127,7 +129,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlSitemap.class);
 
-    /** The container page objects. */
+    /** The sitemap objects. */
     private Map<Locale, CmsSitemapBean> m_sitemaps;
 
     /**
@@ -139,13 +141,13 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
-     * Creates a new container page based on the provided XML document.<p>
+     * Creates a new sitemap based on the provided XML document.<p>
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
      * @param cms the cms context, if <code>null</code> no link validation is performed 
-     * @param document the document to create the container page from
-     * @param encoding the encoding of the container page
+     * @param document the document to create the sitemap from
+     * @param encoding the encoding of the sitemap
      * @param resolver the XML entity resolver to use
      */
     protected CmsXmlSitemap(CmsObject cms, Document document, String encoding, EntityResolver resolver) {
@@ -159,14 +161,14 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
-     * Create a new container page based on the given default content,
+     * Create a new sitemap based on the given default content,
      * that will have all language nodes of the default content and ensures the presence of the given locale.<p> 
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
-     * @param modelUri the absolute path to the container page file acting as model
+     * @param modelUri the absolute path to the sitemap file acting as model
      * 
      * @throws CmsException in case the model file is not found or not valid
      */
@@ -199,14 +201,14 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
-     * Create a new container page based on the given content definition,
+     * Create a new sitemap based on the given content definition,
      * that will have one language node for the given locale all initialized with default values.<p> 
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
-     * @param encoding the encoding to use when marshalling the container page later
+     * @param encoding the encoding to use when marshalling the sitemap later
      * @param contentDefinition the content definition to create the content for
      */
     protected CmsXmlSitemap(CmsObject cms, Locale locale, String encoding, CmsXmlContentDefinition contentDefinition) {
@@ -339,6 +341,16 @@ public class CmsXmlSitemap extends CmsXmlContent {
             addBookmark(entryPath, locale, true, entryValue);
             CmsXmlContentDefinition entryDef = ((CmsXmlNestedContentDefinition)entrySchemaType).getNestedContentDefinition();
 
+            // name
+            Element name = entry.element(XmlNode.NAME.getName());
+            createBookmark(name, locale, entry, entryPath, entryDef);
+            String entryName = name.getTextTrim();
+
+            // title
+            Element title = entry.element(XmlNode.TITLE.getName());
+            createBookmark(title, locale, entry, entryPath, entryDef);
+            String titleValue = title.getTextTrim();
+
             // vfs file
             Element uri = entry.element(XmlNode.VFSFILE.getName());
             createBookmark(uri, locale, entry, entryPath, entryDef);
@@ -423,7 +435,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
             List<CmsSiteEntryBean> subEntries = readSiteEntries(entry, entryPath, entryDef, locale);
 
-            entries.add(new CmsSiteEntryBean(entryId, propertiesMap, subEntries));
+            entries.add(new CmsSiteEntryBean(entryId, entryName, titleValue, propertiesMap, subEntries));
         }
         return entries;
     }

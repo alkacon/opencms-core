@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemapFactory.java,v $
- * Date   : $Date: 2009/11/03 13:30:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/04 13:54:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -60,11 +60,14 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.2
  */
 public final class CmsXmlSitemapFactory {
+
+    /** The sitemap cache. */
+    private static CmsSitemapCache m_cache = new CmsSitemapCache(null);
 
     /**
      * No instances of this class should be created.<p> 
@@ -75,18 +78,18 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Create a new instance of an container page based on the given default content,
+     * Create a new instance of an sitemap based on the given default content,
      * that will have all language nodes of the default content and ensures the presence of the given locale.<p> 
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
-     * @param modelUri the absolute path to the container page file acting as model
+     * @param modelUri the absolute path to the sitemap file acting as model
      * 
      * @throws CmsException in case the model file is not found or not valid
      * 
-     * @return the created container page
+     * @return the created sitemap
      */
     public static CmsXmlSitemap createDocument(CmsObject cms, Locale locale, String modelUri) throws CmsException {
 
@@ -97,7 +100,7 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Create a new instance of a container page based on the given content definition,
+     * Create a new instance of a sitemap based on the given content definition,
      * that will have one language node for the given locale all initialized with default values.<p> 
      * 
      * The given encoding is used when marshalling the XML again later.<p>
@@ -107,7 +110,7 @@ public final class CmsXmlSitemapFactory {
      * @param encoding the encoding to use when marshalling the XML content later
      * @param contentDefinition the content definition to create the content for
      * 
-     * @return the created container page
+     * @return the created sitemap
      */
     public static CmsXmlSitemap createDocument(
         CmsObject cms,
@@ -122,7 +125,7 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Factory method to unmarshal (generate) a container page instance from a byte array
+     * Factory method to unmarshal (generate) a sitemap instance from a byte array
      * that contains XML data.<p>
      * 
      * When unmarshalling, the encoding is read directly from the XML header of the byte array. 
@@ -138,7 +141,7 @@ public final class CmsXmlSitemapFactory {
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entitiy resolver to use
      * 
-     * @return a container page instance unmarshalled from the byte array
+     * @return a sitemap instance unmarshalled from the byte array
      * 
      * @throws CmsXmlException if something goes wrong
      */
@@ -149,7 +152,7 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Factory method to unmarshal (read) a container page instance from a OpenCms VFS file
+     * Factory method to unmarshal (read) a sitemap instance from a OpenCms VFS file
      * that contains XML data.<p>
      * 
      * <b>Warning:</b><br/>
@@ -160,7 +163,7 @@ public final class CmsXmlSitemapFactory {
      * @param cms the current cms object
      * @param file the file with the XML data to unmarshal
      * 
-     * @return a container page instance unmarshalled from the provided file
+     * @return a sitemap instance unmarshalled from the provided file
      * 
      * @throws CmsXmlException if something goes wrong
      */
@@ -170,7 +173,7 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Factory method to unmarshal (read) a container page instance from a OpenCms VFS file
+     * Factory method to unmarshal (read) a sitemap instance from a OpenCms VFS file
      * that contains XML data, using wither the encoding set
      * in the XML file header, or the encoding set in the VFS file property.<p>
      * 
@@ -187,7 +190,7 @@ public final class CmsXmlSitemapFactory {
      * @param keepEncoding if <code>true</code>, the encoding specified in the XML header is used, 
      *    otherwise the encoding from the VFS file property is used
      *    
-     * @return a container page instance unmarshalled from the provided file
+     * @return a sitemap instance unmarshalled from the provided file
      * 
      * @throws CmsXmlException if something goes wrong
      */
@@ -253,7 +256,7 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Factory method to unmarshal (read) a container page instance from a OpenCms VFS resource
+     * Factory method to unmarshal (read) a sitemap instance from a OpenCms VFS resource
      * that contains XML data.<p>
      * 
      * <b>Warning:</b><br/>
@@ -264,7 +267,7 @@ public final class CmsXmlSitemapFactory {
      * @param cms the current cms object
      * @param resource the resource with the XML data to unmarshal
      * 
-     * @return a container page instance unmarshalled from the provided resource
+     * @return a sitemap instance unmarshalled from the provided resource
      * 
      * @throws CmsException if something goes wrong
      */
@@ -285,25 +288,25 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Factory method to unmarshal (read) a container page instance from
+     * Factory method to unmarshal (read) a sitemap instance from
      * a resource, using the request attributes as cache.<p>
      * 
      * @param cms the current OpenCms context object
      * @param resource the resource to unmarshal
      * @param req the current request
      * 
-     * @return the unmarshaled xml content, or null if the given resource was not of type {@link org.opencms.file.types.CmsResourceTypeXmlContainerPage}
+     * @return the unmarshaled xml content, or null if the given resource was not of type {@link org.opencms.file.types.CmsResourceTypeXmlSitemap}
      * 
      * @throws CmsException in something goes wrong
      * @throws CmsLoaderException if no loader for the given <code>resource</code> type ({@link CmsResource#getTypeId()}) is available
-     * @throws CmsXmlException if the given <code>resource</code> is not of type container page
+     * @throws CmsXmlException if the given <code>resource</code> is not of type sitemap
      */
     public static CmsXmlSitemap unmarshal(CmsObject cms, CmsResource resource, ServletRequest req)
     throws CmsXmlException, CmsLoaderException, CmsException {
 
         String rootPath = resource.getRootPath();
 
-        if (!CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+        if (!CmsResourceTypeXmlSitemap.isSitemap(resource)) {
             // sanity check: resource must be of type XML content
             throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_XMLCONTENT_INVALID_TYPE_1,
@@ -326,7 +329,7 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Factory method to unmarshal (generate) a container page instance from a XML document.<p>
+     * Factory method to unmarshal (generate) a sitemap instance from a XML document.<p>
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
@@ -336,11 +339,11 @@ public final class CmsXmlSitemapFactory {
      * for history support.<p>
      * 
      * @param cms the cms context, if <code>null</code> no link validation is performed
-     * @param document the XML document to generate the container page from
-     * @param encoding the encoding to use when marshalling the container page later
+     * @param document the XML document to generate the sitemap from
+     * @param encoding the encoding to use when marshalling the sitemap later
      * @param resolver the XML entity resolver to use
      * 
-     * @return a container page instance unmarshalled from the String
+     * @return a sitemap instance unmarshalled from the String
      */
     public static CmsXmlSitemap unmarshal(CmsObject cms, Document document, String encoding, EntityResolver resolver) {
 
@@ -350,7 +353,7 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Factory method to unmarshal (generate) a container page instance from a String
+     * Factory method to unmarshal (generate) a sitemap instance from a String
      * that contains XML data.<p>
      * 
      * The given encoding is used when marshalling the XML again later.<p>
@@ -362,10 +365,10 @@ public final class CmsXmlSitemapFactory {
      * 
      * @param cms the cms context, if <code>null</code> no link validation is performed
      * @param xmlData the XML data in a String
-     * @param encoding the encoding to use when marshalling the container page later
+     * @param encoding the encoding to use when marshalling the sitemap later
      * @param resolver the XML entity resolver to use
      * 
-     * @return a container page instance unmarshalled from the String
+     * @return a sitemap instance unmarshalled from the String
      * 
      * @throws CmsXmlException if something goes wrong
      */
@@ -377,35 +380,34 @@ public final class CmsXmlSitemapFactory {
     }
 
     /**
-     * Returns the cached container page.<p>
+     * Returns the cached sitemap.<p>
      * 
      * @param cms the cms context
-     * @param resource the container page resource
+     * @param resource the sitemap resource
      * @param keepEncoding if to keep the encoding while unmarshalling
      * 
-     * @return the cached container page, or <code>null</code> if not found
+     * @return the cached sitemap, or <code>null</code> if not found
      */
     private static CmsXmlSitemap getCache(CmsObject cms, CmsResource resource, boolean keepEncoding) {
 
-        return null;
-        //        return m_cache.getCacheContainerPage(
-        //            m_cache.getCacheKey(resource.getStructureId(), keepEncoding),
-        //            cms.getRequestContext().currentProject().isOnlineProject());
+        return m_cache.getCacheSitemap(
+            m_cache.getCacheKey(resource.getStructureId(), keepEncoding),
+            cms.getRequestContext().currentProject().isOnlineProject());
     }
 
     /**
-     * Stores the given container page in the cache.<p>
+     * Stores the given sitemap in the cache.<p>
      * 
      * @param cms the cms context
-     * @param xmlCntPage the container page to cache
+     * @param xmlSitemap the sitemap to cache
      * @param keepEncoding if the encoding was kept while unmarshalling
      */
-    private static void setCache(CmsObject cms, CmsXmlSitemap xmlCntPage, boolean keepEncoding) {
+    private static void setCache(CmsObject cms, CmsXmlSitemap xmlSitemap, boolean keepEncoding) {
 
         boolean online = cms.getRequestContext().currentProject().isOnlineProject();
-        //        m_cache.setCacheContainerPages(
-        //            m_cache.getCacheKey(xmlCntPage.getFile().getStructureId(), keepEncoding),
-        //            xmlCntPage,
-        //            online);
+        m_cache.setCacheSitemap(
+            m_cache.getCacheKey(xmlSitemap.getFile().getStructureId(), keepEncoding),
+            xmlSitemap,
+            online);
     }
 }

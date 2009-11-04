@@ -3,6 +3,8 @@
 <AlkaconSitemaps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/sitemap/schemas/sitemap.xsd">
   <AlkaconSitemap language="en">
     <SiteEntry>
+      <Name><![CDATA[index]]></Name>
+      <Title><![CDATA[Title]]></Title>
       <VfsFile>
         <link type="STRONG">
           <target><![CDATA[/sites/default/]]></target>
@@ -10,6 +12,8 @@
         </link>
       </VfsFile>
       <SiteEntry>
+        <Name><![CDATA[demo_t3]]></Name>
+        <Title><![CDATA[Title]]></Title>
         <VfsFile>
           <link type="STRONG">
             <target><![CDATA[/sites/default/demo_t3/]]></target>
@@ -17,6 +21,8 @@
           </link>
         </VfsFile>
         <SiteEntry>
+          <Name><![CDATA[_content]]></Name>
+          <Title><![CDATA[Title]]></Title>
           <VfsFile>
             <link type="STRONG">
               <target><![CDATA[/sites/default/demo_t3/_content/]]></target>
@@ -24,6 +30,8 @@
             </link>
           </VfsFile>
           <SiteEntry>
+            <Name><![CDATA[listboxes]]></Name>
+            <Title><![CDATA[Title]]></Title>
             <VfsFile>
               <link type="STRONG">
                 <target><![CDATA[/sites/default/demo_t3/_content/listboxes/]]></target>
@@ -31,6 +39,8 @@
               </link>
             </VfsFile>
             <SiteEntry>
+              <Name><![CDATA[news_all]]></Name>
+              <Title><![CDATA[Title]]></Title>
               <VfsFile>
                 <link type="STRONG">
                   <target><![CDATA[/sites/default/demo_t3/_content/listboxes/news_all]]></target>
@@ -39,6 +49,8 @@
               </VfsFile>
             </SiteEntry>
             <SiteEntry>
+              <Name><![CDATA[news_recent]]></Name>
+              <Title><![CDATA[Title]]></Title>
               <VfsFile>
                 <link type="STRONG">
                   <target><![CDATA[/sites/default/demo_t3/_content/listboxes/news_recent]]></target>
