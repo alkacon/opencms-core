@@ -11,6 +11,7 @@
    var classToRemove = 'cms-publish-toremove';
    var classKeep = 'cms-publish-keep';
    var classPublishDialog = 'cms-publish-dialog';
+   var buttonHeight = 30;
    
    /**
     * Returns the icon for a resource
@@ -227,7 +228,7 @@
          if (data.length == 0) {
             var $projectSelector = self.createProjectSelector().css('float', 'right');
             $('<div></div>').text('There are no resources to publish.').append($projectSelector).appendTo($dlg);
-            $('<button></button>').addClass('ui-state-default ui-corner-all').css('clear', 'both').css('margin-top', '75px').height('2.5em').css('float', 'right').width(75).text('OK').click(function() {
+            $('<button></button>').addClass('ui-state-default ui-corner-all').css('clear', 'both').css('margin-top', '75px').height(buttonHeight).css('float', 'right').width(75).text('OK').click(function() {
                self.destroy();
             }).appendTo($dlg);
             
@@ -237,10 +238,10 @@
          this.$topPanel = $('<div></div>').appendTo($dlg);
          this.$topPanel.css('margin-bottom', '30px');
          $('<span></span>').text('Select: ').appendTo(self.$topPanel);
-         var $selectAll = $('<button>All</button>').addClass('ui-state-default ui-corner-all').width(80).height(25).appendTo(self.$topPanel).click(function() {
+         var $selectAll = $('<button>All</button>').addClass('ui-state-default ui-corner-all').width(80).height(buttonHeight).appendTo(self.$topPanel).click(function() {
             _checkAllCheckboxes(self.$mainPanel);
          });
-         var $selectNone = $('<button>None</button>').addClass('ui-state-default ui-corner-all').width(80).height(25).appendTo(self.$topPanel).click(function() {
+         var $selectNone = $('<button>None</button>').addClass('ui-state-default ui-corner-all').width(80).height(buttonHeight).appendTo(self.$topPanel).click(function() {
             _uncheckAllCheckboxes(self.$mainPanel);
          })
          var $projectSelector = self.createProjectSelector().css('float', 'right').appendTo(self.$topPanel);
@@ -270,10 +271,10 @@
             'margin-top': '20px',
             'margin-left': '20px'
          });
-         var $cancel = $('<button></button>').text('Cancel').addClass('ui-corner-all ui-state-default').width(80).height(25).css('float', 'right').appendTo(self.$bottomPanel).click(function() {
+         var $cancel = $('<button></button>').text('Cancel').addClass('ui-corner-all ui-state-default').width(80).height(buttonHeight).css('float', 'right').appendTo(self.$bottomPanel).click(function() {
             self.destroy();
          });
-         var $publish = $('<button></button>').text('Publish').addClass('ui-corner-all ui-state-default').width(80).height(25).css('float', 'right').appendTo(self.$bottomPanel).click(function() {
+         var $publish = $('<button></button>').text('Publish').addClass('ui-corner-all ui-state-default').width(80).height(buttonHeight).css('float', 'right').appendTo(self.$bottomPanel).click(function() {
             self.startPublish();
          });
          
@@ -545,9 +546,9 @@
          var $linkCheckPanel = self.$linkCheckPanel = $('<div></div>').appendTo($dlg).css('margin-top', '40px').css('padding-bottom', '110px');
          
          var $linkCheckButtons = $('<div></div>').css('clear', 'both').appendTo($dlg);
-         var $backButton = $('<button></button>').text('Back').addClass('ui-state-default ui-corner-all').width(150).appendTo($linkCheckButtons);
-         var $cancelButton = $('<button></button>').text('Cancel').addClass('ui-state-default ui-corner-all').width(150).appendTo($linkCheckButtons);
-         var $forceButton = $('<button></button>').text('Publish').addClass('ui-state-default ui-corner-all').width(150);
+         var $backButton = $('<button></button>').text('Back').addClass('ui-state-default ui-corner-all').css('float', 'right').width(80).appendTo($linkCheckButtons).height(buttonHeight);
+         var $cancelButton = $('<button></button>').text('Cancel').addClass('ui-state-default ui-corner-all').css('float', 'right').width(80).appendTo($linkCheckButtons).height(buttonHeight);
+         var $forceButton = $('<button></button>').text('Publish').addClass('ui-state-default ui-corner-all').css('float', 'right').width(80).height(buttonHeight);
          if (data.canPublish) {
             $forceButton.appendTo($linkCheckButtons);
          }
