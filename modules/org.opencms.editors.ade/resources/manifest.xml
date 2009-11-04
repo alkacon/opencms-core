@@ -146,7 +146,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[element]]></value>
+					<value><![CDATA[uri;attrs=(__currentElement)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
