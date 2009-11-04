@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/04 10:39:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/04 13:24:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.6
  */
@@ -537,7 +537,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
             resultEntry.put("title", sResult.getField("title"));
             resultEntry.put("type", sResult.getDocumentType());
             resultEntry.put("path", sResult.getPath());
-
+            result.put(sResult.getPath(), resultEntry);
         }
         return result;
     }
@@ -627,17 +627,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         // TODO: searching the old index, replace with new search
         CmsUser user = cms.getRequestContext().currentUser();
         String indexName = new CmsUserSettings(user).getWorkplaceSearchIndexName();
-        LOG.debug("Searching for '"
-            + queryStr
-            + "' in '"
-            + indexName
-            + "' page: "
-            + page
-            + " types: "
-            + typeNames.toString()
-            + " folder: '"
-            + (((galleriesArr != null) && (galleriesArr.length > 0)) ? galleriesArr[0] : "")
-            + "'");
+
         CmsSearchParameters params = new CmsSearchParameters(queryStr);
         params.setIndex(indexName);
         params.setMatchesPerPage(20);
@@ -650,7 +640,6 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         searchBean.setParameters(params);
         searchBean.setSearchRoot(((galleriesArr != null) && (galleriesArr.length > 0)) ? galleriesArr[0] : "");
         List<CmsSearchResult> searchResults = searchBean.getSearchResult();
-        result = buildJSONForSearchResult(searchResults);
         // TODO: use for new search
         //        CmsGallerySearch gSearch = new CmsGallerySearch();
         //        gSearch.setCategories(categoriesArr);
@@ -666,6 +655,11 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         //        result.put("resultpage", gSearch.getResultPage());
         //        result.put("resultpagecount", gSearch.getPageCount());
         //        result.put("resultlist", buildJSONForSearchResult(gSearch.getResult()));
+
+        result.put("sortorder", searchBean.getSortOrder());
+        result.put("resultcount", searchBean.getSearchResultCount());
+        result.put("resultpage", searchBean.getSearchPage());
+        result.put("resultlist", buildJSONForSearchResult(searchResults));
 
         return result;
     }
