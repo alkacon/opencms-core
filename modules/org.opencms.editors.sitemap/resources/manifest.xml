@@ -187,6 +187,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/editors/sitemap/default-formatter.jsp</source>
+			<destination>system/workplace/editors/sitemap/default-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>4d371c11-c94f-11de-b16b-276a91009534</uuidstructure>
+			<uuidresource>4d371c12-c94f-11de-b16b-276a91009534</uuidresource>
+			<datelastmodified>Wed, 04 Nov 2009 15:14:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 Nov 2009 14:35:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;attrs=(__currentElement)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/editors/sitemap/include.txt</source>
 			<destination>system/workplace/editors/sitemap/include.txt</destination>
 			<type>plain</type>

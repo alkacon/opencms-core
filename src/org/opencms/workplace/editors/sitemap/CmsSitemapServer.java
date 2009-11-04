@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/04 13:54:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/04 14:56:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,11 +41,14 @@ import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
 import org.opencms.xml.sitemap.CmsSitemapBean;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
@@ -59,6 +62,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -72,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.6
  */
@@ -82,10 +86,10 @@ public class CmsSitemapServer extends CmsJspActionElement {
     protected enum Action {
         /** First call to get all the data. */
         ALL,
-        /** To save the sitemap. */
-        SAVE,
         /** To retrieve the favorite or recent list. */
         GET,
+        /** To save the sitemap. */
+        SAVE,
         /** To retrieve the favorite or recent list. */
         SET,
         /** To lock the sitemap. */
@@ -125,14 +129,14 @@ public class CmsSitemapServer extends CmsJspActionElement {
     /** Json property name constants for responses. */
     protected enum JsonResponse {
 
-        /** The sitemap tree. */
-        SITEMAP("sitemap"),
         /** The error message. */
         ERROR("error"),
         /** The favorites list. */
         FAVORITES("favorites"),
         /** The recent list. */
         RECENT("recent"),
+        /** The sitemap tree. */
+        SITEMAP("sitemap"),
         /** The response state. */
         STATE("state");
 
@@ -141,6 +145,42 @@ public class CmsSitemapServer extends CmsJspActionElement {
 
         /** Constructor.<p> */
         private JsonResponse(String name) {
+
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+    }
+
+    /** Json property name constants for sitemap entries. */
+    protected enum JsonSiteEntry {
+
+        /** The HTML content. */
+        CONTENT("content"),
+        /** The resource id. */
+        ID("id"),
+        /** The name. */
+        NAME("name"),
+        /** The properties. */
+        PROPERTIES("properties"),
+        /** The sub-entries. */
+        SUBENTRIES("subentries"),
+        /** The title. */
+        TITLE("title");
+
+        /** Property name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private JsonSiteEntry(String name) {
 
             m_name = name;
         }
@@ -189,12 +229,12 @@ public class CmsSitemapServer extends CmsJspActionElement {
 
         /** The action of execute. */
         ACTION("action"),
-        /** The sitemap uri. */
-        SITEMAP("sitemap"),
         /** Generic data parameter. */
         DATA("data"),
         /** The current locale. */
-        LOCALE("locale");
+        LOCALE("locale"),
+        /** The sitemap uri. */
+        SITEMAP("sitemap");
 
         /** Parameter name. */
         private String m_name;
@@ -216,42 +256,11 @@ public class CmsSitemapServer extends CmsJspActionElement {
         }
     }
 
-    /** Json property name constants for sitemap entries. */
-    protected enum JsonSiteEntry {
-
-        /** The title. */
-        TITLE("title"),
-        /** The resource id. */
-        ID("id"),
-        /** The properties. */
-        PROPERTIES("properties"),
-        /** The sub-entries. */
-        SUBENTRIES("subentries"),
-        /** The name. */
-        NAME("name");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonSiteEntry(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
     /** Mime type constant. */
     public static final String MIMETYPE_APPLICATION_JSON = "application/json";
+
+    /** User additional info key constant. */
+    protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapServer.class);
@@ -362,8 +371,115 @@ public class CmsSitemapServer extends CmsJspActionElement {
         return result;
     }
 
-    /** User additional info key constant. */
-    protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
+    /**
+     * Returns the content of an entry when rendered with the given formatter.<p> 
+     * 
+     * @param entry the site entry bean
+     * 
+     * @return generated html code
+     * 
+     * @throws CmsException if an cms related error occurs
+     * @throws ServletException if a jsp related error occurs
+     * @throws IOException if a jsp related error occurs
+     */
+    public String getEntryContent(CmsSiteEntryBean entry) throws CmsException, ServletException, IOException {
+
+        CmsObject cms = getCmsObject();
+        CmsResource elementRes = cms.readResource(entry.getResourceId());
+        CmsResource formatter = cms.readResource("/system/workplace/editors/sitemap/default-formatter.jsp");
+        CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
+            formatter), elementRes, formatter);
+
+        CmsResource loaderRes = loaderFacade.getLoaderStartResource();
+
+        HttpServletRequest m_req = getRequest();
+        HttpServletResponse m_res = getResponse();
+
+        // TODO: is this going to be cached? most likely not! any alternative?
+        Object currentElement = m_req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
+        m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, new CmsSiteEntryBean(
+            entry.getResourceId(),
+            entry.getName(),
+            entry.getTitle(),
+            entry.getProperties(),
+            null));
+        try {
+            return new String(loaderFacade.getLoader().dump(
+                cms,
+                loaderRes,
+                null,
+                cms.getRequestContext().getLocale(),
+                m_req,
+                m_res), CmsLocaleManager.getResourceEncoding(cms, elementRes));
+        } finally {
+            m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
+        }
+    }
+
+    /**
+     * Returns the current user's favorites list.<p>
+     * 
+     * @return the current user's favorites list
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public JSONArray getFavoriteList() throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsUser user = cms.getRequestContext().currentUser();
+        Object obj = user.getAdditionalInfo(ADDINFO_SITEMAP_FAVORITE_LIST);
+
+        JSONArray favList = new JSONArray();
+        if (obj instanceof String) {
+            try {
+                favList = new JSONArray((String)obj);
+            } catch (Throwable e) {
+                // should never happen, catches json parsing
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        } else {
+            // save to be better next time
+            saveFavoriteList(cms, favList);
+        }
+
+        return favList;
+    }
+
+    /**
+     * Returns the data for the given sitemap.<p>
+     * 
+     * @param resource the sitemap's resource 
+     * @param sitemap the sitemap to use
+     * 
+     * @return the data for the given sitemap
+     * 
+     * @throws CmsException if something goes wrong with the cms context
+     * @throws JSONException if something goes wrong with the JSON manipulation
+     */
+    public JSONObject getSitemap(CmsResource resource, CmsSitemapBean sitemap) throws CmsException, JSONException {
+
+        // create empty result object
+        JSONObject result = new JSONObject();
+
+        // collect the site map entries
+        JSONArray siteEntries = new JSONArray();
+        for (CmsSiteEntryBean entry : sitemap.getSiteEntries()) {
+            siteEntries.put(jsonifyEntry(entry));
+        }
+        result.put(JsonResponse.SITEMAP.getName(), siteEntries);
+
+        // collect the favorites
+        JSONArray resFavorites = getFavoriteList();
+        result.put(JsonResponse.FAVORITES.getName(), resFavorites);
+        // collect the recent list
+        JSONArray resRecent = m_sessionCache.getRecentList();
+        result.put(JsonResponse.RECENT.getName(), resRecent);
+
+        return result;
+    }
 
     /**
      * Saves the favorite list, user based.<p>
@@ -378,6 +494,70 @@ public class CmsSitemapServer extends CmsJspActionElement {
         CmsUser user = cms.getRequestContext().currentUser();
         user.setAdditionalInfo(ADDINFO_SITEMAP_FAVORITE_LIST, favoriteList.toString());
         cms.writeUser(user);
+    }
+
+    /**
+     * Saves the new state of the sitemap.<p>
+     * 
+     * @param uri the uri of the sitemap to save
+     * @param sitemap the sitemap data
+     * 
+     * @throws CmsException if something goes wrong with the cms context
+     * @throws JSONException if something goes wrong with the JSON manipulation
+     */
+    public void saveSitemap(String uri, JSONObject sitemap) throws CmsException, JSONException {
+
+        CmsObject cms = getCmsObject();
+
+        cms.lockResourceTemporary(uri);
+        CmsFile sitemapFile = cms.readFile(uri);
+        CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapFile);
+        Locale locale = cms.getRequestContext().getLocale();
+        if (xmlSitemap.hasLocale(locale)) {
+            // remove the locale 
+            xmlSitemap.removeLocale(locale);
+        }
+        xmlSitemap.addLocale(cms, locale);
+
+        sitemapFile.setContents(xmlSitemap.marshal());
+        cms.writeFile(sitemapFile);
+    }
+
+    /**
+     * Main method that handles all requests.<p>
+     * 
+     * @throws IOException if there is any problem while writing the result to the response 
+     * @throws JSONException if there is any problem with JSON
+     */
+    public void serve() throws JSONException, IOException {
+
+        // set the mime type to application/json
+        CmsFlexController controller = CmsFlexController.getController(getRequest());
+        controller.getTopResponse().setContentType(MIMETYPE_APPLICATION_JSON);
+
+        JSONObject result = new JSONObject();
+        try {
+            result = executeAction();
+        } catch (Exception e) {
+            // a serious error occurred, should not...
+            result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
+            LOG.error(Messages.get().getBundle().key(
+                Messages.ERR_SERVER_EXCEPTION_1,
+                CmsRequestUtil.appendParameters(
+                    getRequest().getRequestURL().toString(),
+                    CmsRequestUtil.createParameterMap(getRequest().getQueryString()),
+                    false)), e);
+        }
+        // add state info
+        if (result.has(JsonResponse.ERROR.getName())) {
+            // add state=error in case an error occurred 
+            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
+        } else if (!result.has(JsonResponse.STATE.getName())) {
+            // add state=ok i case no error occurred
+            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
+        }
+        // write the result
+        result.write(getResponse().getWriter());
     }
 
     /**
@@ -419,168 +599,6 @@ public class CmsSitemapServer extends CmsJspActionElement {
             result.add(entry);
         }
         return result;
-    }
-
-    /**
-     * Returns the data for the given sitemap.<p>
-     * 
-     * @param resource the sitemap's resource 
-     * @param sitemap the sitemap to use
-     * 
-     * @return the data for the given sitemap
-     * 
-     * @throws CmsException if something goes wrong with the cms context
-     * @throws JSONException if something goes wrong with the JSON manipulation
-     */
-    public JSONObject getSitemap(CmsResource resource, CmsSitemapBean sitemap) throws CmsException, JSONException {
-
-        // create empty result object
-        JSONObject result = new JSONObject();
-
-        // collect the site map entries
-        JSONArray siteEntries = new JSONArray();
-        for (CmsSiteEntryBean entry : sitemap.getSiteEntries()) {
-            siteEntries.put(jsonifyEntry(entry));
-        }
-        result.put(JsonResponse.SITEMAP.getName(), siteEntries);
-
-        // collect the favorites
-        JSONArray resFavorites = getFavoriteList();
-        result.put(JsonResponse.FAVORITES.getName(), resFavorites);
-        // collect the recent list
-        JSONArray resRecent = m_sessionCache.getRecentList();
-        result.put(JsonResponse.RECENT.getName(), resRecent);
-
-        return result;
-    }
-
-    /**
-     * Converts a site entry bean into a JSON object.<p>
-     * 
-     * @param entry the entry to convert
-     * 
-     * @return the JSON representation
-     * 
-     * @throws JSONException if something goes wrong
-     */
-    protected JSONObject jsonifyEntry(CmsSiteEntryBean entry) throws JSONException {
-
-        JSONObject result = new JSONObject();
-        result.put(JsonSiteEntry.NAME.getName(), entry.getName());
-        result.put(JsonSiteEntry.TITLE.getName(), entry.getTitle());
-        result.put(JsonSiteEntry.ID.getName(), entry.getResourceId().toString());
-
-        // properties
-        JSONObject props = new JSONObject();
-        for (Map.Entry<String, String> prop : entry.getProperties().entrySet()) {
-            props.put(prop.getKey(), prop.getValue());
-        }
-        result.put(JsonSiteEntry.PROPERTIES.getName(), props);
-
-        // subentries
-        JSONArray subentries = new JSONArray();
-        for (CmsSiteEntryBean subentry : entry.getSubEntries()) {
-            subentries.put(jsonifyEntry(subentry));
-        }
-        result.put(JsonSiteEntry.SUBENTRIES.getName(), subentries);
-
-        return result;
-    }
-
-    /**
-     * Returns the current user's favorites list.<p>
-     * 
-     * @return the current user's favorites list
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public JSONArray getFavoriteList() throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        CmsUser user = cms.getRequestContext().currentUser();
-        Object obj = user.getAdditionalInfo(ADDINFO_SITEMAP_FAVORITE_LIST);
-
-        JSONArray favList = new JSONArray();
-        if (obj instanceof String) {
-            try {
-                favList = new JSONArray((String)obj);
-            } catch (Throwable e) {
-                // should never happen, catches json parsing
-                if (!LOG.isDebugEnabled()) {
-                    LOG.warn(e.getLocalizedMessage());
-                }
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
-        } else {
-            // save to be better next time
-            saveFavoriteList(cms, favList);
-        }
-
-        return favList;
-    }
-
-    /**
-     * Main method that handles all requests.<p>
-     * 
-     * @throws IOException if there is any problem while writing the result to the response 
-     * @throws JSONException if there is any problem with JSON
-     */
-    public void serve() throws JSONException, IOException {
-
-        // set the mime type to application/json
-        CmsFlexController controller = CmsFlexController.getController(getRequest());
-        controller.getTopResponse().setContentType(MIMETYPE_APPLICATION_JSON);
-
-        JSONObject result = new JSONObject();
-        try {
-            result = executeAction();
-        } catch (Exception e) {
-            // a serious error occurred, should not...
-            result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_SERVER_EXCEPTION_1,
-                CmsRequestUtil.appendParameters(
-                    getRequest().getRequestURL().toString(),
-                    CmsRequestUtil.createParameterMap(getRequest().getQueryString()),
-                    false)), e);
-        }
-        // add state info
-        if (result.has(JsonResponse.ERROR.getName())) {
-            // add state=error in case an error occurred 
-            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
-        } else if (!result.has(JsonResponse.STATE.getName())) {
-            // add state=ok i case no error occurred
-            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
-        }
-        // write the result
-        result.write(getResponse().getWriter());
-    }
-
-    /**
-     * Saves the new state of the sitemap.<p>
-     * 
-     * @param uri the uri of the sitemap to save
-     * @param sitemap the sitemap data
-     * 
-     * @throws CmsException if something goes wrong with the cms context
-     * @throws JSONException if something goes wrong with the JSON manipulation
-     */
-    public void saveSitemap(String uri, JSONObject sitemap) throws CmsException, JSONException {
-
-        CmsObject cms = getCmsObject();
-
-        cms.lockResourceTemporary(uri);
-        CmsFile sitemapFile = cms.readFile(uri);
-        CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapFile);
-        Locale locale = cms.getRequestContext().getLocale();
-        if (xmlSitemap.hasLocale(locale)) {
-            // remove the locale 
-            xmlSitemap.removeLocale(locale);
-        }
-        xmlSitemap.addLocale(cms, locale);
-
-        sitemapFile.setContents(xmlSitemap.marshal());
-        cms.writeFile(sitemapFile);
     }
 
     /**
@@ -637,5 +655,47 @@ public class CmsSitemapServer extends CmsJspActionElement {
             }
         }
         return true;
+    }
+
+    /**
+     * Converts a site entry bean into a JSON object.<p>
+     * 
+     * @param entry the entry to convert
+     * 
+     * @return the JSON representation
+     * 
+     * @throws JSONException if something goes wrong
+     */
+    protected JSONObject jsonifyEntry(CmsSiteEntryBean entry) throws JSONException {
+
+        JSONObject result = new JSONObject();
+        result.put(JsonSiteEntry.NAME.getName(), entry.getName());
+        result.put(JsonSiteEntry.TITLE.getName(), entry.getTitle());
+        result.put(JsonSiteEntry.ID.getName(), entry.getResourceId().toString());
+
+        // properties
+        JSONObject props = new JSONObject();
+        for (Map.Entry<String, String> prop : entry.getProperties().entrySet()) {
+            props.put(prop.getKey(), prop.getValue());
+        }
+        result.put(JsonSiteEntry.PROPERTIES.getName(), props);
+
+        // content
+        try {
+            result.put(JsonSiteEntry.CONTENT.getName(), getEntryContent(entry));
+        } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            result.put(JsonSiteEntry.CONTENT.getName(), entry.getName());
+        }
+
+        // subentries
+        JSONArray subentries = new JSONArray();
+        for (CmsSiteEntryBean subentry : entry.getSubEntries()) {
+            subentries.put(jsonifyEntry(subentry));
+        }
+        result.put(JsonSiteEntry.SUBENTRIES.getName(), subentries);
+
+        return result;
     }
 }

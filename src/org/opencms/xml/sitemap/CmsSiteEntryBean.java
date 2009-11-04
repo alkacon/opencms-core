@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2009/11/04 13:54:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/04 14:56:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.xml.sitemap;
 
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -85,7 +86,7 @@ public class CmsSiteEntryBean {
         m_title = title;
         Map<String, String> props = (properties == null ? new HashMap<String, String>() : properties);
         m_properties = Collections.unmodifiableMap(props);
-        m_subEntries = Collections.unmodifiableList(subEntries);
+        m_subEntries = Collections.unmodifiableList(subEntries == null ? new ArrayList<CmsSiteEntryBean>() : subEntries);
     }
 
     /**
