@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/04 10:20:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/04 10:39:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import org.opencms.search.CmsGallerySearch;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.6
  */
@@ -381,27 +382,45 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
 
         String actionParam = request.getParameter(ReqParam.ACTION.getName());
         String localeParam = request.getParameter(ReqParam.LOCALE.getName());
-        Action action = Action.valueOf(actionParam.toUpperCase());
-        cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
-        JSONObject data = new JSONObject(request.getParameter(ReqParam.DATA.getName()));
-        if (action.equals(Action.ALL)) {
-            JSONArray types = data.getJSONArray(JsonKeys.TYPES.getName());
-            int[] typesArr = transformToIntArray(types);
-            List<CmsResource> galleries = getGalleriesForTypes(cms, typesArr);
-            result.put(JsonKeys.GALLERIES.getName(), buildJSONForGalleries(cms, galleries));
-            result.put(JsonKeys.CATEGORIES.getName(), getCategories(cms, galleries));
-            // TODO: Add containers.
-        } else if (action.equals(Action.CATEGORIES)) {
-            result.put(JsonKeys.CATEGORIES.getName(), getCategories(cms));
-        } else if (action.equals(Action.CONTAINERS)) {
-            // TODO:  Will be implemented later.
-        } else if (action.equals(Action.GALLERIES)) {
-            result.put(JsonKeys.GALLERIES.getName(), getGalleries(cms, data.getJSONArray(JsonKeys.TYPES.getName())));
-        } else if (action.equals(Action.SEARCH)) {
-            JSONObject query = data.getJSONObject(JsonKeys.QUERYDATA.getName());
-            result.put(JsonKeys.SEARCHRESULT.getName(), search(cms, query));
+        String dataParam = request.getParameter(ReqParam.DATA.getName());
+        JSONArray errors = new JSONArray();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(actionParam)) {
+            errors.put("Missing parameter: " + ReqParam.ACTION.getName());
         }
-
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(dataParam)) {
+            errors.put("Missing parameter: " + ReqParam.DATA.getName());
+        }
+        if (errors.length() == 0) {
+            try {
+                Action action = Action.valueOf(actionParam.toUpperCase());
+                cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
+                JSONObject data = new JSONObject(dataParam);
+                if (action.equals(Action.ALL)) {
+                    JSONArray types = data.getJSONArray(JsonKeys.TYPES.getName());
+                    int[] typesArr = transformToIntArray(types);
+                    List<CmsResource> galleries = getGalleriesForTypes(cms, typesArr);
+                    result.put(JsonKeys.GALLERIES.getName(), buildJSONForGalleries(cms, galleries));
+                    result.put(JsonKeys.CATEGORIES.getName(), getCategories(cms, galleries));
+                    // TODO: Add containers.
+                } else if (action.equals(Action.CATEGORIES)) {
+                    result.put(JsonKeys.CATEGORIES.getName(), getCategories(cms));
+                } else if (action.equals(Action.CONTAINERS)) {
+                    // TODO:  Will be implemented later.
+                } else if (action.equals(Action.GALLERIES)) {
+                    result.put(JsonKeys.GALLERIES.getName(), getGalleries(
+                        cms,
+                        data.getJSONArray(JsonKeys.TYPES.getName())));
+                } else if (action.equals(Action.SEARCH)) {
+                    JSONObject query = data.getJSONObject(JsonKeys.QUERYDATA.getName());
+                    result.put(JsonKeys.SEARCHRESULT.getName(), search(cms, query));
+                }
+            } catch (Exception e) {
+                errors.put(e.getMessage());
+            }
+        }
+        if (errors.length() != 0) {
+            result.put("errors", errors);
+        }
         // write the result
         result.write(getResponse().getWriter());
 
