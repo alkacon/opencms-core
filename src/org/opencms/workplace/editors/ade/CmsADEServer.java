@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/11/03 09:35:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/11/04 13:53:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,11 +84,11 @@ import org.apache.commons.logging.Log;
 /**
  * ADE server used for client/server communication.<p>
  * 
- * see jsp files under <tt>/system/workplace/editors/ade/</tt>.<p>
+ * see jsp file <tt>/system/workplace/editors/ade/server.jsp</tt>.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.6
  */
@@ -647,7 +647,7 @@ public class CmsADEServer extends CmsJspActionElement {
             JSONObject searchResult = getLastSearchResult(cntPageParam, searchOptions, cntPage.getTypes());
 
             // we need those on the client side to make scrolling work
-            CmsSearchOptions oldOptions = m_sessionCache.getADESearchOptions();
+            CmsSearchOptions oldOptions = m_sessionCache.getSearchOptions();
             if (oldOptions != null) {
                 result.put(JsonSearch.TYPE.getName(), oldOptions.getTypes());
                 result.put(JsonSearch.TEXT.getName(), oldOptions.getText());
@@ -681,7 +681,7 @@ public class CmsADEServer extends CmsJspActionElement {
             } else if (checkParameters(data, result, JsonRequest.REC)) {
                 // save the recent list
                 JSONArray list = data.optJSONArray(JsonRequest.REC.getName());
-                m_sessionCache.setCacheADERecentList(arrayToElementList(list));
+                m_sessionCache.setCacheRecentList(arrayToElementList(list));
             } else {
                 return result;
             }
@@ -922,7 +922,7 @@ public class CmsADEServer extends CmsJspActionElement {
     public JSONObject getLastSearchResult(String cntPageUri, CmsSearchOptions options, Set<String> types)
     throws JSONException, CmsException {
 
-        CmsSearchOptions lastOptions = m_sessionCache.getADESearchOptions();
+        CmsSearchOptions lastOptions = m_sessionCache.getSearchOptions();
         if ((lastOptions == null) || compareSearchOptions(lastOptions, options)) {
             return new JSONObject();
         }
@@ -949,7 +949,7 @@ public class CmsADEServer extends CmsJspActionElement {
             getResponse());
 
         // get the cached list
-        List<CmsContainerElementBean> recentList = m_sessionCache.getADERecentList();
+        List<CmsContainerElementBean> recentList = m_sessionCache.getRecentList();
         // iterate the list and create the missing elements
         for (CmsContainerElementBean element : recentList) {
             String id = element.getClientId();
@@ -1077,7 +1077,7 @@ public class CmsADEServer extends CmsJspActionElement {
             result.put(JsonSearch.COUNT.getName(), 0);
         }
 
-        m_sessionCache.setCacheADESearchOptions(options);
+        m_sessionCache.setCacheSearchOptions(options);
 
         return result;
     }

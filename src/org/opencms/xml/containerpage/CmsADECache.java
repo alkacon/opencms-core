@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADECache.java,v $
- * Date   : $Date: 2009/10/20 09:06:25 $
- * Version: $Revision: 1.1.2.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADECache.java,v $
+ * Date   : $Date: 2009/11/04 13:53:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -209,13 +209,26 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
+     * Returns the cache key for the given parameters.<p>
+     * 
+     * @param structureId the container page's structure id
+     * @param keepEncoding if to keep the encoding while unmarshalling
+     * 
+     * @return the cache key for the given container page and parameters
+     */
+    public String getCacheKey(CmsUUID structureId, boolean keepEncoding) {
+
+        return structureId.toString() + "_" + keepEncoding;
+    }
+
+    /**
      * Caches the given container page under the given key and for the given project.<p>
      * 
      * @param key the cache key
      * @param containerPage the object to cache
      * @param online if to cache in online or offline project
      */
-    public void setCacheContainerPages(String key, CmsXmlContainerPage containerPage, boolean online) {
+    public void setCacheContainerPage(String key, CmsXmlContainerPage containerPage, boolean online) {
 
         if (online) {
             m_containerPagesOnline.put(key, containerPage);
@@ -304,18 +317,5 @@ public final class CmsADECache implements I_CmsEventListener {
             // remove the resource
             uncacheResource(resources.get(i));
         }
-    }
-
-    /**
-     * Returns the cache key for the given parameters.<p>
-     * 
-     * @param structureId the container page's structure id
-     * @param keepEncoding if to keep the encoding while unmarshalling
-     * 
-     * @return the cached container page, or <code>null</code> if not found
-     */
-    public String getCacheKey(CmsUUID structureId, boolean keepEncoding) {
-
-        return structureId.toString() + "_" + keepEncoding;
     }
 }

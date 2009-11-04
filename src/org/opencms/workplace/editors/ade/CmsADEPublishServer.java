@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/11/03 14:25:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/11/04 13:53:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.9.3
  */
@@ -175,7 +175,7 @@ public class CmsADEPublishServer {
         // get the cached publish options
         CmsADESessionCache sessionCache = (CmsADESessionCache)request.getSession().getAttribute(
             CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
-        CmsPublishOptions options = sessionCache.getADEPublishOptions();
+        CmsPublishOptions options = sessionCache.getPublishOptions();
         if (action.equals(CmsADEServer.Action.PUBLISH_OPTIONS)) {
             result.merge(options.toJson(), true, false);
             return result;
@@ -226,7 +226,7 @@ public class CmsADEPublishServer {
                 return result;
             }
             // save options
-            sessionCache.setCacheADEPublishOptions(new CmsPublishOptions(
+            sessionCache.setCachePublishOptions(new CmsPublishOptions(
                 publish.getOptions().isIncludeRelated(),
                 publish.getOptions().isIncludeSiblings(),
                 publish.getOptions().getProjectId()));

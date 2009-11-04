@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPageFactory.java,v $
- * Date   : $Date: 2009/11/03 13:29:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/04 13:53:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.2
  */
@@ -411,7 +411,7 @@ public final class CmsXmlContainerPageFactory {
     private static void setCache(CmsObject cms, CmsXmlContainerPage xmlCntPage, boolean keepEncoding) {
 
         boolean online = cms.getRequestContext().currentProject().isOnlineProject();
-        m_cache.setCacheContainerPages(
+        m_cache.setCacheContainerPage(
             m_cache.getCacheKey(xmlCntPage.getFile().getStructureId(), keepEncoding),
             xmlCntPage,
             online);
