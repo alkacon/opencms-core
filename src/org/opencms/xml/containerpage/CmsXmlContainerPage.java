@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/11/02 16:35:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/05 10:25:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.2
  * 
@@ -254,6 +254,15 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             }
         }
         return m_cntPages.get(theLocale);
+    }
+
+    /**
+     * @see org.opencms.xml.content.CmsXmlContent#isAutoCorrectionEnabled()
+     */
+    @Override
+    public boolean isAutoCorrectionEnabled() {
+
+        return true;
     }
 
     /**

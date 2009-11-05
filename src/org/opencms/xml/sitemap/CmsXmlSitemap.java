@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2009/11/04 13:54:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/05 10:25:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.2
  * 
@@ -91,14 +91,14 @@ public class CmsXmlSitemap extends CmsXmlContent {
         FILELIST("FileList"),
         /** Entry or property name node name. */
         NAME("Name"),
-        /** Title node name. */
-        TITLE("Title"),
         /** Element properties node name. */
         PROPERTIES("Properties"),
         /** A site entry. */
         SITEENTRY("SiteEntry"),
         /** Value string node name. */
         STRING("String"),
+        /** Title node name. */
+        TITLE("Title"),
         /** File list URI node name. */
         URI("Uri"),
         /** Property value node name. */
@@ -251,6 +251,15 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
+     * @see org.opencms.xml.content.CmsXmlContent#isAutoCorrectionEnabled()
+     */
+    @Override
+    public boolean isAutoCorrectionEnabled() {
+
+        return true;
+    }
+
+    /**
      * Creates a new bookmark for the given element.<p>
      * 
      * @param element the element to create the bookmark for 
@@ -336,6 +345,10 @@ public class CmsXmlSitemap extends CmsXmlContent {
             String entryPath = CmsXmlUtils.concatXpath(rootPath, CmsXmlUtils.createXpathElement(
                 entry.getName(),
                 entryIndex));
+            if (entryPath.startsWith("/")) {
+                // this will happen when root path is empty
+                entryPath = entryPath.substring(1);
+            }
             I_CmsXmlSchemaType entrySchemaType = rootDef.getSchemaType(entry.getName());
             I_CmsXmlContentValue entryValue = entrySchemaType.createValue(this, entry, locale);
             addBookmark(entryPath, locale, true, entryValue);
