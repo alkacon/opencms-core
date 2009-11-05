@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/05 14:19:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/05 15:03:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
@@ -48,6 +50,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -83,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.6
  */
@@ -269,12 +272,6 @@ public class CmsSitemapServer extends CmsJspActionElement {
     /** Mime type constant. */
     public static final String MIMETYPE_APPLICATION_JSON = "application/json";
 
-    /** Path constant. */
-    public static final String PATH_DEFAULT_FORMATTER = "/system/workplace/editors/sitemap/default-formatter.jsp";
-
-    /** Resource type parameter name constant. */
-    public static final String RESTYPE_PARAM_SITEMAP_FORMATTER = "sitemap.formatter";
-
     /** User additional info key constant. */
     protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
 
@@ -286,6 +283,9 @@ public class CmsSitemapServer extends CmsJspActionElement {
 
     /** The session cache. */
     private CmsSitemapSessionCache m_sessionCache;
+
+    /** Path constant. */
+    public static final String PATH_DEFAULT_FORMATTER = "/system/workplace/editors/sitemap/default-formatter.jsp";
 
     /**
      * Constructor.<p>
@@ -306,7 +306,8 @@ public class CmsSitemapServer extends CmsJspActionElement {
         if (m_formatters == null) {
             m_formatters = new HashMap<Integer, CmsResource>();
             try {
-                m_formatters.put(KEY_DEFAULT_FORMATTER, getCmsObject().readResource(PATH_DEFAULT_FORMATTER));
+                m_formatters.put(KEY_DEFAULT_FORMATTER, getCmsObject().readResource(
+                    CmsSitemapServer.PATH_DEFAULT_FORMATTER));
             } catch (CmsException e) {
                 // should never happen
                 LOG.error(e.getLocalizedMessage(), e);
@@ -419,7 +420,7 @@ public class CmsSitemapServer extends CmsJspActionElement {
         if (formatter == null) {
             // get the formatter from the resource type configuration
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(elementRes);
-            String formatterPath = type.getConfiguration().get(RESTYPE_PARAM_SITEMAP_FORMATTER);
+            String formatterPath = type.getConfiguration().get(CmsResourceTypeXmlSitemap.PARAM_SITEMAP_FORMATTER);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterPath)) {
                 try {
                     formatter = cms.readResource(formatterPath);
@@ -518,7 +519,10 @@ public class CmsSitemapServer extends CmsJspActionElement {
         // collect the site map entries
         JSONArray siteEntries = new JSONArray();
         for (CmsSiteEntryBean entry : sitemap.getSiteEntries()) {
-            siteEntries.put(jsonifyEntry(entry));
+            JSONObject siteEntry = jsonifyEntry(entry);
+            if (siteEntry != null) {
+                siteEntries.put(siteEntry);
+            }
         }
         result.put(JsonResponse.SITEMAP.getName(), siteEntries);
 
@@ -686,7 +690,7 @@ public class CmsSitemapServer extends CmsJspActionElement {
      * 
      * @param entry the entry to convert
      * 
-     * @return the JSON representation
+     * @return the JSON representation, can be <code>null</code> in case of not enough permissions
      * 
      * @throws JSONException if something goes wrong
      */
@@ -707,16 +711,27 @@ public class CmsSitemapServer extends CmsJspActionElement {
         // content
         try {
             result.put(JsonSiteEntry.CONTENT.getName(), getEntryContent(entry));
+        } catch (CmsVfsResourceNotFoundException e) {
+            // most likely the user has no read permission on this entry
+            LOG.debug(e.getLocalizedMessage(), e);
+            return null;
+        } catch (CmsPermissionViolationException e) {
+            // most likely the user has no read permission on this entry
+            LOG.debug(e.getLocalizedMessage(), e);
+            return null;
         } catch (Exception e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
-            result.put(JsonSiteEntry.CONTENT.getName(), entry.getName());
+            result.put(JsonSiteEntry.CONTENT.getName(), e.getLocalizedMessage());
         }
 
         // subentries
         JSONArray subentries = new JSONArray();
         for (CmsSiteEntryBean subentry : entry.getSubEntries()) {
-            subentries.put(jsonifyEntry(subentry));
+            JSONObject jsonSubEntry = jsonifyEntry(subentry);
+            if (jsonSubEntry != null) {
+                subentries.put(jsonSubEntry);
+            }
         }
         result.put(JsonSiteEntry.SUBENTRIES.getName(), subentries);
 
