@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/10/28 15:58:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/05 09:02:02 $
+ * Version: $Revision: 1.4 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -22,12 +22,15 @@ Legend:
 OpenCms 7.9.1 - xxxx, 2009
 ! Added support for xsd:choice in XML content API and editor
 ! Added new feature: Advanced Direct Edit
+! Added request attributes support for flex cache
+! Added new feature: Sitemap Editor
+! Added generic configuration parameters for resource types  
 - Improved handling for writing additional infos of a cms user
 * Fixed issue #1751: Static Export: export-resources doesn't match a file resource
-* If an error occurs while changing the user password in the preferences tab, so the error dialog can be closed with the close button
 * Fixed issue #1782: Publish dialog in Project overview list hangs
 * Fixed issue #1542: Links to exported files containing anchors are not resolved correctly
-* Fixed corrected search score
+* Fixed search score
+* Fixed close button when an error occurs while changing password in the preferences
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
