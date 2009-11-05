@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2009/09/04 15:01:15 $
- * Version: $Revision: 1.42.2.1 $
+ * Date   : $Date: 2009/11/05 10:33:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -196,7 +196,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         if (obj == this) {
             return 0;
         }
-        return getTypeName().compareTo((obj).getTypeName());
+        return getTypeName().compareTo(obj.getTypeName());
     }
 
     /**
