@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/10/16 10:09:07 $
- * Version: $Revision: 1.55.2.2 $
+ * Date   : $Date: 2009/11/05 08:05:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.55.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,6 +104,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** The configured class name of this resource type. */
     protected String m_className;
 
+    /** Configuration parameters. */
+    protected Map<String, String> m_configuration;
+
     /** The list of resources to copy. */
     protected List<CmsConfigurationCopyResource> m_copyResources;
 
@@ -134,6 +137,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         m_mappings = new ArrayList<String>();
         m_defaultProperties = new ArrayList<CmsProperty>();
         m_copyResources = new ArrayList<CmsConfigurationCopyResource>();
+        m_configuration = new TreeMap<String, String>();
     }
 
     /**
@@ -141,6 +145,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
+        m_configuration.put(paramName, paramValue);
         if (CONFIGURATION_INTERNAL.equalsIgnoreCase(paramName)) {
             m_internal = Boolean.valueOf(paramValue.trim());
         }
@@ -413,12 +418,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_CONFIGURATION_1, this));
         }
 
-        Map<String, String> result = null;
-        if (m_internal != null) {
-            result = new TreeMap<String, String>();
-            result.put(CONFIGURATION_INTERNAL, String.valueOf(m_internal));
-        }
-        return result;
+        return m_configuration;
     }
 
     /**
@@ -564,6 +564,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         m_defaultProperties = Collections.unmodifiableList(m_defaultProperties);
         m_copyResources = Collections.unmodifiableList(m_copyResources);
         m_mappings = Collections.unmodifiableList(m_mappings);
+        m_configuration = Collections.unmodifiableMap(m_configuration);
     }
 
     /**

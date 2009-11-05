@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/05 07:25:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/05 08:05:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -48,6 +49,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
@@ -77,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.6
  */
@@ -257,14 +259,26 @@ public class CmsSitemapServer extends CmsJspActionElement {
         }
     }
 
+    /** Formatters map key constant. */
+    public static final Integer KEY_DEFAULT_FORMATTER = new Integer(-100);
+
     /** Mime type constant. */
     public static final String MIMETYPE_APPLICATION_JSON = "application/json";
+
+    /** Path constant. */
+    public static final String PATH_DEFAULT_FORMATTER = "/system/workplace/editors/sitemap/default-formatter.jsp";
+
+    /** Resource type parameter name constant. */
+    public static final String RESTYPE_PARAM_SITEMAP_FORMATTER = "sitemap.formatter";
 
     /** User additional info key constant. */
     protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapServer.class);
+
+    /** The site map entry formatters. */
+    private Map<Integer, CmsResource> m_formatters;
 
     /** The session cache. */
     private CmsSitemapSessionCache m_sessionCache;
@@ -284,6 +298,15 @@ public class CmsSitemapServer extends CmsJspActionElement {
         if (m_sessionCache == null) {
             m_sessionCache = new CmsSitemapSessionCache(getCmsObject());
             req.getSession().setAttribute(CmsSitemapSessionCache.SESSION_ATTR_SITEMAP_CACHE, m_sessionCache);
+        }
+        if (m_formatters == null) {
+            m_formatters = new HashMap<Integer, CmsResource>();
+            try {
+                m_formatters.put(KEY_DEFAULT_FORMATTER, getCmsObject().readResource(PATH_DEFAULT_FORMATTER));
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
     }
 
@@ -387,7 +410,30 @@ public class CmsSitemapServer extends CmsJspActionElement {
 
         CmsObject cms = getCmsObject();
         CmsResource elementRes = cms.readResource(entry.getResourceId());
-        CmsResource formatter = cms.readResource("/system/workplace/editors/sitemap/default-formatter.jsp");
+
+        CmsResource formatter = m_formatters.get(new Integer(elementRes.getTypeId()));
+        if (formatter == null) {
+            // get the formatter from the resource type configuration
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(elementRes);
+            String formatterPath = type.getConfiguration().get(RESTYPE_PARAM_SITEMAP_FORMATTER);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterPath)) {
+                try {
+                    formatter = cms.readResource(formatterPath);
+                    m_formatters.put(new Integer(elementRes.getTypeId()), formatter);
+                } catch (CmsException e) {
+                    if (!LOG.isDebugEnabled()) {
+                        LOG.warn(e.getLocalizedMessage());
+                    }
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        if (formatter == null) {
+            // use default
+            formatter = m_formatters.get(KEY_DEFAULT_FORMATTER);
+            m_formatters.put(new Integer(elementRes.getTypeId()), formatter);
+        }
+
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
             formatter), elementRes, formatter);
 
