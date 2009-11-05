@@ -1060,6 +1060,10 @@ ol.ade-forms fieldset {
 	background-image: url(images/16x16/permission.png);
 }
 
+.cms-icon-relation {
+	background-image: url(images/16x16/relation.png);
+}
+
 .cms-icon-brokenlink {
 	background-image: url(../../../buttons/link.png);
 }	

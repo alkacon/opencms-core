@@ -11,7 +11,7 @@
    var classToRemove = 'cms-publish-toremove';
    var classKeep = 'cms-publish-keep';
    var classPublishDialog = 'cms-publish-dialog';
-   var buttonHeight = 30;
+   var buttonHeight = 24;
    
    /**
     * Returns the icon for a resource
@@ -26,7 +26,8 @@
       locked: 'cms-icon-locked',
       published: 'cms-icon-published',
       permissions: 'cms-icon-permission',
-      brokenlink: 'cms-icon-brokenlink'
+      brokenlink: 'cms-icon-brokenlink',
+      related: 'cms-icon-relation'
    }
    
    var problemClasses = {
@@ -75,13 +76,17 @@
     * @param {Object} resource the resource for which the entry should be created
     */
    var _formatPublishItem = function(resource) {
-   
-      var $item = $('<div></div>').addClass(classPublishItem + ' cms-item ui-corner-all').css('display', 'inline').css('float', 'left');
-      var $content = $('<div></div>').addClass('ui-corner-all ui-widget-content').appendTo($item);
-      var $head = $('<div></div>').addClass('cms-head ui-corner-all').appendTo($content);
-      var $row1 = $('<div></div>').width(450).appendTo($head);
-      var $row2 = $('<div></div>').width(450).appendTo($head);
-      $('<div></div>').addClass('cms-publish-item-clear').css('clear', 'both').appendTo($head);
+      var itemStyle = {
+         'display': 'block',
+         'margin-left': '40px',
+         'background-color': 'transparent',
+         'border': '1px solid #444444'
+      }
+      
+      var $item = $('<div></div>').addClass(classPublishItem + ' cms-item ui-corner-all').css(itemStyle);
+      var $row1 = $('<div></div>').width(450).appendTo($item);
+      var $row2 = $('<div></div>').width(450).appendTo($item);
+      $('<div></div>').addClass('cms-publish-item-clear').css('clear', 'both').appendTo($item);
       _getItemIcon(resource).css('float', 'left').appendTo($row1);
       var title = '(no title)';
       if (resource.title && resource.title.length > 0) {
@@ -326,18 +331,21 @@
          }
          
          var checkboxStyle = {
-            'display': 'inline',
+            'display': 'block',
             'clear': 'both',
-            'margin-left': '5px',
-            'margin-right': '13px'
+            'margin-left': '8px',
+            'margin-top': '8px',
+            'float': 'left'
          };
          
          var $checkbox = $('<input class="' + classPublishCheckbox + '" type="checkbox"></input>').css(checkboxStyle);
          if (resource.info) {
-            $checkbox.get(0).disabled = true;
-            $checkbox.get(0).checked = false;
+            //$checkbox.get(0).disabled = true;
+            //$checkbox.get(0).checked = false;
+            $('<span></span>').width(30).appendTo($row);
+         } else {
+            $('<span></span>').width(30).append($checkbox).appendTo($row);
          }
-         $('<span></span>').css('float', 'left').append($checkbox).appendTo($row);
          $checkbox.attr('rel', resource.id);
          var $publishItem = _formatPublishItem(resource).css('position', 'static');
          if (isRelated) {
@@ -564,6 +572,7 @@
          var _appendItem = function(resource, isRelated) {
             var $row = $('<div></div>').appendTo($linkCheckPanel);
             var $item = _formatPublishItem(resource).css('clear', 'both').appendTo($row);
+            $item.css('margin-top', '2px').css('margin-bottom', '2px');
             if (isRelated) {
                $item.css('margin-left', '80px');
             }
