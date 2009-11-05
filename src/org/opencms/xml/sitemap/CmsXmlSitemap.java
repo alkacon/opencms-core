@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2009/11/05 10:25:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/05 14:19:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.2
  * 
@@ -398,6 +398,10 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
                 // choice value 
                 Element value = property.element(XmlNode.VALUE.getName());
+                if (value == null) {
+                    // this can happen when adding the elements node to the xml content
+                    continue;
+                }
                 int valueIndex = CmsXmlUtils.getXpathIndexInt(value.getUniquePath(property));
                 String valuePath = CmsXmlUtils.concatXpath(propPath, CmsXmlUtils.createXpathElement(
                     value.getName(),
@@ -416,6 +420,10 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 } else {
                     // file list value
                     Element valueFileList = value.element(XmlNode.FILELIST.getName());
+                    if (valueFileList == null) {
+                        // this can happen when adding the elements node to the xml content
+                        continue;
+                    }
                     int valueFileListIndex = CmsXmlUtils.getXpathIndexInt(valueFileList.getUniquePath(value));
                     String valueFileListPath = CmsXmlUtils.concatXpath(valuePath, CmsXmlUtils.createXpathElement(
                         valueFileList.getName(),
@@ -435,9 +443,16 @@ public class CmsXmlSitemap extends CmsXmlContent {
                         XmlNode.URI.getName()); itFiles.hasNext();) {
 
                         Element valueUri = itFiles.next();
-                        createBookmark(valueUri, locale, value, valueFileListPath, valueFileListDef);
+                        createBookmark(valueUri, locale, valueFileList, valueFileListPath, valueFileListDef);
                         Element valueUriLink = valueUri.element(CmsXmlPage.NODE_LINK);
-                        idList.add(new CmsLink(valueUriLink).getStructureId());
+                        CmsUUID fileId = null;
+                        if (valueUriLink == null) {
+                            // this can happen when adding the elements node to the xml content
+                            // it is not dangerous since the link has to be set before saving 
+                        } else {
+                            fileId = new CmsLink(valueUriLink).getStructureId();
+                        }
+                        idList.add(fileId);
                     }
                     // comma separated list of UUIDs
                     val = CmsStringUtil.listAsString(idList, ",");
