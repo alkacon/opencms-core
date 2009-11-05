@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/04 13:24:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/05 08:02:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,13 @@ package org.opencms.workplace.galleries;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsRecourceTypeFolderGallery;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -60,10 +63,12 @@ import org.opencms.workplace.CmsWorkplace;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -76,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.6
  */
@@ -283,7 +288,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
      * @param cms  the cms-object
      * @return a JSON-Map of categories
      */
-    public JSONObject getCategories(CmsObject cms) {
+    public JSONArray getCategories(CmsObject cms) {
 
         CmsCategoryService catService = CmsCategoryService.getInstance();
         List<CmsCategory> foundCategories = Collections.emptyList();
@@ -307,7 +312,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
      * @param galleries the galleries
      * @return a JSON-Map of categories
      */
-    public JSONObject getCategories(CmsObject cms, List<CmsResource> galleries) {
+    public JSONArray getCategories(CmsObject cms, List<CmsResource> galleries) {
 
         CmsCategoryService catService = CmsCategoryService.getInstance();
         Iterator<CmsResource> iGalleries = galleries.iterator();
@@ -329,17 +334,69 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
     /**
      * Generates a JSON-Map for all available galleries for the given types.<p>
      * 
-     * @param types the gallery-types
      * @param cms the cms-object
+     * @param types the gallery-types
      * @return the galleries
-     * @throws JSONException 
+     * @throws JSONException  if something goes wrong
      */
-    public JSONObject getGalleries(CmsObject cms, JSONArray types) throws JSONException {
+    public JSONArray getGalleries(CmsObject cms, JSONArray types) throws JSONException {
 
         int[] typesArr = transformToIntArray(types);
         List<CmsResource> galleries = getGalleriesForTypes(cms, typesArr);
         return buildJSONForGalleries(cms, galleries);
 
+    }
+
+    /**
+     * Generates a JSON-Map for all available content types in the given gallery types.
+     * 
+     * @param cms the cms-object
+     * @param types the gallery-types
+     * @return the content-types
+     * @throws CmsLoaderException if something goes wrong
+     * @throws JSONException if something goes wrong
+     */
+    public JSONArray getTypes(CmsObject cms, int[] types) throws CmsLoaderException, JSONException {
+
+        JSONArray result = new JSONArray();
+        if ((types == null) || (types.length == 0)) {
+            return result;
+        }
+        CmsResourceManager rm = OpenCms.getResourceManager();
+        Map<String, JSONObject> resourceTypes = new HashMap<String, JSONObject>();
+        for (int i = 0; i < types.length; i++) {
+            I_CmsResourceType galleryType = rm.getResourceType(types[i]);
+            String typesParam = galleryType.getConfiguration().get(
+                CmsRecourceTypeFolderGallery.CONFIGURATION_FOLDER_CONTENT_TYPES);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(typesParam)) {
+                continue;
+            }
+            List<String> rTypes = CmsStringUtil.splitAsList(typesParam, CmsProperty.VALUE_LIST_DELIMITER, true);
+            Iterator<String> iTypes = rTypes.iterator();
+            while (iTypes.hasNext()) {
+                JSONObject jType;
+                I_CmsResourceType rType = rm.getResourceType(iTypes.next());
+                String typeName = rType.getTypeName();
+                if (resourceTypes.containsKey(typeName)) {
+                    jType = resourceTypes.get(typeName);
+                    jType.getJSONArray("galleryTypes").put(types[i]);
+                } else {
+                    jType = new JSONObject();
+                    jType.put("title", typeName);
+                    jType.put("typeId", rType.getTypeId());
+                    JSONArray galleryTypes = new JSONArray();
+                    galleryTypes.put(types[i]);
+                    jType.put("galleryTypes", galleryTypes);
+                    resourceTypes.put(typeName, jType);
+                }
+            }
+        }
+        Iterator<Entry<String, JSONObject>> iEntries = resourceTypes.entrySet().iterator();
+        while (iEntries.hasNext()) {
+            Entry<String, JSONObject> entry = iEntries.next();
+            result.put(entry.getValue());
+        }
+        return result;
     }
 
     /**
@@ -396,9 +453,10 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
                 cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
                 JSONObject data = new JSONObject(dataParam);
                 if (action.equals(Action.ALL)) {
-                    JSONArray types = data.getJSONArray(JsonKeys.TYPES.getName());
-                    int[] typesArr = transformToIntArray(types);
-                    List<CmsResource> galleries = getGalleriesForTypes(cms, typesArr);
+                    JSONArray galleryTypes = data.getJSONArray(JsonKeys.TYPES.getName());
+                    int[] galleryTypesArr = transformToIntArray(galleryTypes);
+                    result.put(JsonKeys.TYPES.getName(), getTypes(cms, galleryTypesArr));
+                    List<CmsResource> galleries = getGalleriesForTypes(cms, galleryTypesArr);
                     result.put(JsonKeys.GALLERIES.getName(), buildJSONForGalleries(cms, galleries));
                     result.put(JsonKeys.CATEGORIES.getName(), getCategories(cms, galleries));
                     // TODO: Add containers.
@@ -432,9 +490,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
      * @param categories the categories
      * @return the JSON-Object
      */
-    private JSONObject buildJSONForCategories(List<CmsCategory> categories) {
+    private JSONArray buildJSONForCategories(List<CmsCategory> categories) {
 
-        JSONObject result = new JSONObject();
+        JSONArray result = new JSONArray();
         if ((categories == null) || (categories.size() == 0)) {
             return result;
         }
@@ -467,7 +525,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
                 jsonObj.put(JsonKeys.ROOTPATH.getName(), cat.getRootPath());
                 // 4 category level
                 jsonObj.put(JsonKeys.LEVEL.getName(), CmsResource.getPathLevel(cat.getPath()));
-                result.put(cat.getPath(), jsonObj);
+                result.put(jsonObj);
             } catch (JSONException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(), e);
@@ -485,9 +543,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
      * @param galleries the galleries
      * @return the JSON-Object
      */
-    private JSONObject buildJSONForGalleries(CmsObject cms, List<CmsResource> galleries) {
+    private JSONArray buildJSONForGalleries(CmsObject cms, List<CmsResource> galleries) {
 
-        JSONObject result = new JSONObject();
+        JSONArray result = new JSONArray();
         if ((galleries == null) || (galleries.size() == 0)) {
             return result;
         }
@@ -512,7 +570,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
                 jsonObj.put(JsonKeys.PATH.getName(), sitePath);
                 // 3: active flag
                 jsonObj.put(JsonKeys.TYPE.getName(), res.getTypeId());
-                result.put(sitePath, jsonObj);
+                result.put(jsonObj);
             } catch (JSONException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(), e);
@@ -523,9 +581,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         return result;
     }
 
-    private JSONObject buildJSONForSearchResult(List<CmsSearchResult> searchResult) throws JSONException {
+    private JSONArray buildJSONForSearchResult(List<CmsSearchResult> searchResult) throws JSONException {
 
-        JSONObject result = new JSONObject();
+        JSONArray result = new JSONArray();
         if ((searchResult == null) || (searchResult.size() == 0)) {
             return result;
         }
@@ -537,7 +595,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
             resultEntry.put("title", sResult.getField("title"));
             resultEntry.put("type", sResult.getDocumentType());
             resultEntry.put("path", sResult.getPath());
-            result.put(sResult.getPath(), resultEntry);
+            result.put(resultEntry);
         }
         return result;
     }

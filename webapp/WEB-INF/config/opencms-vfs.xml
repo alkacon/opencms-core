@@ -64,21 +64,26 @@
 				<type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5"/>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" name="xmlpage" id="6"/>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7"/>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
+				<type class="org.opencms.file.types.CmsRecourceTypeFolderGallery" name="imagegallery" id="8">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxImageGallery</param>
 					<param name="folder.class.params">w:120,h:90,c:D4D0C8,t:1,r:2</param>
+					<param name="folder.content.types">image</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
+				<type class="org.opencms.file.types.CmsRecourceTypeFolderGallery" name="downloadgallery" id="9">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxDownloadGallery</param>
+					<param name="folder.content.types">plain|binary|image</param>
 				</type>	
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="linkgallery" id="10">
+				<type class="org.opencms.file.types.CmsRecourceTypeFolderGallery" name="linkgallery" id="10">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxLinkGallery</param>
+					<param name="folder.content.types">pointer</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="htmlgallery" id="11">
+				<type class="org.opencms.file.types.CmsRecourceTypeFolderGallery" name="htmlgallery" id="11">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+					<param name="folder.content.types">plain</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
+				<type class="org.opencms.file.types.CmsRecourceTypeFolderGallery" name="tablegallery" id="12">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
+					<param name="folder.content.types">plain</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13" />
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
