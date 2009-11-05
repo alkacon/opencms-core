@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeXmlSitemap.java,v $
- * Date   : $Date: 2009/11/03 13:30:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/05 08:49:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,13 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlSitemapLoader;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -50,6 +52,8 @@ import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Resource type descriptor for the type "sitemap".<p>
  *
@@ -57,7 +61,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
@@ -75,6 +79,12 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
     /** Fixed schema for sitemap pages. */
     private static final String SCHEMA = "/system/workplace/editors/sitemap/schemas/sitemap.xsd";
 
+    /** Fixed detail page for sitemap pages. */
+    private static final String DETAIL_PAGE = "/system/workplace/editors/sitemap/sitemap.jsp";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlSitemap.class);
+
     /**
      * Default constructor that sets the fixed schema for container pages.<p>
      */
@@ -84,6 +94,12 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
         m_typeName = RESOURCE_TYPE_NAME;
         m_typeId = CmsResourceTypeXmlSitemap.RESOURCE_TYPE_ID;
         addConfigurationParameter(CONFIGURATION_SCHEMA, SCHEMA);
+        try {
+            addDefaultProperty(new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, null, DETAIL_PAGE));
+        } catch (CmsConfigurationException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**
