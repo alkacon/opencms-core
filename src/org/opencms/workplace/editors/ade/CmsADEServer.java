@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/11/04 13:53:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/11/05 14:19:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.6
  */
@@ -1209,41 +1210,58 @@ public class CmsADEServer extends CmsJspActionElement {
                     while (itProps.hasNext()) {
                         String propertyName = itProps.next();
 
-                        // only if there is a value set and the property is configured in the schema we will save it to the container-page 
-                        if ((properties.get(propertyName).getStructureValue() != null)
-                            && propertiesConf.containsKey(propertyName)) {
-                            I_CmsXmlContentValue propValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
-                                elemValue.getPath(),
-                                CmsXmlContainerPage.XmlNode.PROPERTIES.getName()), locale, j);
-                            xmlCnt.getValue(
-                                CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
-                                locale,
-                                0).setStringValue(cms, propertyName);
-                            I_CmsXmlContentValue valValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
-                                propValue.getPath(),
-                                CmsXmlContainerPage.XmlNode.VALUE.getName()), locale, 0);
-                            if (propertiesConf.get(propertyName).getPropertyType() == CmsXmlContentProperty.T_URI) {
-                                xmlCnt.addValue(
-                                    cms,
-                                    CmsXmlUtils.concatXpath(
-                                        valValue.getPath(),
-                                        CmsXmlContainerPage.XmlNode.URI.getName()),
-                                    locale,
-                                    0).setStringValue(cms, properties.get(propertyName).getStructureValue());
-                            } else {
-                                xmlCnt.addValue(
-                                    cms,
-                                    CmsXmlUtils.concatXpath(
-                                        valValue.getPath(),
-                                        CmsXmlContainerPage.XmlNode.STRING.getName()),
-                                    locale,
-                                    0).setStringValue(cms, properties.get(propertyName).getStructureValue());
-                            }
-                            j++;
+                        if ((properties.get(propertyName).getStructureValue() == null)
+                            || !propertiesConf.containsKey(propertyName)) {
+                            continue;
                         }
+                        // only if there is a value set and the property is configured in the schema we will save it to the container-page 
+                        I_CmsXmlContentValue propValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                            elemValue.getPath(),
+                            CmsXmlContainerPage.XmlNode.PROPERTIES.getName()), locale, j);
+                        xmlCnt.getValue(
+                            CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
+                            locale,
+                            0).setStringValue(cms, propertyName);
+                        I_CmsXmlContentValue valValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                            propValue.getPath(),
+                            CmsXmlContainerPage.XmlNode.VALUE.getName()), locale, 0);
+                        if (propertiesConf.get(propertyName).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+                            I_CmsXmlContentValue filelistValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                                valValue.getPath(),
+                                CmsXmlContainerPage.XmlNode.FILELIST.getName()), locale, 0);
+                            int index = 0;
+                            for (String strId : CmsStringUtil.splitAsList(
+                                properties.get(propertyName).getStructureValue(),
+                                CmsXmlContainerPage.IDS_SEPARATOR)) {
+                                try {
+                                    CmsResource res = cms.readResource(new CmsUUID(strId));
+                                    I_CmsXmlContentValue fileValue = xmlCnt.getValue(CmsXmlUtils.concatXpath(
+                                        filelistValue.getPath(),
+                                        CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
+                                    if (fileValue == null) {
+                                        fileValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                                            filelistValue.getPath(),
+                                            CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
+                                    }
+                                    fileValue.setStringValue(cms, cms.getSitePath(res));
+                                    index++;
+                                } catch (CmsException e) {
+                                    // could happen when the resource are meanwhile deleted
+                                    LOG.error(e.getLocalizedMessage(), e);
+                                }
+                            }
+                        } else {
+                            xmlCnt.addValue(
+                                cms,
+                                CmsXmlUtils.concatXpath(
+                                    valValue.getPath(),
+                                    CmsXmlContainerPage.XmlNode.STRING.getName()),
+                                locale,
+                                0).setStringValue(cms, properties.get(propertyName).getStructureValue());
+                        }
+                        j++;
                     }
                 }
-
             }
             cntCount++;
         }
