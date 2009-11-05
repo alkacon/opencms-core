@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/04 14:56:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/05 07:25:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -76,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.6
  */
@@ -620,9 +621,12 @@ public class CmsSitemapServer extends CmsJspActionElement {
         for (ReqParam param : params) {
             String value = request.getParameter(param.getName());
             if (value == null) {
-                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    param.getName()));
+                if (result != null) {
+                    CmsMessages bundle = Messages.get().getBundle();
+                    result.put(JsonResponse.ERROR.getName(), bundle.key(
+                        Messages.ERR_JSON_MISSING_PARAMETER_1,
+                        param.getName()));
+                }
                 return false;
             }
         }
