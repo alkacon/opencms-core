@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2009/10/13 09:28:41 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
+ * Date   : $Date: 2009/11/05 14:18:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,8 +40,8 @@ package org.opencms.xml.content;
  */
 public class CmsXmlContentProperty {
 
-    /** Property type constant uri. */
-    public static final String T_URI = "uri";
+    /** Property type constant vfs list. */
+    public static final String T_VFSLIST = "vfslist";
 
     /** Property type constant string. */
     public static final String T_STRING = "string";
