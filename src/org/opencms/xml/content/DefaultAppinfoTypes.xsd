@@ -148,14 +148,14 @@
 		<xsd:attribute name="rule-regex" type="xsd:string" use="optional" />
 		<xsd:attribute name="rule-type" type="OpenCmsDefaultAppinfoValidationruleType" use="optional" />
 		<xsd:attribute name="nice-name" type="xsd:string" use="optional" />
-		<xsd:attribute name="desciption" type="xsd:string" use="optional" />
+		<xsd:attribute name="description" type="xsd:string" use="optional" />
 		<xsd:attribute name="error" type="xsd:string" use="optional" />
 		
 	</xsd:complexType>
 	
 	<xsd:simpleType name="OpenCmsDefaultAppinfoPropertyType">
 		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="string|uri" />
+			<xsd:pattern value="string|vfslist" />
 		</xsd:restriction>
 	</xsd:simpleType>
 </xsd:schema>
