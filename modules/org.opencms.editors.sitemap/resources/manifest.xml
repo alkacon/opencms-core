@@ -47,13 +47,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>search.index</name>
-					<value><![CDATA[Online project EN (VFS)]]></value>
-				</property>
-				<property>
-					<name>search.root</name>
-					<value><![CDATA[/demo_t3/]]></value>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/workplace/editors/sitemap/sitemap.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -211,21 +207,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/editors/sitemap/include.txt</source>
-			<destination>system/workplace/editors/sitemap/include.txt</destination>
-			<type>plain</type>
-			<uuidstructure>b841b73e-c865-11de-a457-ab20365f6268</uuidstructure>
-			<uuidresource>b841b73f-c865-11de-a457-ab20365f6268</uuidresource>
-			<datelastmodified>Tue, 03 Nov 2009 10:54:05 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 03 Nov 2009 10:43:27 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/editors/sitemap/server.jsp</source>
 			<destination>system/workplace/editors/sitemap/server.jsp</destination>
 			<type>jsp</type>
@@ -237,6 +218,30 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/sitemap/sitemap.jsp</source>
+			<destination>system/workplace/editors/sitemap/sitemap.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>bd3fcee1-c9e6-11de-ba42-276a91009534</uuidstructure>
+			<uuidresource>bd3fcee2-c9e6-11de-ba42-276a91009534</uuidresource>
+			<datelastmodified>Thu, 05 Nov 2009 09:11:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 Nov 2009 08:39:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
