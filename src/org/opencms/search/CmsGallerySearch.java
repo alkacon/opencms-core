@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsGallerySearch.java,v $
- * Date   : $Date: 2009/11/03 14:03:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/06 08:53:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,20 +47,80 @@ public class CmsGallerySearch {
     /** Sort parameter constants. */
     public enum SortParam {
 
-        /** Sort ascending. */
-        ASC("asc"),
+        /** Sort created by ascending. */
+        CREATEDBY_ASC("createdby.asc"),
 
-        /** Sort by change-date. */
-        CHANGEDATE("changedate"),
+        /** Sort created by descending. */
+        CREATEDBY_DESC("createdby.desc"),
 
-        /** Sort descending. */
-        DESC("desc"),
+        /** Sort date created ascending. */
+        DATECREATED_ASC("datecreated.asc"),
 
-        /** Sort by title. */
-        TITLE("title"),
+        /** Sort date created descending. */
+        DATECREATED_DESC("datecreated.desc"),
 
-        /** Sort by type. */
-        TYPE("type");
+        /** Sort date expired ascending. */
+        DATEEXPIRED_ASC("dateexpired.asc"),
+
+        /** Sort date expired descending. */
+        DATEEXPIRED_DESC("dateexpired.desc"),
+
+        /** Sort date modified ascending. */
+        DATEMODIFIED_ASC("datemodified.asc"),
+
+        /** Sort date modified descending. */
+        DATEMODIFIED_DESC("datemodified.desc"),
+
+        /** Sort date released ascending. */
+        DATERELEASED_ASC("datereleased.asc"),
+
+        /** Sort date released descending. */
+        DATERELEASED_DESC("datereleased.desc"),
+
+        /** Sort modified by ascending. */
+        MODIFIEDBY_ASC("modifiedby.asc"),
+
+        /** Sort modified by descending. */
+        MODIFIEDBY_DESC("modifiedby.desc"),
+
+        /** Sort path ascending. */
+        PATH_ASC("path.asc"),
+
+        /** Sort path descending. */
+        PATH_DESC("path.desc"),
+
+        /** Sort score ascending. */
+        SCORE_ASC("score.asc"),
+
+        /** Sort score descending. */
+        SCORE_DESC("score.desc"),
+
+        /** Sort size ascending. */
+        SIZE_ASC("size.asc"),
+
+        /** Sort size descending. */
+        SIZE_DESC("size.desc"),
+
+        /** Sort state ascending. */
+        STATE_ASC("state.asc"),
+
+        /** Sort state descending. */
+        STATE_DESC("state.desc"),
+
+        /** Sort title ascending. */
+        TITLE_ASC("title.asc"),
+
+        /** Sort title ascending. */
+        TITLE_DESC("title.desc"),
+
+        /** Sort type ascending. */
+        TYPE_ASC("type.asc"),
+
+        /** Sort type descending. */
+        TYPE_DESC("type.desc");
+
+        /** The default sort param. */
+        public static final SortParam DEFAULT = TITLE_DESC;
 
         /** Property name. */
         private String m_name;
@@ -83,13 +143,19 @@ public class CmsGallerySearch {
     }
 
     /** Array of requested categories. */
-    private String[] m_categories;
+    private List<String> m_categories;
 
     /** Array of requested galleries. */
-    private String[] m_galleries;
+    private List<String> m_galleries;
+
+    /** The number of results per page. */
+    private int m_matchesPerPage;
 
     /** The number of pages for the result list. */
     private int m_pageCount;
+
+    /** The current result-page-index. */
+    private int m_pageIndex;
 
     /** Search query. */
     private String m_query;
@@ -97,62 +163,36 @@ public class CmsGallerySearch {
     /** The current search result. */
     private List<CmsSearchResult> m_result;
 
-    /** The current result-page-index. */
-    private int m_pageIndex;
-
     /** The total number of search results matching the query. */
     private int m_searchResultCount;
-
-    /** Array of requested types. */
-    private int[] m_types;
-
-    /** The number of results per page. */
-    private int m_matchesPerPage;
-
-    /** The sort-order. */
-    private SortParam m_sortOrder;
 
     /** The sort-by properties. */
     private SortParam m_sortBy;
 
-    /**
-     * Returns the sortOrder.<p>
-     *
-     * @return the sortOrder
-     */
-    public SortParam getSortOrder() {
+    /** The sort-order. */
+    private SortParam m_sortOrder;
 
-        return m_sortOrder;
+    /** Array of requested types. */
+    private List<Integer> m_typeIds;
+
+    /**
+     * Returns the categories.<p>
+     *
+     * @return the categories
+     */
+    public List<String> getCategories() {
+
+        return m_categories;
     }
 
     /**
-     * Sets the sortOrder.<p>
+     * Returns the galleries.<p>
      *
-     * @param sortOrder the sortOrder to set
+     * @return the galleries
      */
-    public void setSortOrder(SortParam sortOrder) {
+    public List<String> getGalleries() {
 
-        m_sortOrder = sortOrder;
-    }
-
-    /**
-     * Returns the sortBy.<p>
-     *
-     * @return the sortBy
-     */
-    public SortParam getSortBy() {
-
-        return m_sortBy;
-    }
-
-    /**
-     * Sets the sortBy.<p>
-     *
-     * @param sortBy the sortBy to set
-     */
-    public void setSortBy(SortParam sortBy) {
-
-        m_sortBy = sortBy;
+        return m_galleries;
     }
 
     /**
@@ -163,36 +203,6 @@ public class CmsGallerySearch {
     public int getMatchesPerPage() {
 
         return m_matchesPerPage;
-    }
-
-    /**
-     * Sets the matchesPerPage.<p>
-     *
-     * @param matchesPerPage the matchesPerPage to set
-     */
-    public void setMatchesPerPage(int matchesPerPage) {
-
-        m_matchesPerPage = matchesPerPage;
-    }
-
-    /**
-     * Returns the categories.<p>
-     *
-     * @return the categories
-     */
-    public String[] getCategories() {
-
-        return m_categories;
-    }
-
-    /**
-     * Returns the galleries.<p>
-     *
-     * @return the galleries
-     */
-    public String[] getGalleries() {
-
-        return m_galleries;
     }
 
     /**
@@ -246,13 +256,33 @@ public class CmsGallerySearch {
     }
 
     /**
-     * Returns the types.<p>
+     * Returns the sortBy.<p>
      *
-     * @return the types
+     * @return the sortBy
      */
-    public int[] getTypes() {
+    public SortParam getSortBy() {
 
-        return m_types;
+        return m_sortBy;
+    }
+
+    /**
+     * Returns the sortOrder.<p>
+     *
+     * @return the sortOrder
+     */
+    public SortParam getSortOrder() {
+
+        return m_sortOrder;
+    }
+
+    /**
+     * Returns the type-id's.<p>
+     *
+     * @return the type-id's
+     */
+    public List<Integer> getTypeIds() {
+
+        return m_typeIds;
     }
 
     /**
@@ -260,7 +290,7 @@ public class CmsGallerySearch {
      *
      * @param categories the categories to set
      */
-    public void setCategories(String[] categories) {
+    public void setCategories(List<String> categories) {
 
         m_categories = categories;
     }
@@ -270,9 +300,19 @@ public class CmsGallerySearch {
      *
      * @param galleries the galleries to set
      */
-    public void setGalleries(String[] galleries) {
+    public void setGalleries(List<String> galleries) {
 
         m_galleries = galleries;
+    }
+
+    /**
+     * Sets the matchesPerPage.<p>
+     *
+     * @param matchesPerPage the matchesPerPage to set
+     */
+    public void setMatchesPerPage(int matchesPerPage) {
+
+        m_matchesPerPage = matchesPerPage;
     }
 
     /**
@@ -296,13 +336,33 @@ public class CmsGallerySearch {
     }
 
     /**
-     * Sets the types.<p>
+     * Sets the sortBy.<p>
      *
-     * @param types the types to set
+     * @param sortBy the sortBy to set
      */
-    public void setTypes(int[] types) {
+    public void setSortBy(SortParam sortBy) {
 
-        m_types = types;
+        m_sortBy = sortBy;
+    }
+
+    /**
+     * Sets the sortOrder.<p>
+     *
+     * @param sortOrder the sortOrder to set
+     */
+    public void setSortOrder(SortParam sortOrder) {
+
+        m_sortOrder = sortOrder;
+    }
+
+    /**
+     * Sets the type-id's.<p>
+     *
+     * @param typeIds the type-id's to set
+     */
+    public void setTypeIds(List<Integer> typeIds) {
+
+        m_typeIds = typeIds;
     }
 
 }

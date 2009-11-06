@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2009/09/09 15:54:52 $
- * Version: $Revision: 1.35.2.1 $
+ * Date   : $Date: 2009/11/06 08:53:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.35.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -349,6 +349,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @return a list of file extensions mappings for this resource type in an unmodifiable List
      */
     List<String> getConfiguredMappings();
+
+    /**
+     * Returns the gallery type for this resource type.<p>
+     * 
+     * @return the gallery type, if no gallery is configured <code>null</code> will be returned
+     */
+    I_CmsResourceType getGalleryType();
 
     /**
      * Returns the loader type id of this resource type.<p>

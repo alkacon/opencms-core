@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/11/05 08:05:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/06 08:53:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.loader.CmsLoaderException;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -52,6 +54,7 @@ import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,6 +79,15 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** Configuration key for the (optional) internal flag. */
     public static final String CONFIGURATION_INTERNAL = "resource.flag.internal";
+
+    /** Configuration key for the optional folder class name. */
+    public static final String CONFIGURATION_GALLERY_TYPE_NAME = "gallery.type.name";
+
+    /** The gallery type name for this resource type. */
+    private String m_galleryTypeName;
+
+    /** The gallery type for this resource type. */
+    private I_CmsResourceType m_galleryType;
 
     /** Macro for the folder path of the current resource. */
     public static final String MACRO_RESOURCE_FOLDER_PATH = "resource.folder.path";
@@ -146,9 +158,24 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         m_configuration.put(paramName, paramValue);
-        if (CONFIGURATION_INTERNAL.equalsIgnoreCase(paramName)) {
-            m_internal = Boolean.valueOf(paramValue.trim());
+        if (CmsStringUtil.isNotEmpty(paramName) && CmsStringUtil.isNotEmpty(paramValue)) {
+            if (CONFIGURATION_INTERNAL.equalsIgnoreCase(paramName)) {
+                m_internal = Boolean.valueOf(paramValue.trim());
+            }
+            if (CONFIGURATION_GALLERY_TYPE_NAME.equalsIgnoreCase(paramName)) {
+                m_galleryTypeName = paramValue.trim();
+            }
         }
+    }
+
+    /**
+     * Returns the galleryTypeName.<p>
+     *
+     * @return the galleryTypeName
+     */
+    public String getGalleryTypeName() {
+
+        return m_galleryTypeName;
     }
 
     /**
@@ -447,6 +474,24 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public List<String> getConfiguredMappings() {
 
         return m_mappings;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getGalleryType()
+     */
+    public I_CmsResourceType getGalleryType() {
+
+        if ((m_galleryType == null) && !CmsStringUtil.isEmptyOrWhitespaceOnly(m_galleryTypeName)) {
+
+            CmsResourceManager rm = OpenCms.getResourceManager();
+            try {
+                m_galleryType = rm.getResourceType(m_galleryTypeName);
+            } catch (CmsLoaderException e) {
+                // TODO: Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return m_galleryType;
     }
 
     /**
