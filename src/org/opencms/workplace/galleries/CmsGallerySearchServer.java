@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/06 08:53:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/11/06 13:02:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.6
  */
@@ -808,7 +808,12 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         JSONArray categories = query.getJSONArray(JsonKeys.CATEGORIES.getName());
         List<String> categoriesList = transformToStringList(categories);
         String queryStr = query.getString(JsonKeys.QUERY.getName());
-        CmsGallerySearch.SortParam sortOrder = CmsGallerySearch.SortParam.valueOf(query.getString(JsonKeys.SORTORDER.getName()));
+        CmsGallerySearch.SortParam sortOrder = CmsGallerySearch.SortParam.DEFAULT;
+        try {
+            sortOrder = CmsGallerySearch.SortParam.valueOf(query.getString(JsonKeys.SORTORDER.getName()).toUpperCase());
+        } catch (Exception e) {
+            //may happen
+        }
         int page = query.getInt(JsonKeys.PAGE.getName());
 
         List<String> typeNames = new ArrayList<String>();
@@ -828,9 +833,15 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         params.setIndex(indexName);
         params.setMatchesPerPage(20);
         params.setSearchPage(page);
-        params.setResourceTypes(typeNames);
-        params.setCategories(categoriesList);
-        params.setRoots(galleriesList);
+        if (typeNames != null) {
+            params.setResourceTypes(typeNames);
+        }
+        if (categoriesList != null) {
+            params.setCategories(categoriesList);
+        }
+        if (galleriesList != null) {
+            params.setRoots(galleriesList);
+        }
         // search
         CmsSearch searchBean = new CmsSearch();
         searchBean.init(m_cms);
