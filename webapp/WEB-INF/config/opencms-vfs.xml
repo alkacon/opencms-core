@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-vfs.dtd">
-
 <opencms>
 	<vfs>
 		<resources>
 			<resourceloaders>
-				<loader class="org.opencms.loader.CmsDumpLoader" />
+        <loader class="org.opencms.loader.CmsDumpLoader" />
 				<loader class="org.opencms.loader.CmsImageLoader">
-					<param name="image.scaling.enabled">true</param>		
-				</loader>		
+					<param name="image.scaling.enabled">true</param>
+				</loader>
 				<loader class="org.opencms.loader.CmsPointerLoader" />
 				<loader class="org.opencms.loader.CmsJspLoader" />
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
@@ -73,20 +72,20 @@
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7">
 				    <param name="gallery.type.name">downloadgallery</param>
                 </type>
-				<type class="org.opencms.file.types.CmsRecourceTypeFolderExtended" name="imagegallery" id="8">
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxImageGallery</param>
 					<param name="folder.class.params">w:120,h:90,c:D4D0C8,t:1,r:2</param>
 				</type>
-				<type class="org.opencms.file.types.CmsRecourceTypeFolderExtended" name="downloadgallery" id="9">
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxDownloadGallery</param>
 				</type>	
-				<type class="org.opencms.file.types.CmsRecourceTypeFolderExtended" name="linkgallery" id="10">
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="linkgallery" id="10">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxLinkGallery</param>
 				</type>
-				<type class="org.opencms.file.types.CmsRecourceTypeFolderExtended" name="htmlgallery" id="11">
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="htmlgallery" id="11">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 				</type>
-				<type class="org.opencms.file.types.CmsRecourceTypeFolderExtended" name="tablegallery" id="12">
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
