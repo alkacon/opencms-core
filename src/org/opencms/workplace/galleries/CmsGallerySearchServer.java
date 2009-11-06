@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/06 13:06:45 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/11/06 13:20:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.6
  */
@@ -831,7 +831,12 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         CmsUser user = m_cms.getRequestContext().currentUser();
         String indexName = new CmsUserSettings(user).getWorkplaceSearchIndexName();
 
-        CmsSearchParameters params = new CmsSearchParameters(queryStr);
+        CmsSearchParameters params = new CmsSearchParameters();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(queryStr)) {
+            params.setIgnoreQuery(true);
+        } else {
+            params.setQuery(queryStr);
+        }
         params.setIndex(indexName);
         params.setMatchesPerPage(20);
         params.setSearchPage(page);
