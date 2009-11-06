@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/06 13:02:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/11/06 13:06:45 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,7 @@ import org.opencms.search.CmsGallerySearch;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -80,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.6
  */
@@ -711,7 +712,8 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
             CmsSearchResult sResult = iSearchResult.next();
             JSONObject resultEntry = new JSONObject();
             resultEntry.put("changedate", sResult.getDateLastModified());
-            resultEntry.put("title", sResult.getField("title"));
+            resultEntry.put("title", sResult.getField(CmsSearchField.FIELD_TITLE));
+            resultEntry.put("description", sResult.getField(CmsSearchField.FIELD_DESCRIPTION));
             resultEntry.put("type", sResult.getDocumentType());
             resultEntry.put("path", sResult.getPath());
             result.put(resultEntry);
