@@ -1,3 +1,7 @@
+<%@ page import="org.opencms.jsp.*" %><%
+    CmsJspActionElement wp = new CmsJspActionElement(pageContext, request, response);
+%>
+
 <!DOCTYPE html 
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -5,17 +9,20 @@
 <head>
 <script type="text/javascript" src="lib/jquery-1.3.2.js"></script>
 <script type="text/javascript" src="lib/jquery-ui-1.8a1.js"></script>
+<script type="text/javascript" src="lib/json2.js"></script>
 <script type="text/javascript">
 var cms = { html: {}, galleries: {}, messages: {} };
 </script>
 <script type="text/javascript" src="/opencms/opencms/system/workplace/editors/ade/cms.messages.jsp"></script>
 <script type="text/javascript" src="js/cms.html.js"></script>
 <script type="text/javascript" src="js/cms.galleries.js"></script>
-<script type="text/javascript">    
+<script type="text/javascript">  
+    vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
+    
     $(function() {        
-        cms.galleries.initAddDialog();               
+        cms.galleries.initAddDialog();                
 	});
-</script>
+</script> 
 <title>Search demo</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/custom-theme/jquery-ui-1.7.2.custom.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/advanced_direct_edit.css" />
@@ -25,10 +32,10 @@ var cms = { html: {}, galleries: {}, messages: {} };
 	    font-family: Helvetica, Arial, sans-serif;        
 	}
     
-    #main{ 
+    #cms-gallery-main{ 
        /*  margin: 50px auto; */
         width: 650px;
-        /* border: 2px solid #A9A9A9;*/
+        /* border: 2px solid #A9A9A9;*/ 
         font-size: 12px;
         padding: 10px 0px 60px 0px;
         background: #ffffff;
@@ -42,7 +49,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
         overflow:auto;
         width:600px;
     }
-    
+     
     .cms-list-scrolling-innner {
         margin: 0px;
         padding: 0px;
@@ -61,7 +68,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
     .cms-list-checkbox {
         width: 32px; 
         height: 32px; 
-        background: transparent url(css/custom-theme/images/bullet_grey.png) no-repeat scroll center center; 
+        background: transparent url(css/images/checkbox.gif) no-repeat scroll -7px -10px; 
         float: left;    
     }
     
@@ -72,14 +79,16 @@ var cms = { html: {}, galleries: {}, messages: {} };
         float: left;
     }
     
-    .cms-list-item {
-        width: 540px; 
+    .cms-list-item { 
+        /*width: 540px; */
+        width: 420px;
         height: 34px; 
         float: left;
     }
     
     .cms-list-itemcontent {
-        width: 500px; 
+        /*width: 500px;*/
+        width: 380px;        
         height: 34px; 
         float: left;
     }
@@ -105,11 +114,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
         border: 1px solid #fcefa1; 
         background: #fbf9ee url(images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x; 
         color: #363636; 
-    }
-       
-    .cms-list-item-active div.cms-list-checkbox { 
-       background: transparent url(css/custom-theme/images/bullet_green.png) no-repeat scroll center center;
-    }
+    }       
    
    .cms-list-item-hover div.cms-list-item { 
         border: 1px solid #a6a6a6; 
@@ -119,8 +124,13 @@ var cms = { html: {}, galleries: {}, messages: {} };
         outline: none; 
    }
    
+    .cms-list-item-active div.cms-list-checkbox,
+    .cms-list-item-active { 
+       background-position: -7px -210px;
+    }
+   
    .cms-list-item-hover div.cms-list-checkbox { 
-       background: transparent url(css/custom-theme/images/bullet_green.png) no-repeat scroll center center;
+       background-position: -7px -110px;
    }
     
     
@@ -130,6 +140,11 @@ var cms = { html: {}, galleries: {}, messages: {} };
         padding:2px;
         margin: 1px;
         position:relative;            
+    }
+    
+           
+    .cms-result-criteria {
+        margin: 5px 7px 10px 2px; 
     }
     
     span.cms-search-title {       
@@ -148,29 +163,43 @@ var cms = { html: {}, galleries: {}, messages: {} };
     span.cms-search-remove:hover {
         background-color: #a8adb4;
     }
- 
-    .gallery {
-        
+    
+    .cms-result-list-item {
+        list-style-image:none;
+        list-style-position:outside;
+        list-style-type:none;
+        margin: 2px 2px 0px 4px;
+    }
+    
+    
+    
+    .cms-result-list-title {
+        font-weight:bold; 
+        overflow:hidden;
+    }
+    
+    .cms-result-list-path {        
+        overflow:hidden;
     }
 
-    /** Option area over the gallery list */
-    .cms-list-options {
+    /** Option area over and under the criteria list */
+    .cms-list-options{
         display:inline-block;
         margin:10px 2px 10px 7px;
         width:600px;
-    }    
+    }           
     
     .cms-list-options span.cms-drop-down {
-        float: left;
+        float: left;    
     }
     
-    .cms-list-options span.cms-ft-search {
+    .cms-list-options span.cms-ft-search,
+    .cms-list-options button.cms-item-right {
         float: right;
     }
     
     .cms-list-options button {
         cursor: pointer;
-        float: right; 
         width: auto;
     }
     
@@ -182,10 +211,76 @@ var cms = { html: {}, galleries: {}, messages: {} };
         width: 150px;
     }
     
+    /** Full Text Search tab*/
+    .cms-search-options {
+        display:inline-block;
+        margin:10px 2px 10px 7px;
+        width:600px;
+    }
+    
+    .cms-search-options div.cms-checkbox-label {
+        float: left; 
+        line-height: 32px; 
+        margin-right: 10px;
+    }
+     
+    .cms-search-options span.cms-item-left,
+    .cms-search-options button.cms-item-left{
+        float: left;    
+    }
+    
+    .cms-search-options div.cms-item-left {
+        float: left;
+        line-height: 32px;
+        margin-right: 10px;
+    }
+        
+    .cms-search-options span.cms-item-right,
+    .cms-search-options button.cms-item-right {
+        float: right;
+    }
+    
+    .cms-search-options button {
+        cursor: pointer;
+        width: auto;
+    }
+    
+    .cms-search-options span label,
+    .cms-search-options label {
+        margin-right: 10px;
+    }
+    
+    .cms-input-date input{
+        width: 110px;
+        margin-right: 20px;
+    }
+    
+    /** Categories levels*/
+   
+   .cms-list .cms-active-level .cms-level-0 div.cms-list-item {
+       
+   }
+   
+   /*.cms-list.cms-active-level.cms-level-1 div.cms-list-item, */
+   .cms-list.cms-active-level.cms-level-1 div.cms-list-checkbox {
+       margin-left: 25px;
+   }
+   
+   /*.cms-list.cms-active-level.cms-level-2 div.cms-list-item,*/
+   .cms-list.cms-active-level.cms-level-2 div.cms-list-checkbox {
+       margin-left: 40px;
+   }
+   
+   /*.cms-list.cms-active-level.cms-level-3 div.cms-list-item, */
+   .cms-list.cms-active-level.cms-level-3 div.cms-list-checkbox {
+       margin-left: 55px;
+   }
+
+    
 </style>
 	</head>
 	<body>
-	    <div id="main">
+	    <div id="cms-gallery-main"> 
 		    <div id="tabs">
                 <ul>
                      <li><a href="#tabs-result">Search results</a></li>
@@ -194,14 +289,9 @@ var cms = { html: {}, galleries: {}, messages: {} };
                      <li><a href="#tabs-categories">Categories</a></li>
                      <li><a href="#tabs-fulltextsearch">Full Text Search</a></li>
                 </ul>
-          
-                <div id="tabs-result">
-            
-                </div>
-
-               <div class="" id="tabs-fulltextsearch">
+               <!--<div class="" id="tabs-fulltextsearch">
                   <p>tabs-fulltextsearch.</p>
-               </div>
+               </div>-->
             </div>
         </div>
 	</body>

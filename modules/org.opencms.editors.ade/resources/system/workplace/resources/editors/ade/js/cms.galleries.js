@@ -21,17 +21,44 @@
     /** html-class for the panel above or under the list of items. */
     var classListOptions = cms.galleries.classListOptions = 'cms-list-options';
     
+    /** html-class fragment for level information of the categories. */
+    var classConstLevel = 'cms-level-';
+    
     /** Array with available search criteria. */
-    var keysSearchObject = cms.galleries.keysSearchObject = ['types', 'galleries', 'categories', 'searchquery'];
+    var keysSearchObject = cms.galleries.keysSearchObject = ['types', 'galleries', 'categories', 'query'];
     
     /** Map of key words for the criteria buttons on the result tab. */
     var criteriaStr = cms.galleries.criteriaStr = {
         types: ['Type: ', 'Types: '],
         galleries: ['Gallery: ', 'Galleries: '],
         categories: ['Category: ', 'Categories: '],
-        searchquery: ['Search query: ', 'Seach queries: ']
+        query: ['Search query: ', 'Seach queries: ']
     
     };
+    
+    /** html fragment for the tab with the results of the search. */
+    var htmlTabResultSceleton = cms.galleries.htmlTabResultSceleton = '<div id="' + cms.galleries.idTabResult + '">\
+            <div class="cms-result-criteria"></div>\
+            <div id="resultoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
+                        <span class="cms-drop-down">\
+                            <label>Sort by:</label>\
+                            <select name="categories" size="1">\
+                                <option value="title.asc">Title Ascending</option>\
+                                <option value="title.desc">Title Descending</option>\
+                                <option value="type.asc">Type Ascending</option>\
+                                <option value="type.desc">Type Descending</option>\
+                                <option value="datemodified.asc">Date modifired Ascending</option>\
+                                <option value="datemodified.desc">Date modifired Descending</option>\
+                                <option value="path.asc">Path Ascending</option>\
+                                <option value="path.desc">Path Descending</option>\
+                            </select>\
+                        </span>\
+                        <span class="cms-ft-search"><label>Search:</label><input type="text"/></span>\
+             </div>\
+             <div id="results" class="cms-list-scrolling ui-corner-all">\
+                        <ul class="cms-list-scrolling-innner"></ul>\
+             </div>\
+         </div>';
     
     /** html fragment for the tab with the types' list. */
     var htmlTabTypesSceleton = cms.galleries.htmlTabTypesSceleton = '<div id="tabs-types">\
@@ -39,8 +66,8 @@
                     <span class="cms-drop-down">\
                         <label>Sort by:</label>\
                         <select name="types" size="1">\
-                            <option value="Name">Name</option>\
-                            <option value="Date">Date</option>\
+                            <option value="title,asc">Title Ascending</option>\
+                            <option value="title,desc">Title Descending</option>\
                         </select>\
                     </span>\
                     <span class="cms-ft-search"><label>Search:</label><input type="text"/></span>\
@@ -51,7 +78,7 @@
                 <div id="typesbuttons" class="' +
     cms.galleries.classListOptions +
     '">\
-                    <button class="ui-state-default ui-corner-all">Select</button>\
+                    <button class="ui-state-default ui-corner-all cms-item-right">Select</button>\
                 </div>\
               </div>';
     
@@ -61,9 +88,10 @@
                     <span class="cms-drop-down">\
                         <label>Sort by:</label>\
                         <select name="galleries" size="1">\
-                            <option value="Name">Name</option>\
-                            <option value="Date">Date</option>\
-                            <option value="Type">Type</option>\
+                            <option value="title,asc">Title Ascending</option>\
+                            <option value="title,desc">Title Descending</option>\
+                            <option value="type,asc">Type Ascending</option>\
+                            <option value="type,desc">Type Descending</option>\
                         </select>\
                     </span>\
                     <span class="cms-ft-search"><label>Search:</label><input type="text"/></span>\
@@ -74,7 +102,7 @@
                 <div id="galleriesbuttons" class="' +
     cms.galleries.classListOptions +
     '">\
-                    <button class="ui-state-default ui-corner-all">Select</button>\
+                    <button class="ui-state-default ui-corner-all cms-item-right">Select</button>\
                 </div>\
               </div>';
     
@@ -83,9 +111,10 @@
                 <div id="categoriesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
                         <label>Sort by:</label>\
-                        <select name="types" size="1">\
-                            <option value="Name">Name</option>\
-                            <option value="hierarchy">Hierarchy</option>\
+                        <select name="categories" size="1">\
+                            <option value="path,asc">Hierarchy</option>\
+                            <option value="title,asc">Title Ascending</option>\
+                            <option value="title,desc">Title Descending</option>\
                         </select>\
                     </span>\
                     <span class="cms-ft-search"><label>Search:</label><input type="text"/></span>\
@@ -96,14 +125,35 @@
                 <div id="categoriesbuttons" class="' +
     cms.galleries.classListOptions +
     '">\
-                    <button class="ui-state-default ui-corner-all">Select</button>\
+                    <button class="ui-state-default ui-corner-all cms-item-right">Select</button>\
                 </div>\
               </div>';
     
+    /** html fragment for the tab with the types' list. */
+    var htmlTabFTSeachSceleton = cms.galleries.htmlTabFTSeachSceleton = '<div id="tabs-fulltextsearch">\
+                    <div class="ui-widget cms-search-options">\
+                        <span id="searchQuery" class="cms-item-left"><label>Search for:</label><input type="text"/></span>\
+                    </div>\
+                    <div class="ui-widget cms-search-options">\
+                        <div class="cms-item-left">Search in:</div>\
+                        <div id="searchInTitle" class="cms-list-checkbox"></div>\
+                        <div class="cms-checkbox-label">Title</div>\
+                        <div id="searchInContent" class="cms-list-checkbox"></div>\
+                        <div class="cms-checkbox-label">Content</div>\
+                    </div>\
+                    <div class="ui-widget cms-search-options">\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed after:</label><input type="text"/></span>\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text"/></span>\
+                    </div>\
+                    <div class="cms-search-options">\
+                        <button class="ui-state-default ui-corner-all cms-item-left">Search</button>\
+                    </div>\
+              </div>';
+          
     /** html fragment for the <li> in the galleries list. */
     var listGalleryElement = cms.galleries.listGalleryElement = function(itemTitle, itemUrl) {
     
-        return $('<li></li>').addClass('cms-list').attr('id', itemUrl).append('<div class="cms-list-checkbox"></div>\
+        return $('<li></li>').addClass('cms-list').attr('rel', itemUrl).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
                              <div class="cms-list-image"></div>\
                              <div class="cms-list-itemcontent">\
@@ -116,9 +166,9 @@
     }
     
     /** html fragment for the <li> in the types list. */
-    var listTypeElement = cms.galleries.listTypeElement = function(itemTitle, itemId, itemDesc) {
+    var listTypeElement = cms.galleries.listTypeElement = function(itemTitle, itemId, itemDesc, itemTypes) {
     
-        return $('<li></li>').addClass('cms-list').attr('id', itemId).append('<div class="cms-list-checkbox"></div>\
+        return $('<li></li>').addClass('cms-list').attr('rel', itemId).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
                              <div class="cms-list-image"></div>\
                              <div class="cms-list-itemcontent">\
@@ -131,9 +181,9 @@
     }
     
     /** html fragment for the <li> in the categories list. */
-    var listCategoryElement = cms.galleries.listCategoryElement = function(itemTitle, itemUrl, itemLevel) {
+    var listCategoryElement = cms.galleries.listCategoryElement = function(itemTitle, itemUrl, itemLevel, classItemActive) {
     
-        return $('<li></li>').addClass('cms-list').attr('id', itemUrl).append('<div class="cms-list-checkbox"></div>\
+        return $('<li></li>').addClass('cms-list '+ classItemActive + ' ' + classConstLevel + itemLevel).attr('rel', itemUrl).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
                              <div class="cms-list-image"></div>\
                              <div class="cms-list-itemcontent">\
@@ -159,15 +209,19 @@
         types: [],
         galleries: [],
         categories: [],
-        searchquery: null,
+        query: '',
         page: 1,
+        searchfields: '',
         isChanged: {
             types: true,
             galleries: true,
-            categories: false,
-            searchquery: false
+            categories: true,
+            query: false
         }
     };
+    
+    /** Saves the initial list of all available search criteria from server. */
+    var searchCriteriaListsAsJSON = cms.galleries.searchCriteriaListsAsJSON = {};
     
     /**
      * Dummy content
@@ -251,43 +305,106 @@
         level: 3
     }];
     
+    /** Dummy Array with availabe types for galleries, should be configurable. */
+    var dummyTypes = cms.galleries.dummyTypes = [8, 9, 10, 11, 12];
+   
     /**
-     * Dummy content
+     * Init function for search/add dialog.
      */
-    var dummyTypes = cms.galleries.dummyTypes = [{
-        title: 'Type 1',
-        id: 'id1',
-        desc: 'url/to/type1/'
-    }, {
-        title: 'Type 2',
-        id: 'id2',
-        desc: 'url/to/type2/'
-    }, {
-        title: 'Type 3',
-        id: 'id3',
-        desc: 'url/to/type3/'
-    }, {
-        title: 'Type 4',
-        id: 'id4',
-        desc: 'url/to/type4/'
-    }, {
-        title: 'Type 5',
-        id: 'id5',
-        desc: 'url/to/type5/'
+    var initAddDialog = cms.galleries.initAddDialog = function () {
+       // add galleries tab html
+	   $('#' + cms.galleries.idTabs)             
+            .append(cms.galleries.htmlTabResultSceleton)
+            .append(cms.galleries.htmlTabTypesSceleton)
+            .append(cms.galleries.htmlTabGalleriesSceleton)
+            .append(cms.galleries.htmlTabCategoriesSceleton)
+            .append(cms.galleries.htmlTabFTSeachSceleton);
+                         
+       // bind the select tab event, fill the content of the result tab on selection
+       $('#' + cms.galleries.idTabs).tabs({
+            select: function(event, ui) {
+                // if result tab is selected
+                if (ui.index == 0 ) {
+                    cms.galleries.fillResultTab();    
+                }                
+            }
+       });
+                             
+         
+       cms.galleries.loadSearchLists();
+       $('#' + cms.galleries.idTabs).tabs("select", 1);
+	   $('#' + cms.galleries.idTabs).tabs("disable", 0);             
+       
+       // bind all other events at the end          
+       // bind click, dbclick and hover events on items in criteria lists
+       $('li.cms-list').live('dblclick', cms.galleries.dblclickListItem)
+      	    .live('click', cms.galleries.clickListItem)   
+            .live('mouseover',
+                function () {
+                   $(this).addClass(cms.galleries.classListItemHover);
+               }).live( 'mouseout',
+               function() {
+          	       $(this).removeClass(cms.galleries.classListItemHover);
+        });
+           /* .hover(function() {
+                $(this).addClass(cms.galleries.classListItemHover);
+            }, function() {
+               $(this).removeClass(cms.galleries.classListItemHover);
+       });*/
+       
+       
+       
+       $('#searchInTitle, #searchInContent').click(function () {
+           $(this).toggleClass(cms.galleries.classListItemActive);
+       });
+       
+       $('#searchQuery > input').blur(function() {
+           cms.galleries.searchObject.query = $(this).val();                      
+           cms.galleries.searchObject.isChanged.query = true;
+           
+           /*$.each(cms.galleries.searchObject.query, function() {
+               alert(this);
+           });*/
+           
+       });
+       
+       /** Bind the click event to drop-down box and sort the list */
+       $('span.cms-drop-down option').click(function() {
+           //alert('click');
+           var criteria = $(this).closest('select').attr('name');
+           var params = $(this).val().split(',');
+           var  sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);                               
+           cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);                 
+       });
+       
+        $('li.cms-result-list-item > div').live('mouseover',
+                function () {
+                   $(this).toggleClass('ui-state-hover', true);
+               }).live( 'mouseout',
+               function() {
+          	        $(this).toggleClass('ui-state-hover', false);
+            });
+         
+       // bind click events to remove search criteria html from result tab            
+       $('span.cms-search-remove').live('click',cms.galleries.removeCriteria);
+       
+       // bind the hover and click events to the ok button under the criteria lists    
+       $('.' + cms.galleries.classListOptions + ' button,.cms-search-options button')
+           .hover(
+                function() {                   
+                   $(this).addClass('ui-state-hover');
+                },
+                function() {                    
+                   $(this).removeClass('ui-state-hover');                   
+                })
+           .click(function() {                   
+               //switch to result tab index = 0
+               $('#' + cms.galleries.idTabs).tabs("enable", 0);
+               $('#' + cms.galleries.idTabs).tabs('select', 0);  
+        });  
+    }
     
-    }, {
-        title: 'Type 6',
-        id: 'id6',
-        desc: 'url/to/type6/'
-    }, {
-        title: 'Type 7',
-        id: 'id7',
-        desc: 'url/to/type7/'
-    }, {
-        title: 'Type 8',
-        id: 'id8',
-        desc: 'url/to/type8/'
-    }];
+   
     
     /**
      * Add html for search criteria to result tab
@@ -296,43 +413,150 @@
      * @param {String} searchCriteria the given search criteria
      */
     var addCreteriaToTab = cms.galleries.addCreteriaToTab = function(/** String*/content, /** String*/ searchCriteria) {
-        var target = $('<span id="selected' + searchCriteria + '" class="cms-searchquery ui-widget-content ui-state-hover ui-corner-all"></span>').appendTo($('#' + cms.galleries.idTabResult));
-        target.append('<span class="cms-search-title">' + content + '</span>').append('<span class="cms-search-remove">&nbsp;</span>');
+        var target = $('<span id="selected' + searchCriteria + '" class="cms-searchquery ui-widget-content ui-state-hover ui-corner-all"></span>')
+            .appendTo($('.cms-result-criteria'));
+        target.append('<span class="cms-search-title">' + content + '</span>')
+            .append('<span class="cms-search-remove">&nbsp;</span>');
+    }
+    
+    var configContentTypes = [1,2,3,4,5,6,7];
+    
+    /**
+     * Loads the lists with available resource types, galleries ans categories via ajax call.
+     * TODO: generalize to make it possible to load some preselected 
+     */
+    var loadSearchLists = cms.galleries.loadSearchLists = function () {
+        $.ajax({
+                 'url': vfsPathAjaxJsp,
+                 'data': {                             
+                             'action': 'all',
+                             'data': JSON.stringify({ 'types': configContentTypes })
+                         },
+                 'type': 'POST',
+                 'dataType' : 'json',
+                 'success': cms.galleries.fillCriteriaTabs});
+    }       
+         
+    /**
+     * Fills the list in the search criteria tabs.
+     * 
+     * @param {Object} JSON map object 
+     */
+    var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function(/**JSON*/data) {
+        cms.galleries.searchCriteriaListsAsJSON = data;
+        if (cms.galleries.searchCriteriaListsAsJSON.galleries) {
+            cms.galleries.fillGalleries(cms.galleries.searchCriteriaListsAsJSON.galleries);
+        }
+        if (cms.galleries.searchCriteriaListsAsJSON.categories) {
+            cms.galleries.fillCategories(cms.galleries.searchCriteriaListsAsJSON.categories, 'path');
+        }
+        if (cms.galleries.searchCriteriaListsAsJSON.types) {
+            cms.galleries.fillTypes(cms.galleries.searchCriteriaListsAsJSON.types);
+        }                    
+        // TODO: go through html and the search object and mark the already selected search criteria     
+    }
+    
+    /**
+     * Loads the lists with available resource types, galleries ans categories via ajax call.
+     * TODO: generalize to make it possible to load some preselected 
+     */
+    var loadSearchResults = cms.galleries.loadSearchResults = function () {
+        $.ajax({
+                 'url': vfsPathAjaxJsp,
+                 'data': {                             
+                             'action': 'search',
+                             'data': JSON.stringify({ 'querydata': cms.galleries.searchObject })
+                         },
+                 'type': 'POST',
+                 'dataType' : 'json',
+                 'success': cms.galleries.fillResultList});
+    }
+    
+    var fillResultList = cms.galleries.fillResultList = function(/**JSON*/data) {
+        alert('1');
+        if (data.searchresult.resultcount > 0) {
+           $.each(data.searchresult.resultlist, function () {
+
+                $('#results > ul').append('<li class="cms-result-list-item">\
+                        <div class="ui-widget-content ui-state-default ui-corner-all">\
+                             <div class="cms-list-image"></div>\
+                             <div>\
+                                 <div class="cms-result-list-title">' + this.type + '</div>\
+                                 <div class="cms-result-list-path">' + this.path + '</div>\
+                             </div>\
+                         </div></li>'); 
+                 
+            });
+            
+            /*$('li.cms-result-list-item > div').hover(
+                function () {
+                   $(this).toggleClass('ui-state-hover', true);
+               },
+               function() {
+          	        $(this).toggleClass('ui-state-hover', false);
+            });*/
+        } else {
+            // handle no empty list for search
+        }       
     }
     
     /**
      * Fills the list in the search criteria tabs.
      * 
+     * @param {Object} JSON map object 
      */
-    var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function() {
-    
-        cms.galleries.fillTypes(cms.galleries.dummyTypes);
-        cms.galleries.fillGalleries(cms.galleries.dummyGalleries);
-        cms.galleries.fillCategories(cms.galleries.dummyCategories);               
+    var refreshCriteriaList = cms.galleries.refreshCriteriaList = function(/**Array*/sortedList, /**String*/criteria, option) {
         
+        if (criteria == 'galleries') {            
+            cms.galleries.refreshGalleries(sortedList);
+        } else if (criteria == 'categories') {            
+            cms.galleries.refreshCategories(sortedList, option);
+        } else if (criteria == 'types') {
+            cms.galleries.refreshTypes(sortedList);
+        }                    
         // TODO: go through html and the search object and mark the already selected search criteria     
     }
-    
-    /** 
-     * Creates the HTML for the list of available categories from the given JSON array data.
-     *
-     * Comment: this is an adjusted copy from galleryfunctions.js of the old galleries
-     *
-     * @param {Object} JSON object with categories
+     
+    /**
+     * Creates the HTML for the list of available categories from the given JSON map data.
+     * @param {Object} JSON map object with categories
+     * @param {Object} optional flag to set the categories view. Schould be 'path' for hierarchal view.
      */
-    var fillCategories = cms.galleries.fillCategories = function(data) {
-        var categories = data;
+    var fillCategories = cms.galleries.fillCategories = function(/**Json*/categories, /**String*/option) {
         
-        // add the types to the list
-        for (var i = 0; i < categories.length; i++) {
-            var currCategory = categories[i];
-            
-            $('#categories > ul').append(listCategoryElement(currCategory.title, currCategory.path, currCategory.level));
-        }
+        // switch on or to switch off the hierarchic view
+        var classActive = '';            
+        if (option == 'path') {
+            classActive = 'cms-active-level';
+        }  
+        //add the types to the list
+        for (var i = 0; i < categories.length; i++) {      
+            $('#categories > ul').append(listCategoryElement(categories[i].title, categories[i].path, categories[i].level, classActive));                
+        }                                
         // set isChanged flag, so the search will be send to server
         cms.galleries.searchObject.isChanged.categories = true;
-    }    
+    }
     
+    /**
+     * Refreshes the order of the item in the list as given in parameter array.
+     *  
+     * @param {JSON} categories the ordered list with categories
+     * @param {String} optional flag to set the categories view. Schould be 'path' for hierarchal view.
+     */
+    var refreshCategories = cms.galleries.refreshCategories = function(/**JSON*/categories, /**String*/option) {
+
+        // set the flag to switch on or to switch off the hierarchic view
+        var isActive = false;            
+        if (option == 'path') {
+            isActive = true;
+        }  
+        
+        // reorder the item in the list      
+        $.each(categories, function() {            
+            $("li[rel='" + this.path + "']").appendTo('#categories > ul').toggleClass('cms-active-level', isActive);
+        });               
+    }
+        
     /** 
      * Creates the HTML for the list of available galleries from the given JSON array data.
      *
@@ -340,73 +564,103 @@
      *
      * @param {Object} JSON object with categories
      */
-    var fillGalleries = cms.galleries.fillGalleries = function(data) {
-        var galleries = data;
-        
-        // add the galleries to the list
-        for (var i = 0; i < galleries.length; i++) {
-            var currGall = galleries[i];
-            
-            $('#galleries > ul').append(listGalleryElement(currGall.title, currGall.path));
+    var fillGalleries = cms.galleries.fillGalleries = function(/**JSON*/galleries) {              
+       // add the galleries to the list
+       for(key in galleries){
+           $('#galleries > ul').append(listGalleryElement(galleries[key].title, galleries[key].path));
+           $('li[rel=' + galleries[key].path + ']').data('type',galleries[key].type);             
+       }  
+       // set isChanged flag, so the search will be send to server
+       cms.galleries.searchObject.isChanged.galleries = true;             
+    }
+    
+    /**
+     * Refreshes the order of galleries list as given in parameter array.
+     *  
+     * @param {JSON} galleries the ordered list with galleries
+     */
+    var refreshGalleries = cms.galleries.refreshGalleries = function(/**JSON*/galleries) {
+                
+        // reorder the item in the list      
+        $.each(galleries, function() {            
+            $("li[rel='" + this.path + "']").appendTo('#galleries > ul');
+        });               
+    }
+    
+    /** 
+     * Creates the HTML for the list of available types from the given JSON array data.
+     *
+     * @param {Object} JSON object with resource types
+     */
+    var fillTypes = cms.galleries.fillTypes = function(/**JSON*/types) {              
+        // add the types to the list
+        for (var i = 0; i < types.length; i++) {
+            var currType = types[i];            
+            $('#types > ul').append(listTypeElement(currType.title, currType.typeid, 'TODO_This is the description for this resource type'));
+            $('li[rel=' + currType.typeid + ']').data('galleryTypes',currType.gallerytypeid);
         }
         // set isChanged flag, so the search will be send to server
-        cms.galleries.searchObject.isChanged.galleries = true;             
+        cms.galleries.searchObject.isChanged.types = true;             
+    }
+    
+    /**
+     * Refreshes the order of types list as given in parameter array.
+     *  
+     * @param {JSON} types the ordered list with types
+     */
+    var refreshTypes = cms.galleries.refreshTypes = function(/**JSON*/types) {               
+        // reorder the item in the list      
+        $.each(types, function() {            
+            $("li[rel='" + this.typeId + "']").appendTo('#types > ul');
+        });               
     }
        
     /**
      * Adds the search criteria html to the result tab.
      */
     var fillResultTab = cms.galleries.fillResultTab = function() {
-    
+        var searchEnables = false;
         $.each(cms.galleries.keysSearchObject, function() {
             var searchCriteria = this;
-            if (cms.galleries.searchObject.isChanged[searchCriteria]) {
             
-                var singleSelect = cms.galleries.criteriaStr[searchCriteria][0];
-                var multipleSelect = cms.galleries.criteriaStr[searchCriteria][1];
-                var titles = '';
-                // remove criteria button from result tab
-                $('#selected' + searchCriteria).remove();
-                var selectedLis = $('#' + searchCriteria).find('.' + cms.galleries.classListItemActive).find('.' + cms.galleries.classListItemTitle);
-                // if any search criteria is selected
-                if (selectedLis.length == 1) {
-                    titles = singleSelect.concat($(selectedLis[0]).text());
-                    cms.galleries.addCreteriaToTab(titles, searchCriteria);
-                } else if (selectedLis.length > 1) {
-                    $.each(selectedLis, function() {
-                        if (titles.length == 0) {
-                            titles = multipleSelect.concat($(this).text());
-                        } else {
-                            titles = titles.concat(", ").concat($(this).text());
+                if (cms.galleries.searchObject.isChanged[searchCriteria]) {
+                    // is true, if at least one criteria isChanged
+                    searchEnables = true;
+                    
+                    var singleSelect = cms.galleries.criteriaStr[searchCriteria][0];
+                    var multipleSelect = cms.galleries.criteriaStr[searchCriteria][1];
+                    var titles = '';
+                    // remove criteria button from result tab
+                    $('#selected' + searchCriteria).remove();
+                      
+                    if (searchCriteria == 'query') {
+                          var searchQuery = $('#searchQuery input').val();
+                          titles = singleSelect.concat(searchQuery);
+                          cms.galleries.addCreteriaToTab(titles, searchCriteria);
+                          cms.galleries.searchObject.isChanged[searchCriteria] = false;  
+                    } else {               
+                        var selectedLis = $('#' + searchCriteria).find('.' + cms.galleries.classListItemActive).find('.' + cms.galleries.classListItemTitle);
+                        // if any search criteria is selected
+                        if (selectedLis.length == 1) {
+                            titles = singleSelect.concat($(selectedLis[0]).text());
+                            cms.galleries.addCreteriaToTab(titles, searchCriteria);
+                        } else if (selectedLis.length > 1) {
+                            $.each(selectedLis, function() {
+                                if (titles.length == 0) {
+                                    titles = multipleSelect.concat($(this).text());
+                                } else {
+                                    titles = titles.concat(", ").concat($(this).text());
+                                }
+                            });
+                            cms.galleries.addCreteriaToTab(titles, searchCriteria);
                         }
-                    });
-                    cms.galleries.addCreteriaToTab(titles, searchCriteria);
-                    // TODO: trigger send search criterias to server
-                    //.....
+                        cms.galleries.searchObject.isChanged[searchCriteria] = false;
+                    }
                 }
-                cms.galleries.searchObject.isChanged[searchCriteria] = false;
-            }
         });
-    }
-    
-    /** 
-     * Creates the HTML for the list of available types from the given JSON array data.
-     *
-     * Comment: this is an adjusted copy from galleryfunctions.js of the old galleries
-     *
-     * @param {Object} JSON object with resource types
-     */
-    var fillTypes = cms.galleries.fillTypes = function(data) {
-        var types = data;
         
-        // add the types to the list
-        for (var i = 0; i < types.length; i++) {
-            var currType = types[i];
-            
-            $('#types > ul').append(listTypeElement(currType.title, currType.id, currType.desc));
-        }
-        // set isChanged flag, so the search will be send to server
-        cms.galleries.searchObject.isChanged.types = true;             
+        cms.galleries.loadSearchResults();
+        
     }
     
     /**
@@ -415,7 +669,7 @@
     var clickListItem = cms.galleries.clickListItem = function() {
     
         // id of the li tag and type of search 
-        var itemId = $(this).attr('id');
+        var itemId = $(this).attr('rel');
         var itemCriteria = $(this).closest('div').attr('id');
         
         // adjust the active status of the gallery in the gallery list        
@@ -452,7 +706,7 @@
     var dblclickListItem = cms.galleries.dblclickListItem = function() {
     
         // id of the li tag and type of search 
-        var itemId = $(this).attr('id');
+        var itemId = $(this).attr('rel');
         var itemCriteria = $(this).closest('div').attr('id');
         
         // remove all selected items from search object
@@ -467,74 +721,26 @@
         $('#' + cms.galleries.idTabs).tabs("enable", 0);
         $('#' + cms.galleries.idTabs).tabs('select', 0);
     }
-    
-    /**
-     * Init function for search/add dialog.
-     */
-    var initAddDialog = cms.galleries.initAddDialog = function () {
-       // add galleries tab html
-	   $('#' + cms.galleries.idTabs)
-            .append(cms.galleries.htmlTabTypesSceleton)
-            .append(cms.galleries.htmlTabGalleriesSceleton)
-            .append(cms.galleries.htmlTabCategoriesSceleton);
-                         
-       // bind the select tab event, fill the content of the result tab on selection
-       $('#' + cms.galleries.idTabs).tabs({
-            select: function(event, ui) {
-                // if result tab is selected
-                if (ui.index == 0 ) {
-                    cms.galleries.fillResultTab();    
-                }                
-            }
-       });
-                             
-         
-       cms.galleries.fillCriteriaTabs();
-       $('#' + cms.galleries.idTabs).tabs("select", 1);
-	   $('#' + cms.galleries.idTabs).tabs("disable", 0);
        
-       // bind all other events at the end          
-       // bind click, dbclick and hover events on items in criteria lists
-       $('li.cms-list').live('dblclick', cms.galleries.dblclickListItem)
-      	    .live('click', cms.galleries.clickListItem)   
-            .hover(function() {
-                $(this).addClass(cms.galleries.classListItemHover);
-            }, function() {
-               $(this).removeClass(cms.galleries.classListItemHover);
-       });
-         
-       // bind click events to remove search criteria html from result tab            
-       $('span.cms-search-remove').live('click',cms.galleries.removeCriteria);
-       
-       // bind the hover and click events to the ok button under the criteria lists    
-       $('.' + cms.galleries.classListOptions + ' button')
-           .hover(
-                function() {                   
-                   $(this).addClass('ui-state-hover');
-                },
-                function() {                    
-                   $(this).removeClass('ui-state-hover');                   
-                })
-           .click(function() {                   
-               //switch to result tab index = 0
-               $('#' + cms.galleries.idTabs).tabs("enable", 0);
-               $('#' + cms.galleries.idTabs).tabs('select', 0);  
-        });  
-    }
-    
     /**
      * Removes all selected items from the search object and adjust highlighting
      * 
      * @param {String} searchCriteria key
      */
-    var removeItemsFromSearchObject = cms.galleries.removeItemsFromSearchObject = function(/**String*/searchCriteria) {
-        // if at least one item is selected
-        if (cms.galleries.searchObject[searchCriteria].length > 0) {
-            //remove highlighting for all selected items in the list
-            $('#' + searchCriteria + ' li.cms-list').removeClass(cms.galleries.classListItemActive);
-            // remove all items from search object                                                     
-            cms.galleries.searchObject[searchCriteria] = [];
-        }
+    var removeItemsFromSearchObject = cms.galleries.removeItemsFromSearchObject = function(/**String*/searchCriteria) {               
+            // if at least one item is selected
+            if (cms.galleries.searchObject[searchCriteria].length > 0) {
+                if (searchCriteria == 'query') {
+                    $('#searchQuery input').val('');
+                    // remove all items from search object                                                     
+                    cms.galleries.searchObject[searchCriteria] = '';
+                } else {
+                    //remove highlighting for all selected items in the list
+                    $('#' + searchCriteria + ' li.cms-list').removeClass(cms.galleries.classListItemActive);
+                    // remove all items from search object                                                     
+                    cms.galleries.searchObject[searchCriteria] = [];
+                }
+            }
     }
 
     /**
@@ -552,5 +758,67 @@
 
         // TODO: refresh the list of search results on the result tab
     }
+    
+    /**
+     * Sorts the array of objects by given key and order.
+     * 
+     * @param {Array} list the array to be sorted
+     * @param {String} sortBy the name of the key
+     * @param {String} sortOrder the sort order. It can be 'asc'(default) or 'desc'
+     */
+    var sortList = function(/** Array */list, /**String*/sortBy, /**String*/sortOrder) {
+        var sortedArray = list;
+
+        /*$.each(sortedArray, function(){
+            alert(this.title);
+        });*/
+        
+        if (sortOrder == 'asc' || sortOrder == null) {
+           // alert('asc');
+            sortedArray.sort(function(a,b) {
+                if (a[sortBy] < b[sortBy]){
+                    return -1 ;
+                } else if (a[sortBy] > b[sortBy]) {
+                    return 1;
+                } else {
+                    /*if (a['title'] < b['title']){
+                        return -1 ;
+                    } else if (a['title'] > b['title']) {
+                        return 1;
+                    } else {
+                        return 0;
+                    } */
+                   
+                   return 0; 
+                }                
+            });
+        } else {
+            //alert('desc');
+            sortedArray.sort(function(a,b) {
+                if (a[sortBy] > b[sortBy]){
+                    return -1 ;
+                } else if (a[sortBy] < b[sortBy]) {
+                    return 1;
+                } else {
+                    /*if (a['title'] > b['title']){
+                        return -1 ;
+                    } else if (a['title'] < b['title']) {
+                        return 1;
+                    } else {
+                        return 0;
+                    } */
+                   return 0;                      
+                }                
+            }); 
+                
+        }
+        
+       // alert('Nachher \n');
+       /* $.each(sortedArray, function(){
+            alert(this.title);
+        });*/        
+        return sortedArray;
+    }
+    
 
 })(cms);
