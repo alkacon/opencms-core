@@ -43,21 +43,27 @@
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3search" id="140">
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/search.xsd</param>
-			</type>
+                <param name="gallery.type.name">downloadgallery</param>
+            </type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3linkbox" id="141">
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd</param>
-			</type>
+                <param name="gallery.type.name">downloadgallery</param>
+            </type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3textbox" id="142">
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</param>
+                <param name="gallery.type.name">downloadgallery</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3listbox" id="143">
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</param>
+                <param name="gallery.type.name">downloadgallery</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3style" id="144">
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/style.xsd</param>
+                <param name="gallery.type.name">downloadgallery</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3options" id="145">
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/options.xsd</param>
+                <param name="gallery.type.name">downloadgallery</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>

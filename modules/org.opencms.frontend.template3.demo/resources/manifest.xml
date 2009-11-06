@@ -37,15 +37,19 @@
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3article" id="146">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</param>
+                <param name="gallery.type.name">downloadgallery</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3news" id="147">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</param>
+                <param name="gallery.type.name">downloadgallery</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3item" id="148">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</param>
+                <param name="gallery.type.name">downloadgallery</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3event" id="149">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</param>
+                <param name="gallery.type.name">downloadgallery</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
