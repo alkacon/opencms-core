@@ -27,7 +27,7 @@
 						<mapping suffix=".html" />
 						<mapping suffix=".htm" />
 					</mappings>
-                    <param name="gallery.type.name">downloadgallery</param>
+                    <param name="gallery.type.names">downloadgallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeBinary" name="binary" id="2">
 					<mappings>
@@ -39,7 +39,7 @@
 						<mapping suffix=".xls" />
 						<mapping suffix=".jar" />
 					</mappings>
-                    <param name="gallery.type.name">downloadgallery</param>
+                    <param name="gallery.type.names">downloadgallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeImage" name="image" id="3">
 					<mappings>
@@ -50,7 +50,7 @@
 						<mapping suffix=".tif" />
 						<mapping suffix=".tiff" />
 					</mappings>
-                    <param name="gallery.type.name">imagegallery</param>
+                    <param name="gallery.type.names">imagegallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp" id="4">
 					<mappings>
@@ -64,13 +64,13 @@
 					</properties>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5">
-				    <param name="gallery.type.name">linkgallery</param>
+				    <param name="gallery.type.names">linkgallery</param>
                 </type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" name="xmlpage" id="6">
-				    <param name="gallery.type.name">downloadgallery</param>
+				    <param name="gallery.type.names">downloadgallery</param>
                 </type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7">
-				    <param name="gallery.type.name">downloadgallery</param>
+				    <param name="gallery.type.names">downloadgallery</param>
                 </type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxImageGallery</param>
@@ -89,11 +89,11 @@
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
-				    <param name="gallery.type.name">downloadgallery</param>
+				    <param name="gallery.type.names">downloadgallery</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
                     <param name="schema">/system/workplace/editors/ade/schemas/type_config.xsd</param>
-                    <param name="gallery.type.name">downloadgallery</param>
+                    <param name="gallery.type.names">downloadgallery</param>
                 </type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlSitemap" name="sitemap" id="15" />
             </resourcetypes>

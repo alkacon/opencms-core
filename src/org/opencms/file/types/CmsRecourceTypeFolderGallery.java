@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsRecourceTypeFolderGallery.java,v $
- * Date   : $Date: 2009/11/05 08:02:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/09 09:47:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.TreeMap;
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6.0 
  */
@@ -78,7 +78,7 @@ public class CmsRecourceTypeFolderGallery extends CmsResourceTypeFolderExtended 
     public Map<String, String> getConfiguration() {
 
         Map<String, String> result = new TreeMap<String, String>();
-        if (CmsStringUtil.isNotEmpty(getFolderClassName())) {
+        if (CmsStringUtil.isNotEmpty(getFolderContentTypes())) {
             result.put(CONFIGURATION_FOLDER_CONTENT_TYPES, getFolderContentTypes());
         }
         Map<String, String> additional = super.getConfiguration();
@@ -89,9 +89,9 @@ public class CmsRecourceTypeFolderGallery extends CmsResourceTypeFolderExtended 
     }
 
     /**
-     * Returns the folderContentTypes.<p>
+     * Returns the folder content types.<p>
      *
-     * @return the folderContentTypes
+     * @return the folder content types
      */
     public String getFolderContentTypes() {
 

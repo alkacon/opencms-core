@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/06 13:20:11 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/11/09 09:48:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.6
  */
@@ -126,6 +126,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
 
         /** The level. */
         LEVEL("level"),
+
+        /** The matches per page. */
+        MATCHESPERPAGE("matchesperpage"),
 
         /** The page. */
         PAGE("page"),
@@ -489,12 +492,14 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
             JSONObject jType = new JSONObject();
             jType.put(JsonKeys.TITLE.getName(), type.getTypeName());
             jType.put(JsonKeys.TYPEID.getName(), type.getTypeId());
-            int galleryId = 0;
-            if (type.getGalleryType() != null) {
-                galleryId = type.getGalleryType().getTypeId();
+            JSONArray galleryIds = new JSONArray();
+            Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
+            while (galleryTypes.hasNext()) {
+                I_CmsResourceType galleryType = galleryTypes.next();
+                galleryIds.put(galleryType.getTypeId());
 
             }
-            jType.put(JsonKeys.GALLERYTYPEID.getName(), galleryId);
+            jType.put(JsonKeys.GALLERYTYPEID.getName(), galleryIds);
             result.put(jType);
         }
 
@@ -774,8 +779,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         Iterator<I_CmsResourceType> iTypes = resourceTypes.iterator();
         while (iTypes.hasNext()) {
             I_CmsResourceType contentType = iTypes.next();
-            I_CmsResourceType galleryType = contentType.getGalleryType();
-            if (galleryType != null) {
+            Iterator<I_CmsResourceType> galleryTypes = contentType.getGalleryTypes().iterator();
+            while (galleryTypes.hasNext()) {
+                I_CmsResourceType galleryType = galleryTypes.next();
                 if (galleryTypeInfos.containsKey(galleryType.getTypeName())) {
                     CmsGalleryTypeInfo typeInfo = galleryTypeInfos.get(galleryType.getTypeName());
                     typeInfo.addContentType(contentType);
@@ -810,6 +816,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         JSONArray categories = query.getJSONArray(JsonKeys.CATEGORIES.getName());
         List<String> categoriesList = transformToStringList(categories);
         String queryStr = query.getString(JsonKeys.QUERY.getName());
+        int matches = query.getInt(JsonKeys.MATCHESPERPAGE.getName());
         CmsGallerySearch.SortParam sortOrder = CmsGallerySearch.SortParam.DEFAULT;
         try {
             sortOrder = CmsGallerySearch.SortParam.valueOf(query.getString(JsonKeys.SORTORDER.getName()).toUpperCase());
@@ -838,7 +845,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
             params.setQuery(queryStr);
         }
         params.setIndex(indexName);
-        params.setMatchesPerPage(20);
+        params.setMatchesPerPage(matches);
         params.setSearchPage(page);
         if (typeNames != null) {
             params.setResourceTypes(typeNames);

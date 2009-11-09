@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/11/06 08:53:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/09 09:47:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,13 +81,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public static final String CONFIGURATION_INTERNAL = "resource.flag.internal";
 
     /** Configuration key for the optional folder class name. */
-    public static final String CONFIGURATION_GALLERY_TYPE_NAME = "gallery.type.name";
+    public static final String CONFIGURATION_GALLERY_TYPE_NAMES = "gallery.type.names";
 
     /** The gallery type name for this resource type. */
-    private String m_galleryTypeName;
+    private String m_galleryTypeNames;
 
     /** The gallery type for this resource type. */
-    private I_CmsResourceType m_galleryType;
+    private List<I_CmsResourceType> m_galleryTypes;
 
     /** Macro for the folder path of the current resource. */
     public static final String MACRO_RESOURCE_FOLDER_PATH = "resource.folder.path";
@@ -162,8 +162,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             if (CONFIGURATION_INTERNAL.equalsIgnoreCase(paramName)) {
                 m_internal = Boolean.valueOf(paramValue.trim());
             }
-            if (CONFIGURATION_GALLERY_TYPE_NAME.equalsIgnoreCase(paramName)) {
-                m_galleryTypeName = paramValue.trim();
+            if (CONFIGURATION_GALLERY_TYPE_NAMES.equalsIgnoreCase(paramName)) {
+                m_galleryTypeNames = paramValue.trim();
             }
         }
     }
@@ -173,9 +173,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      *
      * @return the galleryTypeName
      */
-    public String getGalleryTypeName() {
+    public String getGalleryType() {
 
-        return m_galleryTypeName;
+        return m_galleryTypeNames;
     }
 
     /**
@@ -477,21 +477,31 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getGalleryType()
+     * @see org.opencms.file.types.I_CmsResourceType#getGalleryTypes()
      */
-    public I_CmsResourceType getGalleryType() {
+    public List<I_CmsResourceType> getGalleryTypes() {
 
-        if ((m_galleryType == null) && !CmsStringUtil.isEmptyOrWhitespaceOnly(m_galleryTypeName)) {
-
-            CmsResourceManager rm = OpenCms.getResourceManager();
-            try {
-                m_galleryType = rm.getResourceType(m_galleryTypeName);
-            } catch (CmsLoaderException e) {
-                // TODO: Auto-generated catch block
-                e.printStackTrace();
+        if (m_galleryTypes == null) {
+            m_galleryTypes = new ArrayList<I_CmsResourceType>();
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_galleryTypeNames)) {
+                CmsResourceManager rm = OpenCms.getResourceManager();
+                Iterator<String> iTypeNames = CmsStringUtil.splitAsList(
+                    m_galleryTypeNames,
+                    CmsProperty.VALUE_LIST_DELIMITER).iterator();
+                while (iTypeNames.hasNext()) {
+                    String typeName = iTypeNames.next();
+                    try {
+                        m_galleryTypes.add(rm.getResourceType(typeName));
+                    } catch (CmsLoaderException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().container(Messages.ERR_COULD_NOT_READ_RESOURCE_TYPE_1, typeName));
+                        }
+                    }
+                }
             }
+
         }
-        return m_galleryType;
+        return m_galleryTypes;
     }
 
     /**
