@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2009/11/04 14:56:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/09 14:58:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,11 +44,14 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
 public class CmsSiteEntryBean {
+
+    /** Constant property name for sub-sitemap reference. */
+    public static final String PROPERTY_SITEMAP = "sitemap";
 
     /** The entry name. */
     private final String m_name;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2009/09/07 12:41:40 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2009/11/09 14:58:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -112,14 +112,14 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the content conversion. */
     public static final String PROPERTY_CONTENT_CONVERSION = "content-conversion";
 
-    /** Property for the days a resource has to be expired to be deleted by the <code>{@link  org.opencms.scheduler.jobs.CmsDeleteExpiredResourcesJob}</code>. */
-    public static final String PROPERTY_DELETE_EXPIRED = "delete.expired";
-
     /** Property for the content encoding. */
     public static final String PROPERTY_CONTENT_ENCODING = "content-encoding";
 
     /** Property for the default file in folders. */
     public static final String PROPERTY_DEFAULT_FILE = "default-file";
+
+    /** Property for the days a resource has to be expired to be deleted by the <code>{@link  org.opencms.scheduler.jobs.CmsDeleteExpiredResourcesJob}</code>. */
+    public static final String PROPERTY_DELETE_EXPIRED = "delete.expired";
 
     /** Property for the description. */
     public static final String PROPERTY_DESCRIPTION = "Description";
@@ -183,6 +183,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property for the secure transmission of resources. */
     public static final String PROPERTY_SECURE = "secure";
+
+    /** Property for the sitemap in a site. */
+    public static final String PROPERTY_SITEMAP = "sitemap";
 
     /** Property for the stylesheet of files. */
     public static final String PROPERTY_STYLESHEET = "stylesheet";

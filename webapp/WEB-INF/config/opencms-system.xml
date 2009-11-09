@@ -24,10 +24,11 @@
 		<scheduler />	
 	   	<versionhistory enabled="true" count="10" deleted="4" />
 		<resourceinit>
-			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler"/>
-			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
-			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler"/>
-        </resourceinit>
+			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler" />
+			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler" />
+			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler" />
+            <resourceinithandler class="org.opencms.xml.sitemap.CmsSitemapResourceHandler" />
+        </resourceinith>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
