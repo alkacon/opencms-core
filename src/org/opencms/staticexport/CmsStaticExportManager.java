@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.134 $
+ * Date   : $Date: 2009/11/09 10:01:51 $
+ * Version: $Revision: 1.135 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.134 $ 
+ * @version $Revision: 1.135 $ 
  * 
  * @since 6.0.0 
  */
@@ -2213,8 +2213,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         resource = cms.readResource(vfsName);
                     } catch (CmsException e) {
                         // static export fails, because the guest user has no permission: 
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().getBundle().key(
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().getBundle().key(
                                 Messages.ERR_EXPORT_FILE_FAILED_1,
                                 new String[] {vfsName}), e);
                         }
@@ -2343,8 +2343,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             match = true;
         } catch (Throwable t) {
             // resource not found          
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(Messages.ERR_EXPORT_FILE_FAILED_1, new String[] {rfsName}), t);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_EXPORT_FILE_FAILED_1, new String[] {rfsName}), t);
             }
         }
 
