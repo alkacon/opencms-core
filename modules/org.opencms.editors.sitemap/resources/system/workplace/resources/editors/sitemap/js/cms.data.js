@@ -78,6 +78,8 @@
     */
    var /** String */ EDITOR_URL = cms.data.EDITOR_URL;
    
+   var /**String*/ SITEMAP_URL = cms.data.SITEMAP_URL;
+   
    /**  
     * The url for server requests.
     * @see /system/workplace/editors/sitemap/include.txt
@@ -295,6 +297,56 @@
       });
       requests.push(xhr);
    }
+   
+   /**
+    * Generic function for posting JSON data to the server.
+    *
+    * @param {String} action a string to tell the server what to do with the data
+    * @param {Object} data the JSON data
+    * @param {Function} afterPost the callback that should be called after the server replied
+    */
+   var sitemapPostJSON = cms.data.sitemapPostJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost, /** boolean */ sync) {
+   
+      var async = !sync;
+      var xhr = $.ajax({
+         'url': SERVER_URL,
+         'data': {
+            'sitemap': SITEMAP_URL,
+            'locale': LOCALE,
+            'action': action,
+            'data': JSON.stringify(data)
+         },
+         'type': 'POST',
+         'timeout': AJAX_TIMEOUT,
+         'async': async,
+         'error': function(xhr, status, error) {
+             _removeRequest(xhr);
+            if (cms.toolbar.leavingPage) {
+               return;
+            }
+            alert(AJAX_SENT_ERROR);
+            afterPost(false);
+         },
+         'success': function(data) {
+             _removeRequest(xhr);
+            try {
+               var jsonData = JSON.parse(data, _jsonRevive);
+            } catch (e) {
+               alert(JSON_PARSE_ERROR);
+               afterPost(false, {});
+               return;
+            }
+            if (jsonData.state == 'error') {
+               alert(jsonData.error);
+               afterPost(false, jsonData);
+               return;
+            }
+            afterPost(true, jsonData);
+         }
+      });
+      requests.push(xhr);
+   }
+
    
    /**
     * Creates a new resource on the server via AJAX
@@ -802,5 +854,38 @@
 
        postJSON('publish_options', {}, callback);
    }
+   
+   var loadAllSitemapData = function() {
+       
+   }
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
 })(cms);
 

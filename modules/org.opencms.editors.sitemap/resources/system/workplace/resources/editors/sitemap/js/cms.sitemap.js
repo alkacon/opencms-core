@@ -1,4 +1,4 @@
-(function(cms) {
+﻿(function(cms) {
 
    /** html-class for additional info. */
    var classAdditionalInfo = 'cms-additional-info';
@@ -27,11 +27,19 @@
    /** html-class for dragged item. */
    var dragClass = 'cms-dragging';
    
+   var helperClass = 'cms-drag-helper';
+   
    /** html-class for dropzone. */
    var dropzoneClass = 'cms-dropzone';
    
    /** html-class for sitemap-item. */
    var itemClass = 'cms-sitemap-item';
+   
+   var classUrlName = 'cms-url-name';
+   var classVfsPath = 'cms-vfs-path';
+   var classSitemapEntry = 'cms-sitemap-entry';
+   var dataProperties = 'cmsdata-properties';
+   var dataId = 'cmsdata-id';
    
    /** html-code for opener handle. */
    var openerHtml = '<span class="' + classOpener + '"></span>';
@@ -41,6 +49,9 @@
    
    /** Map of jquery objects. */
    cms.sitemap.dom = {};
+   cms.sitemap.favorites = [];
+   cms.sitemap.recent = [];
+   var MAX_RECENT = 10;
    
    /**
     * Timer object used for delayed hover effect.
@@ -50,6 +61,18 @@
       handleDiv: null,
       adeMode: null
    };
+   
+   var _addRecent = function(entry) {
+      cms.sitemap.recent.unshift(entry);
+      while (cms.sitemap.recent.length > MAX_RECENT) {
+         cms.sitemap.recent.pop();
+      }
+   }
+   
+   var _addFavorite = function(entry) {
+      cms.sitemap.favorites.unshift(entry);
+   }
+   
    
    /**
     * Adjusts the shadow of the given menu.
@@ -181,11 +204,17 @@
       self.button.click(function() {
       
          if ((cms.sitemap.currentMode == null) || (cms.sitemap.currentMode.name != self.name)) {
-            if (cms.sitemap.currentMode != null) {
-               cms.sitemap.currentMode.disable();
+            var dummyLoader = function(callback) {
+               callback();
             }
-            cms.sitemap.currentMode = self;
-            self.enable();
+            var loader = self.load || dummyLoader;
+            loader.call(self, function() {
+               if (cms.sitemap.currentMode != null) {
+                  cms.sitemap.currentMode.disable();
+               }
+               cms.sitemap.currentMode = self;
+               self.enable();
+            });
          } else {
             self.disable();
             cms.sitemap.currentMode = null;
@@ -231,7 +260,17 @@
                      parentUl.siblings('span.' + classOpener).remove();
                      parentUl.remove();
                   }
-                  liItem.prependTo(cms.sitemap.dom.recentMenu.find('ul'));
+                  
+                  var sitemapEntry = serializeSitemapElement(liItem, true);
+                  _addRecent(sitemapEntry);
+                  saveRecent(function(ok, data) {
+                     if (!ok) {
+                        return;
+                     }
+                     liItem.remove();
+                  })
+                  //liItem.prependTo(cms.sitemap.dom.recentMenu.find('ul'));
+                  setSitemapChanged(true);
                },
                'Cancel': function() {
                   $dialog.dialog('destroy');
@@ -247,7 +286,16 @@
             parentUl.siblings('span.' + classOpener).remove();
             parentUl.remove();
          }
-         liItem.prependTo(cms.sitemap.dom.recentMenu.find('ul'));
+         var sitemapEntry = serializeSitemapElement(liItem, true);
+         _addRecent(sitemapEntry);
+         saveRecent(function(ok, data) {
+            if (!ok) {
+               return;
+            }
+            liItem.remove();
+         });
+         
+         //liItem.prependTo(cms.sitemap.dom.recentMenu.find('ul'));
       }
    }
    
@@ -349,13 +397,22 @@
          $(this).removeClass(classHovered);
          var dragClone = ui.draggable.clone();
          dragClone.find('div.cms-handle').remove();
-         if (dragClone.find('ul').length) {
-            keepTree(dragClone);
+         var _next = function() {
+            dragClone.find('div.' + itemClass).removeClass(dragClass);
+            dragClone.find('.' + classAdditionalShow).removeClass(classAdditionalShow)
+            dragClone.appendTo(cms.sitemap.dom.favoriteList);
+            var newFav = serializeSitemapElement(dragClone, true);
             
+            _addFavorite(newFav);
+            saveFavorites(function() {
+                        });
          }
-         dragClone.find('div.' + itemClass).removeClass(dragClass);
-         dragClone.find('.' + classAdditionalShow).removeClass(classAdditionalShow)
-         dragClone.appendTo(cms.sitemap.dom.favoriteList);
+         if (dragClone.find('ul').length) {
+            keepTree(dragClone, _next);
+         } else {
+            _next();
+         }
+         
          return;
       }
       var li = $(this).parent();
@@ -388,7 +445,6 @@
          }
          li.removeClass(classClosed);
          li.children('ul').append(ui.draggable);
-         
       }
       setURLs(ui.draggable, parentURL);
       // remove the now empty former parent ul and the opener span
@@ -409,6 +465,7 @@
    var dropItemMenu = cms.sitemap.dropItemMenu = function(e, ui) {
       var li = $(this).parent();
       var dropClone = ui.draggable.clone();
+      _addOpenerAndDropzone(dropClone);
       dropClone.removeClass(classSubtree);
       var parentURL = '';
       if ($(this).hasClass(dropzoneClass)) {
@@ -436,6 +493,105 @@
       setURLs(dropClone, parentURL);
       $(this).removeClass(classHovered);
    }
+   
+   /**
+    * Asks the server whether a given url name is valid.
+    *
+    * The callback which is called after the AJAX request is finished receives a boolean status flag
+    * and an object containing the properties invalid (true if the url name is not valid) and urlName
+    * (which is an escaped version of the original url name).
+    *
+    * @param {Object} urlName the url name to be checked
+    * @param {Object} callback the callback that is called after the check
+    */
+   var checkUrlName = function(urlName, callback) {
+      callback(true, {
+         urlName: urlName
+      });
+   }
+   
+   /**
+    * Click-handler to edit the item title and properties for this handler.
+    *
+    */
+   var editPage = function() {
+      var itemDiv = $(this).closest('div.' + itemClass);
+      var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
+      $dialog.appendTo('body');
+      $dialog.append('<p style="margin-bottom: 4px;">Edit page</p><label for="pageTitle">Title:</label>&nbsp;&nbsp;<input type="text" id="pageTitle" value="' + itemDiv.find('h3').text() + '" />');
+      $('<label for="cms-page-urlname"></label>').text('URL name:').appendTo($dialog);
+      var $urlnameInput = $('<input type="text" id="cms-page-urlname"></input>').val(itemDiv.find('.' + classUrlName).text()).appendTo($dialog);
+      $dialog.dialog({
+         zIndex: 9999,
+         title: 'Edit Page',
+         modal: true,
+         close: function() {
+            $dialog.dialog('destroy');
+            $dialog.remove();
+         },
+         buttons: {
+            'OK': function() {
+               var newTitle = $('#pageTitle').val();
+               var validationErrors = [];
+               
+               if (newTitle && newTitle != '') {
+                  itemDiv.find('h3').text(newTitle);
+                  $dialog.dialog('destroy');
+                  $dialog.remove();
+               } else {
+                  validationErrors.push('Please insert the page title');
+               }
+               var newUrlName = $urlnameInput.val();
+               if (newUrlName && newUrlName != '') {
+                  checkUrlName(newUrlName, function(ok, data) {
+                     if (data.invalid) {
+                        alert("error");
+                     } else {
+                        newUrlName = data.urlName;
+                        $dialog.dialog('destroy');
+                     }
+                  })
+                  if (!$('#dialogError').length) {
+                     $('#pageTitle').after('<p id="dialogError" style="color: red; margin-top: 4px;">Please insert the page title.</p>');
+                  }
+                  
+               }
+               
+               
+               
+               
+            },
+            'Cancel': function() {
+               $dialog.dialog('destroy');
+               $dialog.remove();
+            }
+         }
+      
+      });
+   }
+   
+   //   $.fn.validation = function($element, condition) {
+   //       return this.each(function() {
+   //           var $element = $(this);
+   //           $element.addClass('cms-validator');
+   //           $element.data('cms-validator-condition', condition)
+   //       }
+   //   }
+   //   
+   //   $.fn.validate = function() {
+   //       return this.find('cms-validator').each(function() {
+   //           var $form = $(this);
+   //           $form.find('cms-validator').each(function() {
+   //           var $v = $(this);
+   //           if ($v.data('cms-validator-condition')()) {
+   //               $v.hide();
+   //           } else {
+   //               $v.show();
+   //           }
+   //       })
+   //   }
+   //   
+   //   
    
    
    /**
@@ -480,12 +636,12 @@
       });
    }
    
+   
    /**
     * Initializes the sitemap editor.
     *
     */
    var initSitemap = cms.sitemap.initSitemap = function() {
-   
       // setting options for draggable and sortable for dragging within tree
       cms.sitemap.dragOptions = {
          handle: ' > div.' + itemClass + '> div.cms-handle > a.cms-move',
@@ -532,8 +688,8 @@
       });
       
       // preparing tree for drag and drop
-      $('#' + sitemapId + ' li:has(ul)').prepend(openerHtml);
-      $('#' + sitemapId + ' li').prepend('<div class="' + dropzoneClass + '"></div>')
+      //$('#' + sitemapId + ' li:has(ul)').prepend(openerHtml);
+      //$('#' + sitemapId + ' li').prepend('<div class="' + dropzoneClass + '"></div>')
       
       // assigning event-handler
       $('#' + sitemapId + ' span.' + classOpener).live('click', function() {
@@ -570,6 +726,8 @@
          opacity: 0.8,
          live: true
       });
+      $('#fav-edit').click(_editFavorites);
+      $(window).unload(onUnload);
    }
    
    /**
@@ -586,8 +744,9 @@
     * Generates a confirm-dialog to keep subpages when dragging from tree to favorites.
     *
     * @param {Object} dragClone the item to be added to favorites
+    * @param {Function} callback the function that should be called after the dialog is finished
     */
-   var keepTree = cms.sitemap.keepTree = function(dragClone) {
+   var keepTree = cms.sitemap.keepTree = function(dragClone, callback) {
       var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
       $dialog.appendTo('body');
       $dialog.append('<p style="margin-bottom: 4px;">The page you copied to the \'Favorites\' has sub-pages.<br />Do you want to copy these sub-pages also?</p>');
@@ -596,6 +755,7 @@
          title: 'Favorites',
          modal: true,
          close: function() {
+            callback();
             return false;
          },
          buttons: {
@@ -603,16 +763,17 @@
                dragClone.addClass(classSubtree);
                $dialog.dialog('destroy');
                $dialog.remove();
+               callback();
                
             },
-            'Loose sub-pages': function() {
+            'Lose sub-pages': function() {
                dragClone.find('ul').remove();
                dragClone.find('span.' + classOpener).remove();
                $dialog.dialog('destroy');
                $dialog.remove();
+               callback();
             }
          }
-      
       });
    }
    
@@ -691,14 +852,13 @@
                   initDraggable();
                   $dialog.dialog('destroy');
                   $dialog.remove();
+                  setPageChanged(true);
                   
                } else {
                   if (!$('#dialogError').length) {
                      $('#pageTitle').after('<p id="dialogError" style="color: red; margin-top: 4px;">Please insert the page title.</p>');
                   }
                }
-               
-               
             },
             'Cancel': function() {
                $dialog.dialog('destroy');
@@ -785,6 +945,11 @@
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
    }
    
+   
+   var debug1 = function($elem) {
+      var x = 1 + 1;
+   }
+   
    /**
     * Event-handler for draggable start-event dragging within tree.
     *
@@ -795,6 +960,7 @@
       $('input', this).blur();
       $('.cms-hovering').remove();
       $('div.' + itemClass, this).addClass(dragClass);
+      debug1($(this));
       $('div.cms-handle').css('display', 'none');
       stopHover();
       $('div.cms-handle', ui.helper).removeClass('ui-widget-header').css({
@@ -812,9 +978,12 @@
     * @param {Object} ui ui-object
     */
    var startDragMenu = cms.sitemap.startDragMenu = function(e, ui) {
+      //$(ui.helper).addClass(dragClass);
+      //$('<pre/>').text($(this).attr('class')).appendTo('body');
       $('div.' + itemClass, this).addClass(dragClass);
       ui.helper.appendTo(cms.sitemap.dom.currentMenu);
       cms.sitemap.dom.currentMenu.children('div').css('display', 'none');
+      
    }
    
    /**
@@ -840,13 +1009,19 @@
     */
    var stopDrag = cms.sitemap.stopDrag = function(e, ui) {
       $('div.' + itemClass, this).removeClass(dragClass);
+      //$(ui.helper).removeClass(dragClass);
       var dragClone = $(this).clone();
       dragClone.find('div.cms-handle').remove();
       dragClone.find('ul').remove();
       dragClone.find('span.' + classOpener).remove();
-      dragClone.appendTo(cms.sitemap.dom.recentMenu.find('ul'));
+      var sitemapEntry = serializeSitemapElement(dragClone, true);
+      _addRecent(sitemapEntry);
+      saveRecent(cms.sitemap.recent, function() {
+            })
+      //dragClone.appendTo(cms.sitemap.dom.recentMenu.find('ul'));
       $('div.cms-handle').css('display', 'block');
       cms.sitemap.dom.favoriteDrop.css('display', 'none');
+      setSitemapChanged(true);
    }
    
    /**
@@ -857,10 +1032,12 @@
     */
    var stopDragMenu = cms.sitemap.stopDragMenu = function(e, ui) {
       $('div.' + itemClass, this).removeClass(dragClass);
+      //$(ui.helper).removeClass(dragClass);
       cms.sitemap.dom.currentMenu.children('div').css('display', 'block');
       // refresh droppable
       $('div.' + itemClass + ', div.' + dropzoneClass).droppable('destroy');
       $('div.' + itemClass + ', div.' + dropzoneClass).droppable(cms.sitemap.dropOptionsMenu);
+      setSitemapChanged(true);
    }
    
    /**
@@ -891,6 +1068,16 @@
       create: createButton,
       enable: function() {
          this.button.addClass('ui-state-active');
+         var $sitemapElem = $('#' + sitemapId);
+         var sitemap = serializeSitemap($sitemapElem);
+         saveSitemap(sitemap, function(ok, data) {
+            if (ok) {
+               setSitemapChanged(false);
+            } else {
+               alert("error")
+               //display error message ? 
+            }
+         });
       },
       disable: function() {
          this.button.removeClass('ui-state-active');
@@ -1046,6 +1233,15 @@
          cms.sitemap.dom.favoriteMenu = $(cms.html.createMenu(cms.html.favoriteMenuId)).appendTo(cms.sitemap.dom.toolbarContent);
          cms.sitemap.dom.favoriteDrop = $(cms.html.createFavDrop()).appendTo(cms.sitemap.dom.toolbarContent);
          cms.sitemap.dom.favoriteList = cms.sitemap.dom.favoriteMenu.find('ul');
+      },
+      
+      load: function(callback) {
+         loadFavorites(function(ok, data) {
+            var favorites = data.favorites;
+            $('#favorite_list_items').empty();
+            var $favContent = _buildSitemap(favorites).appendTo('#favorite_list_items');
+            callback();
+         });
       }
    }, {
       // recent mode
@@ -1080,6 +1276,17 @@
          cms.sitemap.dom.currentMenu = null;
          
       },
+      
+      load: function(callback) {
+         loadRecent(function(ok, data) {
+            var recent = data.recent;
+            $('#recent_list_items').empty();
+            var $recContent = _buildSitemap(recent).appendTo('#recent_list_items');
+            
+            callback();
+         });
+      },
+      
       init: function() {
          cms.sitemap.dom.recentMenu = $(cms.html.createMenu(cms.html.recentMenuId)).appendTo(cms.sitemap.dom.toolbarContent);
       }
@@ -1117,5 +1324,353 @@
             }
    }];
    
+   
+   
+   
+   /**
+    * Serializes a sitemap DOM element to a JSON structure
+    * @param {Object} $element the DOM element representing the sitemap (wrapped in a jQuery object)
+    */
+   var serializeSitemap = function($element) {
+      var result = [];
+      $element.children('li').each(function() {
+         result.push(serializeSitemapElement($(this)));
+      });
+      return result;
+   }
+   
+   
+   
+   
+   
+   
+   /**
+    * Serializes a sitemap DOM element to a JSON data structure.
+    *
+    * @param {Object} $element the DOM element for the sitemap entry ( wrapped in a jQuery object)
+    * @param {Boolean} includeContent if true, the HTML is included in the output object
+    */
+   var serializeSitemapElement = function($element, includeContent) {
+      var $sitemapItem = $element.children('.' + itemClass);
+      var title = $sitemapItem.children('h3:first').text();
+      var $addInfo = $sitemapItem.children('.' + classAdditionalInfo);
+      var urlName = $addInfo.children('.' + classUrlName).text();
+      var vfsPath = $addInfo.children('.' + classVfsPath).text();
+      var $children = $element.children('ul').children('li');
+      var childObjects = [];
+      $children.each(function() {
+         childObjects.push(serializeSitemapElement($(this), includeContent));
+      });
+      var entryData = getEntryData($element);
+      var dataNode = $sitemapItem.get(0);
+      var result = {
+         title: title,
+         id: entryData.id,
+         name: urlName,
+         subentries: childObjects,
+         properties: entryData.properties
+      };
+      if (includeContent) {
+         var content = $('<p></p>').append($sitemapItem.clone()).html();
+         result.content = content;
+      }
+      return result;
+   }
+   
+   /**
+    * Helper function that generates a callback for jQuery.each which appends its "this" argument to a given parent
+    *
+    * @param {Object} $parent the parent object to which the callback returned should append its argument
+    */
+   var actionAppendTo = function($parent) {
+      return function() {
+         $parent.append(this);
+      }
+   }
+   
+   
+   /**
+    * Builds a DOM sitemap element from JSON sitemap entry data.
+    *
+    * This function also recursively processes all subentries of the entry.
+    *
+    * @param {Object} data a JSON object representing a sitemap entry
+    */
+   var _buildSitemapElement = function(data) {
+      var $li = $('<li></li>').addClass(classSitemapEntry);
+      $('.' + dropzoneClass, $li).remove();
+      $('.' + classOpener, $li).remove();
+      $('<div></div>').addClass(dropzoneClass).appendTo($li);
+      if (data.subentries && data.subentries.length > 0) {
+         $('<span></span>').addClass(classOpener).appendTo($li);
+      }
+      
+      
+      var $ul = null;
+      var $item = $(data.content).appendTo($li);
+      if (data.subentries && data.subentries.length > 0) {
+         $li.addClass(classSubtree);
+         $li.addClass(classClosed);
+         var $ul = $('<ul></ul>').appendTo($li);
+         var subEntries = $.map(data.subentries, _buildSitemapElement);
+         $.each(subEntries, actionAppendTo($ul));
+         
+      }
+      var dataNode = $item.get(0);
+      setEntryData($li, {
+         properties: data.properties,
+         id: data.id
+      });
+      return $li;
+   }
+   
+   /**
+    * Builds a jQuery object containing sitemap DOM elements from a list of sitemap entry data.
+    *
+    * @param {Object} data the list of sitemap entries.
+    */
+   var _buildSitemap = function(data) {
+      return $($.map(data, _buildSitemapElement))
+   }
+   
+   var getOpeners = function($element, filterString) {
+      var $lis = $element.find('.' + classOpener).closest('li');
+      $lis.filter(filterString).child('.' + classOpener);
+   }
+   
+   var getParentOpeners = function($element, filterString) {
+      var $lis = $element.parents('.' + classOpener).closest('li');
+      $lis.filter(filterString).child('.' + classOpener);
+   }
+   
+   var closeAll = function($element) {
+      getOpeners($element, '.' + classClosed).trigger('click');
+   }
+   
+   var openAll = function($element) {
+      getOpeners($element, ':not(.' + classClosed + ')').trigger('click');
+   }
+   
+   var checkUrlName = function(urlname, callbackOk, callbackInvalid) {
+      postJSON('urlname', urlname, function(ok, data) {
+         if (data.invalid) {
+            callbackInvalid();
+         } else {
+            callbackOk(data.urlname);
+         }
+      })
+   }
+   
+   /**
+    * Loads the sitemap and continues to initialize the sitemap editor after loading is finished.
+    *
+    */
+   var loadAndInitSitemap = cms.sitemap.loadAndInitSitemap = function() {
+      cms.data.sitemapPostJSON('all', {}, function(ok, data) {
+         if (!ok) {
+            return;
+         }
+         var sitemap = data.sitemap;
+         var favorites = data.favorites;
+         var recent = data.recent;
+         _buildSitemap(sitemap).appendTo('#' + sitemapId);
+         initSitemap();
+      })
+   }
+   
+   
+   
+   
+   /**
+    * AJAX call that sends the sitemap to the server to save it.
+    * @param {Object} sitemap the sitemap
+    * @param {Object} callback the callback that should be called after the server sends its response
+    */
+   var saveSitemap = cms.sitemap.saveSitemap = function(sitemap, callback) {
+      cms.data.sitemapPostJSON('save', {
+         sitemap: sitemap
+      }, callback);
+   }
+   
+   var sitemapChanged = false;
+   
+   /**
+    * Sets the "changed" status of the sitemap editor
+    * @param {Boolean} changed a flag that indicates whether the sitemap should be marked as changed or unchanged
+    */
+   var setSitemapChanged = function(changed) {
+      sitemapChanged = changed;
+      var $saveButton = $('button[name=save]');
+      if (changed) {
+         $saveButton.removeClass('cms-deactivated');
+      } else {
+         $saveButton.addClass('cms-deactivated');
+      }
+   }
+   
+   
+   /**
+    * Requests the favorite list from the server and stores it in cms.sitemap.favorites.
+    *
+    * @param {Object} callback the function to be called after the favorite list has been loaded
+    */
+   var loadFavorites = function(callback) {
+      cms.data.sitemapPostJSON('get', {
+         'fav': true
+      }, function(ok, data) {
+         if (!ok) {
+            return;
+         }
+         cms.sitemap.favorites = data.favorites;
+         callback(ok, data);
+      })
+   }
+   
+   
+   
+   /**
+    * Requests the recent list from the server and stores it in cms.sitemap.recent.
+    *
+    * @param {Object} callback the function to be called after the recent list has been loaded
+    */
+   var loadRecent = function(callback) {
+      cms.data.sitemapPostJSON('get', {
+         'rec': true
+      }, function(ok, data) {
+         if (!ok) {
+            return;
+         }
+         cms.sitemap.recent = data.recent;
+         callback(ok, data)
+      })
+   }
+   
+   /**
+    * Sends the favorite list to the server to save it.
+    *
+    * @param {Object} callback the function to be called after the server has replied
+    */
+   var saveFavorites = function(callback) {
+      cms.data.sitemapPostJSON('set', {
+         fav: cms.sitemap.favorites
+      }, callback);
+   }
+   
+   /**
+    * Sends the recent list to the server to save it.
+    *
+    * @param {Object} callback the function to be called after the server has replied
+    */
+   var saveRecent = function(callback) {
+      cms.data.sitemapPostJSON('set', {
+         'rec': cms.sitemap.recent
+      }, callback);
+   }
+   
+   var getEntryData = function($item) {
+      var resultStr = decodeURIComponent($item.attr("rel"));
+      return JSON.parse(resultStr);
+   }
+   
+   var setEntryData = function($item, obj) {
+      var dataStr = encodeURIComponent(JSON.stringify(obj));
+      $item.attr('rel', dataStr);
+   }
+   
+   var onUnload = function() {
+      if (sitemapChanged) {
+         var saveChanges = window.confirm('Do you want to save your changes to the sitemap?');
+         if (saveChanges) {
+            saveSitemap(serializeSitemap($('#' + sitemapId)), function() {
+                        });
+         } else {
+            setPageChanged(false);
+         }
+      }
+   }
+   
+   var validateSitemapEntry = function(title, name, callback) {
+      var errors = [];
+      if (title == '') {
+         errors.push('Title can\'t be empty');
+      }
+      if (name == '') {
+         errors.push('URL name can\'t be empty')
+      }
+      callback(title, name, errors);
+   }
+   
+   var showValidationResults = function($form, validationResults) {
+      for (var i = 0; i < validationResults.length; i++) {
+         var vr = validationResults[i];
+         //$(vr.selector, $form)[vr.method](vr.text)
+      }
+   }
+   /**
+    * Adds an opener and a dropzone to the DOM of a sitemap entry.
+    * @param {Object} $element the DOM element, wrapped in a jQuery object
+    */
+   var _addOpenerAndDropzone = function($element) {
+      if ($element.children('.' + classOpener).size() == 0 && $element.children('ul').size() != 0) {
+         $('<span></span>').addClass(classOpener).prependTo($element);
+      }
+      
+      if ($element.children('.' + dropzoneClass).size() == 0) {
+         $('<div></div>').addClass(dropzoneClass).prependTo($element);
+      }
+   }
+   
+   
+   /**
+    * Opens  the "edit favorites" dialog.
+    */
+   var _editFavorites = function() {
+      $('#cms-sitemap-favedit').remove();
+      $('<div id="cms-sitemap-favedit"/>').appendTo('body');
+      var buttons = {}
+      var $dlg = $('#cms-sitemap-favedit');
+      var $ul = $('<div></div>').appendTo($dlg);
+      
+      
+      $.each(cms.sitemap.favorites, function() {
+         var $smItem = _buildSitemapElement(this).addClass('cms-toplevel-entry');
+         var $row = $('<div></div>').appendTo($ul)
+         var $del = $('<span></span>').addClass('cms-sitemap-favdel').css('float', 'left').css('position', 'relative').css('top', '7px').width(24).height(24);
+         $del.click(function() {
+            $row.remove();
+         });
+         $del.appendTo($row);
+         $('<ul/>').append($smItem).css('margin-left', '25px').appendTo($row);
+         $('<div></div>').css('clear', 'both').appendTo($row);
+      });
+      $ul.sortable();
+      
+      buttons['Ok'] = function() {
+      
+         var newFav = $.map($ul.find('.cms-toplevel-entry').get(), function(sm) {
+            return serializeSitemapElement($(sm), true);
+         });
+         $dlg.dialog('destroy');
+         cms.data.sitemapPostJSON('set', {
+            'fav': newFav
+         }, function(ok, callback) {
+            $('button[name=favorites].ui-state-active').trigger('click');
+            // do nothing
+         });
+      };
+      buttons['Cancel'] = function() {
+         $dlg.dialog('destroy');
+      };
+      
+      $('#cms-sitemap-favedit').dialog({
+         autoOpen: true,
+         modal: true,
+         zIndex: 9999,
+         resizable: true,
+         width: 500,
+         buttons: buttons,
+         title: 'Edit favorites'
+      });
+   }
    
 })(cms);
