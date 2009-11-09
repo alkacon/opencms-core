@@ -10,6 +10,7 @@
 <script type="text/javascript" src="lib/jquery-1.3.2.js"></script>
 <script type="text/javascript" src="lib/jquery-ui-1.8a1.js"></script>
 <script type="text/javascript" src="lib/json2.js"></script>
+<script type="text/javascript" src="lib/jquery.pagination.js"></script>
 <script type="text/javascript">
 var cms = { html: {}, galleries: {}, messages: {} };
 </script>
@@ -57,12 +58,13 @@ var cms = { html: {}, galleries: {}, messages: {} };
     
     /** Item in the search list */
     li.cms-list {
-        display: inline-block;
+   /*     display: inline-block; */
         margin-bottom: 4px;
+        margin-right: 5px;
         list-style-image:none;
         list-style-position:outside;
         list-style-type:none;
-        clear: left;
+     /*    clear: left; */
     }
     
     .cms-list-checkbox {
@@ -81,32 +83,34 @@ var cms = { html: {}, galleries: {}, messages: {} };
     
     .cms-list-item { 
         /*width: 540px; */
-        width: 420px;
+      /*  width: 420px; */
         height: 34px; 
-        float: left;
+        margin-left: 34px;
+        /* float: left; */
     }
     
     .cms-list-itemcontent {
         /*width: 500px;*/
-        width: 380px;        
+      /*   width: 380px; */        
         height: 34px; 
-        float: left;
+        margin-left:34px;
+        /* float: left; */
     }
     
     div.cms-list-title {
-        clear:left; 
+    /*     clear:left; */ 
         height:16px;
         font-weight:bold;
         overflow-x:hidden;
         overflow-y:hidden;
-        width:400px;
+        /* width:400px; */
     }
     
     div.cms-list-url {
         height:16px;
         overflow-x:hidden;
         overflow-y:hidden;
-        width:400px;
+    /*     width:400px; */
     }  
     
     /** Hover and active state for items in the search list */
@@ -131,6 +135,10 @@ var cms = { html: {}, galleries: {}, messages: {} };
    
    .cms-list-item-hover div.cms-list-checkbox { 
        background-position: -7px -110px;
+   }
+   
+   .cms-list-item-active.cms-list-item-hover div.cms-list-checkbox { 
+       background-position: -7px -310px;
    }
     
     
@@ -255,26 +263,63 @@ var cms = { html: {}, galleries: {}, messages: {} };
         margin-right: 20px;
     }
     
-    /** Categories levels*/
-   
+    /** Categories levels*/   
    .cms-list .cms-active-level .cms-level-0 div.cms-list-item {
        
    }
-   
-   /*.cms-list.cms-active-level.cms-level-1 div.cms-list-item, */
+      
    .cms-list.cms-active-level.cms-level-1 div.cms-list-checkbox {
        margin-left: 25px;
    }
-   
-   /*.cms-list.cms-active-level.cms-level-2 div.cms-list-item,*/
+      
    .cms-list.cms-active-level.cms-level-2 div.cms-list-checkbox {
        margin-left: 40px;
    }
-   
-   /*.cms-list.cms-active-level.cms-level-3 div.cms-list-item, */
+      
    .cms-list.cms-active-level.cms-level-3 div.cms-list-checkbox {
        margin-left: 55px;
    }
+   
+    /** Pagination plugin*/
+    div.result-pagination {
+    	height: 24px;
+    	font-weight: bold;
+    	text-align: center;
+    	padding-top: 3px;
+    	display: block;
+    }
+    
+    div.result-pagination a, 
+    div.result-pagination a, 
+    div.result-pagination span.current, 
+    div.result-pagination span.current {
+    	margin-right: 6px;
+    	padding: 2px 3px;
+    	text-decoration: none;
+    	display: inline-block;
+    } 
+    
+    div.result-pagination a, 
+    div.result-pagination a {
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+    	border:1px solid #999999;
+        color:#222222;
+    }
+    
+    div.result-pagination a:hover, 
+    div.result-pagination a:hover {
+    	border: 1px solid #999999;
+    }
+    
+    div.result-pagination span.current, 
+    div.result-pagination span.current {
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+    	border: 1px solid #999999;
+        background: #CCCCCC;
+        color:#222222;    	
+    }
 
     
 </style>
