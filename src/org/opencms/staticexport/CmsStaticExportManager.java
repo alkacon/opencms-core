@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2009/10/20 13:43:09 $
- * Version: $Revision: 1.134.2.4 $
+ * Date   : $Date: 2009/11/09 09:47:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.134.2.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -2213,8 +2213,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         resource = cms.readResource(vfsName);
                     } catch (CmsException e) {
                         // static export fails, because the guest user has no permission: 
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().getBundle().key(
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().getBundle().key(
                                 Messages.ERR_EXPORT_FILE_FAILED_1,
                                 new String[] {vfsName}), e);
                         }
