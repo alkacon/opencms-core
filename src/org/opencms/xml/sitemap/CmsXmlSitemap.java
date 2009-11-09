@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2009/11/05 14:19:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/09 08:36:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.5.2
  * 
@@ -125,6 +125,9 @@ public class CmsXmlSitemap extends CmsXmlContent {
             return m_name;
         }
     }
+
+    /** IDs separator constant. */
+    public static final String IDS_SEPARATOR = ",";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlSitemap.class);
@@ -455,7 +458,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                         idList.add(fileId);
                     }
                     // comma separated list of UUIDs
-                    val = CmsStringUtil.listAsString(idList, ",");
+                    val = CmsStringUtil.listAsString(idList, IDS_SEPARATOR);
                 }
 
                 propertiesMap.put(propName.getTextTrim(), val);

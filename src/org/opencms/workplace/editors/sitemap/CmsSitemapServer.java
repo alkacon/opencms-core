@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/05 15:03:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/11/09 08:36:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,6 @@ import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
@@ -56,7 +55,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsADEManager;
-import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
 import org.opencms.xml.sitemap.CmsSitemapBean;
@@ -66,6 +64,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -86,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.6
  */
@@ -272,6 +271,9 @@ public class CmsSitemapServer extends CmsJspActionElement {
     /** Mime type constant. */
     public static final String MIMETYPE_APPLICATION_JSON = "application/json";
 
+    /** Path constant. */
+    public static final String PATH_DEFAULT_FORMATTER = "/system/workplace/editors/sitemap/default-formatter.jsp";
+
     /** User additional info key constant. */
     protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
 
@@ -283,9 +285,6 @@ public class CmsSitemapServer extends CmsJspActionElement {
 
     /** The session cache. */
     private CmsSitemapSessionCache m_sessionCache;
-
-    /** Path constant. */
-    public static final String PATH_DEFAULT_FORMATTER = "/system/workplace/editors/sitemap/default-formatter.jsp";
 
     /**
      * Constructor.<p>
@@ -358,7 +357,7 @@ public class CmsSitemapServer extends CmsJspActionElement {
                 result.put(JsonResponse.FAVORITES.getName(), getFavoriteList());
             } else if (checkParameters(data, result, JsonRequest.REC)) {
                 // get recent list
-                result.put(JsonResponse.RECENT.getName(), m_sessionCache.getRecentList());
+                result.put(JsonResponse.RECENT.getName(), addContents(m_sessionCache.getRecentList()));
             } else {
                 return result;
             }
@@ -472,21 +471,19 @@ public class CmsSitemapServer extends CmsJspActionElement {
      * Returns the current user's favorites list.<p>
      * 
      * @return the current user's favorites list
-     * 
-     * @throws CmsException if something goes wrong 
      */
-    public JSONArray getFavoriteList() throws CmsException {
+    public JSONArray getFavoriteList() {
 
         CmsObject cms = getCmsObject();
         CmsUser user = cms.getRequestContext().currentUser();
         Object obj = user.getAdditionalInfo(ADDINFO_SITEMAP_FAVORITE_LIST);
 
-        JSONArray favList = new JSONArray();
+        JSONArray jsonFavList = new JSONArray();
         if (obj instanceof String) {
             try {
-                favList = new JSONArray((String)obj);
+                jsonFavList = new JSONArray((String)obj);
             } catch (Throwable e) {
-                // should never happen, catches json parsing
+                // should never happen, catches JSON parsing
                 if (!LOG.isDebugEnabled()) {
                     LOG.warn(e.getLocalizedMessage());
                 }
@@ -494,10 +491,15 @@ public class CmsSitemapServer extends CmsJspActionElement {
             }
         } else {
             // save to be better next time
-            saveFavoriteList(cms, favList);
+            try {
+                saveFavoriteList(cms, jsonFavList);
+            } catch (CmsException e) {
+                // should never happen, error writing user's additional info 
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
 
-        return favList;
+        return addContents(jsonFavList);
     }
 
     /**
@@ -508,10 +510,9 @@ public class CmsSitemapServer extends CmsJspActionElement {
      * 
      * @return the data for the given sitemap
      * 
-     * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    public JSONObject getSitemap(CmsResource resource, CmsSitemapBean sitemap) throws CmsException, JSONException {
+    public JSONObject getSitemap(CmsResource resource, CmsSitemapBean sitemap) throws JSONException {
 
         // create empty result object
         JSONObject result = new JSONObject();
@@ -530,7 +531,7 @@ public class CmsSitemapServer extends CmsJspActionElement {
         JSONArray resFavorites = getFavoriteList();
         result.put(JsonResponse.FAVORITES.getName(), resFavorites);
         // collect the recent list
-        JSONArray resRecent = m_sessionCache.getRecentList();
+        JSONArray resRecent = addContents(m_sessionCache.getRecentList());
         result.put(JsonResponse.RECENT.getName(), resRecent);
 
         return result;
@@ -579,7 +580,7 @@ public class CmsSitemapServer extends CmsJspActionElement {
             sitemapFile);
 
         int entryCount = 0;
-        List<CmsSiteEntryBean> entries = jsonToEntryList(sitemap.getJSONArray(JsonResponse.SITEMAP.getName()));
+        List<CmsSiteEntryBean> entries = jsonToEntryList(sitemap.getJSONArray(JsonResponse.SITEMAP.getName()), true);
         for (CmsSiteEntryBean entry : entries) {
             saveEntry(cms, locale, null, xmlSitemap, entry, entryCount, propertiesConf);
             entryCount++;
@@ -624,6 +625,32 @@ public class CmsSitemapServer extends CmsJspActionElement {
         }
         // write the result
         result.write(getResponse().getWriter());
+    }
+
+    /**
+     * Adds the HTML content to the JSON list of site entries
+     * 
+     * @param jsonEntriesList the JSON list of site entries
+     * 
+     * @return the original JSON list of site entries with HTML contents
+     */
+    protected JSONArray addContents(JSONArray jsonEntriesList) {
+
+        List<CmsSiteEntryBean> favList = jsonToEntryList(jsonEntriesList, false);
+        for (int i = 0; i < jsonEntriesList.length(); i++) {
+            try {
+                JSONObject json = jsonEntriesList.getJSONObject(i);
+                json.put(JsonSiteEntry.CONTENT.getName(), getEntryContent(favList.get(i)));
+                addContents(json.getJSONArray(JsonSiteEntry.SUBENTRIES.getName()));
+            } catch (Exception e) {
+                // should never happen, catches JSON parsing
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+        return jsonEntriesList;
     }
 
     /**
@@ -742,38 +769,39 @@ public class CmsSitemapServer extends CmsJspActionElement {
      * Returns a list of sitemap entries from a json array.<p>
      * 
      * @param array the json array
+     * @param recursive if recursive
      * 
      * @return a list of sitemap entries
-     * 
-     * @throws JSONException if something goes wrong
      */
-    protected List<CmsSiteEntryBean> jsonToEntryList(JSONArray array) throws JSONException {
+    protected List<CmsSiteEntryBean> jsonToEntryList(JSONArray array, boolean recursive) {
 
         List<CmsSiteEntryBean> result = new ArrayList<CmsSiteEntryBean>(array.length());
         for (int i = 0; i < array.length(); i++) {
-            JSONObject json = array.getJSONObject(i);
+            JSONObject json = array.optJSONObject(i);
             CmsUUID id = null;
             try {
-                id = new CmsUUID(json.getString(JsonSiteEntry.ID.getName()));
-            } catch (CmsIllegalArgumentException e) {
+                id = new CmsUUID(json.optString(JsonSiteEntry.ID.getName()));
+            } catch (NumberFormatException e) {
                 if (!LOG.isDebugEnabled()) {
                     LOG.warn(e.getLocalizedMessage());
                 }
                 LOG.debug(e.getLocalizedMessage(), e);
                 continue;
             }
-            String name = json.getString(JsonSiteEntry.NAME.getName());
-            String title = json.getString(JsonSiteEntry.TITLE.getName());
+            String name = json.optString(JsonSiteEntry.NAME.getName());
+            String title = json.optString(JsonSiteEntry.TITLE.getName());
             Map<String, String> properties = new HashMap<String, String>();
-            JSONObject jsonProps = json.getJSONObject(JsonSiteEntry.PROPERTIES.getName());
+            JSONObject jsonProps = json.optJSONObject(JsonSiteEntry.PROPERTIES.getName());
             Iterator<String> itKeys = jsonProps.keys();
             while (itKeys.hasNext()) {
                 String key = itKeys.next();
-                String value = jsonProps.getString(key);
+                String value = jsonProps.optString(key);
                 properties.put(key, value);
             }
-            JSONArray jsonSub = json.getJSONArray(JsonSiteEntry.SUBENTRIES.getName());
-            CmsSiteEntryBean entry = new CmsSiteEntryBean(id, name, title, properties, jsonToEntryList(jsonSub));
+            JSONArray jsonSub = json.optJSONArray(JsonSiteEntry.SUBENTRIES.getName());
+            CmsSiteEntryBean entry = new CmsSiteEntryBean(id, name, title, properties, recursive ? jsonToEntryList(
+                jsonSub,
+                true) : Collections.<CmsSiteEntryBean> emptyList());
             result.add(entry);
         }
         return result;
@@ -806,7 +834,7 @@ public class CmsSitemapServer extends CmsJspActionElement {
         ? CmsXmlSitemap.XmlNode.SITEENTRY.getName()
         : CmsXmlUtils.concatXpath(rootPath, CmsXmlSitemap.XmlNode.SITEENTRY.getName()), locale, entryCount);
         if (entryValue == null) {
-            entryValue = xmlSitemap.addValue(cms, CmsXmlContainerPage.XmlNode.CONTAINER.getName(), locale, entryCount);
+            entryValue = xmlSitemap.addValue(cms, CmsXmlSitemap.XmlNode.SITEENTRY.getName(), locale, entryCount);
         }
 
         // entry info
@@ -833,30 +861,30 @@ public class CmsSitemapServer extends CmsJspActionElement {
             // only if the property is configured in the schema we will save it to the sitemap
             I_CmsXmlContentValue propValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
                 entryValue.getPath(),
-                CmsXmlContainerPage.XmlNode.PROPERTIES.getName()), locale, j);
+                CmsXmlSitemap.XmlNode.PROPERTIES.getName()), locale, j);
             xmlSitemap.getValue(
-                CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
+                CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlSitemap.XmlNode.NAME.getName()),
                 locale,
                 0).setStringValue(cms, property.getKey());
             I_CmsXmlContentValue valValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
                 propValue.getPath(),
-                CmsXmlContainerPage.XmlNode.VALUE.getName()), locale, 0);
+                CmsXmlSitemap.XmlNode.VALUE.getName()), locale, 0);
 
             if (propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
                 I_CmsXmlContentValue filelistValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
                     valValue.getPath(),
-                    CmsXmlContainerPage.XmlNode.FILELIST.getName()), locale, 0);
+                    CmsXmlSitemap.XmlNode.FILELIST.getName()), locale, 0);
                 int index = 0;
-                for (String strId : CmsStringUtil.splitAsList(property.getValue(), CmsXmlContainerPage.IDS_SEPARATOR)) {
+                for (String strId : CmsStringUtil.splitAsList(property.getValue(), CmsXmlSitemap.IDS_SEPARATOR)) {
                     try {
                         CmsResource fileRes = cms.readResource(new CmsUUID(strId));
                         I_CmsXmlContentValue fileValue = xmlSitemap.getValue(CmsXmlUtils.concatXpath(
                             filelistValue.getPath(),
-                            CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
+                            CmsXmlSitemap.XmlNode.URI.getName()), locale, index);
                         if (fileValue == null) {
                             fileValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
                                 filelistValue.getPath(),
-                                CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
+                                CmsXmlSitemap.XmlNode.URI.getName()), locale, index);
                         }
                         fileValue.setStringValue(cms, cms.getSitePath(fileRes));
                         index++;
@@ -868,7 +896,7 @@ public class CmsSitemapServer extends CmsJspActionElement {
             } else {
                 xmlSitemap.addValue(
                     cms,
-                    CmsXmlUtils.concatXpath(valValue.getPath(), CmsXmlContainerPage.XmlNode.STRING.getName()),
+                    CmsXmlUtils.concatXpath(valValue.getPath(), CmsXmlSitemap.XmlNode.STRING.getName()),
                     locale,
                     0).setStringValue(cms, property.getValue());
             }
