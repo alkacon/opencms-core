@@ -17,27 +17,33 @@
             "EDITOR_URL": "<cms:link>%(link.weak:/system/workplace/editors/editor.jsp:8973b380-11b7-11db-91cd-fdbae480bac9)</cms:link>",
             "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/sitemap/server.jsp:b848e330-c865-11de-a457-ab20365f6268)</cms:link>",
             "CURRENT_URI": "${cms.requestContext.uri}",
-            "LOCALE": "${cms.requestContext.locale}"
+            "LOCALE": "${cms.requestContext.locale}",
+            "SITEMAP_URL": "/sitemap"
+ 
          },
          html: {},
          messages: {},
          publish: {},
-         sitemap: {}
+         sitemap: {},
+         util: {}
       };
     </script>
     <script type="text/javascript" src="<cms:link>%(link.weak:/system/workplace/editors/sitemap/cms.messages.jsp:b829e977-c865-11de-a457-ab20365f6268)</cms:link>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.html.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.data.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.publish.js")%>"></script>
+    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.util.js")%>"></script>
+
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.sitemap.js")%>"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-         cms.sitemap.initSitemap();
+         cms.sitemap.loadAndInitSitemap();
       });
     </script>
     <title>Sitemap demo</title>
     <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/sitemap/css/custom-theme/jquery-ui-1.7.2.custom.css")%>" />
     <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/sitemap/css/sitemap.css")%>" />
+
   </head>
   <body>
     <div id="cms-main">
