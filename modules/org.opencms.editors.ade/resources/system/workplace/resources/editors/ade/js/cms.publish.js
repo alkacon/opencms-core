@@ -19,7 +19,7 @@
     */
    var _getItemIcon = function(item) {
       var resourceIcon = item.icon;
-      return $('<img></img>').attr('src', resourceIcon);
+      return $('<img  class="cms-publish-icon"></img>').attr('src', resourceIcon);
    }
    
    var problemIconClasses = {
@@ -41,7 +41,7 @@
     * @param {Object} text the title text
     */
    var _getProblemIndicator = function(problem, text) {
-      var $indicator = $('<span></span>').width(20).height(20);
+      var $indicator = $('<span class="cms-publish-icon"></span>');
       if (text) {
          $indicator.attr('title', text);
       }
@@ -76,25 +76,19 @@
     * @param {Object} resource the resource for which the entry should be created
     */
    var _formatPublishItem = function(resource) {
-      var itemStyle = {
-         'display': 'block',
-         'margin-left': '40px',
-         'background-color': 'transparent',
-         'border': '1px solid #444444'
-      }
-      
-      var $item = $('<div></div>').addClass(classPublishItem + ' cms-item ui-corner-all').css(itemStyle);
-      var $row1 = $('<div></div>').width(450).appendTo($item);
-      var $row2 = $('<div></div>').width(450).appendTo($item);
+    
+      var $item = $('<div></div>').addClass(classPublishItem + ' cms-item ui-corner-all ui-widget-content');//.css(itemStyle);
+      var $row1 = $('<div></div>').appendTo($item);
+      var $row2 = $('<div></div>').appendTo($item);
       $('<div></div>').addClass('cms-publish-item-clear').css('clear', 'both').appendTo($item);
-      _getItemIcon(resource).css('float', 'left').appendTo($row1);
+      _getItemIcon(resource).appendTo($row1);
       var title = '(no title)';
       if (resource.title && resource.title.length > 0) {
          title = resource.title;
       }
-      $('<div></div>').addClass('cms-publish-title').text(title).appendTo($row1);
-      _getProblemIndicator(resource.infotype, resource.info).css('float', 'left').css('clear', 'both').appendTo($row2);
-      $('<div></div>').addClass('cms-publish-path').css('float', 'left').text(resource.uri).appendTo($row2);
+      $('<div class="cms-publish-title"></div>').text(title).appendTo($row1);
+      _getProblemIndicator(resource.infotype, resource.info).appendTo($row2);
+      $('<div class="cms-publish-path"></div>').text(resource.uri).appendTo($row2);
       if (problemClasses[resource.infotype]) {
          $item.addClass(problemClasses[resource.infotype]);
       }
@@ -188,6 +182,7 @@
                close: function() {
                   self.destroy();
                },
+               position: 'top',
                resizable: true
             });
          }
@@ -297,11 +292,7 @@
        */
       addGroup: function(group) {
          var $main = this.$mainPanel;
-         $('<p></p>').addClass('cms-publish-group-header').text(group.name).css({
-            'border': '1px solid black',
-            'padding': '2px',
-            'margin': '2px'
-         }).appendTo($main);
+         $('<p></p>').addClass('cms-publish-group-header').text(group.name).appendTo($main);
          
          for (var i = 0; i < group.resources.length; i++) {
             this.addResource(group.resources[i], false, $main);
@@ -319,10 +310,7 @@
          if (!$parent) {
             $parent = this.$mainPanel;
          }
-         var $row = $('<div></div>').addClass('cms-publish-row').css({
-            'position': 'relative',
-            'width': '700px'
-         }).appendTo($parent);
+         var $row = $('<div></div>').addClass('cms-publish-row').appendTo($parent);
          $row.addClass(classKeep);
          $row.attr('rel', resource.id);
          $row.addClass(_getCssClassesForPublishItem(resource));
@@ -340,29 +328,21 @@
          
          var $checkbox = $('<input class="' + classPublishCheckbox + '" type="checkbox"></input>').css(checkboxStyle);
          if (resource.info) {
-            //$checkbox.get(0).disabled = true;
-            //$checkbox.get(0).checked = false;
-            $('<span></span>').width(30).appendTo($row);
+            $('<span></span>').css({float: 'left', width: '30px'}).appendTo($row);
          } else {
-            $('<span></span>').width(30).append($checkbox).appendTo($row);
+            $('<span></span>').css({float: 'left', width: '30px'}).append($checkbox).appendTo($row);
          }
          $checkbox.attr('rel', resource.id);
-         var $publishItem = _formatPublishItem(resource).css('position', 'static');
+         var $publishItem = _formatPublishItem(resource);
          if (isRelated) {
             $publishItem.css('margin-left', '60px');
          }
          var itemVerticalOffset = 1;
          $publishItem.appendTo($row);
-         $publishItem.css('margin-top', itemVerticalOffset + 'px');
-         var $removeButton = $('<button></button>').addClass(classRemoveButton).addClass('ui-corner-all ui-state-default').text('Remove').attr('rel', resource.id).css({
-            'display': 'none',
-            'width': '80px',
-            'margin-top': '-10px',
-            'margin-right': '5px'
-         });
-         if ($.browser.msie) {
-            $removeButton.css('margin-top', '-30px');
-         }
+         var $removeButton = $('<button></button>').addClass(classRemoveButton).addClass('ui-corner-all ui-state-default').text('Remove').attr('rel', resource.id);
+//         if ($.browser.msie) {
+//            $removeButton.css('margin-top', '-30px');
+//         }
          
          var removeButtonState = 0;
          $removeButton.click(function() {
@@ -383,15 +363,15 @@
             }
             removeButtonState = 1 - removeButtonState;
          });
-         $row.height($publishItem.height() + 2 * itemVerticalOffset);
+    //     $row.height($publishItem.height() + 2 * itemVerticalOffset);
          
          $removeButton.height(25);
          if (resource.removable) {
-            $removeButton.css('float', 'right');
+       //     $removeButton.css('float', 'right');
             $('.cms-publish-item-clear', $publishItem).before($removeButton);
             
          }
-         $row.hover(function() {
+         $publishItem.hover(function() {
             $removeButton.show();
          }, function() {
             $removeButton.hide();
@@ -432,7 +412,17 @@
          var projects = cms.data.projects;
          var userListId = '';
          var userListLabel = 'My changes';
-         var $select = $('<select></select>').attr();
+         var values=[];
+         values.push({value: userListId, title: userListLabel});
+         for (var i = 0; i < projects.length; i++) {
+             values.push({value: projects[i].id, title: projects[i].name});
+         }
+         var $select=$.fn.selectBox('generate',{'values': values, select: function($this, replacer, value) {
+            self.updateData(self.checkedRelated, self.checkedSiblings, value);
+         }});
+         $select.selectBox('setValue',self.project);
+         
+   /*      var $select = $('<select></select>').attr();
          $('<option></option>').attr('value', userListId).text(userListLabel).appendTo($select);
          for (var i = 0; i < projects.length; i++) {
             var projectName = projects[i].name;
@@ -445,6 +435,8 @@
             var value = $(this).val();
             self.updateData(self.checkedRelated, self.checkedSiblings, value);
          });
+         
+         */
          return $select;
       },
       

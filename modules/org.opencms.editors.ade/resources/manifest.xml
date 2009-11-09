@@ -3619,6 +3619,21 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/js/cms.selectbox.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.selectbox.js</destination>
+			<type>plain</type>
+			<uuidstructure>d250d738-cd29-11de-9547-ad16e711f5ac</uuidstructure>
+			<uuidresource>d250d739-cd29-11de-9547-ad16e711f5ac</uuidresource>
+			<datelastmodified>Mon, 09 Nov 2009 13:44:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 09 Nov 2009 12:17:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.sitemap.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.sitemap.js</destination>

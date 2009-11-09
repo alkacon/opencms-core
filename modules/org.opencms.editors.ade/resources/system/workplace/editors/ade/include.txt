@@ -34,3 +34,4 @@
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.property.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.sitemap.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.publish.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.selectbox.js"></script>
