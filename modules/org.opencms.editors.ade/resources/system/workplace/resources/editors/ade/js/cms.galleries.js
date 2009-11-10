@@ -45,17 +45,7 @@
    cms.galleries.classListOptions +
    '">\
                         <span class="cms-drop-down">\
-                            <label>Sort by:</label>\
-                         //   <select name="categories" size="1">\
-                       //         <option value="title.asc">Title Ascending</option>\
-                     //           <option value="title.desc">Title Descending</option>\
-                   //             <option value="type.asc">Type Ascending</option>\
-                 //               <option value="type.desc">Type Descending</option>\
-               //                 <option value="datemodified.asc">Date modifired Ascending</option>\
-             //                   <option value="datemodified.desc">Date modifired Descending</option>\
-           //                     <option value="path.asc">Path Ascending</option>\
-         //                       <option value="path.desc">Path Descending</option>\
-       //                     </select>\
+                            <label>Sort by:&nbsp;</label>\
                         </span>\
                         <span class="cms-ft-search"><label>Search:</label><input type="text"/></span>\
              </div>\
@@ -331,16 +321,21 @@
     */
    var initAddDialog = cms.galleries.initAddDialog = function() {
       // add galleries tab html
-      var resultTab=$(cms.galleries.htmlTabResultSceleton).append($.fn.selectBox('generate',{values:[], select: function($this, self, value){}}));
+      var resultTab=$(cms.galleries.htmlTabResultSceleton);
+      resultTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
+          values:[
+              {value: 'title.desc',title: 'Title Ascending'}, 
+              {value: 'title.desc',title: 'Title Descending'}, 
+              {value: 'type.asc',title: 'Type Ascending'}, 
+              {value: 'type.desc',title: 'Type Descending'}, 
+              {value: 'datemodified.asc',title: 'Date Ascending'},
+              {value: 'datemodified.desc',title: 'Date Descending'},
+              {value: 'path.asc',title: 'Path Ascending'},
+              {value: 'path.desc',title: 'Path Descending'}
+          ],
+          width: 150,
+          select: function($this, self, value){}}));
       
-      /*value="title.asc">Title Ascending</option>\
-                     //           <option value="title.desc">Title Descending</option>\
-                   //             <option value="type.asc">Type Ascending</option>\
-                 //               <option value="type.desc">Type Descending</option>\
-               //                 <option value="datemodified.asc">Date modifired Ascending</option>\
-             //                   <option value="datemodified.desc">Date modifired Descending</option>\
-           //                     <option value="path.asc">Path Ascending</option>\
-         //                       <option value="path.desc">Path Descending</option>*/
       $('#' + cms.galleries.idTabs)
           .append(resultTab)
           .append(cms.galleries.htmlTabTypesSceleton)

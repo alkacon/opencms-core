@@ -16,6 +16,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
 </script>
 <script type="text/javascript" src="/opencms/opencms/system/workplace/editors/ade/cms.messages.jsp"></script>
 <script type="text/javascript" src="js/cms.html.js"></script>
+<script type="text/javascript" src="js/cms.selectbox.js"></script>
 <script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript">  
     vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
@@ -61,9 +62,12 @@ var cms = { html: {}, galleries: {}, messages: {} };
    /*     display: inline-block; */
         margin-bottom: 4px;
         margin-right: 5px;
+        margin-top: 2px;
         list-style-image:none;
         list-style-position:outside;
         list-style-type:none;
+        /* HACK: To force hasLayout: true in IE7 */
+        zoom: 1;
      /*    clear: left; */
     }
     
@@ -268,15 +272,15 @@ var cms = { html: {}, galleries: {}, messages: {} };
        
    }
       
-   .cms-list.cms-active-level.cms-level-1 div.cms-list-checkbox {
+   .cms-list.cms-active-level.cms-level-1 {
        margin-left: 25px;
    }
       
-   .cms-list.cms-active-level.cms-level-2 div.cms-list-checkbox {
+   .cms-list.cms-active-level.cms-level-2 {
        margin-left: 40px;
    }
       
-   .cms-list.cms-active-level.cms-level-3 div.cms-list-checkbox {
+   .cms-list.cms-active-level.cms-level-3 {
        margin-left: 55px;
    }
    
@@ -323,6 +327,14 @@ var cms = { html: {}, galleries: {}, messages: {} };
 
     
 </style>
+<!--[if IE 7]>
+<style>
+div.cms-selectbox{
+    zoom: 1;
+    display: inline;
+    }
+</style>
+<![endif]-->
 	</head>
 	<body>
 	    <div id="cms-gallery-main"> 

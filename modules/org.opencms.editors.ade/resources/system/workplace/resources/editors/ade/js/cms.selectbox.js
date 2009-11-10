@@ -127,10 +127,14 @@ $.fn.selectBox=function(options, additional){
         function _generateReplacer(values){
             var replacer=$('<div class="cms-selectbox ui-state-default ui-corner-all"><span class="cms-select-opener ui-icon ui-icon-triangle-1-s"></span></div>')
 			$('<span class="cms-current-value cms-select-option"></span>').appendTo(replacer).text(values[0].title).attr('rel', values[0].value);
-			_generateSelector(values).appendTo(replacer);
+			var selector=_generateSelector(values).appendTo(replacer);
 			replacer.click(_start);
             $('span.cms-select-option', replacer).andSelf().hover(function(){$(this).addClass('ui-state-hover');}, function(){$(this).removeClass('ui-state-hover')});
-            replacer.data('replacer', replacer)
+            replacer.data('replacer', replacer);
+            if (opts.width){
+                replacer.width(opts.width);
+                selector.width(opts.width);
+            }
             return replacer;    
         }
         
@@ -166,6 +170,7 @@ $.fn.selectBox=function(options, additional){
 	};
     
 	$.fn.selectBox.defaults={
+        width: null,
 		open: null,
         select: null
 		
