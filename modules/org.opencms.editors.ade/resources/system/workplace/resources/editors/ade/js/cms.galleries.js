@@ -47,9 +47,8 @@
                         <span class="cms-drop-down">\
                             <label>Sort by:&nbsp;</label>\
                         </span>\
-                        <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
              </div>\
-             <div id="results" class="cms-list-scrolling ui-corner-all">\
+             <div id="results" class="cms-list-scrolling ui-corner-all result-tab-scrolling">\
                         <ul class="cms-list-scrolling-innner"></ul>\
              </div>\
              <div class="result-pagination"></div>\
@@ -60,20 +59,11 @@
                 <div id="typesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
                         <label>Sort by:</label>\
-                        <select name="types" size="1">\
-                            <option value="title,asc">Title Ascending</option>\
-                            <option value="title,desc">Title Descending</option>\
-                        </select>\
                     </span>\
                     <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
-                <div id="types" class="cms-list-scrolling ui-corner-all">\
+                <div id="types" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
                     <ul class="cms-list-scrolling-innner"></ul>\
-                </div>\
-                <div id="typesbuttons" class="' +
-   cms.galleries.classListOptions +
-   '">\
-                    <button class="ui-state-default ui-corner-all cms-item-right">Select</button>\
                 </div>\
               </div>';
    
@@ -82,22 +72,11 @@
                 <div id="galleriesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
                         <label>Sort by:</label>\
-                        <select name="galleries" size="1">\
-                            <option value="title,asc">Title Ascending</option>\
-                            <option value="title,desc">Title Descending</option>\
-                            <option value="type,asc">Type Ascending</option>\
-                            <option value="type,desc">Type Descending</option>\
-                        </select>\
                     </span>\
                     <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
-                <div id="galleries" class="cms-list-scrolling ui-corner-all">\
+                <div id="galleries" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
                     <ul class="cms-list-scrolling-innner"></ul>\
-                </div>\
-                <div id="galleriesbuttons" class="' +
-   cms.galleries.classListOptions +
-   '">\
-                    <button class="ui-state-default ui-corner-all cms-item-right">Select</button>\
                 </div>\
               </div>';
    
@@ -106,21 +85,11 @@
                 <div id="categoriesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
                         <label>Sort by:</label>\
-                        <select name="categories" size="1">\
-                            <option value="path,asc">Hierarchy</option>\
-                            <option value="title,asc">Title Ascending</option>\
-                            <option value="title,desc">Title Descending</option>\
-                        </select>\
                     </span>\
                     <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
-                <div id="categories" class="cms-list-scrolling ui-corner-all">\
+                <div id="categories" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
                     <ul class="cms-list-scrolling-innner"></ul>\
-                </div>\
-                <div id="categoriesbuttons" class="' +
-   cms.galleries.classListOptions +
-   '">\
-                    <button class="ui-state-default ui-corner-all cms-item-right">Select</button>\
                 </div>\
               </div>';
    
@@ -320,8 +289,8 @@
     * Init function for search/add dialog.
     */
    var initAddDialog = cms.galleries.initAddDialog = function() {
-      // add galleries tab html
-      var resultTab=$(cms.galleries.htmlTabResultSceleton);
+      // init tabs for add dialog
+      var resultTab = $(cms.galleries.htmlTabResultSceleton);
       resultTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
           values:[
               {value: 'title.desc',title: 'Title Ascending'}, 
@@ -334,14 +303,75 @@
               {value: 'path.desc',title: 'Path Descending'}
           ],
           width: 150,
-          select: function($this, self, value){}}));
+          /* TODO: bind sort functionality */
+          select: function($this, self, value){$(self).closest('div.cms-list-options').attr('id')}}));
+      // TODO blind out for the moment
+      resultTab.find('.cms-drop-down').css('display','none');
       
+      var typesTab = $(cms.galleries.htmlTabTypesSceleton);
+      typesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
+          values:[
+              {value: 'title,asc',title: 'Title Ascending'}, 
+              {value: 'title,desc',title: 'Title Descending'}         
+          ],
+          width: 150,
+          /* bind sort functionality to selectbox */
+          select: function($this, self, value){
+                  var criteria = $(self).closest('div.cms-list-options').attr('id');
+                  criteria = criteria.replace('options', '');
+                  var params = value.split(',');
+                  var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
+                  cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
+              }
+          })); 
+          
+      var galleriesTab = $(cms.galleries.htmlTabGalleriesSceleton);
+      galleriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
+          values:[
+              {value: 'title,asc',title: 'Title Ascending'}, 
+              {value: 'title,desc',title: 'Title Descending'},
+              {value: 'type,asc',title: 'Type Ascending'}, 
+              {value: 'type,desc',title: 'Type Descending'}          
+          ],
+          width: 150,
+          /* bind sort functionality to selectbox */
+          select: function($this, self, value){
+                  var criteria = $(self).closest('div.cms-list-options').attr('id');
+                  criteria = criteria.replace('options', '');
+                  var params = value.split(',');
+                  var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
+                  cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
+              }
+          }));
+      
+      var categoriesTab = $(cms.galleries.htmlTabCategoriesSceleton);
+      categoriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
+          values:[
+              {value: 'path,asc',title: 'Hierarchy'},
+              {value: 'title,asc',title: 'Title Ascending'}, 
+              {value: 'title,desc',title: 'Title Descending'}         
+          ],
+          width: 150,
+          /* bind sort functionality to selectbox */
+          select: function($this, self, value){
+                  var criteria = $(self).closest('div.cms-list-options').attr('id');
+                  criteria = criteria.replace('options', '');
+                  var params = value.split(',');
+                  var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
+                  cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
+              }
+          }));  
+
+      // add tabs html to tabs
       $('#' + cms.galleries.idTabs)
           .append(resultTab)
-          .append(cms.galleries.htmlTabTypesSceleton)
-          .append(cms.galleries.htmlTabGalleriesSceleton)
-          .append(cms.galleries.htmlTabCategoriesSceleton)
+          .append(typesTab)
+          .append(galleriesTab)
+          .append(categoriesTab)
           .append(cms.galleries.htmlTabFTSeachSceleton);
+      
+      //TODO: blind out quick search dialog for the moment
+      $('span.cms-ft-search').css('display', 'none');
       
       // bind the select tab event, fill the content of the result tab on selection
       $('#' + cms.galleries.idTabs).tabs({
@@ -365,28 +395,16 @@
       }).live('mouseout', function() {
          $(this).removeClass(cms.galleries.classListItemHover);
       });
-      /* .hover(function() {
-       $(this).addClass(cms.galleries.classListItemHover);
-       }, function() {
-       $(this).removeClass(cms.galleries.classListItemHover);
-       });*/
-      $('#searchInTitle, #searchInContent').click(function() {
-         $(this).toggleClass(cms.galleries.classListItemActive);
-      });
+      // add active class to checkbox of search tab  
+      $('#searchInTitle, #searchInContent')
+          .click(function() {
+             $(this).toggleClass(cms.galleries.classListItemActive);
+          });
       
       $('#searchQuery > input').blur(function() {
          cms.galleries.searchObject.query = $(this).val();
          cms.galleries.searchObject.isChanged.query = true;
-      });
-      
-      /** Bind the click event to drop-down box and sort the list */
-      $('span.cms-drop-down option').click(function() {
-         //alert('click');
-         var criteria = $(this).closest('select').attr('name');
-         var params = $(this).val().split(',');
-         var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
-         cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
-      });
+      });           
       
       $('li.cms-result-list-item > div').live('mouseover', function() {
          $(this).toggleClass('ui-state-hover', true);
@@ -398,7 +416,7 @@
       $('span.cms-search-remove').live('click', cms.galleries.removeCriteria);
       
       // bind the hover and click events to the ok button under the criteria lists    
-      $('.' + cms.galleries.classListOptions + ' button,.cms-search-options button').hover(function() {
+      $('.cms-search-options button').hover(function() {
          $(this).addClass('ui-state-hover');
       }, function() {
          $(this).removeClass('ui-state-hover');
@@ -642,7 +660,7 @@
       // add the types to the list
       for (var i = 0; i < types.length; i++) {
          var currType = types[i];
-         $('#types > ul').append(listTypeElement(currType.title, currType.typeid, 'TODO_This is the description for this resource type'));
+         $('#types > ul').append(listTypeElement(currType.title, currType.typeid, currType.info));
          $('li[rel=' + currType.typeid + ']').data('galleryTypes', currType.gallerytypeid);
       }
       // set isChanged flag, so the search will be send to server

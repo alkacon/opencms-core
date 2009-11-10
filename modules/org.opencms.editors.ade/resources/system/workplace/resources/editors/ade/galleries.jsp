@@ -43,11 +43,27 @@ var cms = { html: {}, galleries: {}, messages: {} };
         background: #ffffff;
     }
     
+    /* Style Extension for the ui tabs */
+    .ui-tabs .ui-tabs-nav li a {       
+        padding:3px 5px 4px;
+    }
+    
+    .ui-tabs {
+        height: 440px;
+    }
+    
+    .result-tab-scrolling {
+        height: 290px;
+    }
+    
+    .criteria-tab-scrolling {
+        height: 320px;
+    }
+    
     /* List for search tabs */
     .cms-list-scrolling {                
         border:1px solid #AAAAAA;
-        margin:0 0 7px 7px;
-        max-height:300px;
+        margin:0 0 7px 7px;        
         overflow:auto;
         width:600px;
     }
@@ -81,7 +97,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
     .cms-list-image {
         width: 34px; 
         height: 34px; 
-        background: transparent url(../../filetypes/downloadgallery.gif) no-repeat scroll center center; 
+        background: transparent url(../../filetypes/folder.gif) no-repeat scroll center center; 
         float: left;
     }
     
