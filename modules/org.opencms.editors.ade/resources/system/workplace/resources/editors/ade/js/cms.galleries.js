@@ -115,11 +115,11 @@
               </div>';
    
    /** html fragment for the <li> in the galleries list. */
-   var listGalleryElement = cms.galleries.listGalleryElement = function(itemTitle, itemUrl) {
+   var listGalleryElement = cms.galleries.listGalleryElement = function(itemTitle, itemUrl, itemIcon) {
    
       return $('<li></li>').addClass('cms-list').attr('rel', itemUrl).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
-                             <div class="cms-list-image"></div>\
+                             <div class="cms-list-image" style="background-image: url(' + itemIcon + ');"></div>\
                              <div class="cms-list-itemcontent">\
                                  <div class="' + cms.galleries.classListItemTitle + '">' + itemTitle + '</div>\
                                  <div class="cms-list-url">' +
@@ -130,11 +130,11 @@
    }
    
    /** html fragment for the <li> in the types list. */
-   var listTypeElement = cms.galleries.listTypeElement = function(itemTitle, itemId, itemDesc, itemTypes) {
+   var listTypeElement = cms.galleries.listTypeElement = function(itemTitle, itemId, itemDesc, itemIcon) {
    
       return $('<li></li>').addClass('cms-list').attr('rel', itemId).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
-                             <div class="cms-list-image"></div>\
+                             <div class="cms-list-image" style="background-image: url(' + itemIcon + ');"></div>\
                              <div class="cms-list-itemcontent">\
                                  <div class="' + cms.galleries.classListItemTitle + '">' + itemTitle + '</div>\
                                  <div class="cms-list-url">' +
@@ -159,9 +159,9 @@
                          </div>');
    }
    
-   var listResultElement = cms.galleries.listResultElement = function(itemTitle, itemPath) {
+   var listResultElement = cms.galleries.listResultElement = function(itemTitle, itemPath, itemIcon) {
       return $('<li class="cms-result-list-item"></li>').attr('rel', itemPath).append('<div class="ui-widget-content ui-state-default ui-corner-all">\
-                             <div class="cms-list-image"></div>\
+                             <div class="cms-list-image" style="background-image: url(' + itemIcon + ');"></div>\
                              <div>\
                                  <div class="cms-result-list-title">' + itemTitle + '</div>\
                                  <div class="cms-result-list-path">' +
@@ -435,7 +435,7 @@
     * @param {String} content the nice-list of items for given search criteria
     * @param {String} searchCriteria the given search criteria
     */
-   var addCreteriaToTab = cms.galleries.addCreteriaToTab = function(/** String*/content, /** String*/ searchCriteria) {
+   var addCreteriaToTab = cms.galleries.addCreteriaToTab =  function(/** String*/content, /** String*/ searchCriteria) {
       var target = $('<span id="selected' + searchCriteria + '" class="cms-searchquery ui-widget-content ui-state-hover ui-corner-all"></span>').appendTo($('.cms-result-criteria'));
       target.append('<span class="cms-search-title">' + content + '</span>').append('<span class="cms-search-remove">&nbsp;</span>');
    }
@@ -504,7 +504,17 @@
       // remove old list with search results and pagination
       $('#results > ul').empty();
       $('div.result-pagination').empty();
-      //alert("fillResultList");
+      var resultCriteriaHeight = $('.cms-result-criteria').height();
+      var scrollingHeight = 290;
+      if(resultCriteriaHeight > 30 && resultCriteriaHeight < 80) {
+          scrollingHeight = 265;
+      } else if (resultCriteriaHeight > 79 && resultCriteriaHeight < 110) {
+          scrollingHeight = 235;
+      } else if (resultCriteriaHeight > 111) {
+          scrollingHeight = 210;
+      }      
+      $('#results').height(scrollingHeight);
+                      
       if (data.searchresult.resultcount > 0) {
          // display
          cms.galleries.fillResultPage(data.searchresult.resultlist, data.searchresult.resultpage);
@@ -549,14 +559,13 @@
       }
    }
      
-   var fillResultPage = cms.galleries.fillResultPage = function(pageData, page_id) {
-     // alert("fillResultPage: " + page_id);
-      
+   var fillResultPage = cms.galleries.fillResultPage = function(pageData, page_id) {       
       var target = $('#results > ul').empty().removeAttr('id').attr('id', 'searchresults_page' + page_id);
-      $.each(pageData, function() {
-         // $(target).text('Hallo');
-         $(target).append(cms.galleries.listResultElement(this.title, this.path));
+      $.each(pageData, function() {         
+         $(target).append(cms.galleries.listResultElement(this.title, this.path, this.icon));
       });
+      
+      
    }
    
    var fillGivenResultPage = cms.galleries.fillGivenResultPage = function(pageData) {
@@ -631,7 +640,7 @@
    var fillGalleries = cms.galleries.fillGalleries = function(/**JSON*/galleries) {
       // add the galleries to the list
       for (key in galleries) {
-         $('#galleries > ul').append(listGalleryElement(galleries[key].title, galleries[key].path));
+         $('#galleries > ul').append(listGalleryElement(galleries[key].title, galleries[key].path, galleries[key].icon));
          $('li[rel=' + galleries[key].path + ']').data('type', galleries[key].type);
       }
       // set isChanged flag, so the search will be send to server
@@ -660,7 +669,7 @@
       // add the types to the list
       for (var i = 0; i < types.length; i++) {
          var currType = types[i];
-         $('#types > ul').append(listTypeElement(currType.title, currType.typeid, currType.info));
+         $('#types > ul').append(listTypeElement(currType.title, currType.typeid, currType.info, currType.icon));
          $('li[rel=' + currType.typeid + ']').data('galleryTypes', currType.gallerytypeid);
       }
       // set isChanged flag, so the search will be send to server
@@ -722,8 +731,8 @@
                cms.galleries.searchObject.isChanged[searchCriteria] = false;
             }
          }
+         
       });
-      
       // display the search results
       if (searchEnables) {
          cms.galleries.loadSearchResults();
@@ -840,9 +849,6 @@
    var sortList = function(/** Array */list, /**String*/ sortBy, /**String*/ sortOrder) {
       var sortedArray = list;
       
-      /*$.each(sortedArray, function(){
-       alert(this.title);
-       });*/
       if (sortOrder == 'asc' || sortOrder == null) {
          // alert('asc');
          sortedArray.sort(function(a, b) {
@@ -881,11 +887,6 @@
          });
          
       }
-      
-      // alert('Nachher \n');
-      /* $.each(sortedArray, function(){
-       alert(this.title);
-       });*/
       return sortedArray;
    }
    

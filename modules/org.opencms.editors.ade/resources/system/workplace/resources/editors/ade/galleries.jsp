@@ -51,7 +51,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
     .ui-tabs {
         height: 440px;
     }
-    
+
     .result-tab-scrolling {
         height: 290px;
     }
@@ -233,6 +233,11 @@ var cms = { html: {}, galleries: {}, messages: {} };
     
     .cms-ft-search label, .cms-drop-down label {
         margin-right: 10px;
+    }
+    
+    .cms-drop-down {        
+        /* HACK: To force hasLayout: true in IE7 */
+        zoom: 1;
     }
     
     .cms-drop-down select {
