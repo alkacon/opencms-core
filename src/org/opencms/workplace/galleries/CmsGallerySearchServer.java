@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/09 09:48:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/11/10 08:42:39 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,9 @@ import org.opencms.search.CmsSearchResult;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.6
  */
@@ -123,6 +125,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
 
         /** The gallery types. */
         GALLERYTYPEID("gallerytypeid"),
+
+        /** The info. */
+        INFO("info"),
 
         /** The level. */
         LEVEL("level"),
@@ -486,12 +491,20 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         if (types == null) {
             return result;
         }
+        CmsWorkplaceManager wm = OpenCms.getWorkplaceManager();
         Iterator<I_CmsResourceType> it = types.iterator();
         while (it.hasNext()) {
             I_CmsResourceType type = it.next();
+
             JSONObject jType = new JSONObject();
-            jType.put(JsonKeys.TITLE.getName(), type.getTypeName());
+            CmsExplorerTypeSettings es = wm.getExplorerTypeSetting(type.getTypeName());
+            jType.put(JsonKeys.TITLE.getName(), (es.getKey() != null)
+            ? m_workplaceMessages.getString(es.getKey())
+            : type.getTypeName());
             jType.put(JsonKeys.TYPEID.getName(), type.getTypeId());
+            jType.put(JsonKeys.INFO.getName(), (es.getInfo() != null)
+            ? m_workplaceMessages.getString(es.getInfo())
+            : "");
             JSONArray galleryIds = new JSONArray();
             Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
             while (galleryTypes.hasNext()) {
