@@ -51,7 +51,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
     .ui-tabs {
         height: 440px;
     }
-
+    
     .result-tab-scrolling {
         height: 290px;
     }
@@ -76,12 +76,12 @@ var cms = { html: {}, galleries: {}, messages: {} };
     /** Item in the search list */
     li.cms-list {
    /*     display: inline-block; */
-        margin-bottom: 4px;
         margin-right: 5px;
         margin-top: 2px;
         list-style-image:none;
         list-style-position:outside;
         list-style-type:none;
+        cursor: pointer;
         /* HACK: To force hasLayout: true in IE7 */
         zoom: 1;
      /*    clear: left; */
@@ -95,8 +95,8 @@ var cms = { html: {}, galleries: {}, messages: {} };
     }
     
     .cms-list-image {
-        width: 34px; 
-        height: 34px; 
+        width: 32px; 
+        height: 32px; 
         background: transparent url(../../filetypes/folder.gif) no-repeat scroll center center; 
         float: left;
     }
@@ -104,8 +104,8 @@ var cms = { html: {}, galleries: {}, messages: {} };
     .cms-list-item { 
         /*width: 540px; */
       /*  width: 420px; */
-        height: 34px; 
-        margin-left: 34px;
+        height: 32px; 
+        margin-left: 32px;
         /* float: left; */
     }
     
@@ -134,11 +134,19 @@ var cms = { html: {}, galleries: {}, messages: {} };
     }  
     
     /** Hover and active state for items in the search list */
-    .cms-list-item-active div.cms-list-item { 
+    li.cms-list-item-active div.cms-list-item { 
         border: 1px solid #fcefa1; 
-        background: #fbf9ee url(images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x; 
+        background: #fbf9ee url(css/custom-theme/images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x; 
         color: #363636; 
-    }       
+    }   
+    
+    li.cms-result-list-item div.ui-state-hover, .cms-list div.ui-state-hover, span.cms-drop-down .ui-state-hover{
+    	background-image: url(css/custom-theme/images/ui-bg_glass_75_cccccc_1x400.png);
+    }
+
+    .cms-result-list-item div.ui-state-default, .cms-list div.ui-state-default, .cms-drop-down .ui-state-default{
+    	background-image: url(css/custom-theme/images/ui-bg_glass_75_e6e6e6_1x400.png);
+    }    
    
    .cms-list-item-hover div.cms-list-item { 
         border-color: #5ca718; 
@@ -184,8 +192,8 @@ var cms = { html: {}, galleries: {}, messages: {} };
     span.cms-search-remove {        
         background:transparent url(../../buttons/exit.png) no-repeat scroll center center;
         display:inline-block;
-        height:20px;
-        width:20px;
+        height:19px;
+        width:19px;
     }
     
     span.cms-search-remove:hover {
@@ -212,6 +220,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
 
     /** Option area over and under the criteria list */
     .cms-list-options{
+    	font-size:13px;
         display:inline-block;
         margin:10px 2px 10px 7px;
         width:600px;

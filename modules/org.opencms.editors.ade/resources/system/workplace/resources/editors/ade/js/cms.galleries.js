@@ -435,12 +435,12 @@
     * @param {String} content the nice-list of items for given search criteria
     * @param {String} searchCriteria the given search criteria
     */
-   var addCreteriaToTab = cms.galleries.addCreteriaToTab =  function(/** String*/content, /** String*/ searchCriteria) {
+   var addCreteriaToTab = cms.galleries.addCreteriaToTab = function(/** String*/content, /** String*/ searchCriteria) {
       var target = $('<span id="selected' + searchCriteria + '" class="cms-searchquery ui-widget-content ui-state-hover ui-corner-all"></span>').appendTo($('.cms-result-criteria'));
-      target.append('<span class="cms-search-title">' + content + '</span>').append('<span class="cms-search-remove">&nbsp;</span>');
+      target.append('<span class="cms-search-title">' + content + '</span>').append('<span class="cms-search-remove ui-corner-all">&nbsp;</span>');
    }
    
-   var configContentTypes = [1, 2, 3, 4, 5, 6, 7];
+   var configContentTypes = [1, 2, 3, 4, 5, 6, 7, 146, 147, 149];
    
    /**
     * Loads the lists with available resource types, galleries ans categories via ajax call.
@@ -559,13 +559,11 @@
       }
    }
      
-   var fillResultPage = cms.galleries.fillResultPage = function(pageData, page_id) {       
+   var fillResultPage = cms.galleries.fillResultPage = function(pageData, page_id) {
       var target = $('#results > ul').empty().removeAttr('id').attr('id', 'searchresults_page' + page_id);
-      $.each(pageData, function() {         
+      $.each(pageData, function() {
          $(target).append(cms.galleries.listResultElement(this.title, this.path, this.icon));
       });
-      
-      
    }
    
    var fillGivenResultPage = cms.galleries.fillGivenResultPage = function(pageData) {
@@ -731,8 +729,8 @@
                cms.galleries.searchObject.isChanged[searchCriteria] = false;
             }
          }
-         
       });
+      
       // display the search results
       if (searchEnables) {
          cms.galleries.loadSearchResults();
