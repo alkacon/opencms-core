@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/11/04 14:56:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/10 10:42:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.9.2
  */
@@ -148,7 +148,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      */
     public String getTypeName() throws CmsException {
 
-        return org.opencms.workplace.CmsWorkplaceMessages.getResourceName(
+        return org.opencms.workplace.CmsWorkplaceMessages.getResourceTypeName(
             getCmsObject().getRequestContext().getLocale(),
             getType());
     }
