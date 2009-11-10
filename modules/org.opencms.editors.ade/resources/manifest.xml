@@ -433,6 +433,41 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/galleries.jsp</source>
+			<destination>system/workplace/resources/editors/ade/galleries.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>b2df6878-cdd4-11de-a87a-ffdffeaf9fad</uuidstructure>
+			<uuidresource>b2df6879-cdd4-11de-a87a-ffdffeaf9fad</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 08:40:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 08:40:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/sitemap.html</source>
+			<destination>system/workplace/resources/editors/ade/sitemap.html</destination>
+			<type>plain</type>
+			<uuidstructure>a2c16c2f-c2ce-11de-b0c0-efbe46902201</uuidstructure>
+			<uuidresource>a2c16c30-c2ce-11de-b0c0-efbe46902201</uuidresource>
+			<datelastmodified>Tue, 27 Oct 2009 07:59:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Oct 2009 07:59:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<destination>system/workplace/resources/editors/ade/css</destination>
 			<type>folder</type>
@@ -3478,6 +3513,21 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/js/cms.galleries.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.galleries.js</destination>
+			<type>plain</type>
+			<uuidstructure>b2f4c53b-cdd4-11de-a87a-ffdffeaf9fad</uuidstructure>
+			<uuidresource>b2f4c53c-cdd4-11de-a87a-ffdffeaf9fad</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 08:40:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 08:40:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.html.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.html.js</destination>
@@ -3834,6 +3884,21 @@
 					<value><![CDATA[jquery.jtree.1.0]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/lib/jquery.pagination.js</source>
+			<destination>system/workplace/resources/editors/ade/lib/jquery.pagination.js</destination>
+			<type>plain</type>
+			<uuidstructure>b31aeadd-cdd4-11de-a87a-ffdffeaf9fad</uuidstructure>
+			<uuidresource>b31aeade-cdd4-11de-a87a-ffdffeaf9fad</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 08:40:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 08:40:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
