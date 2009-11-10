@@ -125,11 +125,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
     }       
    
    .cms-list-item-hover div.cms-list-item { 
-        border: 1px solid #a6a6a6; 
-        background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x; 
-        font-weight: normal; 
-        color: #222222; 
-        outline: none; 
+        border-color: #5ca718; 
    }
    
     .cms-list-item-active div.cms-list-checkbox,
