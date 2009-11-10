@@ -28,7 +28,7 @@
 			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler" />
 			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler" />
             <resourceinithandler class="org.opencms.xml.sitemap.CmsSitemapResourceHandler" />
-        </resourceinith>
+        </resourceinit>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
