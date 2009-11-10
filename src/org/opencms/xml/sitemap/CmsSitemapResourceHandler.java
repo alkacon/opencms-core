@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2009/11/09 14:58:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/10 16:42:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.2
  */
@@ -372,7 +372,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
             uriEntry = sitemap.getSiteEntries().get(0);
         } else {
             String uriPath = "";
-            List<CmsSiteEntryBean> subEntries = sitemap.getSiteEntries();
+            List<CmsSiteEntryBean> subEntries = sitemap.getSiteEntries().get(0).getSubEntries();
             boolean finished = false;
             while (!finished) {
                 String name = entryPaths.removeFirst();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/11/10 09:05:11 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/11/10 16:42:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,12 +37,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -50,7 +48,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -65,7 +62,6 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -89,11 +85,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.6
  */
-public class CmsADEServer extends CmsJspActionElement {
+public class CmsADEServer extends A_CmsAjaxServer {
 
     /** Request parameter action value constants. */
     protected enum Action {
@@ -113,16 +109,8 @@ public class CmsADEServer extends CmsJspActionElement {
         LS,
         /** To create a new element. */
         NEW,
-        /** To retrieve the manageable projects. */
-        PROJECTS,
         /** To retrieve the configured properties. */
         PROPS,
-        /** To publish. */
-        PUBLISH,
-        /** To retrieve the publish list. */
-        PUBLISH_LIST,
-        /** To retrieve the stored publish options. */
-        PUBLISH_OPTIONS,
         /** To retrieve search results. */
         SEARCH,
         /** To retrieve the favorite or recent list. */
@@ -310,14 +298,10 @@ public class CmsADEServer extends CmsJspActionElement {
 
         /** List of elements. */
         ELEMENTS("elements"),
-        /** The error message. */
-        ERROR("error"),
         /** The favorites list. */
         FAVORITES("favorites"),
         /** The recent list. */
-        RECENT("recent"),
-        /** The response state. */
-        STATE("state");
+        RECENT("recent");
 
         /** Property name. */
         private String m_name;
@@ -403,34 +387,6 @@ public class CmsADEServer extends CmsJspActionElement {
         }
     }
 
-    /** Json property name constants for response status. */
-    protected enum JsonState {
-
-        /** An error occurred. */
-        ERROR("error"),
-        /** The request was executed with any problems. */
-        OK("ok");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonState(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
     /** Request parameter name constants. */
     protected enum ReqParam {
 
@@ -467,9 +423,6 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** State Constant for client-side element type 'new element configuration'. */
     public static final String ELEMENT_NEWCONFIG = "NC";
-
-    /** Mime type constant. */
-    public static final String MIMETYPE_APPLICATION_JSON = "application/json";
 
     /** JSON response state value constant. */
     public static final String TYPE_CONTAINER = "Container";
@@ -551,6 +504,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws JSONException if there is any problem with JSON
      * @throws CmsException if there is a problem with the cms context
      */
+    @Override
     public JSONObject executeAction() throws CmsException, JSONException {
 
         JSONObject result = new JSONObject();
@@ -558,7 +512,13 @@ public class CmsADEServer extends CmsJspActionElement {
         HttpServletRequest request = getRequest();
         CmsObject cms = getCmsObject();
 
-        if (!checkParameters(request, result, ReqParam.ACTION, ReqParam.LOCALE)) {
+        if (!checkParameters(
+            request,
+            result,
+            ReqParam.ACTION.getName(),
+            ReqParam.LOCALE.getName(),
+            ReqParam.CNTPAGE.getName(),
+            ReqParam.URI.getName())) {
             // every request needs to have at least these parameters 
             return result;
         }
@@ -566,22 +526,6 @@ public class CmsADEServer extends CmsJspActionElement {
         Action action = Action.valueOf(actionParam.toUpperCase());
         String localeParam = request.getParameter(ReqParam.LOCALE.getName());
         cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
-        JSONObject data = new JSONObject();
-        if (checkParameters(request, null, ReqParam.DATA)) {
-            String dataParam = request.getParameter(ReqParam.DATA.getName());
-            data = new JSONObject(dataParam);
-        }
-        if (action.equals(Action.PUBLISH_LIST)
-            || action.equals(Action.PUBLISH)
-            || action.equals(Action.PROJECTS)
-            || action.equals(Action.PUBLISH_OPTIONS)) {
-            CmsADEPublishServer pubHelper = new CmsADEPublishServer(this);
-            return pubHelper.handleRequest(action, result, data);
-        }
-        if (!checkParameters(request, result, ReqParam.CNTPAGE, ReqParam.URI)) {
-            // every non publish related request needs to have at least these parameters 
-            return result;
-        }
         String cntPageParam = request.getParameter(ReqParam.CNTPAGE.getName());
         String uriParam = request.getParameter(ReqParam.URI.getName());
 
@@ -589,12 +533,18 @@ public class CmsADEServer extends CmsJspActionElement {
         CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
         CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
 
+        JSONObject data = new JSONObject();
+        if (checkParameters(request, null, ReqParam.DATA.getName())) {
+            String dataParam = request.getParameter(ReqParam.DATA.getName());
+            data = new JSONObject(dataParam);
+        }
+
         if (action.equals(Action.ALL)) {
             // first load, get everything
             result = getContainerPage(cntPageRes, cntPage, uriParam.equals(cntPageParam) ? null : uriParam);
         } else if (action.equals(Action.ELEM)) {
             // get element data
-            if (!checkParameters(data, result, JsonRequest.ELEM)) {
+            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
                 return result;
             }
             JSONArray elems = data.optJSONArray(JsonRequest.ELEM.getName());
@@ -613,7 +563,7 @@ public class CmsADEServer extends CmsJspActionElement {
             result.put(JsonResponse.ELEMENTS.getName(), resElements);
         } else if (action.equals(Action.ELEMPROPS)) {
             // element formatted with the given properties
-            if (!checkParameters(data, result, JsonRequest.ELEM, JsonRequest.PROPERTIES)) {
+            if (!checkParameters(data, result, JsonRequest.ELEM.getName(), JsonRequest.PROPERTIES.getName())) {
                 return result;
             }
             String elemParam = data.optString(JsonRequest.ELEM.getName());
@@ -628,10 +578,10 @@ public class CmsADEServer extends CmsJspActionElement {
             resElements.put(element.getClientId(), elemUtil.getElementData(element, cntPage.getTypes()));
             result.put(JsonResponse.ELEMENTS.getName(), resElements);
         } else if (action.equals(Action.GET)) {
-            if (checkParameters(data, null, JsonRequest.FAV)) {
+            if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // get the favorite list
                 result.put(JsonResponse.FAVORITES.getName(), getFavoriteList(null, cntPage.getTypes()));
-            } else if (checkParameters(data, result, JsonRequest.REC)) {
+            } else if (checkParameters(data, result, JsonRequest.REC.getName())) {
                 // get recent list
                 result.put(JsonResponse.RECENT.getName(), getRecentList(null, cntPage.getTypes()));
             } else {
@@ -657,7 +607,7 @@ public class CmsADEServer extends CmsJspActionElement {
             result.merge(searchResult, true, false);
         } else if (action.equals(Action.NEW)) {
             // get a new element
-            if (!checkParameters(data, result, JsonRequest.TYPE)) {
+            if (!checkParameters(data, result, JsonRequest.TYPE.getName())) {
                 return result;
             }
             String type = data.optString(JsonRequest.TYPE.getName());
@@ -667,7 +617,7 @@ public class CmsADEServer extends CmsJspActionElement {
             result.put(JsonNewRes.URI.getName(), cms.getSitePath(newResource));
         } else if (action.equals(Action.PROPS)) {
             // get property dialog information
-            if (!checkParameters(data, result, JsonRequest.ELEM)) {
+            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
                 return result;
             }
             String elemParam = data.optString(JsonRequest.ELEM.getName());
@@ -675,11 +625,11 @@ public class CmsADEServer extends CmsJspActionElement {
             CmsContainerElementBean element = getCachedElement(elemParam);
             result = elemUtil.getElementPropertyInfo(element);
         } else if (action.equals(Action.SET)) {
-            if (checkParameters(data, null, JsonRequest.FAV)) {
+            if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // save the favorite list
                 JSONArray list = data.optJSONArray(JsonRequest.FAV.getName());
                 m_manager.saveFavoriteList(cms, arrayToElementList(list));
-            } else if (checkParameters(data, result, JsonRequest.REC)) {
+            } else if (checkParameters(data, result, JsonRequest.REC.getName())) {
                 // save the recent list
                 JSONArray list = data.optJSONArray(JsonRequest.REC.getName());
                 m_sessionCache.setCacheRecentList(arrayToElementList(list));
@@ -694,24 +644,24 @@ public class CmsADEServer extends CmsJspActionElement {
             try {
                 cms.lockResourceTemporary(cntPageParam);
             } catch (CmsException e) {
-                result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage(cms.getRequestContext().getLocale()));
+                error(result, e.getLocalizedMessage(getWorkplaceLocale()));
             }
         } else if (action.equals(Action.STOPEDIT)) {
             // lock the container page
             try {
                 cms.unlockResource(cntPageParam);
             } catch (CmsException e) {
-                result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage(cms.getRequestContext().getLocale()));
+                error(result, e.getLocalizedMessage(getWorkplaceLocale()));
             }
         } else if (action.equals(Action.DEL)) {
             // delete elements
-            if (!checkParameters(data, result, JsonRequest.ELEM)) {
+            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
                 return result;
             }
             JSONArray elems = data.optJSONArray(JsonRequest.ELEM.getName());
             deleteElements(elems);
         } else {
-            result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+            error(result, Messages.get().getBundle(getWorkplaceLocale()).key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
                 ReqParam.ACTION.getName(),
                 actionParam));
@@ -1084,43 +1034,6 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
-     * Main method that handles all requests.<p>
-     * 
-     * @throws IOException if there is any problem while writing the result to the response 
-     * @throws JSONException if there is any problem with JSON
-     */
-    public void serve() throws JSONException, IOException {
-
-        // set the mime type to application/json
-        CmsFlexController controller = CmsFlexController.getController(getRequest());
-        controller.getTopResponse().setContentType(MIMETYPE_APPLICATION_JSON);
-
-        JSONObject result = new JSONObject();
-        try {
-            result = executeAction();
-        } catch (Exception e) {
-            // a serious error occurred, should not...
-            result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_SERVER_EXCEPTION_1,
-                CmsRequestUtil.appendParameters(
-                    getRequest().getRequestURL().toString(),
-                    CmsRequestUtil.createParameterMap(getRequest().getQueryString()),
-                    false)), e);
-        }
-        // add state info
-        if (result.has(JsonResponse.ERROR.getName())) {
-            // add state=error in case an error occurred 
-            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
-        } else if (!result.has(JsonResponse.STATE.getName())) {
-            // add state=ok i case no error occurred
-            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
-        }
-        // write the result
-        result.write(getResponse().getWriter());
-    }
-
-    /**
      * Saves the new state of the container page.<p>
      * 
      * @param uri the uri of the container page to save
@@ -1293,62 +1206,6 @@ public class CmsADEServer extends CmsJspActionElement {
             }
         }
         return result;
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param request the request which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return true if and only if all parameters are present in the request
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ReqParam... params)
-    throws JSONException {
-
-        for (ReqParam param : params) {
-            String value = request.getParameter(param.getName());
-            if (value == null) {
-                result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    param.getName()));
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param data the JSONObject data which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return <code>true</code> if and only if all parameters are present in the given data
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(JSONObject data, JSONObject result, JsonRequest... params) throws JSONException {
-
-        for (JsonRequest param : params) {
-            if (!data.has(param.getName())) {
-                if (result != null) {
-                    result.put(CmsADEServer.JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                        Messages.ERR_JSON_MISSING_PARAMETER_1,
-                        param.getName()));
-                }
-                return false;
-            }
-        }
-        return true;
     }
 
     /**

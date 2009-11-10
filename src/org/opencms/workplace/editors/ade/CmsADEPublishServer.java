@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/11/04 13:53:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/11/10 16:42:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.json.I_CmsJsonifable;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -53,19 +52,34 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
 
 /**
- * ADE publishing features.<p>
+ * Publish server.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.9.3
  */
-public class CmsADEPublishServer {
+public class CmsADEPublishServer extends A_CmsAjaxServer {
+
+    /** Request parameter action value constants. */
+    protected enum Action {
+
+        /** To retrieve the manageable projects. */
+        PROJECTS,
+        /** To publish. */
+        PUBLISH,
+        /** To retrieve the publish list. */
+        PUBLISH_LIST,
+        /** To retrieve the stored publish options. */
+        PUBLISH_OPTIONS;
+    }
 
     /** Json property name constants for responses. */
     protected enum JsonResponse {
@@ -138,57 +152,90 @@ public class CmsADEPublishServer {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEPublishServer.class);
 
-    /** The current cms context. */
-    private CmsObject m_cms;
-
-    /** The current JSP context. */
-    private CmsJspActionElement m_jsp;
-
     /**
-     * Constructor.<p>
+     * Constructor, with parameters.
      * 
-     * @param jsp the current JSP context
+     * @param context the JSP page context object
+     * @param req the JSP request 
+     * @param res the JSP response 
      */
-    public CmsADEPublishServer(CmsJspActionElement jsp) {
+    public CmsADEPublishServer(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        m_jsp = jsp;
-        m_cms = m_jsp.getCmsObject();
+        super(context, req, res);
+    }
+
+    /** Request parameter name constants. */
+    protected enum ReqParam {
+
+        /** The action of execute. */
+        ACTION("action"),
+        /** Generic data parameter. */
+        DATA("data");
+
+        /** Parameter name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private ReqParam(String name) {
+
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
     }
 
     /**
      * Handles all publish related requests.<p>
      * 
-     * @param action the action to carry out
-     * @param result the JSON object for results
-     * @param data the request data
+     * @return the result
      * 
-     * @return JSON object
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if something goes wrong
+     * @throws JSONException if there is any problem with JSON
+     * @throws CmsException if there is a problem with the cms context
      */
-    public JSONObject handleRequest(CmsADEServer.Action action, JSONObject result, JSONObject data)
-    throws JSONException, CmsException {
+    @Override
+    public JSONObject executeAction() throws CmsException, JSONException {
 
-        HttpServletRequest request = m_jsp.getRequest();
+        JSONObject result = new JSONObject();
+
+        HttpServletRequest request = getRequest();
+
+        if (!checkParameters(request, result, ReqParam.ACTION.getName())) {
+            // every request needs to have at least these parameters 
+            return result;
+        }
+        String actionParam = request.getParameter(ReqParam.ACTION.getName());
+        Action action = Action.valueOf(actionParam.toUpperCase());
+        JSONObject data = new JSONObject();
+        if (checkParameters(request, null, ReqParam.DATA.getName())) {
+            String dataParam = request.getParameter(ReqParam.DATA.getName());
+            data = new JSONObject(dataParam);
+        }
 
         // get the cached publish options
         CmsADESessionCache sessionCache = (CmsADESessionCache)request.getSession().getAttribute(
             CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
         CmsPublishOptions options = sessionCache.getPublishOptions();
-        if (action.equals(CmsADEServer.Action.PUBLISH_OPTIONS)) {
+        if (action.equals(Action.PUBLISH_OPTIONS)) {
             result.merge(options.toJson(), true, false);
             return result;
         }
 
         // check possible option parameters
-        if (checkParameters(data, null, ParamPublish.RELATED)) {
+        if (checkParameters(data, null, ParamPublish.RELATED.getName())) {
             options.setIncludeRelated(data.optBoolean(ParamPublish.RELATED.getName()));
         }
-        if (checkParameters(data, null, ParamPublish.SIBLINGS)) {
+        if (checkParameters(data, null, ParamPublish.SIBLINGS.getName())) {
             options.setIncludeSiblings(data.optBoolean(ParamPublish.SIBLINGS.getName()));
         }
-        if (checkParameters(data, null, ParamPublish.PROJECT)) {
+        if (checkParameters(data, null, ParamPublish.PROJECT.getName())) {
             String projectParam = data.optString(ParamPublish.PROJECT.getName());
             try {
                 options.setProjectId(new CmsUUID(projectParam));
@@ -200,13 +247,15 @@ public class CmsADEPublishServer {
             options.setProjectId(null);
         }
 
-        CmsADEPublish publish = new CmsADEPublish(m_cms);
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setLocale(getWorkplaceLocale());
+        CmsADEPublish publish = new CmsADEPublish(cms);
         // set options
         publish.getOptions().setIncludeRelated(options.isIncludeRelated());
         publish.getOptions().setIncludeSiblings(options.isIncludeSiblings());
         publish.getOptions().setProjectId(options.getProjectId());
 
-        if (action.equals(CmsADEServer.Action.PUBLISH_LIST)) {
+        if (action.equals(Action.PUBLISH_LIST)) {
             if (data.has(ParamPublish.REMOVE_RESOURCES.getName())) {
                 removeFromPublishList(publish, data.optJSONArray(ParamPublish.REMOVE_RESOURCES.getName()));
                 // we continue to execute the main action
@@ -214,15 +263,15 @@ public class CmsADEPublishServer {
             // get list of resources to publish
             JSONArray groupsToPublish = toJsonArray(publish.getPublishGroups());
             result.put(JsonResponse.GROUPS.getName(), groupsToPublish);
-        } else if (action.equals(CmsADEServer.Action.PROJECTS)) {
+        } else if (action.equals(Action.PROJECTS)) {
             JSONArray manageableProjects = toJsonArray(publish.getManageableProjects());
             result.put(JsonResponse.PROJECTS.getName(), manageableProjects);
-        } else if (action.equals(CmsADEServer.Action.PUBLISH)) {
+        } else if (action.equals(Action.PUBLISH)) {
             if (data.has(ParamPublish.REMOVE_RESOURCES.getName())) {
                 removeFromPublishList(publish, data.optJSONArray(ParamPublish.REMOVE_RESOURCES.getName()));
                 // we continue to execute the main action
             }
-            if (!checkParameters(data, result, ParamPublish.RESOURCES)) {
+            if (!checkParameters(data, result, ParamPublish.RESOURCES.getName())) {
                 return result;
             }
             // save options
@@ -237,8 +286,7 @@ public class CmsADEPublishServer {
                 pubResources = resourcesFromJson(idsToPublish);
             } catch (CmsException e) {
                 // should never happen
-                LOG.error(e.getLocalizedMessage(), e);
-                result.put(CmsADEServer.JsonResponse.ERROR.getName(), e.getLocalizedMessage());
+                error(result, e.getLocalizedMessage());
                 return result;
             }
             Collections.sort(pubResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
@@ -272,7 +320,7 @@ public class CmsADEPublishServer {
     public boolean isCanPublish() {
 
         return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
-            || OpenCms.getRoleManager().hasRole(m_cms, CmsRole.VFS_MANAGER);
+            || OpenCms.getRoleManager().hasRole(getCmsObject(), CmsRole.VFS_MANAGER);
     }
 
     /**
@@ -309,35 +357,7 @@ public class CmsADEPublishServer {
             idsToRemove.add(new CmsUUID(id));
         }
 
-        OpenCms.getPublishManager().removeResourceFromUsersPubList(m_cms, idsToRemove);
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param data the JSONObject data which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return <code>true</code> if and only if all parameters are present in the given data
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(JSONObject data, JSONObject result, ParamPublish... params) throws JSONException {
-
-        for (ParamPublish param : params) {
-            if (!data.has(param.getName())) {
-                if (result != null) {
-                    result.put(CmsADEServer.JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                        Messages.ERR_JSON_MISSING_PARAMETER_1,
-                        param.getName()));
-                }
-                return false;
-            }
-        }
-        return true;
+        OpenCms.getPublishManager().removeResourceFromUsersPubList(getCmsObject(), idsToRemove);
     }
 
     /**
@@ -353,7 +373,7 @@ public class CmsADEPublishServer {
 
         List<CmsResource> resources = new ArrayList<CmsResource>(ids.length());
         for (int i = 0; i < ids.length(); i++) {
-            resources.add(m_cms.readResource(new CmsUUID(ids.optString(i)), CmsResourceFilter.ALL));
+            resources.add(getCmsObject().readResource(new CmsUUID(ids.optString(i)), CmsResourceFilter.ALL));
         }
         return resources;
     }

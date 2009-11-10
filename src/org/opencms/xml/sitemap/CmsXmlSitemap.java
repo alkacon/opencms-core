@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2009/11/09 08:36:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/10 16:42:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,9 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsMacroResolver;
@@ -67,6 +69,7 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
 
 /**
@@ -76,7 +79,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.5.2
  * 
@@ -225,6 +228,152 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
+     * No validation since rescursive schema.<p>
+     * 
+     * @see org.opencms.xml.content.CmsXmlContent#addValue(org.opencms.file.CmsObject, java.lang.String, java.util.Locale, int)
+     */
+    @Override
+    public I_CmsXmlContentValue addValue(CmsObject cms, String path, Locale locale, int index)
+    throws CmsIllegalArgumentException, CmsRuntimeException {
+
+        // get the schema type of the requested path           
+        I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(path);
+        if (type == null) {
+            throw new CmsIllegalArgumentException(org.opencms.xml.content.Messages.get().container(
+                org.opencms.xml.content.Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1,
+                path));
+        }
+
+        Element parentElement;
+        String elementName;
+        CmsXmlContentDefinition contentDefinition;
+        if (CmsXmlUtils.isDeepXpath(path)) {
+            // this is a nested content definition, so the parent element must be in the bookmarks
+            String parentPath = CmsXmlUtils.createXpath(CmsXmlUtils.removeLastXpathElement(path), 1);
+            Object o = getBookmark(parentPath, locale);
+            if (o == null) {
+                throw new CmsIllegalArgumentException(org.opencms.xml.content.Messages.get().container(
+                    org.opencms.xml.content.Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_1,
+                    path));
+            }
+            CmsXmlNestedContentDefinition parentValue = (CmsXmlNestedContentDefinition)o;
+            parentElement = parentValue.getElement();
+            elementName = CmsXmlUtils.getLastXpathElement(path);
+            contentDefinition = parentValue.getNestedContentDefinition();
+        } else {
+            // the parent element is the locale element
+            parentElement = getLocaleNode(locale);
+            elementName = CmsXmlUtils.removeXpathIndex(path);
+            contentDefinition = m_contentDefinition;
+        }
+
+        // read the XML siblings from the parent node
+        List<Element> siblings = CmsXmlGenericWrapper.elements(parentElement, elementName);
+
+        int insertIndex;
+
+        if (contentDefinition.getChoiceMaxOccurs() > 0) {
+            // for a choice sequence we do not check the index position, we rather do a full XML validation afterwards
+
+            insertIndex = index;
+        } else if (siblings.size() > 0) {
+            // we want to add an element to a sequence, and there are elements already of the same type
+
+            if (siblings.size() >= type.getMaxOccurs()) {
+                // must not allow adding an element if max occurs would be violated
+                throw new CmsRuntimeException(org.opencms.xml.content.Messages.get().container(
+                    org.opencms.xml.content.Messages.ERR_XMLCONTENT_ELEM_MAXOCCURS_2,
+                    elementName,
+                    new Integer(type.getMaxOccurs())));
+            }
+
+            if (index > siblings.size()) {
+                // index position behind last element of the list
+                throw new CmsRuntimeException(org.opencms.xml.content.Messages.get().container(
+                    org.opencms.xml.content.Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3,
+                    new Integer(index),
+                    new Integer(siblings.size())));
+            }
+
+            // check for offset required to append beyond last position
+            int offset = (index == siblings.size()) ? 1 : 0;
+            // get the element from the parent at the selected position
+            Element sibling = siblings.get(index - offset);
+            // check position of the node in the parent node content
+            insertIndex = sibling.getParent().content().indexOf(sibling) + offset;
+        } else {
+            // we want to add an element to a sequence, but there are no elements of the same type yet
+
+            if (index > 0) {
+                // since the element does not occur, index must be 0
+                throw new CmsRuntimeException(org.opencms.xml.content.Messages.get().container(
+                    org.opencms.xml.content.Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_2,
+                    new Integer(index),
+                    elementName));
+            }
+
+            // check where in the type sequence the type should appear
+            int typeIndex = contentDefinition.getTypeSequence().indexOf(type);
+            if (typeIndex == 0) {
+                // this is the first type, so we just add at the very first position
+                insertIndex = 0;
+            } else {
+
+                // create a list of all element names that should occur before the selected type
+                List<String> previousTypeNames = new ArrayList<String>();
+                for (int i = 0; i < typeIndex; i++) {
+                    I_CmsXmlSchemaType t = contentDefinition.getTypeSequence().get(i);
+                    previousTypeNames.add(t.getName());
+                }
+
+                // iterate all elements of the parent node
+                Iterator<Node> i = CmsXmlGenericWrapper.content(parentElement).iterator();
+                int pos = 0;
+                while (i.hasNext()) {
+                    Node node = i.next();
+                    if (node instanceof Element) {
+                        if (!previousTypeNames.contains(node.getName())) {
+                            // the element name is NOT in the list of names that occurs before the selected type, 
+                            // so it must be an element that occurs AFTER the type
+                            break;
+                        }
+                    }
+                    pos++;
+                }
+                insertIndex = pos;
+            }
+        }
+
+        I_CmsXmlContentValue newValue;
+        if (contentDefinition.getChoiceMaxOccurs() > 0) {
+            // for a choice we do a full XML validation
+            try {
+                // append the new element at the calculated position
+                newValue = addValue(cms, parentElement, type, locale, insertIndex);
+                // validate the XML structure to see if the index position was valid
+                // CmsXmlUtils.validateXmlStructure(m_document, m_encoding, new CmsXmlEntityResolver(cms));                
+                // can not be validated since recursive schema
+            } catch (Exception e) {
+                throw new CmsRuntimeException(org.opencms.xml.content.Messages.get().container(
+                    org.opencms.xml.content.Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3,
+                    new Integer(insertIndex),
+                    elementName,
+                    parentElement.getUniquePath()));
+            }
+        } else {
+            // just append the new element at the calculated position
+            newValue = addValue(cms, parentElement, type, locale, insertIndex);
+        }
+
+        // re-initialize this XML content 
+        initDocument(m_document, m_encoding, m_contentDefinition);
+
+        // return the value instance that was stored in the bookmarks 
+        // just returning "newValue" isn't enough since this instance is NOT stored in the bookmarks
+        return getBookmark(getBookmarkName(newValue.getPath(), locale));
+    }
+
+    /**
      * Returns the sitemap bean for the given locale.<p>
      *
      * @param cms the cms context
@@ -260,6 +409,16 @@ public class CmsXmlSitemap extends CmsXmlContent {
     public boolean isAutoCorrectionEnabled() {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.xml.A_CmsXmlDocument#validateXmlStructure(org.xml.sax.EntityResolver)
+     */
+    @Override
+    public void validateXmlStructure(EntityResolver resolver) {
+
+        // can not be validated since recursive schema
+        return;
     }
 
     /**

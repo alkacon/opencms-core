@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/09 14:59:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/11/10 16:42:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,31 +32,33 @@
 package org.opencms.workplace.editors.sitemap;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsTemplateLoaderFacade;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.editors.ade.Messages;
-import org.opencms.workplace.editors.ade.CmsElementUtil.JsonElement;
-import org.opencms.workplace.editors.ade.CmsElementUtil.JsonProperty;
+import org.opencms.workplace.editors.ade.A_CmsAjaxServer;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsADEManager;
@@ -90,11 +92,55 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.6
  */
-public class CmsSitemapServer extends CmsJspActionElement {
+public class CmsSitemapServer extends A_CmsAjaxServer {
+
+    /** Element Property json property constants. */
+    public enum JsonProperty {
+
+        /** Property's default value. */
+        DEFAULT_VALUE("defaultValue"),
+        /** Property's description. */
+        DESCRIPTION("description"),
+        /** Property's error message. */
+        ERROR("error"),
+        /** Property's nice name. */
+        NICE_NAME("niceName"),
+        /** Property's validation regular expression. */
+        RULE_REGEX("ruleRegex"),
+        /** Property's validation rule type. */
+        RULE_TYPE("ruleType"),
+        /** Property's type. */
+        TYPE("type"),
+        /** Property's value. */
+        VALUE("value"),
+        /** Property's widget. */
+        WIDGET("widget"),
+        /** Property's widget configuration. */
+        WIDGET_CONF("widgetConf");
+
+        /** Property name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private JsonProperty(String name) {
+
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+    }
 
     /** Request parameter action value constants. */
     protected enum Action {
@@ -108,12 +154,12 @@ public class CmsSitemapServer extends CmsJspActionElement {
         SAVE,
         /** To retrieve the favorite or recent list. */
         SET,
-        /** To validate a site entry name. */
-        VALIDATE,
         /** To lock the sitemap. */
         STARTEDIT,
         /** To unlock the sitemap. */
-        STOPEDIT;
+        STOPEDIT,
+        /** To validate a site entry name. */
+        VALIDATE;
     }
 
     /** Json property name constants for request parameters. */
@@ -149,18 +195,18 @@ public class CmsSitemapServer extends CmsJspActionElement {
     /** Json property name constants for responses. */
     protected enum JsonResponse {
 
-        /** The error message. */
-        ERROR("error"),
         /** The favorites list. */
         FAVORITES("favorites"),
+        /** The validated/converted site entry name. */
+        NAME("name"),
+        /** The reason why you can not edit the sitemap. */
+        NO_EDIT_REASON("noEditReason"),
+        /** The properties configuration. */
+        PROPERTIES("properties"),
         /** The recent list. */
         RECENT("recent"),
         /** The sitemap tree. */
-        SITEMAP("sitemap"),
-        /** The validated/converted site entry name. */
-        NAME("name"),
-        /** The response state. */
-        STATE("state");
+        SITEMAP("sitemap");
 
         /** Property name. */
         private String m_name;
@@ -218,34 +264,6 @@ public class CmsSitemapServer extends CmsJspActionElement {
         }
     }
 
-    /** Json property name constants for response status. */
-    protected enum JsonState {
-
-        /** An error occurred. */
-        ERROR("error"),
-        /** The request was executed with any problems. */
-        OK("ok");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonState(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
     /** Request parameter name constants. */
     protected enum ReqParam {
 
@@ -280,9 +298,6 @@ public class CmsSitemapServer extends CmsJspActionElement {
 
     /** Formatters map key constant. */
     public static final Integer KEY_DEFAULT_FORMATTER = new Integer(-100);
-
-    /** Mime type constant. */
-    public static final String MIMETYPE_APPLICATION_JSON = "application/json";
 
     /** Path constant. */
     public static final String PATH_DEFAULT_FORMATTER = "/system/workplace/editors/sitemap/default-formatter.jsp";
@@ -328,13 +343,16 @@ public class CmsSitemapServer extends CmsJspActionElement {
     }
 
     /**
-     * Handles all ADE requests.<p>
+     * Handles all sitemap requests.<p>
      * 
      * @return the result
      * 
      * @throws JSONException if there is any problem with JSON
      * @throws CmsException if there is a problem with the cms context
+     * 
+     * @see org.opencms.workplace.editors.ade.A_CmsAjaxServer#executeAction()
      */
+    @Override
     public JSONObject executeAction() throws CmsException, JSONException {
 
         JSONObject result = new JSONObject();
@@ -342,7 +360,12 @@ public class CmsSitemapServer extends CmsJspActionElement {
         HttpServletRequest request = getRequest();
         CmsObject cms = getCmsObject();
 
-        if (!checkParameters(request, result, ReqParam.ACTION, ReqParam.LOCALE, ReqParam.SITEMAP)) {
+        if (!checkParameters(
+            request,
+            result,
+            ReqParam.ACTION.getName(),
+            ReqParam.LOCALE.getName(),
+            ReqParam.SITEMAP.getName())) {
             // every request needs to have at least these parameters 
             return result;
         }
@@ -351,35 +374,48 @@ public class CmsSitemapServer extends CmsJspActionElement {
         String localeParam = request.getParameter(ReqParam.LOCALE.getName());
         cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
         JSONObject data = new JSONObject();
-        if (checkParameters(request, null, ReqParam.DATA)) {
+        if (checkParameters(request, null, ReqParam.DATA.getName())) {
             String dataParam = request.getParameter(ReqParam.DATA.getName());
             data = new JSONObject(dataParam);
         }
         String sitemapParam = request.getParameter(ReqParam.SITEMAP.getName());
-
-        CmsResource sitemapRes = cms.readResource(sitemapParam);
-        CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes, request);
-        CmsSitemapBean sitemap = xmlSitemap.getSitemap(cms, cms.getRequestContext().getLocale());
+        CmsResource sitemapRes = null;
+        CmsXmlSitemap xmlSitemap = null;
+        if (sitemapParam.contains(CmsRequestUtil.URL_DELIMITER)) {
+            int pos = sitemapParam.indexOf(CmsRequestUtil.URL_DELIMITER);
+            Map<String, String[]> params = CmsRequestUtil.createParameterMap(sitemapParam.substring(pos));
+            if (params.containsKey(CmsHistoryResourceHandler.PARAM_VERSION)) {
+                int version = Integer.parseInt(params.get(CmsHistoryResourceHandler.PARAM_VERSION)[0]);
+                sitemapParam = sitemapParam.substring(0, pos);
+                sitemapRes = cms.readResource(sitemapParam);
+                CmsFile histRes = cms.readFile((CmsResource)cms.readResource(sitemapRes.getStructureId(), version));
+                xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, histRes, request);
+            }
+        }
+        if (xmlSitemap == null) {
+            sitemapRes = cms.readResource(sitemapParam);
+            xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes, request);
+        }
 
         if (action.equals(Action.ALL)) {
             // first load, get everything
-            result = getSitemap(sitemapRes, sitemap);
+            result = getSitemap(sitemapRes, xmlSitemap);
         } else if (action.equals(Action.GET)) {
-            if (checkParameters(data, null, JsonRequest.FAV)) {
+            if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // get the favorite list
                 result.put(JsonResponse.FAVORITES.getName(), getFavoriteList());
-            } else if (checkParameters(data, result, JsonRequest.REC)) {
+            } else if (checkParameters(data, result, JsonRequest.REC.getName())) {
                 // get recent list
                 result.put(JsonResponse.RECENT.getName(), addContents(m_sessionCache.getRecentList()));
             } else {
                 return result;
             }
         } else if (action.equals(Action.SET)) {
-            if (checkParameters(data, null, JsonRequest.FAV)) {
+            if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // save the favorite list
                 JSONArray list = data.optJSONArray(JsonRequest.FAV.getName());
                 saveFavoriteList(cms, list);
-            } else if (checkParameters(data, result, JsonRequest.REC)) {
+            } else if (checkParameters(data, result, JsonRequest.REC.getName())) {
                 // save the recent list
                 JSONArray list = data.optJSONArray(JsonRequest.REC.getName());
                 m_sessionCache.setRecentList(list);
@@ -387,13 +423,13 @@ public class CmsSitemapServer extends CmsJspActionElement {
                 return result;
             }
         } else if (action.equals(Action.VALIDATE)) {
-            if (!checkParameters(data, result, JsonRequest.NAME)) {
+            if (!checkParameters(data, result, JsonRequest.NAME.getName())) {
                 return result;
             }
             String name = data.optString(JsonRequest.NAME.getName());
             result.put(JsonResponse.NAME.getName(), cms.getRequestContext().getFileTranslator().translateResource(name));
         } else if (action.equals(Action.PROPS)) {
-            result = getPropertyInfo(sitemapRes);
+            result.put(JsonResponse.PROPERTIES.getName(), getPropertyInfo(sitemapRes));
         } else if (action.equals(Action.SAVE)) {
             // save the sitemap
             saveSitemap(xmlSitemap, data);
@@ -402,17 +438,17 @@ public class CmsSitemapServer extends CmsJspActionElement {
             try {
                 cms.lockResourceTemporary(sitemapParam);
             } catch (CmsException e) {
-                result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage(cms.getRequestContext().getLocale()));
+                error(result, e.getLocalizedMessage(getWorkplaceLocale()));
             }
         } else if (action.equals(Action.STOPEDIT)) {
             // lock the sitemap
             try {
                 cms.unlockResource(sitemapParam);
             } catch (CmsException e) {
-                result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage(cms.getRequestContext().getLocale()));
+                error(result, e.getLocalizedMessage(getWorkplaceLocale()));
             }
         } else {
-            result.put(JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
+            error(result, Messages.get().getBundle(getWorkplaceLocale()).key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
                 ReqParam.ACTION.getName(),
                 actionParam));
@@ -467,7 +503,6 @@ public class CmsSitemapServer extends CmsJspActionElement {
         HttpServletRequest m_req = getRequest();
         HttpServletResponse m_res = getResponse();
 
-        // TODO: is this going to be cached? most likely not! any alternative?
         Object currentElement = m_req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
         m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, new CmsSiteEntryBean(
             entry.getResourceId(),
@@ -540,8 +575,7 @@ public class CmsSitemapServer extends CmsJspActionElement {
         CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
         CmsMessages messages = CmsXmlContentDefinition.getContentHandlerForResource(cms, sitemapRes).getMessages(
             settings.getLocale());
-        JSONObject result = new JSONObject();
-        JSONObject jSONProperties = new JSONObject();
+        JSONObject jsonProperties = new JSONObject();
         Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
             cms,
             sitemapRes);
@@ -551,46 +585,47 @@ public class CmsSitemapServer extends CmsJspActionElement {
             String propertyName = entry.getKey();
             CmsXmlContentProperty conf = entry.getValue();
             CmsMacroResolver.resolveMacros(conf.getWidgetConfiguration(), cms, Messages.get().getBundle());
-            JSONObject jSONProperty = new JSONObject();
-            jSONProperty.put(JsonProperty.DEFAULT_VALUE.getName(), conf.getDefault());
-            jSONProperty.put(JsonProperty.TYPE.getName(), conf.getPropertyType());
-            jSONProperty.put(JsonProperty.WIDGET.getName(), conf.getWidget());
-            jSONProperty.put(JsonProperty.WIDGET_CONF.getName(), CmsMacroResolver.resolveMacros(
+            JSONObject jsonProperty = new JSONObject();
+            jsonProperty.put(JsonProperty.DEFAULT_VALUE.getName(), conf.getDefault());
+            jsonProperty.put(JsonProperty.TYPE.getName(), conf.getPropertyType());
+            jsonProperty.put(JsonProperty.WIDGET.getName(), conf.getWidget());
+            jsonProperty.put(JsonProperty.WIDGET_CONF.getName(), CmsMacroResolver.resolveMacros(
                 conf.getWidgetConfiguration(),
                 cms,
                 messages));
-            jSONProperty.put(JsonProperty.RULE_TYPE.getName(), conf.getRuleType());
-            jSONProperty.put(JsonProperty.RULE_REGEX.getName(), conf.getRuleRegex());
-            jSONProperty.put(JsonProperty.NICE_NAME.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.RULE_TYPE.getName(), conf.getRuleType());
+            jsonProperty.put(JsonProperty.RULE_REGEX.getName(), conf.getRuleRegex());
+            jsonProperty.put(JsonProperty.NICE_NAME.getName(), CmsMacroResolver.resolveMacros(
                 conf.getNiceName(),
                 cms,
                 messages));
-            jSONProperty.put(JsonProperty.DESCRIPTION.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.DESCRIPTION.getName(), CmsMacroResolver.resolveMacros(
                 conf.getDescription(),
                 cms,
                 messages));
-            jSONProperty.put(JsonProperty.ERROR.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.ERROR.getName(), CmsMacroResolver.resolveMacros(
                 conf.getError(),
                 cms,
                 messages));
-            jSONProperties.put(propertyName, jSONProperty);
+            jsonProperties.put(propertyName, jsonProperty);
         }
-        result.put(JsonElement.PROPERTIES.getName(), jSONProperties);
-        return result;
+        return jsonProperties;
     }
 
     /**
      * Returns the data for the given sitemap.<p>
      * 
      * @param resource the sitemap's resource 
-     * @param sitemap the sitemap to use
+     * @param xmlSitemap the XML sitemap to use
      * 
      * @return the data for the given sitemap
      * 
      * @throws JSONException if something goes wrong with the JSON manipulation
+     * @throws CmsException if something goes wrong
      */
-    public JSONObject getSitemap(CmsResource resource, CmsSitemapBean sitemap) throws JSONException {
+    public JSONObject getSitemap(CmsResource resource, CmsXmlSitemap xmlSitemap) throws JSONException, CmsException {
 
+        CmsSitemapBean sitemap = xmlSitemap.getSitemap(getCmsObject(), getCmsObject().getRequestContext().getLocale());
         // create empty result object
         JSONObject result = new JSONObject();
 
@@ -603,6 +638,27 @@ public class CmsSitemapServer extends CmsJspActionElement {
             }
         }
         result.put(JsonResponse.SITEMAP.getName(), siteEntries);
+
+        // check if the current user is allowed to edit the current sitemap
+        Locale workplaceLocale = getWorkplaceLocale();
+        if (xmlSitemap.getFile() instanceof I_CmsHistoryResource) {
+            result.put(JsonResponse.NO_EDIT_REASON.getName(), Messages.get().getBundle(workplaceLocale).key(
+                Messages.GUI_NO_EDIT_REASON_HISTORY_0));
+        } else if (!getCmsObject().hasPermissions(
+            resource,
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.DEFAULT)) {
+            result.put(JsonResponse.NO_EDIT_REASON.getName(), Messages.get().getBundle(workplaceLocale).key(
+                Messages.GUI_NO_EDIT_REASON_PERMISSION_0));
+        } else {
+            CmsLock lock = getCmsObject().getLock(resource);
+            if (!lock.isUnlocked() && !lock.isOwnedBy(getCmsObject().getRequestContext().currentUser())) {
+                result.put(JsonResponse.NO_EDIT_REASON.getName(), Messages.get().getBundle(workplaceLocale).key(
+                    Messages.GUI_NO_EDIT_REASON_LOCK_1,
+                    getCmsObject().readUser(lock.getUserId()).getName()));
+            }
+        }
 
         // collect the favorites
         JSONArray resFavorites = getFavoriteList();
@@ -666,43 +722,6 @@ public class CmsSitemapServer extends CmsJspActionElement {
     }
 
     /**
-     * Main method that handles all requests.<p>
-     * 
-     * @throws IOException if there is any problem while writing the result to the response 
-     * @throws JSONException if there is any problem with JSON
-     */
-    public void serve() throws JSONException, IOException {
-
-        // set the mime type to application/json
-        CmsFlexController controller = CmsFlexController.getController(getRequest());
-        controller.getTopResponse().setContentType(MIMETYPE_APPLICATION_JSON);
-
-        JSONObject result = new JSONObject();
-        try {
-            result = executeAction();
-        } catch (Exception e) {
-            // a serious error occurred, should not...
-            result.put(JsonResponse.ERROR.getName(), e.getLocalizedMessage() == null ? "NPE" : e.getLocalizedMessage());
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_SERVER_EXCEPTION_1,
-                CmsRequestUtil.appendParameters(
-                    getRequest().getRequestURL().toString(),
-                    CmsRequestUtil.createParameterMap(getRequest().getQueryString()),
-                    false)), e);
-        }
-        // add state info
-        if (result.has(JsonResponse.ERROR.getName())) {
-            // add state=error in case an error occurred 
-            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
-        } else if (!result.has(JsonResponse.STATE.getName())) {
-            // add state=ok i case no error occurred
-            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
-        }
-        // write the result
-        result.write(getResponse().getWriter());
-    }
-
-    /**
      * Adds the HTML content to the JSON list of site entries
      * 
      * @param jsonEntriesList the JSON list of site entries
@@ -726,65 +745,6 @@ public class CmsSitemapServer extends CmsJspActionElement {
             }
         }
         return jsonEntriesList;
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param request the request which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return true if and only if all parameters are present in the request
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(HttpServletRequest request, JSONObject result, ReqParam... params)
-    throws JSONException {
-
-        for (ReqParam param : params) {
-            String value = request.getParameter(param.getName());
-            if (value == null) {
-                if (result != null) {
-                    CmsMessages bundle = Messages.get().getBundle();
-                    result.put(JsonResponse.ERROR.getName(), bundle.key(
-                        Messages.ERR_JSON_MISSING_PARAMETER_1,
-                        param.getName()));
-                }
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks whether a list of parameters are present as attributes of a request.<p>
-     * 
-     * If this isn't the case, an error message is written to the JSON result object.
-     * 
-     * @param data the JSONObject data which contains the parameters
-     * @param result the JSON object which the error message should be written into, can be <code>null</code>
-     * @param params the array of parameters which should be checked
-     * 
-     * @return <code>true</code> if and only if all parameters are present in the given data
-     * 
-     * @throws JSONException if something goes wrong with JSON
-     */
-    protected boolean checkParameters(JSONObject data, JSONObject result, JsonRequest... params) throws JSONException {
-
-        for (JsonRequest param : params) {
-            if (!data.has(param.getName())) {
-                if (result != null) {
-                    result.put(CmsSitemapServer.JsonResponse.ERROR.getName(), Messages.get().getBundle().key(
-                        Messages.ERR_JSON_MISSING_PARAMETER_1,
-                        param.getName()));
-                }
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -905,11 +865,12 @@ public class CmsSitemapServer extends CmsJspActionElement {
         Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
 
         // create the entry node itself
-        I_CmsXmlContentValue entryValue = xmlSitemap.getValue(rootPath == null
-        ? CmsXmlSitemap.XmlNode.SITEENTRY.getName()
-        : CmsXmlUtils.concatXpath(rootPath, CmsXmlSitemap.XmlNode.SITEENTRY.getName()), locale, entryCount);
+        String entryPath = (rootPath == null ? CmsXmlSitemap.XmlNode.SITEENTRY.getName() : CmsXmlUtils.concatXpath(
+            rootPath,
+            CmsXmlSitemap.XmlNode.SITEENTRY.getName()));
+        I_CmsXmlContentValue entryValue = xmlSitemap.getValue(entryPath, locale, entryCount);
         if (entryValue == null) {
-            entryValue = xmlSitemap.addValue(cms, CmsXmlSitemap.XmlNode.SITEENTRY.getName(), locale, entryCount);
+            entryValue = xmlSitemap.addValue(cms, entryPath, locale, entryCount);
         }
 
         // entry info
