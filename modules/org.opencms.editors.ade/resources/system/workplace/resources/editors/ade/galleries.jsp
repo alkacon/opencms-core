@@ -57,13 +57,13 @@ var cms = { html: {}, galleries: {}, messages: {} };
     }
     
     .criteria-tab-scrolling {
-        height: 320px;
+        height: 350px;
     }
     
     /* List for search tabs */
     .cms-list-scrolling {                
         border:1px solid #AAAAAA;
-        margin:0 0 7px 7px;        
+        /*margin:0 0 7px 7px;*/        
         overflow:auto;
         width:600px;
     }
@@ -222,7 +222,8 @@ var cms = { html: {}, galleries: {}, messages: {} };
     .cms-list-options{
     	font-size:13px;
         display:inline-block;
-        margin:10px 2px 10px 7px;
+        /*margin:10px 2px 10px 7px;*/
+       margin: 0px 0px 5px 0px;
         width:600px;
     }           
     
@@ -254,10 +255,18 @@ var cms = { html: {}, galleries: {}, messages: {} };
     }
     
     /** Full Text Search tab*/
+   
+   .cms-search-panel {
+        border: 1px solid #AAAAAA;
+        height: 378px;
+        width: 600px; 
+    }
+    
     .cms-search-options {
         display:inline-block;
         margin:10px 2px 10px 7px;
-        width:600px;
+        width:590px;
+        position: relative;
     }
     
     .cms-search-options div.cms-checkbox-label {
@@ -268,9 +277,14 @@ var cms = { html: {}, galleries: {}, messages: {} };
      
     .cms-search-options span.cms-item-left,
     .cms-search-options button.cms-item-left{
-        float: left;    
+        float: left;            
     }
     
+    .cms-search-options button.cms-item-left-bottom{
+        position:relative; 
+        bottom: -190px;
+    }
+        
     .cms-search-options div.cms-item-left {
         float: left;
         line-height: 32px;
@@ -297,11 +311,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
         margin-right: 20px;
     }
     
-    /** Categories levels*/   
-   .cms-list .cms-active-level .cms-level-0 div.cms-list-item {
-       
-   }
-      
+    /** Categories levels*/         
    .cms-list.cms-active-level.cms-level-1 {
        margin-left: 25px;
    }

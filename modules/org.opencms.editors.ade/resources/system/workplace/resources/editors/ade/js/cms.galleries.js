@@ -95,6 +95,7 @@
    
    /** html fragment for the tab with the types' list. */
    var htmlTabFTSeachSceleton = cms.galleries.htmlTabFTSeachSceleton = '<div id="tabs-fulltextsearch">\
+             <div class="cms-search-panel ui-corner-all">\
                     <div class="ui-widget cms-search-options">\
                         <span id="searchQuery" class="cms-item-left"><label>Search for:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
@@ -110,9 +111,10 @@
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
                     <div class="cms-search-options">\
-                        <button class="ui-state-default ui-corner-all cms-item-left">Search</button>\
+                        <button class="ui-state-default ui-corner-all cms-item-left-bottom">Search</button>\
                     </div>\
-              </div>';
+             </div>\
+          </div>';
    
    /** html fragment for the <li> in the galleries list. */
    var listGalleryElement = cms.galleries.listGalleryElement = function(itemTitle, itemUrl, itemIcon) {
@@ -435,7 +437,7 @@
     * @param {String} content the nice-list of items for given search criteria
     * @param {String} searchCriteria the given search criteria
     */
-   var addCreteriaToTab = cms.galleries.addCreteriaToTab = function(/** String*/content, /** String*/ searchCriteria) {
+   var addCreteriaToTab = cms.galleries.addCreteriaToTab =  function(/** String*/content, /** String*/ searchCriteria) {
       var target = $('<span id="selected' + searchCriteria + '" class="cms-searchquery ui-widget-content ui-state-hover ui-corner-all"></span>').appendTo($('.cms-result-criteria'));
       target.append('<span class="cms-search-title">' + content + '</span>').append('<span class="cms-search-remove ui-corner-all">&nbsp;</span>');
    }
@@ -552,18 +554,19 @@
                next_show_always: false,
                num_edge_entries: 1
             });
-            // build the list with search results without pagination
          }
       } else {
             // handle empty list for search
       }
    }
      
-   var fillResultPage = cms.galleries.fillResultPage = function(pageData, page_id) {
+   var fillResultPage = cms.galleries.fillResultPage = function(pageData, page_id) {       
       var target = $('#results > ul').empty().removeAttr('id').attr('id', 'searchresults_page' + page_id);
-      $.each(pageData, function() {
+      $.each(pageData, function() {         
          $(target).append(cms.galleries.listResultElement(this.title, this.path, this.icon));
       });
+      
+      
    }
    
    var fillGivenResultPage = cms.galleries.fillGivenResultPage = function(pageData) {
@@ -730,7 +733,7 @@
             }
          }
       });
-      
+         
       // display the search results
       if (searchEnables) {
          cms.galleries.loadSearchResults();
@@ -848,7 +851,6 @@
       var sortedArray = list;
       
       if (sortOrder == 'asc' || sortOrder == null) {
-         // alert('asc');
          sortedArray.sort(function(a, b) {
             if (a[sortBy] < b[sortBy]) {
                return -1;
@@ -866,7 +868,6 @@
             }
          });
       } else {
-         //alert('desc');
          sortedArray.sort(function(a, b) {
             if (a[sortBy] > b[sortBy]) {
                return -1;
