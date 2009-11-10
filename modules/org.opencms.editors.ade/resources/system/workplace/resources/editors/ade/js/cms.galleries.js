@@ -47,7 +47,7 @@
                         <span class="cms-drop-down">\
                             <label>Sort by:&nbsp;</label>\
                         </span>\
-                        <span class="cms-ft-search"><label>Search:</label><input type="text"/></span>\
+                        <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
              </div>\
              <div id="results" class="cms-list-scrolling ui-corner-all">\
                         <ul class="cms-list-scrolling-innner"></ul>\
@@ -65,7 +65,7 @@
                             <option value="title,desc">Title Descending</option>\
                         </select>\
                     </span>\
-                    <span class="cms-ft-search"><label>Search:</label><input type="text"/></span>\
+                    <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="types" class="cms-list-scrolling ui-corner-all">\
                     <ul class="cms-list-scrolling-innner"></ul>\
@@ -89,7 +89,7 @@
                             <option value="type,desc">Type Descending</option>\
                         </select>\
                     </span>\
-                    <span class="cms-ft-search"><label>Search:</label><input type="text"/></span>\
+                    <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="galleries" class="cms-list-scrolling ui-corner-all">\
                     <ul class="cms-list-scrolling-innner"></ul>\
@@ -112,7 +112,7 @@
                             <option value="title,desc">Title Descending</option>\
                         </select>\
                     </span>\
-                    <span class="cms-ft-search"><label>Search:</label><input type="text"/></span>\
+                    <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="categories" class="cms-list-scrolling ui-corner-all">\
                     <ul class="cms-list-scrolling-innner"></ul>\
@@ -127,7 +127,7 @@
    /** html fragment for the tab with the types' list. */
    var htmlTabFTSeachSceleton = cms.galleries.htmlTabFTSeachSceleton = '<div id="tabs-fulltextsearch">\
                     <div class="ui-widget cms-search-options">\
-                        <span id="searchQuery" class="cms-item-left"><label>Search for:</label><input type="text"/></span>\
+                        <span id="searchQuery" class="cms-item-left"><label>Search for:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
                     <div class="ui-widget cms-search-options">\
                         <div class="cms-item-left">Search in:</div>\
@@ -137,8 +137,8 @@
                         <div class="cms-checkbox-label">Content</div>\
                     </div>\
                     <div class="ui-widget cms-search-options">\
-                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed after:</label><input type="text"/></span>\
-                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text"/></span>\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed after:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
                     <div class="cms-search-options">\
                         <button class="ui-state-default ui-corner-all cms-item-left">Search</button>\

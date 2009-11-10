@@ -145,6 +145,10 @@ var cms = { html: {}, galleries: {}, messages: {} };
        background-position: -7px -310px;
    }
     
+    /** Input fields */
+    input.ui-widget-content{
+    	padding: 1px;
+    }
     
     /** Result tab */
     #tabs-result .cms-searchquery{
