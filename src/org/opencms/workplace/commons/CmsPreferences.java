@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2009/07/06 08:02:34 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2009/11/10 09:05:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -632,7 +632,7 @@ public class CmsPreferences extends CmsTabDialog {
                     result.append("<tr>\n\t<td style=\"white-space: nowrap;\">");
                     String localizedName = keyDefault("label.editor.preferred." + currentResourceType, "");
                     if (CmsStringUtil.isEmpty(localizedName)) {
-                        localizedName = CmsWorkplaceMessages.getResourceName(this, currentResourceType);
+                        localizedName = CmsWorkplaceMessages.getResourceTypeName(this, currentResourceType);
                     }
                     result.append(localizedName);
                     result.append("</td>\n\t<td>");
@@ -838,7 +838,7 @@ public class CmsPreferences extends CmsTabDialog {
             Map localizedGalleries = new TreeMap();
             for (Iterator i = galleriesTypes.keySet().iterator(); i.hasNext();) {
                 String currentGalleryType = (String)i.next();
-                String localizedName = CmsWorkplaceMessages.getResourceName(this, currentGalleryType);
+                String localizedName = CmsWorkplaceMessages.getResourceTypeName(this, currentGalleryType);
                 localizedGalleries.put(localizedName, currentGalleryType);
             }
 

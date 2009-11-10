@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/11/05 14:19:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/11/10 09:05:11 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.6
  */
@@ -1441,7 +1441,7 @@ public class CmsADEServer extends CmsJspActionElement {
             resElement.put(CmsElementUtil.JsonElement.ID.getName(), type);
             resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
             resElement.put(JsonResType.TYPE.getName(), type);
-            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceName(
+            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceTypeName(
                 cms.getRequestContext().getLocale(),
                 type));
             resElements.put(type, resElement);
@@ -1482,7 +1482,7 @@ public class CmsADEServer extends CmsJspActionElement {
             resElement.put(CmsElementUtil.JsonElement.ID.getName(), type);
             resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
             resElement.put(JsonResType.TYPE.getName(), type);
-            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceName(
+            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceTypeName(
                 cms.getRequestContext().getLocale(),
                 type));
             resElements.put(type, resElement);

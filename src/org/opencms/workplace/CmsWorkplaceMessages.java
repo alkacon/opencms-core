@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2009/08/31 09:02:59 $
- * Version: $Revision: 1.45.2.1 $
+ * Date   : $Date: 2009/11/10 09:05:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.45.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,9 +69,6 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
     /** The title key prefix used for the "new resource" dialog. */
     public static final String GUI_NEW_RESOURCE_TITLE_PREFIX = "title.new";
-
-    /** The prefix to generate the resource type names with. */
-    public static final String GUI_RESOURCE_TYPE_PREFIX = "fileicon.";
 
     /** Constant for the <code>".messages"</code> prefix. */
     public static final String PREFIX_BUNDLE_MESSAGES = ".messages";
@@ -121,43 +118,71 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
     }
 
     /**
-     * Returns the nice name of the given resource type name.<p>
+     * Returns the description of the given resource type name.<p>
      * 
-     * It will look up a key with the prefix {@link #GUI_RESOURCE_TYPE_PREFIX} 
-     * and the given name appended.<p>
-     * 
-     * If this key is not found, the value of 
-     * the name input will be returned.<p>
+     * If this key is not found, the value of the name input will be returned.<p>
      * 
      * @param wp an instance of a {@link CmsWorkplace} to resolve the key name with
      * @param name the resource type name to generate the nice name for
      * 
-     * @return the nice name of the given resource type name
+     * @return the description of the given resource type name
      */
-    public static String getResourceName(CmsWorkplace wp, String name) {
+    public static String getResourceTypeDescription(CmsWorkplace wp, String name) {
 
         // try to find the localized key
-        return wp.keyDefault(GUI_RESOURCE_TYPE_PREFIX + name, name);
+        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name).getInfo();
+        return wp.keyDefault(key, name);
     }
 
     /**
-     * Returns the nice name of the given resource type name.<p>
+     * Returns the description of the given resource type name.<p>
      * 
-     * It will look up a key with the prefix {@link #GUI_RESOURCE_TYPE_PREFIX} 
-     * and the given name appended.<p>
-     * 
-     * If this key is not found, the value of 
-     * the name input will be returned.<p>
+     * If this key is not found, the value of the name input will be returned.<p>
      * 
      * @param locale the right locale to use
      * @param name the resource type name to generate the nice name for
      * 
-     * @return the nice name of the given resource type name
+     * @return the description of the given resource type name
      */
-    public static String getResourceName(Locale locale, String name) {
+    public static String getResourceTypeDescription(Locale locale, String name) {
 
         // try to find the localized key
-        return OpenCms.getWorkplaceManager().getMessages(locale).keyDefault(GUI_RESOURCE_TYPE_PREFIX + name, name);
+        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name).getInfo();
+        return OpenCms.getWorkplaceManager().getMessages(locale).keyDefault(key, name);
+    }
+
+    /**
+     * Returns the localized name of the given resource type name.<p>
+     * 
+     * If this key is not found, the value of the name input will be returned.<p>
+     * 
+     * @param wp an instance of a {@link CmsWorkplace} to resolve the key name with
+     * @param name the resource type name to generate the nice name for
+     * 
+     * @return the localized name of the given resource type name
+     */
+    public static String getResourceTypeName(CmsWorkplace wp, String name) {
+
+        // try to find the localized key
+        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name).getKey();
+        return wp.keyDefault(key, name);
+    }
+
+    /**
+     * Returns the localized name of the given resource type name.<p>
+     * 
+     * If this key is not found, the value of the name input will be returned.<p>
+     * 
+     * @param locale the right locale to use
+     * @param name the resource type name to generate the nice name for
+     * 
+     * @return the localized name of the given resource type name
+     */
+    public static String getResourceTypeName(Locale locale, String name) {
+
+        // try to find the localized key
+        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name).getKey();
+        return OpenCms.getWorkplaceManager().getMessages(locale).keyDefault(key, name);
     }
 
     /**
