@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/10 11:08:11 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/11/10 12:49:47 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 7.6
  */
@@ -513,8 +513,8 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
             jType.put(JsonKeys.INFO.getName(), (es.getInfo() != null)
             ? m_workplaceMessages.getString(es.getInfo())
             : "");
-            String iconPath = CmsWorkplace.getResourceUri(OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                type.getTypeName()).getIcon());
+            String iconPath = CmsWorkplace.getResourceUri("filetypes/"
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getIcon());
             jType.put(JsonKeys.ICON.getName(), iconPath);
             JSONArray galleryIds = new JSONArray();
             Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
@@ -693,8 +693,8 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         while (iGalleryTypes.hasNext()) {
             Entry<String, CmsGalleryTypeInfo> ent = iGalleryTypes.next();
             CmsGalleryTypeInfo tInfo = ent.getValue();
-            String iconPath = CmsWorkplace.getResourceUri(OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                tInfo.getResourceType().getTypeName()).getIcon());
+            String iconPath = CmsWorkplace.getResourceUri("filetypes/"
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(tInfo.getResourceType().getTypeName()).getIcon());
             JSONArray contentTypes = new JSONArray();
             Iterator<I_CmsResourceType> it = tInfo.getContentTypes().iterator();
             while (it.hasNext()) {
