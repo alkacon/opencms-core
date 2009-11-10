@@ -3,7 +3,6 @@
    
    //cms.data.js
    M.JSON_PARSE_ERROR = 'ERROR: Couldn\'t parse JSON data';
-   M.AJAX_LOAD_ERROR = 'ERROR: couldn\'t load data from server';
    M.AJAX_SENT_ERROR = 'ERROR: couldn\'t send data to server';
    
    //cms.html.js

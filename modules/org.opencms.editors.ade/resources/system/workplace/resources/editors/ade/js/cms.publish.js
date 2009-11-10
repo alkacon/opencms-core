@@ -1,10 +1,58 @@
 (function(cms) {
 
+   var publishDialogId = cms.publish.publishDialogId = 'publishlist';
+   var publishDialog = cms.publish.publishDialog = '<div id="' + publishDialogId + '" class="cms-dialog">\
+	<form action="#">\
+	    <ul  class="cms-item-list"><li class="cms-item">\
+            <div class="cms-left">\
+              <span class="cms-check-icon"></span>\
+            </div>\
+            <div class="cms-left ui-widget-content">\
+              <div class="cms-head ui-state-hover">\
+                <div class="cms-navtext">\
+                  <a class="cms-left ui-icon ui-icon-triangle-1-e"></a>Extranet\
+                </div>\
+                <span class="cms-title">Flower extranet</span>\
+                <span class="cms-file-icon"></span>\
+                <span class="cms-led-icon"></span>\
+                <span class="cms-lock-icon"></span>\
+              </div>\
+              <div class="cms-additional">\
+                <div alt="File: /demo_en/site/extranet/extranet.html">\
+                  <span class="cms-left">File:</span>extranet.html\
+                </div>\
+                <div alt="Date: 04/04/2009">\
+                  <span class="cms-left">Date:</span>4/4/2009 5:30 PM\
+                </div>\
+                <div alt="User: Admin">\
+                  <span class="cms-left">User:</span>Admin\
+                </div>\
+                <div alt="Type: xmlpage">\
+                  <span class="cms-left">Type:</span>xmlpage\
+                </div>\
+              </div>\
+            </div>\
+            <br clear="all" />\
+          </li></ul>\
+	    <ul class="cms-publish-options">\
+	        <li>\
+	            <div class="cms-left">\<span class="cms-check-icon"></span></div>\
+                <label for="siblings">Publish all siblings</label>\
+	            <br clear="all"/>\
+	        </li>\
+	        <li>\
+	            <div class="cms-left"><span class="cms-check-icon"></span></div>\
+	            <label for="related">Publish with related resources</label>\
+	            <br  clear="all"/>\
+	        </li>\
+	    </ul>\
+	</form></div>';
+   
    var M = cms.messages;
    var STATE_CHANGED = 'C';
    var STATE_DELETED = 'D';
    var STATE_NEW = 'N';
-   WAIT_GIF_URL = cms.data.SKIN_URI + 'commons/wait.gif';
+   var WAIT_GIF_URL = cms.data.SKIN_URI + 'commons/wait.gif';
    var classPublishItem = 'cms-publish-item';
    var classPublishCheckbox = 'cms-publish-checkbox';
    var classRemoveButton = 'cms-publish-remove-button';
@@ -12,6 +60,12 @@
    var classKeep = 'cms-publish-keep';
    var classPublishDialog = 'cms-publish-dialog';
    var buttonHeight = 24;
+   
+   /**  
+    * The url for server requests.
+    * @see /system/workplace/editors/ade/include.txt
+    */
+   var /** String */ SERVER_URL = cms.publish.SERVER_URL;
    
    /**
     * Returns the icon for a resource
@@ -76,7 +130,7 @@
     * @param {Object} resource the resource for which the entry should be created
     */
    var _formatPublishItem = function(resource) {
-    
+   
       var $item = $('<div></div>').addClass(classPublishItem + ' cms-item ui-corner-all ui-widget-content');//.css(itemStyle);
       var $row1 = $('<div></div>').appendTo($item);
       var $row2 = $('<div></div>').appendTo($item);
@@ -328,9 +382,15 @@
          
          var $checkbox = $('<input class="' + classPublishCheckbox + '" type="checkbox"></input>').css(checkboxStyle);
          if (resource.info) {
-            $('<span></span>').css({float: 'left', width: '30px'}).appendTo($row);
+            $('<span></span>').css({
+               'float': 'left',
+               width: '30px'
+            }).appendTo($row);
          } else {
-            $('<span></span>').css({float: 'left', width: '30px'}).append($checkbox).appendTo($row);
+            $('<span></span>').css({
+               'float': 'left',
+               width: '30px'
+            }).append($checkbox).appendTo($row);
          }
          $checkbox.attr('rel', resource.id);
          var $publishItem = _formatPublishItem(resource);
@@ -340,9 +400,9 @@
          var itemVerticalOffset = 1;
          $publishItem.appendTo($row);
          var $removeButton = $('<button></button>').addClass(classRemoveButton).addClass('ui-corner-all ui-state-default').text('Remove').attr('rel', resource.id);
-//         if ($.browser.msie) {
-//            $removeButton.css('margin-top', '-30px');
-//         }
+         //         if ($.browser.msie) {
+         //            $removeButton.css('margin-top', '-30px');
+         //         }
          
          var removeButtonState = 0;
          $removeButton.click(function() {
@@ -363,11 +423,11 @@
             }
             removeButtonState = 1 - removeButtonState;
          });
-    //     $row.height($publishItem.height() + 2 * itemVerticalOffset);
+         //     $row.height($publishItem.height() + 2 * itemVerticalOffset);
          
          $removeButton.height(25);
          if (resource.removable) {
-       //     $removeButton.css('float', 'right');
+            //     $removeButton.css('float', 'right');
             $('.cms-publish-item-clear', $publishItem).before($removeButton);
             
          }
@@ -412,31 +472,40 @@
          var projects = cms.data.projects;
          var userListId = '';
          var userListLabel = 'My changes';
-         var values=[];
-         values.push({value: userListId, title: userListLabel});
-         for (var i = 0; i < projects.length; i++) {
-             values.push({value: projects[i].id, title: projects[i].name});
-         }
-         var $select=$.fn.selectBox('generate',{'values': values, select: function($this, replacer, value) {
-            self.updateData(self.checkedRelated, self.checkedSiblings, value);
-         }});
-         $select.selectBox('setValue',self.project);
-         
-   /*      var $select = $('<select></select>').attr();
-         $('<option></option>').attr('value', userListId).text(userListLabel).appendTo($select);
-         for (var i = 0; i < projects.length; i++) {
-            var projectName = projects[i].name;
-            var projectId = projects[i].id;
-            $('<option></option>').attr('value', projectId).text(projectName).appendTo($select);
-         }
-         $('option[value=' + self.project + ']', $select).attr('selected', 'selected');
-         
-         $select.change(function() {
-            var value = $(this).val();
-            self.updateData(self.checkedRelated, self.checkedSiblings, value);
+         var values = [];
+         values.push({
+            value: userListId,
+            title: userListLabel
          });
+         for (var i = 0; i < projects.length; i++) {
+            values.push({
+               value: projects[i].id,
+               title: projects[i].name
+            });
+         }
+         var $select = $.fn.selectBox('generate', {
+            'values': values,
+            select: function($this, replacer, value) {
+               self.updateData(self.checkedRelated, self.checkedSiblings, value);
+            }
+         });
+         $select.selectBox('setValue', self.project);
          
-         */
+         /*      var $select = $('<select></select>').attr();
+          $('<option></option>').attr('value', userListId).text(userListLabel).appendTo($select);
+          for (var i = 0; i < projects.length; i++) {
+          var projectName = projects[i].name;
+          var projectId = projects[i].id;
+          $('<option></option>').attr('value', projectId).text(projectName).appendTo($select);
+          }
+          $('option[value=' + self.project + ']', $select).attr('selected', 'selected');
+          
+          $select.change(function() {
+          var value = $(this).val();
+          self.updateData(self.checkedRelated, self.checkedSiblings, value);
+          });
+          
+          */
          return $select;
       },
       
@@ -581,4 +650,68 @@
          }
       }
    }
+
+   /**
+   * AJAX call for getting the publish problem list from the server
+   */
+   var getPublishProblemList = cms.data.getPublishProblemList = function(callback) {
+
+       postJSON('publish_list', {}, callback);
+   }
+   
+   /**
+   * AJAX call for getting the publish list from the server 
+   */
+   var getPublishList = function(related, siblings, project, callback) {
+
+       var params = {
+           related: related,
+           siblings: siblings
+       }
+       if ((project != null) && (project != '')) {
+           params.project = project;
+       } 
+       postJSON('publish_list', params, callback, false, 120000)
+   }
+   
+   /**
+   * AJAX call for publishing resources.
+   */
+   var publishResources = function(resources, removeResources, force, callback) {
+
+       var params = {
+           'resources': resources,
+           'remove-resources': removeResources,
+           'force': force
+       }
+       postJSON('publish', params, callback, false, 120000);
+   }
+   
+   var getProjects = function(callback) {
+
+       postJSON('projects', {}, callback);
+   }
+   
+   var getPublishOptions = function(callback) {
+
+       postJSON('publish_options', {}, callback);
+   }
+   
+   /**
+    * Generic function for posting JSON data to the server.
+    *
+    * @param {String} action a string to tell the server what to do with the data
+    * @param {Object} data the JSON data
+    * @param {Function} afterPost the callback that should be called after the server replied
+    * @param {boolean} async optional flag to indicate is the request should synchronized or not, by default it is not
+    * @param {int} timeout optional timeout in millisecs, default is #AJAX_TIMEOUT
+    */
+   var postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost, /** boolean */ sync, /** int */ timeout) {
+   
+      cms.comm.postJSON(SERVER_URL, {
+            'action': action,
+            'data': JSON.stringify(data)
+         }, afterPost, sync, timeout);
+   }
+   
 })(cms);

@@ -15,9 +15,6 @@
    /** Element state 'changed' constant. */
    var /** String */ STATUS_CHANGED = cms.data.STATUS_CHANGED = 'C';
    
-   /** Timeout in ms for ajax requests. */
-   var /** long */ AJAX_TIMEOUT = 20000;
-   
    /** Parameter 'action' value 'all' constant. */
    var /** String */ ACTION_ALL = 'all';
    
@@ -84,15 +81,6 @@
     */
    var /** String */ SERVER_URL = cms.data.SERVER_URL;
    
-   /** Generic error message for json parse errors. */
-   var /** String */ JSON_PARSE_ERROR = cms.messages.JSON_PARSE_ERROR;
-   
-   /** Generic error message for ajax load errors. */
-   var /** String */ AJAX_LOAD_ERROR = cms.messages.AJAX_LOAD_ERROR;
-   
-   /** Generic error message for ajax post errors. */
-   var /** String */ AJAX_SENT_ERROR = cms.messages.AJAX_SENT_ERROR;
-   
    /** Centralized repository for element objects. */
    var /** Object */ elements = cms.data.elements = {};
    
@@ -123,34 +111,6 @@
    
    /** New element types, with name and nice name. */
    var /** Array */ newTypes = cms.data.newTypes = [];
-   
-   /** Keeping track of requests to be able to abort them. */
-   var /** Array<XMLHttpRequest> */ requests = [];
-   
-   /**
-    * The request did finish, so dismiss it.<p>
-    *
-    * @param {XMLHttpRequest} xhr the request object
-    */
-   var _removeRequest = /** void */ function(/** XMLHttpRequest */ xhr) {
-       var pos = requests.indexOf(xhr);
-       if (pos >= 0) {
-           requests.splice(pos, 1);
-       }       
-   };
-   
-   /**
-    * Aborts all pending requests.<p>
-    */
-   var abortAllRequests = cms.data.abortAllRequests = /** void */ function() {
-       for (i = 0, l = requests.length; i < l; i++) {
-           try {
-               requests[i].abort();
-           } catch(e) {
-               // ignore
-           }
-       }
-   };
    
    /**
     * Initial load function that loads all data needed for ADE to start.
@@ -252,48 +212,13 @@
     */
    var postJSON = cms.data.postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost, /** boolean */ sync, /** int */ timeout) {
    
-      var async = !sync;
-      if (!timeout) {
-          timeout = AJAX_TIMEOUT;
-      }
-      var xhr = $.ajax({
-         'url': SERVER_URL,
-         'data': {
+      cms.comm.postJSON(SERVER_URL, {
             'cntpage': CURRENT_CNT_PAGE,
             'uri': CURRENT_URI,
             'locale': LOCALE,
             'action': action,
             'data': JSON.stringify(data)
-         },
-         'type': 'POST',
-         'timeout': timeout,
-         'async': async,
-         'error': function(xhr, status, error) {
-             _removeRequest(xhr);
-            if (cms.toolbar.leavingPage) {
-               return;
-            }
-            alert(AJAX_SENT_ERROR);
-            afterPost(false);
-         },
-         'success': function(data) {
-             _removeRequest(xhr);
-            try {
-               var jsonData = JSON.parse(data, _jsonRevive);
-            } catch (e) {
-               alert(JSON_PARSE_ERROR);
-               afterPost(false, {});
-               return;
-            }
-            if (jsonData.state == 'error') {
-               alert(jsonData.error);
-               afterPost(false, jsonData);
-               return;
-            }
-            afterPost(true, jsonData);
-         }
-      });
-      requests.push(xhr);
+         }, afterPost, sync, timeout, _jsonRevive);
    }
    
    /**
@@ -757,50 +682,5 @@
       return value;
    }
    
-   /**
-   * AJAX call for getting the publish problem list from the server
-   */
-   var getPublishProblemList = cms.data.getPublishProblemList = function(callback) {
-
-       postJSON('publish_list', {}, callback);
-   }
-   
-   /**
-   * AJAX call for getting the publish list from the server 
-   */
-   var getPublishList = cms.data.getPublishList = function(related, siblings, project, callback) {
-
-       var params = {
-           related: related,
-           siblings: siblings
-       }
-       if ((project != null) && (project != '')) {
-           params.project = project;
-       } 
-       postJSON('publish_list', params, callback, false, 120000)
-   }
-   
-   /**
-   * AJAX call for publishing resources.
-   */
-   var publishResources = cms.data.publishResources = function(resources, removeResources, force, callback) {
-
-       var params = {
-           'resources': resources,
-           'remove-resources': removeResources,
-           'force': force
-       }
-       postJSON('publish', params, callback, false, 120000);
-   }
-   
-   var getProjects = cms.data.getProjects = function(callback) {
-
-       postJSON('projects', {}, callback);
-   }
-   
-   var getPublishOptions = cms.data.getPublishOptions = function(callback) {
-
-       postJSON('publish_options', {}, callback);
-   }
 })(cms);
 

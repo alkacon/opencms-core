@@ -177,7 +177,41 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+		<file>
+			<source>system/workplace/editors/ade/include.txt</source>
+			<destination>system/workplace/editors/ade/include.txt</destination>
+			<type>plain</type>
+			<uuidstructure>efc0cf62-8744-11de-83d4-dd9f629b113b</uuidstructure>
+			<uuidresource>efc0cf63-8744-11de-83d4-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 19 Oct 2009 16:00:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:35:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/publish-server.jsp</source>
+			<destination>system/workplace/editors/ade/publish-server.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>dd962f3e-abcd-11de-97fc-dd9f629b113b</uuidstructure>
+			<uuidresource>dd962f3f-8592-abcd-97fc-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 10 Sep 2009 10:52:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Aug 2009 09:47:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/server.jsp</source>
 			<destination>system/workplace/editors/ade/server.jsp</destination>
@@ -195,21 +229,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/ade/include.txt</source>
-			<destination>system/workplace/editors/ade/include.txt</destination>
-			<type>plain</type>
-			<uuidstructure>efc0cf62-8744-11de-83d4-dd9f629b113b</uuidstructure>
-			<uuidresource>efc0cf63-8744-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 19 Oct 2009 16:00:39 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 13:35:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -451,21 +470,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-        <file>
-			<source>system/workplace/resources/editors/ade/sitemap.html</source>
-			<destination>system/workplace/resources/editors/ade/sitemap.html</destination>
-			<type>plain</type>
-			<uuidstructure>a2c16c2f-c2ce-11de-b0c0-efbe46902201</uuidstructure>
-			<uuidresource>a2c16c30-c2ce-11de-b0c0-efbe46902201</uuidresource>
-			<datelastmodified>Tue, 27 Oct 2009 07:59:21 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 27 Oct 2009 07:59:21 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -3473,6 +3477,21 @@
 			<datelastmodified>Wed, 12 Aug 2009 13:51:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:51:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/js/cms.comm.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.comm.js</destination>
+			<type>plain</type>
+			<uuidstructure>19c28604-8747-11de-0987-dd9f629b113b</uuidstructure>
+			<uuidresource>19c28605-8747-0987-83d4-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 19 Oct 2009 16:01:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

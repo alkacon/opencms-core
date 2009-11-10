@@ -69,7 +69,7 @@
       } else {
          $('button.ui-state-active').trigger('click');
          // appending publish-dialog content
-         $(document.body).append(cms.html.publishDialog);
+         $(document.body).append(cms.publish.publishDialog);
          var buttons = {};
          buttons[M.PUBLISH_DIALOG_OK] = function() {
             $(this).dialog('close');
@@ -77,7 +77,7 @@
          buttons[M.PUBLISH_DIALOG_CANCEL] = function() {
             $(this).dialog('close');
          }
-         $('#' + cms.html.publishDialogId).dialog({
+         $('#' + cms.publish.publishDialogId).dialog({
             buttons: buttons,
             width: 340,
             title: M.PUBLISH_DIALOG_TITLE,
@@ -88,11 +88,11 @@
             position: ['center', 20],
             close: function() {
                markAsInactive($('button[name="Publish"]'));
-               $('#' + cms.html.publishDialogId).dialog('destroy');
+               $('#' + cms.publish.publishDialogId).dialog('destroy');
             },
             zIndex: 10000
          });
-         $('#' + cms.html.publishDialogId + ' span.cms-check-icon').click(function() {
+         $('#' + cms.publish.publishDialogId + ' span.cms-check-icon').click(function() {
             $(this).toggleClass('cms-check-icon-inactive')
          });
          
@@ -1572,7 +1572,7 @@
       // initializing dialogs and event-handler
       window.onbeforeunload = function() {
          // DO NOT use jquery to bind this!
-         cms.data.abortAllRequests();
+         cms.comm.abortAllRequests();
       };
       $(window).unload(onUnload); /* TODO */
       $('button[name="Save"]', cms.toolbar.dom.toolbar).click(showSaveDialog);
