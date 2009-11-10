@@ -32,6 +32,7 @@
 			<resource uri="/system/workplace/resources/filetypes/ade_menu.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/containerpage.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/containerpage_config.png"/>
+            <resource uri="/system/workplace/resources/filetypes/mimetype/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -3972,6 +3973,187 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<destination>system/workplace/resources/filetypes/mimetype</destination>
+			<type>folder</type>
+			<uuidstructure>6d5d55a8-cded-11de-a685-ad16e711f5ac</uuidstructure>
+			<datelastmodified>Tue, 10 Nov 2009 11:37:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 11:37:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/mimetype/archiv.png</source>
+			<destination>system/workplace/resources/filetypes/mimetype/archiv.png</destination>
+			<type>image</type>
+			<uuidstructure>6d968e1a-cded-11de-a685-ad16e711f5ac</uuidstructure>
+			<uuidresource>6d968e1b-cded-11de-a685-ad16e711f5ac</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 11:37:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 11:37:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[archiv]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/mimetype/excel.png</source>
+			<destination>system/workplace/resources/filetypes/mimetype/excel.png</destination>
+			<type>image</type>
+			<uuidstructure>6dc629ac-cded-11de-a685-ad16e711f5ac</uuidstructure>
+			<uuidresource>6dc629ad-cded-11de-a685-ad16e711f5ac</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 11:37:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 11:37:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[excel]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/mimetype/image.png</source>
+			<destination>system/workplace/resources/filetypes/mimetype/image.png</destination>
+			<type>image</type>
+			<uuidstructure>6dcd55a0-cded-11de-a685-ad16e711f5ac</uuidstructure>
+			<uuidresource>6dcd55a1-cded-11de-a685-ad16e711f5ac</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 11:37:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 11:37:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[image]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/mimetype/msword.png</source>
+			<destination>system/workplace/resources/filetypes/mimetype/msword.png</destination>
+			<type>image</type>
+			<uuidstructure>6dd6cb84-cded-11de-a685-ad16e711f5ac</uuidstructure>
+			<uuidresource>6dd6cb85-cded-11de-a685-ad16e711f5ac</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 11:37:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 11:37:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[msword]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/mimetype/pdf.png</source>
+			<destination>system/workplace/resources/filetypes/mimetype/pdf.png</destination>
+			<type>image</type>
+			<uuidstructure>6ddbad88-cded-11de-a685-ad16e711f5ac</uuidstructure>
+			<uuidresource>6ddbad89-cded-11de-a685-ad16e711f5ac</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 11:37:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 11:37:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[pdf]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/mimetype/plain.png</source>
+			<destination>system/workplace/resources/filetypes/mimetype/plain.png</destination>
+			<type>image</type>
+			<uuidstructure>6de2d97c-cded-11de-a685-ad16e711f5ac</uuidstructure>
+			<uuidresource>6de2d97d-cded-11de-a685-ad16e711f5ac</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 11:37:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 11:37:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[plain]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/mimetype/powerpoint.png</source>
+			<destination>system/workplace/resources/filetypes/mimetype/powerpoint.png</destination>
+			<type>image</type>
+			<uuidstructure>6de9de60-cded-11de-a685-ad16e711f5ac</uuidstructure>
+			<uuidresource>6de9de61-cded-11de-a685-ad16e711f5ac</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 11:37:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 11:37:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[powerpoint]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
