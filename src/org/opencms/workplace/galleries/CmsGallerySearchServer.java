@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/10 08:42:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/11/10 11:08:11 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,6 +68,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -83,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.6
  */
@@ -125,6 +126,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
 
         /** The gallery types. */
         GALLERYTYPEID("gallerytypeid"),
+
+        /** The icon. */
+        ICON("icon"),
 
         /** The info. */
         INFO("info"),
@@ -335,6 +339,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
     /** The workplace messages. */
     private CmsWorkplaceMessages m_workplaceMessages;
 
+    /** The users locale. */
+    private Locale m_locale;
+
     /** The current instance of the cms object. */
     private CmsObject m_cms;
 
@@ -365,6 +372,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
 
         super(context, req, res);
         m_cms = getCmsObject();
+        m_locale = CmsWorkplace.initUserSettings(m_cms, null, false).getUserSettings().getLocale();
         m_workplaceMessages = new CmsWorkplaceMessages(
             CmsWorkplace.initUserSettings(m_cms, null, false).getUserSettings().getLocale());
 
@@ -505,6 +513,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
             jType.put(JsonKeys.INFO.getName(), (es.getInfo() != null)
             ? m_workplaceMessages.getString(es.getInfo())
             : "");
+            String iconPath = CmsWorkplace.getResourceUri(OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                type.getTypeName()).getIcon());
+            jType.put(JsonKeys.ICON.getName(), iconPath);
             JSONArray galleryIds = new JSONArray();
             Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
             while (galleryTypes.hasNext()) {
@@ -682,6 +693,8 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         while (iGalleryTypes.hasNext()) {
             Entry<String, CmsGalleryTypeInfo> ent = iGalleryTypes.next();
             CmsGalleryTypeInfo tInfo = ent.getValue();
+            String iconPath = CmsWorkplace.getResourceUri(OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                tInfo.getResourceType().getTypeName()).getIcon());
             JSONArray contentTypes = new JSONArray();
             Iterator<I_CmsResourceType> it = tInfo.getContentTypes().iterator();
             while (it.hasNext()) {
@@ -702,6 +715,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
+
                 try {
                     jsonObj.put(JsonKeys.CONTENTTYPES.getName(), contentTypes);
                     jsonObj.put(JsonKeys.TITLE.getName(), title);
@@ -709,6 +723,7 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
                     jsonObj.put(JsonKeys.PATH.getName(), sitePath);
                     // 3: active flag
                     jsonObj.put(JsonKeys.GALLERYTYPEID.getName(), tInfo.getResourceType().getTypeId());
+                    jsonObj.put(JsonKeys.ICON.getName(), iconPath);
                 } catch (JSONException e) {
                     // TODO: Auto-generated catch block
                     e.printStackTrace();
@@ -729,14 +744,55 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         while (iSearchResult.hasNext()) {
             CmsSearchResult sResult = iSearchResult.next();
             JSONObject resultEntry = new JSONObject();
+            String path = sResult.getPath();
+            String mimetype = getMimeType(path);
+            String iconpath = "filetypes/";
+            if (mimetype.equals("other")) {
+                iconpath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(sResult.getDocumentType()).getIcon();
+            } else {
+                iconpath += "mimetype/" + mimetype + ".png";
+            }
+            iconpath = CmsWorkplace.getResourceUri(iconpath);
             resultEntry.put("changedate", sResult.getDateLastModified());
             resultEntry.put("title", sResult.getField(CmsSearchField.FIELD_TITLE));
             resultEntry.put("description", sResult.getField(CmsSearchField.FIELD_DESCRIPTION));
             resultEntry.put("type", sResult.getDocumentType());
             resultEntry.put("path", sResult.getPath());
+            resultEntry.put("icon", iconpath);
             result.put(resultEntry);
         }
         return result;
+    }
+
+    private String getMimeType(String path) {
+
+        String mt = OpenCms.getResourceManager().getMimeType(path, null);
+        if (mt.equals("application/msword")
+            || mt.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+            mt = "msword";
+        } else if (mt.equals("application/pdf")) {
+            mt = "pdf";
+        } else if (mt.equals("application/vnd.ms-excel")
+            || mt.equals("application/excel")
+            || mt.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+            mt = "excel";
+        } else if (mt.equals("application/vnd.ms-powerpoint")
+            || mt.equals("application/vnd.openxmlformats-officedocument.presentationml.presentation")) {
+            mt = "powerpoint";
+        } else if (mt.equals("image/jpeg")
+            || mt.equals("image/gif")
+            || mt.equals("image/png")
+            || mt.equals("image/tiff")) {
+            mt = "image";
+        } else if (mt.equals("text/plain")) {
+            mt = "plain";
+        } else if (mt.equals("application/zip") || mt.equals("application/x-gzip") || mt.equals("application/x-tar")) {
+            mt = "archiv";
+        } else {
+            mt = "other";
+        }
+
+        return mt;
     }
 
     /**
