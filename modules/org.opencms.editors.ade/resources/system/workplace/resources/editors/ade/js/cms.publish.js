@@ -61,21 +61,26 @@
    var classPublishDialog = 'cms-publish-dialog';
    var buttonHeight = 24;
    
+   
+   /**
+    * Initializes the project list if it isn't already initialized and then calls a callback
+    * @param {Object} callback the callback to be called after the project list initialization, or instantly if the project list has already been initialized
+    */
    var initProjects = cms.publish.initProjects = function(callback) {
-       if (!cms.publish.projects) {
-           getProjects(function(ok, data) {
-               if (!ok) {
-                   cms.publish.projects =  [];
-                   callback();
-               } else {
-                   cms.publish.projects = data.projects;
-                   callback();
-               } 
-           })
-       } else {
-           callback();
-       }
-       
+      if (!cms.publish.projects) {
+         getProjects(function(ok, data) {
+            if (!ok) {
+               cms.publish.projects = [];
+               callback();
+            } else {
+               cms.publish.projects = data.projects;
+               callback();
+            }
+         })
+      } else {
+         callback();
+      }
+      
    }
    
    
@@ -668,51 +673,51 @@
          }
       }
    }
-
+   
    /**
-   * AJAX call for getting the publish problem list from the server
-   */
+    * AJAX call for getting the publish problem list from the server
+    */
    var getPublishProblemList = cms.data.getPublishProblemList = function(callback) {
-
-       postJSON('publish_list', {}, callback);
+   
+      postJSON('publish_list', {}, callback);
    }
    
    /**
-   * AJAX call for getting the publish list from the server 
-   */
+    * AJAX call for getting the publish list from the server
+    */
    var getPublishList = function(related, siblings, project, callback) {
-
-       var params = {
-           related: related,
-           siblings: siblings
-       }
-       if ((project != null) && (project != '')) {
-           params.project = project;
-       } 
-       postJSON('publish_list', params, callback, false, 120000)
+   
+      var params = {
+         related: related,
+         siblings: siblings
+      }
+      if ((project != null) && (project != '')) {
+         params.project = project;
+      }
+      postJSON('publish_list', params, callback, false, 120000)
    }
    
    /**
-   * AJAX call for publishing resources.
-   */
+    * AJAX call for publishing resources.
+    */
    var publishResources = function(resources, removeResources, force, callback) {
-
-       var params = {
-           'resources': resources,
-           'remove-resources': removeResources,
-           'force': force
-       }
-       postJSON('publish', params, callback, false, 120000);
+   
+      var params = {
+         'resources': resources,
+         'remove-resources': removeResources,
+         'force': force
+      }
+      postJSON('publish', params, callback, false, 120000);
    }
    
    var getProjects = function(callback) {
-
-       postJSON('projects', {}, callback);
+   
+      postJSON('projects', {}, callback);
    }
    
    var getPublishOptions = function(callback) {
-
-       postJSON('publish_options', {}, callback);
+   
+      postJSON('publish_options', {}, callback);
    }
    
    /**
@@ -727,9 +732,9 @@
    var postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost, /** boolean */ sync, /** int */ timeout) {
    
       cms.comm.postJSON(SERVER_URL, {
-            'action': action,
-            'data': JSON.stringify(data)
-         }, afterPost, sync, timeout);
+         'action': action,
+         'data': JSON.stringify(data)
+      }, afterPost, sync, timeout);
    }
    
 })(cms);
