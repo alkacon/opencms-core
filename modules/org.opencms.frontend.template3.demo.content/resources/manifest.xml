@@ -583,14 +583,19 @@
 		</file>
 		<file>
 			<destination>demo_t3/_content/articles</destination>
-			<type>folder</type>
+			<type>articlegallery</type>
 			<uuidstructure>c547764e-a11a-11de-9057-dd9f629b113b</uuidstructure>
 			<datelastmodified>Tue, 15 Sep 2009 12:06:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 14 Sep 2009 10:38:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+			    <property>
+			        <name>Title</name>
+                    <value><![CDATA[Articles]]></value>
+                </property>
+            </properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1010,14 +1015,19 @@
 		</file>
 		<file>
 			<destination>demo_t3/_content/events</destination>
-			<type>folder</type>
+			<type>eventgallery</type>
 			<uuidstructure>cb1e5da0-a11a-11de-9057-dd9f629b113b</uuidstructure>
 			<datelastmodified>Tue, 15 Sep 2009 12:06:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 14 Sep 2009 10:38:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+			    <property>
+			        <name>Title</name>
+                    <value><![CDATA[Events]]></value>
+                </property>
+            </properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2038,14 +2048,19 @@
 		</file>
 		<file>
 			<destination>demo_t3/_content/news</destination>
-			<type>folder</type>
+			<type>newsgallery</type>
 			<uuidstructure>bd8587dc-a11a-11de-9057-dd9f629b113b</uuidstructure>
 			<datelastmodified>Tue, 15 Sep 2009 12:06:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 14 Sep 2009 10:38:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+			    <property>
+			        <name>Title</name>
+                    <value><![CDATA[Flower news]]></value>
+                </property>
+            </properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -3459,8 +3474,8 @@
 					<value><![CDATA[Autor: Luis Miguel Bugallo Sánchez]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[Blume]]></value>
+                    <name>Title</name>
+                    <value><![CDATA[Blume]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>
