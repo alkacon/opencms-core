@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/10 12:49:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/11/11 09:11:56 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,9 +58,7 @@ import org.opencms.search.CmsSearchResult;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 7.6
  */
@@ -117,6 +115,9 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
 
         /** The content types. */
         CONTENTTYPES("contenttypes"),
+
+        /** The date modified. */
+        DATEMODIFIED("datemodified"),
 
         /** The errors. */
         ERRORS("errors"),
@@ -280,11 +281,11 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         }
 
         /**
-         * Sets the resource.<p>
+         * Sets the galleries.<p>
          *
-         * @param resource the resource to set
+         * @param galleries the gallery resource list to set
          */
-        protected void setResource(List<CmsResource> galleries) {
+        protected void setGalleries(List<CmsResource> galleries) {
 
             m_galleries = galleries;
         }
@@ -336,9 +337,6 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchServer.class);
 
-    /** The workplace messages. */
-    private CmsWorkplaceMessages m_workplaceMessages;
-
     /** The users locale. */
     private Locale m_locale;
 
@@ -373,9 +371,6 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         super(context, req, res);
         m_cms = getCmsObject();
         m_locale = CmsWorkplace.initUserSettings(m_cms, null, false).getUserSettings().getLocale();
-        m_workplaceMessages = new CmsWorkplaceMessages(
-            CmsWorkplace.initUserSettings(m_cms, null, false).getUserSettings().getLocale());
-
     }
 
     /**
@@ -499,20 +494,15 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         if (types == null) {
             return result;
         }
-        CmsWorkplaceManager wm = OpenCms.getWorkplaceManager();
         Iterator<I_CmsResourceType> it = types.iterator();
         while (it.hasNext()) {
             I_CmsResourceType type = it.next();
-
             JSONObject jType = new JSONObject();
-            CmsExplorerTypeSettings es = wm.getExplorerTypeSetting(type.getTypeName());
-            jType.put(JsonKeys.TITLE.getName(), (es.getKey() != null)
-            ? m_workplaceMessages.getString(es.getKey())
-            : type.getTypeName());
+            jType.put(JsonKeys.TITLE.getName(), CmsWorkplaceMessages.getResourceTypeName(m_locale, type.getTypeName()));
             jType.put(JsonKeys.TYPEID.getName(), type.getTypeId());
-            jType.put(JsonKeys.INFO.getName(), (es.getInfo() != null)
-            ? m_workplaceMessages.getString(es.getInfo())
-            : "");
+            jType.put(JsonKeys.INFO.getName(), CmsWorkplaceMessages.getResourceTypeDescription(
+                m_locale,
+                type.getTypeName()));
             String iconPath = CmsWorkplace.getResourceUri("filetypes/"
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getIcon());
             jType.put(JsonKeys.ICON.getName(), iconPath);
@@ -688,7 +678,6 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
         if (galleryTypes == null) {
             return result;
         }
-        CmsResourceManager rm = OpenCms.getResourceManager();
         Iterator<Entry<String, CmsGalleryTypeInfo>> iGalleryTypes = galleryTypes.entrySet().iterator();
         while (iGalleryTypes.hasNext()) {
             Entry<String, CmsGalleryTypeInfo> ent = iGalleryTypes.next();
@@ -745,51 +734,57 @@ public class CmsGallerySearchServer extends CmsJspActionElement {
             CmsSearchResult sResult = iSearchResult.next();
             JSONObject resultEntry = new JSONObject();
             String path = sResult.getPath();
-            String mimetype = getMimeType(path);
+            String fileIcon = getFileIconName(path);
             String iconpath = "filetypes/";
-            if (mimetype.equals("other")) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(fileIcon)) {
                 iconpath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(sResult.getDocumentType()).getIcon();
             } else {
-                iconpath += "mimetype/" + mimetype + ".png";
+                iconpath += "mimetype/" + fileIcon;
             }
             iconpath = CmsWorkplace.getResourceUri(iconpath);
-            resultEntry.put("changedate", sResult.getDateLastModified());
-            resultEntry.put("title", sResult.getField(CmsSearchField.FIELD_TITLE));
-            resultEntry.put("description", sResult.getField(CmsSearchField.FIELD_DESCRIPTION));
-            resultEntry.put("type", sResult.getDocumentType());
-            resultEntry.put("path", sResult.getPath());
-            resultEntry.put("icon", iconpath);
+            resultEntry.put(JsonKeys.DATEMODIFIED.getName(), sResult.getDateLastModified());
+            resultEntry.put(JsonKeys.TITLE.getName(), sResult.getField(CmsSearchField.FIELD_TITLE));
+            resultEntry.put(JsonKeys.INFO.getName(), sResult.getField(CmsSearchField.FIELD_DESCRIPTION));
+            resultEntry.put(JsonKeys.TYPE.getName(), sResult.getDocumentType());
+            resultEntry.put(JsonKeys.PATH.getName(), sResult.getPath());
+            resultEntry.put(JsonKeys.ICON.getName(), iconpath);
             result.put(resultEntry);
         }
         return result;
     }
 
-    private String getMimeType(String path) {
+    /**
+     * Gets the file-icon-name.<p>
+     * 
+     * @param path the file path
+     * @return the file-icon-name for this files mime-type, or an empty string if none available
+     */
+    private String getFileIconName(String path) {
 
         String mt = OpenCms.getResourceManager().getMimeType(path, null);
         if (mt.equals("application/msword")
             || mt.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
-            mt = "msword";
+            mt = "msword.png";
         } else if (mt.equals("application/pdf")) {
-            mt = "pdf";
+            mt = "pdf.png";
         } else if (mt.equals("application/vnd.ms-excel")
             || mt.equals("application/excel")
             || mt.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-            mt = "excel";
+            mt = "excel.png";
         } else if (mt.equals("application/vnd.ms-powerpoint")
             || mt.equals("application/vnd.openxmlformats-officedocument.presentationml.presentation")) {
-            mt = "powerpoint";
+            mt = "powerpoint.png";
         } else if (mt.equals("image/jpeg")
             || mt.equals("image/gif")
             || mt.equals("image/png")
             || mt.equals("image/tiff")) {
-            mt = "image";
+            mt = "image.png";
         } else if (mt.equals("text/plain")) {
-            mt = "plain";
+            mt = "plain.png";
         } else if (mt.equals("application/zip") || mt.equals("application/x-gzip") || mt.equals("application/x-tar")) {
-            mt = "archiv";
+            mt = "archiv.png";
         } else {
-            mt = "other";
+            mt = "";
         }
 
         return mt;
