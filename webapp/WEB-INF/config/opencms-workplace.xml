@@ -202,7 +202,7 @@
         </editoptions>
       </explorertype>
       <explorertype name="image" key="fileicon.image" icon="image.gif">
-        <newresource uri="" order="40" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="" order="40" autosetnavigation="false" autosettitle="false" info="desc.image" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
             <defaultproperty name="Title"/>
@@ -306,7 +306,7 @@
         </editoptions>
       </explorertype>
       <explorertype name="binary" key="fileicon.binary" icon="binary.gif">
-        <newresource uri="" order="60" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="" order="60" autosetnavigation="false" autosettitle="false" info="desc.binary" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
             <defaultproperty name="Title"/>
