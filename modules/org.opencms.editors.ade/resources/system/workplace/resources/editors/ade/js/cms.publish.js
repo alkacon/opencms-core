@@ -61,6 +61,24 @@
    var classPublishDialog = 'cms-publish-dialog';
    var buttonHeight = 24;
    
+   var initProjects = cms.publish.initProjects = function(callback) {
+       if (!cms.publish.projects) {
+           getProjects(function(ok, data) {
+               if (!ok) {
+                   cms.publish.projects =  [];
+                   callback();
+               } else {
+                   cms.publish.projects = data.projects;
+                   callback();
+               } 
+           })
+       } else {
+           callback();
+       }
+       
+   }
+   
+   
    /**  
     * The url for server requests.
     * @see /system/workplace/editors/ade/include.txt
@@ -201,12 +219,12 @@
          $('button[name=publish]').addClass('cms-deactivated');
          var self = this;
          self.goToWaitState();
-         cms.data.getPublishOptions(function(ok, data) {
+         getPublishOptions(function(ok, data) {
             self.checkedRelated = !!data.related;
             self.checkedSiblings = !!data.siblings;
             self.project = data.project ? data.project : '';
             if (ok) {
-               cms.data.getPublishList(self.checkedRelated, self.checkedSiblings, self.project, function(ok, data) {
+               getPublishList(self.checkedRelated, self.checkedSiblings, self.project, function(ok, data) {
                
                   if (ok) {
                      self.goToMainState(data.groups);
@@ -258,7 +276,7 @@
       updateData: function(related, siblings, project) {
          var self = this;
          self.goToWaitState();
-         cms.data.getPublishList(related, siblings, project, function(ok, data) {
+         getPublishList(related, siblings, project, function(ok, data) {
             if (ok) {
                self.goToMainState(data.groups);
             }
@@ -452,7 +470,7 @@
       startPublish: function(force) {
          var self = this;
          self.goToWaitState();
-         cms.data.publishResources(self.getResourcesToPublish(), self.getResourcesToRemove(), force, function(ok, data) {
+         publishResources(self.getResourcesToPublish(), self.getResourcesToRemove(), force, function(ok, data) {
             if (!ok) {
                return;
             }
@@ -469,7 +487,7 @@
        */
       createProjectSelector: function() {
          var self = this;
-         var projects = cms.data.projects;
+         var projects = cms.publish.projects;
          var userListId = '';
          var userListLabel = 'My changes';
          var values = [];

@@ -938,12 +938,14 @@
     * @param {boolean} newValue
     */
    var setPageChanged = cms.toolbar.setPageChanged = function(/** boolean */newValue) {
-       if (!cms.toolbar.pageChanged && newValue) {
-           cms.data.startEdit(function(ok) {});
-       }
-       if (cms.toolbar.pageChanged && !newValue) {
-           cms.data.stopEdit(function(ok) {}, true);
-       }
+      if (!cms.toolbar.pageChanged && newValue) {
+         cms.data.startEdit(function(ok) {
+                  });
+      }
+      if (cms.toolbar.pageChanged && !newValue) {
+         cms.data.stopEdit(function(ok) {
+                  }, true);
+      }
       pageChanged = cms.toolbar.pageChanged = newValue;
       if (newValue) {
          $('#toolbar button[name="Save"], #toolbar button[name="reset"]').removeClass('cms-deactivated');
@@ -1274,25 +1276,16 @@
          var self = this;
          self.button = $('<button name="publish" title="Publish" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button>');
          self.button.click(function() {
-            if (!cms.data.projects) {
-               cms.data.getProjects(function(ok, data) {
-                  if (ok) {
-                     cms.data.projects = data.projects;
-                     (new cms.publish.PublishDialog('')).start();
-                  }
-               });
-            } else {
-               if (!$(this).hasClass('cms-deactivated')) {
-                  (new cms.publish.PublishDialog('')).start();
-               }
+            if ($(this).hasClass('cms-deactivated')) {
+               return;
             }
+            cms.publish.initProjects(function() {
+               (new cms.publish.PublishDialog('')).start();
+            });
          });
          return self.button;
       },
       initialize: doNothing
-   
-   
-   
    }
    
    
