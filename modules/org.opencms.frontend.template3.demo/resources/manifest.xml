@@ -51,6 +51,15 @@
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</param>
                 <param name="gallery.type.names">downloadgallery</param>
 			</type>
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="newsgallery" id="150">
+				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="eventgallery" id="151">
+				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="articlegallery" id="152">
+				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="t3article" key="fileicon.t3article" icon="t3article.png" reference="xmlcontent">
@@ -77,6 +86,15 @@
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
+            <explorertype name="newsgallery" key="fileicon.newsgallery" icon="htmlgallery.gif" reference="downloadgallery">
+                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=newsgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.newsgallery" />
+            </explorertype>
+            <explorertype name="eventgallery" key="fileicon.eventgallery" icon="htmlgallery.gif" reference="downloadgallery">
+                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=eventgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.eventgallery" />
+            </explorertype>
+            <explorertype name="articlegallery" key="fileicon.articlegallery" icon="htmlgallery.gif" reference="downloadgallery">
+                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=articlegallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.articlegallery" />
+            </explorertype>
 		</explorertypes>
 	</module>
 	<files>
