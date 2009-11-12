@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsHttpAuthenticationSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/11/12 07:54:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.workplace.CmsWorkplace;
  * @author Thomas Weckert
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,10 +55,10 @@ public class CmsHttpAuthenticationSettings {
 
     /** The mechanism name for basic HTTP authentication. */
     public static final String AUTHENTICATION_BASIC = "BASIC";
-    
+
     /** The mechanism name for form based authentication. */
     public static final String AUTHENTICATION_FORM = "FORM";
-    
+
     /** The URI of the default authentication form. */
     public static final String DEFAULT_AUTHENTICATION_URI = CmsWorkplace.VFS_PATH_WORKPLACE
         + "action/authenticate.html";
@@ -68,7 +68,7 @@ public class CmsHttpAuthenticationSettings {
 
     /** The mechanism used in browser-based HTTP authentication. */
     private String m_browserBasedAuthenticationMechanism;
-    
+
     /** Boolean flag to enable or disable browser-based HTTP basic authentication. */
     private boolean m_useBrowserBasedHttpAuthentication;
 
@@ -89,7 +89,7 @@ public class CmsHttpAuthenticationSettings {
      * @return "BASIC" in case of browser based basic authentication, "FORM" in case of form based authentication or the alternative mechanism or <code>null</code> if unused.
      */
     public String getBrowserBasedAuthenticationMechanism() {
-        
+
         if (m_useBrowserBasedHttpAuthentication) {
             return AUTHENTICATION_BASIC;
         } else if (m_browserBasedAuthenticationMechanism != null) {
@@ -100,7 +100,7 @@ public class CmsHttpAuthenticationSettings {
             return null;
         }
     }
-    
+
     /**
      * Returns the URI of the system wide login form if browser-based HTTP basic authentication is disabled.<p>
      *
@@ -146,6 +146,7 @@ public class CmsHttpAuthenticationSettings {
                 m_useBrowserBasedHttpAuthentication = true;
             } else {
                 m_browserBasedAuthenticationMechanism = value;
+                m_useBrowserBasedHttpAuthentication = false;
             }
         }
     }
