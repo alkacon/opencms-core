@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/12 13:29:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,7 +207,7 @@ public class CmsTree extends CmsWorkplace {
             retValue.append(curTypeName);
             retValue.append("\",\t\"");
             retValue.append(messages.key(settings.getKey()));
-            retValue.append("\",\t\"\"" + CmsWorkplace.RES_PATH_FILETYPES);
+            retValue.append("\",\t\"" + CmsWorkplace.RES_PATH_FILETYPES);
             retValue.append(settings.getIcon());
             retValue.append("\");\n");
         }
