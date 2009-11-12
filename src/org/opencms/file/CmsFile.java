@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2009/08/20 11:31:25 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2009/11/12 14:45:20 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 6.0.0 
  */
@@ -264,6 +264,9 @@ public class CmsFile extends CmsResource {
      */
     public void setContents(byte[] value) {
 
+        if (value == null) {
+            value = new byte[] {};
+        }
         long dateContent = System.currentTimeMillis();
         if ((m_fileContent == null) || (m_fileContent.length == 0)) {
             dateContent = m_dateContent;
