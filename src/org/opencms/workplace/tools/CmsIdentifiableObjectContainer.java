@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2009/06/04 14:29:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/12 14:07:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,18 +45,18 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectContainer {
+public class CmsIdentifiableObjectContainer {
 
     /**
      * Internal class just for taking care of the positions in the container.<p>
      * 
      * @author Michael Moossen  
      * 
-     * @version $Revision: 1.5 $
+     * @version $Revision: 1.3 $
      * 
      * @since 6.0.0
      */
@@ -131,7 +131,12 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     }
 
     /**
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(java.lang.String, java.lang.Object)
+     * Appends the specified object to the end of this container. <p>
+     * 
+     * @param id the object identifier
+     * @param idObject the object add to the container
+     * 
+     * @see java.util.List#add(Object)
      */
     public void addIdentifiableObject(String id, Object idObject) {
 
@@ -164,7 +169,16 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     }
 
     /**
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(java.lang.String, java.lang.Object, float)
+     * Inserts the specified object at the specified position in this container.<p>
+     * 
+     * Shifts the object currently at that position (if any) and any subsequent 
+     * objects to the right (adds one to their indices).<p>
+     * 
+     * @param id the object identifier
+     * @param idObject the object add to the container
+     * @param position the insertion point
+     * 
+     * @see java.util.List#add(int, Object)
      */
     public void addIdentifiableObject(String id, Object idObject, float position) {
 
@@ -202,7 +216,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     }
 
     /**
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#clear()
+     * Resets the container.<p>
      */
     public void clear() {
 
@@ -212,7 +226,9 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     }
 
     /**
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#elementList()
+     * Returns the list of objects.<p>
+     *
+     * @return the a list of <code>{@link Object}</code>s.
      */
     public List elementList() {
 
@@ -241,7 +257,11 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      * 
      * If the container no contains any object with the given id, <code>null</code> is returned.<p>
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#getObject(String)
+     * @param id the id of the object
+     * 
+     * @return the object if found, or <code>null</code>
+     * 
+     * @see java.util.Map#get(Object)
      */
     public Object getObject(String id) {
 

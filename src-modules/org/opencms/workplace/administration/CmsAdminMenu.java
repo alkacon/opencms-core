@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2009/06/04 14:33:49 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/11/12 14:07:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.workplace.tools.CmsTool;
 import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 import org.opencms.workplace.tools.CmsToolManager;
-import org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -55,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,7 +64,7 @@ public class CmsAdminMenu extends CmsToolDialog {
     public static final String DEFAULT_TARGET = "admin_content";
 
     /** Group container. */
-    private I_CmsIdentifiableObjectContainer m_groupContainer = new CmsIdentifiableObjectContainer(true, true);
+    private CmsIdentifiableObjectContainer m_groupContainer = new CmsIdentifiableObjectContainer(true, true);
 
     /**
      * Default Constructor.<p>
@@ -266,7 +265,8 @@ public class CmsAdminMenu extends CmsToolDialog {
                     tool.getHandler().getShortName(),
                     tool.getHandler().getSmallIconPath(),
                     CmsToolManager.linkForToolPath(getJsp(), tool.getHandler().getPath()),
-                    tool.getHandler().isEnabled(this) ? tool.getHandler().getHelpText()
+                    tool.getHandler().isEnabled(this)
+                    ? tool.getHandler().getHelpText()
                     : tool.getHandler().getDisabledHelpText(),
                     tool.getHandler().isEnabled(this),
                     tool.getHandler().getPosition(),
