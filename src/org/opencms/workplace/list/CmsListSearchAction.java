@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2009/08/20 12:20:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/11/12 08:08:59 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,9 +59,6 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
 
     /** Ids of Columns to search into. */
     private final List m_columns = new ArrayList();
-
-    /** The current search filter. */
-    private String m_searchFilter = "";
 
     /**
      * Default Constructor.<p>
@@ -103,8 +100,10 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
         html.append("' id='");
         html.append(SEARCH_BAR_INPUT_ID);
         html.append("' value='");
-        // http://www.securityfocus.com/archive/1/490498: searchfilter cross site scripting vulnerability:
-        html.append(CmsStringUtil.escapeJavaScript(CmsEncoder.escapeXml(getSearchFilter())));
+        if (wp instanceof A_CmsListDialog) {
+            // http://www.securityfocus.com/archive/1/490498: searchfilter cross site scripting vulnerability:
+            html.append(CmsStringUtil.escapeJavaScript(CmsEncoder.escapeXml(((A_CmsListDialog)wp).getList().getSearchFilter())));
+        }
         html.append("' size='20' maxlength='245' style='vertical-align: bottom;' >\n");
         html.append(buttonHtml(wp));
         if (getShowAllAction() != null) {
@@ -142,18 +141,6 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
                 new Object[] {columns}));
         }
         return super.buttonHtml(wp);
-    }
-
-    /**
-     * Returns a sublist of the given items, that match the current filter string.<p>
-     * 
-     * @param items the items to filter
-     * 
-     * @return the filtered sublist
-     */
-    public List filter(List items) {
-
-        return filter(items, m_searchFilter);
     }
 
     /**
@@ -202,28 +189,15 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
     }
 
     /**
-     * Returns the current search filter.<p>
-     * 
-     * @return the current search filter
-     */
-    public String getSearchFilter() {
-
-        return m_searchFilter;
-    }
-
-    /**
      * Sets the current search filter.<p>
      * 
      * @param filter the current search filter
+     * 
+     * @deprecated use {@link CmsHtmlList#setSearchFilter(String)} instead
      */
     public void setSearchFilter(String filter) {
 
-        if (filter == null) {
-            filter = "";
-        }
-        m_searchFilter = filter;
-        boolean showAll = CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchFilter);
-        getShowAllAction().setVisible(showAll);
+        // empty
     }
 
     /**

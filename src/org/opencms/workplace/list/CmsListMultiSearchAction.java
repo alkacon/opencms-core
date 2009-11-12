@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMultiSearchAction.java,v $
- * Date   : $Date: 2009/08/24 06:43:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/12 08:08:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -46,17 +45,20 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6
  */
 public class CmsListMultiSearchAction extends CmsListSearchAction {
 
+    /** The string to delimit key and value. */
+    public static final String KEY_VAL_DELIM = "#";
+
+    /** The string to delimit each column-value pair. */
+    public static final String PARAM_DELIM = "|";
+
     /** the html id prefix for the input element of the search bar. */
     public static final String SEARCH_COL_INPUT_ID = "listColFilter";
-
-    /** parsed search filter. */
-    private Map<String, String> m_colVals = new HashMap<String, String>();
 
     /**
      * Default constructor.<p>
@@ -85,8 +87,13 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
         html.append("' id='");
         html.append(SEARCH_BAR_INPUT_ID);
         html.append("' value='");
+        String searchFilter = "";
+        if (wp instanceof A_CmsListDialog) {
+            searchFilter = ((A_CmsListDialog)wp).getList().getSearchFilter();
+        }
+        Map<String, String> colVals = CmsStringUtil.splitAsMap(searchFilter, PARAM_DELIM, KEY_VAL_DELIM);
         // http://www.securityfocus.com/archive/1/490498: searchfilter cross site scripting vulnerability:
-        html.append(CmsStringUtil.escapeJavaScript(CmsEncoder.escapeXml(getSearchFilter())));
+        html.append(CmsStringUtil.escapeJavaScript(CmsEncoder.escapeXml(searchFilter)));
         html.append("' >\n");
         Iterator it = getColumns().iterator();
         while (it.hasNext()) {
@@ -96,7 +103,7 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
             html.append("' id='");
             html.append(SEARCH_COL_INPUT_ID).append(colDef.getId());
             html.append("' value='");
-            String val = m_colVals.get(colDef.getId());
+            String val = colVals.get(colDef.getId());
             if (val == null) {
                 val = "";
             }
@@ -132,14 +139,15 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsListSearchAction#filter(java.util.List)
+     * @see org.opencms.workplace.list.CmsListSearchAction#filter(java.util.List, java.lang.String)
      */
     @Override
-    public List filter(List items) {
+    public List filter(List items, String searchFilter) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getSearchFilter())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
             return items;
         }
+        Map<String, String> colVals = CmsStringUtil.splitAsMap(searchFilter, PARAM_DELIM, KEY_VAL_DELIM);
         List res = new ArrayList();
         Iterator itItems = items.iterator();
         while (itItems.hasNext()) {
@@ -154,7 +162,7 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
                 if (item.get(col.getId()) == null) {
                     matched = false;
                 }
-                String colFilter = m_colVals.get(col.getId());
+                String colFilter = colVals.get(col.getId());
 
                 if ((colFilter != null) && (item.get(col.getId()).toString().indexOf(colFilter) < 0)) {
                     matched = false;
@@ -165,15 +173,5 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
             }
         }
         return res;
-    }
-
-    /**
-     * @see org.opencms.workplace.list.CmsListSearchAction#setSearchFilter(java.lang.String)
-     */
-    @Override
-    public void setSearchFilter(String filter) {
-
-        super.setSearchFilter(filter);
-        m_colVals = CmsStringUtil.splitAsMap(getSearchFilter(), "|", "#");
     }
 }

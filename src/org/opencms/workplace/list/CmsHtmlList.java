@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2009/08/24 06:43:05 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2009/11/12 08:08:59 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,10 +104,7 @@ public class CmsHtmlList {
     /** printable flag. */
     protected boolean m_printable;
 
-    /** 
-     * Search filter text. 
-     * @deprecated use <code>getMetadata().getSearchAction().setSearchFilter(String)</code>
-     */
+    /** Search filter text. */
     protected String m_searchFilter;
 
     /** Show the title of the list. */
@@ -348,11 +345,7 @@ public class CmsHtmlList {
      */
     public String getSearchFilter() {
 
-        if (getMetadata().isSearchable()) {
-            return getMetadata().getSearchAction().getSearchFilter();
-        } else {
-            return "";
-        }
+        return m_searchFilter;
     }
 
     /**
@@ -736,13 +729,18 @@ public class CmsHtmlList {
         if (!m_metadata.isSearchable()) {
             return;
         }
-        getMetadata().getSearchAction().setSearchFilter(searchFilter);
+        if (searchFilter == null) {
+            searchFilter = "";
+        }
+        m_searchFilter = searchFilter;
+        boolean showAll = CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchFilter);
+        getMetadata().getSearchAction().getShowAllAction().setVisible(showAll);
         if (!m_metadata.isSelfManaged()) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
                 // reset content if filter is empty
                 m_filteredItems = null;
             } else {
-                m_filteredItems = getMetadata().getSearchAction().filter(getAllContent());
+                m_filteredItems = getMetadata().getSearchAction().filter(getAllContent(), m_searchFilter);
             }
         }
         String sCol = m_sortedColumn;
@@ -1037,7 +1035,7 @@ public class CmsHtmlList {
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         boolean isNotSearching = true;
         if (getMetadata().isSearchable()) {
-            isNotSearching = CmsStringUtil.isEmptyOrWhitespaceOnly(getMetadata().getSearchAction().getSearchFilter());
+            isNotSearching = CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter);
         }
         if (isNotSearching) {
             html.append(messages.key(Messages.GUI_LIST_PAGING_TEXT_2, new Object[] {
@@ -1086,7 +1084,7 @@ public class CmsHtmlList {
             html.append("\t\t\t");
             boolean isNotSearching = true;
             if (getMetadata().isSearchable()) {
-                isNotSearching = CmsStringUtil.isEmptyOrWhitespaceOnly(getMetadata().getSearchAction().getSearchFilter());
+                isNotSearching = CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter);
             }
             if (getTotalNumberOfPages() > 1) {
                 if (isNotSearching) {
