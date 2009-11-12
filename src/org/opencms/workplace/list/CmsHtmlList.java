@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2009/11/12 07:41:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/12 14:06:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +106,7 @@ public class CmsHtmlList {
     protected boolean m_printable;
 
     /** Search filter text. */
-    protected String m_searchFilter;
+    protected String m_searchFilter = "";
 
     /** Show the title of the list. */
     protected boolean m_showTitle;
