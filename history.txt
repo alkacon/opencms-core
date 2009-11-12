@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/11/12 07:55:41 $
- * Version: $Revision: 1.1156 $
+ * Date   : $Date: 2009/11/12 08:03:24 $
+ * Version: $Revision: 1.1157 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -28,6 +28,7 @@ OpenCms x.x.x - month day, year
 * Fixed 'go up' button in account management view
 - Assign roles also to indirect group users when updating from v6 to v7
 - Purge jsp repository after module import
+- Added additional mime-types
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
