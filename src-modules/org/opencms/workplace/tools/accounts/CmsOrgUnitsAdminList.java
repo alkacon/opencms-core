@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsAdminList.java,v $
- * Date   : $Date: 2009/08/20 11:30:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/11/12 07:58:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.5.6 
  */
@@ -154,26 +154,6 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
     }
 
     /**
-     * Returns the tool path of the groups management tool.<p>
-     * 
-     * @return the tool path of the groups management tool
-     */
-    protected String getGroupsToolPath() {
-
-        return getCurrentToolPath() + "/orgunit/groups";
-    }
-
-    /**
-     * Returns the tool path of the users management tool.<p>
-     * 
-     * @return the tool path of the users management tool
-     */
-    protected String getUsersToolPath() {
-
-        return getCurrentToolPath() + "/orgunit/users";
-    }
-
-    /**
      * Performs a forward to the overview of the single organizational unit the current user
      * is allowed to administrate.<p> 
      * 
@@ -195,16 +175,6 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
         OpenCms.getWorkplaceManager().getToolManager().jspForwardTool(this, getForwardToolPath(), params);
-    }
-
-    /**
-     * Returns the tool path to forward if there is only one single organizational unit.<p>
-     * 
-     * @return the tool path to forward
-     */
-    protected String getForwardToolPath() {
-
-        return "/accounts/orgunit";
     }
 
     /**
@@ -238,6 +208,36 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
     }
 
     /**
+     * Returns the tool path to forward if there is only one single organizational unit.<p>
+     * 
+     * @return the tool path to forward
+     */
+    protected String getForwardToolPath() {
+
+        return "/accounts/orgunit";
+    }
+
+    /**
+     * Returns the tool path of the groups management tool.<p>
+     * 
+     * @return the tool path of the groups management tool
+     */
+    protected String getGroupsToolPath() {
+
+        return getCurrentToolPath() + "/orgunit/groups";
+    }
+
+    /**
+     * Returns the tool path of the users management tool.<p>
+     * 
+     * @return the tool path of the users management tool
+     */
+    protected String getUsersToolPath() {
+
+        return getCurrentToolPath() + "/orgunit/users";
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     @Override
@@ -254,20 +254,6 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
         CmsListDirectAction overviewAction = new CmsListDirectAction(LIST_ACTION_OVERVIEW) {
 
             /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
-             */
-            @Override
-            public CmsMessageContainer getName() {
-
-                if (getItem() != null) {
-                    if (((Boolean)getItem().get(LIST_COLUMN_WEBUSER)).booleanValue()) {
-                        return Messages.get().container(Messages.GUI_WEBOUS_LIST_ACTION_OVERVIEW_NAME_0);
-                    }
-                }
-                return super.getName();
-            }
-
-            /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
             @Override
@@ -279,6 +265,20 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
                     }
                 }
                 return super.getIconPath();
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
+             */
+            @Override
+            public CmsMessageContainer getName() {
+
+                if (getItem() != null) {
+                    if (((Boolean)getItem().get(LIST_COLUMN_WEBUSER)).booleanValue()) {
+                        return Messages.get().container(Messages.GUI_WEBOUS_LIST_ACTION_OVERVIEW_NAME_0);
+                    }
+                }
+                return super.getName();
             }
         };
         overviewAction.setName(Messages.get().container(Messages.GUI_ORGUNITS_LIST_ACTION_OVERVIEW_NAME_0));
@@ -350,5 +350,19 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
         CmsListColumnDefinition webuserCol = new CmsListColumnDefinition(LIST_COLUMN_WEBUSER);
         webuserCol.setVisible(false);
         metadata.addColumn(webuserCol);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    @Override
+    protected void validateParamaters() throws Exception {
+
+        if (Boolean.parseBoolean(getParamForce())) {
+            if (!hasMoreAdminOUs()) {
+                // jump one level higher
+                throw new Exception();
+            }
+        }
     }
 }
