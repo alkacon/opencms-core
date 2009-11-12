@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:20 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2009/11/12 07:31:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -51,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,6 +60,9 @@ public class CmsToolDialog extends CmsWorkplace {
 
     /** Request parameter name for the base tool path in the navigation, should be a parent tool of path. */
     public static final String PARAM_BASE = "base";
+
+    /** Request parameter name for the force flag. */
+    public static final String PARAM_FORCE = "force";
 
     /** Request parameter name for the tool path, should be an accessible tool under the given root. */
     public static final String PARAM_PATH = "path";
@@ -74,6 +78,9 @@ public class CmsToolDialog extends CmsWorkplace {
 
     /** Base parameter value. */
     private String m_paramBase;
+
+    /** Force parameter value. */
+    private String m_paramForce;
 
     /** Path parameter value. */
     private String m_paramPath;
@@ -140,6 +147,7 @@ public class CmsToolDialog extends CmsWorkplace {
             getJsp(),
             parentPath,
             parentTool.getHandler().getParameters(this));
+        upLevelLink = CmsRequestUtil.appendParameter(upLevelLink, PARAM_FORCE, Boolean.TRUE.toString());
         String parentName = getToolManager().resolveAdminTool(rootKey, parentPath).getHandler().getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
@@ -198,6 +206,16 @@ public class CmsToolDialog extends CmsWorkplace {
     public String getParamBase() {
 
         return m_paramBase;
+    }
+
+    /**
+     * Returns the value for the force parameter.<p>
+     *
+     * @return the value for the force parameter
+     */
+    public String getParamForce() {
+
+        return m_paramForce;
     }
 
     /**
@@ -461,6 +479,16 @@ public class CmsToolDialog extends CmsWorkplace {
     public void setParamBase(String paramBase) {
 
         m_paramBase = paramBase;
+    }
+
+    /**
+     * Sets the value of the force parameter.<p>
+     *
+     * @param paramForce the value of the force parameter to set
+     */
+    public void setParamForce(String paramForce) {
+
+        m_paramForce = paramForce;
     }
 
     /**

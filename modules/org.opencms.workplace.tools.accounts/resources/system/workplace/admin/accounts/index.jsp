@@ -13,6 +13,7 @@
 
   if(!wpOrgUnitsAdmin.hasMoreAdminOUs()){
     wpOrgUnitsAdmin.forwardToSingleAdminOU();
+    return;
   }
 
   // write the content of list dialogs

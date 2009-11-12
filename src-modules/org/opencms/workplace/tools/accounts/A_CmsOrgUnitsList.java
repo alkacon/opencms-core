@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/11/12 07:31:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -130,6 +130,9 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/accounts/buttons/";
+
+    /** Cached list of OUs. */
+    private List m_ous;
 
     /**
      * Public constructor.<p>
@@ -315,7 +318,10 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
      */
     protected List getOrgUnits() throws CmsException {
 
-        return OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
+        if (m_ous == null) {
+            m_ous = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
+        }
+        return m_ous;
     }
 
     /**
