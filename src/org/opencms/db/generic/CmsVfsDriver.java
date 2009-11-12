@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2009/10/07 10:32:26 $
- * Version: $Revision: 1.288 $
+ * Date   : $Date: 2009/11/12 14:34:05 $
+ * Version: $Revision: 1.289 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.288 $
+ * @version $Revision: 1.289 $
  * 
  * @since 6.0.0 
  */
@@ -1903,7 +1903,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
         if ((resource != null) && resource.getState().isDeleted() && !includeDeleted) {
-            throw new CmsVfsException(Messages.get().container(
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
                 Messages.ERR_READ_DELETED_RESOURCE_1,
                 dbc.removeSiteRoot(resource.getRootPath())));
         }
