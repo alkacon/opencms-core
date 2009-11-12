@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2009/06/04 14:28:59 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2009/11/12 07:26:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,7 +66,7 @@ public class CmsImport {
     protected I_CmsReport m_report;
 
     /** Stores all import interface implementations .*/
-    protected List m_importImplementations;
+    protected List<I_CmsImport> m_importImplementations;
 
     /**
      * Constructs a new uninitialized import, required for special subclass data import.<p>
@@ -113,15 +113,16 @@ public class CmsImport {
 
         try {
             // now find the correct import implementation         
-            Iterator i = m_importImplementations.iterator();
+            Iterator<I_CmsImport> i = m_importImplementations.iterator();
             while (i.hasNext()) {
-                I_CmsImport importVersion = (I_CmsImport)i.next();
+                I_CmsImport importVersion = i.next();
                 if (importVersion.matches(parameters)) {
                     m_report.println(Messages.get().container(
                         Messages.RPT_IMPORT_VERSION_1,
                         String.valueOf(importVersion.getVersion())), I_CmsReport.FORMAT_NOTE);
                     // this is the correct import version, so call it for the import process
                     importVersion.importData(m_cms, m_report, parameters);
+                    OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, null));
                     run = true;
                     break;
                 }
@@ -132,7 +133,9 @@ public class CmsImport {
                     I_CmsReport.FORMAT_WARNING);
             }
         } finally {
-            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES, Collections.EMPTY_MAP));
+            OpenCms.fireCmsEvent(new CmsEvent(
+                I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES,
+                Collections.<String, String> emptyMap()));
         }
     }
 }
