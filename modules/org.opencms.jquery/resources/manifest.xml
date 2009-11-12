@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.5.0</opencms_version>
+		<opencms_version>7.6.0</opencms_version>
 		<createdate>Mon, 09 Jun 2008 15:46:01 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -2032,6 +2032,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/jquery/packed/jquery.hint.js</source>
+			<destination>system/workplace/resources/jquery/packed/jquery.hint.js</destination>
+			<type>plain</type>
+			<uuidstructure>67c1db20-12ae-1d5d-86ab-111d34530985</uuidstructure>
+			<uuidresource>67c1db21-12ae-17ad-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:00:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:00:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/jquery/packed/jquery.js</source>
 			<destination>system/workplace/resources/jquery/packed/jquery.js</destination>
 			<type>plain</type>
@@ -2085,7 +2100,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery UI 1.7.1]]></value>
+					<value><![CDATA[JQuery UI 1.7.2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2170,6 +2185,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/jquery/unpacked/jquery.hint.js</source>
+			<destination>system/workplace/resources/jquery/unpacked/jquery.hint.js</destination>
+			<type>plain</type>
+			<uuidstructure>67c1dbf0-1b5e-12d4-86ab-111d34530985</uuidstructure>
+			<uuidresource>67c1dbd1-18fe-13d7-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:00:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:00:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery FlyDom 3.1.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/jquery/unpacked/jquery.js</source>
 			<destination>system/workplace/resources/jquery/unpacked/jquery.js</destination>
 			<type>plain</type>
@@ -2223,7 +2258,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery UI 1.7.1]]></value>
+					<value><![CDATA[JQuery UI 1.7.2]]></value>
 				</property>
 			</properties>
 			<relations/>
