@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/10/07 10:32:26 $
- * Version: $Revision: 1.131 $
+ * Date   : $Date: 2009/11/12 07:51:23 $
+ * Version: $Revision: 1.132 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.131 $
+ * @version $Revision: 1.132 $
  * 
  * @since 6.0.0 
  */
@@ -2482,7 +2482,16 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
 
             // copy all users from the group to the role
-            Iterator it = readUsersOfGroup(dbc, groupName, false).iterator();
+            Iterator it;
+            try {
+                // read all users, also indirect assigned
+                it = m_driverManager.getUsersOfGroup(dbc, groupName, false, false, false).iterator();
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+                // read only direct assigned users
+                it = readUsersOfGroup(dbc, groupName, false).iterator();
+            }
             while (it.hasNext()) {
                 CmsUser user = (CmsUser)it.next();
 
