@@ -607,9 +607,7 @@
 		        <mimetype extension=".onepkg" type="application/onenote"/>
 		        <mimetype extension=".rar" type="application/x-rar-compressed"/>
 		        <mimetype extension=".flv" type="video/x-flv"/>
-		        <mimetype extension=".word" type="application/msword"/>
-        		<mimetype extension=".msg" type="application/vnd.ms-outlook"/>
-        		<mimetype extension=".mcp" type="application/netmc"/>
+		   		<mimetype extension=".msg" type="application/vnd.ms-outlook"/>
 			</mimetypes>
 			<html-converters>
   		  		<html-converter name="true" class="org.opencms.util.CmsHtmlConverterJTidy" />
