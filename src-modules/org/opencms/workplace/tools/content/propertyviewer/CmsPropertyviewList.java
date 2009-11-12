@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/propertyviewer/CmsPropertyviewList.java,v $
- * Date   : $Date: 2009/10/14 11:03:14 $
- * Version: $Revision: 1.2.2.3 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -78,7 +79,7 @@ import org.apache.commons.logging.Log;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2.2.3 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.5.1
  */
@@ -483,7 +484,7 @@ public class CmsPropertyviewList extends A_CmsListDialog {
 
         type = OpenCms.getResourceManager().getResourceType(resource);
         iconPath = getSkinUri()
-            + "filetypes/"
+            + CmsWorkplace.RES_PATH_FILETYPES
             + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getIcon();
         String iconImage;
 

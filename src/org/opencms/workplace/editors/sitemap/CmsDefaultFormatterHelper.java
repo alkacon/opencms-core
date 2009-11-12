@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/11/10 10:42:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.9.2
  */
@@ -95,7 +95,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      */
     public String getIconPath() throws CmsException {
 
-        return CmsWorkplace.getResourceUri("filetypes/"
+        return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
             + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getType()).getIcon());
     }
 

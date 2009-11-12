@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Messages.java,v $
- * Date   : $Date: 2009/11/09 09:47:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,6 +77,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_FILE_IS_FOLDER_1 = "ERR_WRITE_FILE_IS_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DEFAULT_FORMATTER_NOT_DEFINED_1 = "ERR_DEFAULT_FORMATTER_NOT_DEFINED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_COPY_RESOURCE_4 = "LOG_ADD_COPY_RESOURCE_4";

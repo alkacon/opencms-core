@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2009/06/04 14:29:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,9 +189,9 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         String iconPath = null;
         try {
             String typeName = OpenCms.getResourceManager().getResourceType(getResource1().getTypeId()).getTypeName();
-            iconPath = "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
+            iconPath = CmsWorkplace.RES_PATH_FILETYPES + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
         } catch (CmsException e) {
-            iconPath = "filetypes/"
+            iconPath = CmsWorkplace.RES_PATH_FILETYPES
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePlain.getStaticTypeName()).getIcon();
         }
         StringBuffer result = new StringBuffer(1024);

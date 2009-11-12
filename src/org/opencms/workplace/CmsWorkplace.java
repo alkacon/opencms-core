@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2009/09/07 12:41:54 $
- * Version: $Revision: 1.177.2.1 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.177.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,6 +121,9 @@ public abstract class CmsWorkplace {
 
     /** The request parameter for the workplace site selection. */
     public static final String PARAM_WP_SITE = "wpSite";
+
+    /** Path for file type icons relative to the resources folder. */
+    public static final String RES_PATH_FILETYPES = "filetypes/";
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";

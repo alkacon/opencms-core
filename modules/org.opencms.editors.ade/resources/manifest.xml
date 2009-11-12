@@ -177,6 +177,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/default-gallery-list-formatter.jsp</source>
+			<destination>system/workplace/editors/ade/default-gallery-list-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>89129b4b-cf73-11de-8579-83dd4001fc7f</uuidstructure>
+			<uuidresource>89129b4c-cf73-11de-8579-83dd4001fc7f</uuidresource>
+			<datelastmodified>Thu, 12 Nov 2009 10:09:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 12 Nov 2009 10:09:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/include.txt</source>
 			<destination>system/workplace/editors/ade/include.txt</destination>

@@ -169,6 +169,7 @@
 			    <mimetype extension=".kmz" type="application/vnd.google-earth.kmz" />
 			    <mimetype extension=".mif" type="application/vnd.mif" />
 			    <mimetype extension=".xls" type="application/vnd.ms-excel" />
+                <mimetype extension=".msg" type="application/vnd.ms-outlook"/>
 			    <mimetype extension=".pot" type="application/vnd.ms-powerpoint" />
 			    <mimetype extension=".ppt" type="application/vnd.ms-powerpoint" />
 			    <mimetype extension=".mpp" type="application/vnd.ms-project" />

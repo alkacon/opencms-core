@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:46 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -298,7 +299,7 @@ public class CmsExplorerTypeSettings implements Comparable {
             "\", ");
         result.append("\"");
         result.append(messages.key(settings.getKey()));
-        result.append("\", vi.skinPath + \"filetypes/");
+        result.append("\", vi.skinPath + \"" + CmsWorkplace.RES_PATH_FILETYPES);
         result.append(settings.getIcon());
         result.append("\", \"");
         result.append(settings.getNewResourceUri());

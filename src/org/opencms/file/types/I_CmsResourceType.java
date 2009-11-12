@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2009/11/09 09:47:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,14 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Defines resource type descriptors for all resources in the VFS.<p>
@@ -70,7 +77,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -349,6 +356,28 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @return a list of file extensions mappings for this resource type in an unmodifiable List
      */
     List<String> getConfiguredMappings();
+
+    /**
+     * Returns the formatted content. The specified formatter will render the content given in as request attributes.<p>
+     *  
+     * @param cms the cms-object instance 
+     * @param req 
+     * @param res 
+     * @param formatterKey the formatter configuration key
+     * @param requestAttributes a map of request attributes
+     * @return the rendered content
+     * @throws CmsException 
+     * @throws IOException 
+     * @throws ServletException 
+     * @throws UnsupportedEncodingException 
+     */
+    String getFormattedContent(
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String formatterKey,
+        Map<String, Object> requestAttributes)
+    throws UnsupportedEncodingException, ServletException, IOException, CmsException;
 
     /**
      * Returns the gallery types for this resource type.<p>

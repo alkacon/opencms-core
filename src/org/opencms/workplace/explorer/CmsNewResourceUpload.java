@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -278,7 +278,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         result.append("></td>");
                         result.append("\t<td><img src=\"");
                         result.append(getSkinUri());
-                        result.append("filetypes/");
+                        result.append(CmsWorkplace.RES_PATH_FILETYPES);
                         result.append(settings.getIcon());
                         result.append("\" border=\"0\" title=\"");
                         result.append(dialog.key(settings.getKey()));

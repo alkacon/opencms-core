@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2009/06/04 14:29:46 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUriSplitter;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 import org.opencms.workplace.list.A_CmsListResourceTypeDialog;
@@ -81,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.7.1 
  */
@@ -642,7 +643,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
                 item.set(LIST_COLUMN_NAME, key(set.getKey()));
                 item.set(LIST_COLUMN_ICON, "<img src=\""
                     + getSkinUri()
-                    + "filetypes/"
+                    + CmsWorkplace.RES_PATH_FILETYPES
                     + set.getIcon()
                     + "\" style=\"width: 16px; height: 16px;\" />");
                 ret.add(item);
@@ -668,7 +669,8 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
         // set title
         String title = null;
-        CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeFolder.getStaticTypeName());
+        CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+            CmsResourceTypeFolder.getStaticTypeName());
         if ((set != null) && (CmsStringUtil.isNotEmptyOrWhitespaceOnly(set.getTitleKey()))) {
             title = getMessages().key(set.getTitleKey(), true);
         }

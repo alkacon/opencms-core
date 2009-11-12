@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDialogMultiPropertyEdit.java,v $
- * Date   : $Date: 2009/10/14 11:03:12 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
@@ -71,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.5.1
  */
@@ -168,7 +169,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
             CmsExplorerTypeSettings settings = getSettingsForType(type.getTypeName());
             List<String> editProperties = settings.getProperties();
             if (editProperties.size() > 0) {
-                String iconPath = getSkinUri() + "filetypes/" + settings.getIcon();
+                String iconPath = getSkinUri() + CmsWorkplace.RES_PATH_FILETYPES + settings.getIcon();
                 String imageName = res.getName();
                 String propertySuffix = "" + imageName.hashCode();
                 result.append(dialogBlockStart("<img src=\"" + iconPath + "\"/>&nbsp;" + imageName));

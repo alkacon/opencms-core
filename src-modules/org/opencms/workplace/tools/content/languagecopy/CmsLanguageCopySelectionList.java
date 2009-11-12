@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/languagecopy/CmsLanguageCopySelectionList.java,v $
- * Date   : $Date: 2009/10/14 11:03:08 $
- * Version: $Revision: 1.2.2.3 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2.2.3 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.5.1
  * 
@@ -528,7 +528,7 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
         }
 
         iconPath = getSkinUri()
-            + "filetypes/"
+            + CmsWorkplace.RES_PATH_FILETYPES
             + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getIcon();
         String iconImage;
         iconImage = "<img src=\"" + iconPath + "\" alt=\"" + type.getTypeName() + "\" title=\"" + title + "\" />";

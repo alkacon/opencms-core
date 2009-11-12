@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUriSplitter;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
@@ -91,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -650,7 +651,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
         String result = "";
         if (OpenCms.getDefaultFiles().size() > 0) {
-            String defaultfile = (String)OpenCms.getDefaultFiles().get(0);
+            String defaultfile = OpenCms.getDefaultFiles().get(0);
             int index = defaultfile.indexOf('.');
             if (index >= 0) {
                 result = defaultfile.substring(index, defaultfile.length());
@@ -982,7 +983,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             item.set(LIST_COLUMN_NAME, key(settings.getKey()));
             item.set(LIST_COLUMN_ICON, "<img src=\""
                 + getSkinUri()
-                + "filetypes/"
+                + CmsWorkplace.RES_PATH_FILETYPES
                 + settings.getIcon()
                 + "\" style=\"width: 16px; height: 16px;\" />");
             item.set(LIST_COLUMN_URI, CmsEncoder.encode(settings.getNewResourceUri()));
@@ -1044,7 +1045,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             setParamPage(null);
 
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewFormUri())
-                || getParamNewResourceUri().indexOf("?" + PARAM_PAGE) != -1) {
+                || (getParamNewResourceUri().indexOf("?" + PARAM_PAGE) != -1)) {
                 setParamNewFormUri(getParamNewResourceUri());
                 setParamNewResourceUri(null);
             }
@@ -1082,7 +1083,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         // get session attribute storing if we are in advanced mode
         String advAttr = (String)request.getSession(true).getAttribute(SESSION_ATTR_ADVANCED);
 
-        if (DIALOG_ADVANCED.equals(getParamAction()) || advAttr != null) {
+        if (DIALOG_ADVANCED.equals(getParamAction()) || (advAttr != null)) {
             // advanced mode to display all possible resource types
             if (advAttr == null) {
                 // set attribute that we are in advanced mode
@@ -1141,7 +1142,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             // creation of an index file in a new folder, use default file name
             String defaultFile = "";
             try {
-                defaultFile = (String)OpenCms.getDefaultFiles().get(0);
+                defaultFile = OpenCms.getDefaultFiles().get(0);
             } catch (IndexOutOfBoundsException e) {
 
                 // list is empty, ignore    

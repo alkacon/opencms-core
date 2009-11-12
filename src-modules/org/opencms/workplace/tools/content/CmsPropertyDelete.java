@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author  Andreas Zahner 
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +127,6 @@ public class CmsPropertyDelete extends CmsDialog {
      * @throws JspException if problems including sub-elements occur
      */
     public void actionDeleteCascade() throws JspException {
-        
 
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
@@ -142,7 +142,7 @@ public class CmsPropertyDelete extends CmsDialog {
                 try {
                     // change to the root site
                     getCms().getRequestContext().setSiteRoot("/");
-                    
+
                     Iterator i = resourcesWithProperty.iterator();
                     while (i.hasNext()) {
                         CmsResource resource = (CmsResource)i.next();
@@ -265,7 +265,7 @@ public class CmsPropertyDelete extends CmsDialog {
                 result.append("\t<td>");
                 result.append("<img src=\"");
                 result.append(getSkinUri());
-                result.append("filetypes/");
+                result.append(CmsWorkplace.RES_PATH_FILETYPES);
                 result.append(filetype);
                 result.append(".gif\">");
                 result.append("</td>\n");
@@ -344,7 +344,9 @@ public class CmsPropertyDelete extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
-            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0) + ": " + getParamPropertyName());
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0)
+                + ": "
+                + getParamPropertyName());
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else if (DIALOG_DELETE_CASCADE.equals(getParamAction())) {
@@ -373,8 +375,7 @@ public class CmsPropertyDelete extends CmsDialog {
             // get the lock state for the resource
             CmsLock lock = getCms().getLock(resource);
             // add this resource to the list if this is locked by another user
-            if (!lock.isUnlocked()
-                && !lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
+            if (!lock.isUnlocked() && !lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
                 lockedResourcesByOtherUser.add(resource);
             }
         }

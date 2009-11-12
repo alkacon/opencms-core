@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/11 10:42:28 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -59,6 +60,8 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.editors.ade.A_CmsAjaxServer;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,6 +72,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -80,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 7.6
  */
@@ -235,6 +239,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The info. */
         INFO("info"),
 
+        /** The item html-content. */
+        ITEMHTML("itemhtml"),
+
         /** The level. */
         LEVEL("level"),
 
@@ -305,6 +312,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         /** Generic data parameter. */
         DATA("data"),
+
+        /** The current gallery item parameter. */
+        GALLERYITEM("galleryitem"),
 
         /** The current locale. */
         LOCALE("locale");
@@ -448,8 +458,17 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 jsonObj.put(JsonKeys.ROOTPATH.getName(), cat.getRootPath());
                 // 4 category level
                 jsonObj.put(JsonKeys.LEVEL.getName(), CmsResource.getPathLevel(cat.getPath()));
+                String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
+                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting("folder").getIcon());
+                jsonObj.put(JsonKeys.ITEMHTML.getName(), getFormattedListContent(
+                    OpenCms.getResourceManager().getResourceType("folder"),
+                    cat.getTitle(),
+                    cat.getPath(),
+                    iconPath,
+                    null));
                 result.put(jsonObj);
-            } catch (JSONException e) {
+            } catch (Exception e) {
+                // TODO: Improve error handling
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
@@ -476,7 +495,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         while (iGalleryTypes.hasNext()) {
             Entry<String, CmsGalleryTypeInfo> ent = iGalleryTypes.next();
             CmsGalleryTypeInfo tInfo = ent.getValue();
-            String iconPath = CmsWorkplace.getResourceUri("filetypes/"
+            String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(tInfo.getResourceType().getTypeName()).getIcon());
             JSONArray contentTypes = new JSONArray();
             Iterator<I_CmsResourceType> it = tInfo.getContentTypes().iterator();
@@ -507,9 +526,17 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     // 3: active flag
                     jsonObj.put(JsonKeys.GALLERYTYPEID.getName(), tInfo.getResourceType().getTypeId());
                     jsonObj.put(JsonKeys.ICON.getName(), iconPath);
-                } catch (JSONException e) {
-                    // TODO: Auto-generated catch block
-                    e.printStackTrace();
+                    jsonObj.put(JsonKeys.ITEMHTML.getName(), getFormattedListContent(
+                        tInfo.getResourceType(),
+                        title,
+                        sitePath,
+                        iconPath,
+                        null));
+                } catch (Exception e) {
+                    // TODO: Improve error handling
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
                 result.put(jsonObj);
             }
@@ -522,9 +549,8 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * 
      * @param searchResult the search-result-list
      * @return the JSON representation of the search-result
-     * @throws JSONException if something goes wrong
      */
-    private JSONArray buildJSONForSearchResult(List<CmsSearchResult> searchResult) throws JSONException {
+    private JSONArray buildJSONForSearchResult(List<CmsSearchResult> searchResult) {
 
         JSONArray result = new JSONArray();
         if ((searchResult == null) || (searchResult.size() == 0)) {
@@ -532,24 +558,37 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         }
         Iterator<CmsSearchResult> iSearchResult = searchResult.iterator();
         while (iSearchResult.hasNext()) {
-            CmsSearchResult sResult = iSearchResult.next();
-            JSONObject resultEntry = new JSONObject();
-            String path = sResult.getPath();
-            String fileIcon = getFileIconName(path);
-            String iconpath = "filetypes/";
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(fileIcon)) {
-                iconpath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(sResult.getDocumentType()).getIcon();
-            } else {
-                iconpath += "mimetype/" + fileIcon;
+            try {
+                CmsSearchResult sResult = iSearchResult.next();
+                JSONObject resultEntry = new JSONObject();
+                String path = sResult.getPath();
+                String fileIcon = getFileIconName(path);
+                String iconpath = CmsWorkplace.RES_PATH_FILETYPES;
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(fileIcon)) {
+                    iconpath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(sResult.getDocumentType()).getIcon();
+                } else {
+                    iconpath += "mimetype/" + fileIcon;
+                }
+                iconpath = CmsWorkplace.getResourceUri(iconpath);
+                resultEntry.put(JsonKeys.DATEMODIFIED.getName(), sResult.getDateLastModified());
+                resultEntry.put(JsonKeys.TITLE.getName(), sResult.getField(CmsSearchField.FIELD_TITLE));
+                resultEntry.put(JsonKeys.INFO.getName(), sResult.getField(CmsSearchField.FIELD_DESCRIPTION));
+                resultEntry.put(JsonKeys.TYPE.getName(), sResult.getDocumentType());
+                resultEntry.put(JsonKeys.PATH.getName(), sResult.getPath());
+                resultEntry.put(JsonKeys.ICON.getName(), iconpath);
+                resultEntry.put(JsonKeys.ITEMHTML.getName(), getFormattedListContent(
+                    OpenCms.getResourceManager().getResourceType(sResult.getDocumentType()),
+                    sResult.getField(CmsSearchField.FIELD_TITLE),
+                    sResult.getField(CmsSearchField.FIELD_DESCRIPTION),
+                    iconpath,
+                    sResult));
+                result.put(resultEntry);
+            } catch (Exception e) {
+                // TODO: Improve error handling
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
-            iconpath = CmsWorkplace.getResourceUri(iconpath);
-            resultEntry.put(JsonKeys.DATEMODIFIED.getName(), sResult.getDateLastModified());
-            resultEntry.put(JsonKeys.TITLE.getName(), sResult.getField(CmsSearchField.FIELD_TITLE));
-            resultEntry.put(JsonKeys.INFO.getName(), sResult.getField(CmsSearchField.FIELD_DESCRIPTION));
-            resultEntry.put(JsonKeys.TYPE.getName(), sResult.getDocumentType());
-            resultEntry.put(JsonKeys.PATH.getName(), sResult.getPath());
-            resultEntry.put(JsonKeys.ICON.getName(), iconpath);
-            result.put(resultEntry);
         }
         return result;
     }
@@ -560,9 +599,8 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * @param types the gallery-types
      * @return the content-types
      * @throws CmsLoaderException if something goes wrong
-     * @throws JSONException if something goes wrong
      */
-    private JSONArray buildJSONForTypes(List<I_CmsResourceType> types) throws JSONException {
+    private JSONArray buildJSONForTypes(List<I_CmsResourceType> types) {
 
         JSONArray result = new JSONArray();
         if (types == null) {
@@ -571,24 +609,39 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         Iterator<I_CmsResourceType> it = types.iterator();
         while (it.hasNext()) {
             I_CmsResourceType type = it.next();
-            JSONObject jType = new JSONObject();
-            jType.put(JsonKeys.TITLE.getName(), CmsWorkplaceMessages.getResourceTypeName(m_locale, type.getTypeName()));
-            jType.put(JsonKeys.TYPEID.getName(), type.getTypeId());
-            jType.put(JsonKeys.INFO.getName(), CmsWorkplaceMessages.getResourceTypeDescription(
-                m_locale,
-                type.getTypeName()));
-            String iconPath = CmsWorkplace.getResourceUri("filetypes/"
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getIcon());
-            jType.put(JsonKeys.ICON.getName(), iconPath);
-            JSONArray galleryIds = new JSONArray();
-            Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
-            while (galleryTypes.hasNext()) {
-                I_CmsResourceType galleryType = galleryTypes.next();
-                galleryIds.put(galleryType.getTypeId());
+            try {
+                JSONObject jType = new JSONObject();
+                jType.put(JsonKeys.TITLE.getName(), CmsWorkplaceMessages.getResourceTypeName(
+                    m_locale,
+                    type.getTypeName()));
+                jType.put(JsonKeys.TYPEID.getName(), type.getTypeId());
+                jType.put(JsonKeys.INFO.getName(), CmsWorkplaceMessages.getResourceTypeDescription(
+                    m_locale,
+                    type.getTypeName()));
+                String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
+                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getIcon());
+                jType.put(JsonKeys.ICON.getName(), iconPath);
+                JSONArray galleryIds = new JSONArray();
+                Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
+                while (galleryTypes.hasNext()) {
+                    I_CmsResourceType galleryType = galleryTypes.next();
+                    galleryIds.put(galleryType.getTypeId());
 
+                }
+                jType.put(JsonKeys.GALLERYTYPEID.getName(), galleryIds);
+                jType.put(JsonKeys.ITEMHTML.getName(), getFormattedListContent(
+                    type,
+                    CmsWorkplaceMessages.getResourceTypeName(m_locale, type.getTypeName()),
+                    CmsWorkplaceMessages.getResourceTypeDescription(m_locale, type.getTypeName()),
+                    iconPath,
+                    null));
+                result.put(jType);
+            } catch (Exception e) {
+                // TODO: Improve error handling
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
-            jType.put(JsonKeys.GALLERYTYPEID.getName(), galleryIds);
-            result.put(jType);
         }
 
         return result;
@@ -747,11 +800,15 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             try {
                 result.add(getResourceManager().getResourceType(types.getInt(i)));
             } catch (CmsLoaderException e) {
-                // TODO: Auto-generated catch block
-                e.printStackTrace();
+                // TODO: Improve error handling
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             } catch (JSONException e) {
-                // TODO: Auto-generated catch block
-                e.printStackTrace();
+                // TODO: Improve error handling
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
         }
         return result;
@@ -842,8 +899,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         try {
             typeNames = getTypeNames(types);
         } catch (CmsLoaderException e) {
-            // TODO: Auto-generated catch block
-            e.printStackTrace();
+            // TODO: Improve error handling
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
 
         // TODO: searching the old index, replace with new search
@@ -955,6 +1014,41 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             ret.add(arr.getString(i));
         }
         return ret;
+    }
+
+    /**
+     * Returns the rendered item html.
+     * 
+     * @param type the resource-type
+     * @param title the title
+     * @param subtitle the subtitle
+     * @param iconPath the icon path
+     * @param searchResult the search-result if applicable 
+     * @return the html string
+     * @throws UnsupportedEncodingException if something goes wrong
+     * @throws ServletException if something goes wrong
+     * @throws IOException if something goes wrong
+     * @throws CmsException if something goes wrong
+     */
+    private String getFormattedListContent(
+        I_CmsResourceType type,
+        String title,
+        String subtitle,
+        String iconPath,
+        CmsSearchResult searchResult) throws UnsupportedEncodingException, ServletException, IOException, CmsException {
+
+        Map<String, Object> reqAttributes = new HashMap<String, Object>();
+        CmsGalleryItemBean reqItem = new CmsGalleryItemBean(title, subtitle, iconPath);
+        if (searchResult != null) {
+            reqItem.setSearchResult(searchResult);
+        }
+        reqAttributes.put(ReqParam.GALLERYITEM.getName(), reqItem);
+        return type.getFormattedContent(
+            m_cms,
+            getRequest(),
+            getResponse(),
+            A_CmsResourceType.DefaultFormatters.FORMATTER_GALLERY_LIST.getKey(),
+            reqAttributes);
     }
 
 }

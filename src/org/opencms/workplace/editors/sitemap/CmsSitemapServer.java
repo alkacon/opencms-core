@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/10 16:42:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -92,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.6
  */
@@ -495,11 +494,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             m_formatters.put(new Integer(elementRes.getTypeId()), formatter);
         }
 
-        CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
-            formatter), elementRes, formatter);
-
-        CmsResource loaderRes = loaderFacade.getLoaderStartResource();
-
         HttpServletRequest m_req = getRequest();
         HttpServletResponse m_res = getResponse();
 
@@ -510,10 +504,11 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             entry.getTitle(),
             entry.getProperties(),
             null));
+
         try {
-            return new String(loaderFacade.getLoader().dump(
+            return new String(OpenCms.getResourceManager().getLoader(formatter).dump(
                 cms,
-                loaderRes,
+                formatter,
                 null,
                 cms.getRequestContext().getLocale(),
                 m_req,
@@ -722,7 +717,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Adds the HTML content to the JSON list of site entries
+     * Adds the HTML content to the JSON list of site entries.<p>
      * 
      * @param jsonEntriesList the JSON list of site entries
      * 

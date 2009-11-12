@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/11/09 09:47:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLockType;
@@ -56,12 +57,20 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Map.Entry;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
@@ -71,11 +80,79 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
+
+    /** Default formatters. */
+    public enum DefaultFormatters {
+
+        /** The default gallery list item formatter path. */
+        FORMATTER_GALLERY_LIST("formatter_gallery_list",
+        "/system/workplace/editors/ade/default-gallery-list-formatter.jsp"),
+
+        /** The default gallery preview formatter path. */
+        FORMATTER_GALLERY_PREVIEW("formatter_gallery_preview",
+        "/system/workplace/galleries/formatter/default_preview_formatter.jsp"),
+
+        /** The default sitemap formatter path. */
+        FORMATTER_SITEMAP("formatter_sitemap", "/system/workplace/editors/sitemap/default-formatter.jsp");
+
+        /** Property path. */
+        private String m_path;
+
+        /** Property key. */
+        private String m_key;
+
+        /** Constructor.<p> */
+        private DefaultFormatters(String key, String path) {
+
+            m_key = key;
+            m_path = path;
+        }
+
+        /**
+         * Get the formatter by key.<p>
+         * 
+         * @param key the key
+         * @return the formatter or null
+         * @throws IllegalArgumentException if no default-formatter defined for this key
+         */
+        public static DefaultFormatters getFormatterByKey(String key) throws IllegalArgumentException {
+
+            DefaultFormatters[] formatters = DefaultFormatters.values();
+            for (int i = 0; i < formatters.length; i++) {
+                if (formatters[i].getKey().equals(key)) {
+                    return formatters[i];
+                }
+            }
+            throw new IllegalArgumentException(Messages.get().getBundle().key(
+                Messages.ERR_DEFAULT_FORMATTER_NOT_DEFINED_1,
+                key));
+        }
+
+        /**
+         * Get the key.<p>
+         * 
+         * @return the key
+         */
+        public String getKey() {
+
+            return m_key;
+        }
+
+        /**
+         * Get the path.<p>
+         * 
+         * @return the path
+         */
+        public String getPath() {
+
+            return m_path;
+        }
+    }
 
     /** Configuration key for the (optional) internal flag. */
     public static final String CONFIGURATION_INTERNAL = "resource.flag.internal";
@@ -128,6 +205,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** Indicates that the configuration of the resource type has been frozen. */
     protected boolean m_frozen;
 
+    /** Content formatters. */
+    protected Map<String, CmsResource> m_formatters;
+
     /**  Contains the file extensions mapped to this resource type. */
     protected List<String> m_mappings;
 
@@ -150,6 +230,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         m_defaultProperties = new ArrayList<CmsProperty>();
         m_copyResources = new ArrayList<CmsConfigurationCopyResource>();
         m_configuration = new TreeMap<String, String>();
+        m_formatters = new HashMap<String, CmsResource>();
     }
 
     /**
@@ -502,6 +583,65 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         }
         return m_galleryTypes;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getFormattedContent(CmsObject, HttpServletRequest, HttpServletResponse, java.lang.String, java.util.Map)
+     */
+    public String getFormattedContent(
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String formatterKey,
+        Map<String, Object> requestAttributes)
+    throws UnsupportedEncodingException, CmsException, IOException, ServletException {
+
+        CmsResource formatter = m_formatters.get(formatterKey);
+        if (formatter == null) {
+            // get the formatter from the resource type configuration
+            String formatterPath = getConfiguration().get(CmsResourceTypeXmlSitemap.PARAM_SITEMAP_FORMATTER);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterPath)) {
+                try {
+                    formatter = cms.readResource(formatterPath);
+                    m_formatters.put(formatterKey, formatter);
+                } catch (CmsException e) {
+                    if (!LOG.isDebugEnabled()) {
+                        LOG.warn(e.getLocalizedMessage());
+                    }
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+            if (formatter == null) {
+                // trying to read the default-formatter
+                formatterPath = DefaultFormatters.getFormatterByKey(formatterKey).getPath();
+                formatter = cms.readResource(formatterPath);
+                m_formatters.put(formatterKey, formatter);
+            }
+        }
+        Map<String, Object> attributeStore = new HashMap<String, Object>();
+        Iterator<Entry<String, Object>> attrIt = requestAttributes.entrySet().iterator();
+        while (attrIt.hasNext()) {
+            Entry<String, Object> ent = attrIt.next();
+            attributeStore.put(ent.getKey(), req.getAttribute(ent.getKey()));
+            req.setAttribute(ent.getKey(), ent.getValue());
+        }
+        try {
+            String content = new String(OpenCms.getResourceManager().getLoader(formatter).dump(
+                cms,
+                formatter,
+                null,
+                cms.getRequestContext().getLocale(),
+                req,
+                res), CmsLocaleManager.getResourceEncoding(cms, formatter));
+            return content.trim();
+        } finally {
+            Iterator<Entry<String, Object>> storeIt = attributeStore.entrySet().iterator();
+            while (storeIt.hasNext()) {
+                Entry<String, Object> ent = storeIt.next();
+                req.setAttribute(ent.getKey(), ent.getValue());
+            }
+        }
+
     }
 
     /**

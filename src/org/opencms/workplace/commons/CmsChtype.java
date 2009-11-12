@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/11/12 12:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsNewResource;
@@ -74,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -332,7 +333,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
             if (isResourceType) {
                 // first check if types are limited
-                if (!m_advancedMode && m_limitedRestypes && availableResTypes.indexOf(type.getTypeName()) == -1) {
+                if (!m_advancedMode && m_limitedRestypes && (availableResTypes.indexOf(type.getTypeName()) == -1)) {
                     // this resource type is not in the list of available types, skip it
                     continue;
                 }
@@ -364,7 +365,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
                     item.set(LIST_COLUMN_NAME, key(settings.getKey()));
                     item.set(LIST_COLUMN_ICON, "<img src=\""
                         + getSkinUri()
-                        + "filetypes/"
+                        + CmsWorkplace.RES_PATH_FILETYPES
                         + settings.getIcon()
                         + "\" style=\"width: 16px; height: 16px;\" />");
                     ret.add(item);
@@ -411,7 +412,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
         // get session attribute storing if we are in advanced mode
         String sessionAttr = (String)request.getSession(true).getAttribute(SESSION_ATTR_ADVANCED);
-        if (CmsNewResource.DIALOG_ADVANCED.equals(getParamAction()) || sessionAttr != null) {
+        if (CmsNewResource.DIALOG_ADVANCED.equals(getParamAction()) || (sessionAttr != null)) {
             // advanced mode to display all possible resource types
             if (sessionAttr == null) {
                 // set attribute that we are in advanced mode
