@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2009/06/04 14:28:59 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2009/11/12 07:52:00 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,6 +122,7 @@ public class CmsImport {
                         String.valueOf(importVersion.getVersion())), I_CmsReport.FORMAT_NOTE);
                     // this is the correct import version, so call it for the import process
                     importVersion.importData(m_cms, m_report, parameters);
+                    OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, null));
                     run = true;
                     break;
                 }
