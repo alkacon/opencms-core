@@ -23,7 +23,7 @@
           "SKIN_URI"		: "%(skinUri)"
         }, 
         publish: {
-          "SERVER_URL"      : "%(publishUri)",
+          "SERVER_URL"      : "%(publishUri)"
         }, comm:{}, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}, search :{}, property: {}, messages: {}};
     </script>
     <script type="text/javascript" src="%(messagesUri)"></script>
