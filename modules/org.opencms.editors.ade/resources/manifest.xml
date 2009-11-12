@@ -3725,26 +3725,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/ade/js/cms.sitemap.js</source>
-			<destination>system/workplace/resources/editors/ade/js/cms.sitemap.js</destination>
-			<type>plain</type>
-			<uuidstructure>19d327e0-8747-11de-83d4-dd9f629b113b</uuidstructure>
-			<uuidresource>19d327e1-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 19 Oct 2009 16:01:23 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[cms.sitemap]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.toolbar.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.toolbar.js</destination>
 			<type>plain</type>
