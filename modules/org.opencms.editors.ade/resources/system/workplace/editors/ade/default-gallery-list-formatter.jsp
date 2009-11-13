@@ -11,7 +11,6 @@ pageContext.setAttribute("cms", cms);
 	<div style="background-image: url(${cms.galleryItem.icon});" class="cms-list-image"></div>
 	<div class="cms-list-itemcontent">
     	<div class="cms-list-title">${cms.galleryItem.title}</div>
-		<div class="cms-list-url">${cms.galleryItem.subtitle}</div>
+		<div>${cms.galleryItem.subtitle}</div>
 	</div>
 </div>
-

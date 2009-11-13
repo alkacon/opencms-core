@@ -27,6 +27,8 @@
    /** Array with available search criteria. */
    var keysSearchObject = cms.galleries.keysSearchObject = ['types', 'galleries', 'categories', 'query'];
    
+   var clickTimer;
+   
    /** Map of key words for the criteria buttons on the result tab. */
    var criteriaStr = cms.galleries.criteriaStr = {
       types: ['Type: ', 'Types: '],
@@ -119,7 +121,7 @@
    /** html fragment for the <li> in the galleries list. */
    var listGalleryElement = cms.galleries.listGalleryElement = function(itemTitle, itemUrl, itemIcon) {
    
-      return $('<li></li>').addClass('cms-list').attr('rel', itemUrl).append('<div class="cms-list-checkbox"></div>\
+      return $('<li></li>').addClass('cms-list').addClass('cms-list-with-checkbox').attr('rel', itemUrl).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
                              <div class="cms-list-image" style="background-image: url(' + itemIcon + ');"></div>\
                              <div class="cms-list-itemcontent">\
@@ -134,7 +136,7 @@
    /** html fragment for the <li> in the types list. */
    var listTypeElement = cms.galleries.listTypeElement = function(itemTitle, itemId, itemDesc, itemIcon) {
    
-      return $('<li></li>').addClass('cms-list').attr('rel', itemId).append('<div class="cms-list-checkbox"></div>\
+      return $('<li></li>').addClass('cms-list').addClass('cms-list-with-checkbox').attr('rel', itemId).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
                              <div class="cms-list-image" style="background-image: url(' + itemIcon + ');"></div>\
                              <div class="cms-list-itemcontent">\
@@ -149,7 +151,7 @@
    /** html fragment for the <li> in the categories list. */
    var listCategoryElement = cms.galleries.listCategoryElement = function(itemTitle, itemUrl, itemLevel, classItemActive) {
    
-      return $('<li></li>').addClass('cms-list ' + classItemActive + ' ' + classConstLevel + itemLevel).attr('rel', itemUrl).append('<div class="cms-list-checkbox"></div>\
+      return $('<li></li>').addClass('cms-list ' + classItemActive + ' ' + classConstLevel + itemLevel).addClass('cms-list-with-checkbox').attr('rel', itemUrl).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
                              <div class="cms-list-image"></div>\
                              <div class="cms-list-itemcontent">\
@@ -161,12 +163,24 @@
                          </div>');
    }
    
-   var listResultElement = cms.galleries.listResultElement = function(itemTitle, itemPath, itemIcon) {
+   var listResultElemenAlt = cms.galleries.listResultElementAlt = function(itemTitle, itemPath, itemIcon) {
       return $('<li class="cms-result-list-item"></li>').attr('rel', itemPath).append('<div class="ui-widget-content ui-state-default ui-corner-all">\
                              <div class="cms-list-image" style="background-image: url(' + itemIcon + ');"></div>\
                              <div>\
                                  <div class="cms-result-list-title">' + itemTitle + '</div>\
                                  <div class="cms-result-list-path">' +
+      itemPath +
+      '</div>\
+                             </div>\
+                         </div>');
+   }
+   
+  var listResultElement = cms.galleries.listResultElement = function(itemTitle, itemPath, itemIcon) {
+      return $('<li class="cms-list"></li>').attr('rel', itemPath).append('<div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
+                             <div class="cms-list-image" style="background-image: url(' + itemIcon + ');"></div>\
+                             <div class="cms-list-itemcontent">\
+                                 <div class="cms-list-title">' + itemTitle + '</div>\
+                                 <div class="cms-list-url">' +
       itemPath +
       '</div>\
                              </div>\
@@ -192,9 +206,9 @@
       searchfields: '',
       matchesperpage: 8,
       isChanged: {
-         types: true,
-         galleries: true,
-         categories: true,
+         types: false,
+         galleries: false,
+         categories: false,
          query: false
       }
    };
@@ -332,8 +346,8 @@
           values:[
               {value: 'title,asc',title: 'Title Ascending'}, 
               {value: 'title,desc',title: 'Title Descending'},
-              {value: 'type,asc',title: 'Type Ascending'}, 
-              {value: 'type,desc',title: 'Type Descending'}          
+              {value: 'gallerytypeid,asc',title: 'Type Ascending'}, 
+              {value: 'gallerytypeid,desc',title: 'Type Descending'}          
           ],
           width: 150,
           /* bind sort functionality to selectbox */
@@ -392,11 +406,14 @@
       
       // bind all other events at the end          
       // bind click, dbclick and hover events on items in criteria lists
-      $('li.cms-list').live('dblclick', cms.galleries.dblclickListItem).live('click', cms.galleries.clickListItem).live('mouseover', function() {
+      $('li.cms-list').live('dblclick', cms.galleries.dblclickListItem)
+          .live('click', cms.galleries.clickListItem)
+          .live('mouseover', function() {
          $(this).addClass(cms.galleries.classListItemHover);
       }).live('mouseout', function() {
          $(this).removeClass(cms.galleries.classListItemHover);
-      });
+      });        
+      
       // add active class to checkbox of search tab  
       $('#searchInTitle, #searchInContent')
           .click(function() {
@@ -408,11 +425,11 @@
          cms.galleries.searchObject.isChanged.query = true;
       });           
       
-      $('li.cms-result-list-item > div').live('mouseover', function() {
+      /*$('li.cms-result-list-item > div').live('mouseover', function() {
          $(this).toggleClass('ui-state-hover', true);
       }).live('mouseout', function() {
          $(this).toggleClass('ui-state-hover', false);
-      });
+      });*/
       
       // bind click events to remove search criteria html from result tab            
       $('span.cms-search-remove').live('click', cms.galleries.removeCriteria);
@@ -478,7 +495,7 @@
       }
       if (cms.galleries.searchCriteriaListsAsJSON.types) {
          cms.galleries.fillTypes(cms.galleries.searchCriteriaListsAsJSON.types);
-      }
+      }     
       // TODO: go through html and the search object and mark the already selected search criteria     
    }
    
@@ -487,6 +504,7 @@
     * TODO: generalize to make it possible to load some preselected
     */
    var loadSearchResults = cms.galleries.loadSearchResults = function() {
+      //alert('loadSearchResults');
       cms.galleries.searchObject.page = 1;
       $.ajax({
          'url': vfsPathAjaxJsp,
@@ -519,7 +537,7 @@
                       
       if (data.searchresult.resultcount > 0) {
          // display
-         cms.galleries.fillResultPage(data.searchresult.resultlist, data.searchresult.resultpage);
+         cms.galleries.fillResultPage(data);
          // initialize pagination for result list, if there are many pages                  
          if (data.searchresult.resultcount > cms.galleries.searchObject.matchesperpage) {
             var firsttime = true;
@@ -541,7 +559,7 @@
                            },
                            'type': 'POST',
                            'dataType': 'json',
-                           'success': cms.galleries.fillGivenResultPage
+                           'success': cms.galleries.fillResultPage
                         });
                      }
                   } else {
@@ -560,18 +578,24 @@
       }
    }
      
-   var fillResultPage = cms.galleries.fillResultPage = function(pageData, page_id) {       
-      var target = $('#results > ul').empty().removeAttr('id').attr('id', 'searchresults_page' + page_id);
-      $.each(pageData, function() {         
-         $(target).append(cms.galleries.listResultElement(this.title, this.path, this.icon));
+   var fillResultPage = cms.galleries.fillResultPage = function(pageData) {           
+      var target = $('#results > ul').empty().removeAttr('id').attr('id', 'searchresults_page' + pageData.searchresult.resultpage);
+      $.each(pageData.searchresult.resultlist, function() { 
+          $('<li></li>').appendTo(target).attr('rel', this.path).addClass('cms-list').append(this.itemhtml);        
+            // $(target).append(cms.galleries.listResultElement(this.title, this.path, this.icon));
       });
       
-      
-   }
-   
-   var fillGivenResultPage = cms.galleries.fillGivenResultPage = function(pageData) {
-      cms.galleries.fillResultPage(pageData.searchresult.resultlist, pageData.searchresult.resultpage);
-      
+     /*
+      * '<li class="cms-list"></li>').attr('rel', itemPath).append('<div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
+                             <div class="cms-list-image" style="background-image: url(' + itemIcon + ');"></div>\
+                             <div class="cms-list-itemcontent">\
+                                 <div class="cms-list-title">' + itemTitle + '</div>\
+                                 <div class="cms-list-url">' +
+      itemPath +
+      '</div>\
+                             </div>\
+                         </div>'
+      */ 
    }
    
    /**
@@ -605,7 +629,11 @@
       }
       //add the types to the list
       for (var i = 0; i < categories.length; i++) {
-         $('#categories > ul').append(listCategoryElement(categories[i].title, categories[i].path, categories[i].level, classActive));
+         //$('#categories > ul').append(listCategoryElement(categories[i].title, categories[i].path, categories[i].level, classActive));
+         $('<li></li>').appendTo('#categories > ul')
+             .attr('rel', categories[i].path).addClass('cms-list ' + classActive + ' ' + classConstLevel + categories[i].level).addClass('cms-list-with-checkbox')
+             .append('<div class="cms-list-checkbox"></div>')             
+             .append(categories[i].itemhtml);
       }
       // set isChanged flag, so the search will be send to server
       cms.galleries.searchObject.isChanged.categories = true;
@@ -641,7 +669,11 @@
    var fillGalleries = cms.galleries.fillGalleries = function(/**JSON*/galleries) {
       // add the galleries to the list
       for (key in galleries) {
-         $('#galleries > ul').append(listGalleryElement(galleries[key].title, galleries[key].path, galleries[key].icon));
+         //$('#galleries > ul').append(listGalleryElement(galleries[key].title, galleries[key].path, galleries[key].icon));
+         $('<li></li>').appendTo('#galleries > ul')
+             .attr('rel', galleries[key].path).addClass('cms-list').addClass('cms-list-with-checkbox')
+             .append('<div class="cms-list-checkbox"></div>')
+             .append(galleries[key].itemhtml);
          $('li[rel=' + galleries[key].path + ']').data('type', galleries[key].type);
       }
       // set isChanged flag, so the search will be send to server
@@ -670,7 +702,11 @@
       // add the types to the list
       for (var i = 0; i < types.length; i++) {
          var currType = types[i];
-         $('#types > ul').append(listTypeElement(currType.title, currType.typeid, currType.info, currType.icon));
+         //$('#types > ul').append(listTypeElement(currType.title, currType.typeid, currType.info, currType.icon));
+         $('<li></li>').appendTo('#types > ul')
+             .attr('rel', currType.typeid).addClass('cms-list').addClass('cms-list-with-checkbox')
+             .append('<div class="cms-list-checkbox"></div>')
+             .append(currType.itemhtml);
          $('li[rel=' + currType.typeid + ']').data('galleryTypes', currType.gallerytypeid);
       }
       // set isChanged flag, so the search will be send to server
@@ -745,60 +781,62 @@
    /**
     * Callback function for the one click event in the gallery list
     */
-   var clickListItem = cms.galleries.clickListItem = function() {
+   var clickListItem = cms.galleries.clickListItem = function() {         
+          // id of the li tag and type of search 
+          var itemId = $(this).attr('rel');
+          var itemCriteria = $(this).closest('div').attr('id');
+
+          // adjust the active status of the gallery in the gallery list        
+          var index = $.inArray(itemId, cms.galleries.searchObject[itemCriteria]);
+          // case 1: gallery is selected, -> deselect the gallery on second click
+          if (index != -1) {
+             // remove gallery path from search object
+             cms.galleries.searchObject[itemCriteria].splice(index, 1);
+             // remove highlighting
+             $(this).removeClass(cms.galleries.classListItemActive);
+             
+             // set isChanged flag, so the search will be send to server
+             cms.galleries.searchObject.isChanged[itemCriteria] = true;
+                          
+             // case 2: gallery is not selected yet, -> select the gallery on click
+          } else {
+             // push the gallery path to the search object
+             cms.galleries.searchObject[itemCriteria].push(itemId);
+             // add highlighting
+             $(this).addClass(cms.galleries.classListItemActive);
+             
+             $('#' + cms.galleries.idTabs).tabs("enable", 0);
+             
+             // set isChanged flag, so the search will be send to server
+             cms.galleries.searchObject.isChanged[itemCriteria] = true;             
+          }     
+   }
    
+   /**
+    * Callback function for the double click event in the search criteria list
+    */
+   var dblclickListItem = cms.galleries.dblclickListItem = function() {   
+     
       // id of the li tag and type of search 
       var itemId = $(this).attr('rel');
       var itemCriteria = $(this).closest('div').attr('id');
       
       // adjust the active status of the gallery in the gallery list        
       var index = $.inArray(itemId, cms.galleries.searchObject[itemCriteria]);
-      // case 1: gallery is selected, -> deselect the gallery on second click
-      if (index != -1) {
-         // remove gallery path from search object
-         cms.galleries.searchObject[itemCriteria].splice(index, 1);
-         // remove highlighting
-         $(this).removeClass(cms.galleries.classListItemActive);
-         
-         // set isChanged flag, so the search will be send to server
-         cms.galleries.searchObject.isChanged[itemCriteria] = true;
-         
-         
-         // case 2: gallery is not selected yet, -> select the gallery on click
-      } else {
+      // case 1: gallery is not selected, -> select the gallery
+      if (index == -1){
          // push the gallery path to the search object
          cms.galleries.searchObject[itemCriteria].push(itemId);
          // add highlighting
-         $(this).addClass(cms.galleries.classListItemActive);
-         
-         $('#' + cms.galleries.idTabs).tabs("enable", 0);
+         $(this).addClass(cms.galleries.classListItemActive);         
          
          // set isChanged flag, so the search will be send to server
          cms.galleries.searchObject.isChanged[itemCriteria] = true;
          
-      }
-   }
-   
-   /**
-    * Callback function for the double click event in the search criteria list
-    */
-   var dblclickListItem = cms.galleries.dblclickListItem = function() {
-   
-      // id of the li tag and type of search 
-      var itemId = $(this).attr('rel');
-      var itemCriteria = $(this).closest('div').attr('id');
-      
-      // remove all selected items from search object
-      cms.galleries.removeItemsFromSearchObject(itemCriteria);
-      // add selected item to search object and set highlighting
-      cms.galleries.searchObject[itemCriteria].push(itemId);
-      $(this).addClass(cms.galleries.classListItemActive);
-      // set isChanged flag, so the search will be send to server on 'select' tab event
-      cms.galleries.searchObject.isChanged[itemCriteria] = true;
-      
+      }      
       //switch to result tab index = 0
       $('#' + cms.galleries.idTabs).tabs("enable", 0);
-      $('#' + cms.galleries.idTabs).tabs('select', 0);
+      $('#' + cms.galleries.idTabs).tabs('select', 0);   
    }
    
    /**

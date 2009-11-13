@@ -75,16 +75,13 @@ var cms = { html: {}, galleries: {}, messages: {} };
     
     /** Item in the search list */
     li.cms-list {
-   /*     display: inline-block; */
-        margin-right: 5px;
-        margin-top: 2px;
         list-style-image:none;
         list-style-position:outside;
         list-style-type:none;
         cursor: pointer;
+        margin: 2px;
         /* HACK: To force hasLayout: true in IE7 */
         zoom: 1;
-     /*    clear: left; */
     }
     
     .cms-list-checkbox {
@@ -102,36 +99,45 @@ var cms = { html: {}, galleries: {}, messages: {} };
     }
     
     .cms-list-item { 
-        /*width: 540px; */
-      /*  width: 420px; */
         height: 32px; 
-        margin-left: 32px;
-        /* float: left; */
     }
     
-    .cms-list-itemcontent {
-        /*width: 500px;*/
-      /*   width: 380px; */        
+    .cms-list-with-checkbox div.cms-list-item {
+    	margin-left: 32px;
+    }
+    
+    .cms-list-itemcontent {      
         height: 34px; 
         margin-left:34px;
-        /* float: left; */
+    }
+    
+    .cms-list-itemcontent div{
+        height:16px;
+        overflow-x:hidden;
+        overflow-y:hidden;
     }
     
     div.cms-list-title {
-    /*     clear:left; */ 
+       font-weight:bold;
+    }
+    
+   /* .cms-list-itemcontent {      
+        height: 34px; 
+        margin-left:34px;
+    }
+    
+    div.cms-list-title {
         height:16px;
         font-weight:bold;
         overflow-x:hidden;
         overflow-y:hidden;
-        /* width:400px; */
     }
     
     div.cms-list-url {
         height:16px;
         overflow-x:hidden;
         overflow-y:hidden;
-    /*     width:400px; */
-    }  
+    }  */
     
     /** Hover and active state for items in the search list */
     li.cms-list-item-active div.cms-list-item { 
@@ -140,11 +146,13 @@ var cms = { html: {}, galleries: {}, messages: {} };
         color: #363636; 
     }   
     
-    li.cms-result-list-item div.ui-state-hover, .cms-list div.ui-state-hover, span.cms-drop-down .ui-state-hover{
+    /*li.cms-result-list-item div.ui-state-hover,*/ 
+    .cms-list div.ui-state-hover, span.cms-drop-down .ui-state-hover{
     	background-image: url(css/custom-theme/images/ui-bg_glass_75_cccccc_1x400.png);
     }
 
-    .cms-result-list-item div.ui-state-default, .cms-list div.ui-state-default, .cms-drop-down .ui-state-default{
+    /*.cms-result-list-item div.ui-state-default,*/ 
+    .cms-list div.ui-state-default, .cms-drop-down .ui-state-default{
     	background-image: url(css/custom-theme/images/ui-bg_glass_75_e6e6e6_1x400.png);
     }    
    
@@ -200,7 +208,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
         background-color: #a8adb4;
     }
     
-    .cms-result-list-item {
+   /* .cms-result-list-item {
         list-style-image:none;
         list-style-position:outside;
         list-style-type:none;
@@ -216,7 +224,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
     
     .cms-result-list-path {        
         overflow:hidden;
-    }
+    } */
 
     /** Option area over and under the criteria list */
     .cms-list-options{
