@@ -1,7 +1,7 @@
 (function(cms) {
 
    /** html-id for tabs. */
-   var idTabs = cms.galleries.idTabs = 'tabs';
+   var idTabs = cms.galleries.idTabs = 'cms-gallery-tabs';
    
    /** html-id for the tab with search results. */
    var idTabResult = cms.galleries.idTabResult = 'tabs-result';
@@ -424,15 +424,9 @@
          cms.galleries.searchObject.query = $(this).val();
          cms.galleries.searchObject.isChanged.query = true;
       });           
-      
-      /*$('li.cms-result-list-item > div').live('mouseover', function() {
-         $(this).toggleClass('ui-state-hover', true);
-      }).live('mouseout', function() {
-         $(this).toggleClass('ui-state-hover', false);
-      });*/
-      
+         
       // bind click events to remove search criteria html from result tab            
-      $('span.cms-search-remove').live('click', cms.galleries.removeCriteria);
+      $('div.cms-search-remove').live('click', cms.galleries.removeCriteria);
       
       // bind the hover and click events to the ok button under the criteria lists    
       $('.cms-search-options button').hover(function() {
@@ -455,10 +449,12 @@
     * @param {String} searchCriteria the given search criteria
     */
    var addCreteriaToTab = cms.galleries.addCreteriaToTab =  function(/** String*/content, /** String*/ searchCriteria) {
-      var target = $('<span id="selected' + searchCriteria + '" class="cms-searchquery ui-widget-content ui-state-hover ui-corner-all"></span>').appendTo($('.cms-result-criteria'));
-      target.append('<span class="cms-search-title">' + content + '</span>').append('<span class="cms-search-remove ui-corner-all">&nbsp;</span>');
+      var target = $('<span id="selected' + searchCriteria + '" class="cms-criteria ui-widget-content ui-state-hover ui-corner-all"></span>')
+          .appendTo($('.cms-result-criteria'));
+      target.append('<div class="cms-search-title">' + content + '</div>')
+          .append('<div class="cms-search-remove ui-icon ui-icon-closethick ui-corner-all"></div>');
    }
-   
+
    var configContentTypes = [1, 2, 3, 4, 5, 6, 7, 146, 147, 149];
    
    /**
