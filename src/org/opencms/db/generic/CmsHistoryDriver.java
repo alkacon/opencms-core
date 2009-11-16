@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2009/10/07 10:32:26 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/11/16 17:32:21 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.9.1
  */
@@ -531,7 +531,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                         if (newHistRes.getResourceVersion() != lastHistRes.getResourceVersion()) {
                             // only add interesting versions
                             if (offset == 1) {
-                                result.add(lastHistRes);
+                                if (histRes != lastHistRes) {
+                                    result.add(lastHistRes);
+                                }
                             } else {
                                 result.add(newHistRes);
                             }
