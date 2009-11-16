@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/generic/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2009/06/04 14:31:35 $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBAlterTables.java,v $
+ * Date   : $Date: 2009/11/16 17:05:30 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -134,8 +134,14 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
     /** Constant for the sql query to add the PROPERTYDEF_TYPE to the PROPERTYDEF tables.<p> */
     private static final String QUERY_PROPERTYDEF_TYPE = "Q_CMS_PROPERTYDEF";
 
+    /** Constant for the sql query to select the correct resource versions.<p> */
+    private static final String QUERY_SELECT_CMS_RESOURCE_VERSION = "Q_SELECT_CMS_RESOURCE_VERSION";
+
     /** Constant for the sql query to select the correct structure versions.<p> */
     private static final String QUERY_SELECT_CMS_STRUCTURE_VERSION = "Q_SELECT_CMS_STRUCTURE_VERSION";
+
+    /** Constant for the sql query to update the resource version in each row.<p> */
+    private static final String QUERY_UPDATE_RESOURCE_VERSION = "Q_UPDATE_RESOURCE_VERSION";
 
     /** Constant for the sql query to add the DATE_CONTENT column to the CMS_RESOURCES tables.<p> */
     private static final String QUERY_UPDATE_RESOURCES_DATE_CONTENT = "Q_UPDATE_RESOURCES_DATE_CONTENT";
@@ -145,6 +151,12 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to update the structure version in each row.<p> */
     private static final String QUERY_UPDATE_STRUCTURE_VERSION = "Q_UPDATE_STRUCTURE_VERSION";
+
+    /** Constant for the sql query to initialize the structure version in each row.<p> */
+    private static final String QUERY_SET_STRUCTURE_VERSION = "Q_SET_STRUCTURE_VERSION";
+
+    /** Constant for the sql query to initialize the resource version in each row.<p> */
+    private static final String QUERY_SET_RESOURCES_VERSION = "Q_SET_RESOURCES_VERSION";
 
     /**
      * Default constructor.<p>
@@ -205,6 +217,10 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
                 replacer.put(REPLACEMENT_TABLENAME, table);
                 dbCon.updateSqlStatement(addColumn, replacer, null);
 
+                // initialize the STRUCTURE_VERSION column
+                String initStructureVersion = readQuery(QUERY_SET_STRUCTURE_VERSION);
+                dbCon.updateSqlStatement(initStructureVersion, replacer, null);
+
                 // Update the entries of the newly created column
                 String structureVersion = readQuery(QUERY_SELECT_CMS_STRUCTURE_VERSION);
                 CmsSetupDBWrapper db = null;
@@ -258,8 +274,6 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
             System.out.println("table " + TABLE_CMS_PROJECTS + " does not exists");
         }
 
-        // Update CMS_GROUPS and add the system roles
-
         // Update CMS_RESOURCES tables
         for (Iterator it = CMS_RESOURCES_LIST.iterator(); it.hasNext();) {
             String table = (String)it.next();
@@ -274,9 +288,34 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
             }
 
             if (!dbCon.hasTableOrColumn(table, COLUMN_RESOURCES_RESOURCE_VERSION)) {
-                // add the RESOURCE_VERISION column
+                // add the RESOURCE_VERSION column
                 String addResourceVersion = readQuery(QUERY_UPDATE_RESOURCES_RESOURCE_VERSION);
                 dbCon.updateSqlStatement(addResourceVersion, replacer, null);
+
+                // initialize the RESOURCE_VERSION column
+                String initResourceVersion = readQuery(QUERY_SET_RESOURCES_VERSION);
+                dbCon.updateSqlStatement(initResourceVersion, replacer, null);
+
+                // Update the entries of the newly created column
+                String resourceVersion = readQuery(QUERY_SELECT_CMS_RESOURCE_VERSION);
+                CmsSetupDBWrapper db = null;
+                try {
+                    db = dbCon.executeSqlStatement(resourceVersion, replacer);
+                    // update each row
+                    while (db.getResultSet().next()) {
+                        String updateQuery = readQuery(QUERY_UPDATE_RESOURCE_VERSION);
+                        String resourceId = db.getResultSet().getString("RESOURCE_ID");
+                        int version = db.getResultSet().getInt("RESOURCE_VERSION");
+                        List params = new ArrayList();
+                        params.add(new Integer(version)); // add the version
+                        params.add(resourceId);
+                        dbCon.updateSqlStatement(updateQuery, replacer, params);
+                    }
+                } finally {
+                    if (db != null) {
+                        db.close();
+                    }
+                }
             } else {
                 System.out.println("column "
                     + COLUMN_RESOURCES_RESOURCE_VERSION
