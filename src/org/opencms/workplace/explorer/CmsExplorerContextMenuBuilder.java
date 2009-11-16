@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/11/16 17:04:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -403,12 +403,6 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         StringBuffer link = new StringBuffer(128);
                         if (isSingleSelection) {
                             // create link for single resource context menu
-                            link.append("onmouseup=\"top.submitSingleAction('");
-                            link.append(itemLink);
-                            link.append("', '");
-                            link.append(itemTarget);
-                            link.append("');\"");
-                            // the href attribute still has to be used because of IE 6
                             link.append(" href=\"javascript:top.submitSingleAction('");
                             link.append(itemLink);
                             link.append("', '");
@@ -416,10 +410,6 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                             link.append("');\"");
                         } else {
                             // create link for multi resource context menu
-                            link.append("onmouseup=\"top.submitMultiAction('");
-                            link.append(itemLink);
-                            link.append("');\"");
-                            // the href attribute still has to be used because of IE 6
                             link.append(" href=\"javascript:top.submitMultiAction('");
                             link.append(itemLink);
                             link.append("');\"");
