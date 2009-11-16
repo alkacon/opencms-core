@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2009/09/23 09:33:27 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2009/11/16 17:04:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -75,6 +76,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
@@ -85,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.14.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.2 
  */
@@ -287,6 +289,29 @@ public class CmsHistoryList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the version number from a version parameter.<p>
+     * 
+     * @param version might be negative for the online version
+     * @param locale if the result is for display purposes, the locale has to be <code>!= null</code>
+     * 
+     * @return the display name
+     */
+    public static String getDisplayVersion(String version, Locale locale) {
+
+        int ver = Integer.parseInt(version);
+        if (ver == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
+            return Messages.get().getBundle(locale).key(Messages.GUI_PROJECT_OFFLINE_0);
+        }
+        if (ver < 0) {
+            ver *= -1;
+            if (locale != null) {
+                return Messages.get().getBundle(locale).key(Messages.GUI_PROJECT_ONLINE_1, new Integer(ver));
+            }
+        }
+        return "" + ver;
+    }
+
+    /**
      * Returns the link to an historical file.<p>
      * 
      * @param cms the cms context
@@ -319,29 +344,6 @@ public class CmsHistoryList extends A_CmsListDialog {
      * Returns the version number from a version parameter.<p>
      * 
      * @param version might be negative for the online version
-     * @param locale if the result is for display purposes, the locale has to be <code>!= null</code>
-     * 
-     * @return the display name
-     */
-    public static String getDisplayVersion(String version, Locale locale) {
-
-        int ver = Integer.parseInt(version);
-        if (ver == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
-            return Messages.get().getBundle(locale).key(Messages.GUI_PROJECT_OFFLINE_0);
-        }
-        if (ver < 0) {
-            ver *= -1;
-            if (locale != null) {
-                return Messages.get().getBundle(locale).key(Messages.GUI_PROJECT_ONLINE_1, new Integer(ver));
-            }
-        }
-        return "" + ver;
-    }
-
-    /**
-     * Returns the version number from a version parameter.<p>
-     * 
-     * @param version might be negative for the online version
      * 
      * @return the positive value
      */
@@ -349,6 +351,19 @@ public class CmsHistoryList extends A_CmsListDialog {
 
         int ver = Integer.parseInt(version);
         return Math.abs(ver);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
+     */
+    @Override
+    public void actionDialog() throws JspException, ServletException, IOException {
+
+        super.actionDialog();
+        // ensure the list is correcly sorted
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getList().getSortedColumn())) {
+            getList().setSortedColumn(LIST_COLUMN_VERSION);
+        }
     }
 
     /**
@@ -530,7 +545,7 @@ public class CmsHistoryList extends A_CmsListDialog {
 
         // display offline version, if state is not unchanged
         if (!offlineResource.getState().isUnchanged()) {
-            CmsListItem item = getList().newItem("" + offlineResource.getVersion());
+            CmsListItem item = getList().newItem("" + CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION);
             //version
             item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION));
             // publish date
@@ -574,6 +589,10 @@ public class CmsHistoryList extends A_CmsListDialog {
 
         CmsUUID structureId = new CmsUUID((String)getSelectedItem().get(LIST_COLUMN_STRUCTURE_ID));
         int version = Integer.parseInt(((CmsListItem)getSelectedItems().get(0)).getId());
+        if (version == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
+            // it is not possible to restore the offline version
+            return;
+        }
         CmsResource res = getCms().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
         checkLock(getCms().getSitePath(res));
         getCms().restoreResourceVersion(res.getStructureId(), version);
