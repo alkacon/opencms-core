@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/11/16 11:15:42 $
- * Version: $Revision: 1.1158 $
+ * Date   : $Date: 2009/11/16 17:30:28 $
+ * Version: $Revision: 1.1159 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -27,6 +27,8 @@ OpenCms x.x.x - month day, year
 * Corrected search result score
 * Fixed list search filter caching problem 
 * Fixed 'go up' button in account management view
+* Fixed access to indirect group users
+* Fixed double explorer action execution
 - Assign roles also to indirect group users when updating from v6 to v7
 - Purge jsp repository after module import
 - Added additional mime-types
