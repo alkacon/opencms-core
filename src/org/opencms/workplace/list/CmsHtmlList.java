@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2009/11/12 14:34:27 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2009/11/16 17:32:43 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -784,15 +784,10 @@ public class CmsHtmlList {
      */
     public void setSortedColumn(String sortedColumn) throws CmsIllegalArgumentException {
 
+        // check if the parameter is valid
         if ((getMetadata().getColumnDefinition(sortedColumn) == null)
             || !getMetadata().getColumnDefinition(sortedColumn).isSorteable()) {
             return;
-        }
-        // check if the parameter is valid
-        if (m_metadata.getColumnDefinition(sortedColumn) == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_LIST_INVALID_COLUMN_1,
-                sortedColumn));
         }
         // reset view
         setCurrentPage(1);
