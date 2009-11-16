@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/11/03 13:22:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/16 17:03:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2093,7 +2093,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // get all child groups of the group
         List<CmsGroup> children = getChildren(dbc, group, false);
         // get all users in this group
-        List<CmsUser> users = getUsersOfGroup(dbc, group.getName(), true, false, group.isRole());
+        List<CmsUser> users = getUsersOfGroup(dbc, group.getName(), true, true, group.isRole());
         // get online project
         CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
         if (replacementGroup == null) {
@@ -9244,17 +9244,37 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             directUsersOnly,
                             readRoles));
                     }
-                    // filter users from other ous
-                    if (!includeOtherOuUsers) {
-                        Iterator<CmsUser> itUsers = users.iterator();
-                        while (itUsers.hasNext()) {
-                            CmsUser user = itUsers.next();
-                            if (!user.getOuFqn().equals(ouFqn)) {
-                                itUsers.remove();
+                } else if (!readRoles && !directUsersOnly) {
+                    List<CmsGroup> groups = getChildren(dbc, group, false);
+                    for (CmsGroup parentGroup : groups) {
+                        try {
+                            // iterate the parent groups
+                            users.addAll(internalUsersOfGroup(
+                                dbc,
+                                ouFqn,
+                                parentGroup.getName(),
+                                includeOtherOuUsers,
+                                directUsersOnly,
+                                readRoles));
+                        } catch (CmsDbEntryNotFoundException e) {
+                            // ignore, this may happen while deleting an orgunit
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(e.getLocalizedMessage(), e);
                             }
                         }
                     }
                 }
+                // filter users from other ous
+                if (!includeOtherOuUsers) {
+                    Iterator<CmsUser> itUsers = users.iterator();
+                    while (itUsers.hasNext()) {
+                        CmsUser user = itUsers.next();
+                        if (!user.getOuFqn().equals(ouFqn)) {
+                            itUsers.remove();
+                        }
+                    }
+                }
+
                 // make user list unmodifiable for caching
                 allUsers = Collections.unmodifiableList(new ArrayList<CmsUser>(users));
                 if (dbc.getProjectId().isNullUUID()) {

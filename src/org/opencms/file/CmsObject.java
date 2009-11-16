@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2009/10/26 07:52:11 $
- * Version: $Revision: 1.166.2.2 $
+ * Date   : $Date: 2009/11/16 17:03:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.166.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -1380,7 +1380,7 @@ public final class CmsObject {
      */
     public List<CmsUser> getUsersOfGroup(String groupname, boolean includeOtherOus) throws CmsException {
 
-        return m_securityManager.getUsersOfGroup(m_context, groupname, includeOtherOus, false, false);
+        return m_securityManager.getUsersOfGroup(m_context, groupname, includeOtherOus, true, false);
     }
 
     /**
