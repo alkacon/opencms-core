@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/11/16 11:05:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -261,7 +261,8 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      */
     public void setFields(String fields) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(fields)) {
+        String searchPage = getJsp().getRequest().getParameter("searchPage");
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchPage) && CmsStringUtil.isEmptyOrWhitespaceOnly(fields)) {
             throw new CmsIllegalStateException(org.opencms.workplace.search.Messages.get().container(
                 org.opencms.workplace.search.Messages.ERR_VALIDATE_SEARCH_PARAMS_0));
         }

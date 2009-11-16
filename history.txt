@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/11/12 07:28:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/16 11:05:41 $
+ * Version: $Revision: 1.6 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -25,6 +25,7 @@ OpenCms 7.9.1 - xxxx, 2009
 ! Added request attributes support for flex cache
 ! Added new feature: Sitemap Editor
 ! Added generic configuration parameters for resource types  
+* Fixed issue #1787: Error when browsing the next result pages in the OpenCms backend search
 * Fixed issue #1751: Static Export: export-resources doesn't match a file resource
 * Fixed issue #1782: Publish dialog in Project overview list hangs
 * Fixed issue #1542: Links to exported files containing anchors are not resolved correctly
