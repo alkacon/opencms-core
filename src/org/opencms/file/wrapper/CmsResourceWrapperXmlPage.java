@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2009/08/20 11:31:04 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/11/16 16:41:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -73,7 +74,7 @@ import java.util.Locale;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.5.6
  */
@@ -614,7 +615,23 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         try {
 
             // try to read the resource for the resource name
-            CmsResource res = cms.readResource(resourcename, filter);
+            CmsResource res = null;
+            try {
+                // catch this exception to try to read the resource again if it fails
+                res = cms.readResource(resourcename, filter);
+            } catch (CmsException e) {
+                // read resource failed, so check if the resource name ends with a slash
+                if (resourcename.endsWith("/")) {
+                    // try to read resource without a slash
+                    resourcename = CmsFileUtil.removeTrailingSeparator(resourcename);
+                    // try to read the resource name without ending slash
+                    res = cms.readResource(resourcename, filter);
+                } else {
+                    // the resource has to be read again to make it possible that the
+                    // CmsVfsResourceNotFoundException is thrown
+                    res = cms.readResource(resourcename, filter);
+                }
+            }
             if (CmsResourceTypeXmlPage.isXmlPage(res)) {
                 // return the xml page resource as a folder
                 return wrapResource(cms, res);
@@ -928,11 +945,20 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
         // get the full folder path of the resource to start from
         String path = cms.getRequestContext().removeSiteRoot(resourcename);
+        // the path without the trailing slash
+        // for example: .../xmlpage.xml/ -> .../xmlpagepage.xml
+        String reducedPath = CmsFileUtil.removeTrailingSeparator(path);
         do {
 
+            // check if a resource without the trailing shalsh exists
+            boolean existResource = cms.existsResource(reducedPath);
             // check if the current folder exists
-            if (cms.existsResource(path)) {
-
+            if (cms.existsResource(path) || existResource) {
+                // prove if a resource without the trailing slash does exist
+                if (existResource) {
+                    // a resource without the trailing slash does exist, so take the path without the trailing slash
+                    path = reducedPath;
+                }
                 try {
                     CmsResource res = cms.readResource(path);
                     I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res.getTypeId());
@@ -944,7 +970,6 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 } catch (CmsException ex) {
                     break;
                 }
-
             } else {
 
                 // folder does not exist, go up one folder
