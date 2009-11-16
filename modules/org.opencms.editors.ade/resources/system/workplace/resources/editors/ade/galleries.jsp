@@ -49,6 +49,11 @@ div.cms-selectbox{
                      <li><a href="#tabs-fulltextsearch">Full Text Search</a></li>
                 </ul>
             </div>
+            <div id="cms-preview">
+            	<div class="close-icon ui-icon ui-icon-close" onclick="$(this).parent().css('display', 'none');"></div>
+            	<div class="preview-area"></div>
+            	<div class="edit-area"></div>
+            </div>
         </div>
 	</body>
 </html>

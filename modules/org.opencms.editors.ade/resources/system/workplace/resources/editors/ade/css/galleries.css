@@ -7,8 +7,9 @@
        /* width: 650px;*/
         /* border: 2px solid #A9A9A9;*/ 
         font-size: 12px;
-        /*padding: 10px 0px 60px 0px;*/
+        padding: 0px;
         background: #ffffff;
+        position: relative;
     }
     
     /* Style Extension for the ui tabs */
@@ -20,6 +21,16 @@
 		height:440px;
 		width:650px;
 	}
+    
+    #cms-preview{
+        position:absolute;
+        height:443px;
+        left:2px;
+        top:2px;
+        width:653px;
+        display: none;
+        background: red;
+    }
     
     .result-tab-scrolling {
         height: 290px;
@@ -305,3 +316,7 @@
         background: #CCCCCC;
         color:#222222;    	
     }
+    
+    div.close-icon{
+		float: right;
+	}
