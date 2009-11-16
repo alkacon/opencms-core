@@ -924,4 +924,31 @@
    }
    
    
+   var defaultContentTypeHandler={
+    'init': function(){},
+    
+};
+var contentTypeHandlers={'default': defaultContentTypeHandler};
+
+var addContentTypeHandler=function(typeId, handler){
+    contentTypeHandlers[typeId]= $.extend({}, defaultContentTypeHandler, handler);
+}
+
+
+var getContentHandler = function(typId){
+    if (contentTypeHandlers[typId]){
+        return contentHandler[typId];
+    }
+    return contentHandler['default'];
+}
+
+/*
+
+var specialHandler={
+    'init': function(){}
+}
+addContentHandler(4, specialHandler);
+
+*/
+   
 })(cms);
