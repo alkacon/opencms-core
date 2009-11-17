@@ -1,4 +1,4 @@
-﻿	
+	
 /*-------------------------*/
 /** General **/
 .cms-left {
@@ -1148,7 +1148,7 @@ div.cms-selectbox{
 	position:relative; 
        display:inline-block;
 	line-height: 16px;
-	width: 100px;
+	width: 150px;
 
 }
 	
@@ -1159,7 +1159,7 @@ div.cms-selectbox span.cms-select-option{
 }
 	
 div.cms-selector{
-	width: 100px;
+	width: 150px;
 	position:absolute;
 	top:20px;
 	left:-1px;
