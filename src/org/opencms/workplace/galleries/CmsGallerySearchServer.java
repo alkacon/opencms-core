@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/17 08:33:02 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/11/17 12:29:58 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -85,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 7.6
  */
@@ -110,7 +111,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         PREVIEW,
 
         /** To retrieve search results. */
-        SEARCH;
+        SEARCH,
+
+        /** To set the resource properties. */
+        SETPROPERTIES;
     }
 
     /**
@@ -436,6 +440,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             } else if (action.equals(Action.PREVIEW)) {
                 String resourcePath = data.getString(JsonKeys.PATH.getName());
                 result.put(JsonKeys.PREVIEWDATA.getName(), getPreviewData(resourcePath));
+            } else if (action.equals(Action.SETPROPERTIES)) {
+                String resourcePath = data.getString(JsonKeys.PATH.getName());
+                JSONArray properties = data.getJSONArray(JsonKeys.PROPERTIES.getName());
+                result.put(JsonKeys.PREVIEWDATA.getName(), setProperties(resourcePath, properties));
             }
         }
         return result;
@@ -1015,6 +1023,60 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         result.put("resultlist", buildJSONForSearchResult(searchResults));
 
         return result;
+    }
+
+    private JSONObject setProperties(String resourcePath, JSONArray properties) throws Exception {
+
+        CmsResource resource = m_cms.readResource(resourcePath);
+        if (properties != null) {
+            for (int i = 0; i < properties.length(); i++) {
+                String propertyName = properties.getJSONObject(i).getString(JsonKeys.NAME.getName());
+                String propertyValue = properties.getJSONObject(i).getString(JsonKeys.VALUE.getName());
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(propertyValue)) {
+                    propertyValue = null;
+                }
+                try {
+                    CmsProperty currentProperty = m_cms.readPropertyObject(resource, propertyName, false);
+                    // detect if property is a null property or not
+                    if (currentProperty.isNullProperty()) {
+                        // create new property object and set key and value
+                        currentProperty = new CmsProperty();
+                        currentProperty.setName(propertyName);
+                        if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                            // set structure value
+                            currentProperty.setStructureValue(propertyValue);
+                            currentProperty.setResourceValue(null);
+                        } else {
+                            // set resource value
+                            currentProperty.setStructureValue(null);
+                            currentProperty.setResourceValue(propertyValue);
+                        }
+                    } else if (currentProperty.getStructureValue() != null) {
+                        // structure value has to be updated
+                        currentProperty.setStructureValue(propertyValue);
+                        currentProperty.setResourceValue(null);
+                    } else {
+                        // resource value has to be updated
+                        currentProperty.setStructureValue(null);
+                        currentProperty.setResourceValue(propertyValue);
+                    }
+                    CmsLock lock = m_cms.getLock(resource);
+                    if (lock.isUnlocked()) {
+                        // lock resource before operation
+                        m_cms.lockResource(resource.getName());
+                    }
+                    // write the property to the resource
+                    m_cms.writePropertyObject(resource.getName(), currentProperty);
+                    // unlock the resource
+                    m_cms.unlockResource(resource.getName());
+                } catch (CmsException e) {
+                    // writing the property failed, log error
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+
+        }
+        return getPreviewData(resourcePath);
     }
 
     /**

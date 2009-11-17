@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/11/03 14:25:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/11/17 12:29:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.9.3
  */
@@ -439,7 +439,7 @@ public class CmsADEPublish {
             m_cms,
             resources,
             m_options.isIncludeSiblings(),
-            true);
+            false);
         OpenCms.getPublishManager().publishProject(m_cms, report, publishList);
     }
 
