@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/17 12:40:46 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/11/17 13:43:02 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 7.6
  */
@@ -984,6 +984,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         } else {
             params.setQuery(queryStr);
         }
+        params.setSort(CmsSearchParameters.SORT_TITLE);
         params.setIndex(indexName);
         params.setMatchesPerPage(matches);
         params.setSearchPage(page);
