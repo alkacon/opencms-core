@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/17 08:09:07 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/11/17 08:33:02 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 7.6
  */
@@ -599,12 +599,12 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 resultEntry.put(JsonKeys.TITLE.getName(), sResult.getField(CmsSearchField.FIELD_TITLE));
                 resultEntry.put(JsonKeys.INFO.getName(), sResult.getField(CmsSearchField.FIELD_DESCRIPTION));
                 resultEntry.put(JsonKeys.TYPE.getName(), sResult.getDocumentType());
-                resultEntry.put(JsonKeys.PATH.getName(), sResult.getPath());
+                resultEntry.put(JsonKeys.PATH.getName(), path);
                 resultEntry.put(JsonKeys.ICON.getName(), iconpath);
                 resultEntry.put(JsonKeys.ITEMHTML.getName(), getFormattedListContent(
                     OpenCms.getResourceManager().getResourceType(sResult.getDocumentType()),
                     sResult.getField(CmsSearchField.FIELD_TITLE),
-                    sResult.getPath(),
+                    path,
                     iconpath,
                     sResult));
                 result.put(resultEntry);
