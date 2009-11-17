@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/17 12:29:58 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/11/17 12:40:46 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 7.6
  */
@@ -1063,12 +1063,12 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     CmsLock lock = m_cms.getLock(resource);
                     if (lock.isUnlocked()) {
                         // lock resource before operation
-                        m_cms.lockResource(resource.getName());
+                        m_cms.lockResource(resourcePath);
                     }
                     // write the property to the resource
-                    m_cms.writePropertyObject(resource.getName(), currentProperty);
+                    m_cms.writePropertyObject(resourcePath, currentProperty);
                     // unlock the resource
-                    m_cms.unlockResource(resource.getName());
+                    m_cms.unlockResource(resourcePath);
                 } catch (CmsException e) {
                     // writing the property failed, log error
                     LOG.error(e.getLocalizedMessage(), e);
