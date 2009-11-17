@@ -589,6 +589,21 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/galleries.css</source>
+			<destination>system/workplace/resources/editors/ade/css/galleries.css</destination>
+			<type>plain</type>
+			<uuidstructure>d99c8ddd-d06a-11de-afc7-2ffc8d923fa1</uuidstructure>
+			<uuidresource>d99c8dde-d06a-11de-afc7-2ffc8d923fa1</uuidresource>
+			<datelastmodified>Mon, 16 Nov 2009 17:01:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 13 Nov 2009 15:40:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<destination>system/workplace/resources/editors/ade/css/custom-theme</destination>
 			<type>folder</type>
