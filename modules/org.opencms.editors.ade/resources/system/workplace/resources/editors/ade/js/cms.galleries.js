@@ -119,7 +119,7 @@
           </div>';
    
    /** html fragment for the <li> in the galleries list. */
-   var listGalleryElement = cms.galleries.listGalleryElement = function(itemTitle, itemUrl, itemIcon) {
+   /*var listGalleryElement = cms.galleries.listGalleryElement = function(itemTitle, itemUrl, itemIcon) {
    
       return $('<li></li>').addClass('cms-list').addClass('cms-list-with-checkbox').attr('rel', itemUrl).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
@@ -131,10 +131,10 @@
       '</div>\
                              </div>\
                          </div>');
-   }
+   }*/
    
    /** html fragment for the <li> in the types list. */
-   var listTypeElement = cms.galleries.listTypeElement = function(itemTitle, itemId, itemDesc, itemIcon) {
+   /*var listTypeElement = cms.galleries.listTypeElement = function(itemTitle, itemId, itemDesc, itemIcon) {
    
       return $('<li></li>').addClass('cms-list').addClass('cms-list-with-checkbox').attr('rel', itemId).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
@@ -146,10 +146,10 @@
       '</div>\
                              </div>\
                          </div>');
-   }
+   }*/
    
    /** html fragment for the <li> in the categories list. */
-   var listCategoryElement = cms.galleries.listCategoryElement = function(itemTitle, itemUrl, itemLevel, classItemActive) {
+  /* var listCategoryElement = cms.galleries.listCategoryElement = function(itemTitle, itemUrl, itemLevel, classItemActive) {
    
       return $('<li></li>').addClass('cms-list ' + classItemActive + ' ' + classConstLevel + itemLevel).addClass('cms-list-with-checkbox').attr('rel', itemUrl).append('<div class="cms-list-checkbox"></div>\
                          <div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
@@ -173,9 +173,9 @@
       '</div>\
                              </div>\
                          </div>');
-   }
+   }*/
    
-  var listResultElement = cms.galleries.listResultElement = function(itemTitle, itemPath, itemIcon) {
+ /* var listResultElement = cms.galleries.listResultElement = function(itemTitle, itemPath, itemIcon) {
       return $('<li class="cms-list"></li>').attr('rel', itemPath).append('<div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">\
                              <div class="cms-list-image" style="background-image: url(' + itemIcon + ');"></div>\
                              <div class="cms-list-itemcontent">\
@@ -185,7 +185,7 @@
       '</div>\
                              </div>\
                          </div>');
-   }
+   }*/
    
    /**
     * Map of selected search criteria.
@@ -405,13 +405,19 @@
       $('#' + cms.galleries.idTabs).tabs("disable", 0);
       
       // bind all other events at the end          
-      // bind click, dbclick and hover events on items in criteria lists
-      $('li.cms-list').live('dblclick', cms.galleries.dblclickListItem)
-          .live('click', cms.galleries.clickListItem)
+      // bind click, dbclick events on items in criteria lists
+      $('#types li.cms-list, #galleries li.cms-list, #categories li.cms-list')
+          .live('dblclick', cms.galleries.dblclickListItem)
+          .live('click', cms.galleries.clickListItem);
+      // bind dbclick event to the items in the result list
+      $('#results li.cms-list').live('dblclick', cms.galleries.dblclickToShowPreview);
+          
+      // bind hover event on items in criteriaand result lists
+      $('li.cms-list')
           .live('mouseover', function() {
-         $(this).addClass(cms.galleries.classListItemHover);
-      }).live('mouseout', function() {
-         $(this).removeClass(cms.galleries.classListItemHover);
+             $(this).addClass(cms.galleries.classListItemHover);
+          }).live('mouseout', function() {
+             $(this).removeClass(cms.galleries.classListItemHover);
       });        
       
       // add active class to checkbox of search tab  
@@ -438,6 +444,9 @@
          $('#' + cms.galleries.idTabs).tabs("enable", 0);
          $('#' + cms.galleries.idTabs).tabs('select', 0);
       });
+      
+      //bind dbclick event to items in the result list to show the preview
+      
    }
    
    
@@ -924,23 +933,155 @@
    }
    
    
-   var defaultContentTypeHandler={
+  var dblclickToShowPreview = cms.galleries.dblclickToShowPreview = function() {
+      // id of the li tag and type of search 
+      var itemId = $(this).attr('rel');
+      var currPreviewId = $('#cms-preview').attr('rel');
+      if (currPreviewId == null) {
+          $('#cms-preview').attr('rel',itemId);
+          loadItemPreview(itemId); 
+      } else if (currPreviewId != null || itemId != currPreviewId) {
+          $('#cms-preview').attr('rel', itemId);
+          $('#cms-preview div.preview-area, #cms-preview div.edit-area').empty();
+          loadItemPreview(itemId);
+      } else {
+          $('#cms-preview').fadeIn('slow');
+      }
+      
+
+  } 
+   
+   /**
+    * Loads the lists with available resource types, galleries ans categories via ajax call.
+    * TODO: generalize to make it possible to load some preselected
+    */
+  var loadItemPreview = cms.galleries.loadItemPreview = function(/**String*/ itemId) {
+      $.ajax({
+         'url': vfsPathAjaxJsp,
+         'data': {
+            'action': 'preview',
+            'data': JSON.stringify({
+               'path': itemId
+            })
+         },
+         'type': 'POST',
+         'dataType': 'json',
+         'success': cms.galleries.showItemPreview
+      });
+     
+     //cms.galleries.showItemPreview(itemData);
+     
+   }     
+   
+   var showItemPreview = cms.galleries.showItemPreview = function(itemData) {
+    
+       showPreview(itemData['previewdata']['itemhtml']);
+       showEditArea(itemData['previewdata']['properties']);
+       
+       
+       $('#cms-preview').fadeIn('slow');
+       
+   }
+   
+   var showPreview = cms.galleries.showPreview = function(itemPreview) {
+       $('.preview-area').append(itemPreview);
+   }
+   
+   var showEditArea = cms.galleries.showEditArea = function(itemProperties) {    
+       var target = $('.edit-area').append('<span id="previewSave" class="cms-preview-button ui-state-default ui-corner-all">Save</span>\
+                                           <span id="previewPublish" class="cms-preview-button ui-state-default ui-corner-all">Publish</span>');
+       
+       $.each(itemProperties, function() {
+
+              $('<div style="margin: 2px;"></div>').attr('rel', this.name).appendTo(target)
+                   .append('<span class="cms-item-title" style="margin-right:10px; width: 100px;">' + this.name + '</span>')
+                   .append('<span class="cms-item-edit" style=" width: 100px;">' + this.value + '</span>');
+                   
+               
+           });       
+       
+       $('.cms-item-edit').directInput({
+                     marginHack: true,
+                     live: false,
+                     setValue: markChangedProperty
+               });
+       $('#previewSave').click(saveChangedProperty);
+       $('#publishSave').click(publishChangedProperty);
+        
+   }
+   
+   
+   var markChangedProperty = cms.galleries.markChangedProperty = function(elem, input) {
+      
+      var previous = elem.text();
+      var current = input.val();
+      if (previous != current) {               
+            elem.text(current);
+            elem.addClass('cms-item-changed');
+         
+      }
+      elem.css('display', '');
+      input.remove();          
+   }
+   
+   var saveChangedProperty = cms.galleries.saveChangedProperty = function() {
+       var changedProperties = $('.cms-item-edit.cms-item-changed');
+       
+       // build json object with changed properties
+       var changes = {
+           'properties': []};
+       $.each(changedProperties, function () {           
+           var property = {};
+           property['name'] =  $(this).closest('div').attr('rel');
+           property['value'] = $(this).text();
+           changes['properties'].push(property);
+       });
+       
+       // save changes via ajax 
+       if (changes['properties'].length != 0) {
+          $.ajax({
+             'url': vfsPathAjaxJsp,
+             'data': {
+                'action': 'subproperties',
+                'data': JSON.stringify({
+                   'path': $('#cms-preview').attr('rel'),
+                   'properties': changes['properties']
+                })
+             },
+             'type': 'POST',
+             'dataType': 'json',
+             'success': cms.galleries.refreshItemPreview
+          });
+       }
+       
+   }
+   
+   var refreshItemPreview = cms.galleries.refreshItemPreview = function (data) {
+       
+   }
+   
+   var publishChangedProperty = cms.galleries.publishChangedProperty = function() {
+       alert('Publish');
+   } 
+   
+   /*var defaultContentTypeHandler={
     'init': function(){},
     
-};
-var contentTypeHandlers={'default': defaultContentTypeHandler};
+    };*/
+    
+   /* var contentTypeHandlers={'default': defaultContentTypeHandler};
 
-var addContentTypeHandler=function(typeId, handler){
-    contentTypeHandlers[typeId]= $.extend({}, defaultContentTypeHandler, handler);
-}
-
-
-var getContentHandler = function(typId){
-    if (contentTypeHandlers[typId]){
-        return contentHandler[typId];
+    var addContentTypeHandler=function(typeId, handler){
+        contentTypeHandlers[typeId]= $.extend({}, defaultContentTypeHandler, handler);
     }
-    return contentHandler['default'];
-}
+
+
+    var getContentHandler = function(typId){
+        if (contentTypeHandlers[typId]){
+            return contentHandler[typId];
+        }
+        return contentHandler['default'];
+    }*/
 
 /*
 

@@ -17,6 +17,7 @@ var cms = { html: {}, galleries: {}, messages: {} };
 <script type="text/javascript" src="/opencms/opencms/system/workplace/editors/ade/cms.messages.jsp"></script>
 <script type="text/javascript" src="js/cms.html.js"></script>
 <script type="text/javascript" src="js/cms.selectbox.js"></script>
+<script type="text/javascript" src="js/cms.directinput.js"></script>
 <script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript">  
     vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
@@ -50,9 +51,9 @@ div.cms-selectbox{
                 </ul>
             </div>
             <div id="cms-preview">
-            	<div class="close-icon ui-icon ui-icon-close" onclick="$(this).parent().css('display', 'none');"></div>
+            	<div class="close-icon ui-icon ui-icon-closethick ui-corner-all" onclick="$(this).parent().fadeOut('slow');"></div>
             	<div class="preview-area"></div>
-            	<div class="edit-area"></div>
+				<div class="edit-area ui-widget-content ui-corner-all"></div>				
             </div>
         </div>
 	</body>

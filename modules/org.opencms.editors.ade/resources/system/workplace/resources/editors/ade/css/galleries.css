@@ -22,6 +22,7 @@
 		width:650px;
 	}
     
+    /** Styles for the preview*/
     #cms-preview{
         position:absolute;
         height:443px;
@@ -29,8 +30,46 @@
         top:2px;
         width:653px;
         display: none;
-        background: red;
+        background: #ffffff;
     }
+    
+    #cms-preview .edit-area{
+        display:inline;
+        height:139px;
+        left:2px;
+        position:absolute;
+        top:300px;
+        width:648px;            
+    }
+    
+    span.cms-item-title {
+       display: inline-block;
+       font-weight:bold;
+       width: 100px;
+       line-height: 16px;
+    }
+    
+    input.cms-direct-input, input.cms-direct-input:focus, input.cms-direct-input:active {
+          border: none;
+          background: transparent;
+    }
+    
+    .cms-item-changed {
+        color: blue;
+    }
+    
+    .cms-preview-button {
+        display:inline-block;
+        margin-bottom:10px;
+        margin-left:5px;
+        margin-top:4px;
+        padding:2px;
+    }
+    
+    .cms-preview-button:hover{
+    	background:     #ffffff;
+    }
+
     
     .result-tab-scrolling {
         height: 290px;
@@ -320,3 +359,7 @@
     div.close-icon{
 		float: right;
 	}
+    
+    div.close-icon:hover {
+        background-color: #a8adb4;
+    }
