@@ -10,7 +10,7 @@ pageContext.setAttribute("cms", cms);
 <div class="ui-widget-content">
 	<h3>${cms.title}</h3>
 	<div>
-		<b>Last modified:</b>&nbsp;<fmt:formatDate value="${cms.resource.dateLastModified}"/><br />
+		<b>Last modified:</b>&nbsp;${cms.resource.dateLastModified}<br />
 		<b>Path:</b>&nbsp;${cms.path}<br />
 	</div>
 </div>

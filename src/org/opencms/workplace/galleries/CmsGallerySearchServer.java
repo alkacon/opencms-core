@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/17 07:42:26 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/11/17 08:09:07 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 7.6
  */
@@ -586,6 +586,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 CmsSearchResult sResult = iSearchResult.next();
                 JSONObject resultEntry = new JSONObject();
                 String path = sResult.getPath();
+                path = getRequestContext().removeSiteRoot(path);
                 String fileIcon = getFileIconName(path);
                 String iconpath = CmsWorkplace.RES_PATH_FILETYPES;
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(fileIcon)) {
