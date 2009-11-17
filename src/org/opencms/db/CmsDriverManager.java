@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/11/16 17:03:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/11/17 11:16:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -883,6 +883,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                 report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
                 dbc = (CmsDbContext)event.getData().get(I_CmsEventListener.KEY_DBCONTEXT);
+                m_monitor.clearCache();
                 writeExportPoints(dbc, report, publishHistoryId);
                 break;
 
