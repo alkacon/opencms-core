@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/11/16 17:30:28 $
- * Version: $Revision: 1.1159 $
+ * Date   : $Date: 2009/11/17 15:04:18 $
+ * Version: $Revision: 1.1160 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@ OpenCms x.x.x - month day, year
 - Assign roles also to indirect group users when updating from v6 to v7
 - Purge jsp repository after module import
 - Added additional mime-types
+* Adjustment for resource type "xmlpage" in extended mode in webdav
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
