@@ -267,7 +267,11 @@
       },
       
       destroy: function() {
-         this.$dialog.dialog('destroy');
+         var self = this;
+         self.$dialog.dialog('destroy');
+         if (self.finish) {
+            self.finish();
+         }
          $('button[name=publish]').removeClass('cms-deactivated');
       },
       

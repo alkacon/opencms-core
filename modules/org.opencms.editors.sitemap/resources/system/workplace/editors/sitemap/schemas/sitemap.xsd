@@ -22,8 +22,8 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.sitemap.messages"/>
 			<properties>
-				<property name="test1" type="string" widget="string" />
-				<property name="test2" type="vfslist" widget="string" />
+				<property name="test1" type="string" widget="string" default=""/>
+				<property name="test2" type="vfslist" widget="string" default=""/>
 			</properties>
 		</xsd:appinfo>
 	</xsd:annotation>  

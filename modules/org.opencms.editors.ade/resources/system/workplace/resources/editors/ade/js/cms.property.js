@@ -1,12 +1,12 @@
 ﻿(function(cms) {
    var M = cms.messages;
-
-
+   
+   
    var dump = function(obj) {
       $('<pre></pre>').text($.dump(obj)).appendTo('body');
    }
    
-   var makeDialogDiv = function(divId) {
+   var makeDialogDiv = cms.property.makeDialogDiv = function(divId) {
       var $d = $('#' + divId);
       if ($d.size() == 0) {
          $d = $('<div></div>').attr('id', divId).css('display', 'none').appendTo('body');
@@ -19,7 +19,7 @@
     * Builds a row of the property editor table and stores the row's widget in another object.
     *
     * @param {Object} name the name of the property
-    * @param {Object} entry the property entry 
+    * @param {Object} entry the property entry
     * @param {Object} widgets the object in which this row's widget should be stored
     */
    var buildRow = function(name, entry, widgets) {
@@ -265,9 +265,9 @@
    
    var validateString = function(validation, s) {
       if (validation.substring(0, 1) == '!') {
-         return !s.match('^'+validation.substring(1)+'$');
+         return !s.match('^' + validation.substring(1) + '$');
       } else {
-         return s.match('^'+validation+'$');
+         return s.match('^' + validation + '$');
       }
    }
    
@@ -322,11 +322,11 @@
          this.$row.next('.cms-validation-error').remove();
          
          if (!validationOK) {
-             var $validationRow = $('<tr class="cms-validation-error"></tr>').css('color', '#ff0000');
-             $validationRow.append('<td>&#x25B2;</td>');
-             var $validationError = $('<td colspan="2"></td>').text(this.validationError);
-             $validationRow.append($validationError);
-             this.$row.after($validationRow);
+            var $validationRow = $('<tr class="cms-validation-error"></tr>').css('color', '#ff0000');
+            $validationRow.append('<td>&#x25B2;</td>');
+            var $validationError = $('<td colspan="2"></td>').text(this.validationError);
+            $validationRow.append($validationError);
+            this.$row.after($validationRow);
          }
          return validationOK;
       }
@@ -353,9 +353,9 @@
     * @param {Object} defaults the object containing the default values and widget types
     * @param {Object} widgets the object in which the widget objects should be stored
     */
-   var buildPropertyTable = function(properties, widgets) {
+   var buildPropertyTable = cms.property.buildPropertyTable = function(properties, widgets) {
       var $table = $('<table cellspacing="0" cellpadding="3" align="left"></table>');
-      $table.append('<tr><th><b>'+M.PROPERTIES_HEADING_NAME+'</b></th><th><b>'+M.PROPERTIES_HEADING_EDIT+'</b></th><th><b>'+M.PROPERTIES_HEADING_DEFAULT+'</b></th></tr>');
+      $table.append('<tr><th><b>' + M.PROPERTIES_HEADING_NAME + '</b></th><th><b>' + M.PROPERTIES_HEADING_EDIT + '</b></th><th><b>' + M.PROPERTIES_HEADING_DEFAULT + '</b></th></tr>');
       for (var propName in properties) {
          var defaultEntry = properties[propName];
          var widgetClass = widgetTypes[_getWidgetType(defaultEntry)];
@@ -380,13 +380,13 @@
     * @param {Object} props the object in which the widget values should be stored.
     * @param {Object} widgets a map from property names to widgets
     */
-   var _saveWidgetValues = function(props, widgets) {
+   var saveWidgetValues = cms.property.saveWidgetValues = function(props, widgets) {
       for (widgetName in widgets) {
          widgets[widgetName].save(props);
       }
    }
    
-   var setDialogButtonEnabled = function($button, enabled) {
+   var setDialogButtonEnabled = cms.property.setDialogButtonEnabled = function($button, enabled) {
       if (enabled) {
          $button.attr('disabled', false).css('color', '#000000');
       } else {
@@ -399,10 +399,10 @@
     * @param {Object} obj
     */
    var _isEmpty = function(obj) {
-       for (var key in obj) {
-           return false;
-       }
-       return true;
+      for (var key in obj) {
+         return false;
+      }
+      return true;
    }
    
    /**
@@ -415,8 +415,8 @@
       var widgets = {}
       var newProps = {};
       if (_isEmpty(properties)) {
-          cms.util.dialogAlert(M.NO_PROPERTIES, M.NO_PROPERTIES_TITLE);
-          return;
+         cms.util.dialogAlert(M.NO_PROPERTIES, M.NO_PROPERTIES_TITLE);
+         return;
       }
       var $table = buildPropertyTable(properties, widgets);
       var $dlg = makeDialogDiv('cms-property-dialog');
@@ -458,8 +458,8 @@
       }
       
       $dlg.click(function() {
-          validateAll();
-          return true;
+         validateAll();
+         return true;
       });
       $dlg.nextAll().click(validateAll);
       $dlg.keydown(function(e) {
@@ -472,7 +472,7 @@
       $ok.click(function() {
          if (validateAll()) {
             _destroy();
-            _saveWidgetValues(newProps, widgets);
+            saveWidgetValues(newProps, widgets);
             callback(newProps);
          }
       });

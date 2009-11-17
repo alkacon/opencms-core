@@ -53,6 +53,8 @@
       postJSON(ACTION_STARTEDIT, {}, callback);
    }
    
+   
+   
    /**
     * Unlocks the container page on the server via AJAX.
     *
@@ -61,6 +63,20 @@
    var stopEdit = cms.data.stopEdit = /** void */ function(/** void Function(boolean) */ callback) {
    
       postJSON(ACTION_STOPEDIT, {}, callback);
-   }   
+   }
+   
+      /**
+    * Sends the favorite list to the server to save it.
+    *
+    * @param {Object} callback the function to be called after the server has replied
+    */
+   var saveFavorites = cms.data.saveFavorites = function(callback) {
+      cms.data.sitemapPostJSON(ACTION_SET, {
+         'fav': cms.sitemap.favorites
+      }, callback);
+   }
+
+   
+      
 })(cms);
 

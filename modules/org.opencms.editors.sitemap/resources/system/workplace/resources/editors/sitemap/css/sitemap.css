@@ -1,3 +1,5 @@
+﻿	
+/*-------------------------*/
 /** General **/
 .cms-left {
 	float: left;
@@ -1030,25 +1032,11 @@ ol.ade-forms fieldset {
 
 
 /* PUBLISH */
-.cms-publish-items {
-	border: 1px solid #000000;
-}
-
-.cms-publish-items .cms-even {
-	background-color: #ffffff;
-}
-
-.cms-publish-items .cms-odd {
-	background-color: #ffffaa;
-}
 
 .cms-publish-items {
 	overflow: auto;
 }
 
-.cms-publish-items-table {
-	width: 100%;
-}
 
 .cms-fstate-deleted .cms-publish-title,.cms-fstate-deleted .cms-publish-path
 	{
@@ -1063,82 +1051,66 @@ ol.ade-forms fieldset {
 	color: #ff0000;
 }
 
-.cms-publish-problem {
-	position: relative;
-	left: 7px;
-	top: 3px;
-}
 
-.cms-publish-problem-locked {
-	background-image: url('images/16x16/img_locked_.png');
-	background-repeat: no-repeat;
-}
-
-.cms-publish-problem-published {
-	background-image: url('images/16x16/img_locked_.png');
-	background-repeat: no-repeat;
-}
-
-.cms-publish-list-remove {
-	color: #ff0000 !important;
-	text-decoration: underline !important;
-	
-}
-
-.cms-publish-remove-auto {
-	color: #666666;
-	font-style: italic;
-}
-
-.cms-publish-items-table th {
-	background-color: #aaaaaa;
-}
-
-.cms-publish-items-table th, .cms-publish-items-table td {
-	padding: 4px;
-}
-
-.cms-related {
-	font-size: x-small;
-	color: #0000aa;
-}
 
 /* Publish 2 */
 .cms-publish-item .ui-widget-content {
 	background-image: none;
+	background-color: transparent;
+	border: 1px solid #444444;
+}
+
+.cms-publish-row .cms-publish-item{
+    margin:2px 5px 0 30px;
+    padding: 1px;
+    background: transparent;
+    /* HACK: This will force hasLayout: true in IE7 */ 
+    zoom: 1;
+}
+
+.cms-publish-title{
+    font-weight: bold;
+}
+
+.cms-publish-title, .cms-publish-path{
+    margin-left: 2px;
+    
 }
 
 .cms-publish-toremove {
 	background-color: #cccccc;
 }
 
-.cms-publish-toremove .ui-widget-content {
-	background-color: #dddddd;
+.cms-publish-problem-published.cms-publish-keep {
+	background-color: #a7ff84;
 }
 
-.cms-publish-permission-problem {
-	background-color: #ffff00  !important;
-}
-
-.cms-publish-problem-published {
-	background-color: #cccccc;
-}
-
-.cms-publish-problem-published .ui-widget-content {
-	background-color: #dddddd;
-}
-
-.cms-publish-problem-locked, .cms-publish-problem-permission {
-	background-color: #cc8800;
-}
-
-.cms-publish-problem-locked .ui-widget-content, .cms-publish-problem-permission .ui-widget-content {
-	background-color: #dd9900;
+.cms-publish-problem-locked.cms-publish-keep, .cms-publish-problem-permission.cms-publish-keep {
+	background-color: #ff8282;
 }
 
 .cms-icon-published {
 	background-image: url(images/16x16/published.png);
 }
+
+.cms-publish-item .cms-publish-remove-button{
+    height:25px;
+    padding-bottom:0;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:0;
+    position:absolute;
+    right:8px;
+    top:3px;
+    width:70px;
+    display: none;
+}
+
+ .cms-publish-icon{
+     float: left;
+     width: 16px;
+     height: 16px;
+ }
 
 .cms-icon-locked {
 	background-image: url(images/16x16/ocms_de_lock_sw.png);
@@ -1148,9 +1120,103 @@ ol.ade-forms fieldset {
 	background-image: url(images/16x16/permission.png);
 }
 
+.cms-icon-relation {
+	background-image: url(images/16x16/relation.png);
+}
+
 .cms-icon-brokenlink {
 	background-image: url(../../../buttons/link.png);
 }	
+
+.cms-publish-item .ui-widget-content {
+	width: 575px !important; 
+}
+
+.cms-publish-group-header{
+    margin: 2px;
+    padding: 2px;
+    font-weight: bold;
+}
+
+.cms-publish-row{
+    position: relative;
+  
+}
+/*  select box plugin */
+
+div.cms-selectbox{
+	position:relative; 
+       display:inline-block;
+	line-height: 16px;
+	width: 100px;
+
+}
+	
+div.cms-selectbox span.cms-select-option{
+	display:block;
+	padding: 2px 5px 3px;
+	border:none;
+}
+	
+div.cms-selector{
+	width: 100px;
+	position:absolute;
+	top:20px;
+	left:-1px;
+	display:none;
+}
+	
+div.cms-open div.cms-selector{
+	display: block;
+}
+
+span.cms-select-opener{
+    float: right;
+    margin-top: 2px;
+}
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /************************************ sitemap ************************************************/	
@@ -1264,9 +1330,12 @@ ol.ade-forms fieldset {
           background: #e1e1e1;
           
       }
+      
       body:last-child{
-          overflow: scroll;
+          overflow: auto;
       }
+      
+      
       #cms-sitemap {
           margin: 0px auto;
           width: 930px;
@@ -1353,10 +1422,83 @@ ol.ade-forms fieldset {
       	clear: none;
       }
       
+      .cms-vfs-path {
+      	text-decoration: underline;
+      	cursor: pointer;
+      }
+      	
       	
       
 
 
+/************** basic *******************************************************/
+
+  * { 
+  	margin: 0px; 
+  	padding: 0px; 
+  	font-family: <c:out value="${cms.styleValue['font.family']}" default="'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif" escapeXml="false"/>;
+  }
+
+  html * { font-size: 100.01% }
+
+  textarea, pre, tt, code {
+	font-family:"Courier New", Courier, monospace;  	
+  }
+
+  body {
+    padding: 10px 0;
+    font-family: <c:out value="${cms.styleValue['font.family']}" default="'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif" escapeXml="false"/>;
+    font-size: 75.00%; 
+    height: 1%;
+    color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
+  }
+
+/*  h1, h2, h3, h4, h5, h6 { font-weight:bold; margin: 0 0 0.20em 0; } */
+/*  h1 { font-size: 200% }										*/	/* 24px */
+/*  h2 { font-size: 166.67%; 	margin-top: 0.5em}				*/		/* 20px */
+/*  h3 { font-size: 150%; 	margin-top: 0.45em}					*/	/* 18px */
+/*  h4 { font-size: 133.33%; 	margin-top: 0.8em}              */ 	/* 16px */
+/*  h5 { font-size: 116.67%; 	margin-top: 0.8em}                */    	/* 14px */
+/*  h6 { font-size: 116.67%; 	font-style:italic; margin-top: 0.8em }	*//* 14px */
+/*
+  p { 
+  	line-height: 1.4em;
+  	margin-top: 0.3em;
+  	margin-bottom: 0.3em;
+  }
+*/
+/*  ul, ol, dl { line-height: 1.5em; margin: 1em 0 1em 1em } */
+/*  li { margin-left: 1.5em; line-height: 1.5em } */
+
+  dt { font-weight: bold }
+  dd { margin: 0 0 1em 2em }
+
+  cite, blockquote { font-style:italic }
+  blockquote { margin: 0 0 1em 1.5em }
+
+  strong, b { font-weight: bold }
+  em, i { font-style: italic }
+
+  pre, code { 
+  	font-family: monospace; 
+  	font-size: 1.4em; 
+  	margin-top: 0.3em;
+  	margin-bottom: 0.3em;
+  }
+
+  acronym, abbr {
+    letter-spacing: .07em;
+    border-bottom: .1em dashed #c00;
+    cursor: help;
+  }
+
+  
+  a img {
+  	text-decoration: none;
+  	border: none;
+  }
+  
+  option { padding-left: 0.4em; }
 
 
 

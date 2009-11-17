@@ -38,8 +38,6 @@
    var classUrlName = 'cms-url-name';
    var classVfsPath = 'cms-vfs-path';
    var classSitemapEntry = 'cms-sitemap-entry';
-   var dataProperties = 'cmsdata-properties';
-   var dataId = 'cmsdata-id';
    
    /** html-code for opener handle. */
    var openerHtml = '<span class="' + classOpener + '"></span>';
@@ -52,6 +50,13 @@
    cms.sitemap.favorites = [];
    cms.sitemap.recent = [];
    var MAX_RECENT = 10;
+   
+   var ACTION_SAVE = 'save';
+   var ACTION_GET = 'get';
+   var ACTION_SET = 'set';
+   var ACTION_ALL = 'all';
+   var ACTION_VALIDATE = 'validate';
+   
    
    /**
     * Timer object used for delayed hover effect.
@@ -73,7 +78,6 @@
       cms.sitemap.favorites.unshift(entry);
    }
    
-   
    /**
     * Adjusts the shadow of the given menu.
     *
@@ -86,57 +90,62 @@
       });
    }
    
-   var setURLs = cms.sitemap.setURLs = function(listItem, parentUrl) {
-      var currentItemDiv = listItem.children('.' + itemClass);
-      var pathName = currentItemDiv.find('span.cms-url-name').attr('alt');
-      setInfoValue(currentItemDiv.find('span.cms-url'), parentUrl + '/' + pathName + '.html', 37, true);
-      listItem.children('ul').children().each(function() {
-         setURLs($(this), parentUrl + '/' + pathName);
-      });
+   var _askSetURLName = function(elem, newValue) {
+      var currentLi = elem.closest('li');
+      var currentEntry = new SitemapEntry(currentLi);
+      var $ul = currentLi.closest('ul');
+      var otherUrlNames = getOtherUrlNames($ul, currentLi.get(0));
+      if (otherUrlNames[newValue]) {
+         cms.util.dialogAlert('The url name "' + newValue + '" already exists at this level.', 'Duplicate URL name');
+         return;
+      }
+      var _renameEntry = function() {
+         var previousUrl = currentEntry.getUrl();
+         var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
+         currentEntry.setUrlName(newValue);
+         currentEntry.setUrls(parentUrl);
+      }
+      var _destroy = function() {
+         $dialog.dialog('destroy');
+         $dialog.remove();
+      }
+      if (currentLi.children('ul').length) {
+         var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
+         $dialog.appendTo('body');
+         $dialog.append('<p style="margin-bottom: 4px;">The page you are editing has subpages. Changing its URL will also change the URLs of those.<br />Do you want to change it anyway?</p>');
+         $dialog.dialog({
+            zIndex: 9999,
+            title: 'Changing URL name to "' + newValue + '"',
+            modal: true,
+            close: function() {
+               _destroy();
+            },
+            buttons: {
+               'OK': function() {
+                  _renameEntry();
+                  _destroy();
+               },
+               'Cancel': function() {
+                  _destroy();
+               }
+            }
+         });
+      } else {
+         _renameEntry();
+      }
    }
+   
    
    var setURLName = cms.sitemap.setURLName = function(elem, input) {
       var previous = elem.attr('alt');
       var current = input.val();
-      if (previous != current) {
-         var currentLi = elem.closest('li');
-         if (currentLi.children('ul').length) {
-            var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
-            $dialog.appendTo('body');
-            $dialog.append('<p style="margin-bottom: 4px;">The page you are editing has subpages. Changing it\'s URL will also change the URLs of those.<br />Do you want to change it anyway?</p>');
-            $dialog.dialog({
-               zIndex: 9999,
-               title: 'New Page',
-               modal: true,
-               close: function() {
-                  $dialog.dialog('destroy');
-                  $dialog.remove();
-               },
-               buttons: {
-                  'OK': function() {
-                     var previousUrl = elem.siblings('span.cms-url').attr('alt');
-                     var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
-                     setInfoValue(elem, current, 37, true);
-                     setURLs(currentLi, parentUrl);
-                     $dialog.dialog('destroy');
-                     $dialog.remove();
-                  },
-                  'Cancel': function() {
-                     $dialog.dialog('destroy');
-                     $dialog.remove();
-                  }
-               }
-            });
-         } else {
-            var previousUrl = elem.siblings('span.cms-url').attr('alt');
-            var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
-            setInfoValue(elem, current, 37, true);
-            setURLs(currentLi, parentUrl);
+      convertUrlName(current, function(newValue) {
+         if (previous != newValue) {
+            _askSetURLName(elem, newValue);
          }
-      }
-      elem.css('display', '');
-      input.remove();
-      
+         elem.css('display', '');
+         input.remove();
+      });
    }
    
    /**
@@ -235,67 +244,45 @@
     */
    var deletePage = function() {
       var liItem = $(this).closest('li');
+      var _deleteEntry = function() {
+         if (!liItem.siblings().length) {
+            var parentUl = liItem.parent();
+            parentUl.siblings('span.' + classOpener).remove();
+            parentUl.remove();
+         }
+         liItem.remove();
+         
+         setSitemapChanged(true);
+         var sitemapEntry = new SitemapEntry(liItem.get(0));
+         _addRecent(sitemapEntry.serialize(true));
+         saveRecent(function(ok, data) {
+                  });
+      }
       if (liItem.children('ul').length) {
          var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
+         var _destroy = function() {
+            $dialog.dialog('destroy');
+            $dialog.remove();
+         }
          $dialog.appendTo('body');
          $dialog.text('Do you realy want to remove this page and all sub-pages from the sitemap?');
          $dialog.dialog({
             zIndex: 9999,
             title: 'Delete',
             modal: true,
-            close: function() {
-               $dialog.dialog('destroy');
-               $dialog.remove();
-            },
+            close: _destroy,
             buttons: {
                'OK': function() {
-                  $dialog.dialog('destroy');
-                  $dialog.remove();
+                  _destroy();
+                  // we don't want sub-pages in the recent list
                   liItem.find('ul').remove();
-                  liItem.find('span.' + classOpener).remove();
-                  liItem.find('div.cms-handle').remove();
-                  
-                  if (!liItem.siblings().length) {
-                     var parentUl = liItem.parent();
-                     parentUl.siblings('span.' + classOpener).remove();
-                     parentUl.remove();
-                  }
-                  
-                  var sitemapEntry = serializeSitemapElement(liItem, true);
-                  _addRecent(sitemapEntry);
-                  saveRecent(function(ok, data) {
-                     if (!ok) {
-                        return;
-                     }
-                     liItem.remove();
-                  })
-                  //liItem.prependTo(cms.sitemap.dom.recentMenu.find('ul'));
-                  setSitemapChanged(true);
+                  _deleteEntry();
                },
-               'Cancel': function() {
-                  $dialog.dialog('destroy');
-                  $dialog.remove();
-               }
+               'Cancel': _destroy()
             }
-         
          });
       } else {
-         liItem.find('div.cms-handle').remove();
-         if (!liItem.siblings().length) {
-            var parentUl = liItem.parent();
-            parentUl.siblings('span.' + classOpener).remove();
-            parentUl.remove();
-         }
-         var sitemapEntry = serializeSitemapElement(liItem, true);
-         _addRecent(sitemapEntry);
-         saveRecent(function(ok, data) {
-            if (!ok) {
-               return;
-            }
-            liItem.remove();
-         });
-         
-         //liItem.prependTo(cms.sitemap.dom.recentMenu.find('ul'));
+         _deleteEntry();
       }
    }
    
@@ -306,53 +293,6 @@
    var destroyDraggable = cms.sitemap.destroyDraggable = function() {
       $('#' + sitemapId + ' div.' + itemClass + ', #' + sitemapId + ' .' + dropzoneClass).droppable('destroy');
       $('li').draggable('destroy');
-   }
-   
-   /**
-    * Click-handler to allow direct editing of item-titles.
-    *
-    */
-   var directInput = function() {
-      var elem = $(this);
-      var input = $('<input name="directInput" type="text" class="' + classDirectInput + '" value="' + elem.text() + '" />');
-      copyCss(elem, input);
-      input.insertBefore(elem);
-      
-      if ($.browser.msie && $.browser.version <= 7.0) {
-         // HACK: to avoid the margin-left bug for input-elements in IE7 
-         // (the problem occurs within elements where hasLayout: true and will introduce an 
-         // inherited margin-left for the input-element)
-         var parentMargin = parseInt(elem.parent().css('margin-left'));
-         if (!isNaN(parentMargin)) {
-         
-            inputMargin = parseInt(input.css('margin-left'));
-            if (isNaN(inputMargin)) {
-               inputMargin = -parentMargin;
-               
-            } else {
-               inputMargin = inputMargin - parentMargin;
-            }
-            input.css('margin-left', inputMargin + 'px');
-         }
-      }
-      
-      elem.css('display', 'none');
-      
-      // setting the focus and selecting text
-      input.get(0).focus();
-      input.get(0).select();
-      
-      // set the value on 'return' or 'enter'
-      input.keypress(function(e) {
-         if (e.which == 13) {
-            setDirectValue(elem, input);
-         };
-               });
-      
-      // set the value on loosing focus
-      input.blur(function() {
-         setDirectValue(elem, input);
-      });
    }
    
    /**
@@ -385,6 +325,82 @@
       $('<div class="cms-hovering cms-hovering-bottom"></div>').addClass(additionalClass).height(hWidth).width(btWidth).css('top', tHeight + hOff).css('left', tblLeft).appendTo(elem);
    }
    
+   var checkDuplicateOnDrop = function($dragged, $dropzone) {
+      var currentEntry = new SitemapEntry($dragged.get(0));
+      var otherUrlNames = {};
+      if ($dropzone.hasClass('cms-sitemap-item')) {
+         var $targetUl = $dropzone.siblings('ul');
+         if ($targetUl.size() > 0) {
+            otherUrlNames = getOtherUrlNames($targetUl, $dragged.get(0));
+         }
+      } else {
+         var $targetUl = $dropzone.closest('ul');
+         otherUrlNames = getOtherUrlNames($targetUl, $dragged.get(0));
+      }
+      var urlName = currentEntry.getUrlName();
+      return {
+         duplicate: !!otherUrlNames[urlName],
+         urlName: urlName,
+         otherUrlNames: otherUrlNames
+      };
+   }
+   
+   var setProperties = function($entry, properties) {
+      var entryData = getEntryData($entry);
+      entryData.properties = properties;
+      setEntryData($entry, entryData);
+   }
+   
+   
+   /**
+    * Handler for dropping sitemap entry into favorites
+    * @param {Object} e event
+    * @param {Object} ui ui-object
+    * @param {Object} $dropzone the drop zone (in this case, the favorite list)
+    */
+   var dropItemIntoFavorites = function(e, ui, $dropzone) {
+      var $dragged = ui.draggable;
+      
+      $dropzone.removeClass(classHovered);
+      var dragClone = ui.draggable.clone();
+      dragClone.find('div.cms-handle').remove();
+      var _next = function() {
+         dragClone.find('div.' + itemClass).removeClass(dragClass);
+         dragClone.find('.' + classAdditionalShow).removeClass(classAdditionalShow);
+         dragClone.appendTo(cms.sitemap.dom.favoriteList);
+         var dragCloneEntry = new SitemapEntry(dragClone.get(0));
+         var newFav = dragCloneEntry.serialize(true);
+         
+         _addFavorite(newFav);
+         saveFavorites(function() {
+                  });
+      }
+      if (dragClone.find('ul').length) {
+         keepTree(dragClone, _next);
+      } else {
+         _next();
+      }
+   }
+   
+   var getDropzoneParentUrl = function($dropzone) {
+      var parentURL = '';
+      var $li = $dropzone.parent();
+      var dropzoneEntry = new SitemapEntry($li.get(0));
+      if ($dropzone.hasClass(dropzoneClass)) {
+         var $parentLi = $li.parent().closest('li');
+         var parentEntry = new SitemapEntry($parentLi.get(0));
+         if ($parentLi.length) {
+            parentURL = parentEntry.getUrl();
+            parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
+         }
+      } else {
+         parentURL = dropzoneEntry.getUrl();
+         parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
+      }
+      return parentURL;
+   }
+   
+   
    /**
     * Event-handler for droppable drop-event dragging within tree.
     *
@@ -393,67 +409,72 @@
     */
    var dropItem = cms.sitemap.dropItem = function(e, ui) {
       // target item
-      if ($(this).attr('id') == 'favorite-drop-list') {
-         $(this).removeClass(classHovered);
-         var dragClone = ui.draggable.clone();
-         dragClone.find('div.cms-handle').remove();
-         var _next = function() {
-            dragClone.find('div.' + itemClass).removeClass(dragClass);
-            dragClone.find('.' + classAdditionalShow).removeClass(classAdditionalShow)
-            dragClone.appendTo(cms.sitemap.dom.favoriteList);
-            var newFav = serializeSitemapElement(dragClone, true);
-            
-            _addFavorite(newFav);
-            saveFavorites(function() {
-                        });
-         }
-         if (dragClone.find('ul').length) {
-            keepTree(dragClone, _next);
-         } else {
-            _next();
-         }
-         
+      var $dropzone = $(this);
+      var $dragged = ui.draggable;
+      if ($dropzone.attr('id') == 'favorite-drop-list') {
+         dropItemIntoFavorites(e, ui, $dropzone);
          return;
       }
       var li = $(this).parent();
+      var dropzoneEntry = new SitemapEntry(li.get(0));
       var formerParent = ui.draggable.parent();
-      var removeFormerParent = false;
-      var parentURL = '';
+      var draggedEntry = new SitemapEntry($dragged.get(0));
       // if the former parent li and the target li are not the same
       // and the former parent is going to lose it's last child 
       // (the currently dragged item will appear twice, once as the original and once as the ui-helper),
       // set the removeFormerParent flag
-      if (li.get(0) != formerParent.parent().get(0) && formerParent.children().length == 2) {
-         removeFormerParent = true;
-      }
-      if ($(this).hasClass(dropzoneClass)) {
-         // dropping over dropzone, so insert before
-         li.before(ui.draggable);
-         var parentLi = li.parent().closest('li');
-         if (parentLi.length) {
-            parentURL = parentLi.children('div.' + itemClass).find('span.cms-url').attr('alt');
-            parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
-         }
-      } else {
-         parentURL = li.children('div.' + itemClass).find('span.cms-url').attr('alt');
-         parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
-         // dropping over item, so insert into child-ul
-         if (li.children('ul').length == 0) {
-            // no child-ul present yet
-            li.append('<ul/>');
-            li.children('div.' + dropzoneClass).after(openerHtml);
-         }
-         li.removeClass(classClosed);
-         li.children('ul').append(ui.draggable);
-      }
-      setURLs(ui.draggable, parentURL);
-      // remove the now empty former parent ul and the opener span
-      if (removeFormerParent) {
-         formerParent.siblings('span.' + classOpener).remove();
-         formerParent.remove();
-      }
-      $(this).removeClass(classHovered);
       
+      var sameParent = li.get(0) == formerParent.parent().get(0);
+      var parentUl = null;
+      if ($dropzone.hasClass(dropzoneClass)) {
+         parentUl = li.closest('ul').get(0);
+      } else {
+         parentUl = li.children('ul').get(0);
+      }
+      var sameParent2 = parentUl == formerParent.get(0);
+      
+      formerParent.parent().css('border')
+      var removeFormerParent = (!sameParent && formerParent.children().length == 2);
+      
+      var _completeDrop = function() {
+         if ($dropzone.hasClass(dropzoneClass)) {
+            // dropping over dropzone, so insert before
+            li.before($dragged);
+         } else {
+            // dropping over item, so insert into child-ul
+            if (li.children('ul').length == 0) {
+               // no child-ul present yet
+               li.append('<ul/>');
+               li.children('div.' + dropzoneClass).after(openerHtml);
+            }
+            li.removeClass(classClosed);
+            li.children('ul').append($dragged);
+         }
+         setSitemapChanged(true);
+         draggedEntry.setUrls(getDropzoneParentUrl($dropzone));
+         // remove the now empty former parent ul and the opener span
+         if (removeFormerParent) {
+            formerParent.siblings('span.' + classOpener).andSelf().remove();
+         }
+         $dropzone.removeClass(classHovered);
+      }
+      var li = $(this).parent();
+      var duplicateStatus = checkDuplicateOnDrop($dragged, $(this));
+      if (!sameParent2 && duplicateStatus.duplicate) {
+         var otherUrlNames = duplicateStatus.otherUrlNames;
+         showEntryEditor(draggedEntry, true, otherUrlNames, function(newTitle, newUrlName, newProperties) {
+            var previousUrl = draggedEntry.getUrl();
+            var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
+            draggedEntry.setUrls(parentUrl);
+            _completeDrop();
+         }, function() {
+            $dropzone.removeClass(classHovered);
+            return;
+         });
+         
+      } else {
+         _completeDrop();
+      }
    }
    
    /**
@@ -463,135 +484,55 @@
     * @param {Object} ui ui-object
     */
    var dropItemMenu = cms.sitemap.dropItemMenu = function(e, ui) {
-      var li = $(this).parent();
-      var dropClone = ui.draggable.clone();
-      _addOpenerAndDropzone(dropClone);
-      dropClone.removeClass(classSubtree);
+      var $dropzone = $(this);
+      var li = $dropzone.parent();
+      var $dropClone = ui.draggable.clone();
+      _addOpenerAndDropzone($dropClone);
+      $dropClone.removeClass(classSubtree);
       var parentURL = '';
-      if ($(this).hasClass(dropzoneClass)) {
-         // dropping over dropzone, so insert before
-         li.before(dropClone);
-         var parentLi = li.parent().closest('li');
-         if (parentLi.length) {
-            parentURL = parentLi.children('div.' + itemClass).find('span.cms-url').attr('alt');
+      var dropEntry = new SitemapEntry($dropClone.get(0));
+      
+      var _completeDrop = function() {
+         if ($dropzone.hasClass(dropzoneClass)) {
+            // dropping over dropzone, so insert before
+            li.before($dropClone);
+            var parentLi = li.parent().closest('li');
+            if (parentLi.length) {
+               parentURL = parentLi.children('div.' + itemClass).find('span.cms-url').attr('alt');
+               parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
+            }
+         } else {
+            // dropping over item, so insert into child-ul
+            if (li.children('ul').length == 0) {
+               // no child-ul present yet
+               li.append('<ul/>');
+               li.children('div.' + dropzoneClass).after(openerHtml);
+            }
+            li.removeClass(classClosed);
+            li.children('ul').append($dropClone);
+            parentURL = li.children('div.' + itemClass).find('span.cms-url').attr('alt');
             parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
          }
-      } else {
-         // dropping over item, so insert into child-ul
-         if (li.children('ul').length == 0) {
-            // no child-ul present yet
-            li.append('<ul/>');
-            li.children('div.' + dropzoneClass).after(openerHtml);
-         }
-         li.removeClass(classClosed);
-         li.children('ul').append(dropClone);
-         parentURL = li.children('div.' + itemClass).find('span.cms-url').attr('alt');
-         parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
+         $dropClone.find('div.cms-handle').remove();
+         $dropClone.find('div.' + itemClass).removeClass(dragClass);
+         dropEntry.setUrls(parentURL);
+         $dropzone.removeClass(classHovered);
+         setSitemapChanged(true);
       }
-      dropClone.find('div.cms-handle').remove();
-      dropClone.find('div.' + itemClass).removeClass(dragClass);
-      setURLs(dropClone, parentURL);
-      $(this).removeClass(classHovered);
-   }
-   
-   /**
-    * Asks the server whether a given url name is valid.
-    *
-    * The callback which is called after the AJAX request is finished receives a boolean status flag
-    * and an object containing the properties invalid (true if the url name is not valid) and urlName
-    * (which is an escaped version of the original url name).
-    *
-    * @param {Object} urlName the url name to be checked
-    * @param {Object} callback the callback that is called after the check
-    */
-   var checkUrlName = function(urlName, callback) {
-      callback(true, {
-         urlName: urlName
-      });
-   }
-   
-   /**
-    * Click-handler to edit the item title and properties for this handler.
-    *
-    */
-   var editPage = function() {
-      var itemDiv = $(this).closest('div.' + itemClass);
-      var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
-      $dialog.appendTo('body');
-      $dialog.append('<p style="margin-bottom: 4px;">Edit page</p><label for="pageTitle">Title:</label>&nbsp;&nbsp;<input type="text" id="pageTitle" value="' + itemDiv.find('h3').text() + '" />');
-      $('<label for="cms-page-urlname"></label>').text('URL name:').appendTo($dialog);
-      var $urlnameInput = $('<input type="text" id="cms-page-urlname"></input>').val(itemDiv.find('.' + classUrlName).text()).appendTo($dialog);
-      $dialog.dialog({
-         zIndex: 9999,
-         title: 'Edit Page',
-         modal: true,
-         close: function() {
-            $dialog.dialog('destroy');
-            $dialog.remove();
-         },
-         buttons: {
-            'OK': function() {
-               var newTitle = $('#pageTitle').val();
-               var validationErrors = [];
-               
-               if (newTitle && newTitle != '') {
-                  itemDiv.find('h3').text(newTitle);
-                  $dialog.dialog('destroy');
-                  $dialog.remove();
-               } else {
-                  validationErrors.push('Please insert the page title');
-               }
-               var newUrlName = $urlnameInput.val();
-               if (newUrlName && newUrlName != '') {
-                  checkUrlName(newUrlName, function(ok, data) {
-                     if (data.invalid) {
-                        alert("error");
-                     } else {
-                        newUrlName = data.urlName;
-                        $dialog.dialog('destroy');
-                     }
-                  })
-                  if (!$('#dialogError').length) {
-                     $('#pageTitle').after('<p id="dialogError" style="color: red; margin-top: 4px;">Please insert the page title.</p>');
-                  }
-                  
-               }
-               
-               
-               
-               
-            },
-            'Cancel': function() {
-               $dialog.dialog('destroy');
-               $dialog.remove();
-            }
-         }
       
-      });
+      var duplicateStatus = checkDuplicateOnDrop($dropClone, $dropzone);
+      if (duplicateStatus.duplicate) {
+         var otherUrlNames = duplicateStatus.otherUrlNames;
+         showEntryEditor(dropEntry, true, otherUrlNames, function(newTitle, newUrlName, newProperties) {
+            _completeDrop();
+         }, function() {
+            $dropzone.removeClass(classHovered);
+            return;
+         });
+      } else {
+         _completeDrop();
+      }
    }
-   
-   //   $.fn.validation = function($element, condition) {
-   //       return this.each(function() {
-   //           var $element = $(this);
-   //           $element.addClass('cms-validator');
-   //           $element.data('cms-validator-condition', condition)
-   //       }
-   //   }
-   //   
-   //   $.fn.validate = function() {
-   //       return this.find('cms-validator').each(function() {
-   //           var $form = $(this);
-   //           $form.find('cms-validator').each(function() {
-   //           var $v = $(this);
-   //           if ($v.data('cms-validator-condition')()) {
-   //               $v.hide();
-   //           } else {
-   //               $v.show();
-   //           }
-   //       })
-   //   }
-   //   
-   //   
    
    
    /**
@@ -600,48 +541,75 @@
     */
    var editPage = function() {
       var itemDiv = $(this).closest('div.' + itemClass);
-      var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
-      $dialog.appendTo('body');
-      $dialog.append('<p style="margin-bottom: 4px;">Edit page</p><label for="pageTitle">Title:</label>&nbsp;&nbsp;<input type="text" id="pageTitle" value="' + itemDiv.find('h3').text() + '" />');
-      $dialog.dialog({
-         zIndex: 9999,
-         title: 'Edit Page',
-         modal: true,
-         close: function() {
-            $dialog.dialog('destroy');
-            $dialog.remove();
-         },
-         buttons: {
-            'OK': function() {
-               var newTitle = $('#pageTitle').val();
-               if (newTitle && newTitle != '') {
-                  itemDiv.find('h3').text(newTitle);
-                  $dialog.dialog('destroy');
-                  $dialog.remove();
-                  
-               } else {
-                  if (!$('#dialogError').length) {
-                     $('#pageTitle').after('<p id="dialogError" style="color: red; margin-top: 4px;">Please insert the page title.</p>');
-                  }
-               }
-               
-               
-            },
-            'Cancel': function() {
-               $dialog.dialog('destroy');
-               $dialog.remove();
-            }
-         }
-      
+      var $entry = itemDiv.closest('li');
+      var currentEntry = new SitemapEntry($entry.get(0));
+      var $ul = $entry.closest('ul');
+      var otherUrlNames = getOtherUrlNames($ul, $entry.get(0));
+      showEntryEditor(currentEntry, true, otherUrlNames, function(newTitle, newUrlName, newProperties) {
+         var previousUrl = currentEntry.getUrl();
+         var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
+         currentEntry.setUrls(parentUrl)
+         setSitemapChanged(true);
       });
+   }
+   
+   /**
+    * Returns the URL names of the sitemap entries inside a given ul  which are not identical to a given entry
+    * @param {Object} $ul the ul from which the url names should be retrieved
+    * @param {Object} newItem the DOM element for which the URL name shouldn't be included in the result
+    * @return an object containing the collected url names as properties (which all have the value true)
+    **/
+   var getOtherUrlNames = function($ul, newItem) {
+      var result = {};
+      $ul.children('li').each(function() {
+         if (this != newItem) {
+            result[$(this).find('.cms-url-name:first').attr('alt')] = true;
+         }
+      });
+      return result;
+   }
+   
+   
+   /**
+    * Merges a set of property definition with a set of properties
+    *
+    * @param {Object} propDefs object containing the property definitions
+    * @param {Object} properties object containing the properties
+    *
+    **/
+   var mergePropertiesWithDefinitions = function(propDefs, properties) {
+      var result = JSON.parse(JSON.stringify(propDefs));
+      for (var key in result) {
+         if (properties.hasOwnProperty(key)) {
+            result[key].value = properties[key];
+         }
+      }
+      return result;
+   }
+   
+   
+   /**
+    * Returns the properties of a sitemap entry, merged with the property settings of the sitemap.
+    *
+    * @param {Object} $entry the sitemap entry for which the properties should be read
+    * @return an object containing the merged properties with their settings
+    */
+   var getMergedProperties = function($entry) {
+      var propDefs = JSON.parse(JSON.stringify(cms.sitemap.propertyDefinitions)).properties;
+      var entryData = getEntryData($entry);
+      var props = entryData.properties;
+      var propEntries = mergePropertiesWithDefinitions(propDefs, props);
+      return propEntries;
    }
    
    
    /**
     * Initializes the sitemap editor.
     *
+    * @param {Boolean} allowEdit if true, sets the event handlers for editing the sitemap
+    *
     */
-   var initSitemap = cms.sitemap.initSitemap = function() {
+   var initSitemap = cms.sitemap.initSitemap = function(allowEdit) {
       // setting options for draggable and sortable for dragging within tree
       cms.sitemap.dragOptions = {
          handle: ' > div.' + itemClass + '> div.cms-handle > a.cms-move',
@@ -670,7 +638,7 @@
       });
       
       $('#' + sitemapId).children().each(function() {
-         setURLs($(this), '');
+         (new SitemapEntry(this)).setUrls('');
       });
       
       // generating toolbar
@@ -695,22 +663,30 @@
       $('#' + sitemapId + ' span.' + classOpener).live('click', function() {
          $(this).parent().toggleClass(classClosed);
       });
-      $('a.cms-delete').live('click', deletePage);
-      $('a.cms-new').live('click', newPage);
-      $('a.cms-edit').live('click', editPage);
-      $('#' + sitemapId + ' div.' + itemClass + ' h3').directInput({
-         marginHack: true,
-         live: true
-      });
-      
-      $('#' + sitemapId + ' div.' + itemClass + ' span.cms-url-name').directInput({
-         marginHack: true,
-         live: true,
-         readValue: function(elem) {
-            return elem.attr('alt');
-         },
-         setValue: setURLName
-      });
+      if (allowEdit) {
+         $('a.cms-delete').live('click', deletePage);
+         $('a.cms-new').live('click', newPage);
+         $('a.cms-edit').live('click', editPage);
+         $('#' + sitemapId + ' div.' + itemClass + ' h3').directInput({
+            marginHack: true,
+            live: true,
+            valueChanged: function() {
+               setSitemapChanged(true);
+            }
+         });
+         
+         $('#' + sitemapId + ' div.' + itemClass + ' span.cms-url-name').directInput({
+            marginHack: true,
+            live: true,
+            readValue: function(elem) {
+               return elem.attr('alt');
+            },
+            setValue: setURLName,
+            valueChanged: function() {
+               setSitemapChanged(true);
+            }
+         });
+      }
       $('a.cms-icon-triangle').live('click', function() {
          $(this).parent().toggleClass(classAdditionalShow);
          var menu = $(this).closest('.cms-menu');
@@ -727,6 +703,11 @@
          live: true
       });
       $('#fav-edit').click(_editFavorites);
+      $('.cms-vfs-path').live('click', function() {
+         var target = cms.data.CONTEXT + $(this).attr('alt');
+         window.open(target, '_blank');
+         //showLeaveDialog(target, 'Do you really want to leave the sitemap editor and discard your changes?', 'Leaving editor');
+      });
       $(window).unload(onUnload);
    }
    
@@ -738,7 +719,6 @@
       $('#' + sitemapId + ' div.' + itemClass + ', #' + sitemapId + ' .' + dropzoneClass + ', #favorite-drop-list').droppable(cms.sitemap.dropOptions);
       $('#' + sitemapId + ' li').draggable(cms.sitemap.dragOptions);
    }
-   
    
    /**
     * Generates a confirm-dialog to keep subpages when dragging from tree to favorites.
@@ -802,8 +782,8 @@
     *
     * @param {Object} title item-title
     */
-   var newItemHtml = function(title) {
-      return '<li><div class="' + dropzoneClass + '"></div><div class="ui-state-hover ui-corner-all ' + itemClass + '"><a class="cms-left ui-icon cms-icon-triangle"></a>\
+   var createNewItem = function(title) {
+      var $result = $('<li><div class="' + dropzoneClass + '"></div><div class="ui-state-hover ui-corner-all ' + itemClass + '"><a class="cms-left ui-icon cms-icon-triangle"></a>\
               <h3>' +
       title +
       '</h3>\
@@ -813,59 +793,60 @@
       '</span><br/>\
                 URL:<span class="cms-url"></span><br/>\
                 VFS-Path:<span class="cms-vfs-path">/demo3/123.xml</span><br/>\
-              </div></div></li>';
+              </div></div></li>');
+      $('.cms-url-name', $result).attr('alt', title.toLowerCase());
+      $result.addClass('cms-sitemap-entry');
+      setEntryData($result, {
+         properties: {}
+      });
+      return $result;
    }
    
    /**
     * Click-handler to create a new sub-page. Opening an edit dialog for title and properties.
     */
    var newPage = function() {
-      var liItem = $(this).closest('li');
-      var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
-      $dialog.appendTo('body');
-      $dialog.append('<p style="margin-bottom: 4px;">Add a new page</p><label for="pageTitle">Title:</label>&nbsp;&nbsp;<input type="text" id="pageTitle" />');
-      $dialog.dialog({
-         zIndex: 9999,
-         title: 'New Page',
-         modal: true,
-         close: function() {
-            $dialog.dialog('destroy');
-            $dialog.remove();
+      var title = 'New name';
+      var urlName = 'newname';
+      var $entry = $(this).closest('li');
+      var currentEntry = new SitemapEntry($entry.get(0));
+      var otherUrlNames = {};
+      var $ul = $entry.children('ul');
+      if ($ul.size() > 0) {
+         otherUrlNames = getOtherUrlNames($ul, null);
+      }
+      var properties = getMergedProperties($entry);
+      var dummyEntry = {
+         getTitle: function() {
+            return title;
          },
-         buttons: {
-            'OK': function() {
-               var newTitle = $('#pageTitle').val();
-               if (newTitle && newTitle != '') {
-                  if (liItem.children('ul').length == 0) {
-                     // no child-ul present yet
-                     liItem.append('<ul/>');
-                     liItem.children('div.' + dropzoneClass).after(openerHtml);
-                  }
-                  liItem.removeClass(classClosed);
-                  var newItem = $(newItemHtml(newTitle)).appendTo(liItem.children('ul'));
-                  // setting URL
-                  var parentURL = liItem.children('div.' + itemClass).find('span.cms-url').attr('alt');
-                  parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
-                  setURLs(newItem, parentURL);
-                  addHandles(newItem.children('div.' + itemClass), sitemapModes);
-                  destroyDraggable();
-                  initDraggable();
-                  $dialog.dialog('destroy');
-                  $dialog.remove();
-                  setPageChanged(true);
-                  
-               } else {
-                  if (!$('#dialogError').length) {
-                     $('#pageTitle').after('<p id="dialogError" style="color: red; margin-top: 4px;">Please insert the page title.</p>');
-                  }
-               }
-            },
-            'Cancel': function() {
-               $dialog.dialog('destroy');
-               $dialog.remove();
-            }
+         getUrlName: function() {
+            return urlName;
+         },
+         getPropertiesWithDefinitions: function() {
+            return properties;
          }
-      
+      }
+      showEntryEditor(dummyEntry, false, otherUrlNames, function(newTitle, newUrlName, newProperties) {
+         if ($entry.children('ul').length == 0) {
+            // no child-ul present yet
+            $entry.append('<ul/>');
+            $entry.children('div.' + dropzoneClass).after(openerHtml);
+         }
+         $entry.removeClass(classClosed);
+         var $newItem = createNewItem(newTitle).appendTo($entry.children('ul'));
+         var newEntry = new SitemapEntry($newItem.get(0));
+         // setting URL
+         newEntry.setProperties(newProperties);
+         newEntry.setId('0');
+         newEntry.setUrlName(newUrlName);
+         var parentURL = currentEntry.getUrl();
+         parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
+         newEntry.setUrls(parentURL + '/' + newUrlName);
+         addHandles($newItem.children('div.' + itemClass), sitemapModes);
+         destroyDraggable();
+         initDraggable();
+         setSitemapChanged(true);
       });
    }
    
@@ -913,9 +894,12 @@
     * @param {Object} elem the element
     * @param {Object} input the input-element
     */
-   var setDirectValue = function(elem, input) {
-      elem.text(input.val()).css('display', 'block');
-      input.remove();
+   var setDirectValue = function(elem, input, changeValue) {
+      var oldValue = input.val();
+      changeValue(oldValue, function(newValue) {
+         elem.text(newValue).css('display', 'block');
+         input.remove();
+      })
    }
    
    var setInfoValue = cms.sitemap.setInfoValue = function(elem, value, maxLength, showEnd) {
@@ -945,11 +929,6 @@
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
    }
    
-   
-   var debug1 = function($elem) {
-      var x = 1 + 1;
-   }
-   
    /**
     * Event-handler for draggable start-event dragging within tree.
     *
@@ -960,7 +939,6 @@
       $('input', this).blur();
       $('.cms-hovering').remove();
       $('div.' + itemClass, this).addClass(dragClass);
-      debug1($(this));
       $('div.cms-handle').css('display', 'none');
       stopHover();
       $('div.cms-handle', ui.helper).removeClass('ui-widget-header').css({
@@ -1014,9 +992,10 @@
       dragClone.find('div.cms-handle').remove();
       dragClone.find('ul').remove();
       dragClone.find('span.' + classOpener).remove();
-      var sitemapEntry = serializeSitemapElement(dragClone, true);
-      _addRecent(sitemapEntry);
-      saveRecent(cms.sitemap.recent, function() {
+      
+      var sitemapEntry = new SitemapEntry(dragClone.get(0));
+      _addRecent(sitemapEntry.serialize(true));
+      saveRecent(function() {
             })
       //dragClone.appendTo(cms.sitemap.dom.recentMenu.find('ul'));
       $('div.cms-handle').css('display', 'block');
@@ -1067,17 +1046,19 @@
       floatRight: false,
       create: createButton,
       enable: function() {
-         this.button.addClass('ui-state-active');
-         var $sitemapElem = $('#' + sitemapId);
-         var sitemap = serializeSitemap($sitemapElem);
-         saveSitemap(sitemap, function(ok, data) {
-            if (ok) {
-               setSitemapChanged(false);
-            } else {
-               alert("error")
-               //display error message ? 
-            }
-         });
+         if (!this.button.hasClass('cms-deactivated')) {
+            this.button.addClass('ui-state-active');
+            var $sitemapElem = $('#' + sitemapId);
+            var sitemap = serializeSitemap($sitemapElem);
+            saveSitemap(sitemap, function(ok, data) {
+               if (ok) {
+                  setSitemapChanged(false);
+               } else {
+                  alert("error")
+                  //display error message ? 
+               }
+            });
+         }
       },
       disable: function() {
          this.button.removeClass('ui-state-active');
@@ -1195,7 +1176,7 @@
       },
       init: function() {
          cms.sitemap.dom.newMenu = $(cms.html.createMenu(cms.html.newMenuId)).appendTo(cms.sitemap.dom.toolbarContent);
-         cms.sitemap.dom.newMenu.find('ul').append(newItemHtml('NewPage'));
+         cms.sitemap.dom.newMenu.find('ul').append(createNewItem('NewPage'));
       }
    }, {
       // favorites mode
@@ -1304,7 +1285,11 @@
          this.button.removeClass('ui-state-active');
       },
       init: function() {
-            }
+         $('button[name=reset]').live('click', function() {
+            showLeaveDialog(window.location.href, 'Do you really want to reset and discard your changes?', 'Reset');
+         });
+         
+      }
    }, {
       // publish mode
       name: 'publish',
@@ -1313,9 +1298,15 @@
       floatRight: true,
       create: createButton,
       enable: function() {
+         var self = this;
          this.button.addClass('ui-state-active');
-         var publishDialog = new cms.publish.PublishDialog();
-         publishDialog.start();
+         cms.publish.initProjects(function() {
+            var publishDialog = new cms.publish.PublishDialog();
+            publishDialog.finish = function() {
+               self.button.trigger('click');
+            }
+            publishDialog.start();
+         });
       },
       disable: function() {
          this.button.removeClass('ui-state-active');
@@ -1324,7 +1315,38 @@
             }
    }];
    
-   
+   var showLeaveDialog = function(target, dialogText, dialogTitle) {
+      if (sitemapChanged) {
+      
+         $('#cms-leave-dialog').remove();
+         var $dlg = $('<div id="cms-leave-dialog"></div>').appendTo('body');
+         $dlg.text(dialogText);
+         var buttons = {};
+         
+         buttons['No'] = function() {
+            $dlg.dialog('destroy');
+         }
+         buttons['Yes'] = function() {
+            sitemapChanged = false;
+            $dlg.dialog('destroy');
+            window.location.href = target;
+         }
+         var dlgOptions = {
+            modal: true,
+            zIndex: 9999,
+            title: dialogTitle,
+            autoOpen: true,
+            buttons: buttons,
+            close: function() {
+               $dlg.dialog('destroy');
+            }
+         }
+         $dlg.dialog(dlgOptions);
+      } else {
+         window.location.href = target;
+      }
+      
+   }
    
    
    /**
@@ -1334,15 +1356,11 @@
    var serializeSitemap = function($element) {
       var result = [];
       $element.children('li').each(function() {
-         result.push(serializeSitemapElement($(this)));
+         var entry = new SitemapEntry(this);
+         result.push(entry.serialize(false));
       });
       return result;
    }
-   
-   
-   
-   
-   
    
    /**
     * Serializes a sitemap DOM element to a JSON data structure.
@@ -1354,7 +1372,7 @@
       var $sitemapItem = $element.children('.' + itemClass);
       var title = $sitemapItem.children('h3:first').text();
       var $addInfo = $sitemapItem.children('.' + classAdditionalInfo);
-      var urlName = $addInfo.children('.' + classUrlName).text();
+      var urlName = $addInfo.children('.' + classUrlName).attr('alt');
       var vfsPath = $addInfo.children('.' + classVfsPath).text();
       var $children = $element.children('ul').children('li');
       var childObjects = [];
@@ -1376,6 +1394,64 @@
       }
       return result;
    }
+   
+   var serialize = function(includeContent) {
+      var self = this;
+      var title = self.getTitle();
+      var urlName = self.getUrlName();
+      var vfsPath = self.getPath();
+      var children = self.getChildren();
+      var childrenResults = [];
+      for (var i = 0; i < children.length; i++) {
+         var child = children[i];
+         childrenResults.push(child.serialize(includeContent));
+      }
+      var result = {
+         title: title,
+         id: self.getId(),
+         name: urlName,
+         subentries: childrenResults,
+         properties: self.getProperties()
+      };
+      if (includeContent) {
+         var content = $('<p></p>').append(self.$item.clone()).html();
+         result.content = content;
+      }
+      return result;
+   }
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    /**
     * Helper function that generates a callback for jQuery.each which appends its "this" argument to a given parent
@@ -1404,9 +1480,6 @@
       if (data.subentries && data.subentries.length > 0) {
          $('<span></span>').addClass(classOpener).appendTo($li);
       }
-      
-      
-      var $ul = null;
       var $item = $(data.content).appendTo($li);
       if (data.subentries && data.subentries.length > 0) {
          $li.addClass(classSubtree);
@@ -1433,65 +1506,6 @@
       return $($.map(data, _buildSitemapElement))
    }
    
-   var getOpeners = function($element, filterString) {
-      var $lis = $element.find('.' + classOpener).closest('li');
-      $lis.filter(filterString).child('.' + classOpener);
-   }
-   
-   var getParentOpeners = function($element, filterString) {
-      var $lis = $element.parents('.' + classOpener).closest('li');
-      $lis.filter(filterString).child('.' + classOpener);
-   }
-   
-   var closeAll = function($element) {
-      getOpeners($element, '.' + classClosed).trigger('click');
-   }
-   
-   var openAll = function($element) {
-      getOpeners($element, ':not(.' + classClosed + ')').trigger('click');
-   }
-   
-   var checkUrlName = function(urlname, callbackOk, callbackInvalid) {
-      postJSON('urlname', urlname, function(ok, data) {
-         if (data.invalid) {
-            callbackInvalid();
-         } else {
-            callbackOk(data.urlname);
-         }
-      })
-   }
-   
-   /**
-    * Loads the sitemap and continues to initialize the sitemap editor after loading is finished.
-    *
-    */
-   var loadAndInitSitemap = cms.sitemap.loadAndInitSitemap = function() {
-      cms.data.sitemapPostJSON('all', {}, function(ok, data) {
-         if (!ok) {
-            return;
-         }
-         var sitemap = data.sitemap;
-         var favorites = data.favorites;
-         var recent = data.recent;
-         _buildSitemap(sitemap).appendTo('#' + sitemapId);
-         initSitemap();
-      })
-   }
-   
-   
-   
-   
-   /**
-    * AJAX call that sends the sitemap to the server to save it.
-    * @param {Object} sitemap the sitemap
-    * @param {Object} callback the callback that should be called after the server sends its response
-    */
-   var saveSitemap = cms.sitemap.saveSitemap = function(sitemap, callback) {
-      cms.data.sitemapPostJSON('save', {
-         sitemap: sitemap
-      }, callback);
-   }
-   
    var sitemapChanged = false;
    
    /**
@@ -1499,6 +1513,14 @@
     * @param {Boolean} changed a flag that indicates whether the sitemap should be marked as changed or unchanged
     */
    var setSitemapChanged = function(changed) {
+      if (!sitemapChanged && changed) {
+         cms.data.sitemapPostJSON('startedit', {}, function() {
+                  });
+      }
+      if (sitemapChanged && !changed) {
+         cms.data.sitemapPostJSON('stopedit', {}, function() {
+                  });
+      }
       sitemapChanged = changed;
       var $saveButton = $('button[name=save]');
       if (changed) {
@@ -1508,14 +1530,55 @@
       }
    }
    
+   /**
+    * Loads the sitemap and continues to initialize the sitemap editor after loading is finished.
+    *
+    */
+   var loadAndInitSitemap = cms.sitemap.loadAndInitSitemap = function() {
+      setWaitOverlayVisible(true);
+      
+      cms.data.sitemapPostJSON(ACTION_ALL, {}, function(ok, data) {
+         var allowEdit = !data.noEditReason;
+         setWaitOverlayVisible(false);
+         if (!ok) {
+            return;
+         }
+         var sitemap = data.sitemap;
+         var favorites = data.favorites;
+         var recent = data.recent;
+         _buildSitemap(sitemap).appendTo('#' + sitemapId);
+         initSitemap(allowEdit);
+         setSitemapChanged(false);
+         getSitemapProperties(function(ok, data) {
+            cms.sitemap.propertyDefinitions = data;
+            
+         });
+         if (data.noEditReason) {
+            $('#toolbar_content button').addClass('cms-deactivated').unbind('click');
+            
+            cms.util.dialogAlert(data.noEditReason, "Can't edit sitemap");
+         }
+      })
+   }
+   
+   /**
+    * AJAX call that sends the sitemap to the server to save it.
+    * @param {Object} sitemap the sitemap
+    * @param {Object} callback the callback that should be called after the server sends its response
+    */
+   var saveSitemap = cms.data.saveSitemap = function(sitemap, callback) {
+      cms.data.sitemapPostJSON(ACTION_SAVE, {
+         'sitemap': sitemap
+      }, callback);
+   }
    
    /**
     * Requests the favorite list from the server and stores it in cms.sitemap.favorites.
     *
     * @param {Object} callback the function to be called after the favorite list has been loaded
     */
-   var loadFavorites = function(callback) {
-      cms.data.sitemapPostJSON('get', {
+   var loadFavorites = cms.data.loadFavorites = function(callback) {
+      cms.data.sitemapPostJSON(ACTION_GET, {
          'fav': true
       }, function(ok, data) {
          if (!ok) {
@@ -1526,15 +1589,13 @@
       })
    }
    
-   
-   
    /**
     * Requests the recent list from the server and stores it in cms.sitemap.recent.
     *
     * @param {Object} callback the function to be called after the recent list has been loaded
     */
-   var loadRecent = function(callback) {
-      cms.data.sitemapPostJSON('get', {
+   var loadRecent = cms.data.loadRecent = function(callback) {
+      cms.data.sitemapPostJSON(ACTION_GET, {
          'rec': true
       }, function(ok, data) {
          if (!ok) {
@@ -1550,9 +1611,9 @@
     *
     * @param {Object} callback the function to be called after the server has replied
     */
-   var saveFavorites = function(callback) {
-      cms.data.sitemapPostJSON('set', {
-         fav: cms.sitemap.favorites
+   var saveFavorites = cms.data.saveFavorites = function(callback) {
+      cms.data.sitemapPostJSON(ACTION_SET, {
+         'fav': cms.sitemap.favorites
       }, callback);
    }
    
@@ -1561,22 +1622,51 @@
     *
     * @param {Object} callback the function to be called after the server has replied
     */
-   var saveRecent = function(callback) {
-      cms.data.sitemapPostJSON('set', {
+   var saveRecent = cms.data.saveRecent = function(callback) {
+      cms.data.sitemapPostJSON(ACTION_SET, {
          'rec': cms.sitemap.recent
       }, callback);
    }
    
+   /**
+    * Sends a url name candidate to the server for translation, then calls a callback with the translated name.
+    * @param {Object} name the URL name to be translated
+    * @param {Object} callback the callback which should be called after translation
+    */
+   var convertUrlName = cms.data.convertUrlName = function(name, callback) {
+      cms.data.sitemapPostJSON(ACTION_VALIDATE, {
+         'name': name
+      }, function(ok, data) {
+         if (!ok) {
+            return;
+         }
+         callback(data.name);
+      });
+   }
+   
+   /**
+    * Gets the entry data for a sitemap entry.
+    * @param {Object} $item the sitemap entry for which the entry data should be read
+    */
    var getEntryData = function($item) {
       var resultStr = decodeURIComponent($item.attr("rel"));
       return JSON.parse(resultStr);
    }
    
+   /**
+    * Sets the entry data for a sitemap entry.
+    * @param {Object} $item the sitemap entry
+    * @param {Object} obj the entry data
+    */
    var setEntryData = function($item, obj) {
       var dataStr = encodeURIComponent(JSON.stringify(obj));
       $item.attr('rel', dataStr);
    }
    
+   
+   /**
+    * Unload handler which asks the user whether he wants to save his changes.
+    */
    var onUnload = function() {
       if (sitemapChanged) {
          var saveChanges = window.confirm('Do you want to save your changes to the sitemap?');
@@ -1584,28 +1674,13 @@
             saveSitemap(serializeSitemap($('#' + sitemapId)), function() {
                         });
          } else {
-            setPageChanged(false);
+            setSitemapChanged(false);
          }
       }
    }
    
-   var validateSitemapEntry = function(title, name, callback) {
-      var errors = [];
-      if (title == '') {
-         errors.push('Title can\'t be empty');
-      }
-      if (name == '') {
-         errors.push('URL name can\'t be empty')
-      }
-      callback(title, name, errors);
-   }
    
-   var showValidationResults = function($form, validationResults) {
-      for (var i = 0; i < validationResults.length; i++) {
-         var vr = validationResults[i];
-         //$(vr.selector, $form)[vr.method](vr.text)
-      }
-   }
+   
    /**
     * Adds an opener and a dropzone to the DOM of a sitemap entry.
     * @param {Object} $element the DOM element, wrapped in a jQuery object
@@ -1648,7 +1723,8 @@
       buttons['Ok'] = function() {
       
          var newFav = $.map($ul.find('.cms-toplevel-entry').get(), function(sm) {
-            return serializeSitemapElement($(sm), true);
+            var entry = new SitemapEntry(sm);
+            return entry.serialize(true);
          });
          $dlg.dialog('destroy');
          cms.data.sitemapPostJSON('set', {
@@ -1671,6 +1747,404 @@
          buttons: buttons,
          title: 'Edit favorites'
       });
+   }
+   
+   /**
+    * Enables or disables a "waiting" sign for long-running operations
+    * @param {Boolean} visible enable the waiting sign if this is true, else disable it
+    */
+   var setWaitOverlayVisible = function(visible) {
+      $('#cms-waiting-layer').remove();
+      if (visible) {
+         var $layer = $('<div id="cms-waiting-layer"></div>');
+         $layer.appendTo('body');
+         $layer.css({
+            position: 'fixed',
+            top: '0px',
+            left: '0px',
+            'z-index': 99999,
+            width: '100%',
+            height: '100%',
+            'background-color': '#000000',
+            'opacity': '0.5'
+         });
+         $('<img></img>').attr('src', cms.data.SKIN_URL + 'commons/wait.gif').appendTo($layer);
+      }
+   }
+   
+   var assert = function(condition, desc) {
+      if (!condition) {
+         throw desc;
+      }
+   };
+   
+   var wrapConstructor = function(constructor) {
+      return function() {
+         return new constructor(arguments);
+      }
+   }
+   
+   var SitemapEntry = function(li) {
+   
+      this.$li = $(li);
+      assert(this.$li.hasClass('cms-sitemap-entry'), "wrong element for sitemap entry");
+      this.$item = this.$li.children('.cms-sitemap-item');
+      
+   }
+   
+   SitemapEntry.prototype = {
+      getChildren: function() {
+         var $ul = this.$li.children('ul');
+         if ($ul.size() > 0) {
+            var $childrenLi = $ul.children('li');
+            return $.map($childrenLi.get(), wrapConstructor(SitemapEntry));
+         } else {
+            return [];
+         }
+      },
+      
+      setOpen: function(opened) {
+         if (opened) {
+            this.$li.removeClass('cms-closed');
+         } else {
+            this.$li.addClass('cms-closed');
+         }
+      },
+      
+      getUrlName: function() {
+         return this.$li.find('.cms-url-name:first').attr('alt');
+      },
+      
+      setUrlName: function(newValue) {
+         setInfoValue(this.$item.find('.cms-url-name'), newValue, 37, true);
+      },
+      
+      getTitle: function() {
+         return this.$item.find('h3').text();
+      },
+      
+      setTitle: function(newValue) {
+         this.$item.find('h3').text(newValue);
+      },
+      
+      setUrl: function(newValue) {
+         setInfoValue(this.$item.find('span.cms-url'), newValue, 37, true);
+      },
+      
+      getUrl: function() {
+         return this.$item.find('span.cms-url').attr('alt');
+      },
+      
+      setUrls: function(parentUrl) {
+         var self = this;
+         var pathName = self.getUrlName();
+         self.setUrl(parentUrl + '/' + pathName + '.html');
+         var children = self.getChildren();
+         for (var i = 0; i < children.length; i++) {
+            children[i].setUrls(parentUrl + '/' + pathName);
+         }
+      },
+      
+      getId: function() {
+         var entryData = getEntryData(this.$li);
+         return entryData.id;
+      },
+      
+      setId: function(newValue) {
+         var entryData = getEntryData(this.$li);
+         entryData.id = newValue;
+         setEntryData(this.$li, entryData);
+      },
+      
+      getProperties: function() {
+         var entryData = getEntryData(this.$li);
+         return entryData.properties;
+      },
+      
+      setProperties: function(newValue) {
+         var entryData = getEntryData(this.$li);
+         entryData.properties = newValue;
+         setEntryData(this.$li, entryData);
+      },
+      
+      getPropertiesWithDefinitions: function() {
+         var self = this;
+         var propDefs = JSON.parse(JSON.stringify(cms.sitemap.propertyDefinitions)).properties;
+         var props = self.getProperties();
+         var propEntries = mergePropertiesWithDefinitions(propDefs, props);
+         return propEntries;
+      },
+      
+      getPath: function() {
+         var self = this;
+         return self.$item.find('.cms-vfs-path').attr('alt');
+      },
+      
+      serialize: function(includeContent) {
+         var self = this;
+         var title = self.getTitle();
+         var urlName = self.getUrlName();
+         var vfsPath = self.getPath();
+         var children = self.getChildren();
+         var childrenResults = [];
+         for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            childrenResults.push(child.serialize(includeContent));
+         }
+         var result = {
+            title: title,
+            id: self.getId(),
+            name: urlName,
+            subentries: childrenResults,
+            properties: self.getProperties()
+         };
+         if (includeContent) {
+            var content = $('<p></p>').append(self.$item.clone()).html();
+            result.content = content;
+         }
+         return result;
+      }
+   }
+   
+   var getSitemapProperties = function(callback) {
+      cms.data.sitemapPostJSON('props', {}, callback)
+   }
+   
+   
+   /**
+    * Checks whether an object has no properties.
+    * @param {Object} obj
+    */
+   var _isEmpty = function(obj) {
+      for (var key in obj) {
+         return false;
+      }
+      return true;
+   }
+   
+   var makeDialogDiv = cms.property.makeDialogDiv = function(divId) {
+      var $d = $('#' + divId);
+      if ($d.size() == 0) {
+         $d = $('<div></div>').attr('id', divId).css('display', 'none').appendTo('body');
+      }
+      $d.empty();
+      return $d;
+   }
+   
+   
+   var TitleAndUrlName = function() {
+      var self = this;
+      self.$dom = $('<div/>');
+      var _rowInput = function(label) {
+         var $tr = $('<tr/>');
+         $('<td></td>').text(label).appendTo($tr);
+         var $input = $('<input type="text"></input>');
+         $('<td></td>').append($input).appendTo($tr);
+         return $tr;
+      }
+      
+      var _rowText = function(text) {
+         var $tr = $('<tr/>');
+         $('<td/>').attr('colspan', '2').text(text).appendTo($tr);
+         return $tr;
+      }
+      
+      var $table = $('<table border="0"></table>').appendTo(self.$dom);
+      var $titleRow = _rowInput('Title: ').appendTo($table);
+      var $titleErrorRow = _rowText('').appendTo($table).hide();
+      $titleErrorRow.css('color', '#ff0000');
+      var $urlNameRow = _rowInput('URL name: ').appendTo($table);
+      var $urlNameErrorRow = _rowText('').appendTo($table).hide();
+      $urlNameErrorRow.css('color', '#ff0000');
+      self.$titleRow = $titleRow;
+      self.$urlNameRow = $urlNameRow;
+      self.$titleErrorRow = $titleErrorRow;
+      self.$urlNameErrorRow = $urlNameErrorRow;
+   }
+   
+   TitleAndUrlName.prototype = {
+      getTitle: function() {
+         var self = this;
+         return self.$titleRow.find('input').val();
+      },
+      
+      setTitle: function(newValue) {
+         var self = this;
+         self.$titleRow.find('input').val(newValue);
+      },
+      
+      getUrlName: function() {
+         var self = this;
+         return self.$urlNameRow.find('input').val();
+      },
+      
+      setUrlName: function(newValue) {
+         var self = this;
+         self.$urlNameRow.find('input').val(newValue);
+      },
+      
+      showUrlNameError: function(errorMessage) {
+         var self = this;
+         if (errorMessage) {
+            self.$urlNameErrorRow.show().find('td').text(errorMessage);
+         } else {
+            self.$urlNameErrorRow.hide();
+         }
+      },
+      
+      showTitleError: function(errorMessage) {
+         var self = this;
+         if (errorMessage) {
+            self.$titleErrorRow.show().find('td').text(errorMessage);
+         } else {
+            self.$titleErrorRow.hide();
+         }
+      }
+   }
+   
+   /**
+    * Displays the property editor.
+    *
+    * @param {Object} properties the current non-default properties
+    * @param {Object} defaults the property configuration containing defaults and widget types
+    */
+   var showEntryEditor = cms.sitemap.showEntryEditor = function(entry, writeData, otherUrlNames, callback, cancelCallback) {
+      var title = entry.getTitle();
+      var urlName = entry.getUrlName();
+      var properties = entry.getPropertiesWithDefinitions();
+      var widgets = {};
+      var newProps = {};
+      var $table = cms.property.buildPropertyTable(properties, widgets);
+      var $dlg = makeDialogDiv('cms-property-dialog');
+      var titleAndName = new TitleAndUrlName();
+      
+      titleAndName.setTitle(title);
+      titleAndName.setUrlName(urlName);
+      titleAndName.$dom.appendTo($dlg);
+      
+      $('<hr/>').css({
+         'margin-top': '15px',
+         'margin-bottom': '15px'
+      }).appendTo($dlg);
+      $('<div></div>').css('font-weight', 'bold').text('Properties: ').appendTo($dlg);
+      
+      $dlg.append($table);
+      
+      var _destroy = function() {
+         $dlg.dialog('destroy');
+      }
+      
+      var buttons = {};
+      buttons['Cancel'] = function() {
+         _destroy();
+         if (cancelCallback) {
+            cancelCallback();
+         }
+      };
+      var options = {
+         title: 'Edit entry',
+         modal: true,
+         autoOpen: true,
+         width: 440,
+         zIndex: 9999,
+         close: _destroy,
+         buttons: buttons
+      }
+      
+      $dlg.dialog(options);
+      
+      // align middle columns of both tables
+      var colOffset1 = $table.find('td:eq(1)').position().left;
+      var colOffset2 = titleAndName.$dom.find('td:eq(1)').position().left;
+      if (colOffset1 > colOffset2) {
+         titleAndName.$dom.css('margin-left', (colOffset1 - colOffset2) + 'px');
+      } else {
+         $table.css('margin-left', (colOffset2 - colOffset1) + 'px');
+      }
+      
+      
+      var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text('OK');
+      
+      var _validateAll = function(validationCallback) {
+         var result = true;
+         cms.property.setDialogButtonEnabled($ok, false);
+         var urlName = titleAndName.getUrlName();
+         var urlNameError = null;
+         var hasUrlNameError = false;
+         convertUrlName(urlName, function(newUrlName) {
+            var titleError = null;
+            if (titleAndName.getTitle() == '') {
+               titleError = 'The title must not be empty.';
+               result = false;
+            }
+            titleAndName.showTitleError(titleError);
+            
+            var isDuplicate = otherUrlNames[newUrlName];
+            hasUrlNameError = isDuplicate || (urlName != newUrlName)
+            if (isDuplicate && (urlName != newUrlName)) {
+               urlNameError = 'The translation of the name "' + urlName + '" already exists at this level';
+            } else if (isDuplicate) {
+               urlNameError = 'The name already exists at this level';
+            } else if (urlName != newUrlName) {
+               urlNameError = 'The name was translated from "' + urlName + '".';
+            }
+            titleAndName.setUrlName(newUrlName);
+            titleAndName.showUrlNameError(urlNameError);
+            
+            if (hasUrlNameError) {
+               result = false;
+            }
+            
+            for (var key in widgets) {
+               if (!widgets[key].validate()) {
+                  result = false;
+               }
+            }
+            if (validationCallback) {
+               validationCallback(result);
+            }
+         });
+      }
+      
+      function _validationCallback(ok) {
+         cms.property.setDialogButtonEnabled($ok, ok);
+      }
+      
+      _validateAll(_validationCallback);
+      
+      
+      $dlg.click(function() {
+         _validateAll(_validationCallback);
+         return true;
+      });
+      $dlg.nextAll().click(function() {
+         _validateAll(_validationCallback);
+      });
+      $dlg.keydown(function(e) {
+         // user pressed Tab or Enter
+         if (e.keyCode == 9 || e.keyCode == 13) {
+            _validateAll(_validationCallback);
+         }
+      });
+      
+      $ok.click(function() {
+         _validateAll(function(ok) {
+            cms.property.setDialogButtonEnabled($ok, ok);
+            if (ok) {
+               _destroy();
+               for (widgetName in widgets) {
+                  widgets[widgetName].save(newProps);
+               }
+               if (writeData) {
+                  entry.setTitle(titleAndName.getTitle());
+                  entry.setUrlName(titleAndName.getUrlName());
+                  entry.setProperties(newProps);
+               }
+               callback(titleAndName.getTitle(), titleAndName.getUrlName(), newProps);
+            }
+         });
+      });
+      $dlg.nextAll('.ui-dialog-buttonpane').append($ok);
    }
    
 })(cms);

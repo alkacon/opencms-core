@@ -11,8 +11,10 @@
     * inputClass: String (default='cms-direct-input')
     *     the css-class used for the input elements
     * setValue: function(element, input) (default=null)
-    *     if set the given function will be executed when the value has changed.
+    *     if set the given function will be executed when the user enters a new value.
     *     this will override the default _setValue function.
+    * valueChanged: function()
+    *     If set, this function will be called after setValue.
     *
     * @param {Object} options the options
     */
@@ -35,7 +37,7 @@
       /** The click-handler. */
       function _click() {
          var elem = $(this);
-         var previousValue= $.isFunction(opts.readValue) ? opts.readValue(elem) : elem.text();
+         var previousValue = $.isFunction(opts.readValue) ? opts.readValue(elem) : elem.text();
          var input = $('<input name="directInput" type="text" class="' + opts.inputClass + '" value="' + previousValue + '" />');
          _copyCss(elem, input);
          input.insertBefore(elem);
@@ -72,8 +74,12 @@
                } else {
                   _setValue(elem, input);
                }
-            };
-                     });
+               opts.valueChanged();
+            } else if (e.keyCode == 27) {
+               elem.css('display', '');
+               input.remove();
+            }
+         });
          
          // set the value on loosing focus
          input.blur(function() {
@@ -82,6 +88,7 @@
             } else {
                _setValue(elem, input);
             }
+            opts.valueChanged();
          });
       }
       
@@ -112,7 +119,7 @@
          var previous = $.isFunction(opts.readValue) ? opts.readValue(elem) : elem.text();
          var current = input.val();
          if (previous != current) {
-            elem.text(current)
+            elem.text(current);
          }
          elem.css('display', '');
          input.remove();
@@ -133,6 +140,8 @@
    $.fn.directInput.defaults = {
       live: false,
       inputClass: 'cms-direct-input',
-      marginHack: false
+      marginHack: false,
+      valueChanged: function() {
+            }
    };
 })(jQuery);
