@@ -157,6 +157,54 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/default-gallery-list-formatter.jsp</source>
+			<destination>system/workplace/editors/ade/default-gallery-list-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>89129b4b-cf73-11de-8579-83dd4001fc7f</uuidstructure>
+			<uuidresource>89129b4c-cf73-11de-8579-83dd4001fc7f</uuidresource>
+			<datelastmodified>Mon, 16 Nov 2009 15:00:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 12 Nov 2009 10:09:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+			    <property>
+					<name>cache</name>
+					<value><![CDATA[uri;attrs=(__galleryitem)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/default_preview_formatter.jsp</source>
+			<destination>system/workplace/editors/ade/default_preview_formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>83ba4681-d2b5-11de-989f-8d343bd9a4f4</uuidstructure>
+			<uuidresource>83ba4682-d2b5-11de-989f-8d343bd9a4f4</uuidresource>
+			<datelastmodified>Thu, 12 Nov 2009 10:09:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 16 Nov 2009 13:39:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+			    <property>
+					<name>cache</name>
+					<value><![CDATA[uri;attrs=(__galleryitem)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/cms.messages.jsp</source>
 			<destination>system/workplace/editors/ade/cms.messages.jsp</destination>

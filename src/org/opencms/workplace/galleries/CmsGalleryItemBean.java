@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGalleryItemBean.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/17 07:42:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,40 +31,43 @@
 
 package org.opencms.workplace.galleries;
 
+import org.opencms.file.CmsResource;
 import org.opencms.search.CmsSearchResult;
 
 public class CmsGalleryItemBean {
 
-    /** The item title. */
-    private String m_title;
-
-    /** The item sub-title. */
-    private String m_subtitle;
-
     /** The item icon path. */
     private String m_icon;
+
+    /** The vfs path. */
+    private String m_path;
+
+    /** The resource. */
+    private CmsResource m_resource;
 
     /** The search-result. */
     private CmsSearchResult m_searchResult;
 
+    /** The item sub-title. */
+    private String m_subtitle;
+
+    /** The item title. */
+    private String m_title;
+
+    /** The resource type id. */
+    private int m_typeId = -5;
+
+    /** The resource type name. */
+    private String m_typeName;
+
     /**
-     * Returns the search-result if available.<p>
-     *
-     * @return the search-result
+     * Constructor.<p>
+     * 
+     * @param resource the element resource
      */
-    public CmsSearchResult getSearchResult() {
+    public CmsGalleryItemBean(CmsResource resource) {
 
-        return m_searchResult;
-    }
-
-    /**
-     * Sets the searchResult.<p>
-     *
-     * @param searchResult the searchResult to set
-     */
-    public void setSearchResult(CmsSearchResult searchResult) {
-
-        m_searchResult = searchResult;
+        m_resource = resource;
     }
 
     /**
@@ -82,23 +85,43 @@ public class CmsGalleryItemBean {
     }
 
     /**
-     * Returns the title.<p>
+     * Returns the icon.<p>
      *
-     * @return the title
+     * @return the icon
      */
-    public String getTitle() {
+    public String getIcon() {
 
-        return m_title;
+        return m_icon;
     }
 
     /**
-     * Sets the title.<p>
+     * Returns the path.<p>
      *
-     * @param title the title to set
+     * @return the path
      */
-    public void setTitle(String title) {
+    public String getPath() {
 
-        m_title = title;
+        return m_path;
+    }
+
+    /**
+     * Returns the resource.<p>
+     *
+     * @return the resource
+     */
+    public CmsResource getResource() {
+
+        return m_resource;
+    }
+
+    /**
+     * Returns the search-result if available.<p>
+     *
+     * @return the search-result
+     */
+    public CmsSearchResult getSearchResult() {
+
+        return m_searchResult;
     }
 
     /**
@@ -112,23 +135,33 @@ public class CmsGalleryItemBean {
     }
 
     /**
-     * Sets the subtitle.<p>
+     * Returns the title.<p>
      *
-     * @param subtitle the subtitle to set
+     * @return the title
      */
-    public void setSubtitle(String subtitle) {
+    public String getTitle() {
 
-        m_subtitle = subtitle;
+        return m_title;
     }
 
     /**
-     * Returns the icon.<p>
+     * Returns the typeId.<p>
      *
-     * @return the icon
+     * @return the typeId
      */
-    public String getIcon() {
+    public int getTypeId() {
 
-        return m_icon;
+        return m_typeId;
+    }
+
+    /**
+     * Returns the type name.<p>
+     *
+     * @return the type name
+     */
+    public String getTypeName() {
+
+        return m_typeName;
     }
 
     /**
@@ -139,6 +172,76 @@ public class CmsGalleryItemBean {
     public void setIcon(String icon) {
 
         m_icon = icon;
+    }
+
+    /**
+     * Sets the path.<p>
+     *
+     * @param path the path to set
+     */
+    public void setPath(String path) {
+
+        m_path = path;
+    }
+
+    /**
+     * Sets the resource.<p>
+     *
+     * @param resource the resource to set
+     */
+    public void setResource(CmsResource resource) {
+
+        m_resource = resource;
+    }
+
+    /**
+     * Sets the search result.<p>
+     *
+     * @param searchResult the search result to set
+     */
+    public void setSearchResult(CmsSearchResult searchResult) {
+
+        m_searchResult = searchResult;
+    }
+
+    /**
+     * Sets the subtitle.<p>
+     *
+     * @param subtitle the subtitle to set
+     */
+    public void setSubtitle(String subtitle) {
+
+        m_subtitle = subtitle;
+    }
+
+    /**
+     * Sets the title.<p>
+     *
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+
+        m_title = title;
+    }
+
+    /**
+     * Sets the type id.<p>
+     *
+     * @param typeId the type id to set
+     */
+    public void setTypeId(int typeId) {
+
+        m_typeId = typeId;
+    }
+
+    /**
+     * Sets the type name.<p>
+     *
+     * @param typeName the type name to set
+     */
+    public void setTypeName(String typeName) {
+
+        m_typeName = typeName;
     }
 
 }

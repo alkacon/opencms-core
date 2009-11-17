@@ -6,12 +6,11 @@
 org.opencms.workplace.galleries.CmsDefaultFormatterHelper cms = new org.opencms.workplace.galleries.CmsDefaultFormatterHelper(pageContext, request, response);
 pageContext.setAttribute("cms", cms);
 %>
-
-<div class="cms-list-item ui-widget-content ui-state-default ui-corner-all">
-	<div style="background-image: url(${cms.iconPath});" class="cms-list-image"></div>
-	<div class="cms-list-itemcontent">
-    	<div class="cms-list-title">${cms.title}</div>
-		<div>${cms.subTitle}</div>
+<fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
+<div class="ui-widget-content">
+	<h3>${cms.title}</h3>
+	<div>
+		<b>Last modified:</b>&nbsp;<fmt:formatDate value="${cms.resource.dateLastModified}"/><br />
+		<b>Path:</b>&nbsp;${cms.path}<br />
 	</div>
 </div>
-

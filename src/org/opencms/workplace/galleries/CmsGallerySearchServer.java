@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/11/17 07:42:26 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.workplace.galleries;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -84,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 7.6
  */
@@ -104,6 +105,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         /** To get all available galleries. */
         GALLERIES,
+
+        /** To get the preview html of a resource. */
+        PREVIEW,
 
         /** To retrieve search results. */
         SEARCH;
@@ -248,11 +252,20 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The matches per page. */
         MATCHESPERPAGE("matchesperpage"),
 
+        /** The name. */
+        NAME("name"),
+
         /** The page. */
         PAGE("page"),
 
         /** The path. */
         PATH("path"),
+
+        /** The preview data. */
+        PREVIEWDATA("previewdata"),
+
+        /** The properties. */
+        PROPERTIES("properties"),
 
         /** The query-string. */
         QUERY("query"),
@@ -272,6 +285,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The sort-order. */
         SORTORDER("sortorder"),
 
+        /** The tab-id. */
+        TABID("tabid"),
+
         /** The title. */
         TITLE("title"),
 
@@ -282,7 +298,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         TYPEID("typeid"),
 
         /** The gallery-types. */
-        TYPES("types");
+        TYPES("types"),
+
+        /** The value. */
+        VALUE("value");
 
         /** Property name. */
         private String m_name;
@@ -310,11 +329,14 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The action of execute. */
         ACTION("action"),
 
+        /** The current element. */
+        CURRENTELEMENT("currentelement"),
+
         /** Generic data parameter. */
         DATA("data"),
 
         /** The current gallery item parameter. */
-        GALLERYITEM("galleryitem"),
+        GALLERYITEM("__galleryitem"),
 
         /** The current locale. */
         LOCALE("locale");
@@ -370,11 +392,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * 
      * @return the result
      * 
-     * @throws JSONException if there is any problem with JSON
-     * @throws CmsException if there is a problem with the cms context
+     * @throws Exception if there is a problem
      */
     @Override
-    public JSONObject executeAction() throws CmsException, JSONException {
+    public JSONObject executeAction() throws Exception {
 
         JSONObject result = new JSONObject();
         HttpServletRequest request = getRequest();
@@ -412,6 +433,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             } else if (action.equals(Action.SEARCH)) {
                 JSONObject query = data.getJSONObject(JsonKeys.QUERYDATA.getName());
                 result.put(JsonKeys.SEARCHRESULT.getName(), search(query));
+            } else if (action.equals(Action.PREVIEW)) {
+                String resourcePath = data.getString(JsonKeys.PATH.getName());
+                result.put(JsonKeys.PREVIEWDATA.getName(), getPreviewData(resourcePath));
             }
         }
         return result;
@@ -579,7 +603,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 resultEntry.put(JsonKeys.ITEMHTML.getName(), getFormattedListContent(
                     OpenCms.getResourceManager().getResourceType(sResult.getDocumentType()),
                     sResult.getField(CmsSearchField.FIELD_TITLE),
-                    sResult.getField(CmsSearchField.FIELD_DESCRIPTION),
+                    sResult.getPath(),
                     iconpath,
                     sResult));
                 result.put(resultEntry);
@@ -723,6 +747,42 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         }
 
         return galleries;
+    }
+
+    private JSONObject getPreviewData(String resourcePath) throws Exception {
+
+        JSONObject result = new JSONObject();
+
+        // getting formatted content
+        Map<String, Object> reqAttributes = new HashMap<String, Object>();
+        CmsResource resource = m_cms.readResource(resourcePath);
+        I_CmsResourceType type = getResourceManager().getResourceType(resource.getTypeId());
+        CmsGalleryItemBean reqItem = new CmsGalleryItemBean(resource);
+        reqItem.setTypeId(resource.getTypeId());
+        reqItem.setTypeName(type.getTypeName());
+        reqAttributes.put(ReqParam.GALLERYITEM.getName(), reqItem);
+        result.put(JsonKeys.ITEMHTML.getName(), type.getFormattedContent(
+            m_cms,
+            getRequest(),
+            getResponse(),
+            A_CmsResourceType.DefaultFormatters.FORMATTER_GALLERY_PREVIEW.getKey(),
+            reqAttributes));
+
+        // reading default explorer-type properties
+        JSONArray propertiesJSON = new JSONArray();
+        List<String> properties = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getProperties();
+        Iterator<String> propIt = properties.iterator();
+        while (propIt.hasNext()) {
+            String propertyName = propIt.next();
+            CmsProperty property = m_cms.readPropertyObject(resource, propertyName, false);
+            JSONObject propertyJSON = new JSONObject();
+            propertyJSON.put(JsonKeys.NAME.getName(), propertyName);
+            propertyJSON.put(JsonKeys.VALUE.getName(), property.getValue());
+            propertiesJSON.put(propertyJSON);
+        }
+        result.put(JsonKeys.PROPERTIES.getName(), propertiesJSON);
+        return result;
+
     }
 
     /**
@@ -1051,4 +1111,27 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             reqAttributes);
     }
 
+    /**
+     * Generates the java-script script-tags necessary for the given resource types.
+     * Providing extra functionality within the galleries.<p>
+     * 
+     * @param cms the current instance of the cms object 
+     * @param types the resource types
+     * @return the script tags to include into the gallery page
+     */
+    public static String getJSIncludeForTypes(CmsObject cms, List<I_CmsResourceType> types) {
+
+        StringBuffer result = new StringBuffer(32);
+        Iterator<I_CmsResourceType> typeIt = types.iterator();
+        while (typeIt.hasNext()) {
+            I_CmsResourceType type = typeIt.next();
+            String jsPath = type.getConfiguration().get("js.path");
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(jsPath) && cms.existsResource(jsPath)) {
+                result.append("<script type=\"text/javascript\" src=\"");
+                result.append(CmsWorkplace.getResourceUri(jsPath));
+                result.append("\"></script>\n");
+            }
+        }
+        return result.toString();
+    }
 }

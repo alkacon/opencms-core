@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/A_CmsAjaxServer.java,v $
- * Date   : $Date: 2009/11/10 16:42:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/17 07:42:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9
  */
@@ -143,10 +143,9 @@ public abstract class A_CmsAjaxServer extends CmsJspActionElement {
      * 
      * @return the result
      * 
-     * @throws JSONException if there is any problem with JSON
-     * @throws CmsException if there is a problem with the cms context
+     * @throws Exception if there is a problem
      */
-    public abstract JSONObject executeAction() throws CmsException, JSONException;
+    public abstract JSONObject executeAction() throws Exception;
 
     /**
      * Main method that handles all requests.<p>
