@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/11/17 15:04:18 $
- * Version: $Revision: 1.1160 $
+ * Date   : $Date: 2009/11/18 08:35:55 $
+ * Version: $Revision: 1.1161 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ OpenCms x.x.x - month day, year
 - Purge jsp repository after module import
 - Added additional mime-types
 * Adjustment for resource type "xmlpage" in extended mode in webdav
+* Fixed issue with selected versions in the resource history
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
