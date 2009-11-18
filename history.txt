@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/11/18 08:35:55 $
- * Version: $Revision: 1.1161 $
+ * Date   : $Date: 2009/11/18 15:21:59 $
+ * Version: $Revision: 1.1162 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - month day, year
+* Fixed issue #1791: Template Two Content external link check fails for two resources
 * Fixed issue #1787: Error when browsing the next result pages in the OpenCms backend search
 * If an error occurs while changing the user password in the preferences tab, so the error dialog can be closed with the close button
 * Fixed issue #1782: Publish dialog in Project overview list hangs
