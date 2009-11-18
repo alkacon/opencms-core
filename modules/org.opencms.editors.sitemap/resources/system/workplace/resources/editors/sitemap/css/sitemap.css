@@ -1,4 +1,4 @@
-	
+﻿	
 /*-------------------------*/
 /** General **/
 .cms-left {
@@ -1178,7 +1178,9 @@ span.cms-select-opener{
 	
 
 
-
+.cms-sub-sitemap > .cms-sitemap-item  {
+	background: #E6E6E6 url(images/ui-bg_glass_100_fdf5ce_1x400.png) repeat-x scroll 50% 50% !important;
+}
 
 
 
@@ -1499,16 +1501,6 @@ span.cms-select-opener{
   }
   
   option { padding-left: 0.4em; }
-
-
-
-
-
-
-
-
-
-
 
 
 

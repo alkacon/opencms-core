@@ -67,6 +67,11 @@
       adeMode: null
    };
    
+   
+   /**
+    * Adds a sitemap entry to the recent list
+    * @param {Object} entry the sitemap entry as JSON to add to the recent list
+    */
    var _addRecent = function(entry) {
       cms.sitemap.recent.unshift(entry);
       while (cms.sitemap.recent.length > MAX_RECENT) {
@@ -74,6 +79,10 @@
       }
    }
    
+   /**
+    * Adds a sitemap entry to the list of favorites.
+    * @param {Object} entry the sitemap entry as JSON to add to the favorites
+    */
    var _addFavorite = function(entry) {
       cms.sitemap.favorites.unshift(entry);
    }
@@ -90,6 +99,13 @@
       });
    }
    
+   /**
+    * Asks the user whether he really wants to set the url name for a sitemap entry.
+    * If he clicks OK, the item will be renamed.
+    *
+    * @param {Object} elem a DOM element in the sitemap entry to be renamed
+    * @param {Object} newValue the new URL name
+    */
    var _askSetURLName = function(elem, newValue) {
       var currentLi = elem.closest('li');
       var currentEntry = new SitemapEntry(currentLi);
@@ -135,11 +151,15 @@
       }
    }
    
-   
-   var setURLName = cms.sitemap.setURLName = function(elem, input) {
+   /**
+    * setValue handler for the directInput of url name fields
+    * @param {Object} elem
+    * @param {Object} input
+    */
+   var directInputSetUrlName = function(elem, input) {
       var previous = elem.attr('alt');
       var current = input.val();
-      convertUrlName(current, function(newValue) {
+      cms.data.convertUrlName(current, function(newValue) {
          if (previous != newValue) {
             _askSetURLName(elem, newValue);
          }
@@ -254,9 +274,13 @@
          
          setSitemapChanged(true);
          var sitemapEntry = new SitemapEntry(liItem.get(0));
-         _addRecent(sitemapEntry.serialize(true));
-         saveRecent(function(ok, data) {
+         _addRecent(sitemapEntry.serialize(false));
+         cms.data.saveRecent(function(ok, data) {
                   });
+      }
+      if (isLastRootEntry(liItem)) {
+         cms.util.dialogAlert("You can't delete this entry because it is the last remaining root level entry.");
+         return;
       }
       if (liItem.children('ul').length) {
          var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
@@ -291,7 +315,7 @@
     *
     */
    var destroyDraggable = cms.sitemap.destroyDraggable = function() {
-      $('#' + sitemapId + ' div.' + itemClass + ', #' + sitemapId + ' .' + dropzoneClass).droppable('destroy');
+      $('#' + sitemapId + ' div.' + itemClass + ', #' + sitemapId + '.cms-sitemap-entry:not(.cms-sub-sitemap) > .' + dropzoneClass).droppable('destroy');
       $('li').draggable('destroy');
    }
    
@@ -325,10 +349,15 @@
       $('<div class="cms-hovering cms-hovering-bottom"></div>').addClass(additionalClass).height(hWidth).width(btWidth).css('top', tHeight + hOff).css('left', tblLeft).appendTo(elem);
    }
    
+   /**
+    * Checks for duplicate url names before a sitemap entry is dropped.
+    * @param {Object} $dragged the dragged sitemap entry
+    * @param {Object} $dropzone the dropzone into which the entry should be dropped
+    */
    var checkDuplicateOnDrop = function($dragged, $dropzone) {
       var currentEntry = new SitemapEntry($dragged.get(0));
       var otherUrlNames = {};
-      if ($dropzone.hasClass('cms-sitemap-item')) {
+      if ($dropzone.hasClass(itemClass)) {
          var $targetUl = $dropzone.siblings('ul');
          if ($targetUl.size() > 0) {
             otherUrlNames = getOtherUrlNames($targetUl, $dragged.get(0));
@@ -344,13 +373,6 @@
          otherUrlNames: otherUrlNames
       };
    }
-   
-   var setProperties = function($entry, properties) {
-      var entryData = getEntryData($entry);
-      entryData.properties = properties;
-      setEntryData($entry, entryData);
-   }
-   
    
    /**
     * Handler for dropping sitemap entry into favorites
@@ -369,10 +391,10 @@
          dragClone.find('.' + classAdditionalShow).removeClass(classAdditionalShow);
          dragClone.appendTo(cms.sitemap.dom.favoriteList);
          var dragCloneEntry = new SitemapEntry(dragClone.get(0));
-         var newFav = dragCloneEntry.serialize(true);
+         var newFav = dragCloneEntry.serialize(false);
          
          _addFavorite(newFav);
-         saveFavorites(function() {
+         cms.data.saveFavorites(function() {
                   });
       }
       if (dragClone.find('ul').length) {
@@ -382,13 +404,22 @@
       }
    }
    
+   /**
+    * Returns the parent URL for a given dropzone.
+    * @param {Object} $dropzone the dropzone for which the parent URL should be returned
+    */
    var getDropzoneParentUrl = function($dropzone) {
       var parentURL = '';
       var $li = $dropzone.parent();
       var dropzoneEntry = new SitemapEntry($li.get(0));
       if ($dropzone.hasClass(dropzoneClass)) {
          var $parentLi = $li.parent().closest('li');
+         // drop zone is at root level
+         if ($parentLi.size() == 0) {
+            return '';
+         }
          var parentEntry = new SitemapEntry($parentLi.get(0));
+         
          if ($parentLi.length) {
             parentURL = parentEntry.getUrl();
             parentURL = parentURL.substring(0, parentURL.lastIndexOf('.'));
@@ -423,18 +454,16 @@
       // and the former parent is going to lose it's last child 
       // (the currently dragged item will appear twice, once as the original and once as the ui-helper),
       // set the removeFormerParent flag
-      
-      var sameParent = li.get(0) == formerParent.parent().get(0);
       var parentUl = null;
       if ($dropzone.hasClass(dropzoneClass)) {
          parentUl = li.closest('ul').get(0);
       } else {
          parentUl = li.children('ul').get(0);
       }
-      var sameParent2 = parentUl == formerParent.get(0);
+      var sameParent = parentUl == formerParent.get(0);
       
       formerParent.parent().css('border')
-      var removeFormerParent = (!sameParent && formerParent.children().length == 2);
+      var removeFormerParent = (li.get(0) != formerParent.parent().get(0) && formerParent.children().length == 2);
       
       var _completeDrop = function() {
          if ($dropzone.hasClass(dropzoneClass)) {
@@ -460,7 +489,7 @@
       }
       var li = $(this).parent();
       var duplicateStatus = checkDuplicateOnDrop($dragged, $(this));
-      if (!sameParent2 && duplicateStatus.duplicate) {
+      if (!sameParent && duplicateStatus.duplicate) {
          var otherUrlNames = duplicateStatus.otherUrlNames;
          showEntryEditor(draggedEntry, true, otherUrlNames, function(newTitle, newUrlName, newProperties) {
             var previousUrl = draggedEntry.getUrl();
@@ -471,7 +500,6 @@
             $dropzone.removeClass(classHovered);
             return;
          });
-         
       } else {
          _completeDrop();
       }
@@ -602,6 +630,15 @@
       return propEntries;
    }
    
+   /**
+    * Checks whether a given sitemap entry is the last remaining entry at the root level of the sitemap.
+    * @param {Object} $entry the entry which should be checked
+    */
+   var isLastRootEntry = function($entry) {
+      var $parent = $entry.parent();
+      return $parent.attr('id') == sitemapId && $parent.children().size() == 1;
+   }
+   
    
    /**
     * Initializes the sitemap editor.
@@ -681,12 +718,13 @@
             readValue: function(elem) {
                return elem.attr('alt');
             },
-            setValue: setURLName,
+            setValue: directInputSetUrlName,
             valueChanged: function() {
                setSitemapChanged(true);
             }
          });
       }
+      
       $('a.cms-icon-triangle').live('click', function() {
          $(this).parent().toggleClass(classAdditionalShow);
          var menu = $(this).closest('.cms-menu');
@@ -707,6 +745,10 @@
          var target = cms.data.CONTEXT + $(this).attr('alt');
          window.open(target, '_blank');
          //showLeaveDialog(target, 'Do you really want to leave the sitemap editor and discard your changes?', 'Leaving editor');
+      });
+      $('#' + sitemapId).children('li').each(function() {
+         var entry = new SitemapEntry(this);
+         entry.openRecursively(true, 2);
       });
       $(window).unload(onUnload);
    }
@@ -795,7 +837,7 @@
                 VFS-Path:<span class="cms-vfs-path">/demo3/123.xml</span><br/>\
               </div></div></li>');
       $('.cms-url-name', $result).attr('alt', title.toLowerCase());
-      $result.addClass('cms-sitemap-entry');
+      $result.addClass(classSitemapEntry);
       setEntryData($result, {
          properties: {}
       });
@@ -994,8 +1036,8 @@
       dragClone.find('span.' + classOpener).remove();
       
       var sitemapEntry = new SitemapEntry(dragClone.get(0));
-      _addRecent(sitemapEntry.serialize(true));
-      saveRecent(function() {
+      _addRecent(sitemapEntry.serialize(false));
+      cms.data.saveRecent(function() {
             })
       //dragClone.appendTo(cms.sitemap.dom.recentMenu.find('ul'));
       $('div.cms-handle').css('display', 'block');
@@ -1050,7 +1092,7 @@
             this.button.addClass('ui-state-active');
             var $sitemapElem = $('#' + sitemapId);
             var sitemap = serializeSitemap($sitemapElem);
-            saveSitemap(sitemap, function(ok, data) {
+            cms.data.saveSitemap(sitemap, function(ok, data) {
                if (ok) {
                   setSitemapChanged(false);
                } else {
@@ -1217,10 +1259,10 @@
       },
       
       load: function(callback) {
-         loadFavorites(function(ok, data) {
+         cms.data.loadFavorites(function(ok, data) {
             var favorites = data.favorites;
             $('#favorite_list_items').empty();
-            var $favContent = _buildSitemap(favorites).appendTo('#favorite_list_items');
+            var $favContent = buildSitemap(favorites).appendTo('#favorite_list_items');
             callback();
          });
       }
@@ -1259,10 +1301,10 @@
       },
       
       load: function(callback) {
-         loadRecent(function(ok, data) {
+         cms.data.loadRecent(function(ok, data) {
             var recent = data.recent;
             $('#recent_list_items').empty();
-            var $recContent = _buildSitemap(recent).appendTo('#recent_list_items');
+            var $recContent = buildSitemap(recent).appendTo('#recent_list_items');
             
             callback();
          });
@@ -1315,6 +1357,15 @@
             }
    }];
    
+   /**
+    * Displays a dialog asking the user if he wants to leave the page.
+    *
+    * If the user clicks OK, he will be sent to the target.
+    *
+    * @param {Object} target the URL of the site which the user should be sent to if he clicks OK
+    * @param {Object} dialogText the text of the dialog
+    * @param {Object} dialogTitle the title of the dialog
+    */
    var showLeaveDialog = function(target, dialogText, dialogTitle) {
       if (sitemapChanged) {
       
@@ -1363,97 +1414,6 @@
    }
    
    /**
-    * Serializes a sitemap DOM element to a JSON data structure.
-    *
-    * @param {Object} $element the DOM element for the sitemap entry ( wrapped in a jQuery object)
-    * @param {Boolean} includeContent if true, the HTML is included in the output object
-    */
-   var serializeSitemapElement = function($element, includeContent) {
-      var $sitemapItem = $element.children('.' + itemClass);
-      var title = $sitemapItem.children('h3:first').text();
-      var $addInfo = $sitemapItem.children('.' + classAdditionalInfo);
-      var urlName = $addInfo.children('.' + classUrlName).attr('alt');
-      var vfsPath = $addInfo.children('.' + classVfsPath).text();
-      var $children = $element.children('ul').children('li');
-      var childObjects = [];
-      $children.each(function() {
-         childObjects.push(serializeSitemapElement($(this), includeContent));
-      });
-      var entryData = getEntryData($element);
-      var dataNode = $sitemapItem.get(0);
-      var result = {
-         title: title,
-         id: entryData.id,
-         name: urlName,
-         subentries: childObjects,
-         properties: entryData.properties
-      };
-      if (includeContent) {
-         var content = $('<p></p>').append($sitemapItem.clone()).html();
-         result.content = content;
-      }
-      return result;
-   }
-   
-   var serialize = function(includeContent) {
-      var self = this;
-      var title = self.getTitle();
-      var urlName = self.getUrlName();
-      var vfsPath = self.getPath();
-      var children = self.getChildren();
-      var childrenResults = [];
-      for (var i = 0; i < children.length; i++) {
-         var child = children[i];
-         childrenResults.push(child.serialize(includeContent));
-      }
-      var result = {
-         title: title,
-         id: self.getId(),
-         name: urlName,
-         subentries: childrenResults,
-         properties: self.getProperties()
-      };
-      if (includeContent) {
-         var content = $('<p></p>').append(self.$item.clone()).html();
-         result.content = content;
-      }
-      return result;
-   }
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   /**
     * Helper function that generates a callback for jQuery.each which appends its "this" argument to a given parent
     *
     * @param {Object} $parent the parent object to which the callback returned should append its argument
@@ -1476,12 +1436,14 @@
       var $li = $('<li></li>').addClass(classSitemapEntry);
       $('.' + dropzoneClass, $li).remove();
       $('.' + classOpener, $li).remove();
+      var isSitemap = data.properties.sitemap;
       $('<div></div>').addClass(dropzoneClass).appendTo($li);
       if (data.subentries && data.subentries.length > 0) {
          $('<span></span>').addClass(classOpener).appendTo($li);
       }
       var $item = $(data.content).appendTo($li);
-      if (data.subentries && data.subentries.length > 0) {
+      
+      if (!isSitemap && data.subentries && data.subentries.length > 0) {
          $li.addClass(classSubtree);
          $li.addClass(classClosed);
          var $ul = $('<ul></ul>').appendTo($li);
@@ -1490,11 +1452,45 @@
          
       }
       var dataNode = $item.get(0);
+      var isSitemap = data.properties.sitemap;
+      if (isSitemap) {
+         delete data.properties['sitemap'];
+      }
       setEntryData($li, {
          properties: data.properties,
-         id: data.id
+         id: data.id,
+         sitemap: isSitemap
       });
+      if (isSitemap) {
+         $li.addClass('cms-sub-sitemap')
+      }
       return $li;
+   }
+   
+   /**
+    * AJAX handler that initializes the sitemap after loading it as JSON.
+    * @param {Object} ok
+    * @param {Object} data
+    */
+   var onLoadSitemap = cms.sitemap.onLoadSitemap = function(ok, data) {
+      var allowEdit = !data.noEditReason;
+      cms.sitemap.setWaitOverlayVisible(false);
+      if (!ok) {
+         return;
+      }
+      var sitemap = data.sitemap;
+      var favorites = data.favorites;
+      var recent = data.recent;
+      cms.sitemap.buildSitemap(sitemap).appendTo('#' + sitemapId);
+      initSitemap(allowEdit);
+      setSitemapChanged(false);
+      cms.data.getSitemapProperties(function(ok, data) {
+         cms.sitemap.propertyDefinitions = data;
+      });
+      if (data.noEditReason) {
+         $('#toolbar_content button').addClass('cms-deactivated').unbind('click');
+         cms.util.dialogAlert(data.noEditReason, "Can't edit sitemap");
+      }
    }
    
    /**
@@ -1502,7 +1498,7 @@
     *
     * @param {Object} data the list of sitemap entries.
     */
-   var _buildSitemap = function(data) {
+   var buildSitemap = cms.sitemap.buildSitemap = function(data) {
       return $($.map(data, _buildSitemapElement))
    }
    
@@ -1531,120 +1527,6 @@
    }
    
    /**
-    * Loads the sitemap and continues to initialize the sitemap editor after loading is finished.
-    *
-    */
-   var loadAndInitSitemap = cms.sitemap.loadAndInitSitemap = function() {
-      setWaitOverlayVisible(true);
-      
-      cms.data.sitemapPostJSON(ACTION_ALL, {}, function(ok, data) {
-         var allowEdit = !data.noEditReason;
-         setWaitOverlayVisible(false);
-         if (!ok) {
-            return;
-         }
-         var sitemap = data.sitemap;
-         var favorites = data.favorites;
-         var recent = data.recent;
-         _buildSitemap(sitemap).appendTo('#' + sitemapId);
-         initSitemap(allowEdit);
-         setSitemapChanged(false);
-         getSitemapProperties(function(ok, data) {
-            cms.sitemap.propertyDefinitions = data;
-            
-         });
-         if (data.noEditReason) {
-            $('#toolbar_content button').addClass('cms-deactivated').unbind('click');
-            
-            cms.util.dialogAlert(data.noEditReason, "Can't edit sitemap");
-         }
-      })
-   }
-   
-   /**
-    * AJAX call that sends the sitemap to the server to save it.
-    * @param {Object} sitemap the sitemap
-    * @param {Object} callback the callback that should be called after the server sends its response
-    */
-   var saveSitemap = cms.data.saveSitemap = function(sitemap, callback) {
-      cms.data.sitemapPostJSON(ACTION_SAVE, {
-         'sitemap': sitemap
-      }, callback);
-   }
-   
-   /**
-    * Requests the favorite list from the server and stores it in cms.sitemap.favorites.
-    *
-    * @param {Object} callback the function to be called after the favorite list has been loaded
-    */
-   var loadFavorites = cms.data.loadFavorites = function(callback) {
-      cms.data.sitemapPostJSON(ACTION_GET, {
-         'fav': true
-      }, function(ok, data) {
-         if (!ok) {
-            return;
-         }
-         cms.sitemap.favorites = data.favorites;
-         callback(ok, data);
-      })
-   }
-   
-   /**
-    * Requests the recent list from the server and stores it in cms.sitemap.recent.
-    *
-    * @param {Object} callback the function to be called after the recent list has been loaded
-    */
-   var loadRecent = cms.data.loadRecent = function(callback) {
-      cms.data.sitemapPostJSON(ACTION_GET, {
-         'rec': true
-      }, function(ok, data) {
-         if (!ok) {
-            return;
-         }
-         cms.sitemap.recent = data.recent;
-         callback(ok, data)
-      })
-   }
-   
-   /**
-    * Sends the favorite list to the server to save it.
-    *
-    * @param {Object} callback the function to be called after the server has replied
-    */
-   var saveFavorites = cms.data.saveFavorites = function(callback) {
-      cms.data.sitemapPostJSON(ACTION_SET, {
-         'fav': cms.sitemap.favorites
-      }, callback);
-   }
-   
-   /**
-    * Sends the recent list to the server to save it.
-    *
-    * @param {Object} callback the function to be called after the server has replied
-    */
-   var saveRecent = cms.data.saveRecent = function(callback) {
-      cms.data.sitemapPostJSON(ACTION_SET, {
-         'rec': cms.sitemap.recent
-      }, callback);
-   }
-   
-   /**
-    * Sends a url name candidate to the server for translation, then calls a callback with the translated name.
-    * @param {Object} name the URL name to be translated
-    * @param {Object} callback the callback which should be called after translation
-    */
-   var convertUrlName = cms.data.convertUrlName = function(name, callback) {
-      cms.data.sitemapPostJSON(ACTION_VALIDATE, {
-         'name': name
-      }, function(ok, data) {
-         if (!ok) {
-            return;
-         }
-         callback(data.name);
-      });
-   }
-   
-   /**
     * Gets the entry data for a sitemap entry.
     * @param {Object} $item the sitemap entry for which the entry data should be read
     */
@@ -1663,7 +1545,6 @@
       $item.attr('rel', dataStr);
    }
    
-   
    /**
     * Unload handler which asks the user whether he wants to save his changes.
     */
@@ -1671,14 +1552,13 @@
       if (sitemapChanged) {
          var saveChanges = window.confirm('Do you want to save your changes to the sitemap?');
          if (saveChanges) {
-            saveSitemap(serializeSitemap($('#' + sitemapId)), function() {
+            cms.data.saveSitemap(serializeSitemap($('#' + sitemapId)), function() {
                         });
          } else {
             setSitemapChanged(false);
          }
       }
    }
-   
    
    
    /**
@@ -1724,7 +1604,7 @@
       
          var newFav = $.map($ul.find('.cms-toplevel-entry').get(), function(sm) {
             var entry = new SitemapEntry(sm);
-            return entry.serialize(true);
+            return entry.serialize(false);
          });
          $dlg.dialog('destroy');
          cms.data.sitemapPostJSON('set', {
@@ -1753,7 +1633,7 @@
     * Enables or disables a "waiting" sign for long-running operations
     * @param {Boolean} visible enable the waiting sign if this is true, else disable it
     */
-   var setWaitOverlayVisible = function(visible) {
+   var setWaitOverlayVisible = cms.sitemap.setWaitOverlayVisible = function(visible) {
       $('#cms-waiting-layer').remove();
       if (visible) {
          var $layer = $('<div id="cms-waiting-layer"></div>');
@@ -1778,20 +1658,35 @@
       }
    };
    
+   /**
+    * Helper function that converts a constructor function to a factory function which returns the newly created object and can be used without "new".
+    * @param {Object} constructor the constructor function
+    */
    var wrapConstructor = function(constructor) {
       return function() {
          return new constructor(arguments);
       }
    }
    
+   
+   /**
+    * Constructor function for sitemap entries.
+    * @param {Object} li the LI DOM element representing a sitemap entry
+    */
    var SitemapEntry = function(li) {
    
       this.$li = $(li);
-      assert(this.$li.hasClass('cms-sitemap-entry'), "wrong element for sitemap entry");
-      this.$item = this.$li.children('.cms-sitemap-item');
+      assert(this.$li.hasClass(classSitemapEntry), "wrong element for sitemap entry");
+      this.$item = this.$li.children('.' + itemClass);
       
    }
    
+   /**
+    * Prototype for the SitemapEntry class.
+    *
+    * This class is a wrapper around a DOM element representing a sitemap entry which can be used to conveniently set
+    * or get attributes of that entry without directly using DOM manipulation functions.
+    */
    SitemapEntry.prototype = {
       getChildren: function() {
          var $ul = this.$li.children('ul');
@@ -1808,6 +1703,17 @@
             this.$li.removeClass('cms-closed');
          } else {
             this.$li.addClass('cms-closed');
+         }
+      },
+      
+      openRecursively: function(open, depth) {
+         var self = this;
+         if (depth != 0) {
+            self.setOpen(open);
+            var children = self.getChildren();
+            for (var i = 0; i < children.length; i++) {
+               children[i].openRecursively(open, depth - 1);
+            }
          }
       },
       
@@ -1835,6 +1741,10 @@
          return this.$item.find('span.cms-url').attr('alt');
       },
       
+      /**
+       * Recursively adjusts the URLs of the subtree starting at this sitemap entry.
+       * @param {Object} parentUrl the parent url of this sitemap entry
+       */
       setUrls: function(parentUrl) {
          var self = this;
          var pathName = self.getUrlName();
@@ -1880,6 +1790,16 @@
          return self.$item.find('.cms-vfs-path').attr('alt');
       },
       
+      isSitemap: function() {
+         var entryData = getEntryData(this.$li);
+         return entryData.sitemap;
+      },
+      
+      /**
+       * Recursively converts this entry and its subentries to JSON.
+       * @param {Boolean} includeContent if true, the content is included in the JSON output
+       * @return a JSON object describing the sitemap subtree starting from this entry
+       */
       serialize: function(includeContent) {
          var self = this;
          var title = self.getTitle();
@@ -1891,12 +1811,14 @@
             var child = children[i];
             childrenResults.push(child.serialize(includeContent));
          }
+         var properties = self.getProperties();
+         properties.sitemap = self.isSitemap();
          var result = {
             title: title,
             id: self.getId(),
             name: urlName,
             subentries: childrenResults,
-            properties: self.getProperties()
+            properties: properties
          };
          if (includeContent) {
             var content = $('<p></p>').append(self.$item.clone()).html();
@@ -1904,10 +1826,6 @@
          }
          return result;
       }
-   }
-   
-   var getSitemapProperties = function(callback) {
-      cms.data.sitemapPostJSON('props', {}, callback)
    }
    
    
@@ -2071,7 +1989,7 @@
          var urlName = titleAndName.getUrlName();
          var urlNameError = null;
          var hasUrlNameError = false;
-         convertUrlName(urlName, function(newUrlName) {
+         cms.data.convertUrlName(urlName, function(newUrlName) {
             var titleError = null;
             if (titleAndName.getTitle() == '') {
                titleError = 'The title must not be empty.';

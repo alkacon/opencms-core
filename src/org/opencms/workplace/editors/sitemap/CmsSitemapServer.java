@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/11/18 07:24:51 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.6
  */
@@ -886,7 +886,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         // the properties
         int j = 0;
         for (Map.Entry<String, String> property : entry.getProperties().entrySet()) {
-            if (!propertiesConf.containsKey(property.getKey())) {
+            boolean isSitemapProperty = CmsSiteEntryBean.PROPERTY_SITEMAP.equals(property.getKey());
+            if (!propertiesConf.containsKey(property.getKey()) && !isSitemapProperty) {
                 continue;
             }
             // only if the property is configured in the schema we will save it to the sitemap
@@ -901,7 +902,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 propValue.getPath(),
                 CmsXmlSitemap.XmlNode.VALUE.getName()), locale, 0);
 
-            if (propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+            if (!isSitemapProperty
+                && propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
                 I_CmsXmlContentValue filelistValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
                     valValue.getPath(),
                     CmsXmlSitemap.XmlNode.FILELIST.getName()), locale, 0);

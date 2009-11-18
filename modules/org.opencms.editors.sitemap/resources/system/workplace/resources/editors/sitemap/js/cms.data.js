@@ -24,6 +24,13 @@
    /** The name of the user that has locked the container page. */
    var /** String */ lockedBy = cms.data.lockedBy = '';
    
+   var ACTION_SAVE = 'save';
+   var ACTION_GET = 'get';
+   var ACTION_SET = 'set';
+   var ACTION_ALL = 'all';
+   var ACTION_VALIDATE = 'validate';
+   
+   
    /**
     * Generic function for posting JSON data to the server.
     *
@@ -75,8 +82,108 @@
          'fav': cms.sitemap.favorites
       }, callback);
    }
-
    
+      /**
+    * Requests the favorite list from the server and stores it in cms.sitemap.favorites.
+    *
+    * @param {Object} callback the function to be called after the favorite list has been loaded
+    */
+   var loadFavorites = cms.data.loadFavorites = function(callback) {
+      cms.data.sitemapPostJSON(ACTION_GET, {
+         'fav': true
+      }, function(ok, data) {
+         if (!ok) {
+            return;
+         }
+         cms.sitemap.favorites = data.favorites;
+         callback(ok, data);
+      })
+   }
+   
+   /**
+    * Requests the recent list from the server and stores it in cms.sitemap.recent.
+    *
+    * @param {Object} callback the function to be called after the recent list has been loaded
+    */
+   var loadRecent = cms.data.loadRecent = function(callback) {
+      cms.data.sitemapPostJSON(ACTION_GET, {
+         'rec': true
+      }, function(ok, data) {
+         if (!ok) {
+            return;
+         }
+         cms.sitemap.recent = data.recent;
+         callback(ok, data)
+      })
+   }
+   
+   /**
+    * Sends the favorite list to the server to save it.
+    *
+    * @param {Object} callback the function to be called after the server has replied
+    */
+   var saveFavorites = cms.data.saveFavorites = function(callback) {
+      cms.data.sitemapPostJSON(ACTION_SET, {
+         'fav': cms.sitemap.favorites
+      }, callback);
+   }
+   
+   /**
+    * Sends the recent list to the server to save it.
+    *
+    * @param {Object} callback the function to be called after the server has replied
+    */
+   var saveRecent = cms.data.saveRecent = function(callback) {
+      cms.data.sitemapPostJSON(ACTION_SET, {
+         'rec': cms.sitemap.recent
+      }, callback);
+   }
+   
+    /**
+    * Loads the sitemap and continues to initialize the sitemap editor after loading is finished.
+    *
+    */
+   var loadAndInitSitemap = cms.data.loadAndInitSitemap = function() {
+      cms.sitemap.setWaitOverlayVisible(true);
+      cms.data.sitemapPostJSON(ACTION_ALL, {}, cms.sitemap.onLoadSitemap)
+   }
+   
+   /**
+    * AJAX call that sends the sitemap to the server to save it.
+    * @param {Object} sitemap the sitemap
+    * @param {Object} callback the callback that should be called after the server sends its response
+    */
+   var saveSitemap = cms.data.saveSitemap = function(sitemap, callback) {
+      cms.data.sitemapPostJSON(ACTION_SAVE, {
+         'sitemap': sitemap
+      }, callback);
+   }
+   
+   
+   /**
+    * Sends a url name candidate to the server for translation, then calls a callback with the translated name.
+    * @param {Object} name the URL name to be translated
+    * @param {Object} callback the callback which should be called after translation
+    */
+   var convertUrlName = cms.data.convertUrlName = function(name, callback) {
+      cms.data.sitemapPostJSON(ACTION_VALIDATE, {
+         'name': name
+      }, function(ok, data) {
+         if (!ok) {
+            return;
+         }
+         callback(data.name);
+      });
+   }
+
+   /**
+    * Gets the property settings for sitemaps
+    * @param {Object} callback
+    */
+   var getSitemapProperties = cms.data.getSitemapProperties = function(callback) {
+      cms.data.sitemapPostJSON('props', {}, callback)
+   }
+
       
 })(cms);
 

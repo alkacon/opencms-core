@@ -43,7 +43,7 @@
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.selectbox.js")%>"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-         cms.sitemap.loadAndInitSitemap();
+         cms.data.loadAndInitSitemap();
       });
     </script>
     <title>Sitemap demo</title>
