@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailSettings.java,v $
- * Date   : $Date: 2009/09/08 16:41:04 $
- * Version: $Revision: 1.13.2.2 $
+ * Date   : $Date: 2009/11/18 11:37:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +79,7 @@ public class CmsMailSettings {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_EMPTY_CONSTRUCTOR_CALLED_1));
         }
     }
+
     /**
      * Adds a new mail host to the internal list of mail hosts with default port 25.<p>
      * 
@@ -92,18 +93,24 @@ public class CmsMailSettings {
 
         addMailHost(hostname, "25", order, protocol, username, password);
     }
-    
-  /**
-     * Adds a new mail host to the internal list of mail hosts.<p>
-     * 
-     * @param hostname the name of the mail host
-     * @param port the port of the mail host
-     * @param order the order in which the host is tried
-     * @param protocol the protocol to use (default "smtp")
-     * @param username the user name to use for authentication 
-     * @param password the password to use for authentication
-     */
-    public void addMailHost(String hostname, String port, String order, String protocol, String username, String password) {
+
+    /**
+       * Adds a new mail host to the internal list of mail hosts.<p>
+       * 
+       * @param hostname the name of the mail host
+       * @param port the port of the mail host
+       * @param order the order in which the host is tried
+       * @param protocol the protocol to use (default "smtp")
+       * @param username the user name to use for authentication 
+       * @param password the password to use for authentication
+       */
+    public void addMailHost(
+        String hostname,
+        String port,
+        String order,
+        String protocol,
+        String username,
+        String password) {
 
         Integer thePort;
         try {
@@ -171,5 +178,18 @@ public class CmsMailSettings {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_DEFAULT_SENDER_1, m_mailFromDefault));
         }
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("[hosts:" + m_mailHosts.toString());
+        sb.append(", order:" + m_orderDefault);
+        sb.append(", from:" + m_mailFromDefault);
+        return sb.toString();
     }
 }
