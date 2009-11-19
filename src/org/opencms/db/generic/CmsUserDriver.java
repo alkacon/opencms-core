@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/11/12 07:51:23 $
- * Version: $Revision: 1.132 $
+ * Date   : $Date: 2009/11/19 08:25:44 $
+ * Version: $Revision: 1.133 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.132 $
+ * @version $Revision: 1.133 $
  * 
  * @since 6.0.0 
  */
@@ -121,6 +121,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** Property for the organizational unit default project id. */
     private static final String ORGUNIT_PROPERTY_PROJECTID = CmsPropertyDefinition.PROPERTY_KEYWORDS;
+
+    /** The internal request attribute to indicate that the password has not to be digested. */
+    public static final String REQ_ATTR_DONT_DIGEST_PASSWORD = "DONT_DIGEST_PASSWORD";
 
     /** A digest to encrypt the passwords. */
     protected MessageDigest m_digest;
@@ -1568,19 +1571,21 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         PreparedStatement stmt = null;
         Connection conn = null;
-
-        try {
-
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_1");
-            stmt.setString(1, principal.toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        // TODO: refactor for only one project at a time
+        if (dbc.getProjectId().isNullUUID()) {
+            // offline project available
+            try {
+                conn = m_sqlManager.getConnection(dbc);
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_1");
+                stmt.setString(1, principal.toString());
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
         }
 
         try {
@@ -1589,7 +1594,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.setString(1, principal.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_1, stmt), e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1851,11 +1858,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         if (oldPassword != null) {
             readUser(dbc, userFqn, oldPassword, "");
         }
+        String pwd = newPassword;
+        if (dbc.getRequestContext().getAttribute(REQ_ATTR_DONT_DIGEST_PASSWORD) == null) {
+            pwd = OpenCms.getPasswordHandler().digest(newPassword);
+        }
 
         try {
             conn = getSqlManager().getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SET_PWD_3");
-            stmt.setString(1, OpenCms.getPasswordHandler().digest(newPassword));
+            stmt.setString(1, pwd);
             stmt.setString(2, CmsOrganizationalUnit.getSimpleName(userFqn));
             stmt.setString(3, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(userFqn));
             stmt.executeUpdate();
