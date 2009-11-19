@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailSettings.java,v $
- * Date   : $Date: 2009/09/08 14:46:53 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/11/19 08:26:02 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,7 +104,13 @@ public class CmsMailSettings {
      * @param username the user name to use for authentication 
      * @param password the password to use for authentication
      */
-    public void addMailHost(String hostname, String port, String order, String protocol, String username, String password) {
+    public void addMailHost(
+        String hostname,
+        String port,
+        String order,
+        String protocol,
+        String username,
+        String password) {
 
         Integer thePort;
         try {
@@ -172,5 +178,18 @@ public class CmsMailSettings {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_DEFAULT_SENDER_1, m_mailFromDefault));
         }
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("[hosts:" + m_mailHosts.toString());
+        sb.append(", order:" + m_orderDefault);
+        sb.append(", from:" + m_mailFromDefault);
+        return sb.toString();
     }
 }
