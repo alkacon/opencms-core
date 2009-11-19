@@ -25,7 +25,9 @@ var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
 	
     var request = ${param.data};
     $(function() {        
-        cms.galleries.initAddDialog(request);                    
+        cms.galleries.initAddDialog(request);
+       
+                            
 	});
 
     
@@ -55,11 +57,11 @@ div.cms-selectbox{
                      <li><a href="#tabs-fulltextsearch">Full Text Search</a></li>
                 </ul>
             </div>
-            <div id="cms-preview">
+            <%-- <div id="cms-preview">
             	<div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>
             	<div class="preview-area"></div>
 				<div class="edit-area ui-widget-content ui-corner-all"></div>				
-            </div>
+            </div> --%>
         </div>
 	</body>
 </html>

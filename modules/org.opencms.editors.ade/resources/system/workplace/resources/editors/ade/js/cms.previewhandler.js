@@ -7,16 +7,38 @@
     * 
     * @param {Object} itemData server response as JSON object with preview data 
     */
-   var showItemPreview = function(itemData) {
-       //display the html preview 
+   var showItemPreview = function(itemData) {       
+       // add preview to the galleries html
+       $('#' + cms.galleries.idGalleriesMain).append(htmlPreviewSceleton); 
+       
+       //display the html preview
        $('.preview-area').append(itemData['previewdata']['itemhtml']);
+       
        // display editable properties
        showEditArea(itemData['previewdata']['properties']);       
+       
+       //bind click event to preview close button 
+       $('#cms-preview div.close-icon').click(function() {
+          if ($(this).hasClass('cms-properties-changed')) {
+              cms.galleries.loadSearchResults();
+              $(this).removeClass('cms-properties-changed');
+          }
+          $(this).parent().fadeOut('slow');
+          
+       });   
        
        // fade in the preview      
        $('#cms-preview').fadeIn('slow');
        
+       
+       
    }
+   
+   var htmlPreviewSceleton ='<div id="cms-preview">\
+                               <div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>\
+            	               <div class="preview-area"></div>\
+				               <div class="edit-area ui-widget-content ui-corner-all"></div>\
+                             <div>';				            
    
    /**
     * Generates html for the editable properties and add to the dom.
@@ -87,7 +109,7 @@
            'properties': []};
        $.each(changedProperties, function () {           
            var property = {};
-           property['name'] =  $(this).closest('div').attr('rel');
+           property['name'] =  $(this).closest('div').attr('rel');      
            property['value'] = $(this).text();
            changes['properties'].push(property);
        });
