@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishManager.java,v $
- * Date   : $Date: 2009/08/20 11:31:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/11/19 08:26:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestPublishManager extends OpenCmsTestCase {
 
@@ -404,42 +404,42 @@ public class TestPublishManager extends OpenCmsTestCase {
         int[] firstJobsInQueue = firstListener.getJobsInQueueCounter();
         int[] lastJobsInQueue = lastListener.getJobsInQueueCounter();
         // at enqueue time of first job: queue should contain only the job
-        assertTrue(firstJobsInQueue[0] == 1);
+        assertEquals(1, firstJobsInQueue[0]);
         // at enqueue time of last job: queue should contain  all jobs
-        assertTrue(lastJobsInQueue[0] == max);
+        assertEquals(max, lastJobsInQueue[0]);
         // at start time of first job: queue should contain all jobs but not the job itself and not the aborted job
-        assertTrue(firstJobsInQueue[1] == max - 2);
+        assertEquals(max - 2, firstJobsInQueue[1]);
         // last job is never started
-        assertTrue(lastJobsInQueue[1] == 0);
+        assertEquals(0, lastJobsInQueue[1]);
         // at finish time of first job: queue should still contain all jobs but not the job itself and not the aborted job
-        assertTrue(firstJobsInQueue[2] == max - 2);
+        assertEquals(max - 2, firstJobsInQueue[2]);
         // last job is never finished
-        assertTrue(lastJobsInQueue[2] == 0);
+        assertEquals(0, lastJobsInQueue[2]);
         // first job is not aborted
-        assertTrue(firstJobsInQueue[3] == 0);
+        assertEquals(0, firstJobsInQueue[3]);
         // at abort time of last job: queue should contain all jobs including the aborted job
-        assertTrue(lastJobsInQueue[3] == max);
+        assertEquals(max, lastJobsInQueue[3]);
         // first job is not removed since it is still in the job history
-        assertTrue(firstJobsInQueue[4] == 0);
+        assertEquals(0, firstJobsInQueue[4]);
         // at remove time of the last job: queue should contain all jobs but not the aborted job
-        assertTrue(lastJobsInQueue[4] == max - 1);
+        assertEquals(max - 1, lastJobsInQueue[4]);
 
         // check the jobs in history counters
         int[] firstJobsInHistory = firstListener.getJobsInHistoryCounter();
         int[] lastJobsInHistory = lastListener.getJobsInHistoryCounter();
         // at enqueue/start/finish time of the first job, the history is full (10 Elements)
-        assertTrue(firstJobsInHistory[0] == 10);
-        assertTrue(firstJobsInHistory[1] == 10);
-        assertTrue(firstJobsInHistory[2] == 10);
-        assertTrue(firstJobsInHistory[3] == 0);
-        assertTrue(firstJobsInHistory[4] == 9);
+        assertEquals(10, firstJobsInHistory[0]);
+        assertEquals(10, firstJobsInHistory[1]);
+        assertEquals(10, firstJobsInHistory[2]);
+        assertEquals(0, firstJobsInHistory[3]);
+        assertEquals(9, firstJobsInHistory[4]);
         // when the first element is removed, the history queue has one free slot
         // at start/abort/remove time of the last job, the history is unchanged
-        assertTrue(lastJobsInHistory[0] == 10);
-        assertTrue(lastJobsInHistory[1] == 0);
-        assertTrue(lastJobsInHistory[2] == 0);
-        assertTrue(lastJobsInHistory[3] == 10);
-        assertTrue(lastJobsInHistory[4] == 10);
+        assertEquals(10, lastJobsInHistory[0]);
+        assertEquals(0, lastJobsInHistory[1]);
+        assertEquals(0, lastJobsInHistory[2]);
+        assertEquals(10, lastJobsInHistory[3]);
+        assertEquals(10, lastJobsInHistory[4]);
 
         // clean up
         OpenCms.getPublishManager().publishProject(cms);
