@@ -12,19 +12,24 @@
 <script type="text/javascript" src="lib/json2.js"></script>
 <script type="text/javascript" src="lib/jquery.pagination.js"></script>
 <script type="text/javascript">
-var cms = { html: {}, galleries: {}, messages: {} };
+var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
 </script>
 <script type="text/javascript" src="/opencms/opencms/system/workplace/editors/ade/cms.messages.jsp"></script>
 <script type="text/javascript" src="js/cms.html.js"></script>
 <script type="text/javascript" src="js/cms.selectbox.js"></script>
 <script type="text/javascript" src="js/cms.directinput.js"></script>
+<script type="text/javascript" src="js/cms.previewhandler.js"></script>
 <script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript">  
-    vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
-    
+    var vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
+	
+    var request = ${param.data};
     $(function() {        
-        cms.galleries.initAddDialog();                
+        cms.galleries.initAddDialog(request);                    
 	});
+
+    
+              
 </script> 
 <title>Search demo</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/custom-theme/jquery-ui-1.7.2.custom.css" />
@@ -51,7 +56,7 @@ div.cms-selectbox{
                 </ul>
             </div>
             <div id="cms-preview">
-            	<div class="close-icon ui-icon ui-icon-closethick ui-corner-all" onclick="$(this).parent().fadeOut('slow');"></div>
+            	<div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>
             	<div class="preview-area"></div>
 				<div class="edit-area ui-widget-content ui-corner-all"></div>				
             </div>
