@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2009/09/07 12:41:45 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2009/11/19 07:58:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -420,7 +420,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
 
         try {
             OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, ou2.getName());
-            fail("it should not be possible to delete an organizational unit that has users units");
+            fail("it should not be possible to delete an organizational unit that has users");
         } catch (CmsDbConsistencyException e) {
             // ok, now check the error message
             assertEquals(
