@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/11/17 12:33:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/11/19 07:58:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -652,10 +652,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         m_monitor.flushUserGroups();
 
+        if (!dbc.getProjectId().isNullUUID()) {
+            // user modified event is not needed
+            return;
+        }
         // fire user modified event
         Map eventData = new HashMap();
-        eventData.put(I_CmsEventListener.KEY_ID, user.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
+        eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_GROUP_NAME, group.getName());
         eventData.put(
             I_CmsEventListener.KEY_USER_ACTION,
@@ -1228,10 +1233,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // put it into the cache
         m_monitor.cacheGroup(group);
 
-        // fire user modified event
+        if (!dbc.getProjectId().isNullUUID()) {
+            // group modified event is not needed
+            return group;
+        }
+        // fire group modified event
         Map eventData = new HashMap();
-        eventData.put(I_CmsEventListener.KEY_OU_NAME, group.getName());
-        eventData.put(I_CmsEventListener.KEY_ID, group.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_GROUP_NAME, group.getName());
+        eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_GROUP_MODIFIED_ACTION_CREATE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_GROUP_MODIFIED, eventData));
 
@@ -1314,10 +1323,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
         OpenCms.fireCmsEvent(afterPublishEvent);
 
-        // fire user modified event
+        if (!dbc.getProjectId().isNullUUID()) {
+            // OU modified event is not needed
+            return orgUnit;
+        }
+
+        // fire OU modified event
         Map event2Data = new HashMap();
         event2Data.put(I_CmsEventListener.KEY_OU_NAME, orgUnit.getName());
-        event2Data.put(I_CmsEventListener.KEY_ID, orgUnit.getId().toString());
+        event2Data.put(I_CmsEventListener.KEY_OU_ID, orgUnit.getId().toString());
         event2Data.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_OU_MODIFIED_ACTION_CREATE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_OU_MODIFIED, event2Data));
 
@@ -2022,10 +2036,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
             I_CmsPrincipal.FLAG_ENABLED + flags,
             0,
             info);
+
+        if (!dbc.getProjectId().isNullUUID()) {
+            // user modified event is not needed
+            return user;
+        }
         // fire user modified event
         Map eventData = new HashMap();
-        eventData.put(I_CmsEventListener.KEY_ID, user.getId().toString());
-        eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
+        eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_CREATE_USER);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
         return user;
@@ -2180,10 +2198,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.flushUserGroups();
         m_monitor.flushACLs();
 
-        // fire user modified event
+        if (!dbc.getProjectId().isNullUUID()) {
+            // group modified event is not needed
+            return;
+        }
+        // fire group modified event
         Map eventData = new HashMap();
-        eventData.put(I_CmsEventListener.KEY_OU_NAME, group.getName());
-        eventData.put(I_CmsEventListener.KEY_ID, group.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_GROUP_NAME, group.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_GROUP_MODIFIED_ACTION_DELETE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_GROUP_MODIFIED, eventData));
     }
@@ -2425,10 +2447,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_lockManager.removeDeletedResource(dbc, resource.getRootPath());
 
-        // fire user modified event
+        if (!dbc.getProjectId().isNullUUID()) {
+            // OU modified event is not needed
+            return;
+        }
+        // fire OU modified event
         Map event2Data = new HashMap();
         event2Data.put(I_CmsEventListener.KEY_OU_NAME, organizationalUnit.getName());
-        event2Data.put(I_CmsEventListener.KEY_ID, organizationalUnit.getId().toString());
         event2Data.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_OU_MODIFIED_ACTION_DELETE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_OU_MODIFIED, event2Data));
 
@@ -2912,8 +2937,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         boolean isVfsManager = m_securityManager.hasRole(dbc, replacementUser, CmsRole.VFS_MANAGER);
 
-        boolean readRoles = false; // iterate groups and roles
-        for (int i = 0; i < 2; i++) {
+        // iterate groups and roles
+        for (boolean readRoles = false; !readRoles; readRoles = !readRoles) {
             Iterator<CmsGroup> itGroups = getGroupsOfUser(
                 dbc,
                 username,
@@ -2931,16 +2956,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     }
                 }
                 // remove user from groups
-                if (userInGroup(dbc, username, group.getName(), readRoles)) {
-                    removeUserFromGroup(dbc, username, group.getName(), readRoles);
-                }
+                removeUserFromGroup(dbc, username, group.getName(), readRoles);
             }
-            readRoles = !readRoles;
         }
         // remove all locks set for the deleted user
         m_lockManager.removeLocks(user.getId());
         // offline
+        if (dbc.getProjectId().isNullUUID()) {
+            // offline project available
         transferPrincipalResources(dbc, project, user.getId(), replacementUser.getId(), withACEs);
+        }
         // online
         transferPrincipalResources(dbc, onlineProject, user.getId(), replacementUser.getId(), withACEs);
         m_userDriver.removeAccessControlEntriesForPrincipal(dbc, project, onlineProject, user.getId());
@@ -2949,9 +2974,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // delete user from cache
         m_monitor.clearUserCache(user);
 
+        if (!dbc.getProjectId().isNullUUID()) {
+            // user modified event is not needed
+            return;
+        }
         // fire user modified event
         Map eventData = new HashMap();
-        eventData.put(I_CmsEventListener.KEY_ID, user.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_DELETE_USER);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
@@ -7130,10 +7159,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         m_monitor.flushUserGroups();
 
+        if (!dbc.getProjectId().isNullUUID()) {
+            // user modified event is not needed
+            return;
+        }
         // fire user modified event
         Map eventData = new HashMap();
-        eventData.put(I_CmsEventListener.KEY_ID, user.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
+        eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
         eventData.put(I_CmsEventListener.KEY_GROUP_NAME, group.getName());
         eventData.put(
             I_CmsEventListener.KEY_USER_ACTION,
@@ -7244,10 +7278,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             m_userDriver.writePassword(dbc, username, oldPassword, newPassword);
 
+            if (!dbc.getProjectId().isNullUUID()) {
+                // user modified event is not needed
+                return;
+            }
             // fire user modified event
             Map eventData = new HashMap();
-            eventData.put(I_CmsEventListener.KEY_ID, user.getId().toString());
-            eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
+            eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
             eventData.put(
                 I_CmsEventListener.KEY_USER_ACTION,
                 I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_RESET_PASSWORD);
@@ -7658,10 +7695,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // remove the principal from cache
         m_monitor.clearUserCache(user);
 
+        if (!dbc.getProjectId().isNullUUID()) {
+            // user modified event is not needed
+            return;
+        }
         // fire user modified event
         Map eventData = new HashMap();
-        eventData.put(I_CmsEventListener.KEY_ID, user.getId().toString());
-        eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
+        eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_OU_NAME, user.getOuFqn());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_SET_OU);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
@@ -8252,14 +8293,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
-        m_monitor.uncacheGroup(group);
+        CmsGroup oldGroup = readGroup(dbc, group.getName());
+        m_monitor.uncacheGroup(oldGroup);
         m_userDriver.writeGroup(dbc, group);
         m_monitor.cacheGroup(group);
 
-        // fire user modified event
+        if (!dbc.getProjectId().isNullUUID()) {
+            // group modified event is not needed
+            return;
+        }
+        // fire group modified event
         Map eventData = new HashMap();
-        eventData.put(I_CmsEventListener.KEY_OU_NAME, group.getName());
-        eventData.put(I_CmsEventListener.KEY_ID, group.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_GROUP_NAME, oldGroup.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_GROUP_MODIFIED_ACTION_WRITE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_GROUP_MODIFIED, eventData));
     }
@@ -8575,13 +8621,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
-        m_monitor.clearUserCache(user);
+        CmsUser oldUser = readUser(dbc, user.getId());
+        m_monitor.clearUserCache(oldUser);
         m_userDriver.writeUser(dbc, user);
         m_monitor.flushUserGroups();
+
+        if (!dbc.getProjectId().isNullUUID()) {
+            // user modified event is not needed
+            return;
+        }
         // fire user modified event
         Map eventData = new HashMap();
-        eventData.put(I_CmsEventListener.KEY_ID, user.getId().toString());
-        eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
+        eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_USER_NAME, oldUser.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2009/11/17 12:33:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/19 07:58:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * @author Alexander Kandzior 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -146,6 +146,25 @@ public interface I_CmsEventListener {
      */
     int EVENT_FULLSTATIC_EXPORT = 4;
 
+    /**
+     * Event "group modified".<p>
+     * 
+     * Includes create, write and delete group.<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "id": the uuid of the modified group</li>
+     * <li>key "groupname": the name of the modified group</li>
+     * <li>key "useraction": the name of the action to do on the replicated server</li>
+     * <ul>
+     * <li>createGroup</li>
+     * <li>writeGroup</li>
+     * <li>deleteGroup</li>
+     * </ul>
+     * </ul>
+     */
+    int EVENT_GROUP_MODIFIED = 31;
+
     /** 
      * Event "user has logged in".<p>
      *
@@ -157,6 +176,24 @@ public interface I_CmsEventListener {
      * @see org.opencms.file.CmsObject#loginUser(String, String) 
      */
     int EVENT_LOGIN_USER = 1;
+
+    /**
+     * Event "ou modified".<p>
+     * 
+     * Includes create OU and delete OU.<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "id": the uuid of the modified ou</li>
+     * <li>key "ouname": the name of the modified ou</li>
+     * <li>key "useraction": the name of the action to do on the replicated server</li>
+     * <ul>
+     * <li>createOu</li>
+     * <li>deleteOu</li>
+     * </ul>
+     * </ul>
+     */
+    int EVENT_OU_MODIFIED = 30;
 
     /**
      * Event "a project was modified" (e.g. a project has been deleted, 
@@ -322,102 +359,26 @@ public interface I_CmsEventListener {
      */
     int EVENT_USER_MODIFIED = 29;
 
-    /** Value for the "user modified" action. */
-    String VALUE_USER_MODIFIED_ACTION_CREATE_USER = "createUser";
-
-    /** Value for the "user modified" action. */
-    String VALUE_USER_MODIFIED_ACTION_WRITE_USER = "writeUser";
-
-    /** Value for the "user modified" action. */
-    String VALUE_USER_MODIFIED_ACTION_DELETE_USER = "deleteUser";
-
-    /** Value for the "user modified" action. */
-    String VALUE_USER_MODIFIED_ACTION_SET_OU = "setOu";
-
-    /** Value for the "user modified" action. */
-    String VALUE_USER_MODIFIED_ACTION_ADD_USER_TO_GROUP = "addUserToGroup";
-
-    /** Value for the "user modified" action. */
-    String VALUE_USER_MODIFIED_ACTION_REMOVE_USER_FROM_GROUP = "removeUserFromGroup";
-
-    /** Value for the "user modified" action. */
-    String VALUE_USER_MODIFIED_ACTION_RESET_PASSWORD = "resetPassword";
-
-    /**
-     * Event "ou modified".<p>
-     * 
-     * Includes create OU and delete OU.<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "id": the uuid of the modified ou</li>
-     * <li>key "ouname": the name of the modified ou</li>
-     * <li>key "useraction": the name of the action to do on the replicated server</li>
-     * <ul>
-     * <li>createOu</li>
-     * <li>deleteOu</li>
-     * </ul>
-     * </ul>
-     */
-    int EVENT_OU_MODIFIED = 30;
-
-    /** Value for the "ou modified" action. */
-    String VALUE_OU_MODIFIED_ACTION_CREATE = "createOu";
-
-    /** Value for the "ou modified" action. */
-    String VALUE_OU_MODIFIED_ACTION_DELETE = "deleteOu";
-
-    /**
-     * Event "group modified".<p>
-     * 
-     * Includes create, write and delete group.<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "id": the uuid of the modified group</li>
-     * <li>key "groupname": the name of the modified group</li>
-     * <li>key "useraction": the name of the action to do on the replicated server</li>
-     * <ul>
-     * <li>createGroup</li>
-     * <li>writeGroup</li>
-     * <li>deleteGroup</li>
-     * </ul>
-     * </ul>
-     */
-    int EVENT_GROUP_MODIFIED = 31;
-
-    /** Value for the "group modified" action. */
-    String VALUE_GROUP_MODIFIED_ACTION_CREATE = "createGroup";
-
-    /** Value for the "group modified" action. */
-    String VALUE_GROUP_MODIFIED_ACTION_WRITE = "writeGroup";
-
-    /** Value for the "group modified" action. */
-    String VALUE_GROUP_MODIFIED_ACTION_DELETE = "deleteGroup";
-
-    /** Key name for passing a CmsUUID as String. */
-    String KEY_ID = "id";
-
-    /** Key name for passing a user name. */
-    String KEY_USER_NAME = "username";
-
-    /** Key name for passing a group name. */
-    String KEY_GROUP_NAME = "groupname";
-
-    /** Key name for passing a group name. */
-    String KEY_OU_NAME = "ouname";
-
-    /** Key name for passing a user action. */
-    String KEY_USER_ACTION = "useraction";
-
     /** Key name for passing a change int in the data map - see the <code>CHANGED_XXX</code> constants in {@link org.opencms.db.CmsDriverManager}. */
     String KEY_CHANGE = "change";
 
     /** Key name for passing a database context in the data map. */
     String KEY_DBCONTEXT = "dbContext";
 
+    /** Key name for passing a group ID. */
+    String KEY_GROUP_ID = "groupId";
+
+    /** Key name for passing a group name. */
+    String KEY_GROUP_NAME = "groupname";
+
     /** Key name for passing a comma separated list of search index names in the data map. */
     String KEY_INDEX_NAMES = "indexNames";
+
+    /** Key name for passing an OU ID. */
+    String KEY_OU_ID = "ouId";
+
+    /** Key name for passing a group name. */
+    String KEY_OU_NAME = "ouname";
 
     /** Key name for passing a project id in the data map. */
     String KEY_PROJECTID = "projectId";
@@ -437,10 +398,55 @@ public interface I_CmsEventListener {
     /** Key name for passing a List of {@link org.opencms.file.CmsResource} in the data map. */
     String KEY_RESOURCES = "resources";
 
+    /** Key name for passing a user action. */
+    String KEY_USER_ACTION = "useraction";
+
+    /** Key name for passing an user ID. */
+    String KEY_USER_ID = "userId";
+
+    /** Key name for passing a user name. */
+    String KEY_USER_NAME = "username";
+
     /**
      * Marker for "all events".<p>
      */
     Integer LISTENERS_FOR_ALL_EVENTS = new Integer(-1);
+
+    /** Value for the "group modified" action. */
+    String VALUE_GROUP_MODIFIED_ACTION_CREATE = "createGroup";
+
+    /** Value for the "group modified" action. */
+    String VALUE_GROUP_MODIFIED_ACTION_DELETE = "deleteGroup";
+
+    /** Value for the "group modified" action. */
+    String VALUE_GROUP_MODIFIED_ACTION_WRITE = "writeGroup";
+
+    /** Value for the "ou modified" action. */
+    String VALUE_OU_MODIFIED_ACTION_CREATE = "createOu";
+
+    /** Value for the "ou modified" action. */
+    String VALUE_OU_MODIFIED_ACTION_DELETE = "deleteOu";
+
+    /** Value for the "user modified" action. */
+    String VALUE_USER_MODIFIED_ACTION_ADD_USER_TO_GROUP = "addUserToGroup";
+
+    /** Value for the "user modified" action. */
+    String VALUE_USER_MODIFIED_ACTION_CREATE_USER = "createUser";
+
+    /** Value for the "user modified" action. */
+    String VALUE_USER_MODIFIED_ACTION_DELETE_USER = "deleteUser";
+
+    /** Value for the "user modified" action. */
+    String VALUE_USER_MODIFIED_ACTION_REMOVE_USER_FROM_GROUP = "removeUserFromGroup";
+
+    /** Value for the "user modified" action. */
+    String VALUE_USER_MODIFIED_ACTION_RESET_PASSWORD = "resetPassword";
+
+    /** Value for the "user modified" action. */
+    String VALUE_USER_MODIFIED_ACTION_SET_OU = "setOu";
+
+    /** Value for the "user modified" action. */
+    String VALUE_USER_MODIFIED_ACTION_WRITE_USER = "writeUser";
 
     /** 
      * Acknowledge the occurrence of the specified event, implement this 
