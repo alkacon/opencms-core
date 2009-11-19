@@ -157,6 +157,13 @@
              </div>\
           </div>';    
    
+   
+   /** html fragment for the item preview. */
+   var htmlPreviewSceleton = cms.galleries.htmlPreviewSceleton = '<div id="cms-preview">\
+                                <div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>\
+            	                <div class="preview-area"></div>\
+				                <div class="edit-area ui-widget-content ui-corner-all"></div>\
+                             <div>';
   
       
    /**
@@ -275,8 +282,10 @@
           .append(galleriesTab)
           .append(categoriesTab)
           .append(cms.galleries.htmlTabFTSeachSceleton);
-          
-      cms.galleries.loadSearchLists();
+      // load content of the search criteris tabs    
+      cms.galleries.loadSearchLists();      
+      // add preview to the galleries html
+      $('#' + cms.galleries.idGalleriesMain).append(cms.galleries.htmlPreviewSceleton); 
       
       //TODO: blind out quick search dialog for the moment
       $('span.cms-ft-search').css('display', 'none');

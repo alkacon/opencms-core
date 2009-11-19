@@ -7,10 +7,7 @@
     * 
     * @param {Object} itemData server response as JSON object with preview data 
     */
-   var showItemPreview = function(itemData) {       
-       // add preview to the galleries html
-       $('#' + cms.galleries.idGalleriesMain).append(htmlPreviewSceleton); 
-       
+   var showItemPreview = function(itemData) {                         
        //display the html preview
        $('.preview-area').append(itemData['previewdata']['itemhtml']);
        
@@ -32,13 +29,7 @@
        
        
        
-   }
-   
-   var htmlPreviewSceleton ='<div id="cms-preview">\
-                               <div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>\
-            	               <div class="preview-area"></div>\
-				               <div class="edit-area ui-widget-content ui-corner-all"></div>\
-                             <div>';				            
+   }   				            
    
    /**
     * Generates html for the editable properties and add to the dom.

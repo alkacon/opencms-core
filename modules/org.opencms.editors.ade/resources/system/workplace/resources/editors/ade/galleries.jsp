@@ -56,12 +56,7 @@ div.cms-selectbox{
                      <li><a href="#tabs-categories">Categories</a></li>
                      <li><a href="#tabs-fulltextsearch">Full Text Search</a></li>
                 </ul>
-            </div>
-            <%-- <div id="cms-preview">
-            	<div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>
-            	<div class="preview-area"></div>
-				<div class="edit-area ui-widget-content ui-corner-all"></div>				
-            </div> --%>
+            </div>            
         </div>
 	</body>
 </html>
