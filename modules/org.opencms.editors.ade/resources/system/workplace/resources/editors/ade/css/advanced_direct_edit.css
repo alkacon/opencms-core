@@ -311,9 +311,8 @@ div.cms-highlight-container {
 		50% !important;
 }
 
-/**.hovered,#still-in-use {
-	margin: 2px !important;
-}**/ /** sortable placeholder **/
+
+/** sortable placeholder **/
 .cms-placeholder {
 	border: 2px dotted black;
 	visibility: visible !important;
@@ -554,6 +553,75 @@ div.cms-dialog {
 }
 
 /** List items **/
+
+
+/** Unified list items: START **/
+    
+    li.cms-list {
+        list-style-image:none;
+        list-style-position:outside;
+        list-style-type:none;
+        cursor: pointer;
+        margin: 2px;
+        /* HACK: To force hasLayout: true in IE7 */
+        zoom: 1;
+    }
+    
+    .cms-list-checkbox {
+        width: 32px; 
+        height: 32px; 
+        background: transparent url(images/checkbox.gif) no-repeat scroll -7px -10px; 
+        float: left;    
+    }
+    
+    .cms-list-itemcontent div.cms-list-image {
+        width: 32px; 
+        height: 32px; 
+        background: transparent url(../../filetypes/folder.gif) no-repeat scroll center center; 
+        float: left;
+    }
+    
+    .cms-list-itemcontent div.cms-list-item { 
+        height: 32px; 
+    }
+    
+    .cms-additional{
+        padding: 2px 0pt 1px 32px;
+    }
+    
+    .cms-additional-item-title{
+        display: inline-block;
+        width: 60px;
+    }
+    .cms-list-with-checkbox div.cms-list-item {
+    	margin-left: 32px;
+    }
+    
+    div.cms-list-item div.cms-list-itemcontent {      
+        border: none;
+    }
+    
+    .cms-list-itemcontent div{
+        height:16px;
+        overflow-x:hidden;
+        overflow-y:hidden;
+    }
+    
+    div.cms-list-title {
+       font-weight:bold;
+    }
+    
+/** Unified list items: END **/
+
+
+
+
+
+
+
+
+
+
 .cms-item-list li {
 	display: block;
 	font-weight: normal;
@@ -1124,7 +1192,7 @@ div.cms-selectbox{
 	position:relative; 
        display:inline-block;
 	line-height: 16px;
-	width: 100px;
+	width: 150px;
 
 }
 	
@@ -1135,7 +1203,7 @@ div.cms-selectbox span.cms-select-option{
 }
 	
 div.cms-selector{
-	width: 100px;
+	width: 150px;
 	position:absolute;
 	top:20px;
 	left:-1px;

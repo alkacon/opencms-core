@@ -69,7 +69,6 @@
     .cms-preview-button:hover{
     	background:     #ffffff;
     }
-
     
     .result-tab-scrolling {
         height: 290px;
@@ -91,53 +90,7 @@
         padding: 0px;
     }
     
-    /** Item in the search list */
-    li.cms-list {
-        list-style-image:none;
-        list-style-position:outside;
-        list-style-type:none;
-        cursor: pointer;
-        margin: 2px;
-        /* HACK: To force hasLayout: true in IE7 */
-        zoom: 1;
-    }
-    
-    .cms-list-checkbox {
-        width: 32px; 
-        height: 32px; 
-        background: transparent url(images/checkbox.gif) no-repeat scroll -7px -10px; 
-        float: left;    
-    }
-    
-    .cms-list-image {
-        width: 32px; 
-        height: 32px; 
-        background: transparent url(../../filetypes/folder.gif) no-repeat scroll center center; 
-        float: left;
-    }
-    
-    .cms-list-item { 
-        height: 32px; 
-    }
-    
-    .cms-list-with-checkbox div.cms-list-item {
-    	margin-left: 32px;
-    }
-    
-    .cms-list-itemcontent {      
-        height: 34px; 
-        margin-left:34px;
-    }
-    
-    .cms-list-itemcontent div{
-        height:16px;
-        overflow-x:hidden;
-        overflow-y:hidden;
-    }
-    
-    div.cms-list-title {
-       font-weight:bold;
-    }
+
     
     /** Hover and active state for items in the search list */
     li.cms-list-item-active div.cms-list-item { 
@@ -358,8 +311,7 @@
     
     div.close-icon{
 		float: right;
-	}
-    
+	}    
     div.close-icon:hover {
         background-color: #a8adb4;
     }
