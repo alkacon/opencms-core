@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/Messages.java,v $
- * Date   : $Date: 2009/10/13 11:59:41 $
- * Version: $Revision: 1.1.2.1 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Messages.java,v $
+ * Date   : $Date: 2009/11/19 13:26:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_ELEMENT_FROM_REQUEST_0 = "ERR_READING_ELEMENT_FROM_REQUEST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_FORMATTER_INFO_FROM_REQUEST_0 = "ERR_READING_FORMATTER_INFO_FROM_REQUEST_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2 = "LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2";

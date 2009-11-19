@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEManager.java,v $
- * Date   : $Date: 2009/10/26 10:45:12 $
- * Version: $Revision: 1.1.2.9 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
+ * Date   : $Date: 2009/11/19 13:26:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.editors.ade.CmsFormatterInfoBean;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.6
  */
@@ -77,6 +78,9 @@ public class CmsADEManager {
 
     /** The request attribute name for the current element-bean. */
     public static final String ATTR_CURRENT_ELEMENT = "__currentElement";
+
+    /** The request attribute name for the formatter-info-bean. */
+    public static final String ATTR_FORMATTER_INFO = "__formatterInfo";
 
     /** User additional info key constant. */
     protected static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
@@ -391,6 +395,25 @@ public class CmsADEManager {
     public int getFavoriteListMaxSize(CmsObject cms) throws CmsException {
 
         return m_configuration.getFavoriteListMaxSize(cms);
+    }
+
+    /**
+     * Gets the current formatter-info-bean from the request.<p>
+     * 
+     * @param req the servlet-request
+     * @return the info-bean or null if not available
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFormatterInfoBean getFormatterInfo(ServletRequest req) throws CmsException {
+
+        CmsFormatterInfoBean info = null;
+
+        try {
+            info = (CmsFormatterInfoBean)req.getAttribute(ATTR_FORMATTER_INFO);
+        } catch (Exception e) {
+            throw new CmsException(Messages.get().container(Messages.ERR_READING_FORMATTER_INFO_FROM_REQUEST_0), e);
+        }
+        return info;
     }
 
     /**
