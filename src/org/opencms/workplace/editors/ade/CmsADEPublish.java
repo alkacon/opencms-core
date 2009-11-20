@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/11/17 12:29:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/11/20 08:52:08 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResource;
+import org.opencms.file.types.A_CmsResourceType;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
@@ -55,17 +57,23 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.containerpage.CmsADEManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
@@ -74,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.9.3
  */
@@ -156,6 +164,12 @@ public class CmsADEPublish {
     /** The options. */
     private final CmsPublishOptions m_options;
 
+    /** The current servlet-request. */
+    private HttpServletRequest m_request;
+
+    /** The current servlet-response. */
+    private HttpServletResponse m_response;
+
     /** The user's resource publish list. */
     private ResourcesAndRelated m_resourceList;
 
@@ -164,11 +178,13 @@ public class CmsADEPublish {
      * 
      * @param cms the current cms context
      */
-    public CmsADEPublish(CmsObject cms) {
+    public CmsADEPublish(CmsObject cms, HttpServletRequest request, HttpServletResponse response) {
 
         m_cms = cms;
         m_locale = m_cms.getRequestContext().getLocale();
         m_options = new CmsPublishOptions();
+        m_request = request;
+        m_response = response;
     }
 
     /**
@@ -846,7 +862,35 @@ public class CmsADEPublish {
         boolean removable,
         List<CmsPublishResourceBean> related) {
 
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(m_locale);
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
+        String itemHtml = "";
+        try {
+            CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(OpenCms.getResourceManager().getResourceType(
+                resource.getTypeId()), false);
+            formatterInfo.setResource(resource);
+            formatterInfo.setTitleInfo(new CmsFieldInfoBean(
+                CmsPublishResourceBean.JsonProperty.TITLE.name().toLowerCase(),
+                messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0),
+                resUtil.getTitle()));
+            formatterInfo.setSubTitleInfo(new CmsFieldInfoBean(
+                CmsPublishResourceBean.JsonProperty.URI.name().toLowerCase(),
+                messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0),
+                CmsStringUtil.formatResourceName(resUtil.getFullPath(), PATH_LENGTH)));
+            formatterInfo.setIcon(CmsWorkplace.getResourceUri(resUtil.getIconPathExplorer()));
+            Map<String, Object> reqAttributes = new HashMap<String, Object>();
+            reqAttributes.put(CmsADEManager.ATTR_FORMATTER_INFO, formatterInfo);
+            itemHtml = formatterInfo.getResourceType().getFormattedContent(
+                m_cms,
+                m_request,
+                m_response,
+                A_CmsResourceType.DefaultFormatters.FORMATTER_GALLERY_LIST.getKey(),
+                reqAttributes);
+        } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
         CmsPublishResourceBean pubResource = new CmsPublishResourceBean(
             resource.getStructureId(),
             CmsStringUtil.formatResourceName(resUtil.getFullPath(), PATH_LENGTH),
@@ -855,7 +899,8 @@ public class CmsADEPublish {
             "" + resUtil.getStateAbbreviation(),
             removable,
             info,
-            related);
+            related,
+            itemHtml);
         return pubResource;
     }
 }

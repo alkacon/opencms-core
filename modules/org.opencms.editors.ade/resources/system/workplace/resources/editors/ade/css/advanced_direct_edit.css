@@ -592,6 +592,7 @@ div.cms-dialog {
     .cms-additional-item-title{
         display: inline-block;
         width: 60px;
+        margin-right:3px;
     }
     .cms-list-with-checkbox div.cms-list-item {
     	margin-left: 32px;
@@ -657,7 +658,6 @@ ul.cms-item-list,ul.cms-publish-options {
 */
 .cms-menu .ui-widget-content,.cms-item .ui-widget-content {
 	position: relative;
-	width: 290px;
 	line-height: 16px;
 	margin-bottom: 2px;
 }
@@ -678,11 +678,6 @@ ul.cms-item-list,ul.cms-publish-options {
 	padding: 5px 0 0 4px;
 }
 
-.cms-item-list .ui-widget-content .cms-additional span {
-	width: 60px;
-	overflow: hidden;
-	margin-right: 3px;
-}
 
 .cms-item-list .ui-widget-content .cms-additional div {
 	width: 280px;

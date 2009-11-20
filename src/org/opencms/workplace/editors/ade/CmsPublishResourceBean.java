@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsPublishResourceBean.java,v $
- * Date   : $Date: 2009/10/29 10:40:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/20 08:52:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -62,6 +62,8 @@ public class CmsPublishResourceBean implements I_CmsJsonifable {
         INFO,
         /** The reason a resource can not be published. */
         INFOTYPE,
+        /** The list item html-content. */
+        ITEMHTML,
         /** The list of related resources. */
         RELATED,
         /** Flag to indicate if the resource can be removed from the publish list. */
@@ -98,6 +100,9 @@ public class CmsPublishResourceBean implements I_CmsJsonifable {
     /** The resource title.*/
     private final String m_title;
 
+    /** The list item html-content. */
+    private final String m_itemHtml;
+
     /** 
      * Creates a new publish group bean.<p> 
      * 
@@ -109,6 +114,7 @@ public class CmsPublishResourceBean implements I_CmsJsonifable {
      * @param removable to indicate if the resource can be removed from the user's publish list
      * @param info the additional information, if any
      * @param related the related resources
+     * @param itemHtml the list item html-content
      **/
     public CmsPublishResourceBean(
         CmsUUID id,
@@ -118,7 +124,8 @@ public class CmsPublishResourceBean implements I_CmsJsonifable {
         String state,
         boolean removable,
         CmsPublishResourceInfoBean info,
-        List<CmsPublishResourceBean> related) {
+        List<CmsPublishResourceBean> related,
+        String itemHtml) {
 
         super();
         m_icon = icon;
@@ -131,6 +138,17 @@ public class CmsPublishResourceBean implements I_CmsJsonifable {
         m_title = title;
         m_removable = removable;
         m_info = info;
+        m_itemHtml = itemHtml;
+    }
+
+    /**
+     * Returns the itemHtml.<p>
+     *
+     * @return the itemHtml
+     */
+    public String getItemHtml() {
+
+        return m_itemHtml;
     }
 
     /**
@@ -234,6 +252,7 @@ public class CmsPublishResourceBean implements I_CmsJsonifable {
             resources.put(related.toJson());
         }
         jsonRes.put(JsonProperty.RELATED.name().toLowerCase(), resources);
+        jsonRes.put(JsonProperty.ITEMHTML.name().toLowerCase(), m_itemHtml);
         return jsonRes;
     }
 

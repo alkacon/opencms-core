@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/11/10 16:42:18 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/11/20 08:52:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.9.3
  */
@@ -249,7 +249,7 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
 
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setLocale(getWorkplaceLocale());
-        CmsADEPublish publish = new CmsADEPublish(cms);
+        CmsADEPublish publish = new CmsADEPublish(cms, request, getResponse());
         // set options
         publish.getOptions().setIncludeRelated(options.isIncludeRelated());
         publish.getOptions().setIncludeSiblings(options.isIncludeSiblings());
