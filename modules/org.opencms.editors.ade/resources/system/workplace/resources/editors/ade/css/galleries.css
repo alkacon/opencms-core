@@ -20,6 +20,7 @@
     #cms-gallery-tabs {
 		height:440px;
 		width:650px;
+        background: #efefef;
 	}
     
     /** Styles for the preview*/
@@ -83,6 +84,7 @@
         border:1px solid #AAAAAA;       
         overflow:auto;
         width:600px;
+        background: #ffffff;
     }
      
     .cms-list-scrolling-innner {
@@ -204,6 +206,7 @@
         border: 1px solid #AAAAAA;
         height: 378px;
         width: 600px; 
+        background: #ffffff;
     }
     
     .cms-search-options {

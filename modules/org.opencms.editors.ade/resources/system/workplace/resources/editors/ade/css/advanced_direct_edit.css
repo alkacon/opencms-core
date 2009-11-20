@@ -596,6 +596,11 @@ div.cms-dialog {
     }
     .cms-list-with-checkbox div.cms-list-item {
     	margin-left: 32px;
+        
+    }
+    div.cms-list-item {
+        margin-top: 2px;
+        margin-right: 2px;
     }
     
     div.cms-list-item div.cms-list-itemcontent {      
