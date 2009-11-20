@@ -23,7 +23,7 @@ var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
 <script type="text/javascript">  
     var vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
 	
-    var request = ${param.data};
+    var request = ${(not empty param.data) ? param.data : 'null'};
     $(function() {        
         cms.galleries.initAddDialog(request);
        
