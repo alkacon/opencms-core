@@ -25,9 +25,7 @@ var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
 	
     var request = ${(not empty param.data) ? param.data : 'null'};
     $(function() {        
-        cms.galleries.initAddDialog(request);
-       
-                            
+        cms.galleries.initAddDialog(request);                                 
 	});
 
     

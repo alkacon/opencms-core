@@ -92,7 +92,9 @@
         padding: 0px;
     }
     
-
+    .cms-item-invisible {
+        display: none;
+    }
     
     /** Hover and active state for items in the search list */
     li.cms-list-item-active div.cms-list-item { 
