@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/11/20 08:52:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/11/20 10:27:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.9.3
  */
@@ -866,6 +866,7 @@ public class CmsADEPublish {
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
         String itemHtml = "";
         try {
+            // creating formatter info bean
             CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(OpenCms.getResourceManager().getResourceType(
                 resource.getTypeId()), false);
             formatterInfo.setResource(resource);
@@ -878,13 +879,22 @@ public class CmsADEPublish {
                 messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0),
                 CmsStringUtil.formatResourceName(resUtil.getFullPath(), PATH_LENGTH)));
             formatterInfo.setIcon(CmsWorkplace.getResourceUri(resUtil.getIconPathExplorer()));
+            // adding additional info
+            List<CmsFieldInfoBean> additional = new ArrayList<CmsFieldInfoBean>();
+            additional.add(new CmsFieldInfoBean(
+                CmsPublishResourceBean.JsonProperty.STATE.name().toLowerCase(),
+                messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_STATE_0),
+                resUtil.getStateName()));
+            formatterInfo.setAdditionalInfo(additional);
+
+            // rendering the item html
             Map<String, Object> reqAttributes = new HashMap<String, Object>();
             reqAttributes.put(CmsADEManager.ATTR_FORMATTER_INFO, formatterInfo);
             itemHtml = formatterInfo.getResourceType().getFormattedContent(
                 m_cms,
                 m_request,
                 m_response,
-                A_CmsResourceType.DefaultFormatters.FORMATTER_GALLERY_LIST.getKey(),
+                A_CmsResourceType.DefaultFormatters.FORMATTER_PUBLISH_LIST.getKey(),
                 reqAttributes);
         } catch (Exception e) {
             // should never happen

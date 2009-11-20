@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/11/17 07:42:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/11/20 10:27:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,12 +90,17 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public enum DefaultFormatters {
 
         /** The default gallery list item formatter path. */
-        FORMATTER_GALLERY_LIST("formatter_gallery_list",
-        "/system/workplace/editors/ade/default-gallery-list-formatter.jsp"),
+        FORMATTER_GALLERY_LIST("formatter_gallery_list", "/system/workplace/editors/ade/default-list-formatter.jsp"),
+
+        /** The default gallery list item formatter path. */
+        FORMATTER_ADE_LIST("formatter_ade_list", "/system/workplace/editors/ade/default-list-formatter.jsp"),
+
+        /** The default gallery list item formatter path. */
+        FORMATTER_PUBLISH_LIST("formatter_publish_list", "/system/workplace/editors/ade/default-list-formatter.jsp"),
 
         /** The default gallery preview formatter path. */
         FORMATTER_GALLERY_PREVIEW("formatter_gallery_preview",
-        "/system/workplace/editors/ade/default_preview_formatter.jsp"),
+        "/system/workplace/editors/ade/default-preview-formatter.jsp"),
 
         /** The default sitemap formatter path. */
         FORMATTER_SITEMAP("formatter_sitemap", "/system/workplace/editors/sitemap/default-formatter.jsp");
