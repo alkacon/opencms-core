@@ -1142,7 +1142,7 @@
       self.load(function(ok, data) {
          self.prepareAfterLoad();
          list = $('#' + self.menuId);
-         $('.cms-head:not(:has(a.cms-move))', list).each(function() {
+         $('.cms-list-itemcontent:not(:has(a.cms-move))', list).each(function() {
             var elem = $(this);
             $('<a class="cms-handle cms-move"></a>').appendTo(elem);
          });
