@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2009/08/20 11:30:42 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2009/11/23 10:39:10 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -585,7 +585,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * 
      * @return a list of current selected items
      */
-    public List getSelectedItems() {
+    public List<CmsListItem> getSelectedItems() {
 
         Iterator it = CmsStringUtil.splitAsList(getParamSelItems(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
         List items = new ArrayList();
