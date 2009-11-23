@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/11/20 10:27:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/11/23 09:19:59 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.9.3
  */
@@ -870,22 +870,20 @@ public class CmsADEPublish {
             CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(OpenCms.getResourceManager().getResourceType(
                 resource.getTypeId()), false);
             formatterInfo.setResource(resource);
-            formatterInfo.setTitleInfo(new CmsFieldInfoBean(
+            formatterInfo.setTitleInfo(
                 CmsPublishResourceBean.JsonProperty.TITLE.name().toLowerCase(),
                 messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0),
-                resUtil.getTitle()));
-            formatterInfo.setSubTitleInfo(new CmsFieldInfoBean(
+                resUtil.getTitle());
+            formatterInfo.setSubTitleInfo(
                 CmsPublishResourceBean.JsonProperty.URI.name().toLowerCase(),
                 messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0),
-                CmsStringUtil.formatResourceName(resUtil.getFullPath(), PATH_LENGTH)));
+                CmsStringUtil.formatResourceName(resUtil.getFullPath(), PATH_LENGTH));
             formatterInfo.setIcon(CmsWorkplace.getResourceUri(resUtil.getIconPathExplorer()));
             // adding additional info
-            List<CmsFieldInfoBean> additional = new ArrayList<CmsFieldInfoBean>();
-            additional.add(new CmsFieldInfoBean(
+            formatterInfo.addAdditionalInfo(
                 CmsPublishResourceBean.JsonProperty.STATE.name().toLowerCase(),
                 messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_STATE_0),
-                resUtil.getStateName()));
-            formatterInfo.setAdditionalInfo(additional);
+                resUtil.getStateName());
 
             // rendering the item html
             Map<String, Object> reqAttributes = new HashMap<String, Object>();

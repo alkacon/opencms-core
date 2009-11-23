@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/19 13:23:43 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/11/23 09:19:59 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.editors.ade.A_CmsAjaxServer;
-import org.opencms.workplace.editors.ade.CmsFieldInfoBean;
 import org.opencms.workplace.editors.ade.CmsFormatterInfoBean;
 import org.opencms.xml.containerpage.CmsADEManager;
 
@@ -89,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 7.6
  */
@@ -371,6 +370,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         }
     }
 
+    /** The excerpt field constant. */
+    public static final String EXCERPT_FIELD_NAME = "excerpt";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchServer.class);
 
@@ -493,17 +495,11 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     false);
                 // 1: category title
                 jsonObj.put(JsonKeys.TITLE.getName(), cat.getTitle());
-                formatterInfo.setTitleInfo(new CmsFieldInfoBean(
-                    JsonKeys.TITLE.getName(),
-                    JsonKeys.TITLE.getName(),
-                    cat.getTitle()));
+                formatterInfo.setTitleInfo(JsonKeys.TITLE.getName(), JsonKeys.TITLE.getName(), cat.getTitle());
 
                 // 2: category path
                 jsonObj.put(JsonKeys.PATH.getName(), cat.getPath());
-                formatterInfo.setSubTitleInfo(new CmsFieldInfoBean(
-                    JsonKeys.PATH.getName(),
-                    JsonKeys.PATH.getName(),
-                    cat.getPath()));
+                formatterInfo.setSubTitleInfo(JsonKeys.PATH.getName(), JsonKeys.PATH.getName(), cat.getPath());
                 // 3: category root path
                 jsonObj.put(JsonKeys.ROOTPATH.getName(), cat.getRootPath());
                 // 4 category level
@@ -569,17 +565,11 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     formatterInfo.setResource(res);
                     jsonObj.put(JsonKeys.CONTENTTYPES.getName(), contentTypes);
                     jsonObj.put(JsonKeys.TITLE.getName(), title);
-                    formatterInfo.setTitleInfo(new CmsFieldInfoBean(
-                        JsonKeys.TITLE.getName(),
-                        JsonKeys.TITLE.getName(),
-                        title));
+                    formatterInfo.setTitleInfo(JsonKeys.TITLE.getName(), JsonKeys.TITLE.getName(), title);
 
                     // 2: gallery path
                     jsonObj.put(JsonKeys.PATH.getName(), sitePath);
-                    formatterInfo.setSubTitleInfo(new CmsFieldInfoBean(
-                        JsonKeys.PATH.getName(),
-                        JsonKeys.PATH.getName(),
-                        sitePath));
+                    formatterInfo.setSubTitleInfo(JsonKeys.PATH.getName(), JsonKeys.PATH.getName(), sitePath);
                     formatterInfo.setIcon(iconPath);
                     // 3: active flag
                     jsonObj.put(JsonKeys.GALLERYTYPEID.getName(), tInfo.getResourceType().getTypeId());
@@ -632,18 +622,19 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 resultEntry.put(JsonKeys.ICON.getName(), iconPath);
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getDocumentType());
                 CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(type, false);
-                formatterInfo.setTitleInfo(new CmsFieldInfoBean(
+                formatterInfo.setTitleInfo(
                     JsonKeys.TITLE.getName(),
                     JsonKeys.TITLE.getName(),
-                    sResult.getField(CmsSearchField.FIELD_TITLE)));
-                formatterInfo.setSubTitleInfo(new CmsFieldInfoBean(
+                    sResult.getField(CmsSearchField.FIELD_TITLE));
+                formatterInfo.setSubTitleInfo(
                     JsonKeys.TYPE.getName(),
                     JsonKeys.TYPE.getName(),
-                    CmsWorkplaceMessages.getResourceTypeName(m_locale, type.getTypeName())));
+                    CmsWorkplaceMessages.getResourceTypeName(m_locale, type.getTypeName()));
                 formatterInfo.setIcon(iconPath);
-                List<CmsFieldInfoBean> additional = new ArrayList<CmsFieldInfoBean>();
-                additional.add(new CmsFieldInfoBean("excerpt", "excerpt", sResult.getExcerpt()));
-                formatterInfo.setAdditionalInfo(additional);
+                formatterInfo.addAdditionalInfo(
+                    EXCERPT_FIELD_NAME,
+                    OpenCms.getWorkplaceManager().getMessages(m_locale).key(Messages.GUI_LABEL_EXCERPT),
+                    sResult.getExcerpt());
                 resultEntry.put(JsonKeys.ITEMHTML.getName(), getFormattedListContent(formatterInfo));
                 result.put(resultEntry);
             } catch (Exception e) {
@@ -678,18 +669,18 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 jType.put(JsonKeys.TITLE.getName(), CmsWorkplaceMessages.getResourceTypeName(
                     m_locale,
                     type.getTypeName()));
-                formatterInfo.setTitleInfo(new CmsFieldInfoBean(
+                formatterInfo.setTitleInfo(
                     JsonKeys.TITLE.getName(),
                     JsonKeys.TITLE.getName(),
-                    CmsWorkplaceMessages.getResourceTypeName(m_locale, type.getTypeName())));
+                    CmsWorkplaceMessages.getResourceTypeName(m_locale, type.getTypeName()));
                 jType.put(JsonKeys.TYPEID.getName(), type.getTypeId());
                 jType.put(JsonKeys.INFO.getName(), CmsWorkplaceMessages.getResourceTypeDescription(
                     m_locale,
                     type.getTypeName()));
-                formatterInfo.setSubTitleInfo(new CmsFieldInfoBean(
+                formatterInfo.setSubTitleInfo(
                     JsonKeys.INFO.getName(),
                     JsonKeys.INFO.getName(),
-                    CmsWorkplaceMessages.getResourceTypeDescription(m_locale, type.getTypeName())));
+                    CmsWorkplaceMessages.getResourceTypeDescription(m_locale, type.getTypeName()));
                 String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
                     + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getIcon());
                 jType.put(JsonKeys.ICON.getName(), iconPath);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsFormatterInfoBean.java,v $
- * Date   : $Date: 2009/11/19 13:22:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/23 09:19:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ import java.util.List;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.6
  * 
@@ -86,6 +87,29 @@ public class CmsFormatterInfoBean {
 
         m_resourceType = resourceType;
         m_isType = isType;
+        m_additionalInfo = new ArrayList<CmsFieldInfoBean>();
+    }
+
+    /**
+     * Adds an additional info.<p>
+     * 
+     * @param info the additional info field
+     */
+    public void addAdditionalInfo(CmsFieldInfoBean info) {
+
+        m_additionalInfo.add(info);
+    }
+
+    /**
+     * Adds an additional info.<p>
+     * 
+     * @param fieldName the field name
+     * @param fieldTitle the field title
+     * @param fieldValue the field value
+     */
+    public void addAdditionalInfo(String fieldName, String fieldTitle, String fieldValue) {
+
+        m_additionalInfo.add(new CmsFieldInfoBean(fieldName, fieldTitle, fieldValue));
     }
 
     /**
@@ -239,9 +263,9 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Sets the subTitleInfo.<p>
+     * Sets the sub-title info.<p>
      *
-     * @param subTitleInfo the subTitleInfo to set
+     * @param subTitleInfo the sub-title info to set
      */
     public void setSubTitleInfo(CmsFieldInfoBean subTitleInfo) {
 
@@ -249,13 +273,37 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Sets the titleInfo.<p>
+     * Sets the sub-title info.<p>
+     * 
+     * @param fieldName the field name
+     * @param fieldTitle the field title
+     * @param fieldValue the field value
+     */
+    public void setSubTitleInfo(String fieldName, String fieldTitle, String fieldValue) {
+
+        m_subTitleInfo = new CmsFieldInfoBean(fieldName, fieldTitle, fieldValue);
+    }
+
+    /**
+     * Sets the title info.<p>
      *
-     * @param titleInfo the titleInfo to set
+     * @param titleInfo the title info to set
      */
     public void setTitleInfo(CmsFieldInfoBean titleInfo) {
 
         m_titleInfo = titleInfo;
+    }
+
+    /**
+     * Sets the title info.<p>
+     * 
+     * @param fieldName the field name
+     * @param fieldTitle the field title
+     * @param fieldValue the field value
+     */
+    public void setTitleInfo(String fieldName, String fieldTitle, String fieldValue) {
+
+        m_titleInfo = new CmsFieldInfoBean(fieldName, fieldTitle, fieldValue);
     }
 
 }
