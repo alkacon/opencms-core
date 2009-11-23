@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2009/10/29 10:37:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/23 15:20:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.5
  */
@@ -328,6 +328,29 @@ public class CmsPublishManager {
             directPublishResources,
             directPublishSiblings,
             publishSubResources));
+    }
+
+    /**
+     * Returns a publish list with all the given resources, filtered only by state.<p>
+     * 
+     * @param cms the cms request context
+     * @param directPublishResources the {@link CmsResource} objects which will be directly published
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     *                      published resources should also get published
+     * 
+     * @return a publish list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishListAll(
+        CmsObject cms,
+        List<CmsResource> directPublishResources,
+        boolean directPublishSiblings) throws CmsException {
+
+        return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
+            true,
+            directPublishResources,
+            directPublishSiblings));
     }
 
     /**

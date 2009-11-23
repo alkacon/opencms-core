@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2009/10/29 10:38:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/23 15:20:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  * 
@@ -137,13 +137,25 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
+     * Constructs a publish list for a list of direct publish resources.<p>
+     * 
+     * @param all no redundant resource are filtered out
+     * @param directPublishResources a list of <code>{@link CmsResource}</code> instances to be published directly
+     * @param directPublishSiblings indicates if all siblings of the selected resources should be published
+     */
+    public CmsPublishList(boolean all, List<CmsResource> directPublishResources, boolean directPublishSiblings) {
+
+        this(null, directPublishResources, directPublishSiblings, false, true);
+    }
+
+    /**
      * Constructs a publish list for a given project.<p>
      * 
      * @param project the project to publish, this should always be the id of the current project
      */
     public CmsPublishList(CmsProject project) {
 
-        this(project, null, false, true);
+        this(project, null, false, true, false);
     }
 
     /**
@@ -154,7 +166,7 @@ public class CmsPublishList implements Externalizable {
      */
     public CmsPublishList(CmsResource directPublishResource, boolean publishSiblings) {
 
-        this(null, Collections.singletonList(directPublishResource), publishSiblings, true);
+        this(null, Collections.singletonList(directPublishResource), publishSiblings, true, false);
     }
 
     /**
@@ -165,7 +177,7 @@ public class CmsPublishList implements Externalizable {
      */
     public CmsPublishList(List<CmsResource> directPublishResources, boolean publishSiblings) {
 
-        this(null, directPublishResources, publishSiblings, true);
+        this(null, directPublishResources, publishSiblings, true, false);
     }
 
     /**
@@ -177,7 +189,7 @@ public class CmsPublishList implements Externalizable {
      */
     public CmsPublishList(List<CmsResource> directPublishResources, boolean publishSiblings, boolean publishSubResources) {
 
-        this(null, directPublishResources, publishSiblings, publishSubResources);
+        this(null, directPublishResources, publishSiblings, publishSubResources, false);
     }
 
     /**
@@ -192,7 +204,8 @@ public class CmsPublishList implements Externalizable {
         CmsProject project,
         List<CmsResource> directPublishResources,
         boolean publishSiblings,
-        boolean publishSubResources) {
+        boolean publishSubResources,
+        boolean all) {
 
         m_fileList = new ArrayList<CmsResource>();
         m_folderList = new ArrayList<CmsResource>();
@@ -202,8 +215,12 @@ public class CmsPublishList implements Externalizable {
         m_publishSubResources = publishSubResources;
         m_projectId = (project != null) ? project.getUuid() : null;
         if (directPublishResources != null) {
-            // reduce list of folders to minimum
-            m_directPublishResources = Collections.unmodifiableList(CmsFileUtil.removeRedundantResources(directPublishResources));
+            if (!all) {
+                // reduce list of folders to minimum
+                m_directPublishResources = Collections.unmodifiableList(CmsFileUtil.removeRedundantResources(directPublishResources));
+            } else {
+                m_directPublishResources = Collections.unmodifiableList(directPublishResources);
+            }
         }
     }
 
