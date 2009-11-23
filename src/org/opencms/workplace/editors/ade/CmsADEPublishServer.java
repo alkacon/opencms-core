@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/11/20 08:52:08 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/11/23 15:18:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.9.3
  */
@@ -149,21 +149,6 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
         }
     }
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsADEPublishServer.class);
-
-    /**
-     * Constructor, with parameters.
-     * 
-     * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
-     */
-    public CmsADEPublishServer(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        super(context, req, res);
-    }
-
     /** Request parameter name constants. */
     protected enum ReqParam {
 
@@ -190,6 +175,21 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
 
             return m_name;
         }
+    }
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsADEPublishServer.class);
+
+    /**
+     * Constructor, with parameters.
+     * 
+     * @param context the JSP page context object
+     * @param req the JSP request 
+     * @param res the JSP response 
+     */
+    public CmsADEPublishServer(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        super(context, req, res);
     }
 
     /**
@@ -222,6 +222,10 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
         // get the cached publish options
         CmsADESessionCache sessionCache = (CmsADESessionCache)request.getSession().getAttribute(
             CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
+        if (sessionCache == null) {
+            sessionCache = new CmsADESessionCache(getCmsObject());
+            request.getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, sessionCache);
+        }
         CmsPublishOptions options = sessionCache.getPublishOptions();
         if (action.equals(Action.PUBLISH_OPTIONS)) {
             result.merge(options.toJson(), true, false);
