@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/18 07:24:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/11/23 15:18:05 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.6
  */
@@ -431,7 +431,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             result.put(JsonResponse.PROPERTIES.getName(), getPropertyInfo(sitemapRes));
         } else if (action.equals(Action.SAVE)) {
             // save the sitemap
-            saveSitemap(xmlSitemap, data);
+            saveSitemap(sitemapRes, data);
         } else if (action.equals(Action.STARTEDIT)) {
             // lock the sitemap
             try {
@@ -683,37 +683,41 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     /**
      * Saves the new state of the sitemap.<p>
      * 
-     * @param xmlSitemap the sitemap to save
+     * @param sitemapRes the sitemap resource to save
      * @param sitemap the sitemap data
      * 
      * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    public void saveSitemap(CmsXmlSitemap xmlSitemap, JSONObject sitemap) throws CmsException, JSONException {
+    public void saveSitemap(CmsResource sitemapRes, JSONObject sitemap) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
 
-        cms.lockResourceTemporary(cms.getSitePath(xmlSitemap.getFile()));
-        Locale locale = cms.getRequestContext().getLocale();
-        if (xmlSitemap.hasLocale(locale)) {
-            // remove the locale 
-            xmlSitemap.removeLocale(locale);
+        cms.lockResourceTemporary(cms.getSitePath(sitemapRes));
+        CmsFile file = cms.readFile(sitemapRes);
+        synchronized (file) { // just do not allow to write the same file at the same time
+            CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, file, getRequest());
+            Locale locale = cms.getRequestContext().getLocale();
+            if (xmlSitemap.hasLocale(locale)) {
+                // remove the locale 
+                xmlSitemap.removeLocale(locale);
+            }
+            xmlSitemap.addLocale(cms, locale);
+
+            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+                cms,
+                sitemapRes);
+
+            int entryCount = 0;
+            List<CmsSiteEntryBean> entries = jsonToEntryList(sitemap.getJSONArray(JsonResponse.SITEMAP.getName()), true);
+            for (CmsSiteEntryBean entry : entries) {
+                saveEntry(cms, locale, null, xmlSitemap, entry, entryCount, propertiesConf);
+                entryCount++;
+            }
+
+            file.setContents(xmlSitemap.marshal());
         }
-        xmlSitemap.addLocale(cms, locale);
-
-        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
-            cms,
-            xmlSitemap.getFile());
-
-        int entryCount = 0;
-        List<CmsSiteEntryBean> entries = jsonToEntryList(sitemap.getJSONArray(JsonResponse.SITEMAP.getName()), true);
-        for (CmsSiteEntryBean entry : entries) {
-            saveEntry(cms, locale, null, xmlSitemap, entry, entryCount, propertiesConf);
-            entryCount++;
-        }
-
-        xmlSitemap.getFile().setContents(xmlSitemap.marshal());
-        cms.writeFile(xmlSitemap.getFile());
+        cms.writeFile(file);
     }
 
     /**
