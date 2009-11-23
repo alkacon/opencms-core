@@ -20,8 +20,12 @@
     #cms-gallery-tabs {
 		height:440px;
 		width:650px;
-        background: #efefef;
+        background: #f9f9f9;
 	}
+    
+    #cms-gallery-tabs li.ui-state-active{
+        background: #f9f9f9;
+    }
     
     /** Styles for the preview*/
     #cms-preview{
@@ -82,7 +86,7 @@
     /* List for search tabs */
     .cms-list-scrolling {                
         border:1px solid #AAAAAA;       
-        overflow:auto;
+    /*    overflow:auto; */
         width:600px;
         background: #ffffff;
     }
@@ -90,6 +94,9 @@
     .cms-list-scrolling-innner {
         margin: 0px;
         padding: 0px;
+        height: 100%;
+        overflow:auto;
+        position: relative;
     }
     
     .cms-item-invisible {

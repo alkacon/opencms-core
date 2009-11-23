@@ -28,6 +28,7 @@
 	width: 100%;
 	position: absolute;
 	border-top: none;
+    font-weight:normal;
 }
 
 #toolbar div.cms-toolbar-content {
@@ -662,7 +663,7 @@ ul.cms-item-list,ul.cms-publish-options {
 }
 */
 .cms-menu .ui-widget-content,.cms-item .ui-widget-content {
-	/*position: relative;*/
+	position: relative;
 	line-height: 16px;
 	margin-bottom: 2px;
 }
@@ -709,9 +710,9 @@ li.cms-item,ul.options li,ul.cms-publish-options li {
 	margin: 0 0 0 10px;
 }
 
-#toolbar li.cms-item {
-	margin: 0 auto;
-	width: 292px;
+#toolbar .cms-menu-content li.cms-item{
+    margin: 0 auto;
+    width: 292px;
 }
 
 div.cms-menu {
@@ -720,17 +721,17 @@ div.cms-menu {
 	position: absolute;
 }
 
-div.cms-menu div.ui-widget-content,div.cms-menu div.cms-menu-connect {
+div.cms-menu div.cms-menu-content,div.cms-menu div.cms-menu-connect {
 	background: #AACCFF;
 }
 
-div.cms-menu div.ui-widget-content div.ui-widget-content {
-	background: #ffffff;
+div.cms-menu div.cms-menu-content div.ui-widget-content {
+	background: #ffffff; 
 }
 
-div.cms-menu div.ui-corner-bottom {
-	width: 343px;
+div.cms-menu div.cms-menu-content {
 	padding-top: 7px;
+    position: relative;
 }
 
 div.cms-menu div.cms-menu-connect {
@@ -808,6 +809,14 @@ li.jTreePlacement, li.jTreePlaceholder {
 	left: 0px;
 }
 
+#cms_appendbox div.cms-list-checkbox{
+    display: none;
+}
+
+#cms_appendbox div.cms-list-item{
+    margin-left: 0px;
+}
+
 #jHelperTipAttrContainer {
 	background: InfoBackground;
 	border: 1px solid ButtonShadow;
@@ -858,13 +867,6 @@ li.jTreePlacement, li.jTreePlaceholder {
 	width: 329px;
 }
 
-#cms-search div.ui-corner-bottom {
-	width: 343px;
-}
-
-.cms-menu div.ui-corner-bottom {
-	width: 343px;
-}
 
 /*
 #fav-dialog {
@@ -895,36 +897,7 @@ li.jTreePlacement, li.jTreePlaceholder {
 	border-bottom: 0px;
 }
 
-/*
-#recentlist {
-    display: none;
-    padding: 0px;
-    position: absolute;
-}
-
-
-#recentlist div.ui-widget-content, #recentlist div.connect, #recentlist div.cms-menu-connect {
-    background: #AACCFF;
-}
-
-#recentlist div.ui-widget-content div.ui-widget-content {
-    background: #ffffff;
-}
-
-#recentlist div.ui-corner-bottom {
-    width: 315px;
-}
-
-#recentlist div.connect, #recentlist div.cms-menu-connect {
-    position: absolute;
-    right: 0px;
-    top: -35px;
-    width: 99px;
-    height: 36px;
-    z-index: 1;
-    border: 1px solid #aaaaaa;
-    border-bottom: 0px;
-}  */ /**
+/**
  * Form styles.
  */
 ol.ade-forms {
@@ -1003,8 +976,7 @@ ol.ade-forms fieldset {
 	z-index: 10;
 }
 
-#cms-new-list .cms-item .ui-widget-content,#cms-appendbox .cms-item .ui-widget-content
-	{
+#cms-new-list .cms-item .ui-widget-content {
 	border: 1px solid #333333;
 }
 
@@ -1205,6 +1177,7 @@ div.cms-selectbox span.cms-select-option{
 div.cms-selector{
 	width: 150px;
 	position:absolute;
+    z-index: 10;
 	top:20px;
 	left:-1px;
 	display:none;

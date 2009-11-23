@@ -90,7 +90,7 @@
                         </span>\
              </div>\
              <div id="results" class="cms-list-scrolling ui-corner-all result-tab-scrolling">\
-                        <ul class="cms-list-scrolling-innner"></ul>\
+                        <ul class="cms-list-scrolling-innner cms-item-list"></ul>\
              </div>\
              <div class="result-pagination"></div>\
          </div>';
@@ -104,7 +104,7 @@
                     <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="types" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
-                    <ul class="cms-list-scrolling-innner"></ul>\
+                    <ul id="cms-type-list" class="cms-list-scrolling-innner cms-item-list"></ul>\
                 </div>\
               </div>';
    
@@ -412,7 +412,7 @@
        if (cms.galleries.searchObject[criteria]) {
              $.each(cms.galleries.searchObject[criteria], function() {
                  var path = this;
-                 $('li[rel=' + path + ']').addClass(cms.galleries.classListItemActive);
+                 $('li[alt=' + path + ']').addClass(cms.galleries.classListItemActive);
              });
        }
    }
@@ -498,8 +498,14 @@
    var fillResultPage = cms.galleries.fillResultPage = function(pageData) {           
       var target = $('#results > ul').empty().removeAttr('id').attr('id', 'searchresults_page' + pageData.searchresult.resultpage);
       $.each(pageData.searchresult.resultlist, function() {
-          $(this.itemhtml).appendTo(target).attr('rel', this.path);                              
-          $('li[rel=' + this.path + ']').data('type', this.type);  
+          var resultElement=$(this.itemhtml).appendTo(target);
+          resultElement.attr('alt', this.path);                              
+          resultElement.data('type', this.type);
+          // if in ade container-page
+         if (cms.toolbar && cms.toolbar.toolbarReady) {
+             resultElement.attr('rel', this.clientid);
+             resultElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
+         }
       });           
    }
    
@@ -535,7 +541,7 @@
       //add the types to the list
       for (var i = 0; i < categories.length; i++) {                  
          $(categories[i].itemhtml).appendTo('#categories > ul')
-             .attr('rel', categories[i].path).addClass(classActive + ' ' + classConstLevel + categories[i].level).addClass('cms-list-with-checkbox')
+             .attr('alt', categories[i].path).addClass(classActive + ' ' + classConstLevel + categories[i].level).addClass('cms-list-with-checkbox')
              .prepend('<div class="cms-list-checkbox"></div>');
       }
       // set isChanged flag, so the search will be send to server
@@ -557,7 +563,7 @@
       
       // reorder the item in the list      
       $.each(categories, function() {
-         $("li[rel='" + this.path + "']").appendTo('#categories > ul').toggleClass('cms-active-level', isActive);
+         $("li[alt='" + this.path + "']").appendTo('#categories > ul').toggleClass('cms-active-level', isActive);
       });
    }
    
@@ -572,7 +578,7 @@
       // add the galleries to the list
       for (var i = 0; i < galleries.length; i++) {                  
          $(galleries[i].itemhtml).appendTo('#galleries > ul')
-             .attr('rel', galleries[i].path).addClass('cms-list-with-checkbox')            
+             .attr('alt', galleries[i].path).addClass('cms-list-with-checkbox')            
              .prepend('<div class="cms-list-checkbox"></div>');         
       }
       // set isChanged flag, so the search will be send to server
@@ -588,7 +594,7 @@
    
       // reorder the item in the list      
       $.each(galleries, function() {
-         $("li[rel='" + this.path + "']").appendTo('#galleries > ul');
+         $("li[alt='" + this.path + "']").appendTo('#galleries > ul');
       });
    }
    
@@ -600,10 +606,16 @@
    var fillTypes = cms.galleries.fillTypes = function(/**JSON*/types) {
       // add the types to the list
       for (var i = 0; i < types.length; i++) {        
-         $(types[i].itemhtml).appendTo('#types > ul')
-             .attr('rel', types[i].typeid).addClass('cms-list-with-checkbox')
+         var typeElement=$(types[i].itemhtml).appendTo('#types > ul');
+         typeElement.attr('alt', types[i].typeid).addClass('cms-list-with-checkbox')
              .prepend('<div class="cms-list-checkbox"></div>');
-         $('li[rel=' + types[i].typeid + ']').data('gallerytypeid', types[i].gallerytypeid);
+         typeElement.data('gallerytypeid', types[i].gallerytypeid);
+         
+         // if in ade container-page
+         if (cms.toolbar && cms.toolbar.toolbarReady && cms.data.elements[types[i].type]) {
+             typeElement.attr('rel', types[i].type);
+             typeElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
+         }
       }
       // set isChanged flag, so the search will be send to server
       cms.galleries.searchObject.isChanged.types = true;
@@ -617,7 +629,7 @@
    var refreshTypes = cms.galleries.refreshTypes = function(/**JSON*/types) {
       // reorder the item in the list      
       $.each(types, function() {
-         $("li[rel='" + this.typeid + "']").appendTo('#types > ul');
+         $("li[alt='" + this.typeid + "']").appendTo('#types > ul');
       });
    }
    
@@ -650,14 +662,14 @@
                // if any search criteria is selected
                if (selectedLis) {
                    if (selectedLis.length == 1) {                       
-                       titles = singleSelect.concat($('li[rel=' + selectedLis[0] + ']').find('.cms-list-title').text());
+                       titles = singleSelect.concat($('li[alt=' + selectedLis[0] + ']').find('.cms-list-title').text());
                        cms.galleries.addCreteriaToTab(titles, searchCriteria);
                    } else if (selectedLis.length > 1) {
                       $.each(selectedLis, function() {
                       if (titles.length == 0) {
-                          titles = multipleSelect.concat($('li[rel=' + this + ']').find('.cms-list-title').text());
+                          titles = multipleSelect.concat($('li[alt=' + this + ']').find('.cms-list-title').text());
                       } else {
-                          titles = titles.concat(", ").concat($('li[rel=' + this + ']').find('.cms-list-title').text());
+                          titles = titles.concat(", ").concat($('li[alt=' + this + ']').find('.cms-list-title').text());
                       }
                   });
                   cms.galleries.addCreteriaToTab(titles, searchCriteria);
@@ -679,7 +691,7 @@
     */
    var clickListItem = cms.galleries.clickListItem = function() {         
           // id of the li tag and type of search 
-          var itemId = $(this).attr('rel');
+          var itemId = $(this).attr('alt');
           var itemCriteria = $(this).closest('div').attr('id');
 
           // adjust the active status of the gallery in the gallery list        
@@ -730,19 +742,19 @@
                }           
            }
            for ( j = 0; j < galleryObjects.length; j++ ){
-              var selectStatus = $('li[rel=' + galleryObjects[j].path + ']').hasClass(cms.galleries.classListItemActive);
+              var selectStatus = $('li[alt=' + galleryObjects[j].path + ']').hasClass(cms.galleries.classListItemActive);
               var index = $.inArray(galleryObjects[j]['gallerytypeid'], galleryTypes);
               // case 1: gallery is not acossiated with type and should be hide
               if (index == -1 && !selectStatus) {
-                  $('li[rel=' + galleryObjects[j].path + ']').toggleClass('cms-item-invisible', true);
+                  $('li[alt=' + galleryObjects[j].path + ']').toggleClass('cms-item-invisible', true);
               } else {
-                  $('li[rel=' + galleryObjects[j].path + ']').toggleClass('cms-item-invisible', false);
+                  $('li[alt=' + galleryObjects[j].path + ']').toggleClass('cms-item-invisible', false);
               }              
            }         
            
        } else {
            for ( j = 0; j < galleryObjects.length; j++ ){          
-                 $('li[rel=' + galleryObjects[j].path + ']').toggleClass('cms-item-invisible', false);
+                 $('li[alt=' + galleryObjects[j].path + ']').toggleClass('cms-item-invisible', false);
           }
        }                                                                                                
    }
@@ -753,7 +765,7 @@
    var dblclickListItem = cms.galleries.dblclickListItem = function() {   
      
       // id of the li tag and type of search 
-      var itemId = $(this).attr('rel');
+      var itemId = $(this).attr('alt');
       var itemCriteria = $(this).closest('div').attr('id');
       
       // adjust the active status of the gallery in the gallery list        
@@ -879,10 +891,10 @@
    */
   var dblclickToShowPreview = cms.galleries.dblclickToShowPreview = function() {
       // retrieve the resource id
-      var itemId = $(this).attr('rel');
+      var itemId = $(this).attr('alt');
       
-      // set the resouce id as rel attribute and empty the content of the preview
-      $('#cms-preview').attr('rel', itemId);
+      // set the resouce id as alt attribute and empty the content of the preview
+      $('#cms-preview').attr('alt', itemId);
       $('#cms-preview div.preview-area, #cms-preview div.edit-area').empty();
       
       // retrieve the resource type and load the preview      
@@ -891,12 +903,12 @@
       
       
       // work around to prevent double loading for just opened preview
-      /*var currPreviewId = $('#cms-preview').attr('rel');
+      /*var currPreviewId = $('#cms-preview').attr('alt');
       if (currPreviewId == null) {
-          $('#cms-preview').attr('rel',itemId);
+          $('#cms-preview').attr('alt',itemId);
           loadItemPreview(itemId); 
       } else if (currPreviewId != null || itemId != currPreviewId) {
-          $('#cms-preview').attr('rel', itemId);
+          $('#cms-preview').attr('alt', itemId);
           $('#cms-preview div.preview-area, #cms-preview div.edit-area').empty();
           loadItemPreview(itemId);
       } else {
