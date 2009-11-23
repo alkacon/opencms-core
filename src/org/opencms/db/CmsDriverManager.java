@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/11/19 08:26:10 $
- * Version: $Revision: 1.643 $
+ * Date   : $Date: 2009/11/23 09:21:57 $
+ * Version: $Revision: 1.644 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -913,6 +913,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 m_monitor.clearCache();
                 break;
             case I_CmsEventListener.EVENT_CLEAR_PRINCIPAL_CACHES:
+            case I_CmsEventListener.EVENT_USER_MODIFIED:
                 m_monitor.clearPrincipalsCache();
                 break;
             default:

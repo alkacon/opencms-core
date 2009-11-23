@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2009/11/19 08:26:10 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2009/11/23 09:21:57 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * @author Alexander Kandzior
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  * 
@@ -369,7 +369,7 @@ public interface I_CmsEventListener {
     String KEY_GROUP_ID = "groupId";
 
     /** Key name for passing a group name. */
-    String KEY_GROUP_NAME = "groupname";
+    String KEY_GROUP_NAME = "groupName";
 
     /** Key name for passing a comma separated list of search index names in the data map. */
     String KEY_INDEX_NAMES = "indexNames";
@@ -378,7 +378,7 @@ public interface I_CmsEventListener {
     String KEY_OU_ID = "ouId";
 
     /** Key name for passing a group name. */
-    String KEY_OU_NAME = "ouname";
+    String KEY_OU_NAME = "ouName";
 
     /** Key name for passing a project id in the data map. */
     String KEY_PROJECTID = "projectId";
@@ -399,17 +399,15 @@ public interface I_CmsEventListener {
     String KEY_RESOURCES = "resources";
 
     /** Key name for passing a user action. */
-    String KEY_USER_ACTION = "useraction";
+    String KEY_USER_ACTION = "userAction";
 
     /** Key name for passing an user ID. */
     String KEY_USER_ID = "userId";
 
     /** Key name for passing a user name. */
-    String KEY_USER_NAME = "username";
+    String KEY_USER_NAME = "userName";
 
-    /**
-     * Marker for "all events".<p>
-     */
+    /** Marker for "all events". */
     Integer LISTENERS_FOR_ALL_EVENTS = new Integer(-1);
 
     /** Value for the "group modified" action. */
