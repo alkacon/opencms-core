@@ -3691,6 +3691,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/js/cms.previewhandler.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.previewhandler.js</destination>
+			<type>plain</type>
+			<uuidstructure>6d6a195f-d81b-11de-a516-f19ce2452f95</uuidstructure>
+			<uuidresource>6d6a1960-d81b-11de-a516-f19ce2452f95</uuidresource>
+			<datelastmodified>Mon, 23 Nov 2009 10:31:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Nov 2009 10:31:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[cms.previewhandler]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.property.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.property.js</destination>
