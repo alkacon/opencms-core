@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/11/23 15:18:05 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/11/24 08:56:41 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.6
  */
@@ -481,18 +481,34 @@ public class CmsADEServer extends A_CmsAjaxServer {
      * Deletes the given elements from server.<p>
      * 
      * @param elems the array of client-side element ids
-     * 
-     * @throws CmsException if something goes wrong 
      */
-    public void deleteElements(JSONArray elems) throws CmsException {
+    public void deleteElements(JSONArray elems) {
 
         CmsObject cms = getCmsObject();
         for (int i = 0; i < elems.length(); i++) {
-            CmsResource res = cms.readResource(m_manager.convertToServerId(elems.optString(i)));
-            String path = cms.getSitePath(res);
-            cms.lockResource(path);
-            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
-            cms.unlockResource(path);
+            String path;
+            try {
+                CmsResource res = cms.readResource(m_manager.convertToServerId(elems.optString(i)));
+                path = cms.getSitePath(res);
+                cms.lockResource(path);
+            } catch (Exception e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+                continue;
+            }
+            try {
+                cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            } catch (Exception e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+            } finally {
+                try {
+                    cms.unlockResource(path);
+                } catch (Exception e) {
+                    // should really never happen
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
         }
     }
 
@@ -529,10 +545,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
         String cntPageParam = request.getParameter(ReqParam.CNTPAGE.getName());
         String uriParam = request.getParameter(ReqParam.URI.getName());
 
-        CmsResource cntPageRes = cms.readResource(cntPageParam);
-        CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
-        CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
-
         JSONObject data = new JSONObject();
         if (checkParameters(request, null, ReqParam.DATA.getName())) {
             String dataParam = request.getParameter(ReqParam.DATA.getName());
@@ -541,6 +553,9 @@ public class CmsADEServer extends A_CmsAjaxServer {
 
         if (action.equals(Action.ALL)) {
             // first load, get everything
+            CmsResource cntPageRes = cms.readResource(cntPageParam);
+            CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
+            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
             result = getContainerPage(cntPageRes, cntPage, uriParam.equals(cntPageParam) ? null : uriParam);
         } else if (action.equals(Action.ELEM)) {
             // get element data
@@ -553,6 +568,9 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 elems = new JSONArray();
                 elems.put(data.optString(JsonRequest.ELEM.getName()));
             }
+            CmsResource cntPageRes = cms.readResource(cntPageParam);
+            CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
+            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
             JSONObject resElements = new JSONObject();
             for (int i = 0; i < elems.length(); i++) {
@@ -574,10 +592,16 @@ public class CmsADEServer extends A_CmsAjaxServer {
             m_sessionCache.setCacheContainerElement(element.getClientId(), element);
 
             JSONObject resElements = new JSONObject();
+            CmsResource cntPageRes = cms.readResource(cntPageParam);
+            CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
+            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
             resElements.put(element.getClientId(), elemUtil.getElementData(element, cntPage.getTypes()));
             result.put(JsonResponse.ELEMENTS.getName(), resElements);
         } else if (action.equals(Action.GET)) {
+            CmsResource cntPageRes = cms.readResource(cntPageParam);
+            CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
+            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
             if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // get the favorite list
                 result.put(JsonResponse.FAVORITES.getName(), getFavoriteList(null, cntPage.getTypes()));
@@ -590,11 +614,17 @@ public class CmsADEServer extends A_CmsAjaxServer {
         } else if (action.equals(Action.SEARCH)) {
             // new search
             CmsSearchOptions searchOptions = getSearchOptions(data);
+            CmsResource cntPageRes = cms.readResource(cntPageParam);
+            CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
+            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
             JSONObject searchResult = getSearchResult(cntPageParam, searchOptions, cntPage.getTypes());
             result.merge(searchResult, true, false);
         } else if (action.equals(Action.LS)) {
             // last search
             CmsSearchOptions searchOptions = getSearchOptions(data);
+            CmsResource cntPageRes = cms.readResource(cntPageParam);
+            CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
+            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
             JSONObject searchResult = getLastSearchResult(cntPageParam, searchOptions, cntPage.getTypes());
 
             // we need those on the client side to make scrolling work
@@ -734,7 +764,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
             if ((container.getMaxElements() > -1) && (renderElems > container.getMaxElements())) {
                 renderElems = container.getMaxElements();
             }
-            // add the template element
+            // add the template element, this will be executed only once during the whole 'for' iteration
             if ((elemUri != null) && container.getType().equals(CmsContainerPageBean.TYPE_TEMPLATE)) {
                 renderElems--;
 
@@ -1049,139 +1079,136 @@ public class CmsADEServer extends A_CmsAjaxServer {
 
         cms.lockResourceTemporary(uri);
         CmsFile containerPage = cms.readFile(uri);
-        synchronized (containerPage) { // just do not allow to write the same file at the same time
-            CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, containerPage);
-            Locale locale = CmsLocaleManager.getLocale(cntPage.getString(JsonCntPage.LOCALE.getName()));
-            if (xmlCnt.hasLocale(locale)) {
-                // remove the locale 
-                xmlCnt.removeLocale(locale);
+        CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, containerPage);
+        Locale locale = CmsLocaleManager.getLocale(cntPage.getString(JsonCntPage.LOCALE.getName()));
+        if (xmlCnt.hasLocale(locale)) {
+            // remove the locale 
+            xmlCnt.removeLocale(locale);
+        }
+        xmlCnt.addLocale(cms, locale);
+
+        JSONObject cnts = cntPage.getJSONObject(JsonCntPage.CONTAINERS.getName());
+        int cntCount = 0;
+        Iterator<String> itCnt = cnts.keys();
+        while (itCnt.hasNext()) {
+            String cntKey = itCnt.next();
+            JSONObject cnt = cnts.getJSONObject(cntKey);
+
+            I_CmsXmlContentValue cntValue = xmlCnt.getValue(
+                CmsXmlContainerPage.XmlNode.CONTAINER.getName(),
+                locale,
+                cntCount);
+            if (cntValue == null) {
+                cntValue = xmlCnt.addValue(cms, CmsXmlContainerPage.XmlNode.CONTAINER.getName(), locale, cntCount);
             }
-            xmlCnt.addLocale(cms, locale);
 
-            JSONObject cnts = cntPage.getJSONObject(JsonCntPage.CONTAINERS.getName());
-            int cntCount = 0;
-            Iterator<String> itCnt = cnts.keys();
-            while (itCnt.hasNext()) {
-                String cntKey = itCnt.next();
-                JSONObject cnt = cnts.getJSONObject(cntKey);
+            String name = cnt.getString(JsonContainer.NAME.getName());
+            xmlCnt.getValue(
+                CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
+                locale,
+                0).setStringValue(cms, name);
 
-                I_CmsXmlContentValue cntValue = xmlCnt.getValue(
-                    CmsXmlContainerPage.XmlNode.CONTAINER.getName(),
-                    locale,
-                    cntCount);
-                if (cntValue == null) {
-                    cntValue = xmlCnt.addValue(cms, CmsXmlContainerPage.XmlNode.CONTAINER.getName(), locale, cntCount);
+            String type = cnt.getString(JsonContainer.TYPE.getName());
+            xmlCnt.getValue(
+                CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.XmlNode.TYPE.getName()),
+                locale,
+                0).setStringValue(cms, type);
+
+            JSONArray elems = cnt.getJSONArray(JsonCntPage.ELEMENTS.getName());
+            for (int i = 0; i < elems.length(); i++) {
+                JSONObject elem = elems.getJSONObject(i);
+
+                String formatter = elem.getString(JsonCntElem.FORMATTER.getName());
+                String elemUri = elem.getString(JsonCntElem.URI.getName());
+                if (type.equals(CmsContainerPageBean.TYPE_TEMPLATE) && elemUri.equals(paramUri)) {
+                    // skip main-content if acting as template
+                    continue;
                 }
-
-                String name = cnt.getString(JsonContainer.NAME.getName());
+                String clientId = elem.getString(JsonCntElem.ID.getName());
+                I_CmsXmlContentValue elemValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                    cntValue.getPath(),
+                    CmsXmlContainerPage.XmlNode.ELEMENT.getName()), locale, i);
                 xmlCnt.getValue(
-                    CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
+                    CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.XmlNode.URI.getName()),
                     locale,
-                    0).setStringValue(cms, name);
-
-                String type = cnt.getString(JsonContainer.TYPE.getName());
+                    0).setStringValue(cms, elemUri);
                 xmlCnt.getValue(
-                    CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.XmlNode.TYPE.getName()),
+                    CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.XmlNode.FORMATTER.getName()),
                     locale,
-                    0).setStringValue(cms, type);
+                    0).setStringValue(cms, formatter);
 
-                JSONArray elems = cnt.getJSONArray(JsonCntPage.ELEMENTS.getName());
-                for (int i = 0; i < elems.length(); i++) {
-                    JSONObject elem = elems.getJSONObject(i);
+                // checking if there are any properties to set
+                if (clientId.contains("#")) {
+                    CmsContainerElementBean element = getCachedElement(clientId);
+                    Map<String, CmsProperty> properties = m_manager.getElementProperties(cms, element);
+                    Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(
+                        cms,
+                        cms.readResource(element.getElementId()));
+                    Iterator<String> itProps = properties.keySet().iterator();
 
-                    String formatter = elem.getString(JsonCntElem.FORMATTER.getName());
-                    String elemUri = elem.getString(JsonCntElem.URI.getName());
-                    if (type.equals(CmsContainerPageBean.TYPE_TEMPLATE) && elemUri.equals(paramUri)) {
-                        // skip main-content if acting as template
-                        continue;
-                    }
-                    String clientId = elem.getString(JsonCntElem.ID.getName());
-                    I_CmsXmlContentValue elemValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
-                        cntValue.getPath(),
-                        CmsXmlContainerPage.XmlNode.ELEMENT.getName()), locale, i);
-                    xmlCnt.getValue(
-                        CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.XmlNode.URI.getName()),
-                        locale,
-                        0).setStringValue(cms, elemUri);
-                    xmlCnt.getValue(
-                        CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.XmlNode.FORMATTER.getName()),
-                        locale,
-                        0).setStringValue(cms, formatter);
+                    // index of the property
+                    int j = 0;
 
-                    // checking if there are any properties to set
-                    if (clientId.contains("#")) {
-                        CmsContainerElementBean element = getCachedElement(clientId);
-                        Map<String, CmsProperty> properties = m_manager.getElementProperties(cms, element);
-                        Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(
-                            cms,
-                            cms.readResource(element.getElementId()));
-                        Iterator<String> itProps = properties.keySet().iterator();
+                    // iterating all properties
+                    while (itProps.hasNext()) {
+                        String propertyName = itProps.next();
 
-                        // index of the property
-                        int j = 0;
-
-                        // iterating all properties
-                        while (itProps.hasNext()) {
-                            String propertyName = itProps.next();
-
-                            if ((properties.get(propertyName).getStructureValue() == null)
-                                || !propertiesConf.containsKey(propertyName)) {
-                                continue;
-                            }
-                            // only if there is a value set and the property is configured in the schema we will save it to the container-page 
-                            I_CmsXmlContentValue propValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
-                                elemValue.getPath(),
-                                CmsXmlContainerPage.XmlNode.PROPERTIES.getName()), locale, j);
-                            xmlCnt.getValue(
-                                CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
-                                locale,
-                                0).setStringValue(cms, propertyName);
-                            I_CmsXmlContentValue valValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
-                                propValue.getPath(),
-                                CmsXmlContainerPage.XmlNode.VALUE.getName()), locale, 0);
-                            if (propertiesConf.get(propertyName).getPropertyType().equals(
-                                CmsXmlContentProperty.T_VFSLIST)) {
-                                I_CmsXmlContentValue filelistValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
-                                    valValue.getPath(),
-                                    CmsXmlContainerPage.XmlNode.FILELIST.getName()), locale, 0);
-                                int index = 0;
-                                for (String strId : CmsStringUtil.splitAsList(
-                                    properties.get(propertyName).getStructureValue(),
-                                    CmsXmlContainerPage.IDS_SEPARATOR)) {
-                                    try {
-                                        CmsResource res = cms.readResource(new CmsUUID(strId));
-                                        I_CmsXmlContentValue fileValue = xmlCnt.getValue(CmsXmlUtils.concatXpath(
+                        if ((properties.get(propertyName).getStructureValue() == null)
+                            || !propertiesConf.containsKey(propertyName)) {
+                            continue;
+                        }
+                        // only if there is a value set and the property is configured in the schema we will save it to the container-page 
+                        I_CmsXmlContentValue propValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                            elemValue.getPath(),
+                            CmsXmlContainerPage.XmlNode.PROPERTIES.getName()), locale, j);
+                        xmlCnt.getValue(
+                            CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
+                            locale,
+                            0).setStringValue(cms, propertyName);
+                        I_CmsXmlContentValue valValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                            propValue.getPath(),
+                            CmsXmlContainerPage.XmlNode.VALUE.getName()), locale, 0);
+                        if (propertiesConf.get(propertyName).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+                            I_CmsXmlContentValue filelistValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                                valValue.getPath(),
+                                CmsXmlContainerPage.XmlNode.FILELIST.getName()), locale, 0);
+                            int index = 0;
+                            for (String strId : CmsStringUtil.splitAsList(
+                                properties.get(propertyName).getStructureValue(),
+                                CmsXmlContainerPage.IDS_SEPARATOR)) {
+                                try {
+                                    CmsResource res = cms.readResource(new CmsUUID(strId));
+                                    I_CmsXmlContentValue fileValue = xmlCnt.getValue(CmsXmlUtils.concatXpath(
+                                        filelistValue.getPath(),
+                                        CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
+                                    if (fileValue == null) {
+                                        fileValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
                                             filelistValue.getPath(),
                                             CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
-                                        if (fileValue == null) {
-                                            fileValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
-                                                filelistValue.getPath(),
-                                                CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
-                                        }
-                                        fileValue.setStringValue(cms, cms.getSitePath(res));
-                                        index++;
-                                    } catch (CmsException e) {
-                                        // could happen when the resource are meanwhile deleted
-                                        LOG.error(e.getLocalizedMessage(), e);
                                     }
+                                    fileValue.setStringValue(cms, cms.getSitePath(res));
+                                    index++;
+                                } catch (CmsException e) {
+                                    // could happen when the resource are meanwhile deleted
+                                    LOG.error(e.getLocalizedMessage(), e);
                                 }
-                            } else {
-                                xmlCnt.addValue(
-                                    cms,
-                                    CmsXmlUtils.concatXpath(
-                                        valValue.getPath(),
-                                        CmsXmlContainerPage.XmlNode.STRING.getName()),
-                                    locale,
-                                    0).setStringValue(cms, properties.get(propertyName).getStructureValue());
                             }
-                            j++;
+                        } else {
+                            xmlCnt.addValue(
+                                cms,
+                                CmsXmlUtils.concatXpath(
+                                    valValue.getPath(),
+                                    CmsXmlContainerPage.XmlNode.STRING.getName()),
+                                locale,
+                                0).setStringValue(cms, properties.get(propertyName).getStructureValue());
                         }
+                        j++;
                     }
                 }
-                cntCount++;
             }
-            containerPage.setContents(xmlCnt.marshal());
+            cntCount++;
         }
+        containerPage.setContents(xmlCnt.marshal());
         cms.writeFile(containerPage);
     }
 
