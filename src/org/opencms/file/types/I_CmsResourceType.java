@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2009/11/24 07:36:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/11/24 14:33:33 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,11 +77,63 @@ import javax.servlet.http.HttpServletResponse;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
+
+    /** Resource formatter. */
+    enum Formatter {
+
+        /** The gallery list item formatter. */
+        ADE_LIST("formatter_ade_list", "/system/workplace/editors/ade/default-list-formatter.jsp"),
+
+        /** The gallery list item formatter. */
+        GALLERY_LIST("formatter_gallery_list", "/system/workplace/editors/ade/default-list-formatter.jsp"),
+
+        /** The gallery preview formatter. */
+        GALLERY_PREVIEW("formatter_gallery_preview", "/system/workplace/editors/ade/default-preview-formatter.jsp"),
+
+        /** The gallery list item formatter. */
+        PUBLISH_LIST("formatter_publish_list", "/system/workplace/editors/ade/default-list-formatter.jsp"),
+
+        /** The sitemap formatter. */
+        SITEMAP("formatter_sitemap", "/system/workplace/editors/sitemap/default-formatter.jsp");
+
+        /** Formatter default path. */
+        private String m_defaultPath;
+
+        /** Formatter name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private Formatter(String name, String defaultPath) {
+
+            m_name = name;
+            m_defaultPath = defaultPath;
+        }
+
+        /**
+         * Get the default path.<p>
+         * 
+         * @return the default path
+         */
+        public String getDefaultPath() {
+
+            return m_defaultPath;
+        }
+
+        /**
+         * Get the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+    }
 
     /** The name of the addMapping() method. */
     String ADD_MAPPING_METHOD = "addMappingType";
@@ -363,9 +415,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param cms the cms-object instance 
      * @param req the current request
      * @param res the current response
-     * @param formatterKey the formatter configuration key
+     * @param formatter the formatter
      * @param requestAttributes a map of request attributes
+     * 
      * @return the rendered content
+     * 
      * @throws CmsException  if something goes wrong rendering the formatter jsp or reading the resources
      * @throws IOException if something goes wrong rendering the formatter jsp
      * @throws ServletException if something goes wrong rendering the formatter jsp
@@ -375,7 +429,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsObject cms,
         HttpServletRequest req,
         HttpServletResponse res,
-        String formatterKey,
+        Formatter formatter,
         Map<String, Object> requestAttributes)
     throws UnsupportedEncodingException, ServletException, IOException, CmsException;
 

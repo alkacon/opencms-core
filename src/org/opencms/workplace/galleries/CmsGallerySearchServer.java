@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/24 07:36:27 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2009/11/24 14:33:33 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
-import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -88,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 7.6
  */
@@ -816,7 +815,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             m_cms,
             getRequest(),
             getResponse(),
-            A_CmsResourceType.DefaultFormatters.FORMATTER_GALLERY_PREVIEW.getKey(),
+            I_CmsResourceType.Formatter.GALLERY_PREVIEW,
             reqAttributes));
         result.put(JsonKeys.STATE.getName(), resource.getState().getState());
 
@@ -1174,7 +1173,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             m_cms,
             getRequest(),
             getResponse(),
-            A_CmsResourceType.DefaultFormatters.FORMATTER_GALLERY_LIST.getKey(),
+            I_CmsResourceType.Formatter.GALLERY_LIST,
             reqAttributes);
     }
 

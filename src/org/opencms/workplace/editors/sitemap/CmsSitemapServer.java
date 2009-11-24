@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/24 13:48:15 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/11/24 14:33:33 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 7.6
  */
@@ -457,52 +457,19 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         CmsObject cms = getCmsObject();
         CmsResource elementRes = cms.readResource(entry.getResourceId());
-
-        CmsResource formatter = m_formatters.get(new Integer(elementRes.getTypeId()));
-        if (formatter == null) {
-            // get the formatter from the resource type configuration
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(elementRes);
-            String formatterPath = type.getConfiguration().get(CmsResourceTypeXmlSitemap.PARAM_SITEMAP_FORMATTER);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterPath)) {
-                try {
-                    formatter = cms.readResource(formatterPath);
-                    m_formatters.put(new Integer(elementRes.getTypeId()), formatter);
-                } catch (CmsException e) {
-                    if (!LOG.isDebugEnabled()) {
-                        LOG.warn(e.getLocalizedMessage());
-                    }
-                    LOG.debug(e.getLocalizedMessage(), e);
-                }
-            }
-        }
-        if (formatter == null) {
-            // use default
-            formatter = m_formatters.get(KEY_DEFAULT_FORMATTER);
-            m_formatters.put(new Integer(elementRes.getTypeId()), formatter);
-        }
-
-        HttpServletRequest m_req = getRequest();
-        HttpServletResponse m_res = getResponse();
-
-        Object currentElement = m_req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
-        m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, new CmsSiteEntryBean(
-            entry.getResourceId(),
-            entry.getName(),
-            entry.getTitle(),
-            entry.getProperties(),
-            null));
-
-        try {
-            return new String(OpenCms.getResourceManager().getLoader(formatter).dump(
-                cms,
-                formatter,
-                null,
-                cms.getRequestContext().getLocale(),
-                m_req,
-                m_res), CmsLocaleManager.getResourceEncoding(cms, elementRes));
-        } finally {
-            m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
-        }
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(elementRes);
+        // TODO: use a formatter info bean here!
+        return type.getFormattedContent(
+            cms,
+            getRequest(),
+            getResponse(),
+            I_CmsResourceType.Formatter.SITEMAP,
+            Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)new CmsSiteEntryBean(
+                entry.getResourceId(),
+                entry.getName(),
+                entry.getTitle(),
+                entry.getProperties(),
+                null)));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeXmlSitemap.java,v $
- * Date   : $Date: 2009/11/05 15:03:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/24 14:33:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,14 +73,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
 public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
-
-    /** Resource type parameter name constant. */
-    public static final String PARAM_SITEMAP_FORMATTER = "sitemap.formatter";
 
     /** Fixed detail page for sitemap pages. */
     private static final String DETAIL_PAGE = "/system/workplace/editors/sitemap/sitemap.jsp";

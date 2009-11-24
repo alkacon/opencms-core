@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/11/23 15:21:13 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/11/24 14:33:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResource;
-import org.opencms.file.types.A_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 7.9.3
  */
@@ -901,7 +901,7 @@ public class CmsADEPublish {
                     m_cms,
                     m_request,
                     m_response,
-                    A_CmsResourceType.DefaultFormatters.FORMATTER_PUBLISH_LIST.getKey(),
+                    I_CmsResourceType.Formatter.PUBLISH_LIST,
                     reqAttributes);
             } catch (Exception e) {
                 // should never happen
