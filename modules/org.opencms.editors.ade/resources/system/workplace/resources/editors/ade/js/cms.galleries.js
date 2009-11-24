@@ -19,6 +19,8 @@
        'tabs-fulltextsearch':4
    };
    
+   var configContentTypes = cms.galleries.configContentTypes = [1, 2, 3, 4, 6, 7, 146, 147, 149];
+   
    /** html-class for the inner of the scrolled list with items. */
    var classScrollingInner = cms.galleries.classScrollingInner = 'cms-list-scrolling-innner';
    
@@ -185,7 +187,7 @@
                   cms.galleries.searchObject.isChanged.categories = true;
               }
               if (requestData.querydata.types) {
-                  cms.galleries.searchObject['types'] = requestData.querydata.types;
+                  cms.galleries.configContentTypes = requestData.querydata.types;                  
                   cms.galleries.searchObject.isChanged.types = true;
               }          
               if (requestData.querydata.query) {
@@ -359,20 +361,22 @@
       target.append('<div class="cms-search-title">' + content + '</div>')
           .append('<div class="cms-search-remove ui-icon ui-icon-closethick ui-corner-all"></div>');
    }
-
-   var configContentTypes = [1, 2, 3, 4, 6, 7, 146, 147, 149];
    
    /**
-    * Loads the lists with available resource types, galleries ans categories via ajax call.
-    * TODO: generalize to make it possible to load some preselected
+    * Loads the lists with available resource types, galleries and categories via ajax call.    
     */
    var loadSearchLists = cms.galleries.loadSearchLists = function() {
+      // saves 
+      /*if (cms.galleries.searchObject['types'].length > 0) {
+          cms.galleries.configContentTypes = cms.galleries.searchObject['types'];
+          cms.galleries.searchObject['types'] = [];
+      } */
       $.ajax({
          'url': vfsPathAjaxJsp,
          'data': {
             'action': 'all',
             'data': JSON.stringify({
-               'types': configContentTypes
+               'types': cms.galleries.configContentTypes
             })
          },
          'type': 'POST',
@@ -417,12 +421,23 @@
        }
    }
    
+   var prepareSearchObject = cms.galleries.prepareSearchObject = function() {
+       // criteria for types, galleries and categories are empty
+       if (cms.galleries.searchObject['galleries'].length == 0 && 
+              cms.galleries.searchObject['categories'].length == 0 &&
+              cms.galleries.searchObject['types'].length == 0){           
+           
+           cms.galleries.searchObject['types'] = cms.galleries.configContentTypes;                             
+       }
+   }
+   
    /**
     * Loads the lists with available resource types, galleries and categories via ajax call.
     * TODO: generalize to make it possible to load some preselected
     */
    var loadSearchResults = cms.galleries.loadSearchResults = function() {
       cms.galleries.searchObject.page = 1;
+      prepareSearchObject();
       $.ajax({
          'url': vfsPathAjaxJsp,
          'data': {

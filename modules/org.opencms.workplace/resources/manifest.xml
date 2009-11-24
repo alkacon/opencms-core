@@ -100,6 +100,7 @@
 			<resource uri="/system/workplace/resources/components/widgets/tablegallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/userselector.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/vfsimage.js"/>
+            <resource uri="/system/workplace/resources/components/widgets/defaultadvancedgallery.js"/>
 			<resource uri="/system/workplace/resources/filetypes/binary.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/folder.gif"/>
@@ -5846,6 +5847,21 @@
 					<value><![CDATA[JS to create combo box]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/components/widgets/defaultadvancedgallery.js</source>
+			<destination>system/workplace/resources/components/widgets/defaultadvancedgallery.js</destination>
+			<type>plain</type>
+			<uuidstructure>cd31ac63-d83e-11de-bfa0-f19ce2452f95</uuidstructure>
+			<uuidresource>cd31ac64-d83e-11de-bfa0-f19ce2452f95</uuidresource>
+			<datelastmodified>Tue, 24 Nov 2009 10:26:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Nov 2009 14:45:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>

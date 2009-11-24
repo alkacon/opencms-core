@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2009/11/19 13:23:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/24 11:37:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,13 +55,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6
  */
 public class CmsOpenAdvancedGallery extends CmsDialog {
 
-    private static final String ADVANCED_GALLERY_PATH = "/system/workplace/resources/editors/ade/galleries.jsp";
+    /** The advanced gallery path to the JSPs in the workplace. <p> */
+    public static final String ADVANCED_GALLERY_PATH = "/system/workplace/resources/editors/ade/galleries.jsp";
 
     private static final String DATA_PARAM = "data";
 
