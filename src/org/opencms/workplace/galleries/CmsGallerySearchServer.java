@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/23 09:19:59 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/11/24 07:36:27 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 7.6
  */
@@ -227,6 +227,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         /** The categories. */
         CATEGORIES("categories"),
+
+        /** The client-side resource-id. */
+        CLIENTID("clientid"),
 
         /** The content types. */
         CONTENTTYPES("contenttypes"),
@@ -620,6 +623,11 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 resultEntry.put(JsonKeys.TYPE.getName(), sResult.getDocumentType());
                 resultEntry.put(JsonKeys.PATH.getName(), path);
                 resultEntry.put(JsonKeys.ICON.getName(), iconPath);
+
+                // TODO: the resource-id should be read from the search-result object once this info has been added to the index
+                resultEntry.put(JsonKeys.CLIENTID.getName(), OpenCms.getADEManager().convertToClientId(
+                    m_cms.readResource(path).getStructureId()));
+
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getDocumentType());
                 CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(type, false);
                 formatterInfo.setTitleInfo(
@@ -674,6 +682,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     JsonKeys.TITLE.getName(),
                     CmsWorkplaceMessages.getResourceTypeName(m_locale, type.getTypeName()));
                 jType.put(JsonKeys.TYPEID.getName(), type.getTypeId());
+                jType.put(JsonKeys.TYPE.getName(), type.getTypeName());
                 jType.put(JsonKeys.INFO.getName(), CmsWorkplaceMessages.getResourceTypeDescription(
                     m_locale,
                     type.getTypeName()));
@@ -784,6 +793,13 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         return galleries;
     }
 
+    /**
+     * Returns the JSON-data for the preview of a resource.<p>
+     * 
+     * @param resourcePath the resource site-path
+     * @return the JSON-data
+     * @throws Exception if something goes wrong
+     */
     private JSONObject getPreviewData(String resourcePath) throws Exception {
 
         JSONObject result = new JSONObject();
@@ -1053,6 +1069,14 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         return result;
     }
 
+    /**
+     * Sets the properties for a resource and returns the updated preview data.<p>
+     * 
+     * @param resourcePath the site-path of the resource
+     * @param properties the properties to set as JSON-data
+     * @return the preview data
+     * @throws Exception if something goes wrong
+     */
     private JSONObject setProperties(String resourcePath, JSONArray properties) throws Exception {
 
         CmsResource resource = m_cms.readResource(resourcePath);
@@ -1108,46 +1132,6 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Transforms an <code>JSONArray</code> to an <code>int[]</code>.
-     * Returns null if the JSON is null or empty.<p>
-     * 
-     * @param arr
-     * @return the resulting array
-     * @throws JSONException if something goes wrong
-     */
-    private int[] transformToIntArray(JSONArray arr) throws JSONException {
-
-        if ((arr == null) || (arr.length() == 0)) {
-            return null;
-        }
-        int[] ret = new int[arr.length()];
-        for (int i = 0; i < arr.length(); i++) {
-            ret[i] = arr.getInt(i);
-        }
-        return ret;
-    }
-
-    /**
-     * Transforms an <code>JSONArray</code> to an <code>String[]</code>.
-     * Returns null if the JSON is null or empty.<p>
-     * 
-     * @param arr
-     * @return the resulting array
-     * @throws JSONException if something goes wrong
-     */
-    private String[] transformToStringArray(JSONArray arr) throws JSONException {
-
-        if ((arr == null) || (arr.length() == 0)) {
-            return null;
-        }
-        String[] ret = new String[arr.length()];
-        for (int i = 0; i < arr.length(); i++) {
-            ret[i] = arr.getString(i);
-        }
-        return ret;
-    }
-
-    /**
      * Transforms an <code>JSONArray</code> to a <code>List&lt;String&gt;</code>.
      * Returns null if the JSON is null or empty.<p>
      * 
@@ -1165,41 +1149,6 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             ret.add(arr.getString(i));
         }
         return ret;
-    }
-
-    /**
-     * Returns the rendered item html.
-     * 
-     * @param type the resource-type
-     * @param title the title
-     * @param subtitle the subtitle
-     * @param iconPath the icon path
-     * @param searchResult the search-result if applicable 
-     * @return the html string
-     * @throws UnsupportedEncodingException if something goes wrong
-     * @throws ServletException if something goes wrong
-     * @throws IOException if something goes wrong
-     * @throws CmsException if something goes wrong
-     */
-    private String getFormattedListContent(
-        I_CmsResourceType type,
-        String title,
-        String subtitle,
-        String iconPath,
-        CmsSearchResult searchResult) throws UnsupportedEncodingException, ServletException, IOException, CmsException {
-
-        Map<String, Object> reqAttributes = new HashMap<String, Object>();
-        CmsGalleryItemBean reqItem = new CmsGalleryItemBean(title, subtitle, iconPath);
-        if (searchResult != null) {
-            reqItem.setSearchResult(searchResult);
-        }
-        reqAttributes.put(ReqParam.GALLERYITEM.getName(), reqItem);
-        return type.getFormattedContent(
-            m_cms,
-            getRequest(),
-            getResponse(),
-            A_CmsResourceType.DefaultFormatters.FORMATTER_GALLERY_LIST.getKey(),
-            reqAttributes);
     }
 
     /**

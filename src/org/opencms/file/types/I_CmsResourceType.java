@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/11/24 07:36:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -361,15 +361,15 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Returns the formatted content. The specified formatter will render the content given in as request attributes.<p>
      *  
      * @param cms the cms-object instance 
-     * @param req 
-     * @param res 
+     * @param req the current request
+     * @param res the current response
      * @param formatterKey the formatter configuration key
      * @param requestAttributes a map of request attributes
      * @return the rendered content
-     * @throws CmsException 
-     * @throws IOException 
-     * @throws ServletException 
-     * @throws UnsupportedEncodingException 
+     * @throws CmsException  if something goes wrong rendering the formatter jsp or reading the resources
+     * @throws IOException if something goes wrong rendering the formatter jsp
+     * @throws ServletException if something goes wrong rendering the formatter jsp
+     * @throws UnsupportedEncodingException if something goes wrong rendering the formatter jsp
      */
     String getFormattedContent(
         CmsObject cms,

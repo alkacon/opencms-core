@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsFormatterInfoBean.java,v $
- * Date   : $Date: 2009/11/23 09:19:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/24 07:36:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.6
  * 
@@ -81,7 +81,7 @@ public class CmsFormatterInfoBean {
      * Constructor.<p>
      * 
      * @param resourceType the resource type
-     * @param isType is this a resource-type item
+     * @param isType is this a resource-type info
      */
     public CmsFormatterInfoBean(I_CmsResourceType resourceType, boolean isType) {
 
@@ -143,9 +143,9 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Returns the resourceId.<p>
+     * Returns the resource-id.<p>
      *
-     * @return the resourceId
+     * @return the resource-id
      */
     public CmsUUID getResourceId() {
 
@@ -153,9 +153,9 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Returns the resourceType.<p>
+     * Returns the resource-type.<p>
      *
-     * @return the resourceType
+     * @return the resource-type
      */
     public I_CmsResourceType getResourceType() {
 
@@ -163,9 +163,9 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Returns the sitePath.<p>
+     * Returns the site-path.<p>
      *
-     * @return the sitePath
+     * @return the site-path
      */
     public String getSitePath() {
 
@@ -173,9 +173,9 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Returns the subTitleInfo.<p>
+     * Returns the sub-title info.<p>
      *
-     * @return the subTitleInfo
+     * @return the sub-title info
      */
     public CmsFieldInfoBean getSubTitleInfo() {
 
@@ -183,9 +183,9 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Returns the titleInfo.<p>
+     * Returns the title info.<p>
      *
-     * @return the titleInfo
+     * @return the title info
      */
     public CmsFieldInfoBean getTitleInfo() {
 
@@ -193,9 +193,9 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Returns the typeId.<p>
+     * Returns the type-id.<p>
      *
-     * @return the typeId
+     * @return the type-id
      */
     public int getTypeId() {
 
@@ -203,9 +203,9 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Returns the isType.<p>
+     * Returns this is a resource-type info element and not a resource info.<p>
      *
-     * @return the isType
+     * @return this is a resource-type info
      */
     public boolean isType() {
 
@@ -253,9 +253,9 @@ public class CmsFormatterInfoBean {
     }
 
     /**
-     * Sets the sitePath.<p>
+     * Sets the site-path.<p>
      *
-     * @param sitePath the sitePath to set
+     * @param sitePath the site-path to set
      */
     public void setSitePath(String sitePath) {
 
