@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/11/03 13:54:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/24 08:57:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -111,8 +112,11 @@ public class CmsJspTagContainer extends TagSupport {
         CmsObject cms = controller.getCmsObject();
         boolean actAsTemplate = false;
 
-        // get the container page itself
-        CmsResource containerPage = cms.readResource(cms.getRequestContext().getUri());
+        // get the container page itself, checking the history first
+        CmsResource containerPage = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
+        if (containerPage == null) {
+            containerPage = cms.readResource(cms.getRequestContext().getUri());
+        }
         if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
             // container page is used as template
             String cntPagePath = cms.readPropertyObject(
@@ -205,7 +209,11 @@ public class CmsJspTagContainer extends TagSupport {
                     CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
                     resUri = cms.readResource(id);
                 } else {
-                    resUri = cms.readResource(cms.getRequestContext().getUri());
+                    // check the history first
+                    resUri = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
+                    if (resUri == null) {
+                        resUri = cms.readResource(cms.getRequestContext().getUri());
+                    }
                 }
 
                 // get the content definition
