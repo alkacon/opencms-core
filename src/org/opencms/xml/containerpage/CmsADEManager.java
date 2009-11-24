@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2009/11/19 13:26:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/24 15:49:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.6
  */
@@ -268,6 +268,7 @@ public class CmsADEManager {
      */
     public CmsContainerElementBean getCurrentElement(ServletRequest req) throws CmsException {
 
+        // TODO: remove this and use always the getFormatterInfo method instead
         CmsContainerElementBean element = null;
         try {
             element = (CmsContainerElementBean)req.getAttribute(ATTR_CURRENT_ELEMENT);
