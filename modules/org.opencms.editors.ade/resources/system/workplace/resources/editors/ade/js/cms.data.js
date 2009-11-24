@@ -135,9 +135,9 @@
                delete cms.data.elements.newOrder;
               
                cms.data.searchTypes = cms.data.elements.searchOrder;
-               cms.galleries.searchTypeIds=[];
+               cms.galleries.configContentTypes=[];
                $.each(cms.data.searchTypes, function(){ 
-                   cms.galleries.searchTypeIds.push(cms.data.elements[this].typeid); 
+                   cms.galleries.configContentTypes.push(cms.data.elements[this].typeid); 
                });
                
                delete cms.data.elements.searchOrder;

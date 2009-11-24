@@ -2,7 +2,7 @@
 
    /** A map with all available content handlers. */
    var contentTypeHandlers = cms.galleries.contentTypeHandlers = {};
-   
+    
    /** Array with resource types available for this galleries dialog. */
    var configContentTypes = cms.galleries.configContentTypes = [1, 2, 3, 4, 6, 7, 146, 147, 149];
     
@@ -114,7 +114,7 @@
                     <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="types" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
-                    <ul id="cms-type-list" class="cms-list-scrolling-innner cms-item-list"></ul>\
+                    <ul id="'+cms.html.galleryTypeListId+'" class="cms-list-scrolling-innner cms-item-list"></ul>\
                 </div>\
               </div>';
    
@@ -347,7 +347,7 @@
          $('#' + cms.galleries.idTabs).tabs("enable", 0);
          $('#' + cms.galleries.idTabs).tabs('select', 0);
       });          
-      
+           
       $('.cms-handle-button.cms-select-item').live('click',function(e){        
           var itemType = $(this).data('type');
           cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.dialogMode](this);
@@ -377,8 +377,8 @@
       target.append('<div class="cms-search-title">' + content + '</div>')
           .append('<div class="cms-search-remove ui-icon ui-icon-closethick ui-corner-all"></div>');
    }
-   
-   /**
+    
+  /**
     * Loads the lists with available resource types, galleries and categories via ajax call.    
     */
    var loadSearchLists = cms.galleries.loadSearchLists = function() {
@@ -519,7 +519,7 @@
             // handle empty list for search
       }
    }
-   
+     
    /**
     * Returns true, if the select button should be displayed.
     */
@@ -531,7 +531,7 @@
    }
      
    var fillResultPage = cms.galleries.fillResultPage = function(pageData) {           
-      var target = $('#results > ul').empty().removeAttr('id').attr('id', 'searchresults_page' + pageData.searchresult.resultpage);
+      var target = $('#results > ul').empty().removeAttr('id').attr('id', cms.html.galleryResultListPrefix + pageData.searchresult.resultpage);
       $.each(pageData.searchresult.resultlist, function() {
           var resultElement=$(this.itemhtml).appendTo(target);
           resultElement.attr('alt', this.path);                              
@@ -547,8 +547,6 @@
          }
       });           
    }
-   
-   
    
    /**
     * Fills the list in the search criteria tabs.
@@ -651,10 +649,10 @@
          typeElement.attr('alt', types[i].typeid).addClass('cms-list-with-checkbox')
              .prepend('<div class="cms-list-checkbox"></div>');
          typeElement.data('gallerytypeid', types[i].gallerytypeid);
-         
-         // if in ade container-page
-         if (cms.toolbar && cms.toolbar.toolbarReady && cms.data.elements[types[i].type]) {
-             typeElement.attr('rel', types[i].type);
+         var typeName=types[i].type;
+         // if in ade container-page and type is an creatable element
+         if (cms.toolbar && cms.toolbar.toolbarReady && $.inArray(typeName, cms.data.newTypes)>=0) {
+             typeElement.attr('rel', typeName);
              typeElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
          }
       }

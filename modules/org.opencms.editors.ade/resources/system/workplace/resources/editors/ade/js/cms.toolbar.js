@@ -847,17 +847,6 @@
    
    
    /**
-    * Reloads the new items list.<p>
-    */
-   var resetNewList = cms.toolbar.resetNewList = function() {
-      $('#' + cms.html.newMenuId + " li.cms-item").remove();
-      var $newlist = $('#' + cms.html.newMenuId + " ul");
-      for (var i = 0; i < cms.data.newTypes.length; i++) {
-         $newlist.append(cms.html.createItemFavListHtml(cms.data.newTypes[i].type));
-      }
-   }
-   
-   /**
     * Adds item to recent list.<p>
     *
     * @param {String} itemId
@@ -1314,26 +1303,6 @@
       }
    }
    
-   var AddListMode = {
-      name: 'add',
-      createButton: function() {
-         var self = this;
-         self.button = makeWideButton('add', M.ADD_BUTTON_TITLE, 'cms-icon-add');
-         self.button.click(function() {
-            toggleMode(self);
-         });
-         return self.button;
-      },
-      menuId: cms.html.searchMenuId,
-      load: cms.search.checkLastSearch,
-      prepareAfterLoad: doNothing,
-      enable: _enableListMode,
-      disable: _disableListMode,
-      initialize: function() {
-         cms.toolbar.dom.addMenu = $(cms.html.searchMenu).appendTo(cms.toolbar.dom.toolbarContent);
-      }
-   }
-   
    var RecentListMode = {
       name: 'recent',
       createButton: function() {
@@ -1377,28 +1346,6 @@
       enable: _enableListMode,
       initialize: function() {
          cms.toolbar.dom.addMenu = $(cms.html.createGalleryMenu()).appendTo(cms.toolbar.dom.toolbarContent);
-      }
-   }
-   
-   var NewListMode = {
-      name: 'new',
-      menuId: cms.html.newMenuId,
-      createButton: function() {
-         var self = this;
-         self.button = makeWideButton('new', M.NEW_BUTTON_TITLE, 'cms-icon-new').click(function() {
-            toggleMode(self);
-         });
-         return self.button;
-      },
-      prepareAfterLoad: doNothing,
-      
-      load: function(callback) {
-         callback(true, null);
-      },
-      disable: _disableListMode,
-      enable: _enableListMode,
-      initialize: function() {
-         cms.toolbar.dom.newMenu = $(cms.html.createMenu(cms.html.newMenuId)).appendTo(cms.toolbar.dom.toolbarContent);
       }
    }
    
@@ -1597,15 +1544,7 @@
       };
       $(window).unload(onUnload); /* TODO */
       $('button[name="Save"]', cms.toolbar.dom.toolbar).click(showSaveDialog);
-      /*
-      $(document).bind('cms-data-loaded', cms.search.initScrollHandler);
-      cms.toolbar.dom.addMenu.find('button.cms-search-button').click(function() {
-         if ($('#cms-search-dialog').length < 1) {
-            cms.search.initSearch();
-            this.click();
-         }
-      });
-      */
+
       cms.toolbar.dom.showToolbar.click(toggleToolbar);
       $('#toolbar button, #show-button').mouseover(function() {
          if (!$(this).hasClass('cms-deactivated')) {
@@ -1622,7 +1561,7 @@
    /**
     * The mode objects in the order in which the buttons should appear in the toolbar.
     */
-   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, GalleryMode/*AddListMode, NewListMode*/, FavoritesListMode, RecentListMode, SaveMode, PublishMode];
+   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, GalleryMode, FavoritesListMode, RecentListMode, SaveMode, PublishMode];
    
    /**
     * Gets a mode by mode name.
