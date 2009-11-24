@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/23 15:18:05 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/11/24 08:58:39 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.ade.A_CmsAjaxServer;
@@ -91,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.6
  */
@@ -205,7 +204,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         /** The recent list. */
         RECENT("recent"),
         /** The sitemap tree. */
-        SITEMAP("sitemap");
+        SITEMAP("sitemap"),
+        /** If to display the toolbar or not. */
+        TOOLBAR("toolbar");
 
         /** Property name. */
         private String m_name;
@@ -378,26 +379,12 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             data = new JSONObject(dataParam);
         }
         String sitemapParam = request.getParameter(ReqParam.SITEMAP.getName());
-        CmsResource sitemapRes = null;
-        CmsXmlSitemap xmlSitemap = null;
-        if (sitemapParam.contains(CmsRequestUtil.URL_DELIMITER)) {
-            int pos = sitemapParam.indexOf(CmsRequestUtil.URL_DELIMITER);
-            Map<String, String[]> params = CmsRequestUtil.createParameterMap(sitemapParam.substring(pos));
-            if (params.containsKey(CmsHistoryResourceHandler.PARAM_VERSION)) {
-                int version = Integer.parseInt(params.get(CmsHistoryResourceHandler.PARAM_VERSION)[0]);
-                sitemapParam = sitemapParam.substring(0, pos);
-                sitemapRes = cms.readResource(sitemapParam);
-                CmsFile histRes = cms.readFile((CmsResource)cms.readResource(sitemapRes.getStructureId(), version));
-                xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, histRes, request);
-            }
-        }
-        if (xmlSitemap == null) {
-            sitemapRes = cms.readResource(sitemapParam);
-            xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes, request);
-        }
 
         if (action.equals(Action.ALL)) {
+            // this should also work for historical requests
+            CmsResource sitemapRes = CmsHistoryResourceHandler.getResourceWithHistory(cms, sitemapParam);
             // first load, get everything
+            CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes, request);
             result = getSitemap(sitemapRes, xmlSitemap);
         } else if (action.equals(Action.GET)) {
             if (checkParameters(data, null, JsonRequest.FAV.getName())) {
@@ -428,9 +415,11 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             String name = data.optString(JsonRequest.NAME.getName());
             result.put(JsonResponse.NAME.getName(), cms.getRequestContext().getFileTranslator().translateResource(name));
         } else if (action.equals(Action.PROPS)) {
+            CmsResource sitemapRes = cms.readResource(sitemapParam);
             result.put(JsonResponse.PROPERTIES.getName(), getPropertyInfo(sitemapRes));
         } else if (action.equals(Action.SAVE)) {
             // save the sitemap
+            CmsResource sitemapRes = cms.readResource(sitemapParam);
             saveSitemap(sitemapRes, data);
         } else if (action.equals(Action.STARTEDIT)) {
             // lock the sitemap
@@ -633,12 +622,14 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             }
         }
         result.put(JsonResponse.SITEMAP.getName(), siteEntries);
+        result.put(JsonResponse.TOOLBAR.getName(), Boolean.TRUE);
 
         // check if the current user is allowed to edit the current sitemap
         Locale workplaceLocale = getWorkplaceLocale();
         if (xmlSitemap.getFile() instanceof I_CmsHistoryResource) {
             result.put(JsonResponse.NO_EDIT_REASON.getName(), Messages.get().getBundle(workplaceLocale).key(
                 Messages.GUI_NO_EDIT_REASON_HISTORY_0));
+            result.put(JsonResponse.TOOLBAR.getName(), Boolean.FALSE);
         } else if (!getCmsObject().hasPermissions(
             resource,
             CmsPermissionSet.ACCESS_WRITE,
@@ -655,12 +646,14 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             }
         }
 
-        // collect the favorites
-        JSONArray resFavorites = getFavoriteList();
-        result.put(JsonResponse.FAVORITES.getName(), resFavorites);
-        // collect the recent list
-        JSONArray resRecent = addContents(m_sessionCache.getRecentList());
-        result.put(JsonResponse.RECENT.getName(), resRecent);
+        if (!result.has(JsonResponse.NO_EDIT_REASON.getName())) {
+            // collect the favorites
+            JSONArray resFavorites = getFavoriteList();
+            result.put(JsonResponse.FAVORITES.getName(), resFavorites);
+            // collect the recent list
+            JSONArray resRecent = addContents(m_sessionCache.getRecentList());
+            result.put(JsonResponse.RECENT.getName(), resRecent);
+        }
 
         return result;
     }
@@ -695,28 +688,26 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         cms.lockResourceTemporary(cms.getSitePath(sitemapRes));
         CmsFile file = cms.readFile(sitemapRes);
-        synchronized (file) { // just do not allow to write the same file at the same time
-            CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, file, getRequest());
-            Locale locale = cms.getRequestContext().getLocale();
-            if (xmlSitemap.hasLocale(locale)) {
-                // remove the locale 
-                xmlSitemap.removeLocale(locale);
-            }
-            xmlSitemap.addLocale(cms, locale);
-
-            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
-                cms,
-                sitemapRes);
-
-            int entryCount = 0;
-            List<CmsSiteEntryBean> entries = jsonToEntryList(sitemap.getJSONArray(JsonResponse.SITEMAP.getName()), true);
-            for (CmsSiteEntryBean entry : entries) {
-                saveEntry(cms, locale, null, xmlSitemap, entry, entryCount, propertiesConf);
-                entryCount++;
-            }
-
-            file.setContents(xmlSitemap.marshal());
+        CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, file, getRequest());
+        Locale locale = cms.getRequestContext().getLocale();
+        if (xmlSitemap.hasLocale(locale)) {
+            // remove the locale 
+            xmlSitemap.removeLocale(locale);
         }
+        xmlSitemap.addLocale(cms, locale);
+
+        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+            cms,
+            sitemapRes);
+
+        int entryCount = 0;
+        List<CmsSiteEntryBean> entries = jsonToEntryList(sitemap.getJSONArray(JsonResponse.SITEMAP.getName()), true);
+        for (CmsSiteEntryBean entry : entries) {
+            saveEntry(cms, locale, null, xmlSitemap, entry, entryCount, propertiesConf);
+            entryCount++;
+        }
+
+        file.setContents(xmlSitemap.marshal());
         cms.writeFile(file);
     }
 

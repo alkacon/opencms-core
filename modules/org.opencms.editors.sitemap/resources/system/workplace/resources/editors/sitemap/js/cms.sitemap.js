@@ -643,10 +643,10 @@
    /**
     * Initializes the sitemap editor.
     *
-    * @param {Boolean} allowEdit if true, sets the event handlers for editing the sitemap
-    *
+    * @param {boolean} allowEdit if true, sets the event handlers for editing the sitemap
+    * @param {boolean} displayToolbar if to display the toolbar or not
     */
-   var initSitemap = cms.sitemap.initSitemap = function(allowEdit) {
+   var initSitemap = cms.sitemap.initSitemap = function(allowEdit, displayToolbar) {
       // setting options for draggable and sortable for dragging within tree
       cms.sitemap.dragOptions = {
          handle: ' > div.' + itemClass + '> div.cms-handle > a.cms-move',
@@ -678,29 +678,30 @@
          (new SitemapEntry(this)).setUrls('');
       });
       
-      // generating toolbar
-      cms.sitemap.dom.toolbar = $(cms.html.toolbar).appendTo(document.body);
-      cms.sitemap.dom.toolbarContent = $('#toolbar_content', cms.sitemap.dom.toolbar);
-      
-      cms.sitemap.currentMode = null;
-      //create buttons:
-      for (i = 0; i < sitemapModes.length; i++) {
-         sitemapModes[i].create().appendTo(cms.sitemap.dom.toolbarContent);
+      if (displayToolbar) {
+         // generating toolbar
+         cms.sitemap.dom.toolbar = $(cms.html.toolbar).appendTo(document.body);
+         cms.sitemap.dom.toolbarContent = $('#toolbar_content', cms.sitemap.dom.toolbar);
+         cms.sitemap.currentMode = null;
+         //create buttons:
+         for (i = 0; i < sitemapModes.length; i++) {
+            sitemapModes[i].create().appendTo(cms.sitemap.dom.toolbarContent);
+         }
+         cms.sitemap.dom.favoriteDrop.css({
+            top: '35px',
+            left: $('button[name="favorites"]').position().left - 1 + 'px'
+         });
+         
+         // preparing tree for drag and drop
+         //$('#' + sitemapId + ' li:has(ul)').prepend(openerHtml);
+         //$('#' + sitemapId + ' li').prepend('<div class="' + dropzoneClass + '"></div>')
       }
-      cms.sitemap.dom.favoriteDrop.css({
-         top: '35px',
-         left: $('button[name="favorites"]').position().left - 1 + 'px'
-      });
-      
-      // preparing tree for drag and drop
-      //$('#' + sitemapId + ' li:has(ul)').prepend(openerHtml);
-      //$('#' + sitemapId + ' li').prepend('<div class="' + dropzoneClass + '"></div>')
       
       // assigning event-handler
       $('#' + sitemapId + ' span.' + classOpener).live('click', function() {
          $(this).parent().toggleClass(classClosed);
       });
-      if (allowEdit) {
+      if (allowEdit && displayToolbar) {
          $('a.cms-delete').live('click', deletePage);
          $('a.cms-new').live('click', newPage);
          $('a.cms-edit').live('click', editPage);
@@ -723,6 +724,8 @@
                setSitemapChanged(true);
             }
          });
+         $('#fav-edit').click(_editFavorites);         
+         $(window).unload(onUnload);
       }
       
       $('a.cms-icon-triangle').live('click', function() {
@@ -740,7 +743,6 @@
          opacity: 0.8,
          live: true
       });
-      $('#fav-edit').click(_editFavorites);
       $('.cms-vfs-path').live('click', function() {
          var target = cms.data.CONTEXT + $(this).attr('alt');
          window.open(target, '_blank');
@@ -750,7 +752,6 @@
          var entry = new SitemapEntry(this);
          entry.openRecursively(true, 2);
       });
-      $(window).unload(onUnload);
    }
    
    /**
@@ -1473,22 +1474,24 @@
     * @param {Object} data
     */
    var onLoadSitemap = cms.sitemap.onLoadSitemap = function(ok, data) {
-      var allowEdit = !data.noEditReason;
       cms.sitemap.setWaitOverlayVisible(false);
       if (!ok) {
          return;
       }
       var sitemap = data.sitemap;
-      var favorites = data.favorites;
-      var recent = data.recent;
       cms.sitemap.buildSitemap(sitemap).appendTo('#' + sitemapId);
-      initSitemap(allowEdit);
+      initSitemap(!data.noEditReason, data.toolbar);
+      // don't display the toolbar for historical resources
+      if (!data.toolbar) {
+         return;
+      }
       setSitemapChanged(false);
       cms.data.getSitemapProperties(function(ok, data) {
          cms.sitemap.propertyDefinitions = data;
       });
       if (data.noEditReason) {
          $('#toolbar_content button').addClass('cms-deactivated').unbind('click');
+         // TODO: better display an red-square-icon in the toolbar with a tooltip
          cms.util.dialogAlert(data.noEditReason, "Can't edit sitemap");
       }
    }
