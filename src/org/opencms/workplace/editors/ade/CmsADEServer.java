@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/11/24 08:56:41 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/11/24 13:48:15 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,6 @@ import org.opencms.search.CmsSearchResult;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
-import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -85,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.6
  */
@@ -154,8 +153,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
     /** Json property name constants for container pages. */
     protected enum JsonCntPage {
 
-        /** Boolean value indicating if edition is allowed. */
-        ALLOW_EDIT("allowEdit"),
         /** The list of containers. */
         CONTAINERS("containers"),
         /** The list of elements. */
@@ -164,8 +161,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
         FAVORITES("favorites"),
         /** The locale. */
         LOCALE("locale"),
-        /** The name of the user that has locked the resource. */
-        LOCKED("locked"),
         /** The order of creatable elements. */
         NEWORDER("newOrder"),
         /** The recent list. */
@@ -726,15 +721,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         result.put(JsonCntPage.RECENT_LIST_SIZE.getName(), m_manager.getRecentListMaxSize(cms));
 
         // get the container page itself
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         Set<String> types = cntPage.getTypes();
-
-        // collect some basic data
-        result.put(JsonCntPage.ALLOW_EDIT.getName(), resUtil.getLock().isLockableBy(
-            cms.getRequestContext().currentUser())
-            && resUtil.isEditable());
-        result.put(JsonCntPage.LOCKED.getName(), resUtil.getLockedByName());
-
         // collect creatable type elements
         resElements.merge(getNewResourceTypes(cms.getSitePath(resource), types), true, false);
         // collect searchable type elements

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2009/09/09 14:26:35 $
- * Version: $Revision: 1.91.2.2 $
+ * Date   : $Date: 2009/11/24 13:48:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.91.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1089,6 +1089,27 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public CmsWorkplaceEditorManager getWorkplaceEditorManager() {
 
         return m_editorManager;
+    }
+
+    /**
+     * Returns the workplace locale from the current user's settings.<p>
+     * 
+     * @param cms the current cms object 
+     * 
+     * @return the workplace locale
+     */
+    public Locale getWorkplaceLocale(CmsObject cms) {
+
+        Locale wpLocale = new CmsUserSettings(cms.getRequestContext().currentUser()).getLocale();
+        if (wpLocale == null) {
+            // fall back
+            wpLocale = getDefaultLocale();
+            if (wpLocale == null) {
+                // fall back
+                wpLocale = cms.getRequestContext().getLocale();
+            }
+        }
+        return wpLocale;
     }
 
     /**

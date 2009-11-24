@@ -17,6 +17,9 @@ public void setAllMessages(JspWriter out, ResourceBundle bundle) throws Exceptio
         setJavascriptMessage(key, out, bundle);
     }
 }
+// TODO: make a class for this JSP
+// TODO: create a class for the messages. and include it to the test cases
+// TODO: do not get the locale from the session, that wont work with a front-end login!
 %>
 <%
     CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);

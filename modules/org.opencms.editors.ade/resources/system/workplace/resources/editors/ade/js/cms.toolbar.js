@@ -398,7 +398,7 @@
       var elemId = $domElement.attr('rel');
       
       if (elemId && cms.data.elements[elemId]) {
-         if (cms.data.elements[elemId].allowEdit) {
+         if (!cms.data.elements[elemId].noEditReason) {
             var element = cms.data.elements[elemId];
             
             if (element.status == cms.data.STATUS_NEWCONFIG) {
@@ -1444,10 +1444,10 @@
       },
       
       createHandle: function(elemId, elem) {
-         if (cms.data.elements[elemId].allowEdit) {
+         if (!cms.data.elements[elemId].noEditReason) {
             return $('<a class="cms-edit cms-edit-enabled"></a>');
          } else {
-            return $('<a class="cms-edit cms-edit-locked" title="' + cms.util.format(M.LOCKED_BY, cms.data.elements[elemId].locked) + '" onclick="return false;"></a>');
+            return $('<a class="cms-edit cms-edit-locked" title="' + cms.data.elements[elemId].noEditReason + '" onclick="return false;"></a>');
          }
       },
       

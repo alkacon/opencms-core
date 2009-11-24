@@ -670,12 +670,9 @@
    
    
    /**
-    * Initializes the sitemap editor.
-    *
-    * @param {boolean} allowEdit if true, sets the event handlers for editing the sitemap
-    * @param {boolean} displayToolbar if to display the toolbar or not
+    * Initializes the sitemap editor.<p>
     */
-   var initSitemap = cms.sitemap.initSitemap = function(allowEdit, displayToolbar) {
+   var initSitemap = cms.sitemap.initSitemap = function() {
       // setting options for draggable and sortable for dragging within tree
       cms.sitemap.dragOptions = {
          handle: ' > div.' + itemClass + '> div.cms-handle > a.cms-move',
@@ -707,7 +704,7 @@
          (new SitemapEntry(this)).setUrls('');
       });
       
-      if (displayToolbar) {
+      if (cms.data.DISPLAY_TOOLBAR) {
          // generating toolbar
          cms.sitemap.dom.toolbar = $(cms.html.toolbar).appendTo(document.body);
          cms.sitemap.dom.toolbarContent = $('#toolbar_content', cms.sitemap.dom.toolbar);
@@ -731,7 +728,7 @@
       $('#' + sitemapId + ' span.' + classOpener).live('click', function() {
          $(this).parent().toggleClass(classClosed);
       });
-      if (allowEdit && displayToolbar) {
+      if (cms.data.NO_EDIT_REASON && cms.data.DISPLAY_TOOLBAR) {
          $('a.cms-delete').live('click', deletePage);
          $('a.cms-new').live('click', newPage);
          $('a.cms-edit').live('click', editPage);
@@ -1513,16 +1510,16 @@
       var sitemap = data.sitemap;
       cms.sitemap.propertyDefinitions = data.properties;
       cms.sitemap.buildSitemap(sitemap).appendTo('#' + sitemapId);
-      initSitemap(!data.noEditReason, data.toolbar);
+      initSitemap();
       // don't display the toolbar for historical resources
-      if (!data.toolbar) {
+      if (!cms.data.DISPLAY_TOOLBAR) {
          return;
       }
       setSitemapChanged(false);
-      if (data.noEditReason) {
+      if (cms.data.NO_EDIT_REASON) {
          $('#toolbar_content button').addClass('cms-deactivated').unbind('click');
          // TODO: better display an red-square-icon in the toolbar with a tooltip
-         cms.util.dialogAlert(data.noEditReason, "Can't edit sitemap");
+         cms.util.dialogAlert(cms.data.NO_EDIT_REASON, "Can't edit sitemap");
       }
    }
    

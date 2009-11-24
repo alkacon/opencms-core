@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2009/10/12 08:12:01 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2009/11/24 13:48:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,6 +182,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_PUBLISH_0 = "GUI_EXPLORER_CONTEXT_PUBLISH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0 = "GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_RELATIONS_0 = "GUI_EXPLORER_CONTEXT_RELATIONS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -198,9 +201,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0 = "GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0 = "GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_TOUCH_0 = "GUI_EXPLORER_CONTEXT_TOUCH_0";
@@ -331,8 +331,12 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_0 = "GUI_NEWRESOURCE_0";
 
-    /** Message constant for key in the resource bundle. 
-     * @deprecated use {@link #GUI_NEWRESOURCE_APPENDSUFFIX_HTML_1} with {@link CmsNewResource#getSuffixHtml()}*/
+    /** 
+     * Message constant for key in the resource bundle.<p> 
+     * 
+     * @deprecated use {@link #GUI_NEWRESOURCE_APPENDSUFFIX_HTML_1} with {@link CmsNewResource#getSuffixHtml()} instead
+     */
+    @Deprecated
     public static final String GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0 = "GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0";
 
     /** Message constant for key in the resource bundle. */
@@ -436,6 +440,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWSIBLING_NAME_0 = "GUI_NEWSIBLING_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_EDIT_REASON_HISTORY_0 = "GUI_NO_EDIT_REASON_HISTORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_EDIT_REASON_LOCK_1 = "GUI_NO_EDIT_REASON_LOCK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_EDIT_REASON_PERMISSION_0 = "GUI_NO_EDIT_REASON_PERMISSION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_POINTER_LINKTO_0 = "GUI_POINTER_LINKTO_0";

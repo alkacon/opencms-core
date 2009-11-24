@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/24 09:36:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/11/24 13:48:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
-import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
@@ -47,14 +46,12 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -93,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 7.6
  */
@@ -200,8 +197,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         FAVORITES("favorites"),
         /** The validated/converted site entry name. */
         NAME("name"),
-        /** The reason why you can not edit the sitemap. */
-        NO_EDIT_REASON("noEditReason"),
         /** The properties configuration. */
         PROPERTIES("properties"),
         /** The recent list. */
@@ -209,9 +204,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         /** The sitemap tree. */
         SITEMAP("sitemap"),
         /** Flag to indicate if this is a top-level sitemap or a sub-sitemap. */
-        SUB_SITEMAP("subSitemap"),
-        /** Flag to indicate if to display the toolbar or not. */
-        TOOLBAR("toolbar");
+        SUB_SITEMAP("subSitemap");
 
         /** Property name. */
         private String m_name;
@@ -614,12 +607,10 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
      */
     public JSONObject getSitemap(CmsResource resource, CmsXmlSitemap xmlSitemap) throws JSONException, CmsException {
 
-        CmsObject cms = getCmsObject();
-        CmsSitemapBean sitemap = xmlSitemap.getSitemap(cms, cms.getRequestContext().getLocale());
+        CmsObject cms2 = getCmsObject();
+        CmsSitemapBean sitemap = xmlSitemap.getSitemap(cms2, cms2.getRequestContext().getLocale());
         // create empty result object
         JSONObject result = new JSONObject();
-        // show the toolbar by default
-        result.put(JsonResponse.TOOLBAR.getName(), Boolean.TRUE);
 
         // collect the site map entries
         JSONArray siteEntries = new JSONArray();
@@ -634,37 +625,16 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         // check if this is a top-level sitemap, by checking that it is not linked from another sitemap
         boolean topLevel = true;
         CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_STRONG);
-        for (CmsRelation relation : cms.getRelationsForResource(resource, filter)) {
-            if (CmsResourceTypeXmlSitemap.isSitemap(relation.getSource(cms, CmsResourceFilter.ALL))) {
+        for (CmsRelation relation : cms2.getRelationsForResource(resource, filter)) {
+            if (CmsResourceTypeXmlSitemap.isSitemap(relation.getSource(cms2, CmsResourceFilter.ALL))) {
                 topLevel = false;
                 break;
             }
         }
         result.put(JsonResponse.SUB_SITEMAP.getName(), !topLevel);
 
-        // check if the current user is allowed to edit the current sitemap
-        Locale workplaceLocale = getWorkplaceLocale();
-        if (xmlSitemap.getFile() instanceof I_CmsHistoryResource) {
-            result.put(JsonResponse.NO_EDIT_REASON.getName(), Messages.get().getBundle(workplaceLocale).key(
-                Messages.GUI_NO_EDIT_REASON_HISTORY_0));
-            result.put(JsonResponse.TOOLBAR.getName(), Boolean.FALSE);
-        } else if (!cms.hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.DEFAULT)) {
-            result.put(JsonResponse.NO_EDIT_REASON.getName(), Messages.get().getBundle(workplaceLocale).key(
-                Messages.GUI_NO_EDIT_REASON_PERMISSION_0));
-        } else {
-            CmsLock lock = cms.getLock(resource);
-            if (!lock.isUnlocked() && !lock.isOwnedBy(cms.getRequestContext().currentUser())) {
-                result.put(JsonResponse.NO_EDIT_REASON.getName(), Messages.get().getBundle(workplaceLocale).key(
-                    Messages.GUI_NO_EDIT_REASON_LOCK_1,
-                    cms.readUser(lock.getUserId()).getName()));
-            }
-        }
-
-        // we need this only when the toolbar is enabled
-        if (!result.has(JsonResponse.NO_EDIT_REASON.getName())) {
-            // collect the properties
-            result.put(JsonResponse.PROPERTIES.getName(), getPropertyInfo(resource));
-        }
+        // collect the properties
+        result.put(JsonResponse.PROPERTIES.getName(), getPropertyInfo(resource));
 
         return result;
     }

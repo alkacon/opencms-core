@@ -58,7 +58,6 @@
    M.PROP_BUTTON_TITLE = 'Properties';
    M.DELETE_BUTTON_TITLE = 'Delete';
    M.EDIT_BUTTON_TITLE = 'Edit';
-   M.EDIT_LOCKED_BY = 'locked by {0}';
    M.MOVE_BUTTON_TITLE = 'Move';
    M.RESET_BUTTON_TITLE = 'Reset';
    M.RESET_CONFIRM = 'Do you really want to discard your changes and reset the page?';
@@ -80,11 +79,7 @@
    M.ALERT_OK = 'OK';
    
    //cms.init.js
-   M.CANT_EDIT_LOCKED = 'You can\'t edit this page because it is locked by "{0}".';
-   M.CANT_EDIT_LOCKED_TITLE = 'Page locked';
-   M.LOCKED_BY = 'Page locked by "{0}"';
-   M.CANT_EDIT_PERMISSIONS = 'You do not have the necessary permissions to edit this page.'
-   M.CANT_EDIT_PERMISSIONS_TITLE = 'Permission denied';
+   M.CANT_EDIT_TITLE = 'Page can not be edited';
    M.FIREBUG_ACTIVE = 'The Firefox Firebug plug-in is active. It is advised to deactivate it, as it may degrade the performance of OpenCms Advanced Direct Edit.';
    M.FIREBUG_ACTIVE_TITLE = 'Firebug is active';
    

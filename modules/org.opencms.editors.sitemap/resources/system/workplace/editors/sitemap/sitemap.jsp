@@ -15,12 +15,14 @@
     <script type="text/javascript">
       var cms = {
          data: {
-            "EDITOR_URL": "<cms:link>%(link.weak:/system/workplace/editors/editor.jsp:8973b380-11b7-11db-91cd-fdbae480bac9)</cms:link>",
-            "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/sitemap/server.jsp:b848e330-c865-11de-a457-ab20365f6268)</cms:link>",
-            "LOCALE": "${cms.requestContext.locale}",
-            "SITEMAP_URI": "${cms.sitemapURI}",
-            "CONTEXT": "<%=OpenCms.getSystemInfo().getOpenCmsContext()%>",
-            "SKIN_URI"	: "%(skinUri)"
+            "EDITOR_URL"     : "<cms:link>%(link.weak:/system/workplace/editors/editor.jsp:8973b380-11b7-11db-91cd-fdbae480bac9)</cms:link>",
+            "SERVER_URL"     : "<cms:link>%(link.weak:/system/workplace/editors/sitemap/server.jsp:b848e330-c865-11de-a457-ab20365f6268)</cms:link>",
+            "LOCALE"         : "${cms.requestContext.locale}",
+            "SITEMAP_URI"    : "${cms.sitemapURI}",
+            "CONTEXT"        : "<%=OpenCms.getSystemInfo().getOpenCmsContext()%>",
+            "SKIN_URI"	     : "%(skinUri)",
+            "NO_EDIT_REASON" : "${cms.noEditReason}",
+            "DISPLAY_TOOLBAR": "${cms.displayToolbar}"
          },
          publish: {
             "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/sitemap/publish-server.jsp:dd962f3e-abcd-11de-97fc-dd9f629b113b)</cms:link>"

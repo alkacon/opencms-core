@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/A_CmsAjaxServer.java,v $
- * Date   : $Date: 2009/11/17 07:42:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/24 13:48:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.editors.ade;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -39,6 +38,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9
  */
@@ -266,9 +266,11 @@ public abstract class A_CmsAjaxServer extends CmsJspActionElement {
 
         String msg = error.getLocalizedMessage();
         if (error instanceof CmsException) {
-            msg = ((CmsException)error).getLocalizedMessage(getWorkplaceLocale());
+            msg = ((CmsException)error).getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+                getCmsObject()));
         } else if (error instanceof CmsRuntimeException) {
-            msg = ((CmsRuntimeException)error).getLocalizedMessage(getWorkplaceLocale());
+            msg = ((CmsRuntimeException)error).getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+                getCmsObject()));
         }
         result.put(JsonResponse.ERROR.getName(), msg);
         LOG.error(error.getMessage(), error);
@@ -282,11 +284,7 @@ public abstract class A_CmsAjaxServer extends CmsJspActionElement {
     protected Locale getWorkplaceLocale() {
 
         if (m_wpLocale == null) {
-            m_wpLocale = new CmsUserSettings(getCmsObject().getRequestContext().currentUser()).getLocale();
-            if (m_wpLocale == null) {
-                // fall back
-                m_wpLocale = getCmsObject().getRequestContext().getLocale();
-            }
+            m_wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
         }
         return m_wpLocale;
     }

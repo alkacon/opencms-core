@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/11/03 13:29:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/24 13:48:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
@@ -76,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.6
  */
@@ -85,8 +86,8 @@ public final class CmsElementUtil {
     /** Element json property constants. */
     public enum JsonElement {
 
-        /** Boolean value indicating if edition is allowed. */
-        ALLOWEDIT("allowEdit"),
+        /** If the current user is not allowed to edit the given resource, this is the reason of it. */
+        NO_EDIT_REASON("noEditReason"),
         /** Array of HTML code resulting from formatter execution. */
         CONTENTS("contents"),
         /** The last modification date. */
@@ -97,8 +98,6 @@ public final class CmsElementUtil {
         FORMATTERS("formatters"),
         /** Element's structure id. */
         ID("id"),
-        /** The name of the user that has locked the resource. */
-        LOCKED("locked"),
         /** Element's navigation text. */
         NAVTEXT("navText"),
         /** The object type, container or element. */
@@ -291,10 +290,9 @@ public final class CmsElementUtil {
         resElement.put(JsonElement.USER.getName(), m_cms.readUser(resource.getUserLastModified()).getName());
         resElement.put(JsonElement.NAVTEXT.getName(), resUtil.getNavText());
         resElement.put(JsonElement.TITLE.getName(), resUtil.getTitle());
-        resElement.put(JsonElement.ALLOWEDIT.getName(), resUtil.getLock().isLockableBy(
-            m_cms.getRequestContext().currentUser())
-            && resUtil.isEditable());
-        resElement.put(JsonElement.LOCKED.getName(), resUtil.getLockedByName());
+        resElement.put(
+            JsonElement.NO_EDIT_REASON.getName(),
+            CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms))));
         resElement.put(JsonElement.STATUS.getName(), "" + resUtil.getStateAbbreviation());
         // add formatted elements
         JSONObject resContents = new JSONObject();

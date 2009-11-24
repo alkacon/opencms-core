@@ -194,36 +194,30 @@ $('document').ready(function() {
    });
    cms.toolbar.dom.toolbar.css('cursor', 'wait');
    var M = cms.messages;
-   if (cms.util.isFirebugActive()) {
+   if (cms.data.NO_EDIT_REASON) {
+      $('#toolbar_content button').addClass('cms-deactivated').unbind('click');
+      // TODO: better display an red-square-icon in the toolbar with a tooltip
+      cms.util.dialogAlert(cms.data.NO_EDIT_REASON, M.CANT_EDIT_TITLE);
+      var $buttons = $(cms.util.makeCombinedSelector(['Move', 'Delete', 'Add', 'New', 'Favorites', 'Recent'], 'button[name="%"]'));
+      $buttons.unbind('click').unbind('mouseover').css('color', '#aaaaaa');
+      $buttons.attr('alt', cms.data.NO_EDIT_REASON);
+      $buttons.jHelperTip({
+         trigger: "hover",
+         source: "attribute",
+         attrName: "alt",
+         autoClose: true
+      });
+   } else if (cms.util.isFirebugActive()) {
       cms.util.dialogAlert(M.FIREBUG_ACTIVE, M.FIREBUG_ACTIVE_TITLE)
    }
    cms.data.loadAllData(function(ok) {
       if (ok) {
          cms.data.fillContainers();
          cms.toolbar.resetNewList();
-         if (!cms.data.allowEdit) {
-            if (cms.data.lockedBy) {
-               cms.util.dialogAlert(cms.util.format(M.CANT_EDIT_LOCKED, cms.data.lockedBy), M.CANT_EDIT_LOCKED_TITLE);
-            } else {
-               cms.util.dialogAlert(M.CANT_EDIT_PERMISSIONS, M.CANT_EDIT_PERMISSIONS_TITLE);
-            }
-            var $buttons = $(cms.util.makeCombinedSelector(['Move', 'Delete', 'Add', 'New', 'Favorites', 'Recent'], 'button[name="%"]'));
-            $buttons.unbind('click').unbind('mouseover').css('color', '#aaaaaa');
-            if (cms.data.lockedBy) {
-               $buttons.attr('alt', cms.util.format(M.LOCKED_BY, cms.data.lockedBy));
-               $buttons.jHelperTip({
-                  trigger: "hover",
-                  source: "attribute",
-                  attrName: "alt",
-                  autoClose: true
-               });
-            }
-         }
          cms.toolbar.toolbarReady = true;
          cms.toolbar.dom.toolbar.css('cursor', '');
          
          $(document).trigger("cms-data-loaded");
-         
       } else {
             // TODO
       }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2009/11/24 08:57:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/24 13:48:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,14 @@
 
 package org.opencms.workplace.editors.sitemap;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.6
  */
@@ -64,6 +70,20 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
     }
 
     /**
+     * Returns the reason why you are not allowed to edit the current resource.<p>
+     * 
+     * @return an empty string if editable, the reason if not
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String getNoEditReason() throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, getResource());
+        return CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)));
+    }
+
+    /**
      * Returns the sitemap URI, taken into account history requests.<p>
      * 
      * @return the sitemap URI
@@ -73,5 +93,37 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
         return CmsHistoryResourceHandler.getHistoryResourceURI(
             getCmsObject().getRequestContext().getUri(),
             getRequest());
+    }
+
+    /**
+     * Checks if the toolbar should be displayed.<p>
+     * 
+     * @return <code>true</code> if the toolbar should be displayed
+     */
+    public boolean isDisplayToolbar() {
+
+        // display the toolbar by default
+        boolean displayToolbar = true;
+        if (CmsHistoryResourceHandler.isHistoryRequest(getRequest())) {
+            // we do not want to display the toolbar in case of an historical request
+            displayToolbar = false;
+        }
+        return displayToolbar;
+    }
+
+    /**
+     * Returns the current resource, taken into account historical requests.<p>
+     * 
+     * @return the current resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsResource getResource() throws CmsException {
+
+        CmsResource resource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(getRequest());
+        if (resource == null) {
+            resource = getCmsObject().readResource(getCmsObject().getRequestContext().getUri());
+        }
+        return resource;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/24 13:48:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
@@ -58,6 +59,7 @@ import org.opencms.workplace.commons.CmsTouch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -69,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -427,7 +429,8 @@ public final class CmsResourceUtil {
             return CmsWorkplace.RES_PATH_FILETYPES
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePlain.getStaticTypeName()).getIcon();
         }
-        return CmsWorkplace.RES_PATH_FILETYPES + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getResourceTypeName()).getIcon();
+        return CmsWorkplace.RES_PATH_FILETYPES
+            + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getResourceTypeName()).getIcon();
     }
 
     /**
@@ -601,6 +604,29 @@ public final class CmsResourceUtil {
             navText = "";
         }
         return navText;
+    }
+
+    /**
+     * Checks is the current resource can be edited by the current user.<p>
+     * 
+     * @param locale the locale to use for the messages 
+     * 
+     * @return an empty string if editable, or a localized string with the reason
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String getNoEditReason(Locale locale) throws CmsException {
+
+        String reason = "";
+        if (m_resource instanceof I_CmsHistoryResource) {
+            reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_HISTORY_0);
+        } else if (!m_cms.hasPermissions(m_resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.DEFAULT)
+            || !isEditable()) {
+            reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_PERMISSION_0);
+        } else if (!getLock().isLockableBy(m_cms.getRequestContext().currentUser())) {
+            reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_LOCK_1, getLockedByName());
+        }
+        return reason;
     }
 
     /**

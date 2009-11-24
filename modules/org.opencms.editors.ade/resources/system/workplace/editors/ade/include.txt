@@ -20,7 +20,8 @@
           "CURRENT_CNT_PAGE": "%(currentContainerPage)",
           "CURRENT_URI"     : "%(currentUri)",
           "LOCALE"          : "%(currentLocale)",
-          "SKIN_URI"		: "%(skinUri)"
+          "SKIN_URI"        : "%(skinUri)",
+          "NO_EDIT_REASON"  : %(noEditReason)
         }, 
         publish: {
           "SERVER_URL"      : "%(publishUri)"

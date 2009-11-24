@@ -90,12 +90,6 @@
    /** The current locale used to render the container page. */
    var /** String */ locale = cms.data.locale = 'en';
    
-   /** If the container page itself can be edited, ie. move and delete elements. */
-   var /** boolean */ allowEdit = cms.data.allowEdit = true;
-   
-   /** The name of the user that has locked the container page. */
-   var /** String */ lockedBy = cms.data.lockedBy = '';
-   
    /** Selector for sortable items. */
    var /** int */ newCounter = cms.data.newCounter = 0;
    
@@ -187,12 +181,6 @@
             }
             if (jsonData.locale) {
                locale = cms.data.locale = jsonData.locale;
-            }
-            if (jsonData.allowEdit) {
-               allowEdit = cms.data.allowEdit = jsonData.allowEdit;
-            }
-            if (jsonData.locked) {
-               lockedBy = cms.data.lockedBy = jsonData.locked;
             }
             if (jsonData.recentListSize) {
                cms.toolbar.recentSize = jsonData.recentListSize;

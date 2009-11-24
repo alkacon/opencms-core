@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/11/24 08:47:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/11/24 13:48:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 
 import java.io.IOException;
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6 
  */
@@ -92,6 +93,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
     /** Macro name constant. */
     public static final String MACRO_MESSAGES_URI = "messagesUri";
+
+    /** Macro name constant. */
+    public static final String MACRO_NO_EDIT_REASON = "noEditReason";
 
     /** Macro name constant. */
     public static final String MACRO_PUBLISH_URI = "publishUri";
@@ -159,7 +163,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
      *  
      * @return the ade include HTML to insert in the page beginning
      */
-    protected static String getAdeIncludes(CmsObject cms, ServletRequest req) {
+    public static String getAdeIncludes(CmsObject cms, ServletRequest req) {
 
         // check if the selected include file is available in the cache
         CmsMemoryObjectCache cache = CmsMemoryObjectCache.getInstance();
@@ -230,6 +234,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             String containerPageUri = cms.getSitePath(containerPage);
             resolver.addMacro(MACRO_CURRENT_URI, currentUri);
             resolver.addMacro(MACRO_CURRENT_CNTPAGE, containerPageUri);
+            String noEditReason = new CmsResourceUtil(cms, containerPage).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+                cms));
+            resolver.addMacro(MACRO_NO_EDIT_REASON, CmsEncoder.escapeHtml(noEditReason));
         } catch (Exception e) {
             if (!LOG.isDebugEnabled()) {
                 LOG.warn(e.getLocalizedMessage());
