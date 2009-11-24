@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGalleryItemBean.java,v $
- * Date   : $Date: 2009/11/17 07:42:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/24 16:32:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,16 @@ package org.opencms.workplace.galleries;
 import org.opencms.file.CmsResource;
 import org.opencms.search.CmsSearchResult;
 
+/**
+ * Bean to provide info for preview rendering.
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 7.6
+ * 
+ */
 public class CmsGalleryItemBean {
 
     /** The item icon path. */

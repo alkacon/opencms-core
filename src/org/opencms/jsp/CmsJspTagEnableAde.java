@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/11/24 13:48:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/11/24 16:32:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
@@ -78,6 +78,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
     /** Editor URI constant. */
     public static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
+
+    /** Gallery Server URI constant. */
+    public static final String GALLERY_SERVER_URI = "/system/workplace/galleries/gallerySearch.jsp";
 
     /** Macro name constant. */
     public static final String MACRO_CURRENT_CNTPAGE = "currentContainerPage";
@@ -102,6 +105,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
     /** Macro name constant. */
     public static final String MACRO_SERVER_URI = "serverUri";
+
+    /** Macro name constant. */
+    public static final String MACRO_GALLERY_SERVER_URI = "galleryServerUri";
 
     /** Macro name constant. */
     public static final String MACRO_SKIN_URI = "skinUri";
@@ -192,6 +198,8 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 resolver.addMacro(MACRO_SERVER_URI, serverUri);
                 String publishUri = linkMan.substituteLink(cms, PUBLISH_SERVER_URI);
                 resolver.addMacro(MACRO_PUBLISH_URI, publishUri);
+                String galleryServerUri = linkMan.substituteLink(cms, GALLERY_SERVER_URI);
+                resolver.addMacro(MACRO_GALLERY_SERVER_URI, galleryServerUri);
                 String skinUri = CmsWorkplace.getSkinUri();
                 resolver.addMacro(MACRO_SKIN_URI, skinUri);
                 resolver.addMacro(MACRO_MESSAGES_URI, linkMan.substituteLink(cms, ADE_MESSAGES_URI));
