@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultListFormatterHelper.java,v $
- * Date   : $Date: 2009/11/19 13:22:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/24 15:49:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.editors.ade;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -56,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.6
  * 
@@ -258,14 +257,10 @@ public class CmsDefaultListFormatterHelper extends CmsJspActionElement {
      * 
      * @return the workplace locale
      */
-    private Locale getWorkplaceLocale() {
+    protected Locale getWorkplaceLocale() {
 
         if (m_wpLocale == null) {
-            m_wpLocale = new CmsUserSettings(getCmsObject().getRequestContext().currentUser()).getLocale();
-            if (m_wpLocale == null) {
-                // fall back
-                m_wpLocale = getCmsObject().getRequestContext().getLocale();
-            }
+            m_wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
         }
         return m_wpLocale;
     }
