@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/11/24 14:33:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/11/24 15:48:47 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 7.9.3
  */
@@ -887,7 +887,7 @@ public class CmsADEPublish {
                     CmsPublishResourceBean.JsonProperty.URI.name().toLowerCase(),
                     messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0),
                     CmsStringUtil.formatResourceName(resUtil.getFullPath(), PATH_LENGTH));
-                formatterInfo.setIcon(CmsWorkplace.getResourceUri(resUtil.getIconPathExplorer()));
+                formatterInfo.setIcon(CmsWorkplace.getResourceUri(resUtil.getIconPathResourceType()));
                 // adding additional info
                 formatterInfo.addAdditionalInfo(
                     CmsPublishResourceBean.JsonProperty.STATE.name().toLowerCase(),
