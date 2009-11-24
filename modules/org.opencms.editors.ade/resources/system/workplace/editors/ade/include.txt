@@ -2,7 +2,8 @@
     <link href="%(skinUri)editors/ade/css/advanced_direct_edit.css" rel="stylesheet" type="text/css" >
     <link href="%(skinUri)editors/ade/css/customInput.css" rel="stylesheet" type="text/css" >
 	<link href="%(skinUri)editors/ade/css/galleries.css" rel="stylesheet" type="text/css" />
-	
+
+	<!-- TODO: Make an extra stylesheet for IE7 --> 
 	<!--[if IE 7]>
 	<style>
     div.cms-selectbox{
@@ -40,12 +41,13 @@
           "CURRENT_URI"     : "%(currentUri)",
           "LOCALE"          : "%(currentLocale)",
           "SKIN_URI"        : "%(skinUri)",
-          "NO_EDIT_REASON"  : %(noEditReason)
+          "NO_EDIT_REASON"  : "%(noEditReason)"
         }, 
         publish: {
           "SERVER_URL"      : "%(publishUri)"
         }, comm:{}, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}, search :{}, property: {}, previewhandler:{}, galleries: {}, messages: {}};
         
+      // the following is used by the galleries
       var vfsPathAjaxJsp = cms.data["GALLERY_SERVER_URL"];
     </script>
     <script type="text/javascript" src="%(messagesUri)"></script>
