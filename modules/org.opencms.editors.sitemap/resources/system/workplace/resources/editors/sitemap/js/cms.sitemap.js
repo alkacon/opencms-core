@@ -652,7 +652,7 @@
     * @return an object containing the merged properties with their settings
     */
    var getMergedProperties = function($entry) {
-      var propDefs = JSON.parse(JSON.stringify(cms.sitemap.propertyDefinitions)).properties;
+      var propDefs = JSON.parse(JSON.stringify(cms.sitemap.propertyDefinitions));
       var entryData = getEntryData($entry);
       var props = entryData.properties;
       var propEntries = mergePropertiesWithDefinitions(propDefs, props);
@@ -1511,6 +1511,7 @@
          return;
       }
       var sitemap = data.sitemap;
+      cms.sitemap.propertyDefinitions = data.properties;
       cms.sitemap.buildSitemap(sitemap).appendTo('#' + sitemapId);
       initSitemap(!data.noEditReason, data.toolbar);
       // don't display the toolbar for historical resources
@@ -1518,9 +1519,6 @@
          return;
       }
       setSitemapChanged(false);
-      cms.data.getSitemapProperties(function(ok, data) {
-         cms.sitemap.propertyDefinitions = data;
-      });
       if (data.noEditReason) {
          $('#toolbar_content button').addClass('cms-deactivated').unbind('click');
          // TODO: better display an red-square-icon in the toolbar with a tooltip
@@ -1814,7 +1812,7 @@
       
       getPropertiesWithDefinitions: function() {
          var self = this;
-         var propDefs = JSON.parse(JSON.stringify(cms.sitemap.propertyDefinitions)).properties;
+         var propDefs = JSON.parse(JSON.stringify(cms.sitemap.propertyDefinitions));
          var props = self.getProperties();
          var propEntries = mergePropertiesWithDefinitions(propDefs, props);
          return propEntries;
