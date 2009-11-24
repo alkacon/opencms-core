@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2009/11/10 16:42:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/24 08:57:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.workplace.editors.sitemap;
 
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.util.CmsRequestUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.6
  */
@@ -71,12 +70,8 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
      */
     public String getSitemapURI() {
 
-        String sitemapURI = getCmsObject().getRequestContext().getUri();
-        HttpServletRequest request = getRequest();
-        if (CmsHistoryResourceHandler.isHistoryRequest(request)) {
-            String version = request.getParameter(CmsHistoryResourceHandler.PARAM_VERSION);
-            sitemapURI = CmsRequestUtil.appendParameter(sitemapURI, CmsHistoryResourceHandler.PARAM_VERSION, version);
-        }
-        return sitemapURI;
+        return CmsHistoryResourceHandler.getHistoryResourceURI(
+            getCmsObject().getRequestContext().getUri(),
+            getRequest());
     }
 }
