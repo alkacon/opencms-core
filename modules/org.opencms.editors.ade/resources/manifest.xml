@@ -2064,7 +2064,47 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/apply.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/apply.png</destination>
+			<type>image</type>
+			<uuidstructure>291062cf-d90f-11de-ab2c-f19ce2452f95</uuidstructure>
+			<uuidresource>291062d0-d90f-11de-ab2c-f19ce2452f95</uuidresource>
+			<datelastmodified>Tue, 24 Nov 2009 15:36:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 24 Nov 2009 15:36:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/apply_in.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/apply_in.png</destination>
+			<type>image</type>
+			<uuidstructure>aa35c489-d913-11de-ab2c-f19ce2452f95</uuidstructure>
+			<uuidresource>aa35c48a-d913-11de-ab2c-f19ce2452f95</uuidresource>
+			<datelastmodified>Tue, 24 Nov 2009 16:08:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 24 Nov 2009 16:08:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/check.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/check.png</destination>
 			<type>image</type>
@@ -2088,32 +2128,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-  		<file>
-			<source>system/workplace/resources/editors/ade/css/images/16x16/warning.png</source>
-			<destination>system/workplace/resources/editors/ade/css/images/16x16/warning.png</destination>
-			<type>image</type>
-			<uuidstructure>16a89c0f-8747-11de-8ed4-dd9f629b113b</uuidstructure>
-			<uuidresource>16a89c10-8747-11de-8ed4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 13:50:26 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 13:50:26 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[warning]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-
-
    		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/permission.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/permission.png</destination>

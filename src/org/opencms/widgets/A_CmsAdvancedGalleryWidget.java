@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/A_CmsAdvancedGalleryWidget.java,v $
- * Date   : $Date: 2009/11/24 11:37:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/24 16:50:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.workplace.galleries.CmsOpenAdvancedGallery;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 
  */
@@ -146,7 +146,15 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
         result.append(widgetDialog.button(
-            "javascript:open" + getNameUpper() + "AdvancedGallery('" + id + "',  '" + idHash + "');return false;",
+            "javascript:open"
+                + getNameUpper()
+                + "AdvancedGallery('"
+                + CmsOpenAdvancedGallery.MODE_WIDGET
+                + "',  '"
+                + id
+                + "',  '"
+                + idHash
+                + "');return false;",
             null,
             getNameLower() + "advancedgallery",
             Messages.getButtonName(getNameLower()),

@@ -2,6 +2,9 @@
 
    /** A map with all available content handlers. */
    var contentTypeHandlers = cms.galleries.contentTypeHandlers = {};
+   
+   /** Array with resource types available for this galleries dialog. */
+   var configContentTypes = cms.galleries.configContentTypes = [1, 2, 3, 4, 6, 7, 146, 147, 149];
     
    /** html-id for tabs. */
    var idTabs = cms.galleries.idTabs = 'cms-gallery-tabs';
@@ -11,6 +14,7 @@
    /** html-id for the tab with search results. */
    var idTabResult = cms.galleries.idTabResult = 'tabs-result';
    
+   /** A Map of tab ids. */
    var arrayOfTabIds = cms.galleries.arrayOfTabIds =  {
        'tabs-result': 0,
        'tabs-types':  1, 
@@ -19,7 +23,8 @@
        'tabs-fulltextsearch':4
    };
    
-   var configContentTypes = cms.galleries.configContentTypes = [1, 2, 3, 4, 6, 7, 146, 147, 149];
+   /** The current mode of the dialog. It can be 'widget','editor','ade', 'sitemap' or 'view'. */
+   var dialogMode = cms.galleries.dialogMode = null;
    
    /** html-class for the inner of the scrolled list with items. */
    var classScrollingInner = cms.galleries.classScrollingInner = 'cms-list-scrolling-innner';
@@ -42,12 +47,15 @@
    /**
     * Map of selected search criteria.
     *
-    * types: array of resource ids for the available resource types
-    * galleries: array of paths to the available galleries
-    * categories: array of paths to the available categories
-    * searchquery: the search key word
-    * page: the page number of the requested result page
-    * isChanged: map of flags indicating if one of the search criteria is changed and should be taken into account
+    * 'types': array of resource ids for the selected resource types
+    * 'galleries': array of paths to the selected galleries
+    * 'categories': array of paths to the selected categories
+    * 'query': the search key word
+    * 'tabid'; the currently selected tab
+    * 'page': the page number of the requested result page
+    * 'searchfields':
+    * 'matchesperpage': the number of items pro result page
+    * 'isChanged': map of flags indicating if one of the search criteria is changed and should be taken into account. It is used internally.
     */
    var searchObject = cms.galleries.searchObject = {
       types: [],
@@ -339,6 +347,14 @@
          $('#' + cms.galleries.idTabs).tabs("enable", 0);
          $('#' + cms.galleries.idTabs).tabs('select', 0);
       });          
+      
+      $('.cms-handle-button.cms-select-item').live('click',function(e){        
+          var itemType = $(this).data('type');
+          cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.dialogMode](this);
+          e.stopPropagation();
+          
+          
+      });
            
       $('.cms-item a.ui-icon').live('click', cms.galleries.toggleAdditionalInfo);
       
@@ -366,11 +382,6 @@
     * Loads the lists with available resource types, galleries and categories via ajax call.    
     */
    var loadSearchLists = cms.galleries.loadSearchLists = function() {
-      // saves 
-      /*if (cms.galleries.searchObject['types'].length > 0) {
-          cms.galleries.configContentTypes = cms.galleries.searchObject['types'];
-          cms.galleries.searchObject['types'] = [];
-      } */
       $.ajax({
          'url': vfsPathAjaxJsp,
          'data': {
@@ -422,13 +433,12 @@
    }
    
    var prepareSearchObject = cms.galleries.prepareSearchObject = function() {
-       // criteria for types, galleries and categories are empty
-       if (cms.galleries.searchObject['galleries'].length == 0 && 
-              cms.galleries.searchObject['categories'].length == 0 &&
+       // criteria for types and galleries are empty
+       if (cms.galleries.searchObject['galleries'].length == 0 &&              
               cms.galleries.searchObject['types'].length == 0){           
            
            cms.galleries.searchObject['types'] = cms.galleries.configContentTypes;                             
-       }
+       } 
    }
    
    /**
@@ -509,6 +519,16 @@
             // handle empty list for search
       }
    }
+   
+   /**
+    * Returns true, if the select button should be displayed.
+    */
+   var displaySelectButton = function () {      
+      if (cms.galleries.dialogMode == 'widget' || cms.galleries.dialogMode == 'editor'){
+          return true;
+      }
+      return false;
+   }
      
    var fillResultPage = cms.galleries.fillResultPage = function(pageData) {           
       var target = $('#results > ul').empty().removeAttr('id').attr('id', 'searchresults_page' + pageData.searchresult.resultpage);
@@ -516,6 +536,10 @@
           var resultElement=$(this.itemhtml).appendTo(target);
           resultElement.attr('alt', this.path);                              
           resultElement.data('type', this.type);
+          if(displaySelectButton()) {
+              resultElement.find('.cms-list-itemcontent')
+                  .append('<div class="cms-handle-button cms-select-item ui-widget-content ui-corner-all"></div>');
+          }
           // if in ade container-page
          if (cms.toolbar && cms.toolbar.toolbarReady) {
              resultElement.attr('rel', this.clientid);
@@ -523,6 +547,8 @@
          }
       });           
    }
+   
+   
    
    /**
     * Fills the list in the search criteria tabs.

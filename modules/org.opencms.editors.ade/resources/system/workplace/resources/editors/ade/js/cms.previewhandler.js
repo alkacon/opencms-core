@@ -25,10 +25,7 @@
        });   
        
        // fade in the preview      
-       $('#cms-preview').fadeIn('slow');
-       
-       
-       
+       $('#cms-preview').fadeIn('slow');                    
    }   				            
    
    /**
@@ -45,7 +42,7 @@
               
        // generate editable form
        $.each(itemProperties, function() {
-              $('<div style="margin: 2px;"></div>').attr('rel', this.name).appendTo(target)
+              $('<div style="margin: 2px;"></div>').attr('alt', this.name).appendTo(target)
                    .append('<span class="cms-item-title" style="margin-right:10px; width: 100px;">' + this.name + '</span>')
                    .append('<span class="cms-item-edit" style=" width: 100px;">' + this.value + '</span>');                                 
            });       
@@ -100,7 +97,7 @@
            'properties': []};
        $.each(changedProperties, function () {           
            var property = {};
-           property['name'] =  $(this).closest('div').attr('rel');      
+           property['name'] =  $(this).closest('div').attr('alt');      
            property['value'] = $(this).text();
            changes['properties'].push(property);
        });
@@ -112,7 +109,7 @@
              'data': {
                 'action': 'setproperties',
                 'data': JSON.stringify({
-                   'path': $('#cms-preview').attr('rel'),
+                   'path': $('#cms-preview').attr('alt'),
                    'properties': changes['properties']
                 })
              },
@@ -131,6 +128,10 @@
    var publishChangedProperty = cms.galleries.publishChangedProperty = function() {
        alert('Publish');
    } 
+   
+   var selectPath = function(item) {
+       //alert($(item).closest('li').attr('alt'));       
+   }
 
 ///// Default Content Handler ////////////////              
    /**
@@ -138,7 +139,9 @@
     * It can be used for all possible resource types. 
     */
    var defaultContentTypeHandler = cms.previewhandler.defaultContentTypeHandler = {
-       'init': showItemPreview    
+       'init': showItemPreview,
+       'setValues': { 'widget': selectPath,
+               'editor': 'test2'}    
    };
      
 })(cms);

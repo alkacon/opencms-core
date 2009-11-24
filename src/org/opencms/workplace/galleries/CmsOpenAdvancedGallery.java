@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2009/11/24 11:37:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/24 16:50:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6
  */
@@ -65,6 +65,18 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
     public static final String ADVANCED_GALLERY_PATH = "/system/workplace/resources/editors/ade/galleries.jsp";
 
     private static final String DATA_PARAM = "data";
+
+    /** Request parameter name for the dialog mode (widget, editor, view, ade or sitemap). */
+    private static final String PARAM_DIALOGMODE = "dialogmode";
+
+    /** Request parameter value for the dialog mode: editor. */
+    public static final String MODE_EDITOR = "editor";
+
+    /** Request parameter value for the dialog mode: view. */
+    public static final String MODE_VIEW = "view";
+
+    /** Request parameter value for the dialog mode: widget. */
+    public static final String MODE_WIDGET = "widget";
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "opengallery";
@@ -114,11 +126,15 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 // get the matching gallery type name
                 galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
                 StringBuffer galleryUri = new StringBuffer(256);
+                // path to the gallery dialog with the required request parameters
                 galleryUri.append(ADVANCED_GALLERY_PATH);
                 String width = "670";
                 String height = "540";
-                // path to the gallery dialog with the required request parameters
                 galleryUri.append("?");
+                galleryUri.append(PARAM_DIALOGMODE);
+                galleryUri.append("=");
+                galleryUri.append(MODE_VIEW);
+                galleryUri.append("&");
                 galleryUri.append(DATA_PARAM);
                 galleryUri.append("=");
                 JSONObject jsonObj = new JSONObject();

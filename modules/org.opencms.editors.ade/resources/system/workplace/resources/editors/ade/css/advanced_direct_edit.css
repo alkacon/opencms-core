@@ -366,6 +366,23 @@ div.cms-move {
 	overflow: hidden;
 }
 
+div.cms-handle-button.cms-select-item{
+    position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 20px;
+	height: 20px;
+	overflow: hidden;
+    margin: 4px 2px 0px 0px;
+    background: transparent url(images/16x16/apply_in.png) no-repeat
+		scroll 0 50%;
+}
+
+div.cms-handle-button.cms-select-item:hover{
+    background: transparent url(images/16x16/apply.png) no-repeat
+		scroll 0 50%;
+}
+
 div.cms-handle {
 	margin: 0 !important;
 	padding: 0 !important;

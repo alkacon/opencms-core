@@ -23,9 +23,10 @@ var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
 <script type="text/javascript">  
     var vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
 	
-    var request = ${(not empty param.data) ? param.data : 'null'};
+    var requestData = ${(not empty param.data) ? param.data : 'null'};
+    cms.galleries.dialogMode = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
     $(function() {        
-        cms.galleries.initAddDialog(request);                                 
+        cms.galleries.initAddDialog(requestData);                                 
 	});
 
     

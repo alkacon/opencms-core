@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2009/11/24 11:37:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/11/24 16:50:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,17 +31,15 @@
  
 /*
  * When using this script to open the default advanced gallery dialog, be sure to
- * initialize the context path (e.g. "/opencms/opencms") and gallery path in the opener properly:
- *
- * - downloadGalleryPath for CmsDownloadGallery= "<%= A_CmsGallery.PATH_GALLERIES + A_CmsGallery.OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=downloadgallery" %>";
- * - downloadGalleryPath for CmsAjaxDownloadGallery= "<%= A_CmsAjaxGallery.PATH_GALLERIES + A_CmsAjaxDownloadGallery.OPEN_URI_SUFFIX + "?" %>";
+ * initialize the context path (e.g. "/opencms/opencms") and gallery path in the opener properly.
+ * 
  */
 
 var defaultAdvancedGalleryPath;
 var queryData;
 
 // opens the default advanced gallery popup window
-function openDefaultAdvancedGallery(fieldId, idHash) {
+function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
 	
 	//parameter from the xml configuration
     // startup param as string
@@ -69,8 +67,8 @@ function openDefaultAdvancedGallery(fieldId, idHash) {
         queryData['querydata'][searchKeys[startupType]] =  startupFolders;
     }
         		
-	//var paramString = "dialogmode=" + dialogMode;
-	var paramString = "fieldid=" + fieldId;
+	var paramString = "dialogmode=" + dialogMode;
+	paramString += "&fieldid=" + fieldId;
 	paramString += "&data=" + JSON.stringify(queryData);
 	treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString , "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=680,height=520');
 }
