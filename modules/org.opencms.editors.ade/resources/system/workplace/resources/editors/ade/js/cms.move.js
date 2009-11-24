@@ -21,6 +21,9 @@
       this.currentContainerId = null;
       this.element = null;
       this.hoverList = null;
+      this.isLoading = false;
+      this.runningRequest = null;
+      this.loadingResourceId = null;
       this.origPlaceholder = null;
       this.startId = null;
       this.over = null;
@@ -34,8 +37,12 @@
          return isMenuContainer(this.startId);
       }
       
+      this.isMoveFromResultList = function() {
+         return this.startId.indexOf(cms.html.galleryResultListPrefix) >= 0;
+      }
+      
       this.isMoveFromNew = function() {
-         return this.startId == cms.html.newListId;
+         return this.startId == cms.html.galleryTypeListId;
       }
       
       this.isMoveToFavorites = function() {
@@ -56,7 +63,7 @@
     */
    var isMenuContainer = cms.move.isMenuContainer = function(id) {
       //#
-      return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId || id == cms.html.favoriteDropListId;
+      return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId || id == cms.html.favoriteDropListId || id == cms.html.galleryTypeListId || id.indexOf(cms.html.galleryResultListPrefix) >= 0;
    }
    
    /**
@@ -263,7 +270,7 @@
       moveState.currentContainerId = moveState.startId;
       moveState.currentResourceId = ui.self.currentItem.attr('rel');
       
-      if (moveState.startId == cms.html.newListId) {
+      if (moveState.isMoveFromNew()) {
          var typeElem = cms.data.elements[moveState.currentResourceId];
          if (typeElem) {
             var newItem = moveState.element = typeElem.cloneAsNew(); // ui.self.cmsItem = cms.util.createInstanceForNewItem(typeElem.id);
@@ -272,10 +279,28 @@
       } else {
          moveState.element = cms.data.elements[moveState.currentResourceId];
       }
-      if (!(moveState.currentResourceId && moveState.element)) {
-         $(cms.util.getContainerSelector()).sortable('cancel');
-         return;
+      
+      if (!moveState.element) {
+         if (moveState.isMoveFromResultList()) {
+            var resourceType=ui.self.currentItem.data('type');
+            moveState.isLoading = true;
+            moveState.loadingResourceId=moveState.currentResourceId;
+            moveState.currentResourceId=resourceType;
+            moveState.runningRequest = cms.data.loadElements([moveState.loadingResourceId], function() {
+               
+               moveState.currentResourceId=moveState.loadingResourceId;
+               moveState.element = cms.data.elements[moveState.loadingResourceId];
+               replaceHelperElements(ui.self);
+               moveState.isLoading = false;
+            });
+            moveState.element = cms.data.elements[ resourceType];
+         } else {
+            $(cms.util.getContainerSelector()).sortable('cancel');
+         }
       }
+      
+      
+      
       
       // save the current offset. this is needed by ui.sortable._mouseStop for the reverting-animation in case the move is canceled
       ui.self.cmsStartOffset = {
@@ -300,7 +325,7 @@
       } else {
          startDragFromNormalContainer(ui.self);
       }
-      for (container_name in cms.data.containers) {
+      for (var container_name in cms.data.containers) {
          initContainerForDrag(ui.self, cms.data.containers[container_name]);
       }
       var placeholderSize = {
@@ -501,15 +526,12 @@
          updateContainer(startContainer);
          updateContainer(endContainer);
       }
-      if (moveState.isMoveFromNew() && !moveState.cancel) {
-         $('button[name="Edit"]').trigger('click');
-      }
-      
-      var data = cms.data.elements[moveState.currentResourceId];
-      if (data.status == cms.data.STATUS_NEWCONFIG) {
+      if (moveState.isMoveFromNew()) {
+         $('button[name="edit"]').trigger('click');
          removeBorder(currentItem, '.' + HOVER_NEW);
          drawBorder(currentItem, 2, HOVER_NEW);
       }
+
       resetNewElementBorders();
    }
    
@@ -521,16 +543,16 @@
     */
    var onDragOverContainer = cms.move.onDragOverContainer = function(event, ui) {
       var elem = event.target ? event.target : event.srcElement;
-      var elemId = $(elem).attr('id');
+      var containerId = $(elem).attr('id');
       var reDoHover = !moveState.over;
-      if (moveState.startId != elemId) {
+      if (moveState.startId != containerId) {
          // show placeholder in start container if element moves over a different container
          moveState.origPlaceholder.css({
             'display': 'block',
             'border': 'dotted 2px black'
          });
          // check whether current container is overflowing
-         if (moveState.helpers[elemId] && isOverflowContainer(cms.data.containers[elemId])) {
+         if (moveState.helpers[containerId] && isOverflowContainer(cms.data.containers[containerId])) {
             $('.cms-element:not(.ui-sortable-helper, .cms-placeholder):last', elem).addClass('cms-overflow-element');
          }
       } else {
@@ -538,15 +560,15 @@
          // shown)
          moveState.origPlaceholder.css('display', 'none');
       }
-      if (moveState.helpers[elemId]) {
-         cms.util.fixZIndex(elemId, cms.move.zIndexMap);
+      if (moveState.helpers[containerId]) {
+         cms.util.fixZIndex(containerId, cms.move.zIndexMap);
          ui.placeholder.css('display', 'block');
          moveState.over = true;
-         if (elemId != moveState.currentContainerId) {
-            moveState.currentContainerId = elemId;
+         if (containerId != moveState.currentContainerId) {
+            moveState.currentContainerId = containerId;
             reDoHover = true;
             // hide dragged helper, display helper for container instead
-            setHelper(ui.self, elemId);
+            setHelper(ui.self, containerId);
             ui.self.helper.width(ui.placeholder.width());
             ui.self.helper.height('');
          }
@@ -569,7 +591,7 @@
       
       // this bit of code is needed to prevent the bug where the display of the placeholder
       // goes out of sync with the over/out events
-      if ((elemId == cms.html.favoriteDropListId) && (ui.placeholder.parent().attr('id') != elemId)) {
+      if ((containerId == cms.html.favoriteDropListId) && (ui.placeholder.parent().attr('id') != containerId)) {
          ui.placeholder.appendTo(elem);
       }
       
@@ -590,14 +612,14 @@
     */
    var onDragOutOfContainer = cms.move.onDragOutOfContainer = function(event, ui) {
       var elem = event.target ? event.target : event.srcElement;
-      var elemId = $(elem).attr('id');
-      if (ui.self.helper && elemId == moveState.currentContainerId) {
+      var containerId = $(elem).attr('id');
+      if (ui.self.helper && containerId == moveState.currentContainerId) {
          if (moveState.startId != moveState.currentContainerId) {
             moveState.currentContainerId = moveState.startId;
             cms.util.fixZIndex(moveState.startId, cms.move.zIndexMap);
             setHelper(ui.self, moveState.currentContainerId);
             // check whether current container was overflowing
-            if (isOverflowContainer(cms.data.containers[elemId])) {
+            if (isOverflowContainer(cms.data.containers[containerId])) {
                $('.cms-overflow-element', elem).removeClass('cms-overflow-element');
             }
          }
@@ -822,6 +844,29 @@
       }
       $toRemove.remove();
    };
+   
+   var replaceHelperElements = function(sortable) {
+      
+      for (var container_name in cms.data.containers) {
+         var containerType = cms.data.containers[container_name].type;
+         //skip incompatible containers
+         if (!isCompatibleWithContainer(cms.data.elements[moveState.currentResourceId], container_name) || container_name == moveState.startId) {
+            continue;
+         }
+         var helperContent = moveState.element.getContent(containerType);
+         helperContent.attr('class', moveState.helpers[container_name].attr('class'));
+         helperContent.attr('style', moveState.helpers[container_name].attr('style'));
+         helperContent.removeClass('cms-new-element');
+         moveState.helpers[container_name].replaceWith(helperContent);
+         moveState.helpers[container_name] = helperContent;
+         if (moveState.currentContainerId == container_name) {
+            sortable.helper = helperContent;
+            sortable.currentItem = helperContent;
+            refreshHelperPositions(sortable);
+         }
+      }
+      
+   }
    
    
    /**

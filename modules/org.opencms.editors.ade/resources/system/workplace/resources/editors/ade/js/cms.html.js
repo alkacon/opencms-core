@@ -5,6 +5,10 @@
    var favoriteMenuId = cms.html.favoriteMenuId = 'favoritelist';
    var favoriteListId = cms.html.favoriteListId = 'favorite_list_items';
    
+   var galleryMenuId = cms.html.galleryMenuId ='cms-gallery';
+   var galleryTypeListId = cms.html.galleryTypeListId ='cms-type-list';
+   var galleryResultListPrefix = cms.html.galleryResultListPrefix ='searchresults_page';
+   
    var favoriteDropMenuId = cms.html.favoriteDropMenuId = 'favorite-drop';
    var favoriteDropListId = cms.html.favoriteDropListId = 'favorite-drop-list';
    
@@ -49,7 +53,7 @@
       var menuId = cms.html.favoriteDropMenuId;
       var listId = cms.html.favoriteDropListId;
       
-      var html = ['<div id="', menuId, '" class="cms-menu" style="display:none">\
+      var html = ['<div id="', menuId, '" class="cms-menu" style="width: 343px; display:none">\
     	<div class="connect ui-corner-top"></div>\
     	<div class="ui-widget-shadow ui-corner-all"></div>\
     	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
@@ -76,7 +80,7 @@
       var html = ['<div id="', menuId, '" class="cms-menu" style="width: 343px; display:none">\
     	<div class="connect ui-corner-top"></div>\
     	<div class="ui-widget-shadow ui-corner-all" style="width: 345px"></div>\
-    	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
+    	<div class="cms-menu-content ui-widget-content ui-corner-bottom ui-corner-tl">\
             ', addMenuItem, '\
             <div class="cms-scrolling">\
                 <ul id="', listId, '" class="cms-scrolling-inner cms-item-list">\
@@ -85,6 +89,24 @@
         </div></div>'];
       
       return html.join('');
+   }
+   
+   var createGalleryMenu = cms.html.createGalleryMenu = function(){
+       var html=['<div id="',galleryMenuId,'" class="cms-menu" style="width: 654px;">\
+    	<div class="connect ui-corner-top" style="background: #EFEFEF;"></div>\
+    	<div class="ui-widget-shadow ui-corner-all"></div>\
+        <div id="cms-gallery-main">\
+		    <div id="cms-gallery-tabs">\
+                <ul>\
+                     <li><a href="#tabs-result">Search results</a></li>\
+                     <li><a href="#tabs-types">Type</a></li>\
+                     <li><a href="#tabs-galleries">Galleries</a></li>\
+                     <li><a href="#tabs-categories">Categories</a></li>\
+                     <li><a href="#tabs-fulltextsearch">Full Text Search</a></li>\
+                </ul>\
+            </div>\
+        </div></div>'];
+        return html.join('');
    }
    
    
@@ -187,6 +209,8 @@
       html.push('</div></li></ol></form></div>');
       return html.join('');
    }
+   
+   
    
    
 })(cms);

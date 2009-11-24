@@ -1,7 +1,7 @@
 ﻿(function(cms) {
    var $ = jQuery;
    var M = cms.messages;
-   
+   var galleryInitialized= false;
    /** current toolbar-mode ('Move', 'Edit', 'Delete' etc.) */
    var /** string */ mode = cms.toolbar.mode = '';
    
@@ -1142,10 +1142,12 @@
       self.load(function(ok, data) {
          self.prepareAfterLoad();
          list = $('#' + self.menuId);
-         $('.cms-list-itemcontent:not(:has(a.cms-move))', list).each(function() {
-            var elem = $(this);
-            $('<a class="cms-handle cms-move"></a>').appendTo(elem);
-         });
+         if (self.menuId == cms.html.favriteListId || self.menuId == cms.html.resentListId) {
+             $('.cms-list-itemcontent:not(:has(a.cms-move))', list).each(function() {
+                 var elem = $(this);
+                 $('<a class="cms-handle cms-move"></a>').appendTo(elem);
+             });
+         }
          list.css({
             /* position : 'fixed', */
             top: 35,
@@ -1161,7 +1163,7 @@
             });
          });
          $(cms.util.getContainerSelector()).css('position', 'relative').children('*:visible').css('position', 'relative');
-         fixMenuAlignment();
+         //fixMenuAlignment();
          // * current menu
          $(cms.util.getContainerSelector() + ', #' + self.menuId + ' ul.cms-item-list').sortable({
             // * current menu
@@ -1349,6 +1351,32 @@
       enable: _enableListMode,
       initialize: function() {
          cms.toolbar.dom.recentMenu = $(cms.html.createMenu(cms.html.recentMenuId)).appendTo(cms.toolbar.dom.toolbarContent);
+      }
+   }
+   
+   var GalleryMode = {
+      name: 'add',
+      menuId: cms.html.galleryMenuId,
+      createButton: function() {
+         var self = this;
+         self.button = makeWideButton('add', M.ADD_BUTTON_TITLE, 'cms-icon-new').click(function() {
+            toggleMode(self);
+         });
+         return self.button;
+      },
+      prepareAfterLoad: doNothing,
+      
+      load: function(callback) {
+         if (!galleryInitialized){
+             galleryInitialized=true;
+             cms.galleries.initAddDialog();
+         }
+         callback(true, null);
+      },
+      disable: _disableListMode,
+      enable: _enableListMode,
+      initialize: function() {
+         cms.toolbar.dom.addMenu = $(cms.html.createGalleryMenu()).appendTo(cms.toolbar.dom.toolbarContent);
       }
    }
    
@@ -1569,6 +1597,7 @@
       };
       $(window).unload(onUnload); /* TODO */
       $('button[name="Save"]', cms.toolbar.dom.toolbar).click(showSaveDialog);
+      /*
       $(document).bind('cms-data-loaded', cms.search.initScrollHandler);
       cms.toolbar.dom.addMenu.find('button.cms-search-button').click(function() {
          if ($('#cms-search-dialog').length < 1) {
@@ -1576,7 +1605,7 @@
             this.click();
          }
       });
-      
+      */
       cms.toolbar.dom.showToolbar.click(toggleToolbar);
       $('#toolbar button, #show-button').mouseover(function() {
          if (!$(this).hasClass('cms-deactivated')) {
@@ -1587,13 +1616,13 @@
       });
       
       initLinks();
-      $(window).resize(fixMenuAlignment);
+     // $(window).resize(fixMenuAlignment);
    };
    
    /**
     * The mode objects in the order in which the buttons should appear in the toolbar.
     */
-   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, AddListMode, NewListMode, FavoritesListMode, RecentListMode, SaveMode, PublishMode];
+   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, GalleryMode/*AddListMode, NewListMode*/, FavoritesListMode, RecentListMode, SaveMode, PublishMode];
    
    /**
     * Gets a mode by mode name.

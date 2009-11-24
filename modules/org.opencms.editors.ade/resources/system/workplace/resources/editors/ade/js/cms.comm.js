@@ -46,6 +46,8 @@
     * @param {boolean} async optional flag to indicate is the request should synchronized or not, by default it is not
     * @param {int} timeout optional timeout in millisecs, default is #AJAX_TIMEOUT
     * @param {Function} revive optional function to convert JSON to objects when parsing the JSON response
+    * 
+    * @return the XMLHttpRequest
     */
    var postJSON = cms.comm.postJSON = /** void */ function(/** String */url, /** Object */ data, /** void Function(boolean, Object) */ afterPost, /** boolean */ sync, /** int */ timeout, /** Function */ revive) {
    
@@ -85,6 +87,8 @@
          }
       });
       requests.push(xhr);
+      
+      return xhr;
    }
 })(cms);
 

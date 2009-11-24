@@ -213,7 +213,6 @@ $('document').ready(function() {
    cms.data.loadAllData(function(ok) {
       if (ok) {
          cms.data.fillContainers();
-         cms.toolbar.resetNewList();
          cms.toolbar.toolbarReady = true;
          cms.toolbar.dom.toolbar.css('cursor', '');
          

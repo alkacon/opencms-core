@@ -1,22 +1,41 @@
 ﻿<link href="%(skinUri)editors/ade/css/custom-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" type="text/css" >
     <link href="%(skinUri)editors/ade/css/advanced_direct_edit.css" rel="stylesheet" type="text/css" >
     <link href="%(skinUri)editors/ade/css/customInput.css" rel="stylesheet" type="text/css" >
-    <link href="%(skinUri)editors/ade/css/ui.selectmenu.css" rel="stylesheet" type="text/css" >
+	<link href="%(skinUri)editors/ade/css/galleries.css" rel="stylesheet" type="text/css" />
+	
+	<!--[if IE 7]>
+	<style>
+    div.cms-selectbox{
+        zoom: 1;
+        display: inline;
+    }
+    ul.cms-list-scrolling-innner li.cms-item{
+    	margin-top: -4px;
+    }
+    
+    div.cms-list-scrolling{
+        padding-top: 4px;
+    }
+    </style>
+    <![endif]-->
     
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery-1.3.2.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery-ui-1.8a1.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.jHelperTip.1.0.js"></script>
-    <script type="text/javascript" src="%(skinUri)editors/ade/lib/ui.selectmenu.js"></script>
-    
+
+    <!-- DEBUG -->
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.dump.js"></script>
+    <!-- DEBUG -->
     
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/json2.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.pagination.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/customInput.js"></script>
     <script type="text/javascript">
       var cms = {
         data:{
           "EDITOR_URL"      : "%(editorUri)",
           "SERVER_URL"      : "%(serverUri)",
+          "GALLERY_SERVER_URL" : "%(galleryServerUri)",
           "CURRENT_CNT_PAGE": "%(currentContainerPage)",
           "CURRENT_URI"     : "%(currentUri)",
           "LOCALE"          : "%(currentLocale)",
@@ -25,7 +44,9 @@
         }, 
         publish: {
           "SERVER_URL"      : "%(publishUri)"
-        }, comm:{}, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}, search :{}, property: {}, messages: {}};
+        }, comm:{}, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}, search :{}, property: {}, previewhandler:{}, galleries: {}, messages: {}};
+        
+      var vfsPathAjaxJsp = cms.data["GALLERY_SERVER_URL"];
     </script>
     <script type="text/javascript" src="%(messagesUri)"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.comm.js"></script>
@@ -39,4 +60,7 @@
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.property.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.sitemap.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.publish.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.directinput.js"></script>
+	<script type="text/javascript" src="%(skinUri)editors/ade/js/cms.previewhandler.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.galleries.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.selectbox.js"></script>

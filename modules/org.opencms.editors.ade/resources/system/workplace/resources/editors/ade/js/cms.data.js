@@ -103,8 +103,11 @@
    /** Search result list. */
    var /** Array<String> */ searchResultList = cms.data.searchResultList = [];
    
-   /** New element types, with name and nice name. */
-   var /** Array */ newTypes = cms.data.newTypes = [];
+   /** New element type names. */
+   cms.data.newTypes = [];
+   
+   /** Search element type names. */
+   cms.data.searchTypes = [];
    
    /**
     * Initial load function that loads all data needed for ADE to start.
@@ -128,53 +131,19 @@
             
                elements = cms.data.elements = jsonData.elements;
                
-               var newOrder = cms.data.elements.newOrder;
+               cms.data.newTypes = cms.data.elements.newOrder;
                delete cms.data.elements.newOrder;
-               cms.data.newTypes = [];
-               var newPos = -1;
-               
-               var searchOrder = cms.data.elements.searchOrder;
-               delete cms.data.elements.searchOrder;
-               cms.search.searchParams.types = [];
-               cms.search.searchTypes = [];
-               var searchPos = -1;
-               
-               $.each(cms.data.elements, function() {
-                  if (this.status == cms.data.STATUS_NEWCONFIG) {
-                     if (newOrder == undefined) {
-                        newPos++;
-                     } else {
-                        newPos = newOrder.indexOf(this.type);
-                     }
-                     if (newPos < 0) {
-                         // this element is not a creatable type
-                     } else {
-                        cms.data.newTypes[newPos] = {
-                        'type': this.type,
-                        'name': this.typename
-                        };
-                     }
-                     
-                     if (searchOrder == undefined) {
-                        searchPos++;
-                     } else {
-                        searchPos = searchOrder.indexOf(this.type);
-                     }
-                     if (searchPos < 0) {
-                        // this element is not a searchable type
-                     } else {
-                     cms.search.searchParams.types.push({
-                        'name': this.type,
-                        'checked': true
-                     });
-                        cms.search.searchTypes.push({
-                           'type': this.type,
-                           'name': this.typename
-                        });
-                  }
-                  }
+              
+               cms.data.searchTypes = cms.data.elements.searchOrder;
+               cms.galleries.searchTypeIds=[];
+               $.each(cms.data.searchTypes, function(){ 
+                   cms.galleries.searchTypeIds.push(cms.data.elements[this].typeid); 
                });
+               
+               delete cms.data.elements.searchOrder;
+               
                _initNewCounter(elements);
+               
             }
             if (jsonData.newCounter) {
                newCounter = cms.data.newCounter = jsonData.newCounter;
@@ -197,10 +166,12 @@
     * @param {Function} afterPost the callback that should be called after the server replied
     * @param {boolean} async optional flag to indicate is the request should synchronized or not, by default it is not
     * @param {int} timeout optional timeout in millisecs, default is #AJAX_TIMEOUT
+    * 
+    * @return the XMLHttpRequest
     */
    var postJSON = cms.data.postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost, /** boolean */ sync, /** int */ timeout) {
    
-      cms.comm.postJSON(SERVER_URL, {
+      return cms.comm.postJSON(SERVER_URL, {
             'cntpage': CURRENT_CNT_PAGE,
             'uri': CURRENT_URI,
             'locale': LOCALE,
@@ -292,10 +263,12 @@
     *
     * @param {String} ids a list of ids of the form ade_structureid
     * @param {Function} afterLoad the callback that should be called after loading is finished
+    * 
+    * @return the XMLHttpRequest
     */
    var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, Object) */ afterLoad) {
    
-      postJSON(ACTION_ELEM, {
+      return postJSON(ACTION_ELEM, {
           'elem': ids
       }, function(ok, data) {
          if (ok) {
