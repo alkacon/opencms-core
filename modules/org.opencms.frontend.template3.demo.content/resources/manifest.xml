@@ -14,7 +14,7 @@
 		<group>Template 3</group>
 		<class/>
 		<description><![CDATA[This module contains contents for the Template 3 Demo Site.]]></description>
-		<version>7.5.9</version>
+		<version>7.5.10</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -36,7 +36,7 @@
 			<destination>demo_t3</destination>
 			<type>folder</type>
 			<uuidstructure>5ae56cfe-9c82-11de-adde-dd9f629b113b</uuidstructure>
-			<datelastmodified>Tue, 15 Sep 2009 12:06:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 23 Nov 2009 15:20:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 08:55:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -57,6 +57,10 @@
 				<property>
 					<name>locale</name>
 					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>style.config</name>
+					<value><![CDATA[/demo_t3/_config/new/cntpages]]></value>
 				</property>
 				<property>
 					<name>style.layout</name>
@@ -84,7 +88,7 @@
 			<type>containerpage</type>
 			<uuidstructure>071146b6-9d0a-11de-bac7-dd9f629b113b</uuidstructure>
 			<uuidresource>071146b7-9d0a-11de-bac7-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 15 Sep 2009 12:06:56 GMT</datelastmodified>
+			<datelastmodified>Mon, 23 Nov 2009 17:25:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 09 Sep 2009 06:28:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -484,6 +488,96 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>demo_t3/_config/new/cntpages</destination>
+			<type>folder</type>
+			<uuidstructure>dad46cf5-d83e-11de-ba8d-69bc9d83c2f4</uuidstructure>
+			<datelastmodified>Mon, 23 Nov 2009 14:45:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Nov 2009 14:45:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Model Folder]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/_config/new/cntpages/event.html</source>
+			<destination>demo_t3/_config/new/cntpages/event.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>3b65f3f2-d83f-11de-ba8d-69bc9d83c2f4</uuidstructure>
+			<uuidresource>3b65f3f3-d83f-11de-ba8d-69bc9d83c2f4</uuidresource>
+			<datelastmodified>Tue, 24 Nov 2009 08:19:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Nov 2009 14:48:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[description]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[title]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
+					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
+					<type>XSD</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/_config/new/cntpages/main.html</source>
+			<destination>demo_t3/_config/new/cntpages/main.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>fba8a958-d83e-11de-ba8d-69bc9d83c2f4</uuidstructure>
+			<uuidresource>fba8a959-d83e-11de-ba8d-69bc9d83c2f4</uuidresource>
+			<datelastmodified>Mon, 23 Nov 2009 14:47:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Nov 2009 14:46:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations>
+				<relation>
+					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
+					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
+					<type>XSD</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/_config/new/cntpages/news.html</source>
+			<destination>demo_t3/_config/new/cntpages/news.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>4160b6f4-d83f-11de-ba8d-69bc9d83c2f4</uuidstructure>
+			<uuidresource>4160b6f5-d83f-11de-ba8d-69bc9d83c2f4</uuidresource>
+			<datelastmodified>Tue, 15 Sep 2009 12:06:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Nov 2009 14:48:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations>
+				<relation>
+					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
+					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
+					<type>XSD</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>demo_t3/_content</destination>
 			<type>folder</type>
 			<uuidstructure>80d88a89-a11a-11de-9057-dd9f629b113b</uuidstructure>
@@ -591,11 +685,11 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-			    <property>
-			        <name>Title</name>
-                    <value><![CDATA[Articles]]></value>
-                </property>
-            </properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Articles]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1023,11 +1117,11 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-			    <property>
-			        <name>Title</name>
-                    <value><![CDATA[Events]]></value>
-                </property>
-            </properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Events]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2056,11 +2150,11 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-			    <property>
-			        <name>Title</name>
-                    <value><![CDATA[Flower news]]></value>
-                </property>
-            </properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Flower news]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -3474,8 +3568,8 @@
 					<value><![CDATA[Autor: Luis Miguel Bugallo Sánchez]]></value>
 				</property>
 				<property>
-                    <name>Title</name>
-                    <value><![CDATA[Blume]]></value>
+					<name>Title</name>
+					<value><![CDATA[Blume]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>
@@ -4926,10 +5020,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>a482044b-81a3-11de-9b82-dd9f629b113b</uuidstructure>
-			<datelastmodified>Wed, 05 Aug 2009 09:37:50 GMT</datelastmodified>
+			<uuidstructure>09e1b37a-d83b-11de-ba8d-69bc9d83c2f4</uuidstructure>
+			<datelastmodified>Mon, 23 Nov 2009 14:18:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 05 Aug 2009 09:37:50 GMT</datecreated>
+			<datecreated>Mon, 23 Nov 2009 14:18:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
