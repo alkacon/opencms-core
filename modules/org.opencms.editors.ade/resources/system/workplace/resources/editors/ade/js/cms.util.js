@@ -378,4 +378,185 @@
       return message;
    }
    
+   
+   
+   /**
+    * Converts a function and a list of parameters to a new function which, if called with other parameters,
+    * will call the original function, with the parameter list obtained by concatenating the original parameter
+    * list and the call's argument list.
+    *
+    * For example, bindFn(f, [x1, x2])(x3, x4) will call f(x1, x2, x3, x4).
+    *
+    * The 'this' parameter is passed through to the original function.
+    *
+    * @param {Object} fn the function to bind parameters to
+    * @param {Object} args the list of initial parameters that should be bound
+    */
+   var bindFn = cms.util.bindFn = function(fn, args) {
+      return function() {
+         return fn.apply(this, args.concat(arguments));
+      };
+   }
+   
+   /**
+    * Convert an event callback expecting its argument in the "this" variable to a function taking a normal parameter 
+    * @param {Object} fn the function to convert
+    */
+   var targetToParam = cms.util.targetToParam = function(fn) {
+      return function() {
+         return fn.apply(this, [this].concat(arguments));
+      }
+   }
+   
+   
+   /**
+    * Converts an array of strings to an object which will have a property named x if x is in the array.
+    * @param {Object} arr the array of strings
+    */
+   var stringArrayToObject = cms.util.stringArrayToObject = function(arr) {
+      var result = {};
+      $.each(arr, function() {
+         result[this] = true;
+      });
+      return result;
+   }
+   
+   /**
+    * JQuery extension function that depending on the value of a boolean flag sets one of two css classes on the matched elements.
+    * @param {Object} flag the boolean flag
+    * @param {Object} classTrue if the flag is true, this class will be added, else it will be removed
+    * @param {Object} classFalse if the flag is false, this class will be added, else it will be removed
+    */
+   $.fn.chooseClass = function(flag, classTrue, classFalse) {
+      this.each(function() {
+         if (flag) {
+            $(this).addClass(classTrue).removeClass(classFalse);
+         } else {
+            $(this).addClass(classFalse).removeClass(classTrue);
+         }
+      })
+   }
+   
+   /**
+    * Replacement for the jQuery hover function which takes just one function with a boolean argument instead of two functions.
+    * @param {Object} handler
+    */
+   $.fn.hoverBoolean = function(handler) {
+      return this.hover(function() {
+         handler.call(this, true)
+      }, function() {
+         handler.call(this, false);
+      })
+   }
+   
+   /**
+    * Shows the element passed as a parameter when hovering over one of the elements in the jQuery object, else hides it.
+    */
+   $.fn.hoverSetVisible = function($elem) {
+      return this.hover(function() {
+         $elem.show();
+      }, function() {
+         $elem.hide();
+      });
+   }
+   
+   /**
+    * Checkbox constructor function.
+    * @param {Object} $dom the DOM element to use for the checkbox
+    */
+   var Checkbox = cms.util.Checkbox = function($dom) {
+      if (!$dom) {
+         $dom = $('<div/>');
+      }
+      var self = this;
+      $dom.click(function() {
+         self.setCheckedIfEnabled(!self.checked);
+      });
+      $dom.hoverBoolean(function(hover) {
+         $(this).chooseClass(hover, 'cms-checkbox-hover', 'cms-checkbox-nohover');
+      })
+      self.$dom = $dom.css('cursor', 'pointer').addClass('cms-Checkbox').height(20).width(24);
+      self.$dom.data('cms-Checkbox', self);
+      self.setChecked(false);
+      self.setEnabled(true);
+   }
+   
+   Checkbox.fromJQuery = function($jq) {
+      return $jq.data('cms-Checkbox');
+   }
+   
+   /**
+    * Helper function for getting the checkbox objects from a set of DOM elements
+    * @param {Object} $dom the DOM elements representing the checkboxes
+    */
+   var _getCheckboxes = function($dom) {
+      var result = [];
+      $dom.each(function() {
+         result.push($.data(this, 'cms-Checkbox'));
+      })
+      return result;
+   }
+   
+   /**
+    * Gets all checkbox objects from a given jQuery context
+    * @param {Object} context the jQuery context
+    */
+   Checkbox.getCheckboxes = function(context) {
+      return _getCheckboxes($('.cms-Checkbox', context));
+   }
+   
+   /**
+    * Gets all unchecked checkbox objects from a given jQuery context
+    * @param {Object} context the jQuery context
+    */
+   Checkbox.getUncheckedCheckboxes = function(context) {
+      return _getCheckboxes($('.cms-checkbox-unchecked', context));
+   }
+   
+   
+   
+   Checkbox.prototype = {
+      /**
+       * Enables or disables the checkbox.
+       * @param {Object} enabled if true, the checkbox will be enabled, else disabled
+       */
+      setEnabled: function(enabled) {
+         this.enabled = enabled;
+         this.$dom.chooseClass(enabled, 'cms-checkbox-enabled', 'cms-checkbox-disabled');
+      },
+      
+      /**
+       * Returns true if the checkbox is enabled.
+       */
+      getEnabled: function() {
+         return this.enabled;
+      },
+      
+      /**
+       * Checks or unchecks the checkbox
+       * @param {Object} checked if true, the checkbox will be checked, else unchecked
+       */
+      setChecked: function(checked) {
+         this.checked = checked;
+         this.$dom.chooseClass(checked, 'cms-checkbox-checked', 'cms-checkbox-unchecked');
+      },
+      
+      /**
+       * Check or uncheck the checkbox, but only if it is enabled
+       * @param {Object} checked
+       */
+      setCheckedIfEnabled: function(checked) {
+         if (this.enabled) {
+            this.setChecked(checked);
+         }
+      },
+      
+      /**
+       * Returns true if the checkbox is checked.
+       */
+      getChecked: function() {
+         return this.checked;
+      }
+   }
+   
 })(cms);

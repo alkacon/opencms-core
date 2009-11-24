@@ -69,6 +69,35 @@
    
    
    /**
+    * Shows/hides the additional item info in list-views.<p>
+    */
+   var toggleAdditionalInfo = function() {
+      var elem = $(this);
+      var $additionalInfo = elem.closest('.ui-widget-content').children('.cms-additional');
+      if (elem.hasClass('ui-icon-triangle-1-e')) {
+         elem.removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
+         $additionalInfo.show(5, function() {
+            var list = $(this).parents('div.cms-menu');
+            $('div.ui-widget-shadow', list).css({
+               height: list.outerHeight() + 1
+            });
+         });
+      } else {
+         elem.removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
+         
+         $additionalInfo.hide(5, function() {
+            var list = $(this).parents('div.cms-menu');
+            $('div.ui-widget-shadow', list).css({
+               height: list.outerHeight() + 1
+            });
+         });
+      }
+      return false;
+   };
+   
+   
+   
+   /**
     * Adds a sitemap entry to the recent list
     * @param {Object} entry the sitemap entry as JSON to add to the recent list
     */
@@ -682,6 +711,7 @@
          // generating toolbar
          cms.sitemap.dom.toolbar = $(cms.html.toolbar).appendTo(document.body);
          cms.sitemap.dom.toolbarContent = $('#toolbar_content', cms.sitemap.dom.toolbar);
+         
          cms.sitemap.currentMode = null;
          //create buttons:
          for (i = 0; i < sitemapModes.length; i++) {
@@ -724,7 +754,7 @@
                setSitemapChanged(true);
             }
          });
-         $('#fav-edit').click(_editFavorites);         
+         $('#fav-edit').click(_editFavorites);
          $(window).unload(onUnload);
       }
       
@@ -752,6 +782,8 @@
          var entry = new SitemapEntry(this);
          entry.openRecursively(true, 2);
       });
+      
+      $('.cms-item a.ui-icon').live('click', toggleAdditionalInfo);
    }
    
    /**

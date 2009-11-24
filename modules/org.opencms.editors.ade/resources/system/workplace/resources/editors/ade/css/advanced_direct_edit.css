@@ -61,7 +61,7 @@
 
 button {
 	margin: 2px 2px 0px 2px;
-	width: 32px;
+	/*width: 32px;*/
 }
 
 #toolbar div.cms-toolbar-content button.cms-button-wide span.cms-button-text
@@ -597,7 +597,6 @@ div.cms-dialog {
     }
     .cms-list-with-checkbox div.cms-list-item {
     	margin-left: 32px;
-        
     }
     div.cms-list-item {
         margin-top: 2px;
@@ -726,11 +725,11 @@ div.cms-menu div.cms-menu-content,div.cms-menu div.cms-menu-connect {
 }
 
 div.cms-menu div.cms-menu-content div.ui-widget-content {
-	background: #ffffff; 
+	background: #ffffff;
 }
 
 div.cms-menu div.cms-menu-content {
-	padding-top: 7px;
+    padding-top: 7px;
     position: relative;
 }
 
@@ -1076,12 +1075,58 @@ ol.ade-forms fieldset {
 	border: 1px solid #444444;
 }
 
+.cms-publish-row {
+	/*clear: both;*/
+}
+
 .cms-publish-row .cms-publish-item{
-    margin:2px 5px 0 30px;
+/*    margin:2px 5px 0 30px;
     padding: 1px;
-    background: transparent;
+    background: transparent;*/
     /* HACK: This will force hasLayout: true in IE7 */ 
     zoom: 1;
+}
+
+.cms-publish-group-header {
+	margin-top:  5px;
+	margin-bottom: 6px;
+}
+
+.cms-publish-select-button {
+	margin-left: 3px;
+	margin-right: 3px;
+	margin-bottom: 5px;
+	min-width: 50px;
+	height: 19px;
+	float: right;
+	font-size: 90%;
+}
+
+.cms-publish-scrolling {
+	position: relative;
+	border: 1px solid #aaaaaa;
+	padding: 10px; 
+	overflow: auto;
+	max-height: 500px;
+    margin-bottom: 35px;
+    position: relative;
+    background-color: #ffffff;
+	
+}
+
+#cms-publish-dialog {
+	background-color: #dedede;
+}
+
+#cms-publish-dialog ul {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#cms-publish-dialog li {
+	margin-left: 0px;
 }
 
 .cms-publish-title{
@@ -1093,8 +1138,11 @@ ol.ade-forms fieldset {
     
 }
 
-.cms-publish-toremove {
-	background-color: #cccccc;
+
+.cms-publish-toremove .cms-list-itemcontent {
+	background-image: none;
+	background-color: #bbbbbb;
+	color: #888888 !important;
 }
 
 .cms-publish-problem-published.cms-publish-keep {
@@ -1109,6 +1157,14 @@ ol.ade-forms fieldset {
 	background-image: url(images/16x16/published.png);
 }
 
+.cms-icon-publish-remove {
+	background-image: url(images/24x24/ade_delete.png);
+}
+
+.cms-icon-publish-unremove {
+	background-image: url(images/24x24/ade_undelete.png);
+}
+
 .cms-publish-item .cms-publish-remove-button{
     height:25px;
     padding-bottom:0;
@@ -1121,6 +1177,22 @@ ol.ade-forms fieldset {
     width:70px;
     display: none;
 }
+
+.cms-publish-remove-button {
+	width: 24px;
+	height:24px;
+	margin-right: 10px;
+	margin-top: 4px;
+	float: right;
+}
+
+.cms-publish-row .cms-list-item {
+/*	position: relative;
+	left: 25px; */
+}
+	
+	
+	
 
  .cms-publish-icon{
      float: left;
@@ -1142,16 +1214,25 @@ ol.ade-forms fieldset {
 
 .cms-icon-brokenlink {
 	background-image: url(../../../buttons/link.png);
-}	
+}
+
+.cms-icon-warning {
+	background-image: url(images/16x16/warning.png);
+}
 
 .cms-publish-item .ui-widget-content {
 	width: 575px !important; 
 }
 
 .cms-publish-group-header{
-    margin: 2px;
     padding: 2px;
     font-weight: bold;
+}
+
+.cms-publish-warning {
+	background-image: url(images/16x16/warning.png);
+	width: 20px;
+	height: 20px;
 }
 
 .cms-publish-row{
@@ -1162,9 +1243,10 @@ ol.ade-forms fieldset {
 
 div.cms-selectbox{
 	position:relative; 
-    display:inline-block;
+       display:inline-block;
 	line-height: 16px;
 	width: 150px;
+	z-index: 1;
 
 }
 	
@@ -1185,6 +1267,7 @@ div.cms-selector{
 	
 div.cms-open div.cms-selector{
 	display: block;
+	z-index: 1;
 }
 
 span.cms-select-opener{
@@ -1195,37 +1278,60 @@ span.cms-select-opener{
 	
 
 
+.ade-checkbox input, 
+.ade-radio input {
+	position: absolute;
+	left: 2px;
+	top: 3px;
+	margin: 0;
+	z-index: 0;
+}
+
+.cms-checkbox  {
+/*	display: block;
+	position: relative;
+	z-index: 1;
+	padding-right: 1em;
+	line-height: 1;
+	padding: .5em 0 .2em 30px;
+	margin: 0 0 .3em; */
+	cursor: pointer;
+}
+
+	
+/* checkbox states */
+.cms-Checkbox { background: url(images/checkbox.gif) no-repeat; }
 
 
 
+.cms-checkbox-unchecked {
+	background-position: -10px -14px;
+}
+
+.cms-checkbox-checked {
+	background-position: -10px -214px;
+}
 
 
+.cms-checkbox-unchecked.cms-checkbox-hover  {
+	background-position: -10px -114px;
+}
 
+.cms-checkbox-checked.cms-checkbox-hover {
+	background-position: -10px -314px;
+}
 
+.cms-checkbox-disabled {
+	background-image: none;
+}
 
+/* loading animation */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.cms-loading-animation {
+	background-image: url(images/progress.png);
+	width: 40px;
+	height: 40px;
+}
 
 
 

@@ -1024,6 +1024,27 @@
 			<accesscontrol/>
 		</file>
 		<file>
+        	<source>system/workplace/resources/editors/ade/css/images/24x24/ade_undelete.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/24x24/ade_undelete.png</destination>
+			<type>image</type>
+			<uuidstructure>a645b55d-d5d5-11de-b218-65d0a341fad5</uuidstructure>
+			<uuidresource>a645b55e-d5d5-11de-b218-65d0a341fad5</uuidresource>
+			<datelastmodified>Fri, 20 Nov 2009 13:07:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 Nov 2009 13:07:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
+		<file>
 			<source>system/workplace/resources/editors/ade/css/images/document_delete.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/document_delete.png</destination>
 			<type>image</type>
@@ -1354,6 +1375,26 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:80,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+  		<file>
+			<source>system/workplace/resources/editors/ade/css/images/loading.gif</source>
+			<destination>system/workplace/resources/editors/ade/css/images/loading.gif</destination>
+			<type>image</type>
+			<uuidstructure>1fffd20d-d83c-11de-8eb8-65d0a341fad5</uuidstructure>
+			<uuidresource>1fffd20e-d83c-11de-8eb8-65d0a341fad5</uuidresource>
+			<datelastmodified>Mon, 23 Nov 2009 14:26:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Nov 2009 14:26:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -3691,7 +3732,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-        <file>
+		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.previewhandler.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.previewhandler.js</destination>
 			<type>plain</type>

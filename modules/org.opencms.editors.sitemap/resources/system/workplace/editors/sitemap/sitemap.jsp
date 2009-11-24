@@ -19,7 +19,8 @@
             "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/sitemap/server.jsp:b848e330-c865-11de-a457-ab20365f6268)</cms:link>",
             "LOCALE": "${cms.requestContext.locale}",
             "SITEMAP_URI": "${cms.sitemapURI}",
-            "CONTEXT": "<%=OpenCms.getSystemInfo().getOpenCmsContext()%>"
+            "CONTEXT": "<%=OpenCms.getSystemInfo().getOpenCmsContext()%>",
+            "SKIN_URI"	: "%(skinUri)"
          },
          publish: {
             "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/sitemap/publish-server.jsp:dd962f3e-abcd-11de-97fc-dd9f629b113b)</cms:link>"
@@ -48,6 +49,7 @@
     </script>
     <title>Sitemap demo</title>
     <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/ade/css/custom-theme/jquery-ui-1.7.2.custom.css")%>" />
+    <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/ade/css/advanced_direct_edit.css")%>" />
     <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/sitemap/css/sitemap.css")%>" />
   </head>
   <body>
