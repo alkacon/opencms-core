@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryResourceHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/11/24 08:56:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
+import org.opencms.util.CmsRequestUtil;
+
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +54,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.9.1
  */
@@ -63,14 +66,14 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
     /** The historical version handler path. */
     public static final String HISTORY_HANDLER = "/system/shared/showversion";
 
-    /** The static log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHistoryResourceHandler.class);
-
     /** Request parameter name for the version number. */
     public static final String PARAM_VERSION = "version";
 
     /** Constant for the offline project version. */
     public static final int PROJECT_OFFLINE_VERSION = Integer.MAX_VALUE;
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHistoryResourceHandler.class);
 
     /**
      * Returns the historical version of a resource, 
@@ -83,6 +86,55 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
     public static I_CmsHistoryResource getHistoryResource(ServletRequest req) {
 
         return (I_CmsHistoryResource)req.getAttribute(ATTRIBUTE_NAME);
+    }
+
+    /**
+     * Appends the <code>version</code> parameter to the URI if needed.<p>
+     * 
+     * @param uri the resource URI
+     * @param req the current request
+     * 
+     * @return the same URI, with additional parameters in case of a historical request
+     */
+    public static String getHistoryResourceURI(String uri, ServletRequest req) {
+
+        String histUri = uri;
+        if (CmsHistoryResourceHandler.isHistoryRequest(req)) {
+            String version = req.getParameter(CmsHistoryResourceHandler.PARAM_VERSION);
+            histUri = CmsRequestUtil.appendParameter(uri, CmsHistoryResourceHandler.PARAM_VERSION, version);
+        }
+        return histUri;
+    }
+
+    /**
+     * Returns the correct resource for the given URI, taken into account historical versions 
+     * marked by the <code>version</code> parameter.<p> 
+     * 
+     * @param cms the current CMS context 
+     * @param resourceUri the resource URI
+     * 
+     * @return the resource, which can be an instance of {@link org.opencms.file.history.I_CmsHistoryResource}
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsResource getResourceWithHistory(CmsObject cms, String resourceUri) throws CmsException {
+
+        CmsResource resource = null;
+
+        if (resourceUri.contains(CmsRequestUtil.URL_DELIMITER)) {
+            int pos = resourceUri.indexOf(CmsRequestUtil.URL_DELIMITER);
+            Map<String, String[]> params = CmsRequestUtil.createParameterMap(resourceUri.substring(pos));
+            if (params.containsKey(CmsHistoryResourceHandler.PARAM_VERSION)) {
+                int version = Integer.parseInt(params.get(CmsHistoryResourceHandler.PARAM_VERSION)[0]);
+                String sitemapPath = resourceUri.substring(0, pos);
+                resource = cms.readResource(sitemapPath);
+                resource = (CmsResource)cms.readResource(resource.getStructureId(), version);
+            }
+        }
+        if (resource == null) {
+            resource = cms.readResource(resourceUri);
+        }
+        return resource;
     }
 
     /**
