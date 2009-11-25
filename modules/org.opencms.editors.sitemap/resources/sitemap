@@ -4,6 +4,7 @@
   <AlkaconSitemap language="en">
     <SiteEntry>
       <Name><![CDATA[index]]></Name>
+      <Extension><![CDATA[html]]></Extension>
       <Title><![CDATA[Title]]></Title>
       <VfsFile>
         <link type="STRONG">
@@ -13,6 +14,7 @@
       </VfsFile>
       <SiteEntry>
         <Name><![CDATA[demo_t3]]></Name>
+	    <Extension><![CDATA[html]]></Extension>
         <Title><![CDATA[Title]]></Title>
         <VfsFile>
           <link type="STRONG">
@@ -22,6 +24,7 @@
         </VfsFile>
         <SiteEntry>
           <Name><![CDATA[_content]]></Name>
+          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Title]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -31,6 +34,7 @@
           </VfsFile>
           <SiteEntry>
             <Name><![CDATA[listboxes]]></Name>
+            <Extension><![CDATA[html]]></Extension>
             <Title><![CDATA[Title]]></Title>
             <VfsFile>
               <link type="STRONG">
@@ -40,6 +44,7 @@
             </VfsFile>
             <SiteEntry>
               <Name><![CDATA[news_all]]></Name>
+              <Extension><![CDATA[html]]></Extension>
               <Title><![CDATA[Title]]></Title>
               <VfsFile>
                 <link type="STRONG">
@@ -50,6 +55,7 @@
             </SiteEntry>
             <SiteEntry>
               <Name><![CDATA[news_recent]]></Name>
+              <Extension><![CDATA[html]]></Extension>
               <Title><![CDATA[Title]]></Title>
               <VfsFile>
                 <link type="STRONG">

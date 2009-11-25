@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2009/11/10 16:42:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/11/25 15:26:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.5.2
  * 
@@ -92,6 +92,8 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         /** Value file list node name. */
         FILELIST("FileList"),
+        /** Entry extension node name. */
+        EXTENSION("Extension"),
         /** Entry or property name node name. */
         NAME("Name"),
         /** Element properties node name. */
@@ -521,6 +523,11 @@ public class CmsXmlSitemap extends CmsXmlContent {
             createBookmark(name, locale, entry, entryPath, entryDef);
             String entryName = name.getTextTrim();
 
+            // extension
+            Element extension = entry.element(XmlNode.EXTENSION.getName());
+            createBookmark(extension, locale, entry, entryPath, entryDef);
+            String entryExtension = extension.getTextTrim();
+
             // title
             Element title = entry.element(XmlNode.TITLE.getName());
             createBookmark(title, locale, entry, entryPath, entryDef);
@@ -625,7 +632,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
             List<CmsSiteEntryBean> subEntries = readSiteEntries(entry, entryPath, entryDef, locale);
 
-            entries.add(new CmsSiteEntryBean(entryId, entryName, titleValue, propertiesMap, subEntries));
+            entries.add(new CmsSiteEntryBean(entryId, entryName, entryExtension, titleValue, propertiesMap, subEntries));
         }
         return entries;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2009/11/09 14:58:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/25 15:26:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,9 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -44,14 +44,14 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
 public class CmsSiteEntryBean {
 
-    /** Constant property name for sub-sitemap reference. */
-    public static final String PROPERTY_SITEMAP = "sitemap";
+    /** The entry extension. */
+    private final String m_extension;
 
     /** The entry name. */
     private final String m_name;
@@ -73,6 +73,7 @@ public class CmsSiteEntryBean {
      * 
      * @param resourceId the file's structure id
      * @param name the entry's name
+     * @param extension the entry's extension
      * @param title the entry's title
      * @param properties the properties as a map of name/value pairs
      * @param subEntries the list of sub-entries
@@ -80,16 +81,30 @@ public class CmsSiteEntryBean {
     public CmsSiteEntryBean(
         CmsUUID resourceId,
         String name,
+        String extension,
         String title,
         Map<String, String> properties,
         List<CmsSiteEntryBean> subEntries) {
 
         m_resourceId = resourceId;
         m_name = name;
+        m_extension = extension;
         m_title = title;
-        Map<String, String> props = (properties == null ? new HashMap<String, String>() : properties);
-        m_properties = Collections.unmodifiableMap(props);
-        m_subEntries = Collections.unmodifiableList(subEntries == null ? new ArrayList<CmsSiteEntryBean>() : subEntries);
+        m_subEntries = (subEntries == null
+        ? Collections.<CmsSiteEntryBean> emptyList()
+        : Collections.unmodifiableList(subEntries));
+        // do not freeze the properties
+        m_properties = (properties == null ? new HashMap<String, String>() : properties);
+    }
+
+    /**
+     * Returns the extension.<p>
+     *
+     * @return the extension
+     */
+    public String getExtension() {
+
+        return m_extension;
     }
 
     /**
@@ -109,7 +124,7 @@ public class CmsSiteEntryBean {
      */
     public Map<String, String> getProperties() {
 
-        return m_properties;
+        return Collections.unmodifiableMap(m_properties);
     }
 
     /**
@@ -140,5 +155,15 @@ public class CmsSiteEntryBean {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Sets the position of this entry in the level.<p>
+     * 
+     * @param position the position to set
+     */
+    public void setPosition(int position) {
+
+        m_properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
     }
 }
