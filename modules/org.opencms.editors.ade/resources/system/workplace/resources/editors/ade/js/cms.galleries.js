@@ -417,8 +417,6 @@
       }     
       // open the preselected tab
       $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);
-      
-      // TODO: insert the preselected search query!!!!
            
    }
    
@@ -430,15 +428,23 @@
                  $('li[alt=' + path + ']').addClass(cms.galleries.classListItemActive);
              });
        }
-   }
+   }   
    
+   /**
+    * Handle different states of the search object, so the search is consistent.
+    */
    var prepareSearchObject = cms.galleries.prepareSearchObject = function() {
-       // criteria for types and galleries are empty
+       var preparedSearchObject = {};
+       var types = {'types': cms.galleries.configContentTypes};
+       // add the available types to the search object used for next search, 
+       // if the criteria for types and galleries are empty
        if (cms.galleries.searchObject['galleries'].length == 0 &&              
-              cms.galleries.searchObject['types'].length == 0){           
-           
-           cms.galleries.searchObject['types'] = cms.galleries.configContentTypes;                             
-       } 
+              cms.galleries.searchObject['types'].length == 0){                      
+           return $.extend(preparedSearchObject, cms.galleries.searchObject, types);
+       // just use the unchanged search object                                 
+       }  else {
+           return  cms.galleries.searchObject;
+       }
    }
    
    /**
@@ -447,13 +453,15 @@
     */
    var loadSearchResults = cms.galleries.loadSearchResults = function() {
       cms.galleries.searchObject.page = 1;
-      prepareSearchObject();
+      // ajust the search object to provide a consistent search
+      var preparedSearchObject = prepareSearchObject();
+      
       $.ajax({
          'url': vfsPathAjaxJsp,
          'data': {
             'action': 'search',
             'data': JSON.stringify({
-               'querydata': cms.galleries.searchObject
+               'querydata': preparedSearchObject
             })
          },
          'type': 'POST',
