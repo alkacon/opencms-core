@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/11/25 15:24:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,12 +37,14 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Bean to provide a convenient way to build navigation structures based on the
@@ -58,7 +60,7 @@ import java.util.List;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -66,15 +68,20 @@ import java.util.List;
  */
 public class CmsJspNavBuilder {
 
-    // Member variables
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspNavBuilder.class);
+
+    /** The current CMS context. */
     private CmsObject m_cms;
+
+    /** The current request URI. */
     private String m_requestUri;
+
+    /** The current request folder. */
     private String m_requestUriFolder;
 
     /**
      * Empty constructor, so that this bean can be initialized from a JSP.<p> 
-     * 
-     * @see java.lang.Object#Object()
      */
     public CmsJspNavBuilder() {
 
@@ -92,13 +99,13 @@ public class CmsJspNavBuilder {
     }
 
     /**
-     * Returns the full name (including vfs path) of the default file for this nav element 
-     * or <code>null</code> if the nav element is not a folder.<p>
+     * Returns the full name (including VFS path) of the default file for this navigation element 
+     * or <code>null</code> if the navigation element is not a folder.<p>
      * 
      * The default file of a folder is determined by the value of the property 
-     * <code>default-file</code> or the systemwide property setting.
+     * <code>default-file</code> or the system wide property setting.<p>
      * 
-     * @param cms the cms object
+     * @param cms the CMS object
      * @param folder full name of the folder
      * 
      * @return the name of the default file
@@ -106,53 +113,53 @@ public class CmsJspNavBuilder {
     public static String getDefaultFile(CmsObject cms, String folder) {
 
         if (folder.endsWith("/")) {
-            List defaultFolders = new ArrayList();
+            List<String> defaultFolders = new ArrayList<String>();
             try {
                 CmsProperty p = cms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, false);
                 if (!p.isNullProperty()) {
                     defaultFolders.add(p.getValue());
                 }
-            } catch (CmsException exc) {
-                // noop
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
             }
 
             defaultFolders.addAll(OpenCms.getDefaultFiles());
 
-            for (Iterator i = defaultFolders.iterator(); i.hasNext();) {
-                String defaultName = (String)i.next();
+            for (String defaultName : defaultFolders) {
                 if (cms.existsResource(folder + defaultName)) {
                     return folder + defaultName;
                 }
             }
-
             return folder;
         }
-
         return null;
     }
 
     /**
      * Collect all navigation elements from the files in the given folder,
-     * navigation elements are of class CmsJspNavElement.<p>
+     * navigation elements are of class {@link CmsJspNavElement}.<p>
      *
      * @param cms context provider for the current request
      * @param folder the selected folder
-     * @return a sorted (ascending to nav position) ArrayList of navigation elements
+     * 
+     * @return a sorted (ascending to navigation position) list of navigation elements
      */
-    public static List getNavigationForFolder(CmsObject cms, String folder) {
+    public static List<CmsJspNavElement> getNavigationForFolder(CmsObject cms, String folder) {
 
         folder = CmsResource.getFolderPath(folder);
-        List result = new ArrayList();
+        List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
 
-        List resources;
+        List<CmsResource> resources;
         try {
             resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         } catch (Exception e) {
-            return Collections.EMPTY_LIST;
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return Collections.<CmsJspNavElement> emptyList();
         }
 
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource r = (CmsResource)resources.get(i);
+        for (CmsResource r : resources) {
             CmsJspNavElement element = getNavigationForResource(cms, cms.getSitePath(r));
             if ((element != null) && element.isInNavigation()) {
                 result.add(element);
@@ -172,10 +179,11 @@ public class CmsJspNavBuilder {
      * @param cms context provider for the current request
      * @param folder the selected folder
      * @param level if negative, walk this many levels up, if positive, walk this many 
-     * levels down from root folder 
-     * @return a sorted (ascending to nav position) ArrayList of navigation elements
+     *              levels down from root folder 
+     *              
+     * @return a sorted (ascending to navigation position) list of navigation elements
      */
-    public static List getNavigationForFolder(CmsObject cms, String folder, int level) {
+    public static List<CmsJspNavElement> getNavigationForFolder(CmsObject cms, String folder, int level) {
 
         folder = CmsResource.getFolderPath(folder);
         // If level is one just use root folder
@@ -183,28 +191,31 @@ public class CmsJspNavBuilder {
             return getNavigationForFolder(cms, "/");
         }
         String navfolder = CmsResource.getPathPart(folder, level);
-        // If navfolder found use it to build navigation
+        // If navigation folder found use it to build navigation
         if (navfolder != null) {
             return getNavigationForFolder(cms, navfolder);
         }
         // Nothing found, return empty list
-        return Collections.EMPTY_LIST;
+        return Collections.<CmsJspNavElement> emptyList();
     }
 
     /**
      * Returns a CmsJspNavElement for the named resource.<p>
      * 
      * @param cms context provider for the current request
-     * @param resource the resource name to get the nav information for, 
-     * must be a full path name, e.g. "/docs/index.html".
-     * @return a CmsJspNavElement for the given resource
+     * @param resource the resource name to get the navigation information for, 
+     *              must be a full path name, e.g. "/docs/index.html"
+     *              
+     * @return a navigation element for the given resource
      */
     public static CmsJspNavElement getNavigationForResource(CmsObject cms, String resource) {
 
-        List properties;
+        List<CmsProperty> properties;
         try {
             properties = cms.readPropertyObjects(resource, false);
         } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
         int level = CmsResource.getPathLevel(resource);
@@ -217,23 +228,28 @@ public class CmsJspNavBuilder {
     /**
      * Builds a tree navigation for the folders between the provided start and end level.<p>
      * 
-     * A tree navigation includes all nav elements that are required to display a tree structure.
+     * A tree navigation includes all navigation elements that are required to display a tree structure.
      * However, the data structure is a simple list.
-     * Each of the nav elements in the list has the {@link CmsJspNavElement#getNavTreeLevel()} set
-     * to the level it belongs to. Use this information to distinguish between the nav levels.<p>
+     * Each of the navigation elements in the list has the {@link CmsJspNavElement#getNavTreeLevel()} set
+     * to the level it belongs to. Use this information to distinguish between the navigation levels.<p>
      * 
      * @param cms context provider for the current request
      * @param folder the selected folder
      * @param startlevel the start level
      * @param endlevel the end level
-     * @return a sorted list of nav elements with the nav tree level property set 
+     * 
+     * @return a sorted list of navigation elements with the navigation tree level property set 
      */
-    public static List getNavigationTreeForFolder(CmsObject cms, String folder, int startlevel, int endlevel) {
+    public static List<CmsJspNavElement> getNavigationTreeForFolder(
+        CmsObject cms,
+        String folder,
+        int startlevel,
+        int endlevel) {
 
         folder = CmsResource.getFolderPath(folder);
         // Make sure start and end level make sense
         if (endlevel < startlevel) {
-            return Collections.EMPTY_LIST;
+            return Collections.<CmsJspNavElement> emptyList();
         }
         int currentlevel = CmsResource.getPathLevel(folder);
         if (currentlevel < endlevel) {
@@ -243,30 +259,28 @@ public class CmsJspNavBuilder {
             return getNavigationForFolder(cms, CmsResource.getPathPart(folder, startlevel), startlevel);
         }
 
-        ArrayList result = new ArrayList();
+        List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
         float parentcount = 0;
 
         for (int i = startlevel; i <= endlevel; i++) {
             String currentfolder = CmsResource.getPathPart(folder, i);
-            List entries = getNavigationForFolder(cms, currentfolder);
+            List<CmsJspNavElement> entries = getNavigationForFolder(cms, currentfolder);
             // Check for parent folder
             if (parentcount > 0) {
-                for (int it = 0; it < entries.size(); it++) {
-                    CmsJspNavElement e = (CmsJspNavElement)entries.get(it);
+                for (CmsJspNavElement e : entries) {
                     e.setNavPosition(e.getNavPosition() + parentcount);
                 }
             }
             // Add new entries to result
             result.addAll(entries);
             Collections.sort(result);
-            // Finally spread the values of the nav items so that there is enough room for further items.
+            // Finally spread the values of the navigation items so that there is enough room for further items
             float pos = 0;
             int count = 0;
             String nextfolder = CmsResource.getPathPart(folder, i + 1);
             parentcount = 0;
-            for (int it = 0; it < result.size(); it++) {
+            for (CmsJspNavElement e : result) {
                 pos = 10000 * (++count);
-                CmsJspNavElement e = (CmsJspNavElement)result.get(it);
                 e.setNavPosition(pos);
                 if (e.getResourceName().startsWith(nextfolder)) {
                     parentcount = pos;
@@ -283,33 +297,33 @@ public class CmsJspNavBuilder {
      * This method builds a complete navigation tree with entries of all branches 
      * from the specified folder.<p>
      * 
-     * For an unlimited depth of the navigation (i.e. no endLevel), set the endLevel to
-     * a value &lt; 0.<p>
+     * For an unlimited depth of the navigation (i.e. no <code>endLevel</code>), 
+     * set the <code>endLevel</code> to a value &lt; 0.<p>
      * 
      * 
-     * @param cms the current CmsJspActionElement.
-     * @param folder the root folder of the navigation tree.
-     * @param endLevel the end level of the navigation.
-     * @return ArrayList of CmsJspNavElement, in depth first order.
+     * @param cms the current CMS context
+     * @param folder the root folder of the navigation tree
+     * @param endLevel the end level of the navigation
+     * 
+     * @return list of navigation elements, in depth first order
      */
-    public static List getSiteNavigation(CmsObject cms, String folder, int endLevel) {
+    public static List<CmsJspNavElement> getSiteNavigation(CmsObject cms, String folder, int endLevel) {
 
         // check if a specific end level was given, if not, build the complete navigation
         boolean noLimit = false;
         if (endLevel < 0) {
             noLimit = true;
         }
-        ArrayList list = new ArrayList();
+        List<CmsJspNavElement> list = new ArrayList<CmsJspNavElement>();
         // get the navigation for this folder
-        List curnav = getNavigationForFolder(cms, folder);
-        // loop through all nav entrys
-        for (int i = 0; i < curnav.size(); i++) {
-            CmsJspNavElement ne = (CmsJspNavElement)curnav.get(i);
-            // add the naventry to the result list
+        List<CmsJspNavElement> curnav = getNavigationForFolder(cms, folder);
+        // loop through all navigation entries
+        for (CmsJspNavElement ne : curnav) {
+            // add the navigation entry to the result list
             list.add(ne);
-            // check if naventry is a folder and below the max level -> if so, get the navigation from this folder as well
+            // check if navigation entry is a folder and below the max level -> if so, get the navigation from this folder as well
             if (ne.isFolderLink() && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
-                List subnav = getSiteNavigation(cms, ne.getResourceName(), endLevel);
+                List<CmsJspNavElement> subnav = getSiteNavigation(cms, ne.getResourceName(), endLevel);
                 // copy the result of the subfolder to the result list
                 list.addAll(subnav);
             }
@@ -318,61 +332,73 @@ public class CmsJspNavBuilder {
     }
 
     /**
-     * Build a "bread crump" path navigation to the current folder.<p>
+     * Build a "bread crumb" path navigation to the current folder.<p>
      * 
      * @return ArrayList sorted list of navigation elements
+     * 
      * @see #getNavigationBreadCrumb(String, int, int, boolean) 
      */
-    public List getNavigationBreadCrumb() {
+    public List<CmsJspNavElement> getNavigationBreadCrumb() {
 
         return getNavigationBreadCrumb(m_requestUriFolder, 0, -1, true);
     }
 
     /**
-     * Build a "bread crump" path navigation to the current folder.<p>
+     * Build a "bread crumb" path navigation to the current folder.<p>
      * 
      * @param startlevel the start level, if negative, go down |n| steps from selected folder
      * @param currentFolder include the selected folder in navigation or not
-     * @return ArrayList sorted list of navigation elements
+     * 
+     * @return sorted list of navigation elements
+     * 
      * @see #getNavigationBreadCrumb(String, int, int, boolean) 
      */
-    public List getNavigationBreadCrumb(int startlevel, boolean currentFolder) {
+    public List<CmsJspNavElement> getNavigationBreadCrumb(int startlevel, boolean currentFolder) {
 
         return getNavigationBreadCrumb(m_requestUriFolder, startlevel, -1, currentFolder);
     }
 
     /**
-     * Build a "bread crump" path navigation to the current folder.<p>
+     * Build a "bread crumb" path navigation to the current folder.<p>
      * 
      * @param startlevel the start level, if negative, go down |n| steps from selected folder
      * @param endlevel the end level, if -1, build navigation to selected folder
-     * @return ArrayList sorted list of navigation elements
+     * 
+     * @return sorted list of navigation elements
+     * 
      * @see #getNavigationBreadCrumb(String, int, int, boolean) 
      */
-    public List getNavigationBreadCrumb(int startlevel, int endlevel) {
+    public List<CmsJspNavElement> getNavigationBreadCrumb(int startlevel, int endlevel) {
 
         return getNavigationBreadCrumb(m_requestUriFolder, startlevel, endlevel, true);
     }
 
     /** 
-     * Build a "bread crump" path navigation to the given folder.<p>
+     * Build a "bread crumb" path navigation to the given folder.<p>
      * 
-     * The startlevel marks the point where the navigation starts from, if negative, 
-     * the count of steps to go down from the given folder.
-     * The endlevel is the maximum level of the navigation path, set it to -1 to build the
-     * complete navigation to the given folder.
-     * You can include the given folder in the navigation by setting currentFolder to true,
-     * otherwise false.<p> 
+     * The <code>startlevel</code> marks the point where the navigation starts from, if negative, 
+     * the count of steps to go down from the given folder.<p>
+     *  
+     * The <code>endlevel</code> is the maximum level of the navigation path, set it to -1 to build the
+     * complete navigation to the given folder.<p>
+     * 
+     * You can include the given folder in the navigation by setting <code>currentFolder</code> to 
+     * <code>true</code>, otherwise <code>false</code>.<p> 
      * 
      * @param folder the selected folder
      * @param startlevel the start level, if negative, go down |n| steps from selected folder
      * @param endlevel the end level, if -1, build navigation to selected folder
      * @param currentFolder include the selected folder in navigation or not
-     * @return ArrayList sorted list of navigation elements
+     * 
+     * @return sorted list of navigation elements
      */
-    public List getNavigationBreadCrumb(String folder, int startlevel, int endlevel, boolean currentFolder) {
+    public List<CmsJspNavElement> getNavigationBreadCrumb(
+        String folder,
+        int startlevel,
+        int endlevel,
+        boolean currentFolder) {
 
-        ArrayList result = new ArrayList();
+        List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
 
         int level = CmsResource.getPathLevel(folder);
         // decrease folder level if current folder is not displayed
@@ -404,12 +430,11 @@ public class CmsJspNavBuilder {
     }
 
     /**
-     * Collect all navigation elements from the files of the folder of the current request URI,
-     * navigation elements are of class CmsJspNavElement.<p>
+     * Collect all navigation elements from the files of the folder of the current request URI.<p>
      *
-     * @return a sorted (ascending to nav position) ArrayList of navigation elements.
+     * @return a sorted (ascending to navigation position) list of navigation elements.
      */
-    public List getNavigationForFolder() {
+    public List<CmsJspNavElement> getNavigationForFolder() {
 
         return getNavigationForFolder(m_cms, m_requestUriFolder);
     }
@@ -422,22 +447,22 @@ public class CmsJspNavBuilder {
      * If level is set to zero the root folder is used by convention.<p>
      * 
      * @param level if negative, walk this many levels up, if positive, walk this many 
-     * levels down from root folder 
-     * @return a sorted (ascending to nav position) ArrayList of navigation elements
+     *                  levels down from root folder 
+     * @return a sorted (ascending to navigation position) list of navigation elements
      */
-    public List getNavigationForFolder(int level) {
+    public List<CmsJspNavElement> getNavigationForFolder(int level) {
 
         return getNavigationForFolder(m_cms, m_requestUriFolder, level);
     }
 
     /**
-     * Collect all navigation elements from the files in the given folder,
-     * navigation elements are of class CmsJspNavElement.<p>
+     * Collect all navigation elements from the files in the given folder.<p>
      *
      * @param folder the selected folder
-     * @return A sorted (ascending to nav position) ArrayList of navigation elements.
+     * 
+     * @return A sorted (ascending to navigation position) list of navigation elements
      */
-    public List getNavigationForFolder(String folder) {
+    public List<CmsJspNavElement> getNavigationForFolder(String folder) {
 
         return getNavigationForFolder(m_cms, folder);
     }
@@ -451,18 +476,19 @@ public class CmsJspNavBuilder {
      * 
      * @param folder the selected folder
      * @param level if negative, walk this many levels up, if positive, walk this many 
-     * levels down from root folder 
-     * @return a sorted (ascending to nav position) ArrayList of navigation elements
+     *                  levels down from root folder 
+     *                  
+     * @return a sorted (ascending to navigation position) list of navigation elements
      */
-    public List getNavigationForFolder(String folder, int level) {
+    public List<CmsJspNavElement> getNavigationForFolder(String folder, int level) {
 
         return getNavigationForFolder(m_cms, folder, level);
     }
 
     /**
-     * Returns a CmsJspNavElement for the resource of the current request URI.<p>
+     * Returns a navigation element for the resource of the current request URI.<p>
      *  
-     * @return CmsJspNavElement a CmsJspNavElement for the resource of the current request URI
+     * @return a navigation element for the resource of the current request URI
      */
     public CmsJspNavElement getNavigationForResource() {
 
@@ -470,11 +496,12 @@ public class CmsJspNavBuilder {
     }
 
     /**
-     * Returns a CmsJspNavElement for the named resource.<p>
+     * Returns a navigation element for the named resource.<p>
      * 
-     * @param resource the resource name to get the nav information for, 
-     * must be a full path name, e.g. "/docs/index.html".
-     * @return CmsJspNavElement a CmsJspNavElement for the given resource
+     * @param resource the resource name to get the navigation information for, 
+     *              must be a full path name, e.g. "/docs/index.html"
+     *              
+     * @return a navigation element for the given resource
      */
     public CmsJspNavElement getNavigationForResource(String resource) {
 
@@ -486,10 +513,12 @@ public class CmsJspNavBuilder {
      * 
      * @param startlevel the start level
      * @param endlevel the end level
-     * @return a sorted list of nav elements with the nav tree level property set 
+     * 
+     * @return a sorted list of navigation elements with the navigation tree level property set
+     *  
      * @see #getNavigationTreeForFolder(CmsObject, String, int, int)
      */
-    public List getNavigationTreeForFolder(int startlevel, int endlevel) {
+    public List<CmsJspNavElement> getNavigationTreeForFolder(int startlevel, int endlevel) {
 
         return getNavigationTreeForFolder(m_cms, m_requestUriFolder, startlevel, endlevel);
     }
@@ -500,10 +529,12 @@ public class CmsJspNavBuilder {
      * @param folder the selected folder
      * @param startlevel the start level
      * @param endlevel the end level
-     * @return a sorted list of nav elements with the nav tree level property set 
+     * 
+     * @return a sorted list of navigation elements with the navigation tree level property set
+     *  
      * @see #getNavigationTreeForFolder(CmsObject, String, int, int) 
      */
-    public List getNavigationTreeForFolder(String folder, int startlevel, int endlevel) {
+    public List<CmsJspNavElement> getNavigationTreeForFolder(String folder, int startlevel, int endlevel) {
 
         return getNavigationTreeForFolder(m_cms, folder, startlevel, endlevel);
     }
@@ -513,9 +544,9 @@ public class CmsJspNavBuilder {
      *
      * @see #getSiteNavigation(CmsObject, String, int)
      * 
-     * @return ArrayList of CmsJspNavElement, in depth first order.
+     * @return list of navigation elements, in depth first order
      */
-    public List getSiteNavigation() {
+    public List<CmsJspNavElement> getSiteNavigation() {
 
         return getSiteNavigation(m_cms, "/", -1);
     }
@@ -524,19 +555,20 @@ public class CmsJspNavBuilder {
      * This method builds a complete navigation tree with entries of all branches 
      * from the specified folder.<p>
      * 
-     * @see #getSiteNavigation(CmsObject, String, int)
+     * @param folder folder the root folder of the navigation tree
+     * @param endLevel the end level of the navigation
      * 
-     * @param folder folder the root folder of the navigation tree.
-     * @param endLevel the end level of the navigation.
-     * @return ArrayList of CmsJspNavElement, in depth first order.
+     * @return list of navigation elements, in depth first order
+     * 
+     * @see #getSiteNavigation(CmsObject, String, int)
      */
-    public List getSiteNavigation(String folder, int endLevel) {
+    public List<CmsJspNavElement> getSiteNavigation(String folder, int endLevel) {
 
         return getSiteNavigation(m_cms, folder, endLevel);
     }
 
     /**
-     * Initiliazes this bean.<p>
+     * Initializes this bean.<p>
      * 
      * @param cms context provider for the current request
      */
