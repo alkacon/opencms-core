@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2009/09/14 11:45:33 $
- * Version: $Revision: 1.20.2.2 $
+ * Date   : $Date: 2009/11/25 15:24:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,9 +45,11 @@ import java.util.Map;
  * You can use this information to generate a HTML navigation for 
  * files in the VFS in your template.<p>
  *
+ * Note: this class has a natural ordering that is inconsistent with equals.<p>
+ * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -111,6 +113,8 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     }
 
     /**
+     * Note: this class has a natural ordering that is inconsistent with equals.<p>
+     * 
      * @see java.lang.Comparable#compareTo(Object)
      */
     public int compareTo(CmsJspNavElement obj) {
@@ -127,6 +131,8 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     }
 
     /**
+     * Note: this class has a natural ordering that is inconsistent with equals.<p>
+     * 
      * @see java.lang.Object#equals(Object)
      */
     @Override
@@ -320,12 +326,14 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     }
 
     /**
+     * Note: this class has a natural ordering that is inconsistent with equals.<p>
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
 
-        return super.hashCode();
+        return m_resource.hashCode();
     }
 
     /**
