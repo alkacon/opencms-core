@@ -21,7 +21,14 @@
 		height:440px;
 		width:650px;
         background: #f9f9f9;
+        padding: 0px;
+        margin: 0px;
 	}
+    
+    #cms-gallery-tabs .ui-tabs-nav{
+        background: #BFBFBF;
+        border-bottom: 1px solid #AAAAAA;
+    }
     
     #cms-gallery-tabs li.ui-state-active{
         background: #f9f9f9;

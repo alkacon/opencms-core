@@ -738,7 +738,7 @@ div.cms-menu {
 }
 
 div.cms-menu div.cms-menu-content,div.cms-menu div.cms-menu-connect {
-	background: #AACCFF;
+	background: #F9F9F9;
 }
 
 div.cms-menu div.cms-menu-content div.ui-widget-content {
@@ -865,7 +865,10 @@ li.jTreePlacement, li.jTreePlaceholder {
 	margin-bottom: 7px;
     position: relative;
 }
-
+.cms-scrolling.ui-corner-all{
+    border:1px solid #AAAAAA;
+    background: #ffffff;
+}
 .cms-scrolling ul.cms-scrolling-inner {
 	margin: 0px;
 }
@@ -902,7 +905,7 @@ li.jTreePlacement, li.jTreePlaceholder {
 }
 
 .cms-menu .connect {
-	background: #AACCFF;
+	background: #F9F9F9;
 	position: absolute;
 	left: 0px;
 	top: -35px;

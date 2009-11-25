@@ -306,7 +306,10 @@
         },
         selected: 1
       });
-                  
+      
+      // removing ui-widget-header and ui-corner-all from ui-tabs-nav for layout reasons
+      $('#' + cms.galleries.idGalleriesMain + ' .ui-tabs-nav').removeClass('ui-widget-header').removeClass('ui-corner-all');
+               
       // bind all other events at the end          
       // bind click, dbclick events on items in criteria lists
       $('#types li.cms-list, #galleries li.cms-list, #categories li.cms-list')
@@ -417,7 +420,7 @@
       }     
       // open the preselected tab
       $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);
-           
+      
    }
    
    
@@ -428,7 +431,7 @@
                  $('li[alt=' + path + ']').addClass(cms.galleries.classListItemActive);
              });
        }
-   }   
+   }
    
    /**
     * Handle different states of the search object, so the search is consistent.
@@ -439,12 +442,12 @@
        // add the available types to the search object used for next search, 
        // if the criteria for types and galleries are empty
        if (cms.galleries.searchObject['galleries'].length == 0 &&              
-              cms.galleries.searchObject['types'].length == 0){                      
+              cms.galleries.searchObject['types'].length == 0){           
            return $.extend(preparedSearchObject, cms.galleries.searchObject, types);
        // just use the unchanged search object                                 
        }  else {
            return  cms.galleries.searchObject;
-       }
+       } 
    }
    
    /**
