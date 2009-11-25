@@ -943,6 +943,28 @@
       }
    }
    
+   var leavePage = cms.toolbar.leavePage = function(target){
+       if (cms.toolbar.pageChanged) {
+           cms.toolbar.pageChanged = false;
+           cms.data.stopEdit(function(ok) {
+               window.location.href = target;
+           }, true);
+       }else{
+           window.location.href = target;
+       }
+   }
+   
+   var reloadPage = cms.toolbar.reloadPage = function(){
+       if (cms.toolbar.pageChanged) {
+           cms.toolbar.pageChanged = false;
+           cms.data.stopEdit(function(ok) {
+               window.location.reload();
+           }, true);
+       }else{
+           window.location.reload();
+       }
+   }
+   
    /**
     * On-unload event-handler to prevent accidental data-loss.<p>
     */
@@ -996,15 +1018,14 @@
             $(this).dialog('destroy');
             savePage(function(ok) {
                if (ok) {
-                  window.location.href = target;
+                  leavePage(target);
                }
             });
          };
          
          buttons[M.LEAVE_PAGE_OK] = function() {
             $(this).dialog('destroy');
-            setPageChanged(false);
-            window.location.href = target;
+            leavePage(target);
          };
          
          buttons[M.LEAVE_PAGE_CANCEL] = function() {
@@ -1481,8 +1502,8 @@
             var buttons = {};
             buttons[M.RESET_OK] = function() {
                $(this).dialog('destroy');
-               setPageChanged(false);
-               window.location.reload();
+               reloadPage();
+               
             }
             
             buttons[M.RESET_CANCEL] = function() {
