@@ -107,10 +107,40 @@
       return result;
    }
    
+   $(function() {
+      $('.' + classRemoveButton).liveData('click', 'click');
+      $('.' + classPublishRow).live('mouseover', function() {
+         $(this).find('.' + classRemoveButton).show();
+      });
+      $('.' + classPublishRow).live('mouseout', function() {
+         $(this).find('.' + classRemoveButton).hide();
+      });
+      $('.' + classRemoveButton).live('click', function() {
+         var $row = $(this).closest('.'+classPublishRow);
+         var $removeButton = $(this);
+         var checkbox = cms.util.Checkbox.getCheckboxes($row)[0];
+         var isRemove = $removeButton.hasClass('cms-icon-publish-remove');
+         $row.chooseClass(isRemove, classToRemove, classKeep);
+         $removeButton.chooseClass(isRemove, 'cms-icon-publish-unremove', 'cms-icon-publish-remove');
+         if (isRemove) {
+            checkbox.setEnabled(false);
+            checkbox.setChecked(false);
+            $removeButton.attr('title', 'Unremove');
+         } else {
+            $removeButton.attr('title', 'Remove')
+            if (!$row.hasClass('cms-has-info')) {
+               checkbox.setEnabled(true);
+            }
+         }
+      });
+   });
+   
    var PublishDialog = cms.publish.PublishDialog = function(project) {
       this.project = project ? project : '';
       this.checkboxes = [];
    }
+   
+   
    
    PublishDialog.prototype = {
       setData: function(data) {
@@ -137,6 +167,8 @@
                
                   if (ok) {
                      self.goToMainState(data.groups);
+                  } else {
+                     self.destroy();
                   }
                });
             }
@@ -260,8 +292,10 @@
             self.updateData(relatedCheckbox.getChecked(), siblingsCheckbox.getChecked(), self.project);
          }
          
-         relatedCheckbox.$dom.click(_updateState);
-         siblingsCheckbox.$dom.click(_updateState);
+         // since the checkbox click handlers are live events, just binding _updateState as a click
+         // handler would not work because it would be executed before the live event was triggered.
+         relatedCheckbox.$dom.click(cms.util.defer(_updateState));
+         siblingsCheckbox.$dom.click(cms.util.defer(_updateState));
          
          
          this.$bottomPanel = $('<div></div>').appendTo($dlg).css({
@@ -285,8 +319,6 @@
             var $problemDiv = $('<div/>').text(cms.util.format('There are {0} resources with problems in the publish list.', "" + self.problemCount)).css('margin-bottom', '10px').insertAfter($scrollPanel);
             $('<span class="cms-publish-warning/>').css('float', 'left').css('margin-right', '10px').prependTo($problemDiv);
          }
-         
-         //$('#publish-related, #publish-siblings', $dlg).customInput();
          self.restoreState();
       },
       
@@ -331,7 +363,7 @@
             $row.css('margin-left', '60px');
          }
          if (!resource.title) {
-            $row.find('.cms-list-title').text('[no title]');
+            $row.find('.cms-list-title').append($('<span/>').text('[no title]'));
          }
          if (resource.info) {
             $('<span></span>').addClass('cms-publish-warning').css({
@@ -368,28 +400,13 @@
             $removeButton.addClass('cms-icon-publish-remove');
             
             var removeButtonState = 0;
-            $removeButton.attr('title', 'Remove')
-            $removeButton.click(function() {
-               $row.chooseClass(removeButtonState == 0, classToRemove, classKeep);
-               $removeButton.chooseClass(removeButtonState == 0, 'cms-icon-publish-unremove', 'cms-icon-publish-remove');
-               if (removeButtonState == 0) {
-                  checkbox.setEnabled(false);
-                  checkbox.setChecked(false);
-                  $removeButton.attr('title', 'Unremove');
-               } else {
-                  $removeButton.attr('title', 'Remove')
-                  if (!resource.info) {
-                     checkbox.setEnabled(true);
-                  }
-               }
-               removeButtonState = 1 - removeButtonState;
-               $removeButton.chooseClass(removeButtonState == 0, 'cms-icon-publish-remove', 'cms-icon-publish-unremove');
-            });
-            
+            $removeButton.attr('title', 'Remove');
+            if (resource.info) {
+               $row.addClass('cms-has-info');
+            }
             if (resource.removable && !self.project) {
                $row.find('.cms-list-itemcontent').prepend($removeButton);
             }
-            $row.hoverSetVisible($removeButton);
          }
          if (resource.related) {
             var related = resource.related;
@@ -626,7 +643,7 @@
       if ((project != null) && (project != '')) {
          params.project = project;
       }
-      postJSON('publish_list', params, callback, false, 120000)
+      postJSON('publish_list', params, callback, false, 240000)
    }
    
    /**
@@ -639,7 +656,7 @@
          'remove-resources': removeResources,
          'force': force
       }
-      postJSON('publish', params, callback, false, 120000);
+      postJSON('publish', params, callback, false, 240000);
    }
    
    var getProjects = function(callback) {

@@ -399,7 +399,7 @@
    }
    
    /**
-    * Convert an event callback expecting its argument in the "this" variable to a function taking a normal parameter 
+    * Convert an event callback expecting its argument in the "this" variable to a function taking a normal parameter
     * @param {Object} fn the function to convert
     */
    var targetToParam = cms.util.targetToParam = function(fn) {
@@ -460,6 +460,80 @@
       });
    }
    
+   $.fn.addData = function(key, value) {
+      return this.each(function() {
+         $(this).data(key, value).addClass('has-data-' + key);
+      });
+   }
+   
+   
+   /**
+    * Function which returns the matched element's associated data, and sets it to an empty array if there isn't already
+    * associated data.
+    *
+    * @param {Object} key
+    */
+   $.fn.dataList = function(key) {
+      var data = this.data(key);
+      if (!data) {
+         data = [];
+         this.data(key, data);
+      }
+      return data;
+   }
+   
+   /**
+    * Installs a generic jQuery live event handler which takes the real handler from the event target's associated data.
+    * @param {Object} eventType the event type string
+    * @param {Object} key the key which should be used to retrieve the real event handler(s).
+    */
+   $.fn.liveData = function(eventType, key) {
+      this.live(eventType, function() {
+         var data = $(this).data(key);
+         if (typeof data == 'function') {
+            return fn.call(this);
+         } else if (typeof data == 'object' && data.constructor == Array) {
+            var b = true;
+            for (var i = 0; i < data.length; i++) {
+               b = data[i].call(this);
+               if (!b) {
+                  return false;
+               }
+            }
+            return b;
+         }
+      });
+   }
+   
+   /**
+    * Converts a function to a "deferred" function that executes the original function as a timeout.
+    * 
+    * This can be used to create an event handler that is executed after other live event handlers.
+    * @param {Object} fn the function to convert
+    */
+   var defer = cms.util.defer = function(fn) {
+      return function() {
+         var original = this;
+         window.setTimeout(function() {
+            fn.call(original)
+         }, 0);
+      }
+   }
+   
+   $(function() {
+      $('.cms-Checkbox').live('click', function() {
+         var checkbox = $(this).data('cms-Checkbox');
+         checkbox.setCheckedIfEnabled(!checkbox.checked);
+      });
+      $('.cms-Checkbox').live('mouseover', function() {
+         $(this).chooseClass(true, 'cms-checkbox-hover', 'cms-checkbox-nohover');
+      });
+      $('.cms-Checkbox').live('mouseout', function() {
+         $(this).chooseClass(false, 'cms-checkbox-hover', 'cms-checkbox-nohover');
+      });
+      
+   });
+   
    /**
     * Checkbox constructor function.
     * @param {Object} $dom the DOM element to use for the checkbox
@@ -469,12 +543,6 @@
          $dom = $('<div/>');
       }
       var self = this;
-      $dom.click(function() {
-         self.setCheckedIfEnabled(!self.checked);
-      });
-      $dom.hoverBoolean(function(hover) {
-         $(this).chooseClass(hover, 'cms-checkbox-hover', 'cms-checkbox-nohover');
-      })
       self.$dom = $dom.css('cursor', 'pointer').addClass('cms-Checkbox').height(20).width(24);
       self.$dom.data('cms-Checkbox', self);
       self.setChecked(false);
@@ -512,6 +580,9 @@
    Checkbox.getUncheckedCheckboxes = function(context) {
       return _getCheckboxes($('.cms-checkbox-unchecked', context));
    }
+   
+   
+   
    
    
    
@@ -556,6 +627,10 @@
        */
       getChecked: function() {
          return this.checked;
+      },
+      
+      addClickHandler: function(handler) {
+         this.$dom.dataList('click').push(handler);
       }
    }
    
