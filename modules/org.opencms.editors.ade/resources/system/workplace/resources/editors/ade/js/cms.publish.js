@@ -108,7 +108,6 @@
    }
    
    $(function() {
-      $('.' + classRemoveButton).liveData('click', 'click');
       $('.' + classPublishRow).live('mouseover', function() {
          $(this).find('.' + classRemoveButton).show();
       });
