@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/Messages.java,v $
- * Date   : $Date: 2009/11/09 14:58:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/25 15:26:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SITEMAP_1 = "ERR_SITEMAP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SITEMAP_HANDLER_INSTANTIATION_0 = "ERR_SITEMAP_HANDLER_INSTANTIATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_CACHE_MATCHED_OFFLINE_2 = "LOG_DEBUG_CACHE_MATCHED_OFFLINE_2";
@@ -77,6 +80,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SITEMAP_NOT_FOUND_1 = "LOG_SITEMAP_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_SITEMAP_HANDLER_NOT_CONFIGURED_1 = "LOG_WARN_SITEMAP_HANDLER_NOT_CONFIGURED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WARN_UNCACHE_NULL_0 = "LOG_WARN_UNCACHE_NULL_0";
