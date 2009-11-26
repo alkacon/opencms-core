@@ -60,7 +60,7 @@
                //TODO: 
                var itemType = '';
                var itemId = $(this).closest('#cms-preview').attr('alt');              
-               cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.dialogMode](itemId, cms.galleries.fieldId);          
+               cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);          
            });
        }           
                  
@@ -159,10 +159,10 @@
        if ( fieldId != null && fieldId != "") {
 		var imgField = window.opener.document.getElementById(fieldId);
 		imgField.value = itemId;
-		//try {
+		try {
 			// toggle preview icon if possible
-		//	window.opener.checkPreview(fieldid);
-		//} catch (e) {}
+			window.opener.checkPreview(fieldid);
+		} catch (e) {}
 	}
 	window.close();
        //alert($(item).closest('li').attr('alt') +", " + fieldId );       

@@ -25,8 +25,8 @@ var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
     var vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
 	// read and handle the request params
     var requestData = ${(not empty param.data) ? param.data : 'null'};
-    cms.galleries.dialogMode = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
-    cms.galleries.fieldId = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
+    cms.galleries.initValues['dialogMode'] = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
+    cms.galleries.initValues['fieldId'] = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
     $(function() {        
         cms.galleries.initAddDialog(requestData);                                 
 	});

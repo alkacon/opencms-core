@@ -23,11 +23,29 @@
        'tabs-fulltextsearch':4
    };
    
-   /** The current mode of the dialog. It can be 'widget','editor','ade', 'sitemap' or 'view'. */
-   var dialogMode = cms.galleries.dialogMode = null;
    
-   /** The field id of the input field inside of the xmlcontent. */
-   var fieldId = cms.galleries.fieldId = null;
+   //var dialogMode = cms.galleries.dialogMode = null;
+   
+   
+   //var fieldId = cms.galleries.fieldId = null;
+   
+   /** 
+    * dialogMode: The current mode of the dialog. It can be 'widget','editor','ade', 'sitemap' or 'view'.
+    * fieldId: The field id of the input field inside of the xmlcontent. 
+    */
+   var initValues = cms.galleries.initValues = {
+       'dialogMode': null,
+       'fieldId'   : null
+   };
+   
+   /** 
+    * dialogMode: The current mode of the dialog. It can be 'widget','editor','ade', 'sitemap' or 'view'.
+    * fieldId: The field id of the input field inside of the xmlcontent. 
+    */
+   var activeItem = cms.galleries.activeItem = {
+       'path': '',
+       'isInitial': true       
+   };
    
    /** html-class for the inner of the scrolled list with items. */
    var classScrollingInner = cms.galleries.classScrollingInner = 'cms-list-scrolling-innner';
@@ -65,7 +83,7 @@
       galleries: [],
       categories: [],
       query: '',
-      tabid: 1,
+      tabid: 2,
       page: 1,
       searchfields: '',
       matchesperpage: 8,
@@ -186,8 +204,10 @@
     */
    var initAddDialog = cms.galleries.initAddDialog = function(requestData) {
       // handle the request parameter and initialize the search object
-      var initTabId = cms.galleries.arrayOfTabIds['tabs-types'];
-      if (requestData) {
+      // TODO: remove if not used
+      //var initTabId = cms.galleries.arrayOfTabIds['tabs-types']; 
+      cms.galleries.setSearchObject(requestData);
+      /*if (requestData) {
           if (requestData.querydata) {
               if (requestData.querydata.galleries) {
                   cms.galleries.searchObject['galleries'] = requestData.querydata.galleries;
@@ -209,6 +229,24 @@
                   cms.galleries.searchObject['tabid'] = requestData.querydata.tabid;                 
               }
           }                        
+      }*/
+      
+      // if a resource is selected, save the selected gallery to the search obejct 
+      var test =  cms.galleries.initValues['fieldId'];
+      if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null'){          
+          var itemField = window.opener.document.getElementById(cms.galleries.initValues['fieldId']);
+	      if (itemField.value != null && itemField.value != "") {
+                cms.galleries.activeItem['path'] = itemField.value;
+                cms.galleries.activeItem['isInitial'] = true;
+    		    //cms.galleries.loadSearchObjectForActiveItem(itemField.value);
+                // reset the values of the search object
+                cms.galleries.searchObject['galleries'] = [];
+                cms.galleries.searchObject['categories'] = [];        
+                cms.galleries.searchObject['types'] = [];
+                cms.galleries.searchObject['query'] = '';
+                cms.galleries.searchObject['tabid'] = 0;
+                cms.galleries.searchObject['galleries'].push('/demo_en/extra/extranet/documents/');
+    	  }          
       }
       
       // init tabs for add dialog
@@ -320,6 +358,7 @@
           .live('click', cms.galleries.clickListItem);
       // bind dbclick event to the items in the result list
       $('#results li.cms-list').live('dblclick', cms.galleries.dblclickToShowPreview);
+      $('#results li.cms-list').live('click', cms.galleries.clickResultItem);      
           
       // bind hover event on items in criteria and result lists
       $('li.cms-list')
@@ -358,7 +397,7 @@
       $('.cms-handle-button.cms-select-item').live('click',function(e){        
           var itemType = $(this).closest('li').data('type');
           var itemId = $(this).closest('li').attr('alt');
-          cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.dialogMode](itemId, cms.galleries.fieldId);
+          cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
           // avoid event propagation to the surround 'li'
           e.stopPropagation();                    
       });
@@ -408,7 +447,7 @@
     *
     * @param {Object} JSON map object
     */
-   var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function(/**JSON*/data) {
+   var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function(/**JSON*/data) {       
       cms.galleries.searchCriteriaListsAsJSON = data;
       if (cms.galleries.searchCriteriaListsAsJSON.galleries) {
          cms.galleries.fillGalleries(cms.galleries.searchCriteriaListsAsJSON.galleries);
@@ -424,6 +463,15 @@
       }     
       // open the preselected tab
       $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);
+      
+      // if a resource is selected open the preview 
+      /*if (cms.galleries.initValues['fieldId']){
+          var itemField = window.opener.document.getElementById(cms.galleries.initValues['fieldId']);
+	      if (itemField.value != null && itemField.value != "") {
+              alert('3 ' + itemField.value);
+    		    $('#results li.cms-list[alt="' + itemField.value + '"]').trigger('dblclick');
+    	  }          
+      }*/
            
    }
    
@@ -448,8 +496,24 @@
        if (cms.galleries.searchObject['galleries'].length == 0 &&              
               cms.galleries.searchObject['types'].length == 0){                      
            return $.extend(preparedSearchObject, cms.galleries.searchObject, types);
-       // just use the unchanged search object                                 
-       }  else {
+       // find out the resource types for selected galleries                                  
+       /*}  else if (cms.galleries.searchObject['galleries'].length == 0 && cms.galleries.searchObject['types'].length > 0) {
+               // TODO : finish check of the types for galleries:
+               
+              var contentTypes = [];
+               var selectedGalleries = cms.galleries.searchObject['galleries']
+              // var typeObjects = cms.galleries.searchCriteriaListsAsJSON['types'];  
+               // at least one type is selected
+               if (selectedGalleries.length > 0) {
+                   var availableTypes = cms.galleries.searchCriteriaListsAsJSON['types'];
+                   for (i = 0; i < availableTypes.length; i++) {           
+                       if ($.inArray(availableTypes[i]['typeid'].toString(), selectedGalleries) != -1) {
+                           galleryTypes = galleryTypes.concat(availableTypes[i]['gallerytypeid']);    
+                       }           
+                   }*/
+                     
+       // just use the unchanged search object      
+       } else {
            return  cms.galleries.searchObject;
        }
    }
@@ -476,6 +540,8 @@
          'success': cms.galleries.fillResultList
       });
    }
+   
+   
    
    var fillResultList = cms.galleries.fillResultList = function(/**JSON*/data) {
       // remove old list with search results and pagination
@@ -539,7 +605,7 @@
     * Returns true, if the select button should be displayed.
     */
    var displaySelectButton = cms.galleries.displaySelectButton = function () {      
-      if (cms.galleries.dialogMode == 'widget' || cms.galleries.dialogMode == 'editor'){
+      if (cms.galleries.initValues['dialogMode'] == 'widget' || cms.galleries.initValues['dialogMode'] == 'editor'){
           return true;
       }
       return false;
@@ -560,8 +626,77 @@
              resultElement.attr('rel', this.clientid);
              resultElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
          }
-      });           
+      });          
+      
+      // if a resource is selected open the preview     
+      if (cms.galleries.activeItem['path'] != null && cms.galleries.activeItem['path'] != "" ){
+          $('#results li.cms-list[alt=' + cms.galleries.activeItem['path'] + ']').trigger('click');              	                    
+          if (cms.galleries.activeItem['isInitial'] == true) {
+              $('#results li.cms-list[alt=' + cms.galleries.activeItem['path'] + ']').trigger('dblclick');
+              cms.galleries.activeItem['isInitial'] = false;
+          }
+              	          
+      } 
    }
+   
+  /**
+   * Update the search object according to the given resource path.
+   *  
+   * @param {Object} path to the selected item in the result list
+   */
+   var loadSearchObjectForActiveItem = cms.galleries.loadSearchObjectForActiveItem = function(/**String*/ path) {     
+      
+      $.ajax({
+         'url': vfsPathAjaxJsp,
+         'data': {
+            'action': 'search',
+            'data': JSON.stringify({
+               'querydata': {'path': path}
+            })
+         },
+         'type': 'POST',
+         'dataType': 'json',
+         'success': cms.galleries.setSearchobject
+      });
+   }
+   
+       /**
+     * Sets the values of the search object.
+     * The parameter should look like: {'qeurydata': {'galleries':...,}', 'tabid':..,}
+     * @param {Object} requestData a JSON object with search object data 
+     */
+    var setSearchObject = cms.galleries.setSearchObject = function(/**JSON object*/requestData) {
+        // reset the values of the search object
+        cms.galleries.searchObject['galleries'] = [];
+        cms.galleries.searchObject['categories'] = [];        
+        cms.galleries.searchObject['types'] = [];
+        cms.galleries.searchObject['query'] = '';
+        cms.galleries.searchObject['tabid'] = 2;
+        
+        if (requestData) {
+            if (requestData.querydata) {
+                if (requestData.querydata.galleries) {
+                    cms.galleries.searchObject['galleries'] = requestData.querydata.galleries;
+                    cms.galleries.searchObject.isChanged.galleries = true;
+                }
+                if (requestData.querydata.categories) {
+                    cms.galleries.searchObject['categories'] = requestData.querydata.categories;
+                    cms.galleries.searchObject.isChanged.categories = true;
+                }
+                if (requestData.querydata.types) {
+                    cms.galleries.configContentTypes = requestData.querydata.types;
+                    cms.galleries.searchObject.isChanged.types = true;
+                }
+                if (requestData.querydata.query) {
+                    cms.galleries.searchObject['query'] = requestData.querydata.query;
+                    cms.galleries.searchObject.isChanged.query = true;
+                }
+                if (requestData.querydata.tabid) {
+                    cms.galleries.searchObject['tabid'] = requestData.querydata.tabid;
+                }
+            }
+        }
+    }
    
    /**
     * Fills the list in the search criteria tabs.
@@ -631,8 +766,10 @@
    var fillGalleries = cms.galleries.fillGalleries = function(/**JSON*/galleries) {
       // add the galleries to the list
       for (var i = 0; i < galleries.length; i++) {                  
-         $(galleries[i].itemhtml).appendTo('#galleries > ul')
-             .attr('alt', galleries[i].path).addClass('cms-list-with-checkbox')            
+         $(galleries[i].itemhtml)
+             .appendTo('#galleries > ul')
+             .attr('alt', galleries[i].path)
+             .addClass('cms-list-with-checkbox')            
              .prepend('<div class="cms-list-checkbox"></div>');         
       }
       // set isChanged flag, so the search will be send to server
@@ -939,11 +1076,25 @@
       return sortedArray;
    }
    
+   /**
+    * Callback function for click event on the item in the result list.
+    */
+   var clickResultItem = cms.galleries.clickResultItem = function () {       
+       var isSelected = $(this).hasClass('cms-list-item-active');
+       // deselect selected items
+       $('#results li').toggleClass('cms-list-item-active', false);
+       if (isSelected) {
+           $(this).toggleClass('cms-list-item-active', false);             
+       } else {
+           $(this).toggleClass('cms-list-item-active', true);
+       }
+   }
+   
   /** 
    * Callback function for dbclick event on the item in the result list.
    * 
    */
-  var dblclickToShowPreview = cms.galleries.dblclickToShowPreview = function() {
+  var dblclickToShowPreview = cms.galleries.dblclickToShowPreview = function() {      
       // retrieve the resource id
       var itemId = $(this).attr('alt');
       
@@ -954,6 +1105,10 @@
       // retrieve the resource type and load the preview      
       var itemType = $(this).data('type');
       loadItemPreview(itemId, itemType);
+      
+      //deselect items in the list and set active class to the item which was dblclicked
+      $('#result li.list-item').toggleClass('cms-list-item-active', false);
+      $(this).toggleClass('cms-list-item-active', true);
       
       
       // work around to prevent double loading for just opened preview
@@ -991,11 +1146,7 @@
          'success': cms.galleries.getContentHandler(itemType)['init']
       });
     } 
-    
-    var setParamter = function () {
-        return '';
-    }    
-  
+ 
         
     /**
      * Adds a new specific content handler for thr specified resource type.

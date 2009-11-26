@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2009/11/24 16:50:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/26 16:34:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,9 +66,18 @@ function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
     } else if (startupFolders != null){        
         queryData['querydata'][searchKeys[startupType]] =  startupFolders;
     }
-        		
+    
+    var itemFieldvalue = null;
+    if (fieldId != null && fieldId != "" && fieldId != 'null') {
+        var itemField = window.opener.document.getElementById(fieldId);
+        if (itemField.value != null && itemField.value != '') {
+              itemFieldvalue = itemField.value;  
+        }            
+    }
+            		
 	var paramString = "dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
+    paramString += "&path=" + itemFieldvalue;
 	paramString += "&data=" + JSON.stringify(queryData);
 	treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString , "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=680,height=520');
 }
@@ -78,6 +87,6 @@ function previewDefault(fieldId) {
 	var downUri = document.getElementById(fieldId).value;
 	downUri = downUri.replace(/ /, "");
 	if ((downUri != "") && (downUri.charAt(0) == "/")) {
-		treewin = window.open(contextPath + downUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=750,height=500');
+		treewin = window.open(contextPath + downUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=680,height=520');
 	}
 }
