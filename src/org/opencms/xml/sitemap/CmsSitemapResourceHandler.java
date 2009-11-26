@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2009/11/25 15:26:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/26 11:37:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.2
  */
@@ -132,10 +132,6 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
      */
     public void cmsEvent(CmsEvent event) {
 
-        if (m_missingUrisOffline == null) {
-            init();
-        }
-
         CmsResource resource = null;
         List<CmsResource> resources = null;
 
@@ -195,6 +191,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
     public CmsSiteEntryBean getUri(CmsObject cms, String uri) throws CmsException {
 
         String path = normalizePath(cms.getRequestContext().addSiteRoot(uri));
+
         // check the cache
         CmsSiteEntryBean uriEntry = null;
         boolean online = cms.getRequestContext().currentProject().isOnlineProject();
@@ -207,6 +204,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
             // found in cache
             return uriEntry;
         }
+
         // check the missed cache
         Boolean missing = null;
         if (online) {
@@ -220,7 +218,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
         }
 
         // get it
-        String extension = uri.substring(uri.length() - 1 - CmsFileUtil.getExtension(uri).length());
+        String extension = uri.substring(uri.length() - CmsFileUtil.getExtension(uri).length());
         String uriNoExt = uri.substring(0, uri.length() - extension.length());
         uriEntry = getEntry(cms, uriNoExt, online);
         // match the extension 
@@ -239,6 +237,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
             }
             return null;
         }
+
         // cache the found entry
         if (online) {
             m_urisOnline.put(path, uriEntry);
@@ -314,6 +313,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
         // only do something if the resource was not found good
         if (resource == null) {
             if (m_missingUrisOffline == null) {
+                // TODO: find a better way to initialize
                 init();
             }
             // check if the resource is in the site map
@@ -375,8 +375,11 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
      */
     protected CmsSiteEntryBean getEntry(CmsObject cms, String uri, boolean online) throws CmsException {
 
-        // find the resource
-        CmsSitemapBean sitemap = getSitemap(cms, cms.getRequestContext().getSiteRoot(), online);
+        // find the root sitemap, at the root folder of the site
+        CmsSitemapBean sitemap = getSitemap(cms, "/", online);
+        if (sitemap == null) {
+            return null;
+        }
         // normalize the uri
         String sitePath = normalizePath(uri);
         LinkedList<String> entryPaths = new LinkedList<String>(CmsStringUtil.splitAsList(sitePath, "/"));
@@ -388,7 +391,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
             return entry;
         }
 
-        String uriPath = "";
+        String uriPath = normalizePath(cms.getRequestContext().getSiteRoot());
         List<CmsSiteEntryBean> subEntries = sitemap.getSiteEntries().get(0).getSubEntries();
         boolean finished = false;
         while (!finished) {
@@ -397,9 +400,9 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
             // check the missed cache
             Boolean missing;
             if (online) {
-                missing = m_missingUrisOnline.get(uriPath.substring(1));
+                missing = m_missingUrisOnline.get(uriPath);
             } else {
-                missing = m_missingUrisOffline.get(uriPath.substring(1));
+                missing = m_missingUrisOffline.get(uriPath);
             }
             if (missing != null) {
                 // already marked as not found
@@ -424,7 +427,6 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
                         String sitemapPath = entry.getProperties().get(CmsSitemapResourceHandler.PROPERTY_SITEMAP);
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sitemapPath)) {
                             // switch to sub-sitemap
-                            sitemapPath = cms.getRequestContext().addSiteRoot(sitemapPath);
                             sitemap = getSitemap(cms, sitemapPath, online);
                             if (sitemap == null) {
                                 // no sitemap found
@@ -461,10 +463,12 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
 
         CmsFile sitemap;
         // check the cache
+        // HACK: we are caching here sitemaps by root path, as well as property reference in case path = "/" 
+        String cacheKey = normalizePath(cms.getRequestContext().addSiteRoot(path));
         if (online) {
-            sitemap = m_sitemapsOnline.get(path);
+            sitemap = m_sitemapsOnline.get(cacheKey);
         } else {
-            sitemap = m_sitemapsOffline.get(path);
+            sitemap = m_sitemapsOffline.get(cacheKey);
         }
         if (sitemap != null) {
             // found in cache
@@ -472,12 +476,25 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
         }
 
         // not found in cache
-        String sitemapPath = normalizePath(path);
-        if (path.equals(normalizePath(cms.getRequestContext().getSiteRoot()))) {
+        String sitemapPath = path;
+        if (path.equals("/")) {
             // read the sitemap property from the site folder
             sitemapPath = cms.readPropertyObject("/", CmsPropertyDefinition.PROPERTY_SITEMAP, false).getValue(
                 "/sitemap");
-            sitemapPath = normalizePath(cms.getRequestContext().addSiteRoot(sitemapPath));
+            String cacheKey2 = normalizePath(cms.getRequestContext().addSiteRoot(sitemapPath));
+            if (!cacheKey.equals(cacheKey2)) {
+                // recursive call with the correct path
+                CmsSitemapBean sitemapBean = getSitemap(cms, sitemapPath, online);
+                if (sitemapBean != null) {
+                    // found: cache the sitemap
+                    if (online) {
+                        m_sitemapsOnline.put(cacheKey2, m_sitemapsOnline.get(cacheKey));
+                    } else {
+                        m_sitemapsOffline.put(cacheKey2, m_sitemapsOffline.get(cacheKey));
+                    }
+                }
+                return sitemapBean;
+            }
         }
 
         try {
@@ -486,21 +503,15 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
         } catch (Exception e) {
             // can happen in case of bad configuration
             LOG.error(e.getLocalizedMessage(), e);
-            // cache the missed attempt
-            if (online) {
-                m_missingUrisOnline.put(path, Boolean.TRUE);
-            } else {
-                m_missingUrisOffline.put(path, Boolean.TRUE);
-            }
             // no sitemap found
             return null;
         }
 
         // found: cache the sitemap
         if (online) {
-            m_sitemapsOnline.put(sitemapPath, sitemap);
+            m_sitemapsOnline.put(cacheKey, sitemap);
         } else {
-            m_sitemapsOffline.put(sitemapPath, sitemap);
+            m_sitemapsOffline.put(cacheKey, sitemap);
         }
         return CmsXmlSitemapFactory.unmarshal(cms, sitemap).getSitemap(cms, cms.getRequestContext().getLocale());
     }
@@ -535,21 +546,30 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
             return;
         }
 
+        // this is could be a sitemap file as well as a site root folder, so remove it
+        CmsFile file = m_sitemapsOffline.remove(normalizePath(resource.getRootPath()));
+
+        // we care only more if the modified resource is a sitemap
         if (!CmsResourceTypeXmlSitemap.isSitemap(resource)) {
             return;
         }
+
         // flush all uri's
         m_urisOffline.clear();
         m_missingUrisOffline.clear();
-        // this is a sitemap, so remove it
-        m_sitemapsOffline.remove(normalizePath(resource.getRootPath()));
-        // this is the case of site sitemaps, value lookup
+        if (file == null) {
+            return;
+        }
+
+        // this is the case of root sitemaps
+        // we already removed the cached sitemap by its root path
+        // but know we have also to remove it by the site root path, 
+        // which is unknown, so let's iterate an remove all suspicious entries
         Iterator<Map.Entry<String, CmsFile>> i = m_sitemapsOffline.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry<String, CmsFile> e = i.next();
-            if (resource.getStructureId().equals(e.getValue().getStructureId())) {
+            if (file.equals(e.getValue())) {
                 i.remove();
-                break;
             }
         }
     }
