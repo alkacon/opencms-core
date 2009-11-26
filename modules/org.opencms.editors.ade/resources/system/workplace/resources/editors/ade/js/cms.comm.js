@@ -17,7 +17,7 @@
     *
     * @param {XMLHttpRequest} xhr the request object
     */
-   var _removeRequest = /** void */ function(/** XMLHttpRequest */ xhr) {
+   var removeRequest = cms.comm.removeRequest = /** void */ function(/** XMLHttpRequest */ xhr) {
        var pos = requests.indexOf(xhr);
        if (pos >= 0) {
            requests.splice(pos, 1);
@@ -27,7 +27,7 @@
    /**
     * Aborts all pending requests.<p>
     */
-   var abortAllRequests = cms.data.abortAllRequests = /** void */ function() {
+   var abortAllRequests = cms.comm.abortAllRequests = /** void */ function() {
        for (i = 0, l = requests.length; i < l; i++) {
            try {
                requests[i].abort();
@@ -62,7 +62,7 @@
          'timeout': timeout,
          'async': async,
          'error': function(xhr, status, error) {
-             _removeRequest(xhr);
+             removeRequest(xhr);
             if (cms.toolbar && cms.toolbar.leavingPage) {
                return;
             }
@@ -70,7 +70,7 @@
             afterPost(false);
          },
          'success': function(data) {
-             _removeRequest(xhr);
+             removeRequest(xhr);
             try {
                var jsonData = JSON.parse(data, revive);
             } catch (e) {
@@ -91,4 +91,15 @@
       return xhr;
    }
 })(cms);
+
+if (![].indexOf) {
+  Array.prototype.indexOf = function(item) {
+     for (i = 0, l = this.length; i < l; i++) {
+        if (this[i] === item) {
+           return i;
+        }
+     }
+     return -1;
+  };
+}
 
