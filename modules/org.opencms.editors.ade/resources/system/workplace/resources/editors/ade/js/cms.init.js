@@ -170,17 +170,6 @@ $.extend($.ui.sortable.prototype, {
  */
 $('document').ready(function() {
 
-   if (![].indexOf) {
-      Array.prototype.indexOf = function(item) {
-         for (i = 0, l = this.length; i < l; i++) {
-            if (this[i] === item) {
-               return i;
-            }
-         }
-         return -1;
-      };
-   }
-   
    // TODO: may be it is better to load the toolbar after successfully loading the data
    $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
    cms.toolbar.addToolbar();

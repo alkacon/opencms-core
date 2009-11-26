@@ -24,6 +24,7 @@
       this.isLoading = false;
       this.runningRequest = null;
       this.loadingResourceId = null;
+      this.hasStoped=false;
       this.origPlaceholder = null;
       this.startId = null;
       this.over = null;
@@ -287,11 +288,18 @@
             moveState.loadingResourceId=moveState.currentResourceId;
             moveState.currentResourceId=resourceType;
             moveState.runningRequest = cms.data.loadElements([moveState.loadingResourceId], function() {
-               
-               moveState.currentResourceId=moveState.loadingResourceId;
-               moveState.element = cms.data.elements[moveState.loadingResourceId];
-               replaceHelperElements(ui.self);
+               if (moveState.hasStoped) {
+                   moveState.currentResourceId = moveState.loadingResourceId;
+                   moveState.element = cms.data.elements[moveState.loadingResourceId];
+                   $('#'+moveState.currentContainerId + ' .cms-element[rel="'+moveState.loadingResourceId+'"]').replaceWith(moveState.element.getContent(moveState.currentContainerId))
+               } else {
+                   moveState.currentResourceId = moveState.loadingResourceId;
+                   moveState.element = cms.data.elements[moveState.loadingResourceId];
+                   replaceHelperElements(ui.self);
+               }
                moveState.isLoading = false;
+               moveState.runningRequest=null;
+               
             });
             moveState.element = cms.data.elements[ resourceType];
          } else {
@@ -434,6 +442,11 @@
          if (isMenuContainer(startContainer)) {
             // show favorite list again after dragging a favorite from it.
             $('#' + cms.toolbar.currentMenu).css('display', 'block');
+            if (moveState.isLoading && moveState.runningRequest) {
+                cms.comm.removeRequest(moveState.runningRequest);
+                moveState.runningRequest.abort();
+                moveState.isLoading=false;
+            }
          }
          
          $(this).sortable('cancel');
@@ -460,7 +473,7 @@
          if (moveState.isMoveToFavorites()) {
             changed = false;
             $('#' + cms.html.favoriteDropListId).children().remove();
-            cms.util.addToElementList(cms.toolbar.favorites, moveState.currentResourceId, 9999);
+            cms.util.addToElementList(cms.toolbar.favorites, moveState.isLoading ? moveState.loadingResourceId : moveState.currentResourceId, 9999);
             cms.data.persistFavorites(function(ok) {
                if (!ok) {
                               // TODO
@@ -473,7 +486,7 @@
             cms.toolbar.setPageChanged(true);
          }
          if (moveState.shouldAddToRecent()) {
-            cms.toolbar.addToRecent(moveState.currentResourceId);
+            cms.toolbar.addToRecent(moveState.isLoading ? moveState.loadingResourceId : moveState.currentResourceId);
          }
       }
       
@@ -531,7 +544,10 @@
          removeBorder(currentItem, '.' + HOVER_NEW);
          drawBorder(currentItem, 2, HOVER_NEW);
       }
-
+      if (moveState.isLoading){
+          moveState.hasStoped=true;
+          currentItem.attr('rel', moveState.loadingResourceId)
+      }
       resetNewElementBorders();
    }
    

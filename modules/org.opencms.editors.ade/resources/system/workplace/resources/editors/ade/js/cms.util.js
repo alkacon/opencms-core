@@ -519,16 +519,17 @@
          }, 0);
       }
    }
-   
+   cms.util.checkboxClassName='cms-checkbox';
+   cms.util.checkboxDataName='cms-checkbox';
    $(function() {
-      $('.cms-Checkbox').live('click', function() {
-         var checkbox = $(this).data('cms-Checkbox');
+      $('.'+cms.util.checkboxClassName).live('click', function() {
+         var checkbox = $(this).data(cms.util.checkboxDataName);
          checkbox.setCheckedIfEnabled(!checkbox.checked);
       });
-      $('.cms-Checkbox').live('mouseover', function() {
+      $('.'+cms.util.checkboxClassName).live('mouseover', function() {
          $(this).chooseClass(true, 'cms-checkbox-hover', 'cms-checkbox-nohover');
       });
-      $('.cms-Checkbox').live('mouseout', function() {
+      $('.'+cms.util.checkboxClassName).live('mouseout', function() {
          $(this).chooseClass(false, 'cms-checkbox-hover', 'cms-checkbox-nohover');
       });
       
@@ -543,14 +544,14 @@
          $dom = $('<div/>');
       }
       var self = this;
-      self.$dom = $dom.css('cursor', 'pointer').addClass('cms-Checkbox').height(20).width(24);
-      self.$dom.data('cms-Checkbox', self);
+      self.$dom = $dom.addClass(cms.util.checkboxClassName);
+      self.$dom.data(cms.util.checkboxDataName, self);
       self.setChecked(false);
       self.setEnabled(true);
    }
    
    Checkbox.fromJQuery = function($jq) {
-      return $jq.data('cms-Checkbox');
+      return $jq.data(cms.util.checkboxDataName);
    }
    
    /**
@@ -560,7 +561,7 @@
    var _getCheckboxes = function($dom) {
       var result = [];
       $dom.each(function() {
-         result.push($.data(this, 'cms-Checkbox'));
+         result.push($.data(this, cms.util.checkboxDataName));
       })
       return result;
    }
@@ -570,7 +571,7 @@
     * @param {Object} context the jQuery context
     */
    Checkbox.getCheckboxes = function(context) {
-      return _getCheckboxes($('.cms-Checkbox', context));
+      return _getCheckboxes($('.'+cms.util.checkboxClassName, context));
    }
    
    /**

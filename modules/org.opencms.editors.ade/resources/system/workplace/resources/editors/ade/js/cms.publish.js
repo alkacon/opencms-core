@@ -41,8 +41,8 @@
     * Default button creation function for the publish dialog
     * @param {Object} label the label of the button
     */
-   var dialogButton = function(label) {
-      return $('<button/>').text(label).css('min-width', '80px').height(buttonHeight).addClass('ui-state-default ui-corner-all');
+   var dialogButton = function(label, name) {
+      return $('<button'+(name ? ('name="'+name+'"'):'')+' class="cms-publish-buttons"></button>').text(label).css('min-width', '80px').height(buttonHeight).addClass('ui-state-default ui-corner-all');
    }
    
    
@@ -109,10 +109,10 @@
    
    $(function() {
       $('.' + classPublishRow).live('mouseover', function() {
-         $(this).find('.' + classRemoveButton).show();
+         $(this).find('.' + classRemoveButton).css('visibility', 'visible');
       });
       $('.' + classPublishRow).live('mouseout', function() {
-         $(this).find('.' + classRemoveButton).hide();
+         $(this).find('.' + classRemoveButton).css('visibility', 'hidden');
       });
       $('.' + classRemoveButton).live('click', function() {
          var $row = $(this).closest('.'+classPublishRow);
@@ -254,36 +254,35 @@
             return;
          }
          
-         this.$topPanel = $('<div></div>').appendTo($dlg);
-         this.$topPanel.css('margin-bottom', '30px');
-         $('<span></span>').text('Select: ').appendTo(self.$topPanel);
-         var $selectAll = dialogButton('All').appendTo(self.$topPanel).click(function() {
+         this.$topPanel = $('<div class="cms-publish-selectbar">\
+             <span class="cms-label cms-left">Select:</span>\
+             <button name="all" class="ui-state-default ui-corner-all">All</button>\
+             <button name="none" class="ui-state-default ui-corner-all">None</button>\
+             <span class="cms-label cms-right">Publish list:</span>\
+             </div>').appendTo($dlg);
+         $('button[name="all"]', self.$topPanel).click(function() {
             $.each(util.Checkbox.getCheckboxes(self.$mainPanel), util.bindFn(util.Checkbox.prototype.setChecked, [true]));
          });
-         var $selectNone = dialogButton('None').appendTo(self.$topPanel).click(function() {
+         $('button[name="none"]', self.$topPanel).click(function() {
             $.each(util.Checkbox.getCheckboxes(self.$mainPanel), util.bindFn(util.Checkbox.prototype.setChecked, [false]));
          });
-         var $projectSelector = self.createProjectSelector().css('float', 'right').appendTo(self.$topPanel);
-         var $projectSelectLabel = $('<span></span>').text('Publish list: ').css({
-            'float': 'right',
-            'margin-right': '5px',
-            'margin-top': '3px'
-         }).appendTo(self.$topPanel);
-         if ($.browser.msie) {
-            $projectSelector.css('margin-top', '-20px');
-            $projectSelectLabel.css('margin-top', '-20px');
-         }
-         var $scrollPanel = $('<div/>').addClass('cms-list-scrolling ui-corner-all cms-publish-scrolling').css('position', 'relative').appendTo($dlg);
-         this.$mainPanel = $('<div></div>').addClass('cms-publish-main').appendTo($scrollPanel);
-         this.$checkboxes = $('<div></div>').appendTo($dlg);
+         var $projectSelector = self.createProjectSelector().css('float', 'right').insertAfter(self.$topPanel.find('button[name="none"]'));
+         var $scrollPanel = $('<div class="cms-list-scrolling ui-corner-all cms-publish-scrolling">\
+            <div class="cms-publish-main"></div>\
+          </div>').appendTo($dlg);
+        
+         
+//         var $scrollPanel = $('<div/>').addClass('cms-list-scrolling ui-corner-all cms-publish-scrolling').appendTo($dlg);
+         this.$mainPanel = $('.cms-publish-main', $scrollPanel);
+         this.$checkboxes = $('<div class="cms-publish-optionbar"></div>').appendTo($dlg);
          var relatedCheckbox = new cms.util.Checkbox();
-         relatedCheckbox.$dom.css('float', 'left');
-         $('<div/>').css('clear', 'both').append(relatedCheckbox.$dom).append($('<span/>').text('Publish related resources')).appendTo(this.$checkboxes);
+         
+         this.$checkboxes.append(relatedCheckbox.$dom).append('<span>Publish related resources</span>');
          relatedCheckbox.setChecked(!!self.checkedRelated);
          
          var siblingsCheckbox = new cms.util.Checkbox();
-         siblingsCheckbox.$dom.css('float', 'left');
-         $('<div/>').css('clear', 'both').append(siblingsCheckbox.$dom).append($('<span/>').text('Publish siblings')).appendTo(this.$checkboxes);
+         
+         this.$checkboxes.append(siblingsCheckbox.$dom).append('<span>Publish siblings</span>');
          siblingsCheckbox.setChecked(!!self.checkedSiblings);
          
          var _updateState = function() {
@@ -297,10 +296,7 @@
          siblingsCheckbox.$dom.click(cms.util.defer(_updateState));
          
          
-         this.$bottomPanel = $('<div></div>').appendTo($dlg).css({
-            'margin-top': '20px',
-            'margin-left': '20px'
-         });
+         this.$bottomPanel = $('<div class="cms-publish-buttonbar"></div>').appendTo($dlg);
          var $cancel = dialogButton('Cancel').css('float', 'right').appendTo(self.$bottomPanel).click(function() {
             self.destroy();
          });
@@ -315,8 +311,8 @@
             this.addGroup(data[i]);
          }
          if (self.problemCount > 0) {
-            var $problemDiv = $('<div/>').text(cms.util.format('There are {0} resources with problems in the publish list.', "" + self.problemCount)).css('margin-bottom', '10px').insertAfter($scrollPanel);
-            $('<span class="cms-publish-warning/>').css('float', 'left').css('margin-right', '10px').prependTo($problemDiv);
+            var $problemDiv = $('<div/>').text(cms.util.format('There are {0} resources with problems in the publish list.', "" + self.problemCount)).css('margin', '15px 0').css('font-weight', 'bold').insertAfter($scrollPanel);
+            $('<span class="cms-publish-warning/>').css({'float': 'left', 'margin-right': '8px', 'margin-left': '15px'}).prependTo($problemDiv);
          }
          self.restoreState();
       },
@@ -330,17 +326,14 @@
          var $group = $('<ul/>').appendTo($main);
          var $selectAll = $('<button/>').addClass('cms-publish-select-button ui-state-default ui-corner-all').text('All');
          var $selectNone = $('<button/>').addClass('cms-publish-select-button ui-state-default ui-corner-all').text('None');
-         if ($.browser.msie) {
-            $selectAll.css('margin-top', '-22px');
-            $selectNone.css('margin-top', '-22px');
-         }
+
          var _setAllChecked = function(checked) {
             var checkboxes = cms.util.Checkbox.getCheckboxes($group);
             $.each(checkboxes, cms.util.bindFn(cms.util.Checkbox.prototype.setCheckedIfEnabled, [checked]));
          };
          $selectAll.click(cms.util.bindFn(_setAllChecked, [true]));
          $selectNone.click(cms.util.bindFn(_setAllChecked, [false]));
-         $('<p/>').addClass('cms-publish-group-header').text(group.name).append($selectNone).append($selectAll).insertBefore($group);
+         $('<p/>').addClass('cms-publish-group-header').text(group.name).prepend($selectAll).prepend($selectNone).insertBefore($group);
          for (var i = 0; i < group.resources.length; i++) {
             this.addResource(group.resources[i], false, false, $group);
          }
@@ -365,13 +358,7 @@
             $row.find('.cms-list-title').append($('<span/>').text('[no title]'));
          }
          if (resource.info) {
-            $('<span></span>').addClass('cms-publish-warning').css({
-               'position': 'absolute',
-               'top': '8px',
-               'right': '40px',
-               'float': 'right',
-               'z-index': '1'
-            }).attr('title', resource.info).appendTo($row.find('.cms-list-itemcontent'));
+            $('<span></span>').addClass('cms-publish-warning').attr('title', resource.info).prependTo($row.find('.cms-list-itemcontent'));
             self.problemCount++;
          }
          
@@ -394,7 +381,7 @@
                checkbox.$dom.prependTo($row);
             }
             var $removeButton = $('<span/>').addClass(classRemoveButton).attr('rel', resource.id);
-            $removeButton.css('display', 'none');
+            $removeButton.css('visibility', 'hidden');
             
             $removeButton.addClass('cms-icon-publish-remove');
             
@@ -404,7 +391,7 @@
                $row.addClass('cms-has-info');
             }
             if (resource.removable && !self.project) {
-               $row.find('.cms-list-itemcontent').prepend($removeButton);
+               $row.find('.cms-list-image').before($removeButton);
             }
          }
          if (resource.related) {

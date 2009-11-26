@@ -1047,6 +1047,46 @@ ol.ade-forms fieldset {
 #toolbar_content .cms-move {
 	right: 3px;
 	top: 2px;
+}	
+
+
+#cms-property-dialog table td, #cms-property-dialog table th {
+	padding: 5px !important;
+}
+	
+/* PUBLISH */
+.cms-publish-selectbar{
+    margin-bottom: 30px;
+}
+
+.cms-publish-selectbar span.cms-label{
+    margin-right: 5px;
+    margin-top: 3px;
+}
+
+.cms-publish-selectbar button{
+    min-width: 80px;
+    height: 24px;
+    float: left;
+    margin-top: 0px;
+}
+.cms-publish-selectbar .cms-selectbox{
+    float: right; height: 22px;
+}
+
+.cms-publish-optionbar .cms-checkbox{
+    margin: 0px 8px 0px 11px;
+    float: left; 
+    clear: both;
+}
+
+.cms-publish-optionbar span{
+    padding: 5px 0px 3px 0px;
+    display: block;
+}
+
+.cms-publish-items {
+	border: 1px solid #000000;
 }
 
 .cms-publish-items .cms-even {
@@ -1112,30 +1152,30 @@ ol.ade-forms fieldset {
 	margin-bottom: 6px;
 }
 
-.cms-publish-select-button {
+.cms-publish-main .cms-publish-select-button {
 	margin-left: 3px;
-	margin-right: 3px;
-	margin-bottom: 5px;
+	margin-right: 0px;
+	margin-top: 0px;
 	min-width: 50px;
 	height: 19px;
 	float: right;
-	font-size: 90%;
+	font-size: 12px;
 }
 
-.cms-publish-scrolling {
-	position: relative;
+div.cms-publish-scrolling {
+ 	position: relative; 
 	border: 1px solid #aaaaaa;
-	padding: 10px; 
+	padding: 0px 10px 10px 10px; 
 	overflow: auto;
 	max-height: 500px;
-    margin-bottom: 35px;
-    position: relative;
+    margin-bottom: 15px;
     background-color: #ffffff;
-	
+	width: auto;
+    clear: both;
 }
 
 #cms-publish-dialog {
-	background-color: #dedede;
+	background-color: #f9f9f9;
 }
 
 #cms-publish-dialog ul {
@@ -1199,11 +1239,11 @@ ol.ade-forms fieldset {
 }
 
 .cms-publish-remove-button {
-	width: 24px;
-	height:24px;
-	margin-right: 10px;
-	margin-top: 4px;
+	width: 32px;
+	height:32px;
 	float: right;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .cms-publish-row .cms-list-item {
@@ -1253,6 +1293,16 @@ ol.ade-forms fieldset {
 	background-image: url(images/16x16/warning.png);
 	width: 20px;
 	height: 20px;
+}
+
+.cms-publish-main .cms-publish-warning {
+    float:right;
+    margin-right:3px;
+    margin-top:6px;
+}
+
+.cms-publish-main .cms-list-itemcontent{
+    height:32px;
 }
 
 .cms-publish-row{
@@ -1308,19 +1358,14 @@ span.cms-select-opener{
 }
 
 .cms-checkbox  {
-/*	display: block;
-	position: relative;
-	z-index: 1;
-	padding-right: 1em;
-	line-height: 1;
-	padding: .5em 0 .2em 30px;
-	margin: 0 0 .3em; */
 	cursor: pointer;
+    height: 20px;
+    width: 24px;
 }
 
 	
 /* checkbox states */
-.cms-Checkbox { background: url(images/checkbox.gif) no-repeat; }
+.cms-checkbox { background: url(images/checkbox.gif) no-repeat; }
 
 
 
