@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2009/11/25 15:24:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/26 11:36:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -72,13 +72,13 @@ public class CmsJspNavBuilder {
     private static final Log LOG = CmsLog.getLog(CmsJspNavBuilder.class);
 
     /** The current CMS context. */
-    private CmsObject m_cms;
+    protected CmsObject m_cms;
 
     /** The current request URI. */
-    private String m_requestUri;
+    protected String m_requestUri;
 
     /** The current request folder. */
-    private String m_requestUriFolder;
+    protected String m_requestUriFolder;
 
     /**
      * Empty constructor, so that this bean can be initialized from a JSP.<p> 
@@ -109,7 +109,10 @@ public class CmsJspNavBuilder {
      * @param folder full name of the folder
      * 
      * @return the name of the default file
+     * 
+     * @deprecated use {@link CmsObject#readDefaultFile(String)} instead
      */
+    @Deprecated
     public static String getDefaultFile(CmsObject cms, String folder) {
 
         if (folder.endsWith("/")) {
@@ -144,29 +147,13 @@ public class CmsJspNavBuilder {
      * @param folder the selected folder
      * 
      * @return a sorted (ascending to navigation position) list of navigation elements
+     * 
+     * @deprecated use {@link #getNavigationForFolder(String)} instead
      */
+    @Deprecated
     public static List<CmsJspNavElement> getNavigationForFolder(CmsObject cms, String folder) {
 
-        folder = CmsResource.getFolderPath(folder);
-        List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
-
-        List<CmsResource> resources;
-        try {
-            resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
-        } catch (Exception e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            return Collections.<CmsJspNavElement> emptyList();
-        }
-
-        for (CmsResource r : resources) {
-            CmsJspNavElement element = getNavigationForResource(cms, cms.getSitePath(r));
-            if ((element != null) && element.isInNavigation()) {
-                result.add(element);
-            }
-        }
-        Collections.sort(result);
-        return result;
+        return new CmsJspNavBuilder(cms).getNavigationForFolder(folder);
     }
 
     /** 
@@ -182,47 +169,30 @@ public class CmsJspNavBuilder {
      *              levels down from root folder 
      *              
      * @return a sorted (ascending to navigation position) list of navigation elements
+     * 
+     * @deprecated use {@link #getNavigationForFolder(String, int)} instead
      */
+    @Deprecated
     public static List<CmsJspNavElement> getNavigationForFolder(CmsObject cms, String folder, int level) {
 
-        folder = CmsResource.getFolderPath(folder);
-        // If level is one just use root folder
-        if (level == 0) {
-            return getNavigationForFolder(cms, "/");
-        }
-        String navfolder = CmsResource.getPathPart(folder, level);
-        // If navigation folder found use it to build navigation
-        if (navfolder != null) {
-            return getNavigationForFolder(cms, navfolder);
-        }
-        // Nothing found, return empty list
-        return Collections.<CmsJspNavElement> emptyList();
+        return new CmsJspNavBuilder(cms).getNavigationForFolder(folder, level);
     }
 
     /**
-     * Returns a CmsJspNavElement for the named resource.<p>
+     * Returns a navigation element for the named resource.<p>
      * 
      * @param cms context provider for the current request
      * @param resource the resource name to get the navigation information for, 
      *              must be a full path name, e.g. "/docs/index.html"
      *              
      * @return a navigation element for the given resource
+     * 
+     * @deprecated use {@link #getNavigationForResource(String)} instead
      */
+    @Deprecated
     public static CmsJspNavElement getNavigationForResource(CmsObject cms, String resource) {
 
-        List<CmsProperty> properties;
-        try {
-            properties = cms.readPropertyObjects(resource, false);
-        } catch (Exception e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            return null;
-        }
-        int level = CmsResource.getPathLevel(resource);
-        if (resource.endsWith("/")) {
-            level--;
-        }
-        return new CmsJspNavElement(resource, CmsProperty.toMap(properties), level);
+        return new CmsJspNavBuilder(cms).getNavigationForResource(resource);
     }
 
     /**
@@ -239,58 +209,17 @@ public class CmsJspNavBuilder {
      * @param endlevel the end level
      * 
      * @return a sorted list of navigation elements with the navigation tree level property set 
+     * 
+     * @deprecated use {@link #getNavigationForResource(String)} instead
      */
+    @Deprecated
     public static List<CmsJspNavElement> getNavigationTreeForFolder(
         CmsObject cms,
         String folder,
         int startlevel,
         int endlevel) {
 
-        folder = CmsResource.getFolderPath(folder);
-        // Make sure start and end level make sense
-        if (endlevel < startlevel) {
-            return Collections.<CmsJspNavElement> emptyList();
-        }
-        int currentlevel = CmsResource.getPathLevel(folder);
-        if (currentlevel < endlevel) {
-            endlevel = currentlevel;
-        }
-        if (startlevel == endlevel) {
-            return getNavigationForFolder(cms, CmsResource.getPathPart(folder, startlevel), startlevel);
-        }
-
-        List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
-        float parentcount = 0;
-
-        for (int i = startlevel; i <= endlevel; i++) {
-            String currentfolder = CmsResource.getPathPart(folder, i);
-            List<CmsJspNavElement> entries = getNavigationForFolder(cms, currentfolder);
-            // Check for parent folder
-            if (parentcount > 0) {
-                for (CmsJspNavElement e : entries) {
-                    e.setNavPosition(e.getNavPosition() + parentcount);
-                }
-            }
-            // Add new entries to result
-            result.addAll(entries);
-            Collections.sort(result);
-            // Finally spread the values of the navigation items so that there is enough room for further items
-            float pos = 0;
-            int count = 0;
-            String nextfolder = CmsResource.getPathPart(folder, i + 1);
-            parentcount = 0;
-            for (CmsJspNavElement e : result) {
-                pos = 10000 * (++count);
-                e.setNavPosition(pos);
-                if (e.getResourceName().startsWith(nextfolder)) {
-                    parentcount = pos;
-                }
-            }
-            if (parentcount == 0) {
-                parentcount = pos;
-            }
-        }
-        return result;
+        return new CmsJspNavBuilder(cms).getNavigationTreeForFolder(folder, startlevel, endlevel);
     }
 
     /**
@@ -306,29 +235,13 @@ public class CmsJspNavBuilder {
      * @param endLevel the end level of the navigation
      * 
      * @return list of navigation elements, in depth first order
+     * 
+     * @deprecated use {@link #getNavigationForResource(String)} instead
      */
+    @Deprecated
     public static List<CmsJspNavElement> getSiteNavigation(CmsObject cms, String folder, int endLevel) {
 
-        // check if a specific end level was given, if not, build the complete navigation
-        boolean noLimit = false;
-        if (endLevel < 0) {
-            noLimit = true;
-        }
-        List<CmsJspNavElement> list = new ArrayList<CmsJspNavElement>();
-        // get the navigation for this folder
-        List<CmsJspNavElement> curnav = getNavigationForFolder(cms, folder);
-        // loop through all navigation entries
-        for (CmsJspNavElement ne : curnav) {
-            // add the navigation entry to the result list
-            list.add(ne);
-            // check if navigation entry is a folder and below the max level -> if so, get the navigation from this folder as well
-            if (ne.isFolderLink() && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
-                List<CmsJspNavElement> subnav = getSiteNavigation(cms, ne.getResourceName(), endLevel);
-                // copy the result of the subfolder to the result list
-                list.addAll(subnav);
-            }
-        }
-        return list;
+        return new CmsJspNavBuilder(cms).getSiteNavigation(folder, endLevel);
     }
 
     /**
@@ -432,11 +345,11 @@ public class CmsJspNavBuilder {
     /**
      * Collect all navigation elements from the files of the folder of the current request URI.<p>
      *
-     * @return a sorted (ascending to navigation position) list of navigation elements.
+     * @return a sorted (ascending to navigation position) list of navigation elements
      */
     public List<CmsJspNavElement> getNavigationForFolder() {
 
-        return getNavigationForFolder(m_cms, m_requestUriFolder);
+        return getNavigationForFolder(m_requestUriFolder);
     }
 
     /** 
@@ -452,7 +365,7 @@ public class CmsJspNavBuilder {
      */
     public List<CmsJspNavElement> getNavigationForFolder(int level) {
 
-        return getNavigationForFolder(m_cms, m_requestUriFolder, level);
+        return getNavigationForFolder(m_requestUriFolder, level);
     }
 
     /**
@@ -464,7 +377,26 @@ public class CmsJspNavBuilder {
      */
     public List<CmsJspNavElement> getNavigationForFolder(String folder) {
 
-        return getNavigationForFolder(m_cms, folder);
+        folder = CmsResource.getFolderPath(folder);
+        List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
+
+        List<CmsResource> resources;
+        try {
+            resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
+        } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return Collections.<CmsJspNavElement> emptyList();
+        }
+
+        for (CmsResource r : resources) {
+            CmsJspNavElement element = getNavigationForResource(m_cms.getSitePath(r));
+            if ((element != null) && element.isInNavigation()) {
+                result.add(element);
+            }
+        }
+        Collections.sort(result);
+        return result;
     }
 
     /** 
@@ -482,7 +414,18 @@ public class CmsJspNavBuilder {
      */
     public List<CmsJspNavElement> getNavigationForFolder(String folder, int level) {
 
-        return getNavigationForFolder(m_cms, folder, level);
+        folder = CmsResource.getFolderPath(folder);
+        // If level is one just use root folder
+        if (level == 0) {
+            return getNavigationForFolder("/");
+        }
+        String navfolder = CmsResource.getPathPart(folder, level);
+        // If navigation folder found use it to build navigation
+        if (navfolder != null) {
+            return getNavigationForFolder(navfolder);
+        }
+        // Nothing found, return empty list
+        return Collections.<CmsJspNavElement> emptyList();
     }
 
     /**
@@ -492,7 +435,7 @@ public class CmsJspNavBuilder {
      */
     public CmsJspNavElement getNavigationForResource() {
 
-        return getNavigationForResource(m_cms, m_requestUri);
+        return getNavigationForResource(m_requestUri);
     }
 
     /**
@@ -505,7 +448,19 @@ public class CmsJspNavBuilder {
      */
     public CmsJspNavElement getNavigationForResource(String resource) {
 
-        return getNavigationForResource(m_cms, resource);
+        List<CmsProperty> properties;
+        try {
+            properties = m_cms.readPropertyObjects(resource, false);
+        } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
+        int level = CmsResource.getPathLevel(resource);
+        if (resource.endsWith("/")) {
+            level--;
+        }
+        return new CmsJspNavElement(resource, CmsProperty.toMap(properties), level);
     }
 
     /**
@@ -516,11 +471,11 @@ public class CmsJspNavBuilder {
      * 
      * @return a sorted list of navigation elements with the navigation tree level property set
      *  
-     * @see #getNavigationTreeForFolder(CmsObject, String, int, int)
+     * @see #getNavigationTreeForFolder(String, int, int)
      */
     public List<CmsJspNavElement> getNavigationTreeForFolder(int startlevel, int endlevel) {
 
-        return getNavigationTreeForFolder(m_cms, m_requestUriFolder, startlevel, endlevel);
+        return getNavigationTreeForFolder(m_requestUriFolder, startlevel, endlevel);
     }
 
     /**
@@ -531,24 +486,66 @@ public class CmsJspNavBuilder {
      * @param endlevel the end level
      * 
      * @return a sorted list of navigation elements with the navigation tree level property set
-     *  
-     * @see #getNavigationTreeForFolder(CmsObject, String, int, int) 
      */
     public List<CmsJspNavElement> getNavigationTreeForFolder(String folder, int startlevel, int endlevel) {
 
-        return getNavigationTreeForFolder(m_cms, folder, startlevel, endlevel);
+        folder = CmsResource.getFolderPath(folder);
+        // Make sure start and end level make sense
+        if (endlevel < startlevel) {
+            return Collections.<CmsJspNavElement> emptyList();
+        }
+        int currentlevel = CmsResource.getPathLevel(folder);
+        if (currentlevel < endlevel) {
+            endlevel = currentlevel;
+        }
+        if (startlevel == endlevel) {
+            return getNavigationForFolder(CmsResource.getPathPart(folder, startlevel), startlevel);
+        }
+
+        List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
+        float parentcount = 0;
+
+        for (int i = startlevel; i <= endlevel; i++) {
+            String currentfolder = CmsResource.getPathPart(folder, i);
+            List<CmsJspNavElement> entries = getNavigationForFolder(currentfolder);
+            // Check for parent folder
+            if (parentcount > 0) {
+                for (CmsJspNavElement e : entries) {
+                    e.setNavPosition(e.getNavPosition() + parentcount);
+                }
+            }
+            // Add new entries to result
+            result.addAll(entries);
+            Collections.sort(result);
+            // Finally spread the values of the navigation items so that there is enough room for further items
+            float pos = 0;
+            int count = 0;
+            String nextfolder = CmsResource.getPathPart(folder, i + 1);
+            parentcount = 0;
+            for (CmsJspNavElement e : result) {
+                pos = 10000 * (++count);
+                e.setNavPosition(pos);
+                if (e.getResourceName().startsWith(nextfolder)) {
+                    parentcount = pos;
+                }
+            }
+            if (parentcount == 0) {
+                parentcount = pos;
+            }
+        }
+        return result;
     }
 
     /**
      * This method builds a complete site navigation tree with entries of all branches.<p>
      *
-     * @see #getSiteNavigation(CmsObject, String, int)
+     * @see #getSiteNavigation(String, int)
      * 
      * @return list of navigation elements, in depth first order
      */
     public List<CmsJspNavElement> getSiteNavigation() {
 
-        return getSiteNavigation(m_cms, "/", -1);
+        return getSiteNavigation("/", -1);
     }
 
     /**
@@ -559,12 +556,29 @@ public class CmsJspNavBuilder {
      * @param endLevel the end level of the navigation
      * 
      * @return list of navigation elements, in depth first order
-     * 
-     * @see #getSiteNavigation(CmsObject, String, int)
      */
     public List<CmsJspNavElement> getSiteNavigation(String folder, int endLevel) {
 
-        return getSiteNavigation(m_cms, folder, endLevel);
+        // check if a specific end level was given, if not, build the complete navigation
+        boolean noLimit = false;
+        if (endLevel < 0) {
+            noLimit = true;
+        }
+        List<CmsJspNavElement> list = new ArrayList<CmsJspNavElement>();
+        // get the navigation for this folder
+        List<CmsJspNavElement> curnav = getNavigationForFolder(folder);
+        // loop through all navigation entries
+        for (CmsJspNavElement ne : curnav) {
+            // add the navigation entry to the result list
+            list.add(ne);
+            // check if navigation entry is a folder and below the max level -> if so, get the navigation from this folder as well
+            if (ne.isFolderLink() && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
+                List<CmsJspNavElement> subnav = getSiteNavigation(ne.getResourceName(), endLevel);
+                // copy the result of the subfolder to the result list
+                list.addAll(subnav);
+            }
+        }
+        return list;
     }
 
     /**
