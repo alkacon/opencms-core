@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/26 11:36:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -337,7 +337,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVTEXT, title));
 
             // calculate the new navigation position for the resource
-            List navList = CmsJspNavBuilder.getNavigationForFolder(cms, resourceName);
+            List navList = new CmsJspNavBuilder(cms).getNavigationForFolder(resourceName);
             float navPos = 1;
             if (navList.size() > 0) {
                 CmsJspNavElement nav = (CmsJspNavElement)navList.get(navList.size() - 1);

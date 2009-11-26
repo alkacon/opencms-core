@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/11/26 11:36:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,13 +130,14 @@ public class CmsChnav extends CmsDialog {
     public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsMessages messages) {
 
         // get current file navigation element
-        CmsJspNavElement curNav = CmsJspNavBuilder.getNavigationForResource(cms, filename);
+        CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
+        CmsJspNavElement curNav = navBuilder.getNavigationForResource(filename);
 
         // get the parent folder of the current file
         filename = CmsResource.getParentFolder(filename);
 
         // get navigation of the current folder
-        List navList = CmsJspNavBuilder.getNavigationForFolder(cms, filename);
+        List navList = navBuilder.getNavigationForFolder(filename);
         float maxValue = 0;
         float nextPos = 0;
 

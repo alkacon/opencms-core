@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2009/10/14 14:38:06 $
- * Version: $Revision: 1.17.2.2 $
+ * Date   : $Date: 2009/11/26 11:36:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,7 +158,7 @@ public class CmsEditorDisplayOptions {
         Properties displayOptions;
         if (mappedConfigFile == null) {
             // no configuration file name stored for user, get the navigation items of the configuration folder
-            List items = CmsJspNavBuilder.getNavigationForFolder(cms, FOLDER_EDITORCONFIGURATION);
+            List items = new CmsJspNavBuilder(cms).getNavigationForFolder(FOLDER_EDITORCONFIGURATION);
             if (items.size() > 0) {
                 // get first found configuration file
                 CmsJspNavElement nav = (CmsJspNavElement)items.get(0);

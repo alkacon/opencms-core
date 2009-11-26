@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:20 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/11/26 11:36:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -406,7 +406,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        CmsJspNavElement navElem = CmsJspNavBuilder.getNavigationForResource(cms, resourcePath);
+        CmsJspNavElement navElem = new CmsJspNavBuilder(cms).getNavigationForResource(resourcePath);
 
         String name = navElem.getNavText();
         if (CmsMessages.isUnknownKey(name)) {

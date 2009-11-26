@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2009/09/14 11:45:32 $
- * Version: $Revision: 1.17.2.1 $
+ * Date   : $Date: 2009/11/26 11:36:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -247,17 +247,18 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         // the Cms resources are saved in a map keyed by their nav elements
         // to save time sorting the resources by the value of their NavPos property        
+        CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
         Map<CmsJspNavElement, CmsResource> navElementMap = new HashMap<CmsJspNavElement, CmsResource>();
         for (int i = 0, n = foundResources.size(); i < n; i++) {
 
             CmsResource resource = foundResources.get(i);
-            CmsJspNavElement navElement = CmsJspNavBuilder.getNavigationForResource(cms, cms.getSitePath(resource));
+            CmsJspNavElement navElement = navBuilder.getNavigationForResource(cms.getSitePath(resource));
 
             // check if the resource has the NavPos property set or not
             if ((navElement != null) && (navElement.getNavPosition() != Float.MAX_VALUE)) {
                 navElementMap.put(navElement, resource);
             } else if (LOG.isInfoEnabled()) {
-                // printing a log messages makes it a little easier to indentify 
+                // printing a log messages makes it a little easier to identify 
                 // resources having not the NavPos property set
                 LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_RESOURCE_WITHOUT_NAVPROP_1,
