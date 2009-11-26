@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2009/10/28 07:21:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/11/26 11:32:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3334,6 +3334,7 @@ public final class CmsSecurityManager {
             throw se;
         } catch (CmsException e) {
             // ignore all other exceptions
+            LOG.debug(e.getLocalizedMessage(), e);
         } finally {
             dbc.clear();
         }
