@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsTemplateMenu.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/26 11:36:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,9 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -50,17 +50,21 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.logging.Log;
 
 /**
  * Helper class to build a menu navigation with ul and li.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.4
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTemplateMenu.class);
 
     /** Lazy map with the flags if the elements of the navigation have children. */
     private Map m_children;
@@ -151,6 +155,9 @@ public class CmsTemplateMenu extends CmsJspActionElement {
         if (m_current == null) {
             m_current = LazyMap.decorate(new HashMap(), new Transformer() {
 
+                /** The log object for this class. */
+                private final Log LOGG = CmsLog.getLog(CmsTemplateMenu.class);
+
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
                  */
@@ -164,23 +171,31 @@ public class CmsTemplateMenu extends CmsJspActionElement {
                         uriElem = new CmsJspNavElement(uri, CmsProperty.toMap(getCmsObject().readPropertyObjects(
                             uri,
                             false)));
-                    } catch (CmsException ex) {
+                    } catch (CmsException e) {
                         // noop
+                        LOGG.debug(e.getLocalizedMessage(), e);
                     }
 
                     // check if uri matches resource name
                     if (elem.getResourceName().equals(uri)) {
-                        return new Boolean(true);
+                        return Boolean.TRUE;
                     }
 
                     // check if the default file for the uri matches the resource name
-                    String path = CmsJspNavBuilder.getDefaultFile(getCmsObject(), elem.getResourceName());
+                    String path = null;
+                    try {
+                        CmsResource resource = getCmsObject().readDefaultFile(elem.getResourceName());
+                        path = getCmsObject().getSitePath(resource);
+                    } catch (CmsException e) {
+                        // resource not found or not enough permissions
+                        LOGG.debug(e.getLocalizedMessage(), e);
+                    }
                     if ((path == null) || ((uriElem != null) && uriElem.isInNavigation())) {
                         path = elem.getResourceName();
                     }
 
                     if (uri.equals(path)) {
-                        return new Boolean(true);
+                        return Boolean.TRUE;
                     }
 
                     // check if uri is in NOT in the navigation and so a parent folder will be marked as current
@@ -201,10 +216,10 @@ public class CmsTemplateMenu extends CmsJspActionElement {
                     }
 
                     if ((navElem != null) && (uriElem != null) && !uriElem.isInNavigation()) {
-                        return new Boolean(elem.equals(navElem));
+                        return Boolean.valueOf(elem.equals(navElem));
                     }
 
-                    return new Boolean(false);
+                    return Boolean.FALSE;
                 }
             });
         }
@@ -218,9 +233,14 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      */
     public boolean getIsDefault() {
 
-        String path = CmsJspNavBuilder.getDefaultFile(
-            getCmsObject(),
-            CmsResource.getFolderPath(getRequestContext().getUri()));
+        String path = null;
+        try {
+            CmsResource resource = getCmsObject().readDefaultFile(getRequestContext().getUri());
+            path = getCmsObject().getSitePath(resource);
+        } catch (CmsException e) {
+            // resource not found or not enough permissions
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
         if (path != null) {
             return path.equals(getRequestContext().getUri());
         }
