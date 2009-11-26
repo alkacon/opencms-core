@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2009/10/20 13:43:08 $
- * Version: $Revision: 1.32.2.1 $
+ * Date   : $Date: 2009/11/26 11:32:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -356,7 +356,7 @@ public class CmsJspActionElement extends CmsJspBean {
     /**
      * Returns an initialized {@link CmsJspNavBuilder} instance.<p>
      *  
-     * @return CmsJspNavBuilder an initialized <code>CmsJspNavBuilder</code>
+     * @return an initialized navigation builder instance
      * 
      * @see org.opencms.jsp.CmsJspNavBuilder
      */
@@ -367,6 +367,24 @@ public class CmsJspActionElement extends CmsJspBean {
         }
         if (m_navigation == null) {
             m_navigation = new CmsJspNavBuilder(getCmsObject());
+        }
+        return m_navigation;
+    }
+
+    /**
+     * Returns an initialized {@link CmsJspSitemapNavBuilder} instance.<p>
+     *  
+     * @return an initialized sitemap navigation builder instance
+     * 
+     * @see org.opencms.jsp.CmsJspSitemapNavBuilder
+     */
+    public CmsJspNavBuilder getSitemapNavigation() {
+
+        if (isNotInitialized()) {
+            return null;
+        }
+        if (m_navigation == null) {
+            m_navigation = new CmsJspSitemapNavBuilder(getCmsObject());
         }
         return m_navigation;
     }
