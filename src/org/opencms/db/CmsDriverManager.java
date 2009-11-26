@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/11/23 10:05:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/11/26 11:33:02 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2965,7 +2965,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // offline
         if (dbc.getProjectId().isNullUUID()) {
             // offline project available
-        transferPrincipalResources(dbc, project, user.getId(), replacementUser.getId(), withACEs);
+            transferPrincipalResources(dbc, project, user.getId(), replacementUser.getId(), withACEs);
         }
         // online
         transferPrincipalResources(dbc, onlineProject, user.getId(), replacementUser.getId(), withACEs);
@@ -5693,7 +5693,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (defaultFileName != null) {
                     // property was set, so look up this file first
                     String folderName = CmsResource.getFolderPath(resource.getRootPath());
-                    resource = readResource(dbc, folderName + defaultFileName, CmsResourceFilter.DEFAULT);
+                    resource = readResource(
+                        dbc,
+                        folderName + defaultFileName,
+                        CmsResourceFilter.DEFAULT.addRequireFile());
                 }
             } catch (CmsException e) {
                 // ignore all other exceptions and continue the lookup process
@@ -5708,7 +5711,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 while (it.hasNext()) {
                     String tmpResourceName = folderName + it.next();
                     try {
-                        resource = readResource(dbc, tmpResourceName, CmsResourceFilter.DEFAULT);
+                        resource = readResource(dbc, tmpResourceName, CmsResourceFilter.DEFAULT.addRequireFile());
                         // no exception? So we have found the default file
                         // stop looking for default files   
                         break;
