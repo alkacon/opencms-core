@@ -26,6 +26,9 @@
    /** The current mode of the dialog. It can be 'widget','editor','ade', 'sitemap' or 'view'. */
    var dialogMode = cms.galleries.dialogMode = null;
    
+   /** The field id of the input field inside of the xmlcontent. */
+   var fieldId = cms.galleries.fieldId = null;
+   
    /** html-class for the inner of the scrolled list with items. */
    var classScrollingInner = cms.galleries.classScrollingInner = 'cms-list-scrolling-innner';
    
@@ -306,7 +309,7 @@
         },
         selected: 1
       });
-      
+                  
       // removing ui-widget-header and ui-corner-all from ui-tabs-nav for layout reasons
       $('#' + cms.galleries.idGalleriesMain + ' .ui-tabs-nav').removeClass('ui-widget-header').removeClass('ui-corner-all');
                
@@ -337,10 +340,10 @@
          cms.galleries.searchObject.isChanged.query = true;
       });           
          
-      // bind click events to remove search criteria html from result tab            
+      // bind click events to the close button of the search criteria on the result tab            
       $('div.cms-search-remove').live('click', cms.galleries.removeCriteria);
       
-      // bind the hover and click events to the ok button under the criteria lists    
+      // bind the hover and click events to the ok button on the full text search tab 
       $('.cms-search-options button').hover(function() {
          $(this).addClass('ui-state-hover');
       }, function() {
@@ -350,13 +353,14 @@
          $('#' + cms.galleries.idTabs).tabs("enable", 0);
          $('#' + cms.galleries.idTabs).tabs('select', 0);
       });          
-           
+      
+      // bind click event to the select-button of the item in the result list(dialogmode = widget|editor)     
       $('.cms-handle-button.cms-select-item').live('click',function(e){        
-          var itemType = $(this).data('type');
-          cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.dialogMode](this);
-          e.stopPropagation();
-          
-          
+          var itemType = $(this).closest('li').data('type');
+          var itemId = $(this).closest('li').attr('alt');
+          cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.dialogMode](itemId, cms.galleries.fieldId);
+          // avoid event propagation to the surround 'li'
+          e.stopPropagation();                    
       });
            
       $('.cms-item a.ui-icon').live('click', cms.galleries.toggleAdditionalInfo);
@@ -420,7 +424,7 @@
       }     
       // open the preselected tab
       $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);
-      
+           
    }
    
    
@@ -431,7 +435,7 @@
                  $('li[alt=' + path + ']').addClass(cms.galleries.classListItemActive);
              });
        }
-   }
+   }   
    
    /**
     * Handle different states of the search object, so the search is consistent.
@@ -442,12 +446,12 @@
        // add the available types to the search object used for next search, 
        // if the criteria for types and galleries are empty
        if (cms.galleries.searchObject['galleries'].length == 0 &&              
-              cms.galleries.searchObject['types'].length == 0){           
+              cms.galleries.searchObject['types'].length == 0){                      
            return $.extend(preparedSearchObject, cms.galleries.searchObject, types);
        // just use the unchanged search object                                 
        }  else {
            return  cms.galleries.searchObject;
-       } 
+       }
    }
    
    /**
@@ -534,7 +538,7 @@
    /**
     * Returns true, if the select button should be displayed.
     */
-   var displaySelectButton = function () {      
+   var displaySelectButton = cms.galleries.displaySelectButton = function () {      
       if (cms.galleries.dialogMode == 'widget' || cms.galleries.dialogMode == 'editor'){
           return true;
       }

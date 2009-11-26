@@ -2152,6 +2152,46 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/publish.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/publish.png</destination>
+			<type>image</type>
+			<uuidstructure>e0093df2-d9ba-11de-a16d-f19ce2452f95</uuidstructure>
+			<uuidresource>e0093df3-d9ba-11de-a16d-f19ce2452f95</uuidresource>
+			<datelastmodified>Wed, 25 Nov 2009 12:05:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 25 Nov 2009 12:05:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/publish_in.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/publish_in.png</destination>
+			<type>image</type>
+			<uuidstructure>e0473155-d9ba-11de-a16d-f19ce2452f95</uuidstructure>
+			<uuidresource>e0473156-d9ba-11de-a16d-f19ce2452f95</uuidresource>
+			<datelastmodified>Wed, 25 Nov 2009 12:05:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 25 Nov 2009 12:05:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
   		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/relation.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/relation.png</destination>
@@ -2176,7 +2216,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-
   		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/published.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/published.png</destination>
@@ -2201,8 +2240,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-
-
 		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/check_gray.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/check_gray.png</destination>

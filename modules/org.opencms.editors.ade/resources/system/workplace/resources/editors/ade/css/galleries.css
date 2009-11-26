@@ -28,7 +28,7 @@
     #cms-gallery-tabs .ui-tabs-nav{
         background: #BFBFBF;
         border-bottom: 1px solid #AAAAAA;
-    }
+	}
     
     #cms-gallery-tabs li.ui-state-active{
         background: #f9f9f9;
@@ -46,13 +46,45 @@
     }
     
     #cms-preview .edit-area{
-        display:inline;
-        height:139px;
-        left:2px;
-        position:absolute;
-        top:300px;
-        width:648px;            
+        height: 100px;  
+    }                 
+       
+    div.button-bar button{
+        /* Fix for IE to avoid too wide buttons */
+        padding: 1px 2px 1px 2px;        
+        width:auto;
+        overflow:visible;
     }
+    
+    button span.cms-galleries-button{         
+        display: inline-block;                
+        height: 20px;
+        line-height: 20px;        
+    }      
+    
+    button span.cms-galleries-icon-apply{                       
+        background: transparent url(images/16x16/apply_in.png) no-repeat scroll left center;              
+    }
+    
+    button:hover span.cms-galleries-icon-apply{                       
+        background: transparent url(images/16x16/apply.png) no-repeat scroll left center;              
+    }
+    
+    button span.cms-galleries-icon-publish{                       
+        background: transparent url(images/16x16/publish_in.png) no-repeat scroll left center;              
+    }
+    
+     button:hover span.cms-galleries-icon-publish{                       
+        background: transparent url(images/16x16/publish.png) no-repeat scroll left center;              
+    }
+    
+    .cms-icon-text{
+        padding-left: 25px;
+    }
+    
+    .cms-text{
+        padding-left: 20px;
+    }     
     
     span.cms-item-title {
        display: inline-block;
@@ -68,18 +100,6 @@
     
     .cms-item-changed {
         color: blue;
-    }
-    
-    .cms-preview-button {
-        display:inline-block;
-        margin-bottom:10px;
-        margin-left:5px;
-        margin-top:4px;
-        padding:2px;
-    }
-    
-    .cms-preview-button:hover{
-    	background:     #ffffff;
     }
     
     .result-tab-scrolling {

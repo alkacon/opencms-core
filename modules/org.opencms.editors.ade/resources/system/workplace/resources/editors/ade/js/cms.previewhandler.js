@@ -22,7 +22,13 @@
           }
           $(this).parent().fadeOut('slow');
           
-       });   
+       });
+       
+       $('.button-bar button').live('mouseover', function() {
+             $(this).toggleClass('ui-state-hover', true);
+          }).live('mouseout', function() {
+             $(this).toggleClass('ui-state-hover', false);
+      });                 
        
        // fade in the preview      
        $('#cms-preview').fadeIn('slow');                    
@@ -33,19 +39,39 @@
     * 
     * @param {Object} itemProperties server response as JSON object with the editable properties
     */     
-   var showEditArea = function(itemProperties) {
-       // add button bar to the editable area
-       var target = $('.edit-area').append('<span id="previewSave" class="cms-preview-button ui-state-default ui-corner-all">Save</span>\
-                                           <span id="previewPublish" class="cms-preview-button ui-state-default ui-corner-all">Publish</span>');
+   var showEditArea = function(itemProperties) {      
+       var buttonBar = $('<div class="button-bar"></div>')
+                                       .append('<button id="previewSave" class="cms-left ui-state-default ui-corner-all">\
+                                                    <span class="cms-galleries-button">Save</span>\
+                                                </button>')
+                                       .append('<button id="previewPublish" class="cms-left ui-state-default ui-corner-all">\
+                                                    <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
+                                                </button>'); 
+                                        
+       var target = $('.edit-area').append(buttonBar);
        $('#previewSave').click(saveChangedProperty);
        $('#publishSave').click(publishChangedProperty);
-              
+       
+       if (cms.galleries.displaySelectButton()) {
+           $('.edit-area').find('.button-bar').append('<button id="previewSelect" class="cms-left ui-state-default ui-corner-all">\
+                                <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                          </button>');
+           $('#previewSelect').click(function() {
+               //TODO: 
+               var itemType = '';
+               var itemId = $(this).closest('#cms-preview').attr('alt');              
+               cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.dialogMode](itemId, cms.galleries.fieldId);          
+           });
+       }           
+                 
        // generate editable form
+       var form = $('<div class="edit-from"></div>');
        $.each(itemProperties, function() {
-              $('<div style="margin: 2px;"></div>').attr('alt', this.name).appendTo(target)
+              $('<div style="margin: 2px;  clear: left;"></div>').attr('alt', this.name).appendTo(form)
                    .append('<span class="cms-item-title" style="margin-right:10px; width: 100px;">' + this.name + '</span>')
                    .append('<span class="cms-item-edit" style=" width: 100px;">' + this.value + '</span>');                                 
-           });       
+           }); 
+       $(target).append(form);      
        
        // bind direct input to the editable fields
        $('.cms-item-edit').directInput({
@@ -83,7 +109,7 @@
        //display the html preview 
        $('.preview-area').append(itemData['previewdata']['itemhtml']);
        showEditArea(itemData['previewdata']['properties']);
-         
+              
    }
    
    /**
@@ -129,8 +155,17 @@
        alert('Publish');
    } 
    
-   var selectPath = function(item) {
-       //alert($(item).closest('li').attr('alt'));       
+   var selectPath = function(itemId, fieldId) {
+       if ( fieldId != null && fieldId != "") {
+		var imgField = window.opener.document.getElementById(fieldId);
+		imgField.value = itemId;
+		//try {
+			// toggle preview icon if possible
+		//	window.opener.checkPreview(fieldid);
+		//} catch (e) {}
+	}
+	window.close();
+       //alert($(item).closest('li').attr('alt') +", " + fieldId );       
    }
 
 ///// Default Content Handler ////////////////              

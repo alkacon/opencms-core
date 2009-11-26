@@ -21,10 +21,12 @@ var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
 <script type="text/javascript" src="js/cms.previewhandler.js"></script>
 <script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript">  
+	// set the ajax server path
     var vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
-	
+	// read and handle the request params
     var requestData = ${(not empty param.data) ? param.data : 'null'};
     cms.galleries.dialogMode = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
+    cms.galleries.fieldId = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
     $(function() {        
         cms.galleries.initAddDialog(requestData);                                 
 	});
