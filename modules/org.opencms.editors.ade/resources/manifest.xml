@@ -2084,6 +2084,27 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/warning.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/warning.png</destination>
+			<type>image</type>
+			<uuidstructure>291062cf-d90f-11de-ab2c-a19ce2452f95</uuidstructure>
+			<uuidresource>291062d0-d90f-11de-ab2c-a19ce2452f95</uuidresource>
+			<datelastmodified>Tue, 24 Nov 2009 15:36:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 24 Nov 2009 15:36:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
 		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/apply_in.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/apply_in.png</destination>
