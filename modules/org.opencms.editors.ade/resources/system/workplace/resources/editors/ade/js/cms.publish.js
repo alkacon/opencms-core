@@ -17,6 +17,13 @@
    var classPublishDialog = 'cms-publish-dialog';
    var buttonHeight = 24;
    
+   var stateToClassMap = {
+       'C': 'cms-fstate-changed',
+       'D': 'cms-fstate-deleted',
+       'N': 'cms-fstate-new'
+   };
+   
+   
    /**
     * Initializes the project list if it isn't already initialized and then calls a callback
     * @param {Object} callback the callback to be called after the project list initialization, or instantly if the project list has already been initialized
@@ -129,6 +136,7 @@
             $removeButton.attr('title', 'Remove')
             if (!$row.hasClass('cms-has-info')) {
                checkbox.setEnabled(true);
+               checkbox.setChecked(true);
             }
          }
       });
@@ -357,6 +365,10 @@
          if (!resource.title) {
             $row.find('.cms-list-title').append($('<span/>').text('[no title]'));
          }
+         var stateClass = stateToClassMap[resource.state];
+         if (stateClass) {
+             $row.addClass(stateClass);
+         }
          if (resource.info) {
             $('<span></span>').addClass('cms-publish-warning').attr('title', resource.info).prependTo($row.find('.cms-list-itemcontent'));
             self.problemCount++;
@@ -394,7 +406,7 @@
                $row.find('.cms-list-image').before($removeButton);
             }
          }
-         if (resource.related) {
+         if (resource.related && self.checkedRelated) {
             var related = resource.related;
             for (var i = 0; i < resource.related.length; i++) {
                var subResource = related[i];
@@ -509,8 +521,6 @@
          if (self.selectState) {
             var unchecked = cms.util.stringArrayToObject(self.selectState.unchecked);
             var toRemove = self.selectState.toRemove;
-            cms.util.Checkbox.getCheckboxes()
-            
             $.each(cms.util.Checkbox.getCheckboxes(self.$mainPanel), function() {
                if (unchecked[this.resourceId]) {
                   this.setChecked(false);

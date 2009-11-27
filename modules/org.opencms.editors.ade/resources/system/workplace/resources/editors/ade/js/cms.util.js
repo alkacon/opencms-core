@@ -328,6 +328,33 @@
       });
    }
    
+   
+   var dialogConfirm = cms.util.dialogConfirm = function(text, title, yesLabel, noLabel, callback) {
+      var $dlg = $('<div/>').text(text).appendTo('body');
+      var buttons = {};
+      buttons[noLabel] = function() {
+         $dlg.dialog('destroy').remove();
+         callback(false);
+      }
+      buttons[yesLabel] = function() {
+         $dlg.dialog('destroy').remove();
+         callback(true);
+      }
+      
+      $dlg.dialog({
+         autoOpen: true,
+         zIndex: 9999,
+         buttons: buttons,
+         title: title,
+         modal: true,
+         close: function() {
+            $dlg.dialog('destroy').remove();
+            callback(false);
+         }
+      });
+   }
+   
+   
    var addToElementList = cms.util.addToElementList = function(list, item, maxLen) {
       var rId = getResourceId(item);
       var pos = findFirstWithPrefix(list, rId);
@@ -507,7 +534,7 @@
    
    /**
     * Converts a function to a "deferred" function that executes the original function as a timeout.
-    * 
+    *
     * This can be used to create an event handler that is executed after other live event handlers.
     * @param {Object} fn the function to convert
     */

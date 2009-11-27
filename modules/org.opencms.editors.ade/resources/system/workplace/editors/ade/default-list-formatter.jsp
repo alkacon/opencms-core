@@ -17,7 +17,8 @@ pageContext.setAttribute("cms", cms);
 		<div class="cms-additional">
 			<c:forEach var="info" items="${cms.additionalInfo}">
 				<div class="cms-additional-item" rel="${info.name}">
-					<span class="cms-additional-item-title">${info.title}:  </span>${info.value}
+					<span class="cms-additional-item-title">${info.title}:  </span>
+					<span class= "cms-additional-item-value">${info.value}</span>
 				</div>
 			</c:forEach>
 		</div>

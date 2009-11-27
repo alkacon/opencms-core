@@ -1113,16 +1113,22 @@ ol.ade-forms fieldset {
 }
 
 
-.cms-fstate-deleted .cms-publish-title,.cms-fstate-deleted .cms-publish-path
+.cms-fstate-deleted .cms-additional-item[rel=state] .cms-additional-item-value
 	{
 	text-decoration: line-through;
 }
 
-.cms-fstate-new .cms-publish-title,.cms-fstate-new .cms-publish-path {
+
+
+
+
+
+
+.cms-fstate-new .cms-additional-item[rel=state] .cms-additional-item-value {
 	color: #0000ff;
 }
 
-.cms-fstate-changed .cms-publish-title,.cms-fstate-changed .cms-publish-path {
+.cms-fstate-changed .cms-additional-item[rel=state] .cms-additional-item-value {
 	color: #ff0000;
 }
 
@@ -1137,6 +1143,14 @@ ol.ade-forms fieldset {
 
 .cms-publish-row {
 	/*clear: both;*/
+}
+
+li.cms-list.cms-publish-row {
+	cursor: default;
+}
+
+.cms-publish-remove-button {
+	cursor: pointer;
 }
 
 .cms-publish-row .cms-publish-item{
@@ -1163,7 +1177,7 @@ ol.ade-forms fieldset {
 }
 
 div.cms-publish-scrolling {
- 	position: relative; 
+	position: relative;
 	border: 1px solid #aaaaaa;
 	padding: 0px 10px 10px 10px; 
 	overflow: auto;
@@ -1200,7 +1214,7 @@ div.cms-publish-scrolling {
 
 
 .cms-publish-toremove .cms-list-itemcontent {
-	background-image: none;
+	background-image: none !important; 
 	background-color: #bbbbbb;
 	color: #888888 !important;
 }
@@ -1397,9 +1411,6 @@ span.cms-select-opener{
 	width: 40px;
 	height: 40px;
 }
-
-
-
 
 
 
