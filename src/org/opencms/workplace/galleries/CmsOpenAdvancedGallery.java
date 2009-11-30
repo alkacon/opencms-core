@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2009/11/24 16:50:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/11/30 12:43:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6
  */
@@ -127,13 +127,13 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
                 StringBuffer galleryUri = new StringBuffer(256);
                 // path to the gallery dialog with the required request parameters
-                galleryUri.append(ADVANCED_GALLERY_PATH);
+                galleryUri.append(CmsAdvancedGallery.ADVANCED_GALLERY_PATH);
                 String width = "670";
                 String height = "540";
                 galleryUri.append("?");
-                galleryUri.append(PARAM_DIALOGMODE);
+                galleryUri.append(CmsAdvancedGallery.PARAM_DIALOGMODE);
                 galleryUri.append("=");
-                galleryUri.append(MODE_VIEW);
+                galleryUri.append(CmsAdvancedGallery.MODE_VIEW);
                 galleryUri.append("&");
                 galleryUri.append(DATA_PARAM);
                 galleryUri.append("=");

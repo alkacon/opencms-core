@@ -1,6 +1,7 @@
-<%@ page import="org.opencms.jsp.*" %><%
-    CmsJspActionElement wp = new CmsJspActionElement(pageContext, request, response);
-%>
+<%@ page import="org.opencms.workplace.galleries.*" %>
+<jsp:useBean id="gallery" class="org.opencms.workplace.galleries.CmsAdvancedGallery">
+ <% gallery.init(pageContext, request, response); %>
+ </jsp:useBean>
 
 <!DOCTYPE html 
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -22,9 +23,10 @@ var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
 <script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript">  
 	// set the ajax server path
-    var vfsPathAjaxJsp = "<%= wp.link("/system/workplace/galleries/gallerySearch.jsp") %>";  
+    var vfsPathAjaxJsp = "${gallery.galleryServerUri}";  
+    var tabs = ${gallery.listConfig};
 	// read and handle the request params
-    var requestData = ${(not empty param.data) ? param.data : 'null'};
+    var requestData = ${gallery.initialSearch};
     cms.galleries.initValues['dialogMode'] = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
     cms.galleries.initValues['fieldId'] = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
     $(function() {        

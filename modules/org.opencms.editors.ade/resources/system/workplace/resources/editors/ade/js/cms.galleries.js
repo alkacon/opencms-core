@@ -206,7 +206,7 @@
       // handle the request parameter and initialize the search object
       // TODO: remove if not used
       //var initTabId = cms.galleries.arrayOfTabIds['tabs-types']; 
-      cms.galleries.setSearchObject(requestData);     
+      cms.galleries.setSearchObject(requestData);
       
       // if a resource is selected, save the selected gallery to the search obejct 
       var test =  cms.galleries.initValues['fieldId'];
@@ -481,7 +481,7 @@
                 var availableTypes = cms.galleries.searchCriteriaListsAsJSON['types'];
                 var availableGalleries = cms.galleries.searchCriteriaListsAsJSON['galleries'];
                 // get the resource types associated with the selected galleries
-                var contentTypes = [];
+              var contentTypes = [];
                 for (var i = 0; i < availableGalleries.length; i++) {                   
                     if ( $.inArray(availableGalleries[i]['path'], selectedGalleries) != -1){                                                                            
                             contentTypes = contentTypes.concat(availableGalleries[i]['contenttypes']);                                                    
@@ -497,7 +497,7 @@
                 return $.extend(preparedSearchObject, cms.galleries.searchObject, {'types' : checkedTypes});                                              
             } else {
                 return cms.galleries.searchObject;
-            }                                            
+                       }           
        // just use the unchanged search object      
        } else {
            return  cms.galleries.searchObject;
@@ -648,7 +648,7 @@
    
        /**
      * Sets the values of the search object.
-     * The parameter should look like: {'qeurydata': {'galleries':...,}', 'tabid':..,}
+     * The parameter should look like: {'querydata': {'galleries':...,}', 'tabid':..,}
      * @param {Object} requestData a JSON object with search object data 
      */
     var setSearchObject = cms.galleries.setSearchObject = function(/**JSON object*/requestData) {

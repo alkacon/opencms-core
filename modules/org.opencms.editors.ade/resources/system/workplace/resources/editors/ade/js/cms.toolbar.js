@@ -1152,7 +1152,7 @@
       self.load(function(ok, data) {
          self.prepareAfterLoad();
          list = $('#' + self.menuId);
-         if (self.menuId == cms.html.favriteListId || self.menuId == cms.html.resentListId) {
+         if (self.menuId == cms.html.favoriteListId || self.menuId == cms.html.recentListId) {
              $('.cms-list-itemcontent:not(:has(a.cms-move))', list).each(function() {
                  var elem = $(this);
                  $('<a class="cms-handle cms-move"></a>').appendTo(elem);

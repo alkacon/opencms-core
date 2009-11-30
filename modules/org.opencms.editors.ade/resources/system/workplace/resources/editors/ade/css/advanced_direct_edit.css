@@ -1177,7 +1177,7 @@ li.cms-list.cms-publish-row {
 }
 
 div.cms-publish-scrolling {
-	position: relative;
+ 	position: relative; 
 	border: 1px solid #aaaaaa;
 	padding: 0px 10px 10px 10px; 
 	overflow: auto;
@@ -1327,7 +1327,7 @@ div.cms-publish-scrolling {
 
 div.cms-selectbox{
 	position:relative; 
-       display:inline-block;
+    display:inline-block;
 	line-height: 16px;
 	width: 150px;
 	z-index: 1;
@@ -1342,7 +1342,7 @@ div.cms-selectbox span.cms-select-option{
 	
 div.cms-selector{
 	width: 150px;
-	position:absolute;
+	position:absolute !important;
     z-index: 10;
 	top:20px;
 	left:-1px;
@@ -1351,7 +1351,6 @@ div.cms-selector{
 	
 div.cms-open div.cms-selector{
 	display: block;
-	z-index: 1;
 }
 
 span.cms-select-opener{
@@ -1411,6 +1410,9 @@ span.cms-select-opener{
 	width: 40px;
 	height: 40px;
 }
+
+
+
 
 
 
