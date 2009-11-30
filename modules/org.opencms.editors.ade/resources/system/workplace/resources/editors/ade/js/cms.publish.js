@@ -406,7 +406,9 @@
                $row.find('.cms-list-image').before($removeButton);
             }
          }
-         if (resource.related && self.checkedRelated) {
+         
+         // do not display related resources if we are in the main state and the "related" checkbox is not checked
+         if (resource.related && (self.checkedRelated || isLinkCheck)) {
             var related = resource.related;
             for (var i = 0; i < resource.related.length; i++) {
                var subResource = related[i];
