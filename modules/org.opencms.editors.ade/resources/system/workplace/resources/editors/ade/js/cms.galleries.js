@@ -206,30 +206,7 @@
       // handle the request parameter and initialize the search object
       // TODO: remove if not used
       //var initTabId = cms.galleries.arrayOfTabIds['tabs-types']; 
-      cms.galleries.setSearchObject(requestData);
-      /*if (requestData) {
-          if (requestData.querydata) {
-              if (requestData.querydata.galleries) {
-                  cms.galleries.searchObject['galleries'] = requestData.querydata.galleries;
-                  cms.galleries.searchObject.isChanged.galleries = true;
-              }
-              if (requestData.querydata.categories) {
-                  cms.galleries.searchObject['categories'] = requestData.querydata.categories;
-                  cms.galleries.searchObject.isChanged.categories = true;
-              }
-              if (requestData.querydata.types) {
-                  cms.galleries.configContentTypes = requestData.querydata.types;                  
-                  cms.galleries.searchObject.isChanged.types = true;
-              }          
-              if (requestData.querydata.query) {
-                  cms.galleries.searchObject['query'] = requestData.querydata.query;
-                  cms.galleries.searchObject.isChanged.query = true;
-              }
-              if (requestData.querydata.tabid) {
-                  cms.galleries.searchObject['tabid'] = requestData.querydata.tabid;                 
-              }
-          }                        
-      }*/
+      cms.galleries.setSearchObject(requestData);     
       
       // if a resource is selected, save the selected gallery to the search obejct 
       var test =  cms.galleries.initValues['fieldId'];
@@ -490,28 +467,37 @@
     */
    var prepareSearchObject = cms.galleries.prepareSearchObject = function() {
        var preparedSearchObject = {};
-       var types = {'types': cms.galleries.configContentTypes};
+       var types = {};
+       
        // add the available types to the search object used for next search, 
-       // if the criteria for types and galleries are empty
-       if (cms.galleries.searchObject['galleries'].length == 0 &&              
-              cms.galleries.searchObject['types'].length == 0){                      
-           return $.extend(preparedSearchObject, cms.galleries.searchObject, types);
-       // find out the resource types for selected galleries                                  
-       /*}  else if (cms.galleries.searchObject['galleries'].length == 0 && cms.galleries.searchObject['types'].length > 0) {
-               // TODO : finish check of the types for galleries:
-               
-              var contentTypes = [];
-               var selectedGalleries = cms.galleries.searchObject['galleries']
-              // var typeObjects = cms.galleries.searchCriteriaListsAsJSON['types'];  
-               // at least one type is selected
-               if (selectedGalleries.length > 0) {
-                   var availableTypes = cms.galleries.searchCriteriaListsAsJSON['types'];
-                   for (i = 0; i < availableTypes.length; i++) {           
-                       if ($.inArray(availableTypes[i]['typeid'].toString(), selectedGalleries) != -1) {
-                           galleryTypes = galleryTypes.concat(availableTypes[i]['gallerytypeid']);    
-                       }           
-                   }*/
-                     
+       // if the criteria for types are empty
+       if (cms.galleries.searchObject['types'].length == 0) {
+           // no galleries is selected
+           if (cms.galleries.searchObject['galleries'].length == 0) {               
+               return $.extend(preparedSearchObject, cms.galleries.searchObject, {'types':cms.galleries.configContentTypes});
+           // at least one gallery is selected                              
+           } else if (cms.galleries.searchObject['galleries'].length > 0) {               
+                var selectedGalleries = cms.galleries.searchObject['galleries'];                
+                var availableTypes = cms.galleries.searchCriteriaListsAsJSON['types'];
+                var availableGalleries = cms.galleries.searchCriteriaListsAsJSON['galleries'];
+                // get the resource types associated with the selected galleries
+                var contentTypes = [];
+                for (var i = 0; i < availableGalleries.length; i++) {                   
+                    if ( $.inArray(availableGalleries[i]['path'], selectedGalleries) != -1){                                                                            
+                            contentTypes = contentTypes.concat(availableGalleries[i]['contenttypes']);                                                    
+                    }
+                }
+                // check if the associated resource types are available for this gallery
+                var checkedTypes = [];
+                for (var i = 0; i < contentTypes.length; i++) {
+                    if ( $.inArray(contentTypes[i], cms.galleries.configContentTypes) != -1 && $.inArray(contentTypes[i], checkedTypes) == -1){                                                                            
+                            checkedTypes.push(contentTypes[i]);                                                    
+                    }
+                }                                                                
+                return $.extend(preparedSearchObject, cms.galleries.searchObject, {'types' : checkedTypes});                                              
+            } else {
+                return cms.galleries.searchObject;
+            }                                            
        // just use the unchanged search object      
        } else {
            return  cms.galleries.searchObject;

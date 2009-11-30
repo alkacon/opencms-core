@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2009/11/26 16:34:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/11/30 12:40:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
     
     var itemFieldvalue = null;
     if (fieldId != null && fieldId != "" && fieldId != 'null') {
-        var itemField = window.opener.document.getElementById(fieldId);
+        var itemField = window.document.getElementById(fieldId);
         if (itemField.value != null && itemField.value != '') {
               itemFieldvalue = itemField.value;  
         }            
