@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/12/01 13:03:29 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2009/12/01 16:17:00 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.editors.ade.A_CmsAjaxServer;
 import org.opencms.workplace.editors.ade.CmsFormatterInfoBean;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsADEManager;
 
 import java.io.IOException;
@@ -87,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 7.6
  */
@@ -386,7 +387,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /** Request parameter name constants. */
-    protected enum ReqParam {
+    public enum ReqParam {
 
         /** The action of execute. */
         ACTION("action"),
@@ -1014,7 +1015,17 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         // reading default explorer-type properties
         JSONArray propertiesJSON = new JSONArray();
-        List<String> properties = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getProperties();
+        CmsExplorerTypeSettings setting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        List<String> properties = setting.getProperties();
+        String reference = setting.getReference();
+
+        // looking up properties from referenced explorer types if properties list is empty
+        while ((properties.size() == 0) && !CmsStringUtil.isEmptyOrWhitespaceOnly(reference)) {
+            setting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(reference);
+            properties = setting.getProperties();
+            reference = setting.getReference();
+        }
+
         Iterator<String> propIt = properties.iterator();
         while (propIt.hasNext()) {
             String propertyName = propIt.next();

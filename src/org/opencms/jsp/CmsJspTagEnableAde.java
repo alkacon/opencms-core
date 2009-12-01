@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/11/24 16:32:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/12/01 16:17:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.workplace.galleries.CmsGallerySearchServer;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 
 import java.io.IOException;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6 
  */
@@ -198,7 +199,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 resolver.addMacro(MACRO_SERVER_URI, serverUri);
                 String publishUri = linkMan.substituteLink(cms, PUBLISH_SERVER_URI);
                 resolver.addMacro(MACRO_PUBLISH_URI, publishUri);
-                String galleryServerUri = linkMan.substituteLink(cms, GALLERY_SERVER_URI);
+                String galleryServerUri = linkMan.substituteLink(cms, CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
                 resolver.addMacro(MACRO_GALLERY_SERVER_URI, galleryServerUri);
                 String skinUri = CmsWorkplace.getSkinUri();
                 resolver.addMacro(MACRO_SKIN_URI, skinUri);
