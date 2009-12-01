@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2009/12/01 08:55:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/12/01 13:39:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6
  */
@@ -125,8 +125,13 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 JSONArray galleriesArr = new JSONArray();
                 try {
                     galleriesArr.put(galleryPath);
+                    queryObj.put(CmsGallerySearchServer.JsonKeys.TYPES.getName(), new JSONArray());
                     queryObj.put(CmsGallerySearchServer.JsonKeys.GALLERIES.getName(), galleriesArr);
+                    queryObj.put(CmsGallerySearchServer.JsonKeys.CATEGORIES.getName(), new JSONArray());
+                    queryObj.put(CmsGallerySearchServer.JsonKeys.MATCHESPERPAGE.getName(), 8);
+                    queryObj.put(CmsGallerySearchServer.JsonKeys.QUERY.getName(), "");
                     queryObj.put(CmsGallerySearchServer.JsonKeys.TABID.getName(), "tabs-result");
+                    queryObj.put(CmsGallerySearchServer.JsonKeys.PAGE.getName(), 1);
                     jsonObj.put(CmsGallerySearchServer.JsonKeys.QUERYDATA.getName(), queryObj);
                 } catch (JSONException e) {
                     // ignore, because it should not happen!

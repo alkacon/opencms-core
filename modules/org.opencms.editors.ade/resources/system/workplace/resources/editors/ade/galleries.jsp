@@ -1,7 +1,9 @@
 <%@ page import="org.opencms.workplace.galleries.*" 
 %><jsp:useBean id="gallery" class="org.opencms.workplace.galleries.CmsGallerySearchServer">
-	<% gallery.init(pageContext, request, response); %>
-</jsp:useBean><!DOCTYPE html 
+ <% gallery.init(pageContext, request, response); %>
+ </jsp:useBean>
+
+<!DOCTYPE html 
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -22,13 +24,13 @@ var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
 <script type="text/javascript">  
 	// set the ajax server path
     var vfsPathAjaxJsp = "${gallery.galleryServerUri}";  
-    var tabs = ${gallery.listConfig};
-	// read and handle the request params
+ 	// read and handle the request params
+    var tabs = ${gallery.listConfig};	
     var requestData = ${gallery.initialSearch};
     cms.galleries.initValues['dialogMode'] = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
     cms.galleries.initValues['fieldId'] = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
     $(function() {        
-        cms.galleries.initAddDialog(requestData);                                 
+        cms.galleries.initAddDialog(tabs, requestData);                                 
 	});
 
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2009/11/30 12:40:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/01 13:39:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,50 +36,65 @@
  */
 
 var defaultAdvancedGalleryPath;
-var queryData;
+var requestData;
 
 // opens the default advanced gallery popup window
 function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
-	
+	requestData = {};
 	//parameter from the xml configuration
     // startup param as string
 	var startupFolder = eval('startupFolder' + idHash);
     // startup param as array    
-    var startupFolders = eval('startupFolders' + idHash);    
+    var startupFolders = eval('startupFolders' + idHash);
+    
+    // start type from the configuration could be 'gallery' or 'category'
 	var startupType = eval('startupType' + idHash);
     var resourceTypes = eval('resourceTypes' + idHash);    
-    
-    var searchKeys = {'category' : 'categories', 'gallery' : 'galleries'};
-    
-	//edited resource has to be provided to use custom categories
-	//var editedResource = "";
-	//try {
-	//	editedResource = document.forms["EDITOR"].elements["resource"].value;
-	//} catch (e) {};
-    
-    queryData = {'querydata': {}};
-    queryData['querydata']['types'] =  resourceTypes;
-    queryData['querydata']['tabid'] =  'tabs-result';
-    // check the 
-    if (startupFolder != null) {       
-        queryData['querydata'][searchKeys[startupType]] =  [startupFolder];    
-    } else if (startupFolders != null){        
-        queryData['querydata'][searchKeys[startupType]] =  startupFolders;
-    }
-    
+    // value of the input field
     var itemFieldvalue = null;
     if (fieldId != null && fieldId != "" && fieldId != 'null') {
         var itemField = window.document.getElementById(fieldId);
         if (itemField.value != null && itemField.value != '') {
               itemFieldvalue = itemField.value;  
         }            
+    }    
+    var searchKeys = {'category' : 'categories', 'gallery' : 'galleries'};            	
+    
+    // if input field is not empty
+    if (itemFieldvalue) {
+        requestData['resourcepath'] = itemFieldvalue;
+        requestData['types'] = resourceTypes;
+    // id input field is empty
+    } else {        
+        requestData = {  'querydata': {},
+                         'types':     resourceTypes
+                      };
+        requestData['querydata']['types'] =  resourceTypes;        
+        requestData['querydata']['galleries'] =  [];
+        requestData['querydata']['categories'] = [];
+        requestData['querydata']['matchesperpage'] = 8;
+        requestData['querydata']['query'] =  '';
+        requestData['querydata']['tabid'] =  'tabs-result';
+        requestData['querydata']['page'] =  1;                
+        // check the 
+        if (startupFolder != null) {       
+            requestData['querydata'][searchKeys[startupType]] =  [startupFolder];    
+        } else if (startupFolders != null){        
+            requestData['querydata'][searchKeys[startupType]] =  startupFolders;
+        }   
+        // TODO: zusätzlich types hinzufügen
     }
-            		
+                            		
 	var paramString = "dialogmode=" + dialogMode;
-	paramString += "&fieldid=" + fieldId;
-    paramString += "&path=" + itemFieldvalue;
-	paramString += "&data=" + JSON.stringify(queryData);
+	paramString += "&fieldid=" + fieldId;    
+	paramString += "&data=" + JSON.stringify(requestData);
 	treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString , "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=680,height=520');
+    
+    //edited resource has to be provided to use custom categories
+	//var editedResource = "";
+	//try {
+	//	editedResource = document.forms["EDITOR"].elements["resource"].value;
+	//} catch (e) {};
 }
 
 // opens a preview popup window to display the currently selected download

@@ -4,10 +4,11 @@
    var contentTypeHandlers = cms.galleries.contentTypeHandlers = {};
     
    /** Array with resource types available for this galleries dialog. */
-   var configContentTypes = cms.galleries.configContentTypes = [1, 2, 3, 4, 6, 7, 146, 147, 149];
+   var configContentTypes = cms.galleries.configContentTypes = [];
     
    /** html-id for tabs. */
    var idTabs = cms.galleries.idTabs = 'cms-gallery-tabs';
+   
    /** html-id for tabs. */
    var idGalleriesMain = cms.galleries.idGalleriesMain = 'cms-gallery-main';   
    
@@ -22,12 +23,6 @@
        'tabs-categories': 3,
        'tabs-fulltextsearch':4
    };
-   
-   
-   //var dialogMode = cms.galleries.dialogMode = null;
-   
-   
-   //var fieldId = cms.galleries.fieldId = null;
    
    /** 
     * dialogMode: The current mode of the dialog. It can be 'widget','editor','ade', 'sitemap' or 'view'.
@@ -203,30 +198,19 @@
     * 
     * @param {Object} requestData the request parameter
     */
-   var initAddDialog = cms.galleries.initAddDialog = function(requestData) {
-      // handle the request parameter and initialize the search object
-      // TODO: remove if not used
-      //var initTabId = cms.galleries.arrayOfTabIds['tabs-types']; 
-      cms.galleries.setSearchObject(requestData);
-      
-      // if a resource is selected, save the selected gallery to the search obejct 
-      var test =  cms.galleries.initValues['fieldId'];
-      if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null'){          
-          var itemField = window.opener.document.getElementById(cms.galleries.initValues['fieldId']);
-	      if (itemField.value != null && itemField.value != "") {
-                cms.galleries.activeItem['path'] = itemField.value;
-                cms.galleries.activeItem['isInitial'] = true;
-    		    //cms.galleries.loadSearchObjectForActiveItem(itemField.value);
-                // reset the values of the search object
-                cms.galleries.searchObject['galleries'] = [];
-                cms.galleries.searchObject['categories'] = [];        
-                cms.galleries.searchObject['types'] = [];
-                cms.galleries.searchObject['query'] = '';
-                cms.galleries.searchObject['tabid'] = 0;
-                cms.galleries.searchObject['galleries'].push('/demo_en/extra/extranet/documents/');
-    	  }          
+   var initAddDialog = cms.galleries.initAddDialog = function(tabsContent, requestData) {       
+      // add default content handler
+      cms.galleries.contentTypeHandlers['default']= cms.previewhandler.defaultContentTypeHandler;              
+      // handle the request parameter:
+      // initialize the search object and the initial search 
+      var initSearchResult = null;          
+      if (requestData) {
+          cms.galleries.setSearchObject(requestData);    
+          if (requestData['searchresult']) {
+              initSearchResult = requestData;
+          }
       }
-      
+                 
       // init tabs for add dialog
       var resultTab = $(cms.galleries.htmlTabResultSceleton);
       resultTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
@@ -307,10 +291,8 @@
           .append(galleriesTab)
           .append(categoriesTab)
           .append(cms.galleries.htmlTabFTSeachSceleton);
-      // load content of the search criteris tabs    
-      cms.galleries.loadSearchLists();      
       // add preview to the galleries html
-      $('#' + cms.galleries.idGalleriesMain).append(cms.galleries.htmlPreviewSceleton); 
+      $('#' + cms.galleries.idGalleriesMain).append(cms.galleries.htmlPreviewSceleton);                  
       
       //TODO: blind out quick search dialog for the moment
       $('span.cms-ft-search').css('display', 'none');
@@ -323,8 +305,10 @@
                 cms.galleries.fillResultTab();
             }
         },
-        selected: 1
+        selected: 0    // should be the result tab, so the it does not have to switch
       });
+      
+      
                   
       // removing ui-widget-header and ui-corner-all from ui-tabs-nav for layout reasons
       $('#' + cms.galleries.idGalleriesMain + ' .ui-tabs-nav').removeClass('ui-widget-header').removeClass('ui-corner-all');
@@ -336,7 +320,10 @@
           .live('click', cms.galleries.clickListItem);
       // bind dbclick event to the items in the result list
       $('#results li.cms-list').live('dblclick', cms.galleries.dblclickToShowPreview);
-      $('#results li.cms-list').live('click', cms.galleries.clickResultItem);      
+      $('#results li.cms-list').live('click', cms.galleries.clickResultItem); 
+      
+      // load content of the search criteris tabs    
+      cms.galleries.loadSearchLists(tabsContent, initSearchResult);     
           
       // bind hover event on items in criteria and result lists
       $('li.cms-list')
@@ -380,10 +367,7 @@
           e.stopPropagation();                    
       });
            
-      $('.cms-item a.ui-icon').live('click', cms.galleries.toggleAdditionalInfo);
-      
-      // add default content handler
-      cms.galleries.contentTypeHandlers['default']= cms.previewhandler.defaultContentTypeHandler;           
+      $('.cms-item a.ui-icon').live('click', cms.galleries.toggleAdditionalInfo);                       
    }
    
    
@@ -405,19 +389,23 @@
   /**
     * Loads the lists with available resource types, galleries and categories via ajax call.    
     */
-   var loadSearchLists = cms.galleries.loadSearchLists = function() {
-      $.ajax({
-         'url': vfsPathAjaxJsp,
-         'data': {
-            'action': 'all',
-            'data': JSON.stringify({
-               'types': cms.galleries.configContentTypes
-            })
-         },
-         'type': 'POST',
-         'dataType': 'json',
-         'success': cms.galleries.fillCriteriaTabs
-      });
+   var loadSearchLists = cms.galleries.loadSearchLists = function(tabsContent, initSearchResult) {
+      if (tabsContent) {
+          cms.galleries.fillCriteriaTabs(tabsContent, initSearchResult);
+      } else {
+          $.ajax({
+             'url': vfsPathAjaxJsp,
+             'data': {
+                'action': 'all',
+                'data': JSON.stringify({
+                   'types': cms.galleries.configContentTypes
+                })
+             },
+             'type': 'POST',
+             'dataType': 'json',
+             'success': cms.galleries.fillCriteriaTabs
+          });   
+      }
    }
    
    /**
@@ -425,7 +413,7 @@
     *
     * @param {Object} JSON map object
     */
-   var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function(/**JSON*/data) {       
+   var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function(/**JSON*/data, initSearchResult) {       
       cms.galleries.searchCriteriaListsAsJSON = data;
       if (cms.galleries.searchCriteriaListsAsJSON.galleries) {
          cms.galleries.fillGalleries(cms.galleries.searchCriteriaListsAsJSON.galleries);
@@ -436,24 +424,24 @@
          markSelectedCriteria('categories');
       }
       if (cms.galleries.searchCriteriaListsAsJSON.types) {
+         cms.galleries.configContentTypes = cms.galleries.searchCriteriaListsAsJSON.typeids;
          cms.galleries.fillTypes(cms.galleries.searchCriteriaListsAsJSON.types);
          markSelectedCriteria('types');
-      }     
-      // open the preselected tab
-      $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);
+      }
       
-      // if a resource is selected open the preview 
-      /*if (cms.galleries.initValues['fieldId']){
-          var itemField = window.opener.document.getElementById(cms.galleries.initValues['fieldId']);
-	      if (itemField.value != null && itemField.value != "") {
-              alert('3 ' + itemField.value);
-    		    $('#results li.cms-list[alt="' + itemField.value + '"]').trigger('dblclick');
-    	  }          
-      }*/
-           
+      if (initSearchResult) {
+          fillResultTab(initSearchResult);          
+      } else {
+          // open the preselected tab
+          $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);    
+      }       
    }
    
-   
+   /**
+    * Marks the preloaded selected criteria set in the search object
+    * 
+    * @param {Object} criteria the search criteria (galleries, categories or types) to be selected
+    */
    var markSelectedCriteria = function (/**String*/criteria) {       
        if (cms.galleries.searchObject[criteria]) {
              $.each(cms.galleries.searchObject[criteria], function() {
@@ -509,23 +497,27 @@
     * Loads the lists with available resource types, galleries and categories via ajax call.
     * TODO: generalize to make it possible to load some preselected
     */
-   var loadSearchResults = cms.galleries.loadSearchResults = function() {
-      cms.galleries.searchObject.page = 1;
-      // ajust the search object to provide a consistent search
-      var preparedSearchObject = prepareSearchObject();
-      
-      $.ajax({
-         'url': vfsPathAjaxJsp,
-         'data': {
-            'action': 'search',
-            'data': JSON.stringify({
-               'querydata': preparedSearchObject
-            })
-         },
-         'type': 'POST',
-         'dataType': 'json',
-         'success': cms.galleries.fillResultList
-      });
+   var loadSearchResults = cms.galleries.loadSearchResults = function(initSearchResult) {
+      if (initSearchResult) {
+          cms.galleries.fillResultList(initSearchResult);
+      } else {
+          cms.galleries.searchObject.page = 1;
+          // ajust the search object to provide a consistent search
+          var preparedSearchObject = prepareSearchObject();
+          
+          $.ajax({
+             'url': vfsPathAjaxJsp,
+             'data': {
+                'action': 'search',
+                'data': JSON.stringify({
+                   'querydata': preparedSearchObject
+                })
+             },
+             'type': 'POST',
+             'dataType': 'json',
+             'success': cms.galleries.fillResultList
+          });
+      }
    }
    
    
@@ -559,12 +551,14 @@
                      if ($('#searchresults_page' + currentPage).children().length == 0) {
                         // adjust the page_id in the search object and load search results for this page
                         cms.galleries.searchObject.page = currentPage;
+                        // ajust the search object to provide a consistent search
+                        var preparedSearchObject = prepareSearchObject();
                         $.ajax({
                            'url': vfsPathAjaxJsp,
                            'data': {
                               'action': 'search',
                               'data': JSON.stringify({
-                                 'querydata': cms.galleries.searchObject
+                                 'querydata': preparedSearchObject
                               })
                            },
                            'type': 'POST',
@@ -606,7 +600,7 @@
           resultElement.data('type', this.type);
           if(displaySelectButton()) {
               resultElement.find('.cms-list-itemcontent')
-                  .append('<div class="cms-handle-button cms-select-item ui-widget-content ui-corner-all"></div>');
+                  .append('<div class="cms-handle-button cms-select-item"></div>');
           }
           // if in ade container-page
          if (cms.toolbar && cms.toolbar.toolbarReady) {
@@ -626,28 +620,7 @@
       } 
    }
    
-  /**
-   * Update the search object according to the given resource path.
-   *  
-   * @param {Object} path to the selected item in the result list
-   */
-   var loadSearchObjectForActiveItem = cms.galleries.loadSearchObjectForActiveItem = function(/**String*/ path) {     
-      
-      $.ajax({
-         'url': vfsPathAjaxJsp,
-         'data': {
-            'action': 'search',
-            'data': JSON.stringify({
-               'querydata': {'path': path}
-            })
-         },
-         'type': 'POST',
-         'dataType': 'json',
-         'success': cms.galleries.setSearchobject
-      });
-   }
-   
-       /**
+   /**
      * Sets the values of the search object.
      * The parameter should look like: {'querydata': {'galleries':...,}', 'tabid':..,}
      * @param {Object} requestData a JSON object with search object data 
@@ -661,6 +634,7 @@
         cms.galleries.searchObject['tabid'] = 2;
         
         if (requestData) {
+            // initialize the search object
             if (requestData.querydata) {
                 if (requestData.querydata.galleries) {
                     cms.galleries.searchObject['galleries'] = requestData.querydata.galleries;
@@ -671,7 +645,7 @@
                     cms.galleries.searchObject.isChanged.categories = true;
                 }
                 if (requestData.querydata.types) {
-                    cms.galleries.configContentTypes = requestData.querydata.types;
+                    // Do not set the type the criteria for type, so only the gallery is selected
                     cms.galleries.searchObject.isChanged.types = true;
                 }
                 if (requestData.querydata.query) {
@@ -679,19 +653,30 @@
                     cms.galleries.searchObject.isChanged.query = true;
                 }
                 if (requestData.querydata.tabid) {
-                    cms.galleries.searchObject['tabid'] = requestData.querydata.tabid;
+                    cms.galleries.searchObject['tabid'] = cms.galleries.arrayOfTabIds[requestData.querydata.tabid];
                 }
             }
+            
+            // Set the path to currently selected item            
+            if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null'){          
+                  var itemField = window.opener.document.getElementById(cms.galleries.initValues['fieldId']);
+        	      if (itemField.value != null && itemField.value != "") {
+                        cms.galleries.activeItem['path'] = itemField.value;
+                        cms.galleries.activeItem['isInitial'] = true;
+            	  }          
+            }
         }
+        
     }
    
    /**
-    * Fills the list in the search criteria tabs.
-    *
-    * @param {Object} JSON map object
+    * Refresh the list for given criteria after sorting.
+    * 
+    * @param {Object} sortedList the list after sorting
+    * @param {Object} criteria the name of the list
+    * @param {Object} option the option for the hierarchic list
     */
-   var refreshCriteriaList = cms.galleries.refreshCriteriaList = function(/**Array*/sortedList, /**String*/ criteria, option) {
-   
+   var refreshCriteriaList = cms.galleries.refreshCriteriaList = function(/**Array*/sortedList, /**String*/ criteria, option) {   
       if (criteria == 'galleries') {
          cms.galleries.refreshGalleries(sortedList);
       } else if (criteria == 'categories') {
@@ -699,7 +684,6 @@
       } else if (criteria == 'types') {
          cms.galleries.refreshTypes(sortedList);
       }
-      // TODO: go through html and the search object and mark the already selected search criteria     
    }
    
    /**
@@ -814,7 +798,7 @@
    /**
     * Adds the search criteria html to the result tab.
     */
-   var fillResultTab = cms.galleries.fillResultTab = function() {      
+   var fillResultTab = cms.galleries.fillResultTab = function(initSearchResult) {      
       var searchEnables = false;
       // display the search criteria
       $.each(cms.galleries.keysSearchObject, function() {         
@@ -860,7 +844,7 @@
          
       // display the search results
       if (searchEnables) {
-         cms.galleries.loadSearchResults();
+         cms.galleries.loadSearchResults(initSearchResult);
       }           
    }
    
@@ -1096,20 +1080,7 @@
       //deselect items in the list and set active class to the item which was dblclicked
       $('#result li.list-item').toggleClass('cms-list-item-active', false);
       $(this).toggleClass('cms-list-item-active', true);
-      
-      
-      // work around to prevent double loading for just opened preview
-      /*var currPreviewId = $('#cms-preview').attr('alt');
-      if (currPreviewId == null) {
-          $('#cms-preview').attr('alt',itemId);
-          loadItemPreview(itemId); 
-      } else if (currPreviewId != null || itemId != currPreviewId) {
-          $('#cms-preview').attr('alt', itemId);
-          $('#cms-preview div.preview-area, #cms-preview div.edit-area').empty();
-          loadItemPreview(itemId);
-      } else {
-          $('#cms-preview').fadeIn('slow');
-      } */     
+       
   } 
      
     /**
