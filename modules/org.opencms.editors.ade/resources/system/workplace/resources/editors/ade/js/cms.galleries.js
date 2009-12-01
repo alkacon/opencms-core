@@ -168,20 +168,21 @@
    /** html fragment for the tab with the types' list. */
    var htmlTabFTSeachSceleton = cms.galleries.htmlTabFTSeachSceleton = '<div id="tabs-fulltextsearch">\
              <div class="cms-search-panel ui-corner-all">\
-                    <div class="ui-widget cms-search-options">\
+                    <div class="cms-search-options"><b>Search the offline-index:</b></div>\
+                    <div class="cms-search-options">\
                         <span id="searchQuery" class="cms-item-left"><label>Search for:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
-                    <div class="ui-widget cms-search-options">\
+                 <!--   <div class="cms-search-options">\
                         <div class="cms-item-left">Search in:</div>\
                         <div id="searchInTitle" class="cms-list-checkbox"></div>\
                         <div class="cms-checkbox-label">Title</div>\
                         <div id="searchInContent" class="cms-list-checkbox"></div>\
                         <div class="cms-checkbox-label">Content</div>\
                     </div>\
-                    <div class="ui-widget cms-search-options">\
+                    <div class="cms-search-options">\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed after:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
-                    </div>\
+                    </div> -->\
                     <div class="cms-search-options">\
                         <button class="ui-state-default ui-corner-all cms-item-left-bottom">Search</button>\
                     </div>\
@@ -190,9 +191,9 @@
    
    
    /** html fragment for the item preview. */
-   var htmlPreviewSceleton = cms.galleries.htmlPreviewSceleton = '<div id="cms-preview">\
+   var htmlPreviewSceleton = cms.galleries.htmlPreviewSceleton = '<div id="cms-preview" class="ui-corner-all">\
                                 <div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>\
-            	                <div class="preview-area"></div>\
+            	                <div class="preview-area ui-widget-content ui-corner-all"></div>\
 				                <div class="edit-area ui-widget-content ui-corner-all"></div>\
                              <div>';
   

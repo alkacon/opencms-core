@@ -7,7 +7,7 @@ org.opencms.workplace.galleries.CmsDefaultFormatterHelper cms = new org.opencms.
 pageContext.setAttribute("cms", cms);
 %>
 <fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
-<div class="ui-widget-content">
+<div>
 	<h3>${cms.title}</h3>
 	<div>
 		<b>Last modified:</b>&nbsp;${cms.resource.dateLastModified}<br />

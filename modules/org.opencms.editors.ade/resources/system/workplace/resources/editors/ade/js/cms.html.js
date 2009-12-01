@@ -136,9 +136,8 @@
     */
    var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = /*Html*/ function(/*Element*/item) {
       var $content = createItemFavListHtml(item.id);
-      $content.prepend(deleteIcon).append('<br style="clear:both;" />');
+      $content.prepend(deleteIcon);
       $('.cms-move', $content).remove();
-      $content.children('.ui-widget-content').addClass('cms-left');
       return cms.util.jqueryToHtml($content);
    }
    

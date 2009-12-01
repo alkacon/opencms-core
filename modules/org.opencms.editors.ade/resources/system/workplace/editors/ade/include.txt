@@ -10,6 +10,11 @@
         zoom: 1;
         display: inline;
     }
+    
+    ul.cms-list-scrolling-innner{
+    	padding-top: 4px;
+    }
+    
     ul.cms-list-scrolling-innner li.cms-item{
     	margin-top: -4px;
     }

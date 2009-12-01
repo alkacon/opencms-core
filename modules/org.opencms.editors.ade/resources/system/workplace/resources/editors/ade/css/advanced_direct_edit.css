@@ -1294,7 +1294,7 @@ div.cms-publish-scrolling {
 }
 
 .cms-publish-group-header{
-    padding: 2px;
+    padding: 2px 2px 0;
     font-weight: bold;
 }
 

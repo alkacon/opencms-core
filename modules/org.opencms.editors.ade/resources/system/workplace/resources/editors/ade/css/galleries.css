@@ -36,30 +36,49 @@
     
     /** Styles for the preview*/
     #cms-preview{
+        height:439px;
+        left:1px;
         position:absolute;
-        height:443px;
-        left:2px;
         top:2px;
-        width:653px;
+        width:650px;
         display: none;
         background: #ffffff;
     }
     
+    #cms-preview .preview-area{
+        height:330px;
+        margin:2px;
+    }
+    
+    #cms-preview .preview-area>div{
+        margin: 2px;
+    }
+    
     #cms-preview .edit-area{
         height: 100px;  
+        margin: 2px;
     }                 
+       
+    #cms-preview .close-icon{
+        margin: 2px;
+        z-index: 2;
+        position: relative;
+    }
        
     div.button-bar button{
         /* Fix for IE to avoid too wide buttons */
-        padding: 1px 2px 1px 2px;        
-        width:auto;
+        height:24px !important;
         overflow:visible;
+        padding:0 10px 2px !important;
+        width:auto;
     }
     
     button span.cms-galleries-button{         
         display: inline-block;                
         height: 20px;
-        line-height: 20px;        
+        line-height: 20px;   
+        width: auto !important;
+        margin: 0px !important;     
     }      
     
     button span.cms-galleries-icon-apply{                       
@@ -67,15 +86,15 @@
     }
     
     button:hover span.cms-galleries-icon-apply{                       
-        background: transparent url(images/16x16/apply.png) no-repeat scroll left center;              
+        background-image: url(images/16x16/apply.png);              
     }
     
     button span.cms-galleries-icon-publish{                       
-        background: transparent url(images/16x16/publish_in.png) no-repeat scroll left center;              
+        background: transparent url(images/16x16/publish_in.png) no-repeat scroll -2px 0px;              
     }
     
      button:hover span.cms-galleries-icon-publish{                       
-        background: transparent url(images/16x16/publish.png) no-repeat scroll left center;              
+        background-image: url(images/16x16/publish.png);              
     }
     
     .cms-icon-text{
@@ -264,8 +283,9 @@
     }
     
     .cms-search-options button.cms-item-left-bottom{
-        position:relative; 
-        bottom: -190px;
+        height:auto !important;
+        margin-left:0;
+        padding: 2px 10px;
     }
         
     .cms-search-options div.cms-item-left {
