@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/A_CmsAdvancedGalleryWidget.java,v $
- * Date   : $Date: 2009/11/24 16:50:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/01 08:55:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,14 +34,14 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.galleries.CmsOpenAdvancedGallery;
+import org.opencms.workplace.galleries.CmsGallerySearchServer;
 
 /**
  * Base class for all advanced gallery widget implementations.<p>
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 
  */
@@ -105,7 +105,7 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
         result.append(getNameLower());
         result.append("AdvancedGalleryPath = '");
         // path to advanced gallery
-        result.append(CmsOpenAdvancedGallery.ADVANCED_GALLERY_PATH);
+        result.append(CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
         result.append("?");
         result.append("';\n");
         result.append("}\n");
@@ -149,7 +149,7 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
             "javascript:open"
                 + getNameUpper()
                 + "AdvancedGallery('"
-                + CmsOpenAdvancedGallery.MODE_WIDGET
+                + CmsGallerySearchServer.GalleryMode.WIDGET.getName()
                 + "',  '"
                 + id
                 + "',  '"

@@ -609,15 +609,21 @@ div.cms-dialog {
     
     .cms-additional-item-title{
         display: inline-block;
-        width: 60px;
-        margin-right:3px;
+        width: 19%;
+        margin-right: 2%;
+        vertical-align: top;
+    }
+    
+    .cms-additional-item-value{
+        display: inline-block;
+        width: 79%;
+        vertical-align: top;
     }
     .cms-list-with-checkbox div.cms-list-item {
     	margin-left: 32px;
     }
     div.cms-list-item {
-        margin-top: 2px;
-        margin-right: 2px;
+        margin: 2px;
     }
     
     div.cms-list-item div.cms-list-itemcontent {      
@@ -701,13 +707,6 @@ ul.cms-item-list,ul.cms-publish-options {
 }
 
 
-.cms-item-list .ui-widget-content .cms-additional div {
-	width: 280px;
-	overflow: hidden;
-	height: 18px;
-	word-wrap: break-word;
-}
-
 .cms-item-list .ui-widget-content a.ui-icon {
 	cursor: pointer;
 }
@@ -723,13 +722,9 @@ ul.cms-item-list,ul.cms-publish-options {
 li.cms-item,ul.options li,ul.cms-publish-options li {
 	clear: left;
 	list-style: none;
-	margin: 0 0 0 10px;
+	margin: 0px;
 }
 
-#toolbar .cms-menu-content li.cms-item{
-    margin: 0 auto;
-    width: 292px;
-}
 
 div.cms-menu {
 	display: none;

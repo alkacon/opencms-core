@@ -83,7 +83,7 @@
       galleries: [],
       categories: [],
       query: '',
-      tabid: 2,
+      tabid: 1,
       page: 1,
       searchfields: '',
       matchesperpage: 8,

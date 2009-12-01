@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2009/11/30 12:43:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/01 08:55:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,28 +55,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6
  */
 public class CmsOpenAdvancedGallery extends CmsDialog {
-
-    /** The advanced gallery path to the JSPs in the workplace. <p> */
-    public static final String ADVANCED_GALLERY_PATH = "/system/workplace/resources/editors/ade/galleries.jsp";
-
-    private static final String DATA_PARAM = "data";
-
-    /** Request parameter name for the dialog mode (widget, editor, view, ade or sitemap). */
-    private static final String PARAM_DIALOGMODE = "dialogmode";
-
-    /** Request parameter value for the dialog mode: editor. */
-    public static final String MODE_EDITOR = "editor";
-
-    /** Request parameter value for the dialog mode: view. */
-    public static final String MODE_VIEW = "view";
-
-    /** Request parameter value for the dialog mode: widget. */
-    public static final String MODE_WIDGET = "widget";
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "opengallery";
@@ -127,15 +110,15 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
                 StringBuffer galleryUri = new StringBuffer(256);
                 // path to the gallery dialog with the required request parameters
-                galleryUri.append(CmsAdvancedGallery.ADVANCED_GALLERY_PATH);
+                galleryUri.append(CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
                 String width = "670";
                 String height = "540";
                 galleryUri.append("?");
-                galleryUri.append(CmsAdvancedGallery.PARAM_DIALOGMODE);
+                galleryUri.append(CmsGallerySearchServer.ReqParam.DIALOGMODE.getName());
                 galleryUri.append("=");
-                galleryUri.append(CmsAdvancedGallery.MODE_VIEW);
+                galleryUri.append(CmsGallerySearchServer.GalleryMode.VIEW.getName());
                 galleryUri.append("&");
-                galleryUri.append(DATA_PARAM);
+                galleryUri.append(CmsGallerySearchServer.ReqParam.DATA.getName());
                 galleryUri.append("=");
                 JSONObject jsonObj = new JSONObject();
                 JSONObject queryObj = new JSONObject();

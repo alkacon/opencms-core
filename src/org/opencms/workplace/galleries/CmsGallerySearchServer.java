@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/11/30 12:43:31 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/12/01 08:55:00 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 7.6
  */
@@ -221,6 +221,45 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         }
     }
 
+    /** Gallery mode constants. */
+    public enum GalleryMode {
+
+        /** The advanced direct edit mode. */
+        ADE("ade"),
+
+        /** The sitemap editor mode. */
+        SITEMAP("sitemap"),
+
+        /** The FCKEditor mode. */
+        EDITOR("editor"),
+
+        /** The explorer mode. */
+        VIEW("view"),
+
+        /** The widget mode. */
+        WIDGET("widget");
+
+        /** Property name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private GalleryMode(String name) {
+
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+
+    }
+
     /** Json property name constants. */
     protected enum JsonKeys {
 
@@ -283,6 +322,12 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         /** The resource path. */
         RESOURCEPATH("resourcepath"),
+
+        /** The result count. */
+        RESULTCOUNT("resultcount"),
+
+        /** The result list. */
+        RESULTLIST("resultlist"),
 
         /** The root-path. */
         ROOTPATH("rootpath"),
@@ -349,6 +394,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** Generic data parameter. */
         DATA("data"),
 
+        /** The dialog mode. */
+        DIALOGMODE("dialogmode"),
+
         /** The current gallery item parameter. */
         GALLERYITEM("__galleryitem"),
 
@@ -375,8 +423,17 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         }
     }
 
+    /** The advanced gallery path to the JSPs in the workplace. */
+    public static final String ADVANCED_GALLERY_PATH = "/system/workplace/resources/editors/ade/galleries.jsp";
+
+    /** The advanced gallery search server path to the JSP in the workplace. */
+    public static final String ADVANCED_GALLERY_SERVER_PATH = "/system/workplace/galleries/gallerySearch.jsp";
+
     /** The excerpt field constant. */
     public static final String EXCERPT_FIELD_NAME = "excerpt";
+
+    /** The result tab id. */
+    public static final String RESULT_TAB_ID = "#tabs-result";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchServer.class);
@@ -390,8 +447,19 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     /** The users locale. */
     private Locale m_locale;
 
+    /** The JSON data request object. */
+    private JSONObject m_reqDataObj;
+
     /** The default matchers per search result page. */
-    private static final int m_matchesPerPage = 8;
+    private static final int MATCHES_PER_PAGE = 8;
+
+    /**
+     * Empty constructor, required for every JavaBean.
+     */
+    public CmsGallerySearchServer() {
+
+        super();
+    }
 
     /**
      * Constructor.<p>
@@ -403,6 +471,17 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     public CmsGallerySearchServer(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
+        m_cms = getCmsObject();
+        m_locale = getWorkplaceLocale();
+    }
+
+    /**
+     * @see org.opencms.jsp.CmsJspBean#init(javax.servlet.jsp.PageContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        super.init(context, req, res);
         m_cms = getCmsObject();
         m_locale = getWorkplaceLocale();
     }
@@ -721,12 +800,19 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * 
      * @return the search result page containing the given resource
      * 
-     * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong 
      */
-    public JSONObject findResourceInGallery(String resourceName) throws CmsException, JSONException {
+    public JSONObject findResourceInGallery(String resourceName) throws JSONException {
 
-        CmsResource resource = m_cms.readResource(resourceName);
+        CmsResource resource = null;
+        try {
+            resource = m_cms.readResource(resourceName);
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        if (resource == null) {
+            return new JSONObject();
+        }
         String rootPath = resource.getRootPath();
         JSONObject queryData = new JSONObject();
         JSONArray types = new JSONArray();
@@ -736,7 +822,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         galleries.put(CmsResource.getFolderPath(resourceName));
         queryData.put(JsonKeys.GALLERIES.getName(), galleries);
         queryData.put(JsonKeys.CATEGORIES.getName(), new JSONArray());
-        queryData.put(JsonKeys.MATCHESPERPAGE.getName(), m_matchesPerPage);
+        queryData.put(JsonKeys.MATCHESPERPAGE.getName(), MATCHES_PER_PAGE);
         queryData.put(JsonKeys.QUERY.getName(), "");
         queryData.put(JsonKeys.SORTORDER.getName(), CmsGallerySearch.SortParam.DEFAULT.getName());
         int currentPage = 1;
@@ -767,11 +853,12 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         JSONObject result = new JSONObject();
         if (found) {
             JSONObject sResult = new JSONObject();
-            sResult.put("sortorder", searchBean.getSortOrder());
-            sResult.put("resultcount", searchBean.getSearchResultCount());
-            sResult.put("resultpage", searchBean.getSearchPage());
-            sResult.put("resultlist", buildJSONForSearchResult(searchResults));
+            sResult.put(JsonKeys.SORTORDER.getName(), searchBean.getSortOrder());
+            sResult.put(JsonKeys.RESULTCOUNT.getName(), searchBean.getSearchResultCount());
+            sResult.put(JsonKeys.PAGE.getName(), searchBean.getSearchPage());
+            sResult.put(JsonKeys.RESULTLIST.getName(), buildJSONForSearchResult(searchResults));
             queryData.put(JsonKeys.PAGE.getName(), currentPage);
+            queryData.put(JsonKeys.TABID.getName(), RESULT_TAB_ID);
             result.put(JsonKeys.QUERYDATA.getName(), queryData);
             result.put(JsonKeys.SEARCHRESULT.getName(), sResult);
         }
@@ -1308,5 +1395,102 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Returns the request data parameter as JSON.<p> 
+     * 
+     * @return the JSON object
+     * @throws JSONException if something goes wrong parsing the parameter string
+     */
+    private JSONObject getReqDataObj() throws JSONException {
+
+        if (m_reqDataObj == null) {
+            String dataParam = getRequest().getParameter(ReqParam.DATA.getName());
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(dataParam)) {
+                m_reqDataObj = new JSONObject(dataParam);
+            }
+        }
+        return m_reqDataObj;
+    }
+
+    /**
+     * Returns the URI of the gallery JSP.<p>
+     * 
+     * @return the URI string
+     */
+    public String getGalleryUri() {
+
+        return link(ADVANCED_GALLERY_PATH);
+    }
+
+    /**
+     * Returns the URI of the gallery server JSP.<p>
+     * 
+     * @return the URI string
+     */
+    public String getGalleryServerUri() {
+
+        return link(ADVANCED_GALLERY_SERVER_PATH);
+    }
+
+    /**
+     * Returns the JSON as string for type, galleries and categories tab. Uses the given types or all available resource types.<p>
+     * 
+     * @return the type, galleries and categories data as JSON string
+     * 
+     * @throws JSONException if something goes wrong
+     */
+    public String getListConfig() throws JSONException {
+
+        JSONArray resourceTypesParam = null;
+        try {
+            JSONObject data = getReqDataObj();
+            if ((data != null) && data.has(JsonKeys.TYPES.getName())) {
+                resourceTypesParam = data.getJSONArray(JsonKeys.TYPES.getName());
+            }
+        } catch (JSONException e) {
+            // TODO: improve error handling
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        JSONObject result = getAllLists(resourceTypesParam, getModeName());
+        return result.toString();
+    }
+
+    /**
+     * Returns the JSON as string for the initial search. All search parameters are taken from the request parameters.<p>
+     * 
+     * @return the search result data as JSON string
+     */
+    public String getInitialSearch() {
+
+        JSONObject result = new JSONObject();
+
+        try {
+            JSONObject data = getReqDataObj();
+            if ((data != null) && data.has(JsonKeys.RESOURCEPATH.getName())) {
+                String resourcePath = data.getString(JsonKeys.RESOURCEPATH.getName());
+                result = findResourceInGallery(resourcePath);
+            } else if ((data != null) && data.has(JsonKeys.QUERYDATA.getName())) {
+                JSONObject queryData = data.getJSONObject(JsonKeys.QUERYDATA.getName());
+                result.put(JsonKeys.QUERYDATA.getName(), queryData);
+                result.put(JsonKeys.SEARCHRESULT.getName(), search(queryData));
+            }
+        } catch (JSONException e) {
+            // TODO: improve error handling
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns the current dialog mode name.<p>
+     * 
+     * @return the mode name
+     */
+    public String getModeName() {
+
+        // TODO: read request parameter
+        return "";
     }
 }

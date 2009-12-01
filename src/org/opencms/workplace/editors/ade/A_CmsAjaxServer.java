@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/A_CmsAjaxServer.java,v $
- * Date   : $Date: 2009/11/24 13:48:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/01 08:55:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9
  */
@@ -125,6 +125,14 @@ public abstract class A_CmsAjaxServer extends CmsJspActionElement {
 
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
+
+    /**
+     * Empty constructor, required for every JavaBean.
+     */
+    public A_CmsAjaxServer() {
+
+        super();
+    }
 
     /**
      * Constructor.<p>

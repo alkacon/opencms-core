@@ -296,15 +296,15 @@
     
     /** Categories levels*/         
    .cms-list.cms-active-level.cms-level-1 {
-       margin-left: 25px;
+       margin-left: 33px;
    }
       
    .cms-list.cms-active-level.cms-level-2 {
-       margin-left: 40px;
+       margin-left: 66px;
    }
       
    .cms-list.cms-active-level.cms-level-3 {
-       margin-left: 55px;
+       margin-left: 99px;
    }
    
     /** Pagination plugin*/
