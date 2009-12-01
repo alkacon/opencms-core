@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/12/01 08:55:00 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/12/01 13:03:29 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 7.6
  */
@@ -355,6 +355,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         /** The type id. */
         TYPEID("typeid"),
+
+        /** The type id's. */
+        TYPEIDS("typeids"),
 
         /** The gallery-types. */
         TYPES("types"),
@@ -880,10 +883,18 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         JSONObject result = new JSONObject();
         // using all available types if typeIds is null or empty
-        List<I_CmsResourceType> resourceTypes = ((typeIds == null) || (typeIds.length() == 0))
-        ? getResourceManager().getResourceTypes()
-        : readContentTypes(typeIds);
+        List<I_CmsResourceType> resourceTypes;
+        if ((typeIds == null) || (typeIds.length() == 0)) {
+            resourceTypes = getResourceManager().getResourceTypes();
+            typeIds = new JSONArray();
+            for (I_CmsResourceType type : resourceTypes) {
+                typeIds.put(type.getTypeId());
+            }
+        } else {
+            resourceTypes = readContentTypes(typeIds);
+        }
         result.put(JsonKeys.TYPES.getName(), buildJSONForTypes(resourceTypes));
+        result.put(JsonKeys.TYPEIDS.getName(), typeIds);
         Map<String, CmsGalleryTypeInfo> galleryTypes = readGalleryTypes(resourceTypes);
 
         result.put(JsonKeys.GALLERIES.getName(), buildJSONForGalleries(galleryTypes));
