@@ -398,7 +398,7 @@
     */
    var loadSearchLists = cms.galleries.loadSearchLists = function(tabsContent, initSearchResult) {
       if (tabsContent) {
-          cms.galleries.fillCriteriaTabs(tabsContent, initSearchResult);
+          cms.galleries.fillCriteriaTabs(tabsContent, "success", initSearchResult);
       } else {
           $.ajax({
              'url': vfsPathAjaxJsp,
@@ -420,7 +420,7 @@
     *
     * @param {Object} JSON map object
     */
-   var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function(/**JSON*/data, initSearchResult) {       
+   var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function(/**JSON*/data, message, initSearchResult) {       
       cms.galleries.searchCriteriaListsAsJSON = data;
       if (cms.galleries.searchCriteriaListsAsJSON.galleries) {
          cms.galleries.fillGalleries(cms.galleries.searchCriteriaListsAsJSON.galleries);
