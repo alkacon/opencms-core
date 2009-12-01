@@ -60,9 +60,10 @@
     }                 
        
     #cms-preview .close-icon{
-        margin: 2px;
-        z-index: 2;
-        position: relative;
+        position:absolute;
+    right:2px;
+    top:2px;
+    z-index:2;
     }
        
     div.button-bar button{
@@ -368,9 +369,7 @@
         color:#222222;    	
     }
     
-    div.close-icon{
-		float: right;
-	}    
+ 
     div.close-icon:hover {
         background-color: #a8adb4;
     }
