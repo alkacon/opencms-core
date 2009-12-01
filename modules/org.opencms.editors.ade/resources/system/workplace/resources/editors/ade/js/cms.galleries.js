@@ -305,7 +305,7 @@
                 cms.galleries.fillResultTab();
             }
         },
-        selected: 0    // should be the result tab, so the it does not have to switch
+        selected: cms.galleries.searchObject['tabid']    // should be the result tab, so the it does not have to switch
       });
       
       
@@ -340,8 +340,15 @@
           });
       
       $('#searchQuery > input').blur(function() {
-         cms.galleries.searchObject.query = $(this).val();
-         cms.galleries.searchObject.isChanged.query = true;
+         var currentQuery = $(this).val();
+         // update the search object, if at least one search character is given 
+         // or the query string is just deleted  
+         if (currentQuery.length > 0 
+               || (currentQuery.length == 0 && cms.galleries.searchObject.query.length > 0) ){
+                     cms.galleries.searchObject.query = currentQuery;
+                     cms.galleries.searchObject.isChanged.query = true;          
+               }
+         
       });           
          
       // bind click events to the close button of the search criteria on the result tab            
@@ -816,8 +823,11 @@
             
             if (searchCriteria == 'query') {
                var searchQuery = $('#searchQuery input').val();
-               titles = singleSelect.concat(searchQuery);
-               cms.galleries.addCreteriaToTab(titles, searchCriteria);
+               // only show the criteria button, if the querx is longer then 0
+               if (searchQuery.length > 0) {
+                   titles = singleSelect.concat(searchQuery);    
+                   cms.galleries.addCreteriaToTab(titles, searchCriteria);
+               }               
                cms.galleries.searchObject.isChanged[searchCriteria] = false;
             } else {
                var selectedLis = cms.galleries.searchObject[searchCriteria];
