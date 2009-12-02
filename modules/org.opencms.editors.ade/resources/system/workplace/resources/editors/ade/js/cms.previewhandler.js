@@ -158,7 +158,7 @@
     * Callback function for click event on the 'publish' button.
     */
    var publishChangedProperty = cms.galleries.publishChangedProperty = function() {
-       alert('Publish');
+       
    } 
    
    var selectPath = function(itemId, fieldId) {
@@ -171,7 +171,7 @@
 		} catch (e) {}
 	}
 	window.close();
-       //alert($(item).closest('li').attr('alt') +", " + fieldId );       
+              
    }
 
 ///// Default Content Handler ////////////////              

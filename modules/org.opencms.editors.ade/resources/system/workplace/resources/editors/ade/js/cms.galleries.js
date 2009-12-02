@@ -340,15 +340,14 @@
           });
       
       $('#searchQuery > input').blur(function() {
-         var currentQuery = $(this).val();
+         var currentQuery = $(this).val();         
          // update the search object, if at least one search character is given 
-         // or the query string is just deleted  
-         if (currentQuery.length > 0 
-               || (currentQuery.length == 0 && cms.galleries.searchObject.query.length > 0) ){
-                     cms.galleries.searchObject.query = currentQuery;
-                     cms.galleries.searchObject.isChanged.query = true;          
-               }
-         
+         // or the query string is just deleted          
+         if (currentQuery.match(/[^\s]/) 
+                 || currentQuery.match(/\s*/g) && cms.galleries.searchObject.query.match(/[^\s]/)) {
+                      cms.galleries.searchObject.query = currentQuery;
+                     cms.galleries.searchObject.isChanged.query = true;     
+                 }         
       });           
          
       // bind click events to the close button of the search criteria on the result tab            
@@ -823,11 +822,11 @@
             
             if (searchCriteria == 'query') {
                var searchQuery = $('#searchQuery input').val();
-               // only show the criteria button, if the querx is longer then 0
-               if (searchQuery.length > 0) {
+               // only show the criteria button, query is not empty or white space only               
+               if (searchQuery.length > 0 && searchQuery.match(/[^\s]/)) {
                    titles = singleSelect.concat(searchQuery);    
                    cms.galleries.addCreteriaToTab(titles, searchCriteria);
-               }               
+               }                         
                cms.galleries.searchObject.isChanged[searchCriteria] = false;
             } else {
                var selectedLis = cms.galleries.searchObject[searchCriteria];
