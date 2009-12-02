@@ -65,6 +65,10 @@
     top:2px;
     z-index:2;
     }
+    
+    div.button-bar{
+        margin-bottom: 5px;
+    }
        
     div.button-bar button{
         /* Fix for IE to avoid too wide buttons */
@@ -72,6 +76,10 @@
         overflow:visible;
         padding:0 10px 2px !important;
         width:auto;
+    }
+    
+    div.button-bar button[disabled=true]{
+        color:#999999;
     }
     
     button span.cms-galleries-button{         

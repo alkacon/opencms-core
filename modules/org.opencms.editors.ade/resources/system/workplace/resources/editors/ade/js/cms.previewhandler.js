@@ -41,10 +41,10 @@
     */     
    var showEditArea = function(itemProperties) {      
        var buttonBar = $('<div class="button-bar"></div>')
-                                       .append('<button id="previewSave" class="cms-left ui-state-default ui-corner-all">\
+                                       .append('<button id="previewSave" disabled="true" class="ui-state-default ui-corner-all">\
                                                     <span class="cms-galleries-button">Save</span>\
                                                 </button>')
-                                       .append('<button id="previewPublish" class="cms-left ui-state-default ui-corner-all">\
+                                       .append('<button id="previewPublish" class="ui-state-default ui-corner-all">\
                                                     <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
                                                 </button>'); 
                                         
@@ -53,7 +53,7 @@
        $('#publishSave').click(publishChangedProperty);
        
        if (cms.galleries.displaySelectButton()) {
-           $('.edit-area').find('.button-bar').append('<button id="previewSelect" class="cms-left ui-state-default ui-corner-all">\
+           $('.edit-area').find('.button-bar').append('<button id="previewSelect" class="ui-state-default ui-corner-all">\
                                 <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                           </button>');
            $('#previewSelect').click(function() {
@@ -69,7 +69,7 @@
        $.each(itemProperties, function() {
               $('<div style="margin: 2px;  clear: left;"></div>').attr('alt', this.name).appendTo(form)
                    .append('<span class="cms-item-title" style="margin-right:10px; width: 100px;">' + this.name + '</span>')
-                   .append('<span class="cms-item-edit" style=" width: 100px;">' + this.value + '</span>');                                 
+                   .append('<span class="cms-item-edit" style=" width: 100px;">' + (this.value ? this.value : '') + '</span>');                                 
            }); 
        $(target).append(form);      
        
@@ -77,7 +77,10 @@
        $('.cms-item-edit').directInput({
                      marginHack: true,
                      live: false,
-                     setValue: markChangedProperty
+                     setValue: markChangedProperty,
+                     onChange: function(element, input){
+                         $('#previewSave').removeAttr('disabled');
+                     }
                });             
    }
    

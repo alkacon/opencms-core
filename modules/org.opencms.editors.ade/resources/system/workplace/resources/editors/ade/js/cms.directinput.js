@@ -13,8 +13,12 @@
     * setValue: function(element, input) (default=null)
     *     if set the given function will be executed when the user enters a new value.
     *     this will override the default _setValue function.
-    * valueChanged: function()
+    * valueChanged: function() (default=null)
     *     If set, this function will be called after setValue.
+    * onChange: function(element, input) (default=null)
+    *     If set, this function will be called when the value changes on key-press 
+    * onReset: function(element) (default=null)
+    *     If set, this function will be called, when the value is reset by pressing 'ESC'
     *
     * @param {Object} options the options
     */
@@ -65,7 +69,7 @@
          // setting the focus and selecting text
          input.get(0).focus();
          input.get(0).select();
-         
+         var valueChanged = false;
          // set the value on 'return' or 'enter'
          input.keypress(function(e) {
             if (e.which == 13) {
@@ -78,6 +82,12 @@
             } else if (e.keyCode == 27) {
                elem.css('display', '');
                input.remove();
+               if ($.isFunction(opts.onReset)){
+                   opts.onReset(elem);
+               }
+            } else if ($.isFunction(opts.onChange) && !valueChanged && previousValue != input.val()){
+                valueChanged = true;
+                opts.onChange(elem, input);
             }
          });
          

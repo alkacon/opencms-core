@@ -2,7 +2,7 @@
 %><jsp:useBean id="gallery" class="org.opencms.workplace.galleries.CmsGallerySearchServer">
  <% gallery.init(pageContext, request, response); %>
  </jsp:useBean><%
- 	if (request.getParameter(CmsGallerySearchServer.ReqParam.DATA.getName())!= null){
+ 	if (request.getParameter(CmsGallerySearchServer.ReqParam.ACTION.getName())!= null){
  	    gallery.serve();
  	}else{ 
 // this is the initial call to the gallery so build the html first
