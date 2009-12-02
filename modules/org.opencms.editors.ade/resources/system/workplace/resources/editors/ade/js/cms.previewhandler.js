@@ -40,24 +40,27 @@
     * @param {Object} itemProperties server response as JSON object with the editable properties
     */     
    var showEditArea = function(itemProperties) {      
-       var buttonBar = $('<div class="button-bar"></div>')
-                                       .append('<button id="previewSave" disabled="true" class="ui-state-default ui-corner-all">\
-                                                    <span class="cms-galleries-button">Save</span>\
-                                                </button>')
-                                       .append('<button id="previewPublish" class="ui-state-default ui-corner-all">\
-                                                    <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
-                                                </button>'); 
+       var buttonBar = $('<div class="button-bar"></div>');
+       if (itemProperties.length > 0) {
+             buttonBar.append('<button id="previewSave" disabled="true" class="ui-state-default ui-corner-all">\
+                                     <span class="cms-galleries-button">Save</span>\
+                               </button>');
+                     /*.append('<button id="previewPublish" class="ui-state-default ui-corner-all">\
+                                    <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
+                                </button>');*/
+       }
+                                      
                                         
        var target = $('.edit-area').append(buttonBar);
        $('#previewSave').click(saveChangedProperty);
-       $('#publishSave').click(publishChangedProperty);
+       // TODO: comment in for direct publish
+       /* $('#publishSave').click(publishChangedProperty);*/
        
        if (cms.galleries.displaySelectButton()) {
            $('.edit-area').find('.button-bar').append('<button id="previewSelect" class="ui-state-default ui-corner-all">\
                                 <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                           </button>');
-           $('#previewSelect').click(function() {
-               //TODO: 
+           $('#previewSelect').click(function() {               
                var itemType = '';
                var itemId = $(this).closest('#cms-preview').attr('alt');              
                cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);          
