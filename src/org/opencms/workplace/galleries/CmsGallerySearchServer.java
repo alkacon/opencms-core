@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/12/01 16:17:00 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/12/02 09:20:02 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 7.6
  */
@@ -430,9 +430,6 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     /** The advanced gallery path to the JSPs in the workplace. */
     public static final String ADVANCED_GALLERY_PATH = "/system/workplace/resources/editors/ade/galleries.jsp";
 
-    /** The advanced gallery search server path to the JSP in the workplace. */
-    public static final String ADVANCED_GALLERY_SERVER_PATH = "/system/workplace/galleries/gallerySearch.jsp";
-
     /** The excerpt field constant. */
     public static final String EXCERPT_FIELD_NAME = "excerpt";
 
@@ -719,10 +716,12 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     JsonKeys.TYPE.getName(),
                     CmsWorkplaceMessages.getResourceTypeName(m_locale, type.getTypeName()));
                 formatterInfo.setIcon(iconPath);
-                formatterInfo.addAdditionalInfo(
-                    EXCERPT_FIELD_NAME,
-                    OpenCms.getWorkplaceManager().getMessages(m_locale).key(Messages.GUI_LABEL_EXCERPT),
-                    sResult.getExcerpt());
+
+                // only add excerpt if not empty
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
+                    formatterInfo.addAdditionalInfo(EXCERPT_FIELD_NAME, OpenCms.getWorkplaceManager().getMessages(
+                        m_locale).key(Messages.GUI_LABEL_EXCERPT), sResult.getExcerpt());
+                }
                 resultEntry.put(JsonKeys.ITEMHTML.getName(), getFormattedListContent(formatterInfo));
                 result.put(resultEntry);
             } catch (Exception e) {
@@ -1444,16 +1443,6 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     public String getGalleryUri() {
 
         return link(ADVANCED_GALLERY_PATH);
-    }
-
-    /**
-     * Returns the URI of the gallery server JSP.<p>
-     * 
-     * @return the URI string
-     */
-    public String getGalleryServerUri() {
-
-        return link(ADVANCED_GALLERY_SERVER_PATH);
     }
 
     /**
