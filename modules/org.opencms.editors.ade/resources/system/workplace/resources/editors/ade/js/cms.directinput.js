@@ -71,7 +71,7 @@
          input.get(0).select();
          var valueChanged = false;
          // set the value on 'return' or 'enter'
-         input.keypress(function(e) {
+         input.keyup(function(e) {
             if (e.which == 13) {
                if ($.isFunction(opts.setValue)) {
                   opts.setValue(elem, input);
