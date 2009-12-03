@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2009/09/23 14:03:21 $
- * Version: $Revision: 1.41.2.4 $
+ * Date   : $Date: 2009/12/03 13:37:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.lucene.index.Term;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.41.2.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,7 +158,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             List<CmsResource> resources = null;
             try {
                 // read all resources (only files) below the given path
-                resources = m_cms.readResources(resourceName, CmsResourceFilter.DEFAULT.addRequireFile());
+                resources = m_cms.readResources(resourceName, CmsResourceFilter.IGNORE_EXPIRATION.addRequireFile());
             } catch (CmsException e) {
                 if (m_report != null) {
                     m_report.println(Messages.get().container(
@@ -207,7 +207,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             CmsPublishedResource res = i.next();
             CmsResource resource = null;
             try {
-                resource = m_cms.readResource(res.getRootPath());
+                resource = m_cms.readResource(res.getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(
@@ -326,8 +326,11 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     protected void updateResource(IndexWriter writer, CmsIndexingThreadManager threadManager, CmsResource resource)
     throws CmsIndexException {
 
-        if (resource.isInternal() || resource.isFolder() || resource.isTemporaryFile()) {
-            // don't index internal resources, folders or temporary files
+        if (resource.isInternal()
+            || resource.isFolder()
+            || resource.isTemporaryFile()
+            || (resource.getDateExpired() <= System.currentTimeMillis())) {
+            // don't index internal resources, folders or temporary files or resources with expire date in the past
             return;
         }
         // no check for folder resources, this must be taken care of before calling this method
