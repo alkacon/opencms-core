@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2009/06/04 14:42:15 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/12/03 15:57:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1096,9 +1096,9 @@ function displayHead(doc, pages, actpage){
 
 	+ "</head>\n"
 	+ "<body class=\"buttons-head\" onload=\"window.setTimeout('doSet()',50);\">\n"
+    + "<form name=\"urlform\" onsubmit=\"top.submitResource();return false;\">\n"
 	+ "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
-	+ "<form name=\"urlform\" onsubmit=\"top.submitResource();return false;\">\n"
-	+ "<tr>\n"
+    + "<tr>\n"
 
 	+ buttonSep(0, 0, 0)
 	+ button("javascript:top.histGoBack();", null, "back.png", vr.langback, buttonType)
@@ -1112,7 +1112,7 @@ function displayHead(doc, pages, actpage){
 	+ "<td width=\"100%\"><input value=\"\" maxlength=\"255\" name=\"resource\" class=\"location\"></td>\n"
 	+ pageSelect
 
-	+ "</tr>\n</form>\n</table>\n"
+	+ "</tr>\n</table>\n</form>\n"
 	+ "</body>\n</html>";
 
 	doc.open();
