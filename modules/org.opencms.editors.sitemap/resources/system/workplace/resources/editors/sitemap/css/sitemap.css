@@ -16,7 +16,7 @@
           padding: 0px;
       }
       
-      li {
+      li.cms-sitemap-entry {
           display: block;
           float: left;
           clear: left;
@@ -37,7 +37,7 @@
           position: static;
       }
       
-      #toolbar ul {
+      #toolbar ul.favorite_list_items, #toolbar ul.recent_list_items {
           width: 290px;
           margin: auto;
       }
@@ -137,6 +137,9 @@
           padding: 10px 0px 60px 0px;
           background: #ffffff;
       }
+      .cms-root-sitemap > .cms-sitemap-item  {
+	background: #E6E6E6 url(images/ui-bg_glass_100_green_1x400.png) repeat-x scroll 50% 50% !important;
+}
       
       #cms-sitemap div.cms-hovered {
           background: #CCCCCC url(custom-theme/images/ui-bg_glass_75_cccccc_1x400.png) repeat-x scroll 50% 50%;
@@ -208,7 +211,21 @@
       }
       	
       	
-      
+      	.cms-menu ul {
+      		overflow-x: hidden !important;
+      	}
+      	
+      	.cms-menu li {
+      		margin-left: 15px;
+      	}
+      	
+      	.cms-sitemap-links {
+      	    border: 1px solid #a9a9a9;
+      	    margin-right: 15px;
+      	    float: right;
+      	    width: 300px;
+      	    padding: 5px;
+      	}
 
 
 /************** basic *******************************************************/
@@ -279,8 +296,76 @@
   }
   
   option { padding-left: 0.4em; }
+  
+.cms-sub-sitemap-ref > .cms-sitemap-item  {
+	background: #E6E6E6 url(images/ui-bg_glass_100_fdf5ce_1x400.png) repeat-x scroll 50% 50% !important;
+}
 
 
+
+.ui-state-default .cms-icon-open {
+	background-image: url(images/24x24/ade_open_sw.png) !important;
+	width: 24;
+	height: 24;
+}
+
+.ui-state-active .cms-icon-open {
+	background-image: url(images/24x24/ade_open.png) !important;
+	width: 24;
+	height: 24;
+}
+
+
+.cms-open {
+	background: transparent url(images/16x16/ocms_de_open_i.png) no-repeat scroll 50% 50%;
+}
+
+div.ui-widget-header a.cms-open {
+	background-image: url(images/16x16/ocms_de_open_sw.png);
+}
+
+.cms-open:hover,div.ui-widget-header a.cms-open:hover {
+	background-image: url(images/16x16/ocms_de_open_a.png);
+}
+
+
+
+.ui-state-default .cms-icon-subsitemap {
+	background-image: url(images/24x24/ade_subsitemap_sw.png) !important;
+	width: 24;
+	height: 24;
+}
+
+
+
+.ui-state-active .cms-icon-subsitemap {
+	background-image: url(images/24x24/ade_subsitemap.png) !important;
+	width: 24;
+	height: 24;
+}
+
+
+.cms-subsitemap {
+	background: transparent url(images/16x16/ocms_de_subsitemap_i.png) no-repeat scroll 50% 50%;
+}
+
+div.ui-widget-header a.cms-subsitemap {
+	background-image: url(images/16x16/ocms_de_subsitemap_sw.png);
+}
+
+.cms-subsitemap:hover,div.ui-widget-header a.cms-subsitemap:hover {
+	background-image: url(images/16x16/ocms_de_subsitemap_a.png);
+}
+
+.cms-root-sitemap > .cms-hovered {
+	background-image: none !important;
+}
+/*
+.cms-sub-sitemap-ref > .cms-sitemap-item .cms-subsitemap {
+	display: none;
+	width: 0;
+	height: 0;
+}*/
 
 
 

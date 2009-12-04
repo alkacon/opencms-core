@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2009/11/24 13:48:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/04 08:56:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.6
  */
@@ -126,4 +128,17 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
         }
         return resource;
     }
+
+    /**
+     * Returns the URI for the gallery server JSP.
+     * 
+     * @return the URI for the gallery server JSP
+     */
+    public String getGalleryServerUri() {
+
+        CmsLinkManager linkMan = OpenCms.getLinkManager();
+        String galleryServerUri = linkMan.substituteLink(getCmsObject(), CmsJspTagEnableAde.GALLERY_SERVER_URI);
+        return galleryServerUri;
+    }
+
 }

@@ -12,6 +12,7 @@
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/lib/json2.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/lib/jquery.jHelperTip.1.0.js")%>" ></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.directinput.js")%>"></script>
+    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/lib/jquery.pagination.js")%>"></script>
     <script type="text/javascript">
       var cms = {
          data: {
@@ -20,9 +21,10 @@
             "LOCALE"         : "${cms.requestContext.locale}",
             "SITEMAP_URI"    : "${cms.sitemapURI}",
             "CONTEXT"        : "<%=OpenCms.getSystemInfo().getOpenCmsContext()%>",
-            "SKIN_URI"	     : "%(skinUri)",
+            "SKIN_URI"	     : "<%=CmsWorkplace.getSkinUri()%>",
             "NO_EDIT_REASON" : "${cms.noEditReason}",
-            "DISPLAY_TOOLBAR": "${cms.displayToolbar}"
+            "DISPLAY_TOOLBAR": "${cms.displayToolbar}",
+            "GALLERY_SERVER_URL" : "${cms.galleryServerUri}"
          },
          publish: {
             "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/sitemap/publish-server.jsp:dd962f3e-abcd-11de-97fc-dd9f629b113b)</cms:link>"
@@ -32,13 +34,19 @@
          messages: {},
          sitemap: {},
          util: {},
-         property: {}
+         property: {},
+         galleries: {},
+         previewhandler: {}
       };
+      var vfsPathAjaxJsp = cms.data["GALLERY_SERVER_URL"];
     </script>
     <script type="text/javascript" src="<cms:link>%(link.weak:/system/workplace/editors/sitemap/cms.messages.jsp:b829e977-c865-11de-a457-ab20365f6268)</cms:link>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.comm.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.html.js")%>"></script>
+    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.data.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.data.js")%>"></script>
+    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.galleries.js")%>"></script>
+    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.previewhandler.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.publish.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.property.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.util.js")%>"></script>
@@ -53,6 +61,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/ade/css/custom-theme/jquery-ui-1.7.2.custom.css")%>" />
     <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/ade/css/advanced_direct_edit.css")%>" />
     <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/sitemap/css/sitemap.css")%>" />
+    <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/ade/css/galleries.css")%>"/>
   </head>
   <body>
     <div id="cms-main">

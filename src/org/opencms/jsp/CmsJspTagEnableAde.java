@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/12/01 16:17:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/12/04 08:56:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.6 
  */
@@ -81,7 +81,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
     public static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
 
     /** Gallery Server URI constant. */
-    public static final String GALLERY_SERVER_URI = "/system/workplace/galleries/gallerySearch.jsp";
+    public static final String GALLERY_SERVER_URI = "/system/workplace/resources/editors/ade/galleries.jsp";
 
     /** Macro name constant. */
     public static final String MACRO_CURRENT_CNTPAGE = "currentContainerPage";

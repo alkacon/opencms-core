@@ -8,7 +8,6 @@
     
    /** html-id for tabs. */
    var idTabs = cms.galleries.idTabs = 'cms-gallery-tabs';
-   
    /** html-id for tabs. */
    var idGalleriesMain = cms.galleries.idGalleriesMain = 'cms-gallery-main';   
    
@@ -205,12 +204,12 @@
       // initialize the search object and the initial search 
       var initSearchResult = null;          
       if (requestData) {
-          cms.galleries.setSearchObject(requestData);    
+      cms.galleries.setSearchObject(requestData);
           if (requestData['searchresult']) {
               initSearchResult = requestData;
-          }
-      }
-                 
+              }
+              }
+      
       // init tabs for add dialog
       var resultTab = $(cms.galleries.htmlTabResultSceleton);
       resultTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
@@ -292,7 +291,7 @@
           .append(categoriesTab)
           .append(cms.galleries.htmlTabFTSeachSceleton);
       // add preview to the galleries html
-      $('#' + cms.galleries.idGalleriesMain).append(cms.galleries.htmlPreviewSceleton);                  
+      $('#' + cms.galleries.idGalleriesMain).append(cms.galleries.htmlPreviewSceleton); 
       
       //TODO: blind out quick search dialog for the moment
       $('span.cms-ft-search').css('display', 'none');
@@ -307,8 +306,6 @@
         },
         selected: cms.galleries.searchObject['tabid']    // should be the result tab, so the it does not have to switch
       });
-      
-      
                   
       // removing ui-widget-header and ui-corner-all from ui-tabs-nav for layout reasons
       $('#' + cms.galleries.idGalleriesMain + ' .ui-tabs-nav').removeClass('ui-widget-header').removeClass('ui-corner-all');
@@ -320,8 +317,8 @@
           .live('click', cms.galleries.clickListItem);
       // bind dbclick event to the items in the result list
       $('#results li.cms-list').live('dblclick', cms.galleries.dblclickToShowPreview);
-      $('#results li.cms-list').live('click', cms.galleries.clickResultItem); 
-      
+      $('#results li.cms-list').live('click', cms.galleries.clickResultItem);      
+          
       // load content of the search criteris tabs    
       cms.galleries.loadSearchLists(tabsContent, initSearchResult);     
           
@@ -346,7 +343,7 @@
          if (currentQuery.match(/[^\s]/) 
                  || currentQuery.match(/\s*/g) && cms.galleries.searchObject.query.match(/[^\s]/)) {
                       cms.galleries.searchObject.query = currentQuery;
-                     cms.galleries.searchObject.isChanged.query = true;     
+         cms.galleries.searchObject.isChanged.query = true;
                  }         
       });           
          
@@ -373,7 +370,7 @@
           e.stopPropagation();                    
       });
            
-      $('.cms-item a.ui-icon').live('click', cms.galleries.toggleAdditionalInfo);                       
+      $('.cms-item a.ui-icon').live('click', cms.galleries.toggleAdditionalInfo);
    }
    
    
@@ -399,19 +396,19 @@
       if (tabsContent) {
           cms.galleries.fillCriteriaTabs(tabsContent, "success", initSearchResult);
       } else {
-          $.ajax({
-             'url': vfsPathAjaxJsp,
-             'data': {
-                'action': 'all',
-                'data': JSON.stringify({
-                   'types': cms.galleries.configContentTypes
-                })
-             },
-             'type': 'POST',
-             'dataType': 'json',
-             'success': cms.galleries.fillCriteriaTabs
-          });   
-      }
+      $.ajax({
+         'url': vfsPathAjaxJsp,
+         'data': {
+            'action': 'all',
+            'data': JSON.stringify({
+               'types': cms.galleries.configContentTypes
+            })
+         },
+         'type': 'POST',
+         'dataType': 'json',
+         'success': cms.galleries.fillCriteriaTabs
+      });
+   }
    }
    
    /**
@@ -433,14 +430,14 @@
          cms.galleries.configContentTypes = cms.galleries.searchCriteriaListsAsJSON.typeids;
          cms.galleries.fillTypes(cms.galleries.searchCriteriaListsAsJSON.types);
          markSelectedCriteria('types');
-      }
+      }     
       
       if (initSearchResult) {
           fillResultTab(initSearchResult);          
       } else {
-          // open the preselected tab
-          $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);    
-      }       
+      // open the preselected tab
+      $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);
+    	  }          
    }
    
    /**
@@ -507,23 +504,23 @@
       if (initSearchResult) {
           cms.galleries.fillResultList(initSearchResult);
       } else {
-          cms.galleries.searchObject.page = 1;
-          // ajust the search object to provide a consistent search
-          var preparedSearchObject = prepareSearchObject();
-          
-          $.ajax({
-             'url': vfsPathAjaxJsp,
-             'data': {
-                'action': 'search',
-                'data': JSON.stringify({
-                   'querydata': preparedSearchObject
-                })
-             },
-             'type': 'POST',
-             'dataType': 'json',
-             'success': cms.galleries.fillResultList
-          });
-      }
+      cms.galleries.searchObject.page = 1;
+      // ajust the search object to provide a consistent search
+      var preparedSearchObject = prepareSearchObject();
+      
+      $.ajax({
+         'url': vfsPathAjaxJsp,
+         'data': {
+            'action': 'search',
+            'data': JSON.stringify({
+               'querydata': preparedSearchObject
+            })
+         },
+         'type': 'POST',
+         'dataType': 'json',
+         'success': cms.galleries.fillResultList
+      });
+   }
    }
    
    
@@ -609,9 +606,12 @@
                   .append('<div class="cms-handle-button cms-select-item"></div>');
           }
           // if in ade container-page
-         if (cms.toolbar && cms.toolbar.toolbarReady) {
+         if ((cms.toolbar && cms.toolbar.toolbarReady) || cms.sitemap) {
              resultElement.attr('rel', this.clientid);
              resultElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
+         }
+         if (cms.sitemap) {
+             cms.sitemap.initDragForGallery(this, resultElement);
          }
       });          
       
@@ -626,7 +626,7 @@
       } 
    }
    
-   /**
+  /**
      * Sets the values of the search object.
      * The parameter should look like: {'querydata': {'galleries':...,}', 'tabid':..,}
      * @param {Object} requestData a JSON object with search object data 
@@ -669,20 +669,20 @@
         	      if (itemField.value != null && itemField.value != "") {
                         cms.galleries.activeItem['path'] = itemField.value;
                         cms.galleries.activeItem['isInitial'] = true;
-            	  }          
+                }
             }
         }
-        
     }
    
    /**
     * Refresh the list for given criteria after sorting.
-    * 
+    *
     * @param {Object} sortedList the list after sorting
     * @param {Object} criteria the name of the list
     * @param {Object} option the option for the hierarchic list
     */
-   var refreshCriteriaList = cms.galleries.refreshCriteriaList = function(/**Array*/sortedList, /**String*/ criteria, option) {   
+   var refreshCriteriaList = cms.galleries.refreshCriteriaList = function(/**Array*/sortedList, /**String*/ criteria, option) {
+   
       if (criteria == 'galleries') {
          cms.galleries.refreshGalleries(sortedList);
       } else if (criteria == 'categories') {
@@ -780,10 +780,15 @@
          typeElement.data('gallerytypeid', types[i].gallerytypeid);
          var typeName=types[i].type;
          // if in ade container-page and type is an creatable element
-         if (cms.toolbar && cms.toolbar.toolbarReady && $.inArray(typeName, cms.data.newTypes)>=0) {
+         var toolbarReady = cms.toolbar && cms.toolbar.toolbarReady;
+         if ((toolbarReady || cms.sitemap) && $.inArray(typeName, cms.data.newTypes)>=0) {
              typeElement.attr('rel', typeName);
              typeElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
+             if (cms.sitemap) {
+                 cms.sitemap.initDragForGalleryType(types[i], typeElement);
+             }
          }
+         
       }
       // set isChanged flag, so the search will be send to server
       cms.galleries.searchObject.isChanged.types = true;
@@ -824,8 +829,8 @@
                var searchQuery = $('#searchQuery input').val();
                // only show the criteria button, query is not empty or white space only               
                if (searchQuery.length > 0 && searchQuery.match(/[^\s]/)) {
-                   titles = singleSelect.concat(searchQuery);    
-                   cms.galleries.addCreteriaToTab(titles, searchCriteria);
+               titles = singleSelect.concat(searchQuery);
+               cms.galleries.addCreteriaToTab(titles, searchCriteria);
                }                         
                cms.galleries.searchObject.isChanged[searchCriteria] = false;
             } else {
@@ -1089,7 +1094,7 @@
       //deselect items in the list and set active class to the item which was dblclicked
       $('#result li.list-item').toggleClass('cms-list-item-active', false);
       $(this).toggleClass('cms-list-item-active', true);
-       
+      
   } 
      
     /**

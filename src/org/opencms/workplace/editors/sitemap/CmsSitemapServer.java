@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/11/25 15:26:38 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/12/04 08:56:10 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.workplace.editors.sitemap;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -91,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 7.6
  */
@@ -158,7 +159,11 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         /** To unlock the sitemap. */
         STOPEDIT,
         /** To validate a site entry name. */
-        VALIDATE;
+        VALIDATE,
+        /** To fill in the content of a sitemap entry. */
+        CONTENT,
+        /** To create a new resource as a sitemap entry */
+        NEW_ENTRY
     }
 
     /** Json property name constants for request parameters. */
@@ -169,7 +174,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         /** The validated/converted site entry name. */
         NAME("name"),
         /** To retrieve or save the recent list. */
-        REC("rec");
+        REC("rec"),
+        /** The type for which a new entry should be created. */
+        TYPE("type");
 
         /** Property name. */
         private String m_name;
@@ -204,8 +211,14 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         RECENT("recent"),
         /** The sitemap tree. */
         SITEMAP("sitemap"),
+        /** List of sitemap entries */
+        ENTRIES("entries"),
+        /** Single sitemap entry */
+        ENTRY("entry"),
         /** Flag to indicate if this is a top-level sitemap or a sub-sitemap. */
-        SUB_SITEMAP("subSitemap");
+        SUB_SITEMAP("subSitemap"),
+        /** List of the URIs of sitemaps which reference the current sitemap */
+        SUPER_SITEMAPS("superSitemaps");
 
         /** Property name. */
         private String m_name;
@@ -387,6 +400,15 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             // first load, get everything
             CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes, request);
             result = getSitemap(sitemapRes, xmlSitemap);
+
+            CmsADEManager ade = OpenCms.getADEManager();
+            List<CmsResource> creatableElements = ade.getCreatableElements(cms, sitemapParam, request);
+            JSONArray creatableTypes = new JSONArray();
+            for (CmsResource resource : creatableElements) {
+                String typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+                creatableTypes.put(typeName);
+            }
+            result.put("types", creatableTypes);
         } else if (action.equals(Action.GET)) {
             if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // get the favorite list
@@ -436,6 +458,35 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             } catch (CmsException e) {
                 error(result, e.getLocalizedMessage(getWorkplaceLocale()));
             }
+        } else if (action.equals(Action.CONTENT)) {
+            JSONArray entries = data.getJSONArray(JsonResponse.ENTRIES.getName().toLowerCase());
+            addContents(entries);
+            result.put(JsonResponse.ENTRIES.getName().toLowerCase(), entries);
+        } else if (action.equals(Action.NEW_ENTRY)) {
+            CmsADEManager ade = OpenCms.getADEManager();
+            String type = data.getString(JsonRequest.TYPE.getName());
+            CmsResource newResource = ade.createNewElement(cms, sitemapParam, request, type);
+            CmsProperty titleProp = cms.readPropertyObject(newResource, "Title", false);
+            String title = titleProp.getValue();
+            String name = newResource.getName();
+            String extension = "";
+            int dotPos = name.lastIndexOf('.');
+            if (dotPos != -1) {
+                extension = name.substring(dotPos + 1, name.length());
+            }
+
+            CmsSiteEntryBean entryBean = new CmsSiteEntryBean(
+                newResource.getStructureId(),
+                name.substring(0, dotPos),
+                extension,
+                title,
+                new HashMap<String, String>(),
+                new ArrayList<CmsSiteEntryBean>());
+            JSONObject jsonEntry = jsonifyEntry(entryBean);
+            JSONArray entries = new JSONArray();
+            entries.put(jsonEntry);
+            addContents(entries);
+            result.put(JsonResponse.ENTRY.getName(), jsonEntry);
         } else {
             error(result, Messages.get().getBundle(getWorkplaceLocale()).key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
@@ -595,14 +646,17 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         // check if this is a top-level sitemap, by checking that it is not linked from another sitemap
         boolean topLevel = true;
+        JSONArray superSitemapsJSON = new JSONArray();
         CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_STRONG);
         for (CmsRelation relation : cms2.getRelationsForResource(resource, filter)) {
-            if (CmsResourceTypeXmlSitemap.isSitemap(relation.getSource(cms2, CmsResourceFilter.ALL))) {
+            CmsResource source = relation.getSource(cms2, CmsResourceFilter.ALL);
+            if (CmsResourceTypeXmlSitemap.isSitemap(source)) {
                 topLevel = false;
-                break;
+                superSitemapsJSON.put(cms2.getSitePath(source));
             }
         }
         result.put(JsonResponse.SUB_SITEMAP.getName(), !topLevel);
+        result.put(JsonResponse.SUPER_SITEMAPS.getName(), superSitemapsJSON);
 
         // collect the properties
         result.put(JsonResponse.PROPERTIES.getName(), getPropertyInfo(resource));

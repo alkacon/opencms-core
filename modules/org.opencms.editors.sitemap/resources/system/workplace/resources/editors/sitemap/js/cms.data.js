@@ -172,7 +172,8 @@
          if (!ok) {
             return;
          }
-         callback(data.name);
+         // also replace slashes with underscores
+         callback(data.name.replace(/\//g, '_'));
       });
    }
 
@@ -182,6 +183,19 @@
     */
    var getSitemapProperties = cms.data.getSitemapProperties = function(callback) {
       cms.data.sitemapPostJSON('props', {}, callback)
+   }
+   
+   var addContent = cms.data.addContent = function(entries, callback) {
+       cms.data.sitemapPostJSON('content', {
+           entries: entries
+       },
+       callback);
+   }
+   
+   var createEntry = cms.data.createEntry = function(type, callback) {
+       cms.data.sitemapPostJSON('new_entry', {
+           'type': type
+       }, callback);
    }
 
       
