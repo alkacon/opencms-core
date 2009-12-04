@@ -205,6 +205,30 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/image-preview-formatter.jsp</source>
+			<destination>system/workplace/editors/ade/image-preview-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>8a2d4f29-df4b-11de-b55c-f19ce2452f95</uuidstructure>
+			<uuidresource>8a2d4f2a-df4b-11de-b55c-f19ce2452f95</uuidresource>
+			<datelastmodified>Thu, 03 Dec 2009 16:31:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 02 Dec 2009 14:04:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[image-preview-formatter]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/cms.messages.jsp</source>
 			<destination>system/workplace/editors/ade/cms.messages.jsp</destination>
@@ -3767,6 +3791,21 @@
 					<value><![CDATA[cms.html]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/js/cms.imagepreviewhandler.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.imagepreviewhandler.js</destination>
+			<type>plain</type>
+			<uuidstructure>07809316-df5e-11de-9289-f19ce2452f95</uuidstructure>
+			<uuidresource>07809317-df5e-11de-9289-f19ce2452f95</uuidresource>
+			<datelastmodified>Fri, 04 Dec 2009 09:25:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 02 Dec 2009 16:16:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>

@@ -16,13 +16,14 @@
 <script type="text/javascript" src="lib/json2.js"></script>
 <script type="text/javascript" src="lib/jquery.pagination.js"></script>
 <script type="text/javascript">
-var cms = { html: {}, previewhandler:{}, galleries: {}, messages: {} };
+var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
 </script>
 <script type="text/javascript" src="/opencms/opencms/system/workplace/editors/ade/cms.messages.jsp"></script>
 <script type="text/javascript" src="js/cms.html.js"></script>
 <script type="text/javascript" src="js/cms.selectbox.js"></script>
 <script type="text/javascript" src="js/cms.directinput.js"></script>
 <script type="text/javascript" src="js/cms.previewhandler.js"></script>
+<script type="text/javascript" src="js/cms.imagepreviewhandler.js"></script>
 <script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript">  
 	// set the ajax server path

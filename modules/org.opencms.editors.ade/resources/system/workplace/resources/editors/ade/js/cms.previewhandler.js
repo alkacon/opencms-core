@@ -12,7 +12,7 @@
        $('.preview-area').append(itemData['previewdata']['itemhtml']);
        
        // display editable properties
-       showEditArea(itemData['previewdata']['properties']);       
+       cms.galleries.getContentHandler()['showEditArea'](itemData['previewdata']['properties']);       
        
        //bind click event to preview close button 
        $('#cms-preview div.close-icon').click(function() {
@@ -39,7 +39,7 @@
     * 
     * @param {Object} itemProperties server response as JSON object with the editable properties
     */     
-   var showEditArea = function(itemProperties) {      
+   var showEditArea =  function(itemProperties) {      
        var buttonBar = $('<div class="button-bar"></div>');
        if (itemProperties.length > 0) {
              buttonBar.append('<button id="previewSave" disabled="true" class="ui-state-default ui-corner-all">\
@@ -52,7 +52,7 @@
                                       
                                         
        var target = $('.edit-area').append(buttonBar);
-       $('#previewSave').click(saveChangedProperty);
+       $('#previewSave').click(cms.galleries.getContentHandler()['saveChangedProperty']);
        // TODO: comment in for direct publish
        /* $('#publishSave').click(publishChangedProperty);*/
        
@@ -80,7 +80,7 @@
        $('.cms-item-edit').directInput({
                      marginHack: true,
                      live: false,
-                     setValue: markChangedProperty,
+                     setValue: cms.galleries.getContentHandler()['markChangedProperty'],
                      onChange: function(element, input){
                          $('#previewSave').removeAttr('disabled');
                      }
@@ -181,6 +181,9 @@
     */
    var defaultContentTypeHandler = cms.previewhandler.defaultContentTypeHandler = {
        'init': showItemPreview,
+       'showEditArea': showEditArea,
+       'markChangedProperty': markChangedProperty, 
+       'saveChangedProperty': saveChangedProperty,
        'setValues': { 'widget': selectPath,
                'editor': 'test2'}    
    };

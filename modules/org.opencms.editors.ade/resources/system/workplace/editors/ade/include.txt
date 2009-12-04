@@ -50,7 +50,7 @@
         }, 
         publish: {
           "SERVER_URL"      : "%(publishUri)"
-        }, comm:{}, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}, search :{}, property: {}, previewhandler:{}, galleries: {}, messages: {}};
+        }, comm:{}, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}, search :{}, property: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {}};
         
       // the following is used by the galleries
       var vfsPathAjaxJsp = cms.data["GALLERY_SERVER_URL"];
@@ -69,5 +69,6 @@
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.publish.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.directinput.js"></script>
 	<script type="text/javascript" src="%(skinUri)editors/ade/js/cms.previewhandler.js"></script>
+	<script type="text/javascript" src="%(skinUri)editors/ade/js/cms.imagepreviewhandler.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.galleries.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.selectbox.js"></script>
