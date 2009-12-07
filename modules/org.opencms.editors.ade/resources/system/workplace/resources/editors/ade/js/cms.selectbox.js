@@ -10,6 +10,7 @@
      * 
      * The following methods can be called by $(selector).selectbox('method name', additionalValue):
      * 'getValue': returns the currently selected value 
+     * 'getIndex': returns the currently selected index
      * 'setValue': sets the value to additionalValue
      * 
      * The following styles are necessary:
