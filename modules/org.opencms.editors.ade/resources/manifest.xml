@@ -3814,6 +3814,21 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/js/cms.imagepreviewhandler.js</source>
+			<destination>system/workplace/resources/editors/ade/js/cms.imagepreviewhandler.js</destination>
+			<type>plain</type>
+			<uuidstructure>07809316-df5e-11de-9289-f19ce2452f95</uuidstructure>
+			<uuidresource>07809317-df5e-11de-9289-f19ce2452f95</uuidresource>
+			<datelastmodified>Fri, 04 Dec 2009 09:25:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 02 Dec 2009 16:16:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.init.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.init.js</destination>
