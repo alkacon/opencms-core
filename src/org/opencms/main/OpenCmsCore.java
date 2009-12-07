@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/09/17 11:50:36 $
- * Version: $Revision: 1.247 $
+ * Date   : $Date: 2009/12/07 09:40:42 $
+ * Version: $Revision: 1.248 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -138,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.247 $ 
+ * @version $Revision: 1.248 $ 
  * 
  * @since 6.0.0 
  */
@@ -2145,11 +2146,25 @@ public final class OpenCmsCore {
 
             private CmsObject m_adminCms;
 
+            /**
+             * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#setCmsObject(org.opencms.file.CmsObject)
+             */
             public void setCmsObject(CmsObject adminCms) {
 
                 m_adminCms = adminCms;
             }
+            
+            /**
+             * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#getCmsObject()
+             */
+            public CmsObject getCmsObject() {
 
+            	return m_adminCms;
+            }
+
+            /**
+             * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#doLogin(javax.servlet.http.HttpServletRequest, java.lang.String)
+             */
             public CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException {
 
                 try {
@@ -2161,9 +2176,26 @@ public final class OpenCmsCore {
                             "-"));
                     }
 
+                    // initialize the new cms object
                     CmsContextInfo contextInfo = new CmsContextInfo(m_adminCms.getRequestContext());
                     contextInfo.setUserName(principal);
-                    return initCmsObject(m_adminCms, contextInfo);
+                    CmsObject newCms = initCmsObject(m_adminCms, contextInfo);
+                    
+                    if (contextInfo.getRequestedUri().startsWith("/system/workplace/") && getRoleManager().hasRole(newCms, CmsRole.WORKPLACE_USER)) {
+	                    // set the default project of the user for workplace users
+	                    CmsUserSettings settings = new CmsUserSettings(newCms);	                    
+	                    try {
+	                        CmsProject project = newCms.readProject(settings.getStartProject());
+	                        if (getOrgUnitManager().getAllAccessibleProjects(newCms, project.getOuFqn(), false).contains(project)) {
+	                            // user has access to the project, set this as current project
+	                        	newCms.getRequestContext().setCurrentProject(project);
+	                        }
+	                    } catch (CmsException e) {
+	                        // unable to set the startup project, bad but not critical
+	                    }
+                    }
+
+                    return newCms;
                 } finally {
                     m_adminCms = null;
                 }
@@ -2175,7 +2207,7 @@ public final class OpenCmsCore {
             return cms;
         }
 
-        // authentification failed, so display a login screen
+        // authentification failed or not enough permissions, so display a login screen
         m_authorizationHandler.requestAuthorization(req, res, getLoginFormURL(req, res));
 
         cms = initCmsObject(
