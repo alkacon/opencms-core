@@ -89,12 +89,14 @@ $.fn.selectBox=function(options, additional){
         }
         
 		function _select(){
+            var valueOptions=$(this).closest('.cms-selector').find('.cms-select-option');
+            var index = valueOptions.index(this);
             var replacer=$(this).closest('.cms-selectbox');
             var value=$(this).attr('rel');
             replacer.find('span.cms-current-value').text($(this).text()).attr('rel',value);
             _close();
             if ($.isFunction(opts.select)){
-                opts.select(this, replacer, value, _getIndex(replacer));
+                opts.select(this, replacer, value, index);
             }
             return false;
         }
@@ -112,8 +114,10 @@ $.fn.selectBox=function(options, additional){
         }
         
         function _getIndex(replacer){
-            if (replacer && replacer.lentgh) {
-                return ('.cms_select_option', replacer).index($('.cms-current-value', replacer));
+            if (replacer && replacer.length) {
+                var valueOptions=$('.cms_selector .cms-select-option', replacer);
+                var currentValue=valueOptions.filter('.cms-select-option[rel="'+_getValue(replacer)+'"]');
+                return valueOptions.index(currentValue);
             }
             return -1;
         }
