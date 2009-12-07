@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/12/07 09:41:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Michael Moossen
  * @author Carsten Weinholz
  *
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.5.4 
  */
@@ -64,6 +64,12 @@ public interface I_CmsAuthorizationHandler {
          * @param cms an initial cms object
          */
         void setCmsObject(CmsObject cms);
+        /**
+         * Returns the cms object.<p>
+         * 
+         * @return the cms object
+         */
+        CmsObject getCmsObject();
         /**
          * Performs a privileged login action and returns a cms object initialized for the principal.<p>
          * 
