@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPermissionHandler.java,v $
- * Date   : $Date: 2009/09/11 15:29:14 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2009/12/07 09:17:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.2
  */
@@ -156,7 +156,7 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
 
         if ((permissions.getPermissions() & CmsPermissionSet.PERMISSION_VIEW) == 0) {
             // resource "invisible" flag is set for this user
-            if (filter.requireVisible()) {
+            if (!canIgnorePermissions && filter.requireVisible()) {
                 // filter requires visible permission - extend required permission set
                 requiredPermissions = new CmsPermissionSet(requiredPermissions.getAllowedPermissions()
                     | CmsPermissionSet.PERMISSION_VIEW, requiredPermissions.getDeniedPermissions());
