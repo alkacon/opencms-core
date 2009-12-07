@@ -45,7 +45,7 @@
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3item" id="148">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</param>
-                <param name="gallery.type.names">downloadgallery</param>
+                <param name="gallery.type.names">itemgallery</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3event" id="149">
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</param>
@@ -58,6 +58,9 @@
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="articlegallery" id="152">
+				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+			</type>
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="itemgallery" id="153">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
 		</resourcetypes>
@@ -94,6 +97,9 @@
             </explorertype>
             <explorertype name="articlegallery" key="fileicon.articlegallery" icon="htmlgallery.gif" reference="downloadgallery">
                 <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=articlegallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.articlegallery" />
+            </explorertype>
+            <explorertype name="itemgallery" key="fileicon.itemgallery" icon="htmlgallery.gif" reference="downloadgallery">
+                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=itemgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.itemgallery" />
             </explorertype>
 		</explorertypes>
 	</module>

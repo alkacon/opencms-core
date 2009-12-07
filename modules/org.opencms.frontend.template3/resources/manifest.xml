@@ -65,7 +65,19 @@
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/options.xsd</param>
                 <param name="gallery.type.names">downloadgallery</param>
 			</type>
-		</resourcetypes>
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="searchgallery" id="160">
+				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+			</type>
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="linkboxgallery" id="161">
+				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+			</type>
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="textboxgallery" id="162">
+				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+			</type>
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="listboxgallery" id="163">
+				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+			</type>
+        </resourcetypes>
 		<explorertypes>
 			<explorertype name="template3" key="fileicon.template3" icon="t3menu.png" reference="xmlcontent">
 				<newresource uri="newresource.jsp?page=template3" order="12" autosetnavigation="false" autosettitle="false" info="desc.template3"/>
@@ -106,7 +118,19 @@
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-		</explorertypes>
+            <explorertype name="searchgallery" key="fileicon.searchgallery" icon="htmlgallery.gif" reference="downloadgallery">
+                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=searchgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.searchgallery" />
+            </explorertype>
+            <explorertype name="linkboxgallery" key="fileicon.linkboxgallery" icon="htmlgallery.gif" reference="downloadgallery">
+                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=linkboxgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.linkboxgallery" />
+            </explorertype>
+            <explorertype name="textboxgallery" key="fileicon.textboxgallery" icon="htmlgallery.gif" reference="downloadgallery">
+                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=textboxgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.textboxgallery" />
+            </explorertype>
+            <explorertype name="listboxgallery" key="fileicon.listboxgallery" icon="htmlgallery.gif" reference="downloadgallery">
+                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=listboxgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.listboxgallery" />
+            </explorertype>
+        </explorertypes>
 	</module>
 	<files>
 		<file>

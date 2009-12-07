@@ -1463,14 +1463,19 @@
 		</file>
 		<file>
 			<destination>demo_t3/_content/items</destination>
-			<type>folder</type>
+			<type>itemgallery</type>
 			<uuidstructure>4c1b4d0a-a11b-11de-9057-dd9f629b113b</uuidstructure>
 			<datelastmodified>Tue, 15 Sep 2009 12:06:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 14 Sep 2009 10:42:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+			    <property>
+			        <name>Title</name>
+                    <value>Items</value>
+                </property>
+            </properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1908,7 +1913,7 @@
 		</file>
 		<file>
 			<destination>demo_t3/_content/linkboxes</destination>
-			<type>folder</type>
+			<type>linkboxgallery</type>
 			<uuidstructure>36136658-a1e4-11de-aafb-dd9f629b113b</uuidstructure>
 			<datelastmodified>Tue, 15 Sep 2009 12:06:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1947,7 +1952,7 @@
 		</file>
 		<file>
 			<destination>demo_t3/_content/listboxes</destination>
-			<type>folder</type>
+			<type>listboxgallery</type>
 			<uuidstructure>5b50bbcc-a11b-11de-9057-dd9f629b113b</uuidstructure>
 			<datelastmodified>Tue, 15 Sep 2009 12:06:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -2441,7 +2446,7 @@
 		</file>
 		<file>
 			<destination>demo_t3/_content/textboxes</destination>
-			<type>folder</type>
+			<type>textboxgallery</type>
 			<uuidstructure>d475b922-a11a-11de-9057-dd9f629b113b</uuidstructure>
 			<datelastmodified>Tue, 15 Sep 2009 12:06:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
