@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2009/11/26 11:32:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/07 15:12:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsDirectEditJspIncludeProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
+import org.opencms.xml.sitemap.CmsSitemapResourceHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -83,7 +84,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -366,25 +367,11 @@ public class CmsJspActionElement extends CmsJspBean {
             return null;
         }
         if (m_navigation == null) {
-            m_navigation = new CmsJspNavBuilder(getCmsObject());
-        }
-        return m_navigation;
-    }
-
-    /**
-     * Returns an initialized {@link CmsJspSitemapNavBuilder} instance.<p>
-     *  
-     * @return an initialized sitemap navigation builder instance
-     * 
-     * @see org.opencms.jsp.CmsJspSitemapNavBuilder
-     */
-    public CmsJspNavBuilder getSitemapNavigation() {
-
-        if (isNotInitialized()) {
-            return null;
-        }
-        if (m_navigation == null) {
-            m_navigation = new CmsJspSitemapNavBuilder(getCmsObject());
+            if (getRequest().getAttribute(CmsSitemapResourceHandler.SITEMAP_CURRENT_URI) == null) {
+                m_navigation = new CmsJspNavBuilder(getCmsObject());
+            } else {
+                m_navigation = new CmsJspSitemapNavBuilder(getCmsObject(), getRequest());
+            }
         }
         return m_navigation;
     }

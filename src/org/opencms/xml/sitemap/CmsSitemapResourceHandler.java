@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2009/11/26 11:37:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/07 15:12:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.9.2
  */
@@ -75,6 +75,9 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
 
     /** Constant property name for sub-sitemap reference. */
     public static final String PROPERTY_SITEMAP = "sitemap";
+
+    /** Request attribute name constant. */
+    public static final String SITEMAP_CURRENT_URI = "SITEMAP_CURRENT_URI";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapResourceHandler.class);
@@ -311,35 +314,39 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
     throws CmsResourceInitException {
 
         // only do something if the resource was not found good
-        if (resource == null) {
-            if (m_missingUrisOffline == null) {
-                // TODO: find a better way to initialize
-                init();
+        if (resource != null) {
+            return resource;
+        }
+        // skip when not coming from the 'right' site
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot())) {
+            return resource;
+        }
+        if (m_missingUrisOffline == null) {
+            // TODO: find a better way to initialize
+            init();
+        }
+        // check if the resource is in the site map
+        try {
+            // find the site map entry
+            CmsSiteEntryBean entry = getUri(cms, cms.getRequestContext().getUri());
+            if (entry == null) {
+                return resource;
             }
-            // check if the resource is in the site map
-            try {
-                // find the site map entry
-                CmsSiteEntryBean entry = getUri(cms, cms.getRequestContext().getUri());
-                if (entry != null) {
-                    // read the resource
-                    resource = cms.readResource(entry.getResourceId());
-                    // set the element
-                    req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, new CmsSiteEntryBean(
-                        entry.getResourceId(),
-                        entry.getName(),
-                        entry.getExtension(),
-                        entry.getTitle(),
-                        entry.getProperties(),
-                        null));
-                }
-            } catch (Throwable e) {
-                String uri = cms.getRequestContext().getUri();
-                CmsMessageContainer msg = Messages.get().container(Messages.ERR_SITEMAP_1, uri);
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(msg.key(), e);
-                }
-                throw new CmsResourceInitException(msg, e);
+            // read the resource
+            resource = cms.readResource(entry.getResourceId());
+            // set the element
+            req.setAttribute(CmsADEManager.ATTR_SITEMAP_ENTRY, entry.cloneWithoutSubEntries());
+            // store the requested path 
+            req.setAttribute(SITEMAP_CURRENT_URI, cms.getRequestContext().getUri());
+            // set the resource path
+            cms.getRequestContext().setUri(cms.getSitePath(resource));
+        } catch (Throwable e) {
+            String uri = cms.getRequestContext().getUri();
+            CmsMessageContainer msg = Messages.get().container(Messages.ERR_SITEMAP_1, uri);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(msg.key(), e);
             }
+            throw new CmsResourceInitException(msg, e);
         }
         return resource;
     }

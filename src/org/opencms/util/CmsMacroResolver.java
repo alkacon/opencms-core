@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2009/10/26 10:45:14 $
- * Version: $Revision: 1.28.2.6 $
+ * Date   : $Date: 2009/12/07 15:12:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28.2.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,7 +169,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         "webapp", // 5
         "webbasepath", // 6 
         "version", // 7
-        "element" // 8
+        "element", // 8
+        "sitemap" // 9
     };
 
     /** The "magic" commands wrapped in a List. */
@@ -612,6 +615,17 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                                 LOG.warn(ex);
                                 LOG.debug(ex.getLocalizedMessage(), ex);
                             }
+                        }
+                        break;
+                    case 9:
+                        // TODO: unify these beans!
+                        try {
+                            CmsSiteEntryBean element = (CmsSiteEntryBean)m_jspPageContext.getRequest().getAttribute(
+                                CmsADEManager.ATTR_SITEMAP_ENTRY);
+                            value = m_cms.getSitePath(m_cms.readResource(element.getResourceId()));
+                        } catch (CmsException e) {
+                            LOG.warn(e);
+                            LOG.debug(e.getLocalizedMessage(), e);
                         }
                         break;
                     default:

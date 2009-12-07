@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/11/24 13:48:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/07 15:12:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.6
  */
@@ -246,7 +246,6 @@ public final class CmsElementUtil {
             eb.init(m_cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(elementRes));
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
 
-            // TODO: is this going to be cached? most likely not! any alternative?
             Object currentElement = m_req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
             m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
             try {

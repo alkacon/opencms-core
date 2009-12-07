@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2009/11/25 15:26:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/07 15:12:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -95,6 +95,16 @@ public class CmsSiteEntryBean {
         : Collections.unmodifiableList(subEntries));
         // do not freeze the properties
         m_properties = (properties == null ? new HashMap<String, String>() : properties);
+    }
+
+    /**
+     * Returns a clone, but without the sub-entries.<p>
+     * 
+     * @return a clone, but without the sub-entries
+     */
+    public CmsSiteEntryBean cloneWithoutSubEntries() {
+
+        return new CmsSiteEntryBean(m_resourceId, m_name, m_extension, m_title, m_properties, null);
     }
 
     /**

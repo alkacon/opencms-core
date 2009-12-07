@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsTemplateMenu.java,v $
- * Date   : $Date: 2009/11/26 11:36:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/07 15:12:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.frontend.template3;
 
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
@@ -60,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
 
@@ -158,9 +157,6 @@ public class CmsTemplateMenu extends CmsJspActionElement {
         if (m_current == null) {
             m_current = LazyMap.decorate(new HashMap<CmsJspNavElement, Boolean>(), new Transformer() {
 
-                /** The log object for this class. */
-                private final Log LOGG = CmsLog.getLog(CmsTemplateMenu.class);
-
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
                  */
@@ -168,58 +164,25 @@ public class CmsTemplateMenu extends CmsJspActionElement {
 
                     CmsJspNavElement elem = (CmsJspNavElement)input;
 
-                    String uri = getCmsObject().getRequestContext().getUri();
-                    CmsJspNavElement uriElem = null;
-                    try {
-                        uriElem = new CmsJspNavElement(uri, CmsProperty.toMap(getCmsObject().readPropertyObjects(
-                            uri,
-                            false)));
-                    } catch (CmsException e) {
-                        // noop
-                        LOGG.debug(e.getLocalizedMessage(), e);
-                    }
-
+                    CmsJspNavElement uriElem = getNavigation().getNavigationForResource();
                     // check if uri matches resource name
-                    if (elem.getResourceName().equals(uri)) {
+                    if (elem.getResourceName().equals(uriElem.getResourceName())) {
                         return Boolean.TRUE;
                     }
 
-                    // check if the default file for the uri matches the resource name
-                    String path = null;
-                    try {
-                        CmsResource resource = getCmsObject().readDefaultFile(elem.getResourceName());
-                        path = getCmsObject().getSitePath(resource);
-                    } catch (CmsException e) {
-                        // resource not found or not enough permissions
-                        LOGG.debug(e.getLocalizedMessage(), e);
-                    }
-                    if ((path == null) || ((uriElem != null) && uriElem.isInNavigation())) {
-                        path = elem.getResourceName();
-                    }
+                    // TODO: check if the default file for the uri matches the resource name
 
-                    if (uri.equals(path)) {
-                        return Boolean.TRUE;
-                    }
-
-                    // check if uri is in NOT in the navigation and so a parent folder will be marked as current
+                    // check if URI is NOT in the navigation and so a parent folder will be marked as current
                     CmsJspNavElement navElem = uriElem;
                     while ((navElem != null) && !navElem.isInNavigation()) {
-
                         String parentPath = CmsResource.getParentFolder(navElem.getResourceName());
                         if (parentPath == null) {
                             break;
                         }
-                        try {
-                            navElem = new CmsJspNavElement(
-                                parentPath,
-                                CmsProperty.toMap(getCmsObject().readPropertyObjects(parentPath, false)));
-                        } catch (CmsException e) {
-                            LOGG.debug(e.getLocalizedMessage());
-                            break;
-                        }
+                        navElem = getNavigation().getNavigationForResource(parentPath);
                     }
 
-                    if ((navElem != null) && (uriElem != null) && !uriElem.isInNavigation()) {
+                    if ((navElem != null) && !uriElem.isInNavigation()) {
                         return Boolean.valueOf(elem.equals(navElem));
                     }
 

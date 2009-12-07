@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2009/11/26 11:36:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/07 15:12:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -584,7 +584,7 @@ public class CmsJspNavBuilder {
     /**
      * Initializes this bean.<p>
      * 
-     * @param cms context provider for the current request
+     * @param cms the current cms context
      */
     public void init(CmsObject cms) {
 

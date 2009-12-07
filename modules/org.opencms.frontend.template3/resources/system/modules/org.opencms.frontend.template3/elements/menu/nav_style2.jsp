@@ -18,11 +18,9 @@
 	CmsTemplateMenu cms = new CmsTemplateMenu(pageContext, request, response);
 	// in order to omit folder levels, set the NavStartLevel property to the level number where 0 is the root "/" level
 	int navStartLevel = Integer.parseInt(cms.property("NavStartLevel", "search", "0"));
-	cms.setElements(cms.getNavigation().getNavigationForFolder(CmsResource.getPathPart(cms.getRequestContext().getFolderUri(), navStartLevel)));
+	cms.setElements(cms.getNavigation().getNavigationForFolder(CmsResource.getPathPart((String)request.getAttribute(org.opencms.xml.containerpage.CmsADEManager.ATTR_SITEMAP_ENTRY), navStartLevel)));
 	pageContext.setAttribute("cms", cms);
 %>
-
-<div id="nav_main" class="gradient">
 <c:if test="${!empty cms.elements}">
 	<ul>
 		<c:set var="oldLevel" value="" />

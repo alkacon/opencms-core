@@ -13,7 +13,8 @@
 
 	CmsTemplateMenu cms = new CmsTemplateMenu(pageContext, request, response);
 	pageContext.setAttribute("cms", cms);
-	pageContext.setAttribute("navList", cms.getNavigation().getNavigationBreadCrumb(1, true));
+	int navStartLevel = Integer.parseInt(cms.property("NavStartLevel", "search", "0") + 0);	
+	pageContext.setAttribute("navList", cms.getNavigation().getNavigationBreadCrumb(navStartLevel, true));
 %>
 
 <c:set var="first" value="true" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/12/04 08:56:10 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/12/07 15:12:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 7.6
  */
@@ -146,8 +146,12 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     protected enum Action {
         /** First call to get all the data. */
         ALL,
+        /** To fill in the content of a sitemap entry. */
+        CONTENT,
         /** To retrieve the favorite or recent list. */
         GET,
+        /** To create a new resource as a sitemap entry */
+        NEW_ENTRY,
         /** To retrieve the sitemap's property definitions. */
         PROPS,
         /** To save the sitemap. */
@@ -159,11 +163,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         /** To unlock the sitemap. */
         STOPEDIT,
         /** To validate a site entry name. */
-        VALIDATE,
-        /** To fill in the content of a sitemap entry. */
-        CONTENT,
-        /** To create a new resource as a sitemap entry */
-        NEW_ENTRY
+        VALIDATE
     }
 
     /** Json property name constants for request parameters. */
@@ -201,6 +201,10 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     /** Json property name constants for responses. */
     protected enum JsonResponse {
 
+        /** List of sitemap entries */
+        ENTRIES("entries"),
+        /** Single sitemap entry */
+        ENTRY("entry"),
         /** The favorites list. */
         FAVORITES("favorites"),
         /** The validated/converted site entry name. */
@@ -211,10 +215,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         RECENT("recent"),
         /** The sitemap tree. */
         SITEMAP("sitemap"),
-        /** List of sitemap entries */
-        ENTRIES("entries"),
-        /** Single sitemap entry */
-        ENTRY("entry"),
         /** Flag to indicate if this is a top-level sitemap or a sub-sitemap. */
         SUB_SITEMAP("subSitemap"),
         /** List of the URIs of sitemaps which reference the current sitemap */
@@ -518,13 +518,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             getRequest(),
             getResponse(),
             I_CmsResourceType.Formatter.SITEMAP,
-            Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)new CmsSiteEntryBean(
-                entry.getResourceId(),
-                entry.getName(),
-                entry.getExtension(),
-                entry.getTitle(),
-                entry.getProperties(),
-                null)));
+            Collections.singletonMap(CmsADEManager.ATTR_SITEMAP_ENTRY, (Object)entry.cloneWithoutSubEntries()));
     }
 
     /**

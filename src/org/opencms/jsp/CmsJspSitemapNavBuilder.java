@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2009/11/26 11:37:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/07 15:12:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 
 /**
@@ -55,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.9.2 
  * 
@@ -66,6 +68,9 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspSitemapNavBuilder.class);
+
+    /** The current request. */
+    protected HttpServletRequest m_request;
 
     /**
      * Empty constructor, so that this bean can be initialized from a JSP.<p> 
@@ -79,18 +84,15 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
      * Default constructor.<p>
      * 
      * @param cms context provider for the current request
+     * @param req the current request
      */
-    public CmsJspSitemapNavBuilder(CmsObject cms) {
+    public CmsJspSitemapNavBuilder(CmsObject cms, HttpServletRequest req) {
 
-        super(cms);
+        init(cms, req);
     }
 
     /**
-     * Collect all navigation elements from the files in the given folder.<p>
-     *
-     * @param folder the selected folder
-     * 
-     * @return A sorted (ascending to navigation position) list of navigation elements
+     * @see org.opencms.jsp.CmsJspNavBuilder#getNavigationForFolder(java.lang.String)
      */
     @Override
     public List<CmsJspNavElement> getNavigationForFolder(String folder) {
@@ -117,7 +119,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
                 m_cms.readResource(entry.getResourceId());
                 // permissions are fine, add it to the results
                 entry.setPosition(position);
-                CmsJspNavElement element = getNavigationForSiteEntry(folder + entry.getName(), entry);
+                CmsJspNavElement element = getNavigationForSiteEntry(folder + entry.getName() + "/", entry);
                 if ((element != null) && element.isInNavigation()) {
                     result.add(element);
                 }
@@ -133,12 +135,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
     }
 
     /**
-     * Returns a navigation element for the named resource.<p>
-     * 
-     * @param resource the resource name to get the navigation information for, 
-     *              must be a full path name, e.g. "/docs/index.html"
-     *              
-     * @return a navigation element for the given resource
+     * @see org.opencms.jsp.CmsJspNavBuilder#getNavigationForResource(java.lang.String)
      */
     @Override
     public CmsJspNavElement getNavigationForResource(String resource) {
@@ -152,6 +149,30 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
             return null;
         }
         return getNavigationForSiteEntry(resource, uriEntry);
+    }
+
+    /**
+     * @see org.opencms.jsp.CmsJspNavBuilder#init(org.opencms.file.CmsObject)
+     */
+    @Override
+    public void init(CmsObject cms) {
+
+        // prevent the usage of this method
+        throw new RuntimeException();
+    }
+
+    /**
+     * Initializes this bean.<p>
+     * 
+     * @param cms the current cms context
+     * @param req the current request
+     */
+    public void init(CmsObject cms, HttpServletRequest req) {
+
+        m_request = req;
+        m_cms = cms;
+        m_requestUri = (String)m_request.getAttribute(CmsSitemapResourceHandler.SITEMAP_CURRENT_URI);
+        m_requestUriFolder = CmsResource.getFolderPath(m_requestUri);
     }
 
     /**
