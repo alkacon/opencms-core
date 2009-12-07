@@ -16,10 +16,15 @@ if [ -z "$TOMCAT_HOME" ]; then
 fi
 
 TOMCAT_CLASSPATH=""
+# Support for tomcat 5
 for JAR in ${TOMCAT_HOME}/common/lib/*.jar; do
    TOMCAT_CLASSPATH="${TOMCAT_CLASSPATH}:${JAR}"
 done
 for JAR in ${TOMCAT_HOME}/shared/lib/*.jar; do
+   TOMCAT_CLASSPATH="${TOMCAT_CLASSPATH}:${JAR}"
+done
+# Support for tomcat 6
+for JAR in ${TOMCAT_HOME}/lib/*.jar; do
    TOMCAT_CLASSPATH="${TOMCAT_CLASSPATH}:${JAR}"
 done
 

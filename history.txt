@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/12/07 14:08:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/12/07 17:03:20 $
+ * Version: $Revision: 1.13 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ OpenCms 7.9.1 - xxxx, 2009
 * Fixed issue with selected versions in the resource history
 * Fixed issue #1800: Still not released resources are indexed
 * Fixed issue #1803: Template Two Demo Article links with target="_blank"
+* Fixed issue #1802: CmsShell does work in Linux in TomCat6
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
