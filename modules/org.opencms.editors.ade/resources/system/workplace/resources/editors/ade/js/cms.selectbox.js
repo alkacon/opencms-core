@@ -70,20 +70,6 @@ $.fn.selectBox=function(options, additional){
                 
 				var replacer=_generateReplacer(_getValues($(this)));
                 replacer.insertBefore(this);
-           /*     $('<div class="cms-selectbox ui-state-default ui-corner-all"></div>')
-				var selection=$('option:selected', this)
-				replacer.insertBefore(this);
-				$('<span class="cms-current-value cms-select-option"></span>').appendTo(replacer).text(selection.text()).attr('rel', selection.val());
-				var selector=$('<div class="cms-selector ui-widget-content ui-corner-bottom"></div>').appendTo(replacer);
-				$(this).find('option').each(function(){
-					$('<span class="cms-select-option"></span>')
-                        .attr('rel', $(this).val()).text($(this).text())
-                        .appendTo('.cms-selector',replacer)
-                        .click(_select);
-				});
-				replacer.click(_start);
-                $('span', replacer).hover(function(){$(this).addClass('ui-state-hover');}, function(){$(this).removeClass('ui-state-hover')});
-                */
                 $(this).data('replacer',replacer);
 			}).hide();
 			$(document.body).click(_close);
@@ -122,6 +108,10 @@ $.fn.selectBox=function(options, additional){
         
         function _getValue(replacer){
             return replacer.find('span.cms-current-value').attr('rel');
+        }
+        
+        function _getIndex(replacer){
+            return ('.cms_select_option', replacer).index($('.cms-current-value', replacer));
         }
         
         function _generateReplacer(values){
