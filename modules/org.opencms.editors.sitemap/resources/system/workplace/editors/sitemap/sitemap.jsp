@@ -53,8 +53,12 @@
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.sitemap.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.selectbox.js")%>"></script>
     <script type="text/javascript">
+ // TODO: use config to set the gallery-types
+    cms.galleries.configContentTypes=[13];
+    	
       $(document).ready(function() {
-         cms.data.loadAndInitSitemap();
+
+        cms.data.loadAndInitSitemap();
       });
     </script>
     <title>Sitemap demo</title>

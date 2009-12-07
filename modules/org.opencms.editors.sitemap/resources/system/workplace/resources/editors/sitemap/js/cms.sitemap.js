@@ -1399,7 +1399,7 @@
             top: 35,
             left: this.button.position().left - 1
          }).slideDown(100, function() {
-            $('div.ui-widget-shadow', cms.sitemap.dom.newMenu).css({
+            $('div.ui-widget-shadow', cms.sitemap.dom.addMenu).css({
                top: 0,
                left: -3,
                width: cms.sitemap.dom.addMenu.outerWidth() + 8,
