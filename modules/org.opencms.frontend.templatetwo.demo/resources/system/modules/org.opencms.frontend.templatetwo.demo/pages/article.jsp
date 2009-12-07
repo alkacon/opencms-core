@@ -45,7 +45,7 @@
 		<cms:contentcheck ifexists="Links">
 			<ul>
 			<cms:contentloop element="Links">
-				<c:set var="newWindow"><cms:contentshow element="URI" /></c:set>
+				<c:set var="newWindow"><cms:contentshow element="NewWindow" /></c:set>
 				<li><a href="<cms:link><cms:contentshow element="URI" /></cms:link>" <c:if test="${newWindow}">target="_blank"</c:if>>
 					<cms:contentcheck ifexists="Description">
 						<c:set var="desc"><cms:contentshow element="Description" /></c:set>
