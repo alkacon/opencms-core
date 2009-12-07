@@ -94,7 +94,7 @@ $.fn.selectBox=function(options, additional){
             replacer.find('span.cms-current-value').text($(this).text()).attr('rel',value);
             _close();
             if ($.isFunction(opts.select)){
-                opts.select(this, replacer, value);
+                opts.select(this, replacer, value, _getIndex(replacer));
             }
             return false;
         }
@@ -112,7 +112,10 @@ $.fn.selectBox=function(options, additional){
         }
         
         function _getIndex(replacer){
-            return ('.cms_select_option', replacer).index($('.cms-current-value', replacer));
+            if (replacer && replacer.lentgh) {
+                return ('.cms_select_option', replacer).index($('.cms-current-value', replacer));
+            }
+            return -1;
         }
         
         function _generateReplacer(values){
@@ -149,6 +152,10 @@ $.fn.selectBox=function(options, additional){
         
         function getValue(){
             return _getValue(self.data('replacer'));
+        }
+        
+        function getIndex(){
+            return _getIndex(self.data('replacer'));
         }
         
         function setValue(value){
