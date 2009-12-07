@@ -205,7 +205,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-        <file>
+		<file>
 			<source>system/workplace/editors/ade/image-preview-formatter.jsp</source>
 			<destination>system/workplace/editors/ade/image-preview-formatter.jsp</destination>
 			<type>jsp</type>
@@ -742,6 +742,26 @@
 					<name>Title</name>
 					<value><![CDATA[ui-bg_glass_65_ffffff_1x400]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:400]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/custom-theme/images/ui-bg_glass_65_f6f6f6_1x400.png</source>
+			<destination>system/workplace/resources/editors/ade/css/custom-theme/images/ui-bg_glass_65_f6f6f6_1x400.png</destination>
+			<type>image</type>
+			<uuidstructure>0d4e79fe-e0b6-11de-b0bc-1b83e2ded98b</uuidstructure>
+			<uuidresource>0d4e79ff-e0b6-11de-b0bc-1b83e2ded98b</uuidresource>
+			<datelastmodified>Fri, 04 Dec 2009 09:18:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 04 Dec 2009 09:18:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:1,h:400]]></value>
@@ -3791,21 +3811,6 @@
 					<value><![CDATA[cms.html]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-        <file>
-			<source>system/workplace/resources/editors/ade/js/cms.imagepreviewhandler.js</source>
-			<destination>system/workplace/resources/editors/ade/js/cms.imagepreviewhandler.js</destination>
-			<type>plain</type>
-			<uuidstructure>07809316-df5e-11de-9289-f19ce2452f95</uuidstructure>
-			<uuidresource>07809317-df5e-11de-9289-f19ce2452f95</uuidresource>
-			<datelastmodified>Fri, 04 Dec 2009 09:25:54 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 02 Dec 2009 16:16:21 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>

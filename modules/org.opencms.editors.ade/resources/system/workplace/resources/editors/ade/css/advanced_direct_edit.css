@@ -515,7 +515,7 @@ div.ui-widget-header a.cms-edit-locked {
 		scroll 50% 50%;
 }
 
-div.ui-widget-header a.cms-move {
+div.ui-widget-header>a.cms-move {
 	background-image: url(images/16x16/ocms_de_move_sw.png);
 }
 
@@ -608,15 +608,16 @@ div.cms-dialog {
     }
     
     .cms-additional-item-title{
-        display: inline-block;
-        width: 19%;
-        margin-right: 2%;
+        display: block;
+        width: 65px;
+        margin-right: 5px;
+        float: left;
         vertical-align: top;
     }
     
     .cms-additional-item-value{
-        display: inline-block;
-        width: 79%;
+        display: block;
+        margin-left: 70px;
         vertical-align: top;
     }
     .cms-list-with-checkbox div.cms-list-item {
@@ -639,6 +640,41 @@ div.cms-dialog {
     div.cms-list-title {
        font-weight:bold;
     }
+    
+        /** Hover and active state for items in the list */
+    li.cms-list-item-active div.cms-list-item { 
+        border-color: #888888; 
+    }   
+    
+    li.cms-list-item-active div.cms-list-item div.cms-list-itemcontent {
+        background: #f6f6f6 url(custom-theme/images/ui-bg_glass_65_f6f6f6_1x400.png) 50% 50% repeat-x; 
+        color: #000000; 
+    }
+    
+    .cms-list div.ui-state-hover, span.cms-drop-down .ui-state-hover, li.cms-list-item-hover div.cms-list-itemcontent {
+    	background-image: url(custom-theme/images/ui-bg_glass_75_cccccc_1x400.png);
+    }
+
+    .cms-list div.ui-state-default, .cms-drop-down .ui-state-default{
+    	background-image: url(custom-theme/images/ui-bg_glass_75_e6e6e6_1x400.png);
+    }    
+   
+    .cms-list-item-hover div.cms-list-item { 
+        border-color: #555555 !important; 
+    }
+   
+    .cms-list-item-active div.cms-list-checkbox,
+    .cms-list-item-active { 
+       background-position: -7px -210px;
+    }
+   
+   .cms-list-item-hover div.cms-list-checkbox { 
+       background-position: -7px -110px;
+   }
+   
+   .cms-list-item-active.cms-list-item-hover div.cms-list-checkbox { 
+       background-position: -7px -310px;
+   }
     
 /** Unified list items: END **/
 
@@ -994,8 +1030,8 @@ ol.ade-forms fieldset {
 	border: 1px solid #333333;
 }
 
-#fav-dialog .cms-subcontainer-item { /*border: none !important;*/
-	
+#fav-dialog .cms-item-list { 
+	margin: 10px;
 }
 
 .cms-type-fields {
@@ -1038,8 +1074,7 @@ ol.ade-forms fieldset {
 #cms-search-dialog {
 	overflow: hidden;
 }
-
-#toolbar_content .cms-move {
+#toolbar_content .cms-move, #fav-dialog .cms-move {
 	right: 3px;
 	top: 2px;
 }	

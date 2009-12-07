@@ -10,7 +10,8 @@ pageContext.setAttribute("cms", cms);
 <div>
 	<h3>${cms.title}</h3>
 	<div>
-		<b>Last modified:</b>&nbsp;${cms.resource.dateLastModified}<br />
+		<c:set var="dateModified" value="<%=new java.util.Date(cms.getResource().getDateLastModified()) %>" />
+		<b>Last modified:</b>&nbsp;<fmt:formatDate type="both" dateStyle="medium" timeStyle="medium" value="${dateModified}" /><br />
 		<b>Path:</b>&nbsp;${cms.path}<br />
 	</div>
 </div>

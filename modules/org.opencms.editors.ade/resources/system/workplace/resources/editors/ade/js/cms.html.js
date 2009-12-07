@@ -137,13 +137,13 @@
    var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = /*Html*/ function(/*Element*/item) {
       var $content = createItemFavListHtml(item.id);
       $content.prepend(deleteIcon);
-      $('.cms-move', $content).remove();
+      $content.find('div.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
       return cms.util.jqueryToHtml($content);
    }
    
    
    /**
-    * Creates the HTML for an item in the New/Fav/Recent menu from an element.<p>
+    * Creates the HTML for an item in the Fav/Recent menu from an element.<p>
     *
     * @param {String} id the id of the element for which the HTML should be generated
     */

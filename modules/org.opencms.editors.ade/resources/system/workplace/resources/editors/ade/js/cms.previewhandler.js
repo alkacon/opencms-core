@@ -39,14 +39,14 @@
     * 
     * @param {Object} itemProperties server response as JSON object with the editable properties
     */     
-   var showEditArea =  function(itemProperties) {      
+   var showEditArea = function(itemProperties) {      
        var buttonBar = $('<div class="button-bar"></div>');
        if (itemProperties.length > 0) {
              buttonBar.append('<button id="previewSave" disabled="true" class="ui-state-default ui-corner-all">\
-                                     <span class="cms-galleries-button">Save</span>\
+                                                    <span class="cms-galleries-button">Save</span>\
                                </button>');
                      /*.append('<button id="previewPublish" class="ui-state-default ui-corner-all">\
-                                    <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
+                                                    <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
                                 </button>');*/
        }
                                       
@@ -60,7 +60,7 @@
            $('.edit-area').find('.button-bar').append('<button id="previewSelect" class="ui-state-default ui-corner-all">\
                                 <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                           </button>');
-           $('#previewSelect').click(function() {               
+           $('#previewSelect').click(function() {
                var itemType = '';
                var itemId = $(this).closest('#cms-preview').attr('alt');              
                cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);          
@@ -71,8 +71,8 @@
        var form = $('<div class="edit-from"></div>');
        $.each(itemProperties, function() {
               $('<div style="margin: 2px;  clear: left;"></div>').attr('alt', this.name).appendTo(form)
-                   .append('<span class="cms-item-title" style="margin-right:10px; width: 100px;">' + this.name + '</span>')
-                   .append('<span class="cms-item-edit" style=" width: 100px;">' + (this.value ? this.value : '') + '</span>');                                 
+                   .append('<span class="cms-item-title" style="margin-right: 2%; width: 19%;">' + this.name + '</span>')
+                   .append('<span class="cms-item-edit" style="width: 79%;">' + (this.value ? this.value : '') + '</span>');                                 
            }); 
        $(target).append(form);      
        

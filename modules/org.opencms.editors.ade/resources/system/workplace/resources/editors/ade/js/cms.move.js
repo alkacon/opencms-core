@@ -24,7 +24,7 @@
       this.isLoading = false;
       this.runningRequest = null;
       this.loadingResourceId = null;
-      this.hasStoped=false;
+      this.hasStoped = false;
       this.origPlaceholder = null;
       this.startId = null;
       this.over = null;
@@ -283,25 +283,25 @@
       
       if (!moveState.element) {
          if (moveState.isMoveFromResultList()) {
-            var resourceType=ui.self.currentItem.data('type');
+            var resourceType = ui.self.currentItem.data('type');
             moveState.isLoading = true;
-            moveState.loadingResourceId=moveState.currentResourceId;
-            moveState.currentResourceId=resourceType;
+            moveState.loadingResourceId = moveState.currentResourceId;
+            moveState.currentResourceId = resourceType;
             moveState.runningRequest = cms.data.loadElements([moveState.loadingResourceId], function() {
                if (moveState.hasStoped) {
-                   moveState.currentResourceId = moveState.loadingResourceId;
-                   moveState.element = cms.data.elements[moveState.loadingResourceId];
-                   $('#'+moveState.currentContainerId + ' .cms-element[rel="'+moveState.loadingResourceId+'"]').replaceWith(moveState.element.getContent(moveState.currentContainerId))
+                  moveState.currentResourceId = moveState.loadingResourceId;
+                  moveState.element = cms.data.elements[moveState.loadingResourceId];
+                  $('#' + moveState.currentContainerId + ' .cms-element[rel="' + moveState.loadingResourceId + '"]').replaceWith(moveState.element.getContent(moveState.currentContainerId))
                } else {
-                   moveState.currentResourceId = moveState.loadingResourceId;
-                   moveState.element = cms.data.elements[moveState.loadingResourceId];
-                   replaceHelperElements(ui.self);
+                  moveState.currentResourceId = moveState.loadingResourceId;
+                  moveState.element = cms.data.elements[moveState.loadingResourceId];
+                  replaceHelperElements(ui.self);
                }
                moveState.isLoading = false;
-               moveState.runningRequest=null;
+               moveState.runningRequest = null;
                
             });
-            moveState.element = cms.data.elements[ resourceType];
+            moveState.element = cms.data.elements[resourceType];
          } else {
             $(cms.util.getContainerSelector()).sortable('cancel');
          }
@@ -439,13 +439,13 @@
       var currentItem = ui.self.currentItem;
       
       if (moveState.cancel) {
-         if (isMenuContainer(startContainer)) {
+         if (moveState.isMoveFromMenu()) {
             // show favorite list again after dragging a favorite from it.
             $('#' + cms.toolbar.currentMenu).css('display', 'block');
             if (moveState.isLoading && moveState.runningRequest) {
-                cms.comm.removeRequest(moveState.runningRequest);
-                moveState.runningRequest.abort();
-                moveState.isLoading=false;
+               cms.comm.removeRequest(moveState.runningRequest);
+               moveState.runningRequest.abort();
+               moveState.isLoading = false;
             }
          }
          
@@ -538,15 +538,16 @@
          }
          updateContainer(startContainer);
          updateContainer(endContainer);
+         if (moveState.isMoveFromNew()) {
+            $('button[name="edit"]').trigger('click');
+            removeBorder(currentItem, '.' + HOVER_NEW);
+            drawBorder(currentItem, 2, HOVER_NEW);
+         }
       }
-      if (moveState.isMoveFromNew()) {
-         $('button[name="edit"]').trigger('click');
-         removeBorder(currentItem, '.' + HOVER_NEW);
-         drawBorder(currentItem, 2, HOVER_NEW);
-      }
-      if (moveState.isLoading){
-          moveState.hasStoped=true;
-          currentItem.attr('rel', moveState.loadingResourceId)
+      
+      if (moveState.isLoading) {
+         moveState.hasStoped = true;
+         currentItem.attr('rel', moveState.loadingResourceId)
       }
       resetNewElementBorders();
    }
@@ -862,7 +863,7 @@
    };
    
    var replaceHelperElements = function(sortable) {
-      
+   
       for (var container_name in cms.data.containers) {
          var containerType = cms.data.containers[container_name].type;
          //skip incompatible containers

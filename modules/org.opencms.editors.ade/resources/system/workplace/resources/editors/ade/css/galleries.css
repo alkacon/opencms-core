@@ -57,7 +57,12 @@
     #cms-preview .edit-area{
         height: 100px;  
         margin: 2px;
-    }                 
+        overflow: auto;
+    }       
+    
+    .edit-area span{
+        font-size: 12px;
+    }          
        
     #cms-preview .close-icon{
         position:absolute;
@@ -124,6 +129,8 @@
     input.cms-direct-input, input.cms-direct-input:focus, input.cms-direct-input:active {
           border: none;
           background: transparent;
+          overflow: visible;
+          display: inline;
     }
     
     .cms-item-changed {
@@ -141,8 +148,6 @@
     /* List for search tabs */
     .cms-list-scrolling {                
         border:1px solid #AAAAAA;       
-    /*    overflow:auto; */
-        width:600px;
         background: #ffffff;
     }
      
@@ -158,37 +163,7 @@
         display: none;
     }
     
-    /** Hover and active state for items in the search list */
-    li.cms-list-item-active div.cms-list-item { 
-        border: 1px solid #fcefa1; 
-        background: #fbf9ee url(custom-theme/images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x; 
-        color: #363636; 
-    }   
-    
-    .cms-list div.ui-state-hover, span.cms-drop-down .ui-state-hover{
-    	background-image: url(custom-theme/images/ui-bg_glass_75_cccccc_1x400.png);
-    }
 
-    .cms-list div.ui-state-default, .cms-drop-down .ui-state-default{
-    	background-image: url(custom-theme/images/ui-bg_glass_75_e6e6e6_1x400.png);
-    }    
-   
-    .cms-list-item-hover div.cms-list-item { 
-        border-color: #5ca718; 
-    }
-   
-    .cms-list-item-active div.cms-list-checkbox,
-    .cms-list-item-active { 
-       background-position: -7px -210px;
-    }
-   
-   .cms-list-item-hover div.cms-list-checkbox { 
-       background-position: -7px -110px;
-   }
-   
-   .cms-list-item-active.cms-list-item-hover div.cms-list-checkbox { 
-       background-position: -7px -310px;
-   }
     
     /** Input fields */
     input.ui-widget-content{
@@ -234,7 +209,6 @@
     	font-size:13px;
         display:inline-block;
         margin: 0px 0px 5px 0px;
-        width:600px;
     }           
     
     .cms-list-options span.cms-drop-down {
@@ -269,7 +243,6 @@
    .cms-search-panel {
         border: 1px solid #AAAAAA;
         height: 378px;
-        width: 600px; 
         background: #ffffff;
     }
     
