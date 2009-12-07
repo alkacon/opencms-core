@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/11/24 08:57:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/07 08:04:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,9 +40,9 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -216,18 +216,14 @@ public class CmsJspTagContainer extends TagSupport {
                     }
                 }
 
-                // get the content definition
-                CmsXmlContentDefinition contentDef = CmsXmlContentDefinition.getContentDefinitionForResource(
-                    cms,
-                    resUri);
-
-                String elementFormatter = contentDef.getContentHandler().getFormatters().get(containerType);
+                String elementFormatter = OpenCms.getADEManager().getXmlContentFormatters(cms, resUri).get(
+                    containerType);
 
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormatter)) {
                     throw new CmsIllegalStateException(Messages.get().container(
                         Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
                         cms.getRequestContext().getUri(),
-                        contentDef.getSchemaLocation(),
+                        OpenCms.getResourceManager().getResourceType(resUri).getTypeName(),
                         CmsContainerPageBean.TYPE_TEMPLATE));
                 }
                 // execute the formatter jsp for the given element uri
@@ -267,13 +263,10 @@ public class CmsJspTagContainer extends TagSupport {
                 for (CmsContainerElementBean subelement : subcontainer.getElements()) {
                     CmsResource subelementRes = cms.readResource(subelement.getElementId());
                     String subelementUri = cms.getSitePath(subelementRes);
-                    // get the content definition
-                    CmsXmlContentDefinition contentDef = CmsXmlContentDefinition.getContentDefinitionForResource(
-                        cms,
-                        subelementRes);
 
                     //String subelementFormatter = cms.getSitePath(subelement.getFormatter());
-                    String subelementFormatter = contentDef.getContentHandler().getFormatters().get(containerType);
+                    String subelementFormatter = OpenCms.getADEManager().getXmlContentFormatters(cms, subelementRes).get(
+                        containerType);
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter)) {
                         subelementFormatter = cms.getSitePath(cms.readResource(subelement.getFormatterId()));
                     }
@@ -281,7 +274,7 @@ public class CmsJspTagContainer extends TagSupport {
                         throw new CmsIllegalStateException(Messages.get().container(
                             Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
                             subelementUri,
-                            contentDef.getSchemaLocation(),
+                            OpenCms.getResourceManager().getResourceType(subelementRes).getTypeName(),
                             containerType));
                     }
 

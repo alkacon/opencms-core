@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2009/10/13 11:59:41 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/12/07 08:04:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -65,7 +66,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -249,7 +250,17 @@ public class CmsConfigurationParser {
             CmsResource resource = cms.readResource(source);
             String type = getTypeName(resource.getTypeId());
             m_configuration.put(type, configItem);
-            m_newElements.add(resource);
+
+            // checking access entries for the explorer-type
+            CmsResource folderRes = cms.readResource(folder);
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                OpenCms.getResourceManager().getResourceType(resource).getTypeName());
+            boolean editable = settings.isEditable(cms, folderRes);
+            //TODO: fix wrong permission test for explorer-types
+            boolean controlPermission = settings.getAccess().getPermissions(cms, folderRes).requiresControlPermission();
+            if (editable && controlPermission) {
+                m_newElements.add(resource);
+            }
         }
     }
 }

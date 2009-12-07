@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/12/02 09:20:02 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/12/07 08:04:59 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 7.6
  */
@@ -455,7 +455,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     private static final int MATCHES_PER_PAGE = 8;
 
     /**
-     * Empty constructor, required for every JavaBean.
+     * Empty constructor, required for every JavaBean.<p>
      */
     public CmsGallerySearchServer() {
 
@@ -735,7 +735,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Generates a JSON-Map for all available content types.
+     * Generates a JSON-Map for all available content types.<p>
      * 
      * @param types the gallery-types
      * 
@@ -1161,7 +1161,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Reads the resource-types for given resource-type-id's.
+     * Reads the resource-types for given resource-type-id's.<p>
      * 
      * @param types the type-id's
      * @return the list of resource-types
@@ -1301,7 +1301,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 String propertyName = properties.getJSONObject(i).getString(JsonKeys.NAME.getName());
                 String propertyValue = properties.getJSONObject(i).getString(JsonKeys.VALUE.getName());
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(propertyValue)) {
-                    propertyValue = null;
+                    propertyValue = "";
                 }
                 try {
                     CmsProperty currentProperty = m_cms.readPropertyObject(resource, propertyName, false);
@@ -1368,7 +1368,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Returns the rendered item html.
+     * Returns the rendered item html.<p>
      * 
      * @param type the resource-type
      * @param title the title

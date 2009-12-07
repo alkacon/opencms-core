@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2009/12/04 08:56:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/07 08:04:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.workplace.galleries.CmsGallerySearchServer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.6
  */
@@ -130,14 +130,14 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
     }
 
     /**
-     * Returns the URI for the gallery server JSP.
+     * Returns the URI for the gallery server JSP.<p>
      * 
      * @return the URI for the gallery server JSP
      */
     public String getGalleryServerUri() {
 
         CmsLinkManager linkMan = OpenCms.getLinkManager();
-        String galleryServerUri = linkMan.substituteLink(getCmsObject(), CmsJspTagEnableAde.GALLERY_SERVER_URI);
+        String galleryServerUri = linkMan.substituteLink(getCmsObject(), CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
         return galleryServerUri;
     }
 
