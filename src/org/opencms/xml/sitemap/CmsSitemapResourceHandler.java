@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/08 11:31:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsADEManager;
 
 import java.util.Collections;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.9.2
  */
@@ -313,14 +314,17 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
     public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
     throws CmsResourceInitException {
 
-        // only do something if the resource was not found good
-        if (resource != null) {
+        // check if the resource was already found
+        boolean abort = (resource != null);
+        // check if the resource comes from the root site
+        abort |= CmsStringUtil.isEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot());
+        // check if the resource comes from the /system/ folder
+        abort |= cms.getRequestContext().getUri().startsWith("/system/");
+        if (abort) {
+            // skip in all cases above 
             return resource;
         }
-        // skip when not coming from the 'right' site
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot())) {
-            return resource;
-        }
+
         if (m_missingUrisOffline == null) {
             // TODO: find a better way to initialize
             init();
@@ -382,6 +386,11 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
      */
     protected CmsSiteEntryBean getEntry(CmsObject cms, String uri, boolean online) throws CmsException {
 
+        CmsUUID logId = null;
+        if (LOG.isDebugEnabled()) {
+            logId = new CmsUUID();
+            LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_ENTRY_3, logId, uri, Boolean.valueOf(online)).key());
+        }
         // find the root sitemap, at the root folder of the site
         CmsSitemapBean sitemap = getSitemap(cms, "/", online);
         if (sitemap == null) {
@@ -395,6 +404,11 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
             // special case for '/'
             CmsSiteEntryBean entry = sitemap.getSiteEntries().get(0);
             entry.setPosition(0);
+            LOG.debug(Messages.get().container(
+                Messages.LOG_DEBUG_SITEMAP_FOUND_3,
+                logId,
+                new Integer(0),
+                entry.getName()).key());
             return entry;
         }
 
@@ -403,6 +417,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
         boolean finished = false;
         while (!finished) {
             String name = entryPaths.removeFirst();
+            LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_ENTRY_CHECK_2, logId, uriPath).key());
             uriPath += "/" + name;
             // check the missed cache
             Boolean missing;
@@ -413,43 +428,74 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit, I_CmsEventL
             }
             if (missing != null) {
                 // already marked as not found
+                LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_ENTRY_MISSING_2, logId, uriPath).key());
                 return null;
             }
+            List<CmsSiteEntryBean> newSubEntries = null;
             int position = 0;
             for (; position < subEntries.size(); position++) {
                 CmsSiteEntryBean entry = subEntries.get(position);
                 if (!entry.getName().equals(name)) {
                     // no match
+                    LOG.debug(Messages.get().container(
+                        Messages.LOG_DEBUG_SITEMAP_NO_MATCH_3,
+                        logId,
+                        new Integer(position),
+                        entry.getName()).key());
                     continue;
                 }
+                LOG.debug(Messages.get().container(
+                    Messages.LOG_DEBUG_SITEMAP_MATCH_3,
+                    logId,
+                    new Integer(position),
+                    entry.getName()).key());
                 if (entryPaths.isEmpty()) {
                     // if nothing left, we got a match
+                    LOG.debug(Messages.get().container(
+                        Messages.LOG_DEBUG_SITEMAP_FOUND_3,
+                        logId,
+                        new Integer(position),
+                        entry.getName()).key());
                     entry.setPosition(position);
                     return entry;
                 } else {
                     // continue with sub-entries
-                    subEntries = entry.getSubEntries();
-                    if (subEntries.isEmpty()) {
+                    newSubEntries = entry.getSubEntries();
+                    if (newSubEntries.isEmpty()) {
                         // check sitemap property
-                        String sitemapPath = entry.getProperties().get(CmsSitemapResourceHandler.PROPERTY_SITEMAP);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sitemapPath)) {
+                        String subSitemapId = entry.getProperties().get(CmsSitemapResourceHandler.PROPERTY_SITEMAP);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subSitemapId)) {
                             // switch to sub-sitemap
-                            sitemap = getSitemap(cms, sitemapPath, online);
+                            CmsResource subSitemapPath = cms.readResource(new CmsUUID(subSitemapId));
+                            LOG.debug(Messages.get().container(
+                                Messages.LOG_DEBUG_SITEMAP_SUBSITEMAP_2,
+                                logId,
+                                subSitemapPath).key());
+                            sitemap = getSitemap(cms, cms.getSitePath(subSitemapPath), online);
                             if (sitemap == null) {
                                 // no sitemap found
                                 return null;
                             }
-                            subEntries = sitemap.getSiteEntries();
+                            newSubEntries = sitemap.getSiteEntries();
                         }
                     }
-                    finished = subEntries.isEmpty();
+                    finished = newSubEntries.isEmpty();
+                    if (finished) {
+                        LOG.debug(Messages.get().container(
+                            Messages.LOG_DEBUG_SITEMAP_NO_SUBENTRIES_3,
+                            logId,
+                            new Integer(position),
+                            entry.getName()).key());
+                    }
                 }
                 break;
             }
             if (position == subEntries.size()) {
                 // not found
                 finished = true;
+                LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_NOT_FOUND_2, logId, uriPath).key());
             }
+            subEntries = newSubEntries;
         }
 
         return null;

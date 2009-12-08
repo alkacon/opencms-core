@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/Messages.java,v $
- * Date   : $Date: 2009/11/25 15:26:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/08 11:31:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,33 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_CACHE_SET_ONLINE_2 = "LOG_DEBUG_CACHE_SET_ONLINE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_SITEMAP_ENTRY_3 = "LOG_DEBUG_SITEMAP_ENTRY_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_SITEMAP_ENTRY_CHECK_2 = "LOG_DEBUG_SITEMAP_ENTRY_CHECK_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_SITEMAP_ENTRY_MISSING_2 = "LOG_DEBUG_SITEMAP_ENTRY_MISSING_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_SITEMAP_FOUND_3 = "LOG_DEBUG_SITEMAP_FOUND_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_SITEMAP_MATCH_3 = "LOG_DEBUG_SITEMAP_MATCH_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_SITEMAP_NO_MATCH_3 = "LOG_DEBUG_SITEMAP_NO_MATCH_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_SITEMAP_NO_SUBENTRIES_3 = "LOG_DEBUG_SITEMAP_NO_SUBENTRIES_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_SITEMAP_NOT_FOUND_2 = "LOG_DEBUG_SITEMAP_NOT_FOUND_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_SITEMAP_SUBSITEMAP_2 = "LOG_DEBUG_SITEMAP_SUBSITEMAP_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SITEMAP_LOCALE_NOT_FOUND_2 = "LOG_SITEMAP_LOCALE_NOT_FOUND_2";
