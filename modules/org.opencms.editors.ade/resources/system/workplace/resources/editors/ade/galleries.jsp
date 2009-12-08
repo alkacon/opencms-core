@@ -22,17 +22,19 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 <script type="text/javascript" src="js/cms.html.js"></script>
 <script type="text/javascript" src="js/cms.selectbox.js"></script>
 <script type="text/javascript" src="js/cms.directinput.js"></script>
+<script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript" src="js/cms.previewhandler.js"></script>
 <script type="text/javascript" src="js/cms.imagepreviewhandler.js"></script>
-<script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript">  
 	// set the ajax server path
     var vfsPathAjaxJsp = "${gallery.galleryUri}";  
  	// read and handle the request params
     var tabs = ${gallery.listConfig};	
     var requestData = ${gallery.initialSearch};
+    $.extend(cms.galleries.initValues, ${gallery.additionalImageParams});
     cms.galleries.initValues['dialogMode'] = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
     cms.galleries.initValues['fieldId'] = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
+    cms.galleries.initValues['path'] = "${(not empty param.path) ? param.path : 'null'}";
     $(function() {        
         cms.galleries.initAddDialog(tabs, requestData);                                 
 	});

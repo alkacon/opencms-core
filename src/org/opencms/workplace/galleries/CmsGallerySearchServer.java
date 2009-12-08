@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/12/07 08:04:59 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2009/12/08 12:43:07 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 7.6
  */
@@ -321,6 +321,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The query data */
         QUERYDATA("querydata"),
 
+        /** The additional image query data */
+        IMAGEDATA("imagedata"),
+
         /** The resource path. */
         RESOURCEPATH("resourcepath"),
 
@@ -398,6 +401,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** Generic data parameter. */
         DATA("data"),
 
+        /** Generic data parameter. */
+        IMAGEDATA("imagedata"),
+
         /** The dialog mode. */
         DIALOGMODE("dialogmode"),
 
@@ -450,6 +456,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
     /** The JSON data request object. */
     private JSONObject m_reqDataObj;
+
+    /** The additional JSON data request object for image gallery. */
+    private JSONObject m_reqImageDataObj;
 
     /** The default matchers per search result page. */
     private static final int MATCHES_PER_PAGE = 8;
@@ -1436,6 +1445,23 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /**
+     * Returns the additional request data parameter for image gallery as JSON.<p> 
+     * 
+     * @return the JSON object
+     * @throws JSONException if something goes wrong parsing the parameter string
+     */
+    private JSONObject getReqImageDataObj() throws JSONException {
+
+        if (m_reqImageDataObj == null) {
+            String imageDataParam = getRequest().getParameter(ReqParam.IMAGEDATA.getName());
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(imageDataParam)) {
+                m_reqImageDataObj = new JSONObject(imageDataParam);
+            }
+        }
+        return m_reqImageDataObj;
+    }
+
+    /**
      * Returns the URI of the gallery JSP.<p>
      * 
      * @return the URI string
@@ -1486,6 +1512,28 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 JSONObject queryData = data.getJSONObject(JsonKeys.QUERYDATA.getName());
                 result.put(JsonKeys.QUERYDATA.getName(), queryData);
                 result.put(JsonKeys.SEARCHRESULT.getName(), search(queryData));
+            }
+        } catch (JSONException e) {
+            // TODO: improve error handling
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns the JSON as string for the additinal parameters of the reouses of the type image.<p>
+     * 
+     * All parameters are taken from the request parameters.<p>
+     * 
+     * @return the search result data as JSON string
+     */
+    public String getAdditionalImageParams() {
+
+        JSONObject result = new JSONObject();
+        try {
+            JSONObject imageDate = getReqImageDataObj();
+            if (imageDate != null) {
+                result = getReqImageDataObj();
             }
         } catch (JSONException e) {
             // TODO: improve error handling

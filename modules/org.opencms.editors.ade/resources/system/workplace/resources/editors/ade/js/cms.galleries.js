@@ -25,21 +25,21 @@
    };
    
    /** 
-    * dialogMode: The current mode of the dialog. It can be 'widget','editor','ade', 'sitemap' or 'view'.
-    * fieldId: The field id of the input field inside of the xmlcontent. 
+    * 'dialogMode': The current mode of the dialog. It can be 'widget','editor','ade', 'sitemap' or 'view'.
+    * 'fieldId': The field id of the input field inside of the xmlcontent. 
     */
    var initValues = cms.galleries.initValues = {
        'dialogMode': null,
-       'fieldId'   : null
+       'fieldId'   : null       
    };
    
-   /** 
-    * dialogMode: The current mode of the dialog. It can be 'widget','editor','ade', 'sitemap' or 'view'.
-    * fieldId: The field id of the input field inside of the xmlcontent. 
+   /**
+    * 'path': path to the image, also used as id for the preview
+    * 'isInitial': flag to indicate is the the resource is loaded from xmlContent
     */
    var activeItem = cms.galleries.activeItem = {
        'path': '',
-       'isInitial': true       
+       'isInitial': false       
    };
    
    /** html-class for the inner of the scrolled list with items. */
@@ -198,10 +198,7 @@
     * 
     * @param {Object} requestData the request parameter
     */
-   var initAddDialog = cms.galleries.initAddDialog = function(tabsContent, requestData) {       
-      // add default content handler
-      cms.galleries.contentTypeHandlers['default'] = cms.previewhandler.defaultContentTypeHandler;              
-      cms.galleries.addContentTypeHandler('image', cms.imagepreviewhandler.imageContentTypeHandler);
+   var initAddDialog = cms.galleries.initAddDialog = function(tabsContent, requestData) {                  
       // handle the request parameter:
       // initialize the search object and the initial search 
       var initSearchResult = null;          
@@ -624,7 +621,7 @@
           $('#results li.cms-list[alt=' + cms.galleries.activeItem['path'] + ']').trigger('click');              	                    
           if (cms.galleries.activeItem['isInitial'] == true) {
               $('#results li.cms-list[alt=' + cms.galleries.activeItem['path'] + ']').trigger('dblclick');
-              cms.galleries.activeItem['isInitial'] = false;
+              //cms.galleries.activeItem['isInitial'] = false;
           }
               	          
       } 
@@ -668,12 +665,13 @@
             }
             
             // Set the path to currently selected item            
-            if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null'){          
-                  var itemField = window.opener.document.getElementById(cms.galleries.initValues['fieldId']);
-        	      if (itemField.value != null && itemField.value != "") {
-                        cms.galleries.activeItem['path'] = itemField.value;
+            if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null' 
+                && cms.galleries.initValues['path'] != null && cms.galleries.initValues['path'] != 'null'){          
+                  //var itemField = window.opener.document.getElementById(cms.galleries.initValues['fieldId']);
+        	      //if (itemField.value != null && itemField.value != '') {
+                        cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
                         cms.galleries.activeItem['isInitial'] = true;
-            	  }          
+            	  //}          
             }
         }
         
@@ -1089,6 +1087,7 @@
       // set the resouce id as alt attribute and empty the content of the preview
       $('#cms-preview').attr('alt', itemId);
       $('#cms-preview div.preview-area, #cms-preview div.edit-area').empty();
+      $('#cms-preview div.edit-format-area').remove();
       
       // reset the active item object
       cms.galleries.resetActiveItem();
@@ -1121,13 +1120,13 @@
          },
          'type': 'POST',
          'dataType': 'json',
-         'success': cms.galleries.getContentHandler(itemType)['init']
+         'success': cms.galleries.getContentHandler(itemType)['openPreview']
       });
     } 
     
     
     var resetActiveItem = cms.galleries.resetActiveItem = function() {        
-        cms.galleries.activeItem['isCropped'] = null;
+        cms.galleries.activeItem['isCropped'] = null;        
     }
  
         

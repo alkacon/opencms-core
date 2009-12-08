@@ -1,7 +1,7 @@
 /*
- * File   : $Source: $
- * Date   : $Date: $
- * Version: $Revision: $
+ * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/imagegallery.js,v $
+ * Date   : $Date: 2009/12/08 12:43:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -107,8 +107,8 @@ function setImageGalleryInfo(fieldId, idHash) {
 		"imagepath": 		imagePath,
 		"useformats": 		useFormats,
 		"showformats": 		showFormats,
-		"scale":		scaleParam,
-		"imgwidth":		imgWidth,
+		"scale":		    scaleParam,
+		"imgwidth":		    imgWidth,
 		"imgheight":		imgHeight,
 		"editedresource": 	editedResource,
 		"startupfolder":	startupFolder,
