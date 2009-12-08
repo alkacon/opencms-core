@@ -27,7 +27,7 @@
             "GALLERY_SERVER_URL" : "${cms.galleryServerUri}"
          },
          publish: {
-            "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/sitemap/publish-server.jsp:dd962f3e-abcd-11de-97fc-dd9f629b113b)</cms:link>"
+            "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/ade/publish-server.jsp:dd962f3e-abcd-11de-97fc-dd9f629b113b)</cms:link>"
          },
          html: {},
          comm: {},
@@ -36,7 +36,8 @@
          util: {},
          property: {},
          galleries: {},
-         previewhandler: {}
+         previewhandler: {},
+         imagepreviewhandler: {}
       };
       var vfsPathAjaxJsp = cms.data["GALLERY_SERVER_URL"];
     </script>
@@ -47,6 +48,7 @@
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.data.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.galleries.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.previewhandler.js")%>"></script>
+    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.imagepreviewhandler.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.publish.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.property.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.util.js")%>"></script>
