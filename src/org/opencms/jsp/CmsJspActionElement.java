@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/08 10:38:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,6 @@ import org.opencms.xml.sitemap.CmsSitemapResourceHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -84,7 +83,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -377,6 +376,21 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
+     * Returns the current uri for the navigation.<p>
+     *  
+     * @return the current uri for the navigation
+     */
+    public String getNavigationUri() {
+
+        String uri = (String)getRequest().getAttribute(
+            org.opencms.xml.sitemap.CmsSitemapResourceHandler.SITEMAP_CURRENT_URI);
+        if (uri == null) {
+            uri = getCmsObject().getRequestContext().getUri();
+        }
+        return uri;
+    }
+
+    /**
      * Returns the HTML for an <code>&lt;img src="..." /&gt;</code> tag that includes the given image scaling parameters.<p>
      * 
      * @param target the target URI of the file in the OpenCms VFS
@@ -385,7 +399,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
      */
-    public String img(String target, CmsImageScaler scaler, Map attributes) {
+    public String img(String target, CmsImageScaler scaler, Map<String, String> attributes) {
 
         return img(target, scaler, attributes, false);
     }
@@ -400,7 +414,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
      */
-    public String img(String target, CmsImageScaler scaler, Map attributes, boolean partialTag) {
+    public String img(String target, CmsImageScaler scaler, Map<String, String> attributes, boolean partialTag) {
 
         try {
             return CmsJspTagImage.imageTagAction(target, scaler, attributes, partialTag, getRequest());
@@ -484,7 +498,8 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, boolean editable, Map parameterMap) throws JspException {
+    public void include(String target, String element, boolean editable, Map<String, Object> parameterMap)
+    throws JspException {
 
         if (isNotInitialized()) {
             return;
@@ -494,10 +509,8 @@ public class CmsJspActionElement extends CmsJspBean {
             try {
                 modParameterMap = new HashMap<String, String[]>(parameterMap.size());
                 // ensure parameters are always of type String[] not just String
-                Iterator i = parameterMap.entrySet().iterator();
-                while (i.hasNext()) {
-                    Map.Entry entry = (Map.Entry)i.next();
-                    String key = (String)entry.getKey();
+                for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
+                    String key = entry.getKey();
                     Object value = entry.getValue();
                     if (value instanceof String[]) {
                         modParameterMap.put(key, (String[])value);
@@ -536,7 +549,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, Map parameterMap) throws JspException {
+    public void include(String target, String element, Map<String, Object> parameterMap) throws JspException {
 
         include(target, element, false, parameterMap);
     }
@@ -595,7 +608,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param editable flag to indicate if direct edit should be enabled for the element 
      * @param parameterMap a map of the request parameters
      */
-    public void includeSilent(String target, String element, boolean editable, Map parameterMap) {
+    public void includeSilent(String target, String element, boolean editable, Map<String, Object> parameterMap) {
 
         try {
             include(target, element, editable, parameterMap);
@@ -616,7 +629,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * @param element the element (template selector) to display from the target
      * @param parameterMap a map of the request parameters
      */
-    public void includeSilent(String target, String element, Map parameterMap) {
+    public void includeSilent(String target, String element, Map<String, Object> parameterMap) {
 
         try {
             include(target, element, parameterMap);
@@ -709,7 +722,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @return Map all properties of the current file
      */
-    public Map properties() {
+    public Map<String, String> properties() {
 
         return properties(null);
     }
@@ -726,12 +739,12 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagProperty
      */
-    public Map properties(String file) {
+    public Map<String, String> properties(String file) {
 
         if (isNotInitialized()) {
-            return new HashMap();
+            return new HashMap<String, String>();
         }
-        Map value = new HashMap();
+        Map<String, String> value = new HashMap<String, String>();
         try {
             if (file == null) {
                 file = CmsJspTagProperty.USE_URI;
