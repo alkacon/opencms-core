@@ -340,9 +340,8 @@
    var widgetTypes = {
       'string': StringWidget,
       'selector': SelectorWidget,
-      'chk': CheckboxWidget,
+      'checkbox': CheckboxWidget,
       'color': ColorWidget
-   
    }
    
    /**
