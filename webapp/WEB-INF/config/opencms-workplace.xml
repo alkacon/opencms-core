@@ -662,6 +662,9 @@
           <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
         </accesscontrol>
       </explorertype>
+      <explorertype name="cntpagegallery" key="fileicon.cntpagegallery" icon="htmlgallery.gif" reference="downloadgallery">
+          <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=cntpagegallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.cntpagegallery"/>
+      </explorertype>
       <defaultaccesscontrol>
         <accesscontrol>
           <accessentry principal="DEFAULT" permissions="+r+v"/>

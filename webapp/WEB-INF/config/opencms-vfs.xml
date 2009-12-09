@@ -90,13 +90,16 @@
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
-				    <param name="gallery.type.names">downloadgallery</param>
+				    <param name="gallery.type.names">cntpagegallery</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
                     <param name="schema">/system/workplace/editors/ade/schemas/type_config.xsd</param>
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlSitemap" name="sitemap" id="15" />
+                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="cntpagegallery" id="16">
+                    <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+                </type>
             </resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
