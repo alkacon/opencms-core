@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/12/07 17:30:45 $
- * Version: $Revision: 1.1165 $
+ * Date   : $Date: 2009/12/09 09:51:13 $
+ * Version: $Revision: 1.1166 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue #1800: Still not released resources are indexed
 * Fixed issue #1803: Template Two Demo Article links with target="_blank"
 * Fixed issue #1802: CmsShell does work in Linux in TomCat6
+* Fixed issue that, no error when changing field structure in xsd from simple to optional nested content
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
