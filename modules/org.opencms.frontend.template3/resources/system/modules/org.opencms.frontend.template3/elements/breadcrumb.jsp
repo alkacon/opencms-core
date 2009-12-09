@@ -13,27 +13,27 @@
 
 	CmsTemplateMenu cms = new CmsTemplateMenu(pageContext, request, response);
 	pageContext.setAttribute("cms", cms);
-	int navStartLevel = Integer.parseInt(cms.property("NavStartLevel", "search", "0") + 0);	
-	pageContext.setAttribute("navList", cms.getNavigation().getNavigationBreadCrumb(navStartLevel, true));
+	int navStartLevel = Integer.parseInt(cms.property("NavStartLevel", "search", "0") + 1);	
+	cms.setElements(cms.getNavigation().getNavigationBreadCrumb(navStartLevel, true));
 %>
 
 <c:set var="first" value="true" />
-<c:forEach items="${navList}" var="elem" >
+<c:forEach items="${cms.elements}" var="elem">
 	<c:if test="${!empty cms.navText[elem]}">
-		<c:if test="${!first}">&nbsp;&#187;&nbsp;</c:if>
+		<c:if test="${!first}">&nbsp;»&nbsp;</c:if>
 		<a href="<cms:link>${elem.resourceName}</cms:link>">${cms.navText[elem]}</a>
 		<c:set var="first" value="false" />
 	</c:if>
 </c:forEach>
 
-<c:if test="${!cms.isDefault || first}">
-	<c:set var="navText"><cms:property name="NavText" /></c:set>
+<c:if test="${cms.isDefault || first}">
+	<c:set var="navText" value="${cms.properties['NavText']}" />
 	<c:if test="${empty navText}">
-		<c:set var="navText"><cms:property name="Title" /></c:set>
+		<c:set var="navText" value="${cms.properties['Title']}" />
 	</c:if>
 	<c:if test="${!empty navText}">
 		<c:if test="${!first}">
-			&nbsp;&#187;&nbsp;
+			&nbsp;»&nbsp;
 		</c:if>
 		<c:out value="${navText}" />
 	</c:if>

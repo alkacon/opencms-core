@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/09 10:41:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.9.2 
  * 
@@ -119,7 +119,14 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
                 m_cms.readResource(entry.getResourceId());
                 // permissions are fine, add it to the results
                 entry.setPosition(position);
-                CmsJspNavElement element = getNavigationForSiteEntry(folder + entry.getName() + "/", entry);
+                // TODO: what should we do here
+                String entryName = folder + entry.getName() + "/";
+                /*
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getExtension())) {
+                    entryName += "." + entry.getExtension();
+                }
+                */
+                CmsJspNavElement element = getNavigationForSiteEntry(entryName, entry);
                 if ((element != null) && element.isInNavigation()) {
                     result.add(element);
                 }

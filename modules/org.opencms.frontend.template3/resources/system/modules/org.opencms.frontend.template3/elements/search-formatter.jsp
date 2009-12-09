@@ -73,16 +73,16 @@ String itemPath = cms.getCmsObject().getRequestContext().removeSiteRoot(((org.op
 try {
   CmsResource res = cms.getCmsObject().readResource(itemPath);
   if (res.getTypeId() == 147) { //news
-    itemPath = "/demo_t3/today/news/news.html?id=" +res.getStructureId();
+    itemPath = "/demo_t3/today/news/news/?id=" +res.getStructureId();
   } else if (res.getTypeId() == 149) { //event
-    itemPath = "/demo_t3/today/events/event.html?id=" +res.getStructureId();
+    itemPath = "/demo_t3/today/events/event/?id=" +res.getStructureId();
   } else if (res.getTypeId() == 148) { //item
     String category = CmsCategoryService.getInstance().readResourceCategories(cms.getCmsObject(), itemPath).get(0).getName().toLowerCase();
-    itemPath = "/demo_t3/dictionary/item_composite.html";
+    itemPath = "/demo_t3/dictionary/item_composite/?id=" +res.getStructureId();
     if (category.contains("liliaceous")) {
-      itemPath = "/demo_t3/dictionary/item_liliaceous.html";
+      itemPath = "/demo_t3/dictionary/item_liliaceous/?id=" +res.getStructureId();
     } else if (category.contains("rosaceous")) {
-      itemPath = "/demo_t3/dictionary/item_rosaceous.html";
+      itemPath = "/demo_t3/dictionary/item_rosaceous/?id=" +res.getStructureId();
     } 
     itemPath += "?id=" + res.getStructureId();
   } else {

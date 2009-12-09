@@ -21,7 +21,7 @@
 			<xsd:element name="Image" type="OpenCmsVfsFile" minOccurs="0" />
 			<xsd:element name="AdditionalLink" type="OpenCmsPageLink" minOccurs="0" />
 			<xsd:element name="Links" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="10" />
-			<xsd:element name="Facade" type="OpenCmsVfsFile" />
+			<xsd:element name="Facade" type="OpenCmsString" />
 			<xsd:element name="Collector" type="OpenCmsString" default="allInFolder" />
 			<xsd:element name="Parameter" type="OpenCmsString" />
 			<xsd:element name="More" type="OpenCmsString" />

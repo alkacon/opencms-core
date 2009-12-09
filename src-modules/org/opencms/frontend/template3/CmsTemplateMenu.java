@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsTemplateMenu.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/09 10:41:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,20 @@
 
 package org.opencms.frontend.template3;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsContainerPageBean;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +53,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -59,9 +63,50 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
+
+    /**
+     * Transformer that a properties of a resource from the OpenCms VFS, 
+     * the input is used as String for the property name to read.<p>
+     */
+    public class CmsPropertyLoaderSingleTransformer implements Transformer {
+
+        /** The resource where the properties are read from. */
+        private CmsResource m_resource;
+
+        /** Indicates if properties should be searched when loaded. */
+        private boolean m_search;
+
+        /**
+         * Creates a new property loading Transformer.<p>
+         * 
+         * @param resource the resource where the properties are read from
+         * @param search indicates if properties should be searched when loaded
+         */
+        public CmsPropertyLoaderSingleTransformer(CmsResource resource, boolean search) {
+
+            m_resource = resource;
+            m_search = search;
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            String result;
+            try {
+                // read the properties of the requested resource
+                result = getCmsObject().readPropertyObject(m_resource, String.valueOf(input), m_search).getValue();
+            } catch (CmsException e) {
+                // in case of any error we assume the property does not exist
+                result = null;
+            }
+            return result;
+        }
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateMenu.class);
@@ -75,8 +120,17 @@ public class CmsTemplateMenu extends CmsJspActionElement {
     /** The list with the elements of the menu. */
     private List<CmsJspNavElement> m_elements;
 
+    /** The list with the elements of the menu, without detail pages. */
+    private List<CmsJspNavElement> m_navElements;
+
     /** Lazy map with the navigation text of the elements. */
     private Map<CmsJspNavElement, String> m_navText;
+
+    /** Properties loaded from the OpenCms VFS. */
+    private Map<String, String> m_properties;
+
+    /** Properties loaded from the OpenCms VFS with search. */
+    private Map<String, String> m_propertiesSearch;
 
     /**
      * Empty constructor, required for every JavaBean.<p>
@@ -108,7 +162,18 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      */
     public List<CmsJspNavElement> getElements() {
 
-        return m_elements;
+        if (m_navElements == null) {
+            // only return no detail pages
+            m_navElements = new ArrayList<CmsJspNavElement>(m_elements.size());
+            Iterator<CmsJspNavElement> it = m_elements.iterator();
+            while (it.hasNext()) {
+                CmsJspNavElement navElem = it.next();
+                if (!navElem.getProperties().containsKey("detail-page")) {
+                    m_navElements.add(navElem);
+                }
+            }
+        }
+        return m_navElements;
     }
 
     /**
@@ -116,11 +181,10 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      * 
      * @return a lazy initialized map
      */
-    @SuppressWarnings("unchecked")
     public Map<CmsJspNavElement, Boolean> getHasChildren() {
 
         if (m_children == null) {
-            m_children = LazyMap.decorate(new HashMap<CmsJspNavElement, Boolean>(), new Transformer() {
+            m_children = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -151,11 +215,10 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      * 
      * @return a lazy initialized map
      */
-    @SuppressWarnings("unchecked")
     public Map<CmsJspNavElement, Boolean> getIsCurrent() {
 
         if (m_current == null) {
-            m_current = LazyMap.decorate(new HashMap<CmsJspNavElement, Boolean>(), new Transformer() {
+            m_current = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -170,11 +233,10 @@ public class CmsTemplateMenu extends CmsJspActionElement {
                         return Boolean.TRUE;
                     }
 
-                    // TODO: check if the default file for the uri matches the resource name
-
                     // check if URI is NOT in the navigation and so a parent folder will be marked as current
                     CmsJspNavElement navElem = uriElem;
-                    while ((navElem != null) && !navElem.isInNavigation()) {
+                    while ((navElem != null)
+                        && (!navElem.isInNavigation() || navElem.getProperties().containsKey("detail-page"))) {
                         String parentPath = CmsResource.getParentFolder(navElem.getResourceName());
                         if (parentPath == null) {
                             break;
@@ -182,7 +244,8 @@ public class CmsTemplateMenu extends CmsJspActionElement {
                         navElem = getNavigation().getNavigationForResource(parentPath);
                     }
 
-                    if ((navElem != null) && !uriElem.isInNavigation()) {
+                    if ((navElem != null)
+                        && (!uriElem.isInNavigation() || uriElem.getProperties().containsKey("detail-page"))) {
                         return Boolean.valueOf(elem.equals(navElem));
                     }
 
@@ -200,18 +263,13 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      */
     public boolean getIsDefault() {
 
-        String path = null;
-        try {
-            CmsResource resource = getCmsObject().readDefaultFile(getRequestContext().getUri());
-            path = getCmsObject().getSitePath(resource);
-        } catch (CmsException e) {
-            // resource not found or not enough permissions
-            LOG.debug(e.getLocalizedMessage(), e);
+        if ((m_elements == null) || m_elements.isEmpty()) {
+            return false;
         }
-        if (path != null) {
-            return path.equals(getRequestContext().getUri());
-        }
-        return false;
+        CmsJspNavElement uriElem = getNavigation().getNavigationForResource();
+        CmsJspNavElement lastElem = m_elements.get(m_elements.size() - 1);
+        return uriElem.getResourceName().equals(lastElem.getResourceName())
+            && uriElem.getProperties().containsKey("detail-page");
     }
 
     /**
@@ -219,11 +277,10 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      * 
      * @return a lazy initialized map
      */
-    @SuppressWarnings("unchecked")
     public Map<CmsJspNavElement, String> getNavText() {
 
         if (m_navText == null) {
-            m_navText = LazyMap.decorate(new HashMap<CmsJspNavElement, String>(), new Transformer() {
+            m_navText = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
 
                 /**
                  * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -242,6 +299,58 @@ public class CmsTemplateMenu extends CmsJspActionElement {
             });
         }
         return m_navText;
+    }
+
+    /**
+     * Reads the properties from the current resource, without search.<p>
+     * 
+     * Usage example on a JSP with the EL, reading the title property of the current resource: 
+     * <code>${cms.properties['Title']}<code>
+     * 
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, without search
+     * 
+     * @see #getPropertiesSearch()
+     */
+    public Map<String, String> getProperties() {
+
+        if (m_properties == null) {
+            CmsResource resUri;
+            try {
+                resUri = getResource();
+                m_properties = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderSingleTransformer(
+                    resUri,
+                    false));
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return m_properties;
+    }
+
+    /**
+     * Reads the properties from the current resource, with search.<p>
+     * 
+     * Usage example on a JSP with the EL, reading the title property of the current resource: 
+     * <code>${cms.propertiesSearch['Title']}<code>
+     * 
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, with search
+     * 
+     * @see #getProperties()
+     */
+    public Map<String, String> getPropertiesSearch() {
+
+        if (m_propertiesSearch == null) {
+            CmsResource resUri;
+            try {
+                resUri = getResource();
+                m_propertiesSearch = CmsCollectionsGenericWrapper.createLazyMap(new CmsPropertyLoaderSingleTransformer(
+                    resUri,
+                    true));
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return m_propertiesSearch;
     }
 
     /**
@@ -270,6 +379,27 @@ public class CmsTemplateMenu extends CmsJspActionElement {
     public void setElements(List<CmsJspNavElement> elements) {
 
         m_elements = elements;
+    }
+
+    /**
+     * Returns the current resource.<p>
+     * 
+     * @return the current resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsResource getResource() throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        HttpServletRequest req = getRequest();
+        CmsResource resUri;
+        if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
+            CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
+            resUri = cms.readResource(id);
+        } else {
+            resUri = cms.readResource(cms.getRequestContext().getUri());
+        }
+        return resUri;
     }
 
 }

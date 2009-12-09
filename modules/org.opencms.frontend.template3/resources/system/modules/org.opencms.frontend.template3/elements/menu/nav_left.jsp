@@ -10,7 +10,7 @@
 	// /system/modules/org.opencms.frontend.template3/java_src/CmsTemplateMenu.java
 
 	CmsTemplateMenu cms = new CmsTemplateMenu(pageContext, request, response);
-	cms.setElements(cms.getNavigation().getNavigationTreeForFolder(0, 2));
+	cms.setElements(cms.getNavigation().getNavigationTreeForFolder(1, 3));
 	pageContext.setAttribute("cms", cms);
 %>
 
