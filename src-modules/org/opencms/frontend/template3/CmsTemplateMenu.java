@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsTemplateMenu.java,v $
- * Date   : $Date: 2009/12/09 10:41:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/09 10:52:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
 
@@ -110,6 +110,9 @@ public class CmsTemplateMenu extends CmsJspActionElement {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateMenu.class);
+
+    /** Property name constant. */
+    private static final String PROPERTY_DETAIL_PAGE = "detail-page";
 
     /** Lazy map with the flags if the elements of the navigation have children. */
     private Map<CmsJspNavElement, Boolean> m_children;
@@ -168,7 +171,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
             Iterator<CmsJspNavElement> it = m_elements.iterator();
             while (it.hasNext()) {
                 CmsJspNavElement navElem = it.next();
-                if (!navElem.getProperties().containsKey("detail-page")) {
+                if (!isDetailPage(navElem)) {
                     m_navElements.add(navElem);
                 }
             }
@@ -235,8 +238,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
 
                     // check if URI is NOT in the navigation and so a parent folder will be marked as current
                     CmsJspNavElement navElem = uriElem;
-                    while ((navElem != null)
-                        && (!navElem.isInNavigation() || navElem.getProperties().containsKey("detail-page"))) {
+                    while ((navElem != null) && (!navElem.isInNavigation() || isDetailPage(navElem))) {
                         String parentPath = CmsResource.getParentFolder(navElem.getResourceName());
                         if (parentPath == null) {
                             break;
@@ -244,8 +246,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
                         navElem = getNavigation().getNavigationForResource(parentPath);
                     }
 
-                    if ((navElem != null)
-                        && (!uriElem.isInNavigation() || uriElem.getProperties().containsKey("detail-page"))) {
+                    if ((navElem != null) && (!uriElem.isInNavigation() || isDetailPage(uriElem))) {
                         return Boolean.valueOf(elem.equals(navElem));
                     }
 
@@ -268,8 +269,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
         }
         CmsJspNavElement uriElem = getNavigation().getNavigationForResource();
         CmsJspNavElement lastElem = m_elements.get(m_elements.size() - 1);
-        return uriElem.getResourceName().equals(lastElem.getResourceName())
-            && uriElem.getProperties().containsKey("detail-page");
+        return uriElem.getResourceName().equals(lastElem.getResourceName()) && isDetailPage(uriElem);
     }
 
     /**
@@ -388,7 +388,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      * 
      * @throws CmsException if something goes wrong
      */
-    private CmsResource getResource() throws CmsException {
+    protected CmsResource getResource() throws CmsException {
 
         CmsObject cms = getCmsObject();
         HttpServletRequest req = getRequest();
@@ -400,6 +400,19 @@ public class CmsTemplateMenu extends CmsJspActionElement {
             resUri = cms.readResource(cms.getRequestContext().getUri());
         }
         return resUri;
+    }
+
+    /**
+     * Checks if the given navigation element is a detail page.<p>
+     * 
+     * @param navElem the navigation element to check
+     * 
+     * @return <code>true</code> if the given navigation element is a detail page
+     */
+    protected boolean isDetailPage(CmsJspNavElement navElem) {
+
+        String prop = navElem.getProperties().get(PROPERTY_DETAIL_PAGE);
+        return Boolean.parseBoolean(prop);
     }
 
 }
