@@ -24,6 +24,7 @@
 			<properties>
 				<property name="test1" type="string" widget="string" default=""/>
 				<property name="test2" type="vfslist" widget="string" default=""/>
+				<property name="detail-page" type="string" widget="checkbox" default="false"/>
 			</properties>
 		</xsd:appinfo>
 	</xsd:annotation>  
