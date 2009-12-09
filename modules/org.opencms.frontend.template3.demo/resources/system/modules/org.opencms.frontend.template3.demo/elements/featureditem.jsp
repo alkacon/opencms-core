@@ -5,7 +5,7 @@
 <%
   CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
 %>
-<cms:contentload collector="allInFolder" param="/demo_t3/_content/items/|t3item" preload="true">
+<cms:contentload collector="allInFolder" param="/demo_t3/items/|t3item" preload="true">
 	<cms:contentinfo var="info" />
 	<c:set var="max" value="${info.resultSize}" />
 	<c:set var="cur"><%= System.currentTimeMillis() % ((Integer)pageContext.getAttribute("max")).intValue() %></c:set>
@@ -15,11 +15,11 @@
 		<c:set var="file"><cms:contentshow element="%(opencms.filename)" /></c:set>
 <%
   String category = CmsCategoryService.getInstance().readResourceCategories(jsp.getCmsObject(), pageContext.getAttribute("file").toString()).get(0).getName().toLowerCase();
-  String link = "/demo_t3/dictionary/item_composite.html";
+  String link = "/demo_t3/cntpages/item_composite.html";
   if (category.contains("liliaceous")) {
-    link = "/demo_t3/dictionary/item_liliaceous.html";
+    link = "/demo_t3/cntpages/item_liliaceous.html";
   } else if (category.contains("rosaceous")) {
-    link = "/demo_t3/dictionary/item_rosaceous.html";
+    link = "/demo_t3/cntpages/item_rosaceous.html";
   } 
   link += "?id=" + jsp.getCmsObject().readResource(pageContext.getAttribute("file").toString()).getStructureId();
   pageContext.setAttribute("link", link);

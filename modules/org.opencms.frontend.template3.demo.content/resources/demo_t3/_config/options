@@ -5,7 +5,7 @@
     <Header name="Header0">
       <links>
         <link name="link4" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_t3/search.html]]></target>
+          <target><![CDATA[/sites/default/demo_t3/cntpages/search.html]]></target>
           <uuid>8ebab265-a127-11de-9057-dd9f629b113b</uuid>
         </link>
         <link name="link2" internal="false" type="A">

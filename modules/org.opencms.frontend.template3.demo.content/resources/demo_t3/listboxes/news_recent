@@ -2,28 +2,37 @@
 
 <ListBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/listbox.xsd">
   <ListBox language="en">
-    <Title><![CDATA[New listbox]]></Title>
+    <Title><![CDATA[Recent news]]></Title>
+    <Image/>
     <Links>
       <link type="WEAK">
         <target><![CDATA[/sites/default/demo_t3/news/]]></target>
         <uuid>bd8587dc-a11a-11de-9057-dd9f629b113b</uuid>
       </link>
     </Links>
-    <Facade>
-      <link type="WEAK">
-        <target><![CDATA[/sites/default/demo_t3/cntpages/today/news/news.html]]></target>
-        <uuid>dbbf0202-a12a-11de-9057-dd9f629b113b</uuid>
-      </link>
-    </Facade>
-    <Collector><![CDATA[allInFolder]]></Collector>
+    <Facade><![CDATA[/demo_t3/today/news/news/]]></Facade>
+    <Collector><![CDATA[allInFolderPriorityDateDesc]]></Collector>
     <Parameter><![CDATA[%(link1)news_%(number).html|t3news|2]]></Parameter>
-    <More><![CDATA[Edit this!]]></More>
+    <More/>
     <PositionAuthor><![CDATA[Top]]></PositionAuthor>
     <PositionDate><![CDATA[Top]]></PositionDate>
-    <PositionImage><![CDATA[Top]]></PositionImage>
+    <PositionImage><![CDATA[Left]]></PositionImage>
     <Mapping>
       <Field><![CDATA[Title]]></Field>
       <XmlNode><![CDATA[Title]]></XmlNode>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Text]]></Field>
+      <XmlNode><![CDATA[Teaser]]></XmlNode>
+      <MaxLength><![CDATA[500]]></MaxLength>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Date]]></Field>
+      <XmlNode><![CDATA[Date]]></XmlNode>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Image]]></Field>
+      <XmlNode><![CDATA[Paragraph/Image/Image]]></XmlNode>
     </Mapping>
   </ListBox>
 </ListBoxes>

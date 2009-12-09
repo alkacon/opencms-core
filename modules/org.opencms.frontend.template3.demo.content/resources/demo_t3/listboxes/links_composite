@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ListBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/listbox.xsd">
+  <ListBox language="en">
+    <Title><![CDATA[Composite Plants]]></Title>
+    <Links>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/demo_t3/items/]]></target>
+        <uuid>4c1b4d0a-a11b-11de-9057-dd9f629b113b</uuid>
+      </link>
+    </Links>
+    <Facade><![CDATA[/demo_t3/dictionary/item_composite/]]></Facade>
+    <Collector><![CDATA[allKeyValuePairFiltered]]></Collector>
+    <Parameter><![CDATA[resource=%(link1)|resourceType=t3item|categoryTypes=species/composite-plants/|subTree=false|sortBy=date|sortAsc=true]]></Parameter>
+    <More/>
+    <PositionAuthor><![CDATA[Top]]></PositionAuthor>
+    <PositionDate><![CDATA[Top]]></PositionDate>
+    <PositionImage><![CDATA[Top]]></PositionImage>
+    <Mapping>
+      <Field><![CDATA[Title]]></Field>
+      <XmlNode><![CDATA[Name]]></XmlNode>
+    </Mapping>
+  </ListBox>
+</ListBoxes>

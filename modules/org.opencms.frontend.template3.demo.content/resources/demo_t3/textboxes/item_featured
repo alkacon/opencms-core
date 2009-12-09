@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.template3/schemas/textbox.xsd">
+  <TextBox language="en">
+    <Title><![CDATA[The flower parade]]></Title>
+    <Content name="Content0">
+      <links>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_t3/cntpages/extra/]]></target>
+          <uuid>5b8a10b1-9c82-11de-adde-dd9f629b113b</uuid>
+        </link>
+      </links>
+      <content><![CDATA[<p>Visit our extranet: <a title="Extranet" href="%(link0)">Flower Extra</a>.</p>]]></content>
+    </Content>
+    <JspFile>
+      <link type="STRONG">
+        <target><![CDATA[/system/modules/org.opencms.frontend.template3.demo/elements/featureditem.jsp]]></target>
+        <uuid>873c0a17-9c7c-11de-adde-dd9f629b113b</uuid>
+      </link>
+    </JspFile>
+  </TextBox>
+</TextBoxes>
