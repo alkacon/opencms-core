@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2009/12/09 08:39:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/12/09 08:43:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,8 +96,7 @@ function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
    
    // additional parameter for the image resource type
    var initialImageInfos = '';   
-   if ($.inArray(3, resourceTypes) != -1) {  
-      alert("setImageInfos");
+   if ($.inArray(3, resourceTypes) != -1) {        
       var scaleParam = extractScaleParam(scalePath);
       var imgWidth = "";
       var imgHeight = "";
