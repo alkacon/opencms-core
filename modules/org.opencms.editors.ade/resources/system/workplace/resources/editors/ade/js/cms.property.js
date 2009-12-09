@@ -341,7 +341,8 @@
       'string': StringWidget,
       'selector': SelectorWidget,
       'checkbox': CheckboxWidget,
-      'color': ColorWidget
+      'color': ColorWidget,
+      'radio': RadioWidget
    }
    
    /**
