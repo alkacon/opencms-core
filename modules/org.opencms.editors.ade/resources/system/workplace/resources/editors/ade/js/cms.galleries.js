@@ -1093,7 +1093,7 @@
       cms.galleries.resetActiveItem();
       
       // retrieve the resource type and load the preview      
-      var itemType = $(this).data('type');
+      var itemType = $(this).data('type');      
       loadItemPreview(itemId, itemType);
       
       //deselect items in the list and set active class to the item which was dblclicked

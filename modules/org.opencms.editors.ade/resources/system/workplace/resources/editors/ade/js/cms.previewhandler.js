@@ -76,7 +76,7 @@
       // generate editable form
       var form = $('<div class="edit-form"></div>');
       $.each(itemProperties, function() {
-         $('<div style="cms-editable-field"></div>').attr('alt', this.name)
+         $('<div class="cms-editable-field"></div>').attr('alt', this.name)
          .appendTo(form)
          .append('<span class="cms-item-title">' + this.name + '</span>')
          .append('<span class="cms-item-edit">' + (this.value ? this.value : '') + '</span>');

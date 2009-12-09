@@ -1,12 +1,10 @@
 (function(cms) {
 
-   ///// Content Handler Function definition ////////////////////////// 
-  var resourceTypeConst 
-   
-  /** Initial flag for the genrating of the values for the format select box. */
+   ///// Content Handler Function definition //////////////////////////    
+   /** Initial flag for the genrating of the values for the format select box. */
    var isInitFormatSelectBox = true;
    
-   /** Default values for the max size of the image in the preview. */   
+   /** Default values for the max size of the image in the preview. */
    var defaultPreview = {
       'height': 295,
       'width': 550
@@ -15,7 +13,8 @@
    /** String constants to use in html. */
    var keys = {
       'previewWidth': 'width',
-      'previewHeight': 'height'
+      'previewHeight': 'height',
+      'imageFormat': 'format'
    };
    
    /** Default format value for the drop down. */
@@ -41,13 +40,13 @@
     */
    var showItemPreview = function(itemData) {
       if (isInitFormatSelectBox) {
-          cms.galleries.getContentHandler(cms.imagepreviewhandler.imageContentTypeHandler['type'])['init']();
-          isInitFormatSelectBox = false;    
-      }      
-   
+         cms.galleries.getContentHandler(cms.imagepreviewhandler.imageContentTypeHandler['type'])['init']();
+         isInitFormatSelectBox = false;
+      }
+      
       // displays the html preview
       $('.preview-area').append(itemData['previewdata']['itemhtml']);
-      // read the json object for the active item       
+      // read the json object for the active item
       var jsonForActiveImage = JSON.parse($('.preview-area').find("input[type='hidden']").val());
       
       // display editable properties
@@ -120,24 +119,28 @@
                                                     <span class="cms-galleries-button">Edit image formats</span>\
                                                 </button>');
       
-      // generate editable form
+      // generate editable foramt form for width and height
       var form = $('<div class="edit-form"></div>');
-      // drop down to select format
-      $('<div class="cms-drop-down cms-editable-field"></div>').attr('alt', 'TODO_Format').appendTo(form).append('<label class="cms-item-title">Format:</label>');
       // width input field    
       $('<div class="cms-editable-field"></div>').attr('alt', keys['previewWidth']).appendTo(form).append('<span class="cms-item-title">Width:</span>').append('<span class="cms-item-edit" style=" width: 100px;"></span>');
       // height input field    
       $('<div class="cms-editable-field"></div>').attr('alt', keys['previewHeight']).appendTo(form).append('<span class="cms-item-title">Height:</span>').append('<span class="cms-item-edit" style=" width: 100px;"></span>');
       $(target).append(form);
       
-      form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
-         values: formatDropDown,
-         width: 150,
-         /* Binds format select options. */
-         select: function($this, self, value, index) {
-            changeFormat(index);
-         }
-      }));
+      // add format select box in widget or editor mode
+      if (cms.galleries.displaySelectButton()) {
+         // drop down to select format
+         $('<div class="cms-drop-down cms-editable-field"></div>').attr('alt', keys['imageFormat']).appendTo(form).append('<label class="cms-item-title">Format:</label>');
+         form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
+            values: formatDropDown,
+            width: 150,
+            /* Binds format select options. */
+            select: function($this, self, value, index) {
+               changeFormat(index);
+            }
+         }));
+      }
+      
       
       // bind direct input to the editable fields
       $('.cms-item-edit').directInput({
@@ -716,7 +719,7 @@
                cms.galleries.initValues.scale += newScale;
                
             } // remove cropping parameter
-     else if (getScaleValue(cms.galleries.initValues.scale, "cx") != "") {
+ else if (getScaleValue(cms.galleries.initValues.scale, "cx") != "") {
                cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cx");
                cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cy");
                cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cw");
