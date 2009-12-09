@@ -30,37 +30,10 @@
 			<resource uri="/system/workplace/editors/sitemap/"/>
 			<resource uri="/system/workplace/resources/editors/sitemap/"/>
 			<resource uri="/system/workplace/resources/filetypes/sitemap.gif"/>
-			<resource uri="/sitemap"/>
 		</resources>
 		<parameters/>
 	</module>
 	<files>
-		<file>
-			<source>sitemap</source>
-			<destination>sitemap</destination>
-			<type>sitemap</type>
-			<uuidstructure>9d4f8d10-c7c3-11de-8b05-ab20365f6268</uuidstructure>
-			<uuidresource>9d4f8d11-c7c3-11de-8b05-ab20365f6268</uuidresource>
-			<datelastmodified>Tue, 03 Nov 2009 10:57:17 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 02 Nov 2009 15:23:03 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/workplace/editors/sitemap/sitemap.jsp]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>b80d39af-c865-11de-a457-ab20365f6268</id>
-					<path>/system/workplace/editors/sitemap/schemas/sitemap.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
