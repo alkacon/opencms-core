@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2009/10/13 11:59:44 $
- * Version: $Revision: 1.46.2.2 $
+ * Date   : $Date: 2009/12/09 09:24:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -852,8 +852,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     protected void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
 
         // iterate all XML nodes 
-        for (Iterator<Node> i = CmsXmlGenericWrapper.content(root).iterator(); i.hasNext();) {
-            Node node = i.next();
+        List<Node> content = CmsXmlGenericWrapper.content(root);
+        for (int i = content.size() - 1; i >= 0; i--) {
+            Node node = content.get(i);
             if (!(node instanceof Element)) {
                 // this node is not an element, so it must be a white space text node, remove it
                 node.detach();
