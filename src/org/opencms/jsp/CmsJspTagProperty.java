@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/12/10 10:00:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,18 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapResourceHandler;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -57,98 +60,123 @@ import org.apache.commons.logging.Log;
  * The following values are supported: 
  * </P>
  * <DL>
- *   <DT><b>uri</b> (default) 
+ *   <DT><b>uri</b> (default)</DT>
  *   <DD>  Look up  the property on the file with the 
- *   uri requested by the user. 
- *   <DT><b>search.uri</b> or <b>search</b> 
+ *   uri requested by the user.</DD>
+ *   <DT><b>search.uri</b> or <b>search</b></DT>
  *   <DD>Look up the property by also checking all parent folders for the property, 
  *   starting with the file with uri requested by the user and 
- *   going "upward" if the property was not found there. 
- *   <DT><b>element.uri</b> 
+ *   going "upward" if the property was not found there.</DD>
+ *   <DT><b>element.uri</b></DT>
  *   <DD>Look up the property on the currently 
  *   processed sub - element. This is useful in templates or other pages that 
- *   consist of many elements.   
- *   <DT><b>search.element.uri</b> 
+ *   consist of many elements.</DD>
+ *   <DT><b>search.element.uri</b></DT>
  *   <DD>Look up the property by also checking all parent folders for the 
  *   property, starting with the file with the currently processed sub - 
- *   element and going "upward" if the property was not found there.
- *   <DT><B>{some-file-uri}</B> 
+ *   element and going "upward" if the property was not found there.</DD>
+ *   <DT>sitemap</DT> 
+ *   <DD>reads from the current sitemap entry</DD> 
+ *   <DT>search.sitemap</DT> 
+ *   <DD>Look up the property by also checking all parent sitemap entries 
+ *   for the property, starting with the current sitemap entry and 
+ *   going "upward" if the property was not found there.</DD>
+ *   <DT><B>{some-file-uri}</B></DT>
  *   <DD>Look up the property on that exact file 
  *   uri in the OpenCms VFS,<EM> fallback if no other valid option is 
- *   selected for the file attribute.</EM>           
- *   </DD>
+ *   selected for the file attribute.</EM></DD>
  * </DL>
  *   
  * <P>There are also some deprecated options for the "file" value that are 
  * still supported but should not longer be used:</P>
  * <DL>
- *   <DT>parent 
- *   <DD>same as <STRONG>uri</STRONG> 
- *   <DT>search-parent 
- *   <DD>same as <STRONG>search.uri</STRONG> 
- *   <DT>this
- *   <DD>same as <STRONG>element.uri</STRONG> 
- *   <DT>search-this 
+ *   <DT>parent</DT>
+ *   <DD>same as <STRONG>uri</STRONG></DD> 
+ *   <DT>search-parent</DT> 
+ *   <DD>same as <STRONG>search.uri</STRONG></DD> 
+ *   <DT>this</DT>
+ *   <DD>same as <STRONG>element.uri</STRONG></DD> 
+ *   <DT>search-this</DT> 
  *   <DD>same as <STRONG>search.element.uri</STRONG></DD>
  * </DL>
  *
- * @author  Alexander Kandzior 
+ * @author Alexander Kandzior 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagProperty extends TagSupport {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -4040833541258687977L;
+    /** Constants for <code>file</code> attribute interpretation. */
+    private enum FileUse {
 
-    /** Accessor constant: Use element uri. */
-    public static final String USE_ELEMENT_URI = "element.uri";
+        /** Use element uri. */
+        ELEMENT_URI("element.uri"),
+        /** Use parent (same as {@link #URI}). */
+        PARENT("parent"),
+        /** Use search (same as {@link #SEARCH_URI}). */
+        SEARCH("search"),
+        /** Use search element uri. */
+        SEARCH_ELEMENT_URI("search.element.uri"),
+        /** Use search parent (same as {@link #SEARCH_URI}). */
+        SEARCH_PARENT("search-parent"),
+        /** Use search sitemap entries. */
+        SEARCH_SITEMAP("search.sitemap"),
+        /** Use seach this (same as {@link #SEARCH_ELEMENT_URI}). */
+        SEARCH_THIS("search-this"),
+        /** Use search uri. */
+        SEARCH_URI("search.uri"),
+        /** Use sitemap entries. */
+        SITEMAP("sitemap"),
+        /** Use this (same as {@link #ELEMENT_URI}). */
+        THIS("this"),
+        /** Use uri. */
+        URI("uri");
 
-    /** Accessor constant: Use parent (same as USE_URI). */
-    public static final String USE_PARENT = "parent";
+        /** Property name. */
+        private String m_name;
 
-    /** Accessor constant: Use search (same as USE_SEARCH_URI). */
-    public static final String USE_SEARCH = "search";
+        /** Constructor.<p> */
+        private FileUse(String name) {
 
-    /** Accessor constant: Use search element uri. */
-    public static final String USE_SEARCH_ELEMENT_URI = "search.element.uri";
+            m_name = name;
+        }
 
-    /** Accessor constant: Search parent (same as USE_SEARCH_URI). */
-    public static final String USE_SEARCH_PARENT = "search-parent";
+        /**
+         * Parses a string into an enumeration element.<p>
+         * 
+         * @param name the name of the element
+         * 
+         * @return the element with the given name or <code>null</code> if not found
+         */
+        public static FileUse parse(String name) {
 
-    /** Accessor constant: Use seach this (same as USE_SEARCH_ELEMENT_URI). */
-    public static final String USE_SEARCH_THIS = "search-this";
+            for (FileUse fileUse : FileUse.values()) {
+                if (fileUse.getName().equals(name)) {
+                    return fileUse;
+                }
+            }
+            return null;
+        }
 
-    /** Accessor constant: Search uri. */
-    public static final String USE_SEARCH_URI = "search.uri";
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
 
-    /** Accessor constant: Use this (same as USE_ELEMENT_URI). */
-    public static final String USE_THIS = "this";
-
-    /** Accessor constant: Use uri. */
-    public static final String USE_URI = "uri";
-
-    /** Static array of the possible "file" properties. */
-    // automatic member sorting will cause compilation error (static order) due to the naming convention.
-    static final String[] ACTION_VALUES = {
-        USE_URI,
-        USE_PARENT,
-        USE_SEARCH,
-        USE_SEARCH_URI,
-        USE_SEARCH_PARENT,
-        USE_ELEMENT_URI,
-        USE_THIS,
-        USE_SEARCH_ELEMENT_URI,
-        USE_SEARCH_THIS};
-
-    /** Array list for fast lookup. */
-    // automatic member sorting will cause compilation error. 
-    public static final List ACTION_VALUES_LIST = Arrays.asList(ACTION_VALUES);
+            return m_name;
+        }
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagProperty.class);
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -4040833541258687977L;
 
     /** The default value. */
     private String m_defaultValue;
@@ -170,8 +198,10 @@ public class CmsJspTagProperty extends TagSupport {
      * @param defaultValue the default value
      * @param escape if the result html should be escaped or not
      * @param req the current request
+     * 
      * @return String the value of the property or <code>null</code> if not found (and no
      *      defaultValue provided)
+     *      
      * @throws CmsException if something goes wrong
      */
     public static String propertyTagAction(
@@ -183,47 +213,74 @@ public class CmsJspTagProperty extends TagSupport {
 
         CmsFlexController controller = CmsFlexController.getController(req);
 
-        // if action is not set use default
-        if (action == null) {
-            action = ACTION_VALUES[0];
+        FileUse useAction = FileUse.URI;
+        if (action != null) {
+            // if action is set overwrite default
+            useAction = FileUse.parse(action);
         }
 
-        String value;
-        String vfsUri;
-        boolean search;
-        switch (ACTION_VALUES_LIST.indexOf(action)) {
-            case 0: // USE_URI
-            case 1: // USE_PARENT
-                // read properties of parent (i.e. top requested) file
-                vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                search = false;
-                break;
-            case 2: // USE_SEARCH
-            case 3: // USE_SEARCH_URI
-            case 4: // USE_SEARCH_PARENT 
-                // try to find property on parent file and all parent folders
-                vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                search = true;
-                break;
-            case 5: // USE_ELEMENT_URI
-            case 6: // USE_THIS
-                // read properties of this file            
-                vfsUri = controller.getCurrentRequest().getElementUri();
-                search = false;
-                break;
-            case 7: // USE_SEARCH_ELEMENT_URI
-            case 8: // USE_SEARCH_THIS
-                // try to find property on this file and all parent folders
-                vfsUri = controller.getCurrentRequest().getElementUri();
-                search = true;
-                break;
-            default:
-                // read properties of the file named in the attribute  
-                vfsUri = CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri());
-                search = false;
+        String vfsUri = null;
+        String sitemapUri = null;
+        boolean search = false;
+        if (useAction != null) {
+            switch (useAction) {
+                case URI:
+                case PARENT:
+                    // read properties of parent (i.e. top requested) file
+                    vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                    break;
+                case SEARCH:
+                case SEARCH_URI:
+                case SEARCH_PARENT:
+                    // try to find property on parent file and all parent folders
+                    vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                    search = true;
+                    break;
+                case ELEMENT_URI:
+                case THIS:
+                    // read properties of this file            
+                    vfsUri = controller.getCurrentRequest().getElementUri();
+                    break;
+                case SEARCH_ELEMENT_URI:
+                case SEARCH_THIS:
+                    // try to find property on this file and all parent folders
+                    vfsUri = controller.getCurrentRequest().getElementUri();
+                    search = true;
+                    break;
+                case SITEMAP:
+                    // try to find property on this sitemap entry
+                    sitemapUri = (String)req.getAttribute(CmsSitemapResourceHandler.SITEMAP_CURRENT_URI);
+                    if (sitemapUri == null) {
+                        // fall back
+                        vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                    }
+                    break;
+                case SEARCH_SITEMAP:
+                    // try to find property on this sitemap entry all parent entries
+                    sitemapUri = (String)req.getAttribute(CmsSitemapResourceHandler.SITEMAP_CURRENT_URI);
+                    if (sitemapUri == null) {
+                        // fall back
+                        vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                    }
+                    search = true;
+                    break;
+            }
+        } else {
+            // read properties of the file named in the attribute  
+            vfsUri = CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri());
+            search = false;
         }
+
         // now read the property from the VFS
-        value = controller.getCmsObject().readPropertyObject(vfsUri, property, search).getValue(defaultValue);
+        String value;
+        if (vfsUri == null) {
+            value = controller.getCmsObject().readPropertyObject(vfsUri, property, search).getValue(defaultValue);
+        } else if (!search) {
+            value = ((CmsSiteEntryBean)req.getAttribute(CmsADEManager.ATTR_SITEMAP_ENTRY)).getProperties().get(property);
+        } else {
+            value = CmsSitemapResourceHandler.getInstance().getSearchProperties(controller.getCmsObject(), sitemapUri).get(
+                property);
+        }
         if (escape) {
             // HTML escape the value 
             value = CmsEncoder.escapeHtml(value);
@@ -232,10 +289,95 @@ public class CmsJspTagProperty extends TagSupport {
     }
 
     /**
+     * Internal action method.<p>
+     * 
+     * @param action the search action
+     * @param req the current request
+     * 
+     * @return String the value of the property or <code>null</code> if not found (and no
+     *      defaultValue provided)
+     *      
+     * @throws CmsException if something goes wrong
+     */
+    public static Map<String, String> propertiesTagAction(String action, ServletRequest req) throws CmsException {
+
+        CmsFlexController controller = CmsFlexController.getController(req);
+
+        FileUse useAction = FileUse.URI;
+        if (action != null) {
+            // if action is set overwrite default
+            useAction = FileUse.parse(action);
+        }
+
+        String vfsUri = null;
+        String sitemapUri = null;
+        boolean search = false;
+        if (useAction != null) {
+            switch (useAction) {
+                case URI:
+                case PARENT:
+                    // read properties of parent (i.e. top requested) file
+                    vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                    break;
+                case SEARCH:
+                case SEARCH_URI:
+                case SEARCH_PARENT:
+                    // try to find property on parent file and all parent folders
+                    vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                    search = true;
+                    break;
+                case ELEMENT_URI:
+                case THIS:
+                    // read properties of this file            
+                    vfsUri = controller.getCurrentRequest().getElementUri();
+                    break;
+                case SEARCH_ELEMENT_URI:
+                case SEARCH_THIS:
+                    // try to find property on this file and all parent folders
+                    vfsUri = controller.getCurrentRequest().getElementUri();
+                    search = true;
+                    break;
+                case SITEMAP:
+                    // try to find property on this sitemap entry
+                    sitemapUri = (String)req.getAttribute(CmsSitemapResourceHandler.SITEMAP_CURRENT_URI);
+                    if (sitemapUri == null) {
+                        // fall back
+                        vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                    }
+                    break;
+                case SEARCH_SITEMAP:
+                    // try to find property on this sitemap entry all parent entries
+                    sitemapUri = (String)req.getAttribute(CmsSitemapResourceHandler.SITEMAP_CURRENT_URI);
+                    if (sitemapUri == null) {
+                        // fall back
+                        vfsUri = controller.getCmsObject().getRequestContext().getUri();
+                    }
+                    search = true;
+                    break;
+            }
+        } else {
+            // read properties of the file named in the attribute  
+            vfsUri = CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri());
+            search = false;
+        }
+
+        // now read the property from the VFS
+        Map<String, String> value;
+        if (vfsUri == null) {
+            value = CmsProperty.toMap(controller.getCmsObject().readPropertyObjects(vfsUri, search));
+        } else if (!search) {
+            value = ((CmsSiteEntryBean)req.getAttribute(CmsADEManager.ATTR_SITEMAP_ENTRY)).getProperties();
+        } else {
+            value = CmsSitemapResourceHandler.getInstance().getSearchProperties(controller.getCmsObject(), sitemapUri);
+        }
+        return value;
+    }
+
+    /**
      * @return SKIP_BODY
-     * @throws JspException in case somethins goes wrong
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -304,6 +446,7 @@ public class CmsJspTagProperty extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         super.release();

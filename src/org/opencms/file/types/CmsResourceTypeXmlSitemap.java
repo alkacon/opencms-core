@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeXmlSitemap.java,v $
- * Date   : $Date: 2009/11/24 14:33:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/10 10:00:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,14 +73,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
 public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
 
     /** Fixed detail page for sitemap pages. */
-    private static final String DETAIL_PAGE = "/system/workplace/editors/sitemap/sitemap.jsp";
+    public static final String DETAIL_PAGE = "/system/workplace/editors/sitemap/sitemap.jsp";
+
+    /** Fixed schema for sitemap pages. */
+    public static final String SCHEMA = "/system/workplace/editors/sitemap/schemas/sitemap.xsd";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlSitemap.class);
@@ -93,9 +96,6 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
 
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "sitemap";
-
-    /** Fixed schema for sitemap pages. */
-    private static final String SCHEMA = "/system/workplace/editors/sitemap/schemas/sitemap.xsd";
 
     /**
      * Default constructor that sets the fixed schema for container pages.<p>

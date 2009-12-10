@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2009/12/08 10:38:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/10 10:00:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsFile;
-import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
@@ -83,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -741,46 +740,16 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public Map<String, String> properties(String file) {
 
+        Map<String, String> props = new HashMap<String, String>();
         if (isNotInitialized()) {
-            return new HashMap<String, String>();
+            return props;
         }
-        Map<String, String> value = new HashMap<String, String>();
         try {
-            if (file == null) {
-                file = CmsJspTagProperty.USE_URI;
-            }
-            switch (CmsJspTagProperty.ACTION_VALUES_LIST.indexOf(file)) {
-                case 0: // USE_URI
-                case 1: // USE_PARENT
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(getRequestContext().getUri(), false));
-                    break;
-                case 2: // USE_SEARCH
-                case 3: // USE_SEARCH_URI
-                case 4: // USE_SEARCH_PARENT 
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(getRequestContext().getUri(), true));
-                    break;
-                case 5: // USE_ELEMENT_URI
-                case 6: // USE_THIS
-                    // Read properties of this file            
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(
-                        getController().getCurrentRequest().getElementUri(),
-                        false));
-                    break;
-                case 7: // USE_SEARCH_ELEMENT_URI
-                case 8: // USE_SEARCH_THIS
-                    // Try to find property on this file and all parent folders
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(
-                        getController().getCurrentRequest().getElementUri(),
-                        true));
-                    break;
-                default:
-                    // Read properties of the file named in the attribute            
-                    value = CmsProperty.toMap(getCmsObject().readPropertyObjects(toAbsolute(file), false));
-            }
+            props = CmsJspTagProperty.propertiesTagAction(file, getRequest());
         } catch (Throwable t) {
             handleException(t);
         }
-        return value;
+        return props;
     }
 
     /**
