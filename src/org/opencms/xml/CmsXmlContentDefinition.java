@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2009/11/02 17:41:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/10 09:59:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -281,7 +281,9 @@ public class CmsXmlContentDefinition implements Cloneable {
                 contentDef = unmarshal(cms, schema);
             } catch (CmsException e) {
                 // this should never happen, unless the configured schema is different than the schema in the xml
-                LOG.warn(e);
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e);
+                }
                 LOG.debug(e.getLocalizedMessage(), e);
             }
         }
