@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/12/10 09:59:22 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 7.6
  */
@@ -623,8 +623,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
      */
     public JSONObject getSitemap(CmsResource resource, CmsXmlSitemap xmlSitemap) throws JSONException, CmsException {
 
-        CmsObject cms2 = getCmsObject();
-        CmsSitemapBean sitemap = xmlSitemap.getSitemap(cms2, cms2.getRequestContext().getLocale());
+        CmsObject cms = getCmsObject();
+        CmsSitemapBean sitemap = xmlSitemap.getSitemap(cms, cms.getRequestContext().getLocale());
         // create empty result object
         JSONObject result = new JSONObject();
 
@@ -642,11 +642,11 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         boolean topLevel = true;
         JSONArray superSitemapsJSON = new JSONArray();
         CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_STRONG);
-        for (CmsRelation relation : cms2.getRelationsForResource(resource, filter)) {
-            CmsResource source = relation.getSource(cms2, CmsResourceFilter.ALL);
+        for (CmsRelation relation : cms.getRelationsForResource(resource, filter)) {
+            CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
             if (CmsResourceTypeXmlSitemap.isSitemap(source)) {
                 topLevel = false;
-                superSitemapsJSON.put(cms2.getSitePath(source));
+                superSitemapsJSON.put(cms.getSitePath(source));
             }
         }
         result.put(JsonResponse.SUB_SITEMAP.getName(), !topLevel);
