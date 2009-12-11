@@ -190,7 +190,7 @@
                                 <div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>\
             	                <div class="preview-area ui-widget-content ui-corner-all"></div>\
 				                <div class="edit-area ui-widget-content ui-corner-all"></div>\
-                             <div>';
+                             </div>';
   
       
    /**
@@ -290,7 +290,7 @@
           .append(categoriesTab)
           .append(cms.galleries.htmlTabFTSeachSceleton);
       // add preview to the galleries html
-      $('#' + cms.galleries.idGalleriesMain).append(cms.galleries.htmlPreviewSceleton);                  
+      $('#' + cms.galleries.idGalleriesMain).append(cms.galleries.htmlPreviewSceleton);                      
       
       //TODO: blind out quick search dialog for the moment
       $('span.cms-ft-search').css('display', 'none');
@@ -589,7 +589,7 @@
    /**
     * Returns true, if the select button should be displayed.
     */
-   var displaySelectButton = cms.galleries.displaySelectButton = function () {      
+   var isSelectableItem = cms.galleries.isSelectableItem = function () {      // displaySelectButton
       if (cms.galleries.initValues['dialogMode'] == 'widget' || cms.galleries.initValues['dialogMode'] == 'editor'){
           return true;
       }
@@ -602,7 +602,7 @@
           var resultElement=$(this.itemhtml).appendTo(target);
           resultElement.attr('alt', this.path);                              
           resultElement.data('type', this.type);
-          if(displaySelectButton()) {
+          if(isSelectableItem()) {
               resultElement.find('.cms-list-itemcontent')
                   .append('<div class="cms-handle-button cms-select-item"></div>');
           }

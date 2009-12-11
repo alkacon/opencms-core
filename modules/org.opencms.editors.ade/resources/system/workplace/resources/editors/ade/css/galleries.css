@@ -34,8 +34,9 @@
         background: #f9f9f9;
     }
     
-    /** Styles for the preview*/
-    #cms-preview{
+    /** Styles for the preview and crop html*/
+    #cms-preview,
+    #cms-image-crop{
         height:439px;
         left:1px;
         position:absolute;
@@ -56,10 +57,16 @@
     
     #cms-preview .edit-area,
     #cms-preview .edit-format-area{
-        height: 100px;  
+        height: 100px;
+        /*height:240px; */ 
         margin: 2px;
         overflow: auto;
-    }       
+    } 
+    
+    /*TODO: remove as soon as layout is improved!!!! */
+    #cms-preview .edit-format-area {
+        height:240px;
+    }      
     
     .edit-area span{
         font-size: 12px;
@@ -73,7 +80,9 @@
     }
     
     div.button-bar{
+        display:inline-block;
         margin-bottom: 5px;
+        width: 644px;
     }
        
     div.button-bar button{
@@ -90,8 +99,10 @@
     
     button span.cms-galleries-button{         
         display: inline-block;                
-        height: 20px;
-        line-height: 20px;   
+        /*height:20px;
+        line-height:20px;*/        
+        height:19px;
+        line-height:18px;   
         width: auto !important;
         margin: 0px !important;     
     }      
@@ -112,6 +123,26 @@
         background-image: url(images/16x16/publish.png);              
     }
     
+    button span.cms-galleries-icon-reset{                       
+        background: transparent url(images/16x16/reset.gif) no-repeat scroll left center;              
+    }
+    
+    button span.cms-galleries-icon-locked{                       
+        background: transparent url(images/16x16/locked.gif) no-repeat scroll left center;              
+    }
+    
+    button span.cms-galleries-icon-unlocked{                       
+        background: transparent url(images/16x16/unlocked.gif) no-repeat scroll left center;              
+    }
+    
+    button span.cms-galleries-icon-crop{                       
+        background: transparent url(images/16x16/crop.png) no-repeat scroll left center;              
+    }
+    
+    button span.cms-galleries-icon-cropremove{                       
+        background: transparent url(images/16x16/cropremove.png) no-repeat scroll left center; 
+    }
+    
     .cms-icon-text{
         padding-left: 25px;
     }
@@ -121,6 +152,11 @@
     }     
     
     /** Editable properties in the edit area. */
+    .edit-form button {
+        margin: 0px 0px 0px 2px;
+        vertical-align:middle;
+    }
+    
     span.cms-item-title,
     label.cms-item-title {
         display: inline-block;
@@ -134,6 +170,9 @@
         margin: 2px;
     }
     
+    div.cms-editable-field input{
+        width: 50px;
+    }
     
     input.cms-direct-input, input.cms-direct-input:focus, input.cms-direct-input:active {
           border: none;
@@ -144,6 +183,10 @@
     
     .cms-item-changed {
         color: blue;
+    }
+    
+    .cms-drop-down div.cms-selectbox {
+        vertical-align:middle;
     }
     
     .result-tab-scrolling {

@@ -62,7 +62,7 @@
       // TODO: comment in for direct publish
       /* $('.edit-area button[name="publishSave"]').click(publishChangedProperty);*/
       
-      if (cms.galleries.displaySelectButton()) {
+      if (cms.galleries.isSelectableItem()) {
          $('.edit-area').find('.button-bar').append('<button name="previewSelect" class="ui-state-default ui-corner-all">\
                                 <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                           </button>');

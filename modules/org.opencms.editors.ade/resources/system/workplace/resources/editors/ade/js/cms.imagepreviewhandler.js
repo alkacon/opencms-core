@@ -14,24 +14,32 @@
    var keys = {
       'previewWidth': 'width',
       'previewHeight': 'height',
-      'imageFormat': 'format'
+      'imageFormat': 'format',
+      'cropShow': 'cropShow',
+      'cropRemove': 'cropRemove',
+      'locksizes': 'locksizes',
+      'resetsize': 'resetsize'
    };
    
    /** Default format value for the drop down. */
+   //TODO: change width of small foramt to '200'!!!
    var defaultFormatOptions = 'original|user|free cropping|small|large';
-   var defaultFormatValues = ['original', 'user', 'free', '200x?', '500x?'];
+   var defaultFormatValues = ['original', 'user', 'free', '150x?', '500x?'];
    
    /** Array with format values for the drop down. */
    var formatDropDown = [];
    
    /** An array with format values for image size calculation. */
-   var formatSelections = [];
+   cms.imagepreviewhandler.formatSelections = [];
    
    /** The index of the selected item in the drop down. */
-   var formatSelected = 0;
+   cms.imagepreviewhandler.formatSelected = {};
    
    /** The flag for the state of lock ration for selected image. */
    var lockRatio = true;
+   
+   /** html fragment for the image cropping dialog. */
+   var htmlCropSceleton = '<div id="cms-image-crop" class="ui-corner-all"></div>';
    
    /**
     * Displays the content of the preview item.
@@ -41,6 +49,7 @@
    var showItemPreview = function(itemData) {
       if (isInitFormatSelectBox) {
          cms.galleries.getContentHandler(cms.imagepreviewhandler.imageContentTypeHandler['type'])['init']();
+         $('#' + cms.galleries.idGalleriesMain).append(htmlCropSceleton);
          isInitFormatSelectBox = false;
       }
       
@@ -67,7 +76,7 @@
          
       });
       
-      $('.button-bar button').live('mouseover', function() {
+      $('#cms-preview button').live('mouseover', function() {
          $(this).toggleClass('ui-state-hover', true);
       }).live('mouseout', function() {
          $(this).toggleClass('ui-state-hover', false);
@@ -78,7 +87,7 @@
       
       // change the initial flag 
       if (cms.galleries.activeItem['isInitial'] == true) {
-         cms.galleries.activeItem['isInitial'] == false;
+         cms.galleries.activeItem['isInitial'] = false;
       }
    }
    
@@ -92,18 +101,22 @@
       cms.galleries.getContentHandler()['showEditArea'](itemProperties);
       
       // add button to select the edit area
-      $('.edit-form').find('button-bar').append('<button name="showEditArea" disabled="true" class="ui-state-default ui-corner-all">\
-                                                    <span class="cms-galleries-button">Edit resource properties</span>\
-                                              </button>').append('<button name="showFormEditArea" disabled="false" class="ui-state-default ui-corner-all">\
-                                                    <span class="cms-galleries-button">Edit image formats</span>\
+      $('.edit-area').find('.button-bar').append('<button name="showEditArea" disabled="true" class="cms-right ui-state-default ui-corner-all">\
+                                                    <span class="cms-galleries-button">Edit&nbsp;resource&nbsp;properties</span>\
+                                              </button>').append('<button name="showFormEditArea" disabled="false" class="cms-right ui-state-default ui-corner-all">\
+                                                    <span class="cms-galleries-button">Edit&nbsp;image&nbsp;formats</span>\
                                                 </button>');
+      
+      
       $('.edit-area').hide();
       
+      ////display format select parameters for image  
       // add format edit area to preview
-      var target = $('<div class="edit-format-area"></div>').appendTo('#cms-preview');
+      var target = $('<div class="edit-format-area ui-widget-content ui-corner-all"></div>').appendTo('#cms-preview');
+      // add the buttons to the button bar
       var buttonBar = $('<div class="button-bar"></div>').appendTo(target);
-      if (cms.galleries.displaySelectButton()) {
-         buttonBar.append('<button name="previewSelect" class="ui-state-default ui-corner-all">\
+      if (cms.galleries.isSelectableItem()) {
+         buttonBar.append('<button name="previewSelect" class="cms-left ui-state-default ui-corner-all">\
                                    <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                              </button>');
          buttonBar.find('button[name="previewSelect"]').click(function() {
@@ -112,25 +125,58 @@
          });
       }
       
-      // add button to select the edit area
+      // add buttons to switch between the file properties and the image format option
       buttonBar.append('<button name="showEditArea" class="cms-right ui-state-default ui-corner-all">\
-                                                    <span class="cms-galleries-button">Edit resource properties</span>\
-                                              </button>').append('<button name="showFormEditArea" disabled="true" class="cms-right ui-state-default ui-corner-all">\
-                                                    <span class="cms-galleries-button">Edit image formats</span>\
-                                                </button>');
+                                <span class="cms-galleries-button">Edit&nbsp;resource&nbsp;properties</span>\
+                        </button>').append('<button name="showFormEditArea" disabled="true" class="cms-right ui-state-default ui-corner-all">\
+                                <span class="cms-galleries-button">Edit&nbsp;image&nbsp;formats</span>\
+                        </button>');
       
-      // generate editable foramt form for width and height
+      // generate editable format fields for width and height
       var form = $('<div class="edit-form"></div>');
       // width input field    
-      $('<div class="cms-editable-field"></div>').attr('alt', keys['previewWidth']).appendTo(form).append('<span class="cms-item-title">Width:</span>').append('<span class="cms-item-edit" style=" width: 100px;"></span>');
+      $('<div class="cms-editable-field"></div>').attr('alt', keys['previewWidth']).appendTo(form).append('<span class="cms-item-title">Width:</span>').append('<input class="ui-corner-all ui-widget-content" disabled="true" type="text"/>');
       // height input field    
-      $('<div class="cms-editable-field"></div>').attr('alt', keys['previewHeight']).appendTo(form).append('<span class="cms-item-title">Height:</span>').append('<span class="cms-item-edit" style=" width: 100px;"></span>');
+      $('<div class="cms-editable-field"></div>').attr('alt', keys['previewHeight']).appendTo(form).append('<span class="cms-item-title">Height:</span>').append('<input class="ui-corner-all ui-widget-content" disabled="true" type="text"/>');
+      //.append('<span class="cms-item-edit" style=" width: 100px;"></span>');
       $(target).append(form);
       
+      if (cms.galleries.isSelectableItem()) {
+         $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false);
+         $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false); 
+         // bind changeFormat 
+         $('.cms-editable-field[alt="' + keys['previewWidth'] + '"]').find('input').blur(function() {
+            onSizeChanged('Width', $(this).val())
+         });
+         $('.cms-editable-field[alt="' + keys['previewHeight'] + '"]').find('input').blur(function() {
+            onSizeChanged('Height', $(this).val())
+         });
+         
+         // append locksize und reset button
+         $('.cms-editable-field[alt="' + keys['previewWidth'] + '"]').find('input').after('<button name="' + keys['locksizes'] + '" class="ui-state-default ui-corner-all">\
+                                <span class="cms-galleries-button cms-galleries-icon-locked cms-icon-text">Lock&nbsp;size</span>\
+                          </button>').after('<button name="' + keys['resetsize'] + '" class="ui-state-default ui-corner-all">\
+                                <span class="cms-galleries-button cms-galleries-icon-reset cms-icon-text">Reset&nbsp;size</span>\
+                          </button>');
+         $('button[name="' + keys['locksizes'] + '"]').click(switchLock);
+         $('button[name="' + keys['resetsize'] + '"]').click(resetSizes);
+      }
+      
       // add format select box in widget or editor mode
-      if (cms.galleries.displaySelectButton()) {
+      if (cms.galleries.isSelectableItem()) {
          // drop down to select format
-         $('<div class="cms-drop-down cms-editable-field"></div>').attr('alt', keys['imageFormat']).appendTo(form).append('<label class="cms-item-title">Format:</label>');
+         $('<div class="cms-drop-down cms-editable-field"></div>').attr('alt', keys['imageFormat']).appendTo(form).append('<label class="cms-item-title">Format:</label>').append('<button class="ui-state-default ui-corner-all" name="' + keys['cropShow'] + '">\
+                            <span class="cms-galleries-button cms-galleries-icon-crop cms-icon-text">Cropping</span>\
+                      </button>').append('<button class="ui-state-default ui-corner-all" name="' + keys['cropRemove'] + '">\
+                            <span class="cms-galleries-button cms-galleries-icon-cropremove cms-icon-text">Remove&nbsp;cropping</span>\
+                      </button>');
+         $('button[name="' + keys['cropShow'] + '"]').click(showCropDialog);
+         
+         $('button[name="' + keys['cropRemove'] + '"]').click(function() {
+            setCropActive(false);
+            checkResetSizes();
+         });
+         
          form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
             values: formatDropDown,
             width: 150,
@@ -140,17 +186,6 @@
             }
          }));
       }
-      
-      
-      // bind direct input to the editable fields
-      $('.cms-item-edit').directInput({
-         marginHack: true,
-         live: false,
-         setValue: cms.galleries.getContentHandler()['markChangedProperty'],
-         onChange: function(element, input) {
-            $('#previewSave').removeAttr('disabled');
-         }
-      });
    }
    
    /**
@@ -170,28 +205,28 @@
          'newheight': 0
       });
       
-      var widthField = $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('.cms-item-edit');
-      var heightField = $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('.cms-item-edit');
+      var widthField = $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input');
+      var heightField = $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input');
       
       if (isInitial == true) {
          // initial image loaded
          var cropIt = false;
-         /*if (getScaleValue(initValues.scale, "cx") != "") {
-          cropIt = true;
-          activeItem.cropx = getScaleValueInt(initValues.scale, "cx");
-          activeItem.cropy = getScaleValueInt(initValues.scale, "cy");
-          activeItem.cropw = getScaleValueInt(initValues.scale, "cw");
-          activeItem.croph = getScaleValueInt(initValues.scale, "ch");
-          var cropParams = "cx:" + activeItem.cropx;
-          cropParams += ",cy:" + activeItem.cropy;
-          cropParams += ",cw:" + activeItem.cropw;
-          cropParams += ",ch:" + activeItem.croph;
-          activeItem.crop = cropParams;
-          initValues.scale = removeScaleValue(initValues.scale, "cx");
-          initValues.scale = removeScaleValue(initValues.scale, "cy");
-          initValues.scale = removeScaleValue(initValues.scale, "cw");
-          initValues.scale = removeScaleValue(initValues.scale, "ch");
-          }*/
+         if (getScaleValue(cms.galleries.initValues.scale, "cx") != "") {
+            cropIt = true;
+            cms.galleries.activeItem.cropx = getScaleValueInt(cms.galleries.initValues.scale, "cx");
+            cms.galleries.activeItem.cropy = getScaleValueInt(cms.galleries.initValues.scale, "cy");
+            cms.galleries.activeItem.cropw = getScaleValueInt(cms.galleries.initValues.scale, "cw");
+            cms.galleries.activeItem.croph = getScaleValueInt(cms.galleries.initValues.scale, "ch");
+            var cropParams = "cx:" + cms.galleries.activeItem.cropx;
+            cropParams += ",cy:" + cms.galleries.activeItem.cropy;
+            cropParams += ",cw:" + cms.galleries.activeItem.cropw;
+            cropParams += ",ch:" + cms.galleries.activeItem.croph;
+            cms.galleries.activeItem.crop = cropParams;
+            cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cx");
+            cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cy");
+            cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cw");
+            cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "ch");
+         }
          if (cms.galleries.initValues.useformats == true) {
             if (cms.galleries.initValues.imgwidth != "?") {
                widthField.text(cms.galleries.initValues.imgwidth);
@@ -259,22 +294,23 @@
                // refresh the format select box
                refreshSelectBox();
             } else if (cms.galleries.initValues.showformats == false) {
-                        //$("#croplink").hide();
+               $('button[name="' + keys['cropShow'] + '"]').hide();
             }
          }
-         //initValues.scale = removeScaleValue(initValues.scale, "w");
-         //initValues.scale = removeScaleValue(initValues.scale, "h");
+         cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "w");
+         cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "h");
       } else {
-         // image loaded by user selection
-         //$tabs.data("disabled.tabs", []);
-         //$tabs.tabs("select", 0);
+         // image loaded by user selection         
          resetSizes();
-         setCropActive(false);
-         if (cms.galleries.initValues.useformats != true) {
-                  //$("#croplink").hide();
+         if (cms.galleries.isSelectableItem()) {
+            setCropActive(false);
          }
-         if (cms.galleries.initValues.useformats == true && initValues.showformats == true) {
-                  //$("#croplink").show();
+         if (cms.galleries.initValues.useformats != true && cms.galleries.isSelectableItem()) {
+         
+            $('button[name="' + keys['cropShow'] + '"]').hide();
+         }
+         if (cms.galleries.initValues.useformats == true && initValues.showformats == true && cms.galleries.isSelectableItem()) {
+            $('button[name="' + keys['cropShow'] + '"]').show();
          }
       }
       try {
@@ -282,54 +318,55 @@
          //activeImageAdditionalActions(isInitial);
       } catch (e) {
             }
-      //$('#previmgname').html(activeItem.title);
-      //showItemInfo(-1, "detail", activeItem, true);
    }
    
-   
-   /* Enables and disabled links and inputs depending if image is cropped or not. */
    /**
     * Displays the image format editing fields depending on the config parameters.
     *
     * @param {Object} isCropped 'true' if image is cropped, 'false' otherwise
     * @param {Object} forceRefreshPreview if true the image preview will be refreshed
     */
-   var setCropActive = function(isCropped, forceRefreshPreview) {
+   var setCropActive = cms.imagepreviewhandler.setCropActive = function(isCropped, forceRefreshPreview) {
       if (cms.galleries.initValues.widgetmode == "simple" && cms.galleries.initValues.showformats == false) {
-            // disable input fields and buttons for simple widget mode      
-      
-         //$('#txtWidth').get(0).disabled = true;
-         //$('#txtHeight').get(0).disabled = true;
+         // disable input fields and buttons for simple widget mode      
+         
+         
+         $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true);
+         $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true);
+         
+         
          //$('#formatselect').get(0).disabled = true;
-         //$('#resetsize').hide();
-         //$('#locksizes').hide();
-         //$('#cropremove').hide();
-         //$('#cropinfo').hide();
+         $('button[name="' + keys['locksizes'] + '"]').hide();
+         $('button[name="' + keys['resetsize'] + '"]').hide();
+         $('button[name="' + keys['cropRemove'] + '"]').hide();
       } else {
          if (isCropped == true) {
             // cropping has been set, disable input fields and refresh view
-            $('#txtWidth').get(0).disabled = true;
-            $('#txtHeight').get(0).disabled = true;
-            $('#formatselect').get(0).disabled = true;
-            $('#resetsize').hide();
-            $('#locksizes').hide();
-            $('#cropremove').show();
-            $('#cropinfo').show();
+            
+            $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true);
+            $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true);
+            
+            
+            //$('#formatselect').get(0).disabled = true;                
+            $('button[name="' + keys['locksizes'] + '"]').hide();
+            $('button[name="' + keys['resetsize'] + '"]').hide();
+            $('button[name="' + keys['cropRemove'] + '"]').show();
+            
          } else {
             // cropping has been disabled, enable input fields and refresh view
             if (cms.galleries.initValues.useformats == true && cms.galleries.initValues.showformats != true) {
-                        // using formats, calculate image for currently selected size
-               //changeFormat();
+               // using formats, calculate image for currently selected size
+               changeFormat();
             } else if (cms.galleries.initValues.useformats == false) {
-                        // only enable if not using formats
-               //$('#txtWidth').get(0).disabled = false;
-               //$('#txtHeight').get(0).disabled = false;
+               // only enable if not using formats
+               $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false);
+               $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false);
+               
             }
             //$('#formatselect').get(0).disabled = false;
-            //$('#resetsize').show();
-            //$('#locksizes').show();
-            //$('#cropremove').hide();
-            //$('#cropinfo').hide();
+            $('button[name="' + keys['locksizes'] + '"]').show();
+            $('button[name="' + keys['resetsize'] + '"]').show();
+            $('button[name="' + keys['cropRemove'] + '"]').hide();
          }
       }
       if (isCropped != cms.galleries.activeItem.isCropped || (forceRefreshPreview != null && forceRefreshPreview == true)) {
@@ -355,8 +392,8 @@
             scaleParams += ",";
          }
          scaleParams += cms.galleries.activeItem.crop;
-         //imgWidth = getScaleValueInt(activeItem.crop, "cw");
-         //imgHeight = getScaleValueInt(activeItem.crop, "ch");
+         imgWidth = getScaleValueInt(cms.galleries.activeItem.crop, "cw");
+         imgHeight = getScaleValueInt(cms.galleries.activeItem.crop, "ch");
       }
       
       if (cms.galleries.activeItem.newwidth > 0) {
@@ -368,14 +405,14 @@
          useSelectedDimensions = true;
       }
       if (cms.galleries.initValues.useformats != true ||
-      (cms.galleries.initValues.useformats == true && (formatSelected.width == -1 || formatSelected.height == -1))) {
+      (cms.galleries.initValues.useformats == true && (cms.imagepreviewhandler.formatSelected.width == -1 || cms.imagepreviewhandler.formatSelected.height == -1))) {
          setImageFormatFields(imgWidth, imgHeight);
       }
       var maxWidth = defaultPreview['width'];
       var maxHeight = defaultPreview['height'];
       if (cms.galleries.initValues.useformats == true) {
-         var formatWidth = formatSelected.width;
-         var formatHeight = formatSelected.height;
+         var formatWidth = cms.imagepreviewhandler.formatSelected.width;
+         var formatHeight = cms.imagepreviewhandler.formatSelected.height;
          if (formatWidth > -1) {
             if (formatWidth < maxWidth) {
                maxWidth = formatWidth;
@@ -401,15 +438,12 @@
          scaleParams += "w:" + imgWidth;
          scaleParams += ",h:" + imgHeight;
       }
-      //$('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('.cms-item-edit').text(cms.galleries.activeItem.width);
-      //$('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('.cms-item-edit').text(cms.galleries.activeItem.height);
-      //var path = cms.galleries.activeItem.linkpath;
+      
       if (scaleParams != "") {
          scaleParams = "?__scale=" + scaleParams;
       }
       $('.cms-image-preview').empty();
       $('.cms-image-preview').append('<img src="' + cms.galleries.activeItem['linkpath'] + scaleParams + '" />');
-      //$("#imgpreview").html("<img src=\"" + path + scaleParams + "\" />");
    }
    
    /**
@@ -420,7 +454,7 @@
     * @param {Object} maxWidth max width
     * @param {Object} maxHeight max height
     */
-   var calculateDimensions = function(imgWidth, imgHeight, maxWidth, maxHeight) {
+   var calculateDimensions = cms.imagepreviewhandler.calculateDimensions = function(imgWidth, imgHeight, maxWidth, maxHeight) {
       var newWidth = imgWidth;
       var newHeight = imgHeight;
       var scaleFactor = 1;
@@ -446,6 +480,17 @@
    }
    
    /**
+    * Checks if the image sizes should be reset when clicking on the "remove crop" button.
+    */
+   var checkResetSizes = function() {
+      if (cms.galleries.activeItem.isCropped == false && !cms.galleries.initValues.useformats == true) {
+         if (cms.imagepreviewhandler.formatSelected.type != "user") {
+            resetSizes();
+         }
+      }
+   }
+   
+   /**
     * Fired when the reset size button is clicked or the original format from the drop down is selected.<p>
     */
    var resetSizes = function() {
@@ -457,15 +502,21 @@
       } else {
          // not using formats, lock ratio and use original image size
          lockRatio = true;
-         //$('#locksizes').attr("title", LANG.IMGPREVIEW_SIZE_UNLOCK);
-         //$('#locksizes').attr("class", "btnlocked");
          
-         $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('.cms-item-edit').text(cms.galleries.activeItem.width);
-         $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('.cms-item-edit').text(cms.galleries.activeItem.height);
-         //$("#formatselect").get(0).selectedIndex = 0;
+         
+         $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.galleries.activeItem.width);
+         $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.galleries.activeItem.height);
+         if (cms.galleries.isSelectableItem()) {
+            $('button[name="' + keys['locksizes'] + '"]').find('span').removeClass('cms-galleries-icon-unlocked');
+            $('button[name="' + keys['locksizes'] + '"]').find('span').addClass('cms-galleries-icon-locked');
+            // reset select box
+            $('.edit-format-area').find('.cms-selectbox').selectBox('setValue', formatDropDown[0]['value']);
+         }
          refreshActiveImagePreview();
       }
-      //$("#croplink").hide();
+      if (cms.galleries.isSelectableItem()) {
+         $('button[name="' + keys['cropShow'] + '"]').hide();
+      }
    }
    
    /* Initializes the options and values shown in the format select box. */
@@ -484,9 +535,9 @@
          formatValues = defaultFormatValues;
       }
       
-      formatSelections = new Array(formatValues.length);
+      cms.imagepreviewhandler.formatSelections = [];
       for (var i = 0; i < formatValues.length; i++) {
-         formatSelections[i] = new Object();
+         cms.imagepreviewhandler.formatSelections[i] = new Object();
          var pos = formatOptions.indexOf("|");
          var currOptStr;
          if (pos != -1) {
@@ -497,38 +548,38 @@
          }
          pos = currOptStr.indexOf(":");
          if (pos != -1) {
-            formatSelections[i].optionvalue = currOptStr.substring(0, pos);
-            formatSelections[i].optionlabel = currOptStr.substring(pos + 1);
+            cms.imagepreviewhandler.formatSelections[i].optionvalue = currOptStr.substring(0, pos);
+            cms.imagepreviewhandler.formatSelections[i].optionlabel = currOptStr.substring(pos + 1);
          } else {
-            formatSelections[i].optionvalue = currOptStr;
-            formatSelections[i].optionlabel = currOptStr;
+            cms.imagepreviewhandler.formatSelections[i].optionvalue = currOptStr;
+            cms.imagepreviewhandler.formatSelections[i].optionlabel = currOptStr;
          }
          pos = formatValues[i].indexOf("x");
          if (pos != -1) {
-            formatSelections[i].type = "ocspecial";
-            formatSelections[i].width = -1;
-            formatSelections[i].height = -1;
+            cms.imagepreviewhandler.formatSelections[i].type = "ocspecial";
+            cms.imagepreviewhandler.formatSelections[i].width = -1;
+            cms.imagepreviewhandler.formatSelections[i].height = -1;
             var pixels = formatValues[i].substring(0, pos);
             if (pixels != "?") {
-               formatSelections[i].width = parseInt(pixels);
+               cms.imagepreviewhandler.formatSelections[i].width = parseInt(pixels);
             }
             pixels = formatValues[i].substring(pos + 1);
             if (pixels != "?") {
-               formatSelections[i].height = parseInt(pixels);
+               cms.imagepreviewhandler.formatSelections[i].height = parseInt(pixels);
             }
          } else {
-            formatSelections[i].type = formatValues[i];
-            formatSelections[i].width = -1;
-            formatSelections[i].height = -1;
+            cms.imagepreviewhandler.formatSelections[i].type = formatValues[i];
+            cms.imagepreviewhandler.formatSelections[i].width = -1;
+            cms.imagepreviewhandler.formatSelections[i].height = -1;
          }
          var selected = "";
-         if (cms.galleries.initValues.useformats == true && cms.galleries.initValues.formatname == formatSelections[i].optionvalue) {
+         if (cms.galleries.initValues.useformats == true && cms.galleries.initValues.formatname == cms.imagepreviewhandler.formatSelections[i].optionvalue) {
             selected = " selected=\"selected\"";
-            formatSelected = formatSelections[i];
+            cms.imagepreviewhandler.formatSelected = cms.imagepreviewhandler.formatSelections[i];
          }
          var optionObject = {
-            'value': formatSelections[i].optionvalue,
-            'title': formatSelections[i].optionlabel
+            'value': cms.imagepreviewhandler.formatSelections[i].optionvalue,
+            'title': cms.imagepreviewhandler.formatSelections[i].optionlabel
          };
          formatDropDown.push(optionObject);
       }
@@ -536,51 +587,47 @@
    
    /* Called if a format is selected in the format select box. */
    var changeFormat = function(selectedIndex) {
-      //var selected = $("#formatselect").get(0).selectedIndex;
-      formatSelected = formatSelections[selectedIndex];
+      cms.imagepreviewhandler.formatSelected = cms.imagepreviewhandler.formatSelections[selectedIndex];
       
-      if (formatSelected.type == "original") {
+      if (cms.imagepreviewhandler.formatSelected.type == "original") {
          // reset to original sizes
          resetSizes();
-      } else if (formatSelected.type == "user") {
-            // user defined format, nothing to do except remove cropping
-         //$("#croplink").show();
-      } else if (formatSelected.type == "free") {
-            // free cropping;
-         //$("#croplink").show();
+      } else if (cms.imagepreviewhandler.formatSelected.type == "user") {
+         // user defined format, nothing to do except remove cropping         
+         $('button[name="' + keys['cropShow'] + '"]').show();
+      } else if (cms.imagepreviewhandler.formatSelected.type == "free") {
+         // free cropping;
+         $('button[name="' + keys['cropShow'] + '"]').show();
       } else {
          // other format selected
-         //$("#croplink").show();
-         if (formatSelected.width != -1) {
-            if (formatSelected.height != -1) {
+         $('button[name="' + keys['cropShow'] + '"]').show();
+         if (cms.imagepreviewhandler.formatSelected.width != -1) {
+            if (cms.imagepreviewhandler.formatSelected.height != -1) {
                // we have a width and height, we also have to check the lock ratio
-               $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('.cms-item-edit').text(formatSelected.width);
-               onSizeChanged("Width", formatSelected.width, false, false);
-               var txtHeight = parseInt($('#txtHeight').get(0).value);
-               if (txtHeight != formatSelected.height) {
+               $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.width);
+               onSizeChanged("Width", cms.imagepreviewhandler.formatSelected.width, false, false);
+               var txtHeight = $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val();
+               if (txtHeight != cms.imagepreviewhandler.formatSelected.height) {
                   setLockRatio(false);
-                  $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('.cms-item-edit').text(formatSelected.height)
-                  //$('#txtHeight').get(0).value = formatSelected.height;
-                  onSizeChanged("Height", formatSelected.height, true, false);
+                  $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.height);
+                  onSizeChanged("Height", cms.imagepreviewhandler.formatSelected.height, true, false);
                }
             } else {
                // we have only the width, change it
                if (cms.galleries.initValues.useformats == true) {
                   setLockRatio(true);
                }
-               $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('.cms-item-edit').text(formatSelected.width)
-               //$('#txtWidth').get(0).value = formatSelected.width;
-               onSizeChanged("Width", formatSelected.width, true, false);
+               $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.width)
+               onSizeChanged("Width", cms.imagepreviewhandler.formatSelected.width, true, false);
             }
          } else {
-            if (formatSelected.height != -1) {
+            if (cms.imagepreviewhandler.formatSelected.height != -1) {
                // we only have a height value, change it
                if (cms.galleries.initValues.useformats == true) {
                   setLockRatio(true);
                }
-               $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('.cms-item-edit').text(formatSelected.height)
-               //$('#txtHeight').get(0).value = formatSelected.height;
-               onSizeChanged("Height", formatSelected.height, true, false);
+               $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.height)
+               onSizeChanged("Height", cms.imagepreviewhandler.formatSelected.height, true, false);
             }
          }
       }
@@ -590,7 +637,7 @@
    var onSizeChanged = function(dimension, value, refreshImage, refreshSelect) {
       // verifies if the aspect ratio has to be mantained
       if (lockRatio == true) {
-         var e = dimension == 'Width' ? $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('.cms-item-edit') : $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('.cms-item-edit');
+         var e = dimension == 'Width' ? $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input') : $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input');
          
          if (value.length == 0 || isNaN(value)) {
             e.value = "";
@@ -605,16 +652,24 @@
             value = value == 0 ? 0 : Math.round(imgWidth * (value / imgHeight));
          }
          if (!isNaN(value)) 
-            e.text(value);
+            e.val(value);
       }
-      cms.galleries.activeItem.newwidth = parseInt($('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('.cms-item-edit').text());
-      cms.galleries.activeItem.newheight = parseInt($('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('.cms-item-edit').text());
+      cms.galleries.activeItem.newwidth = parseInt($('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val());
+      cms.galleries.activeItem.newheight = parseInt($('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val());
       if (refreshSelect == null || refreshSelect == true) {
          refreshSelectBox();
       }
       if (refreshImage == null || refreshImage == true) {
          refreshActiveImagePreview();
       }
+   }
+   
+   /**
+    * Switches the lock ratio.
+    */
+   function switchLock() {
+      var newRatio = !lockRatio;
+      setLockRatio(newRatio);
    }
    
    /**
@@ -625,19 +680,22 @@
    var setLockRatio = function(/**Boolean*/newRatio) {
       lockRatio = newRatio;
       if (lockRatio == true) {
-         var displayedWidth = $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('.cms-item-edit').text();
-         var displayedHeight = $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('.cms-item-edit').text();
+         var displayedWidth = $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val();
+         var displayedHeight = $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val();
          if (displayedWidth.length > 0) {
-         
             onSizeChanged('Width', displayedWidth);
          } else {
             onSizeChanged('Height', displayedHeight);
          }
          //$('#locksizes').attr("title", LANG.IMGPREVIEW_SIZE_UNLOCK);
          //$('#locksizes').attr("class", "btnlocked");
+         $('button[name="' + keys['locksizes'] + '"]').find('span').removeClass('cms-galleries-icon-unlocked');
+         $('button[name="' + keys['locksizes'] + '"]').find('span').addClass('cms-galleries-icon-locked');
+         
       } else {
-            //$('#locksizes').attr("title", LANG.IMGPREVIEW_SIZE_LOCK);
-         //$('#locksizes').attr("class", "btnunlocked");
+         // $('#locksizes').attr("title", LANG.IMGPREVIEW_SIZE_LOCK);
+         $('button[name="' + keys['locksizes'] + '"]').find('span').removeClass('cms-galleries-icon-locked');
+         $('button[name="' + keys['locksizes'] + '"]').find('span').addClass('cms-galleries-icon-unlocked');
       }
    }
    
@@ -645,40 +703,43 @@
    var refreshSelectBox = function(forceCalculateSelection) {
       var selectedIndex = -1;
       if (cms.galleries.initValues.useformats != true || forceCalculateSelection == true) {
-         for (var i = 0; i < formatSelections.length; i++) {
+         for (var i = 0; i < cms.imagepreviewhandler.formatSelections.length; i++) {
             // check if the values match a format selection
-            var currSelect = formatSelections[i];
+            var currSelect = cms.imagepreviewhandler.formatSelections[i];
             if (currSelect.type == "user") {
                selectedIndex = i;
-               //$("#croplink").show();
+               $('button[name="' + keys['cropShow'] + '"]').show();
+               
             }
             if (currSelect.type == "free" && cms.galleries.activeItem.isCropped == true) {
                selectedIndex = i;
-               //$("#croplink").show();
+               $('button[name="' + keys['cropShow'] + '"]').show();
             } else if (currSelect.type == "original" &&
             (cms.galleries.activeItem.newwidth == 0 || cms.galleries.activeItem.newwidth == cms.galleries.activeItem.width) &&
             (cms.galleries.activeItem.newheight == 0 || cms.galleries.activeItem.newheight == cms.galleries.activeItem.height)) {
                selectedIndex = i;
-               //$("#croplink").hide();
+               $('button[name="' + keys['cropShow'] + '"]').hide();
                break;
             } else if (currSelect.width == cms.galleries.activeItem.newwidth &&
             (currSelect.height == -1 || currSelect.height == cms.galleries.activeItem.newheight)) {
                selectedIndex = i;
-               //$("#croplink").show();
+               $('button[name="' + keys['cropShow'] + '"]').show();
                break;
             } else if (currSelect.height == cms.galleries.activeItem.newheight &&
             (currSelect.width == -1 || currSelect.width == cms.galleries.activeItem.newwidth)) {
                selectedIndex = i;
-               //$("#croplink").show();
+               $('button[name="' + keys['cropShow'] + '"]').show();
                break;
             }
          }
       }
       if (selectedIndex != -1) {
-         if (formatSelections[selectedIndex].type == "user" && formatSelected != null && formatSelected.type == "free") {
+         if (cms.imagepreviewhandler.formatSelections[selectedIndex].type == "user" &&
+         cms.imagepreviewhandler.formatSelected != null &&
+         cms.imagepreviewhandler.formatSelected.type == "free") {
             return;
          }
-         formatSelected = formatSelections[selectedIndex];
+         cms.imagepreviewhandler.formatSelected = cms.imagepreviewhandler.formatSelections[selectedIndex];
          $('.edit-format-area').find('.cms-selectbox').selectBox('setValue', formatDropDown[selectedIndex]['value']);
       }
    }
@@ -690,8 +751,8 @@
     * @param {Object} imgHeight image height
     */
    var setImageFormatFields = function(/**int*/imgWidth,/**int*/ imgHeight) {
-      $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('.cms-item-edit').text(imgWidth);
-      $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('.cms-item-edit').text(imgHeight);
+      $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(imgWidth);
+      $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(imgHeight);
    }
    
    /**
@@ -718,8 +779,8 @@
                
                cms.galleries.initValues.scale += newScale;
                
-            } // remove cropping parameter
- else if (getScaleValue(cms.galleries.initValues.scale, "cx") != "") {
+               // remove cropping parameter
+            } else if (getScaleValue(cms.galleries.initValues.scale, "cx") != "") {
                cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cx");
                cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cy");
                cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cw");
@@ -827,6 +888,12 @@
       window.close();
    }
    
+   var showCropDialog = function() {
+      $('#cms-image-crop').html('<iframe frameborder="0" style="width: 650px; height: 439px;" name="cropFrame" src="./crop.jsp?" hspace="0">\
+           </iframe>');
+      $('#cms-image-crop').show();
+   }
+   
    /**
     * Returns the integer value of the specified scale parameter.
     *
@@ -903,12 +970,19 @@
       return scale;
    }
    
+   /**
+    * Close function for the crop dialog.
+    */
+   var closeCropDialog = cms.imagepreviewhandler.closeCropDialog = function() {
+      $('#cms-image-crop').hide();
+      $('#cms-image-crop').empty();
+   };
    
    ///// Image Content Handler ////////////////              
    /**
     * Image handler to display the preview for images (resource id = 3).
     */
-   var imageContentTypeHandler = cms.imagepreviewhandler.imageContentTypeHandler = {
+   cms.imagepreviewhandler.imageContentTypeHandler = {
       'type': 'image',
       'init': initFormatSelectBox,
       'openPreview': showItemPreview,

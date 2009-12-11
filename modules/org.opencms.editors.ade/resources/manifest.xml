@@ -556,6 +556,26 @@
 			<accesscontrol/>
 		</file>
         <file>
+			<source>system/workplace/resources/editors/ade/crop.jsp</source>
+			<destination>system/workplace/resources/editors/ade/crop.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>42cd585d-e4b9-11de-884c-f5d9e9f1b46a</uuidstructure>
+			<uuidresource>42cd585e-e4b9-11de-884c-f5d9e9f1b46a</uuidresource>
+			<datelastmodified>Fri, 11 Dec 2009 10:54:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 11:52:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
 			<source>system/workplace/resources/editors/ade/galleries.jsp</source>
 			<destination>system/workplace/resources/editors/ade/galleries.jsp</destination>
 			<type>jsp</type>
@@ -2335,6 +2355,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/reset.gif</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/reset.gif</destination>
+			<type>image</type>
+			<uuidstructure>5902ad7d-e59c-11de-b4ec-f5d9e9f1b46a</uuidstructure>
+			<uuidresource>5902ad7e-e59c-11de-b4ec-f5d9e9f1b46a</uuidresource>
+			<datelastmodified>Thu, 10 Dec 2009 14:57:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Dec 2009 14:57:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:12,h:12]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/check_gray.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/check_gray.png</destination>
@@ -2399,6 +2439,46 @@
 					<name>Title</name>
 					<value><![CDATA[checkbox_empty_16x16]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/crop.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/crop.png</destination>
+			<type>image</type>
+			<uuidstructure>59c64ba9-e59c-11de-b4ec-f5d9e9f1b46a</uuidstructure>
+			<uuidresource>59c64baa-e59c-11de-b4ec-f5d9e9f1b46a</uuidresource>
+			<datelastmodified>Thu, 10 Dec 2009 14:57:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Dec 2009 14:57:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/cropremove.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/cropremove.png</destination>
+			<type>image</type>
+			<uuidstructure>594582e0-e59c-11de-b4ec-f5d9e9f1b46a</uuidstructure>
+			<uuidresource>594582e1-e59c-11de-b4ec-f5d9e9f1b46a</uuidresource>
+			<datelastmodified>Thu, 10 Dec 2009 14:57:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Dec 2009 14:57:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -2474,6 +2554,26 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/locked.gif</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/locked.gif</destination>
+			<type>image</type>
+			<uuidstructure>59751e63-e59c-11de-b4ec-f5d9e9f1b46a</uuidstructure>
+			<uuidresource>59751e64-e59c-11de-b4ec-f5d9e9f1b46a</uuidresource>
+			<datelastmodified>Thu, 10 Dec 2009 14:57:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Dec 2009 14:57:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:11,h:12]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -3046,6 +3146,26 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/unlocked.gif</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/unlocked.gif</destination>
+			<type>image</type>
+			<uuidstructure>5991ce26-e59c-11de-b4ec-f5d9e9f1b46a</uuidstructure>
+			<uuidresource>5991ce27-e59c-11de-b4ec-f5d9e9f1b46a</uuidresource>
+			<datelastmodified>Thu, 10 Dec 2009 14:57:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Dec 2009 14:57:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:11,h:12]]></value>
 				</property>
 			</properties>
 			<relations/>
