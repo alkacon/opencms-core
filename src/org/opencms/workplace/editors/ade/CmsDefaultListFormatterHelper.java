@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultListFormatterHelper.java,v $
- * Date   : $Date: 2009/11/24 15:49:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/11 08:27:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.6
  * 
@@ -113,13 +113,18 @@ public class CmsDefaultListFormatterHelper extends CmsJspActionElement {
 
         if (m_isContainerBeanMode) {
             List<CmsFieldInfoBean> result = new ArrayList<CmsFieldInfoBean>();
-            result.add(new CmsFieldInfoBean("path", "path", getSitePath()));
-            result.add(new CmsFieldInfoBean("type", "type", CmsWorkplaceMessages.getResourceTypeName(
+            result.add(new CmsFieldInfoBean("path", Messages.get().getBundle(getWorkplaceLocale()).key(
+                Messages.GUI_LABEL_PATH_0), getSitePath()));
+            result.add(new CmsFieldInfoBean("type", Messages.get().getBundle(getWorkplaceLocale()).key(
+                Messages.GUI_LABEL_TYPE_0), CmsWorkplaceMessages.getResourceTypeName(
                 getWorkplaceLocale(),
                 OpenCms.getResourceManager().getResourceType(getTypeName()).getTypeName())));
 
-            result.add(new CmsFieldInfoBean("lastModified", "lastModified", OpenCms.getWorkplaceManager().getMessages(
-                getWorkplaceLocale()).getDateTime(getResource().getDateLastModified())));
+            result.add(new CmsFieldInfoBean(
+                "lastModified",
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_LABEL_LAST_MODIFIED_0),
+                OpenCms.getWorkplaceManager().getMessages(getWorkplaceLocale()).getDateTime(
+                    getResource().getDateLastModified())));
             return result;
         }
         return m_formatterInfo.getAdditionalInfo();

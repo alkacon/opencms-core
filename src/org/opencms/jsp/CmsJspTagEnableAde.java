@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/12/07 08:04:59 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/12/11 08:27:48 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
@@ -54,6 +55,9 @@ import org.opencms.workplace.galleries.CmsGallerySearchServer;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -65,7 +69,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.6 
  */
@@ -106,6 +110,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
     /** Macro name constant. */
     public static final String MACRO_GALLERY_SERVER_URI = "galleryServerUri";
+
+    /** Macro name constant. */
+    public static final String MACRO_GALLERY_ADDITIONAL_JAVASCRIPT = "galleryAdditionalJavascript";
 
     /** Macro name constant. */
     public static final String MACRO_SKIN_URI = "skinUri";
@@ -198,6 +205,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 resolver.addMacro(MACRO_PUBLISH_URI, publishUri);
                 String galleryServerUri = linkMan.substituteLink(cms, CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
                 resolver.addMacro(MACRO_GALLERY_SERVER_URI, galleryServerUri);
+
                 String skinUri = CmsWorkplace.getSkinUri();
                 resolver.addMacro(MACRO_SKIN_URI, skinUri);
                 resolver.addMacro(MACRO_MESSAGES_URI, linkMan.substituteLink(cms, ADE_MESSAGES_URI));
@@ -218,6 +226,19 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         try {
             String currentUri = cms.getRequestContext().getUri();
+
+            // get searchable types for gallery and lookup additional java-script for handling inside the advanced galleries
+            Iterator<CmsResource> resIt = OpenCms.getADEManager().getSearchableResourceTypes(cms, currentUri, req).iterator();
+            List<I_CmsResourceType> searchableTypes = new ArrayList<I_CmsResourceType>();
+            while (resIt.hasNext()) {
+                CmsResource resource = resIt.next();
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+                searchableTypes.add(type);
+            }
+            resolver.addMacro(
+                MACRO_GALLERY_ADDITIONAL_JAVASCRIPT,
+                CmsGallerySearchServer.getAdditionalJavascriptForTypes(searchableTypes));
+
             CmsResource containerPage = cms.readResource(currentUri);
             if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
                 // container page is used as template

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/11/23 15:21:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/12/11 08:27:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,6 +107,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_PUBLISHED_BY_2 = "GUI_RESOURCE_PUBLISHED_BY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_TITLE_0 = "GUI_LABEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_TYPE_0 = "GUI_LABEL_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_PATH_0 = "GUI_LABEL_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_LAST_MODIFIED_0 = "GUI_LABEL_LAST_MODIFIED_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.editors.ade.messages";

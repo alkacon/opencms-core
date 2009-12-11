@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/11 08:27:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -53,11 +52,10 @@ import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEManager;
-import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsXmlContainerPage;
-import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.containerpage.CmsSubContainerBean;
+import org.opencms.xml.containerpage.CmsXmlSubContainer;
+import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -77,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.6
  */
@@ -300,27 +298,57 @@ public final class CmsElementUtil {
         JSONObject formatters = new JSONObject();
         resElement.put(JsonElement.FORMATTERS.getName(), formatters);
 
-        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-            // set empty entries to prevent client side problems
-            Iterator<String> itTypes = types.iterator();
-            while (itTypes.hasNext()) {
-                String type = itTypes.next();
-                formatters.put(type, ""); // empty formatters
-                resContents.put(type, ""); // empty contents
-            }
-            // this container page should contain exactly one container
-            CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(m_cms, resource, m_req);
-            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(m_cms, m_cms.getRequestContext().getLocale());
-            CmsContainerBean container = cntPage.getContainers().values().iterator().next();
+        if (resource.getTypeId() == CmsADEManager.SUB_CONTAINER_TYPE_ID) {
+            CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(m_cms, resource, m_req);
+            CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                m_cms,
+                m_cms.getRequestContext().getLocale());
+            if (subContainer.getTypes().isEmpty()) {
+                if (subContainer.getElements().isEmpty()) {
+                    //TODO: use formatter to generate the 'empty'-content
+                    String emptySub = "<div>NEW AND EMPTY</div>";
+                    for (String type : types) {
+                        formatters.put(type, "formatter");
 
+                        resContents.put(type, emptySub);
+                    }
+                } else {
+                    // TODO: throw appropriate exception
+                    return null;
+                }
+            } else {
+                // add formatter and content entries for the supported types
+                for (String type : subContainer.getTypes()) {
+                    if (types.contains(type)) {
+                        formatters.put(type, "formatter"); // empty formatters
+                        resContents.put(type, "<div>should not be used</div>"); // empty contents
+                    }
+                }
+            }
+            String defaultFormatter = m_manager.getXmlContentFormatters(m_cms, resource).get(
+                CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE);
+            String jspResult;
+            try {
+                jspResult = getElementContent(element, m_cms.readResource(defaultFormatter));
+                // set the results
+                formatters.put(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE, defaultFormatter);
+                resContents.put(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE, jspResult); // empty contents
+            } catch (Exception e) {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
+                    m_cms.getSitePath(resource),
+                    defaultFormatter,
+                    CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE), e);
+            }
             // add subitems
             JSONArray subitems = new JSONArray();
             resElement.put(JsonElement.SUBITEMS.getName(), subitems);
             // iterate the elements
-            for (CmsContainerElementBean subElement : container.getElements()) {
+            for (CmsContainerElementBean subElement : subContainer.getElements()) {
                 // collect ids
                 subitems.put(subElement.getClientId());
             }
+
         } else {
             Iterator<Map.Entry<String, String>> it = m_manager.getXmlContentFormatters(m_cms, resource).entrySet().iterator();
             while (it.hasNext()) {

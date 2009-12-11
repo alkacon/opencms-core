@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADECache.java,v $
- * Date   : $Date: 2009/11/04 13:53:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/11 08:27:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
@@ -51,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -65,6 +66,12 @@ public final class CmsADECache implements I_CmsEventListener {
 
     /** Cache for online container pages. */
     private Map<String, CmsXmlContainerPage> m_containerPagesOnline;
+
+    /** Cache for offline sub containers. */
+    private Map<String, CmsXmlSubContainer> m_subContainersOffline;
+
+    /** Cache for online sub containers. */
+    private Map<String, CmsXmlSubContainer> m_subContainersOnline;
 
     /**
      * Initializes the cache. Only intended to be called during startup.<p>
@@ -84,6 +91,15 @@ public final class CmsADECache implements I_CmsEventListener {
         lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOnlineSize());
         m_containerPagesOnline = Collections.synchronizedMap(lruMapCntPage);
         memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", lruMapCntPage);
+
+        // container page caches
+        Map<String, CmsXmlSubContainer> lruMapSubContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getSubContainerOfflineSize());
+        m_subContainersOffline = Collections.synchronizedMap(lruMapSubContainer);
+        memMonitor.register(CmsADECache.class.getName() + ".subContainersOffline", lruMapSubContainer);
+
+        lruMapSubContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getSubContainerOnlineSize());
+        m_subContainersOnline = Collections.synchronizedMap(lruMapSubContainer);
+        memMonitor.register(CmsADECache.class.getName() + ".subContainersOnline", lruMapSubContainer);
 
         // add this class as an event handler to the cms event listener
         OpenCms.addCmsEventListener(this, new int[] {
@@ -166,6 +182,20 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
+     * Flushes the sub containers cache.<p>
+     * 
+     * @param online if to flush the online or offline cache
+     */
+    public void flushSubContainers(boolean online) {
+
+        if (online) {
+            m_subContainersOnline.clear();
+        } else {
+            m_subContainersOffline.clear();
+        }
+    }
+
+    /**
      * Returns the cached container page under the given key and for the given project.<p>
      * 
      * @param key the cache key
@@ -192,6 +222,49 @@ public final class CmsADECache implements I_CmsEventListener {
             }
         } else {
             retValue = m_containerPagesOffline.get(key);
+            if (LOG.isDebugEnabled()) {
+                if (retValue == null) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_MISSED_OFFLINE_1,
+                        new Object[] {key}));
+
+                } else {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_MATCHED_OFFLINE_2,
+                        new Object[] {key, retValue}));
+                }
+            }
+        }
+        return retValue;
+    }
+
+    /**
+     * Returns the cached sub container under the given key and for the given project.<p>
+     * 
+     * @param key the cache key
+     * @param online if cached in online or offline project
+     * 
+     * @return the cached sub container or <code>null</code> if not found
+     */
+    public CmsXmlSubContainer getCacheSubContainer(String key, boolean online) {
+
+        CmsXmlSubContainer retValue;
+        if (online) {
+            retValue = m_subContainersOnline.get(key);
+            if (LOG.isDebugEnabled()) {
+                if (retValue == null) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_MISSED_ONLINE_1,
+                        new Object[] {key}));
+
+                } else {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_MATCHED_ONLINE_2,
+                        new Object[] {key, retValue}));
+                }
+            }
+        } else {
+            retValue = m_subContainersOffline.get(key);
             if (LOG.isDebugEnabled()) {
                 if (retValue == null) {
                     LOG.debug(Messages.get().getBundle().key(
@@ -248,6 +321,32 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
+     * Caches the given sub container under the given key and for the given project.<p>
+     * 
+     * @param key the cache key
+     * @param subContainer the object to cache
+     * @param online if to cache in online or offline project
+     */
+    public void setCacheSubContainer(String key, CmsXmlSubContainer subContainer, boolean online) {
+
+        if (online) {
+            m_subContainersOnline.put(key, subContainer);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_DEBUG_CACHE_SET_ONLINE_2,
+                    new Object[] {key, subContainer}));
+            }
+        } else {
+            m_subContainersOffline.put(key, subContainer);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
+                    new Object[] {key, subContainer}));
+            }
+        }
+    }
+
+    /**
      * Clean up at shutdown time. Only intended to be called at system shutdown.<p>
      * 
      * @see org.opencms.main.OpenCmsCore#shutDown
@@ -281,6 +380,23 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
+     * Removes the sub container identified by its structure id from the cache.<p>
+     * 
+     * @param structureId the sub container's structure id
+     * @param online if online or offline
+     */
+    public void uncacheSubContainer(CmsUUID structureId, boolean online) {
+
+        if (online) {
+            m_subContainersOnline.remove(getCacheKey(structureId, true));
+            m_subContainersOnline.remove(getCacheKey(structureId, false));
+        } else {
+            m_subContainersOffline.remove(getCacheKey(structureId, true));
+            m_subContainersOffline.remove(getCacheKey(structureId, false));
+        }
+    }
+
+    /**
      * Removes a cached resource from the cache.<p>
      * 
      * The resource is removed both from the resource and sibling caches.
@@ -293,9 +409,12 @@ public final class CmsADECache implements I_CmsEventListener {
             LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
             return;
         }
-
-        // remove the resource cached by it's structure ID
-        uncacheContainerPage(resource.getStructureId(), false);
+        if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.getStaticTypeId()) {
+            // remove the resource cached by it's structure ID
+            uncacheContainerPage(resource.getStructureId(), false);
+        } else {
+            uncacheSubContainer(resource.getStructureId(), false);
+        }
     }
 
     /**

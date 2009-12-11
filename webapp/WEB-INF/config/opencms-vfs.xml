@@ -51,6 +51,7 @@
 						<mapping suffix=".tiff" />
 					</mappings>
                     <param name="gallery.type.names">imagegallery</param>
+                    <param name="gallery.javascript.path">editors/ade/js/cms.imagepreviewhandler.js</param>
                     <param name="formatter_gallery_preview"></param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp" id="4">
@@ -97,8 +98,12 @@
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlSitemap" name="sitemap" id="15" />
-                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="cntpagegallery" id="16">
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="cntpagegallery" id="16">
                     <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+                </type>
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="subcontainer" id="17">
+                    <param name="schema">/system/workplace/editors/ade/schemas/sub_container.xsd</param>
+				    <param name="gallery.type.names">downloadgallery</param>
                 </type>
             </resourcetypes>
 			<collectors>

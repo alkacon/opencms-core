@@ -421,6 +421,36 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/schemas/sub_container.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/sub_container.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>5a7d2853-e403-11de-8b28-975b367aae60</uuidstructure>
+			<uuidresource>5a7d2854-e403-11de-8b28-975b367aae60</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 08:59:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 08 Dec 2009 14:09:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/sub_container_element.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/sub_container_element.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>41506a2a-e4a1-11de-95df-975b367aae60</uuidstructure>
+			<uuidresource>41506a2b-e4a1-11de-95df-975b367aae60</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 09:00:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 09:00:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/schemas/type.xsd</source>
 			<destination>system/workplace/editors/ade/schemas/type.xsd</destination>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/11/24 14:33:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/12/11 08:27:48 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,8 +89,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** Configuration key for the (optional) internal flag. */
     public static final String CONFIGURATION_INTERNAL = "resource.flag.internal";
 
+    /** Configuration key for optional javascript in galleries. */
+    public static final String CONFIGURATION_GALLERY_JAVASCRIPT_PATH = "gallery.javascript.path";
+
     /** Configuration key for the optional folder class name. */
     public static final String CONFIGURATION_GALLERY_TYPE_NAMES = "gallery.type.names";
+
+    /** The path to an additional java-script file to be used in the advanced galleries. */
+    private String m_galleryJavascriptPath;
 
     /** The gallery type name for this resource type. */
     private String m_galleryTypeNames;
@@ -487,6 +493,20 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public List<String> getConfiguredMappings() {
 
         return m_mappings;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getGalleryJavascriptPath()
+     */
+    public String getGalleryJavascriptPath() {
+
+        if (m_galleryJavascriptPath == null) {
+            m_galleryJavascriptPath = getConfiguration().get(CONFIGURATION_GALLERY_JAVASCRIPT_PATH);
+            if (m_galleryJavascriptPath == null) {
+                m_galleryJavascriptPath = "";
+            }
+        }
+        return m_galleryJavascriptPath;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/12/07 08:04:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/12/11 08:27:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,8 +47,11 @@ import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsSubContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.containerpage.CmsXmlSubContainer;
+import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -66,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -252,30 +255,35 @@ public class CmsJspTagContainer extends TagSupport {
             renderElems--;
 
             CmsResource resUri = cms.readResource(element.getElementId());
-            if (CmsResourceTypeXmlContainerPage.isContainerPage(resUri)) {
-                // get the subcontainer data from cache
-                CmsXmlContainerPage subXmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, resUri, req);
-                CmsContainerPageBean subcntPage = subXmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
 
-                // get the first subcontainer
-                CmsContainerBean subcontainer = subcntPage.getContainers().values().iterator().next();
-                // iterate the subelements
-                for (CmsContainerElementBean subelement : subcontainer.getElements()) {
+            if (resUri.getTypeId() == CmsADEManager.SUB_CONTAINER_TYPE_ID) {
+                CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, resUri, req);
+                CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                    cms,
+                    cms.getRequestContext().getLocale());
+                if (!subContainer.getTypes().contains(containerType)) {
+                    //TODO: change message
+                    throw new CmsIllegalStateException(Messages.get().container(
+                        Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                        resUri.getRootPath(),
+                        OpenCms.getResourceManager().getResourceType(resUri).getTypeName(),
+                        containerType));
+                }
+                for (CmsContainerElementBean subelement : subContainer.getElements()) {
                     CmsResource subelementRes = cms.readResource(subelement.getElementId());
                     String subelementUri = cms.getSitePath(subelementRes);
 
                     //String subelementFormatter = cms.getSitePath(subelement.getFormatter());
                     String subelementFormatter = OpenCms.getADEManager().getXmlContentFormatters(cms, subelementRes).get(
                         containerType);
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter)) {
-                        subelementFormatter = cms.getSitePath(cms.readResource(subelement.getFormatterId()));
-                    }
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter)) {
-                        throw new CmsIllegalStateException(Messages.get().container(
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter) && LOG.isErrorEnabled()) {
+                        // skip this element, it has no formatter for this container type defined
+                        LOG.error(new CmsIllegalStateException(Messages.get().container(
                             Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
                             subelementUri,
                             OpenCms.getResourceManager().getResourceType(subelementRes).getTypeName(),
-                            containerType));
+                            containerType)));
+                        continue;
                     }
 
                     // execute the formatter jsp for the given element uri
@@ -289,6 +297,7 @@ public class CmsJspTagContainer extends TagSupport {
                         req,
                         res);
                 }
+
             } else {
                 String elementFormatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
 

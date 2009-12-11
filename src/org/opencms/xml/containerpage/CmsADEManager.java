@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/11 08:27:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.6
  */
@@ -81,6 +81,9 @@ public class CmsADEManager {
 
     /** The request attribute name for the formatter-info-bean. */
     public static final String ATTR_FORMATTER_INFO = "__formatterInfo";
+
+    /** The sub container resource type id. */
+    public static final int SUB_CONTAINER_TYPE_ID = 17;
 
     /** The request attribute name for the current sitemap entry-bean. */
     public static final String ATTR_SITEMAP_ENTRY = "__currentSitemapEntry";
