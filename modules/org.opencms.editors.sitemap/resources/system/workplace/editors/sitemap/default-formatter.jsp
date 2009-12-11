@@ -8,13 +8,18 @@ pageContext.setAttribute("cms", cms);
 %>
 <fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
 <fmt:bundle basename="org.opencms.workplace.editors.sitemap.messages">
-<div class="ui-state-hover ui-corner-all cms-sitemap-item">
+<div class="ui-corner-all cms-sitemap-item ui-state-default">
+  <div class="cms-sitemap-entry-header ui-state-hover ui-corner-all"  >
   <a class="cms-left ui-icon cms-icon-triangle"></a>
   <h3>${cms.entry.title}</h3>
-  <div class="cms-additional-info">
-    <fmt:message key="GUI_DEFAULT_FORMATTER_URL_NAME_0" /><span class="cms-url-name" alt="${cms.entry.name}">${cms.entry.name}</span><br/>
-    <fmt:message key="GUI_DEFAULT_FORMATTER_URL_0" /><span class="cms-url"></span><br/>
-    <fmt:message key="GUI_DEFAULT_FORMATTER_VFSPATH_0" /><span class="cms-vfs-path" alt="${cms.path}">${cms.path}</span><br/>
+  </div>
+  <div class="cms-additional">
+    <fmt:message key="GUI_DEFAULT_FORMATTER_URL_NAME_0" />&nbsp;<span class="cms-url-name" alt="${cms.entry.name}">${cms.entry.name}</span><br/>
+    <fmt:message key="GUI_DEFAULT_FORMATTER_URL_0" />&nbsp;<span class="cms-url"></span><br/>
+    <fmt:message key="GUI_DEFAULT_FORMATTER_VFSPATH_0" />&nbsp;<span class="cms-vfs-path" alt="${cms.path}">${cms.path}</span><br/>
+    <c:if test="${cms.entry.properties.sitemap}">
+    	<a href="${cms.entry.properties.sitemap}">SUBSITEMAP</a>
+    </c:if>
   </div>
 </div>
 </fmt:bundle>

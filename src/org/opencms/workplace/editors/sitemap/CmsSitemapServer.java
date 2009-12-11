@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/12/11 08:30:11 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/12/11 15:47:07 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,6 @@ import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
 import org.opencms.xml.sitemap.CmsSitemapBean;
-import org.opencms.xml.sitemap.CmsSitemapResourceHandler;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -93,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 7.6
  */
@@ -219,7 +218,11 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         /** Flag to indicate if this is a top-level sitemap or a sub-sitemap. */
         SUB_SITEMAP("subSitemap"),
         /** List of the URIs of sitemaps which reference the current sitemap */
-        SUPER_SITEMAPS("superSitemaps");
+        SUPER_SITEMAPS("superSitemaps"),
+        /** Creatable types */
+        TYPES("types"),
+        /** Models of creatable types */
+        MODELS("models");
 
         /** Property name. */
         private String m_name;
@@ -428,11 +431,16 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsADEManager ade = OpenCms.getADEManager();
             List<CmsResource> creatableElements = ade.getCreatableElements(cms, sitemapParam, request);
             JSONArray creatableTypes = new JSONArray();
+            JSONArray models = new JSONArray();
             for (CmsResource resource : creatableElements) {
                 String typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
                 creatableTypes.put(typeName);
+                CmsSiteEntryBean siteEntryData = resourceToSiteEntryBean(cms, resource);
+                models.put(jsonifyEntry(siteEntryData));
             }
-            result.put("types", creatableTypes);
+            addContents(models);
+            result.put(JsonResponse.TYPES.getName(), creatableTypes);
+            result.put(JsonResponse.MODELS.getName(), models);
         } else if (action.equals(Action.GET)) {
             if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // get the favorite list
@@ -518,6 +526,37 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 actionParam));
         }
         return result;
+    }
+    
+    
+    /**
+    * Converts a resource to a sitemap entry bean.<p>
+    *
+    * @param cms the CmsObject to use for VFS operations 
+    * @param resource the resource to convert
+    * @return the sitemap entry bean for the resource
+    * @throws CmsException if something goes wrong
+    **/
+    private CmsSiteEntryBean resourceToSiteEntryBean(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsProperty titleProp = cms.readPropertyObject(resource, "Title", false);
+        String title = titleProp.getValue();
+        String name = resource.getName();
+        String extension = "";
+        int dotPos = name.lastIndexOf('.');
+        if (dotPos != -1) {
+            extension = name.substring(dotPos + 1, name.length());
+        }
+
+        CmsSiteEntryBean entryBean = new CmsSiteEntryBean(
+            resource.getStructureId(),
+            name.substring(0, dotPos),
+            extension,
+            title,
+            new HashMap<String, String>(),
+            new ArrayList<CmsSiteEntryBean>());
+
+        return entryBean;
     }
 
     /**
@@ -665,8 +704,13 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         // check if this is a top-level sitemap, by checking that it is not linked from another sitemap
         boolean topLevel = true;
         JSONArray superSitemapsJSON = new JSONArray();
-        CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_STRONG);
+        CmsRelationFilter filter = CmsRelationFilter.SOURCES;
         for (CmsRelation relation : cms.getRelationsForResource(resource, filter)) {
+            // we don't want to force the links in properties to be strong links
+            if (!relation.getType().equals(CmsRelationType.XML_STRONG)
+                && !relation.getType().equals(CmsRelationType.XML_WEAK)) {
+                continue;
+            }
             CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
             if (CmsResourceTypeXmlSitemap.isSitemap(source)) {
                 topLevel = false;
@@ -911,8 +955,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         // the properties
         int j = 0;
         for (Map.Entry<String, String> property : entry.getProperties().entrySet()) {
-            boolean isSitemapProperty = CmsSitemapResourceHandler.PROPERTY_SITEMAP.equals(property.getKey());
-            if (!propertiesConf.containsKey(property.getKey()) && !isSitemapProperty) {
+            if (!propertiesConf.containsKey(property.getKey())) {
                 continue;
             }
             // only if the property is configured in the schema we will save it to the sitemap
@@ -927,8 +970,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 propValue.getPath(),
                 CmsXmlSitemap.XmlNode.VALUE.getName()), locale, 0);
 
-            if (!isSitemapProperty
-                && propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+            if (propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
                 I_CmsXmlContentValue filelistValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
                     valValue.getPath(),
                     CmsXmlSitemap.XmlNode.FILELIST.getName()), locale, 0);

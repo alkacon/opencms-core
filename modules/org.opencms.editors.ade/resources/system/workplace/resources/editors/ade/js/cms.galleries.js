@@ -30,10 +30,10 @@
     */
    var initValues = cms.galleries.initValues = {
        'dialogMode': null,
-       'fieldId'   : null       
+       'fieldId'   : null
    };
    
-   /**
+   /** 
     * 'path': path to the image, also used as id for the preview
     * 'isInitial': flag to indicate is the the resource is loaded from xmlContent
     */
@@ -198,7 +198,7 @@
     * 
     * @param {Object} requestData the request parameter
     */
-   var initAddDialog = cms.galleries.initAddDialog = function(tabsContent, requestData) {                  
+   var initAddDialog = cms.galleries.initAddDialog = function(tabsContent, requestData) {       
       // handle the request parameter:
       // initialize the search object and the initial search 
       var initSearchResult = null;          
@@ -290,7 +290,7 @@
           .append(categoriesTab)
           .append(cms.galleries.htmlTabFTSeachSceleton);
       // add preview to the galleries html
-      $('#' + cms.galleries.idGalleriesMain).append(cms.galleries.htmlPreviewSceleton);                      
+      $('#' + cms.galleries.idGalleriesMain).append(cms.galleries.htmlPreviewSceleton);                  
       
       //TODO: blind out quick search dialog for the moment
       $('span.cms-ft-search').css('display', 'none');
@@ -672,8 +672,8 @@
                         cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
                         cms.galleries.activeItem['isInitial'] = true;
             	  //}          
+            	  }          
             }
-        }
         
     }
    
@@ -783,7 +783,7 @@
          var typeName=types[i].type;
          // if in ade container-page and type is an creatable element
          var toolbarReady = cms.toolbar && cms.toolbar.toolbarReady;
-         if ((toolbarReady || cms.sitemap) && $.inArray(typeName, cms.data.newTypes)>=0) {
+         if (toolbarReady && $.inArray(typeName, cms.data.newTypes)>=0) {
              typeElement.attr('rel', typeName);
              typeElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
              if (cms.sitemap) {
@@ -1093,7 +1093,7 @@
       cms.galleries.resetActiveItem();
       
       // retrieve the resource type and load the preview      
-      var itemType = $(this).data('type');      
+      var itemType = $(this).data('type');
       loadItemPreview(itemId, itemType);
       
       //deselect items in the list and set active class to the item which was dblclicked
@@ -1126,7 +1126,7 @@
     
     
     var resetActiveItem = cms.galleries.resetActiveItem = function() {        
-        cms.galleries.activeItem['isCropped'] = null;        
+        cms.galleries.activeItem['isCropped'] = null;
     }
  
         

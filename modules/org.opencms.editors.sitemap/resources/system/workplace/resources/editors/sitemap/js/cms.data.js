@@ -123,8 +123,17 @@
     * @param {Object} callback the function to be called after the server has replied
     */
    var saveFavorites = cms.data.saveFavorites = function(callback) {
+      var _removeContent = function(item) {
+          delete item['content'];
+          if (item.children) {
+              for (var child in item.children) {
+                  _removeContent(child);
+              }
+          }
+          return item;
+      }
       cms.data.sitemapPostJSON(ACTION_SET, {
-         'fav': cms.sitemap.favorites
+         'fav': $.map(cms.sitemap.favorites, _removeContent)
       }, callback);
    }
    
@@ -197,7 +206,10 @@
            'type': type
        }, callback);
    }
-
+   
+   var createEntryByModel = cms.data.createEntryByModel = function(id, callback) {
+       cms.data.sitemapPostJSON('new_entry_model', {'model': id}, callback)
+   }
       
 })(cms);
 

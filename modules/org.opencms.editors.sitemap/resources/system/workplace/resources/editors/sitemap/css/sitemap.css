@@ -25,11 +25,22 @@
           width: 100%;
       }
       
+      
+      	
+      
       li div.cms-sitemap-item {
           width: 290px;
           margin-left: 20px;
           position: relative;
           padding: 1px 0px;
+      }
+      
+      #cms-sitemap li div.cms-sitemap-item {
+      	  width: 390px;
+      }
+      
+      .cms-hovered > .cms-dropzone, .cms-hovered.cms-dropzone {
+      	  background-color: #cccccc!important;
       }
       
       #toolbar .cms-scrolling li div.cms-sitemap-item {
@@ -61,6 +72,7 @@
       
       #favorite-drop-list {
           height: 25px;
+          width: 320px !important;
           margin-bottom: 15px !important;
       }
       
@@ -137,11 +149,11 @@
           padding: 10px 0px 60px 0px;
           background: #ffffff;
       }
-      .cms-root-sitemap > .cms-sitemap-item  {
+      .cms-root-sitemap > .cms-sitemap-item > .cms-sitemap-entry-header {
 	background: #E6E6E6 url(images/ui-bg_glass_100_green_1x400.png) repeat-x scroll 50% 50% !important;
 }
       
-      #cms-sitemap div.cms-hovered {
+      #cms-sitemap div.cms-hovered > .cms-sitemap-entry-header {
           background: #CCCCCC url(custom-theme/images/ui-bg_glass_75_cccccc_1x400.png) repeat-x scroll 50% 50%;
       }
       
@@ -149,23 +161,44 @@
           display: none;
       }
       
-      .cms-additional-info{
+      .cms-additional {
           display: none;
           font-size: 12px;
           line-height: 16px;
-          margin: 2px 10px 0 16px;
+          margin: 2px 10px 0 0px;
           overflow: hidden;
           white-space: nowrap;
+          padding: none;
       }
+      
+      .cms-sitemap-entry-header {
+      	border: none !important;
+      	/* We need those negative margins to hide small "gaps" inbetween the header and the rest of the sitemap item */
+      	margin-top: -1px;
+      	margin-bottom: -1px;
+      	padding-top: 1px;
+      	padding-bottom: 1px;
+      }
+      
       .cms-additional-info span{
           font-weight: bold;
           margin-left: 10px;
       }
+      
+      .cms-sitemap-item  {
+      		background-image: none;
+      }
+      
+      
+      .cms-sitemap-item.ui-state-default {
+      	background: none;
+      }
+      
       .cms-icon-triangle, div.cms-dragging div.cms-icon-triangle, li.ui-draggable-dragging div.cms-icon-triangle{
           background-position:-32px -16px;
           margin-top: 3px;
       }
-      .cms-additional-show .cms-additional-info{
+      .cms-additional-show .cms-additional {
           display: block;
       }
       .cms-additional-show .cms-icon-triangle{
@@ -226,6 +259,129 @@
       	    width: 300px;
       	    padding: 5px;
       	}
+      	
+      	
+
+.cms-sub-sitemap-ref > .cms-sitemap-item > .cms-sitemap-entry-header {
+	background: #E6E6E6 url(images/ui-bg_glass_100_fdf5ce_1x400.png) repeat-x scroll 50% 50% !important;
+}
+
+
+
+.ui-state-default .cms-icon-open {
+	background-image: url(images/24x24/ade_open_sw.png) !important;
+	width: 24;
+	height: 24;
+}
+
+.ui-state-active .cms-icon-open {
+	background-image: url(images/24x24/ade_open.png) !important;
+	width: 24;
+	height: 24;
+}
+
+
+.cms-xopen {
+	background: transparent url(images/16x16/ocms_de_open_i.png) no-repeat scroll 50% 50%;
+}
+
+div.ui-widget-header a.cms-xopen {
+	background-image: url(images/16x16/ocms_de_open_sw.png);
+}
+
+.cms-xopen:hover,div.ui-widget-header a.cms-xopen:hover {
+	background-image: url(images/16x16/ocms_de_open_a.png);
+}
+
+
+
+.ui-state-default .cms-icon-subsitemap {
+	background-image: url(images/24x24/ade_subsitemap_sw.png) !important;
+	width: 24;
+	height: 24;
+}
+
+
+
+.ui-state-active .cms-icon-subsitemap {
+	background-image: url(images/24x24/ade_subsitemap.png) !important;
+	width: 24;
+	height: 24;
+}
+
+
+.cms-subsitemap {
+	background: transparent url(images/16x16/ocms_de_subsitemap_i.png) no-repeat scroll 50% 50%;
+}
+
+div.ui-widget-header a.cms-subsitemap {
+	background-image: url(images/16x16/ocms_de_subsitemap_sw.png);
+}
+
+.cms-subsitemap:hover,div.ui-widget-header a.cms-subsitemap:hover {
+	background-image: url(images/16x16/ocms_de_subsitemap_a.png);
+}
+
+.cms-root-sitemap > .cms-hovered > .cms-sitemap-entry-header {
+	background-image: none !important;
+}
+/*
+.cms-sub-sitemap-ref > .cms-sitemap-item .cms-subsitemap {
+	display: none;
+	width: 0;
+	height: 0;
+}*/
+
+
+#cms-sitemap .cms-handle.ui-widget-header {
+	background: none;
+	border: none;
+}
+
+#cms-sitemap .cms-handle a.ui-state-default {
+	border: none;
+}
+
+.cms-subsitemap-link {
+	display: block;
+	margin-top: 5px;
+	text-decoration: underline !important;
+}
+
+.cms-sitemap-item h3 {
+	font-size: 14px;
+	height: 23px;
+}
+
+
+#favorite-drop-list {
+	margin-left: 10px;
+}
+
+
+.cms-sitemap-item.ui-state-disabled {
+	filter:Alpha(enabled = false);
+	opacity: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /************** basic *******************************************************/
@@ -297,100 +453,3 @@
   
   option { padding-left: 0.4em; }
   
-.cms-sub-sitemap-ref > .cms-sitemap-item  {
-	background: #E6E6E6 url(images/ui-bg_glass_100_fdf5ce_1x400.png) repeat-x scroll 50% 50% !important;
-}
-
-
-
-.ui-state-default .cms-icon-open {
-	background-image: url(images/24x24/ade_open_sw.png) !important;
-	width: 24;
-	height: 24;
-}
-
-.ui-state-active .cms-icon-open {
-	background-image: url(images/24x24/ade_open.png) !important;
-	width: 24;
-	height: 24;
-}
-
-
-.cms-open {
-	background: transparent url(images/16x16/ocms_de_open_i.png) no-repeat scroll 50% 50%;
-}
-
-div.ui-widget-header a.cms-open {
-	background-image: url(images/16x16/ocms_de_open_sw.png);
-}
-
-.cms-open:hover,div.ui-widget-header a.cms-open:hover {
-	background-image: url(images/16x16/ocms_de_open_a.png);
-}
-
-
-
-.ui-state-default .cms-icon-subsitemap {
-	background-image: url(images/24x24/ade_subsitemap_sw.png) !important;
-	width: 24;
-	height: 24;
-}
-
-
-
-.ui-state-active .cms-icon-subsitemap {
-	background-image: url(images/24x24/ade_subsitemap.png) !important;
-	width: 24;
-	height: 24;
-}
-
-
-.cms-subsitemap {
-	background: transparent url(images/16x16/ocms_de_subsitemap_i.png) no-repeat scroll 50% 50%;
-}
-
-div.ui-widget-header a.cms-subsitemap {
-	background-image: url(images/16x16/ocms_de_subsitemap_sw.png);
-}
-
-.cms-subsitemap:hover,div.ui-widget-header a.cms-subsitemap:hover {
-	background-image: url(images/16x16/ocms_de_subsitemap_a.png);
-}
-
-.cms-root-sitemap > .cms-hovered {
-	background-image: none !important;
-}
-/*
-.cms-sub-sitemap-ref > .cms-sitemap-item .cms-subsitemap {
-	display: none;
-	width: 0;
-	height: 0;
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

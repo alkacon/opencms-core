@@ -176,6 +176,10 @@
 					<name>template-elements</name>
 					<value><![CDATA[/system/workplace/editors/sitemap/sitemap.jsp]]></value>
 				</property>
+                <property type="shared">
+                    <name>container-config</name>
+                    <value><![CDATA[/sitemap_restype.config]]></value>
+                </property>
 			</properties>
 			<relations>
 				<relation>

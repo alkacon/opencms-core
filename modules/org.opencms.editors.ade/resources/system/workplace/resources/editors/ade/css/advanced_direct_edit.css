@@ -653,7 +653,7 @@ div.cms-dialog {
         color: #000000; 
     }
     
-    .cms-list div.ui-state-hover, span.cms-drop-down .ui-state-hover, li.cms-list-item-hover div.cms-list-itemcontent {
+    .cms-list div.ui-state-hover, span.cms-drop-down .ui-state-hover, li.cms-list-item-hover div.cms-list-itemcontent, .cms-list-item-hover > .cms-sitemap-entry-header {
     	background-image: url(custom-theme/images/ui-bg_glass_75_cccccc_1x400.png);
     }
 
