@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2009/12/10 10:00:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/11 08:10:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -273,7 +273,7 @@ public class CmsJspTagProperty extends TagSupport {
 
         // now read the property from the VFS
         String value;
-        if (vfsUri == null) {
+        if (vfsUri != null) {
             value = controller.getCmsObject().readPropertyObject(vfsUri, property, search).getValue(defaultValue);
         } else if (!search) {
             value = ((CmsSiteEntryBean)req.getAttribute(CmsADEManager.ATTR_SITEMAP_ENTRY)).getProperties().get(property);
