@@ -609,15 +609,17 @@ div.cms-dialog {
     
     .cms-additional-item-title{
         display: block;
-        width: 65px;
+        width: 90px;
         margin-right: 5px;
         float: left;
         vertical-align: top;
+        height: 16px;
+        overflow: hidden;
     }
     
     .cms-additional-item-value{
         display: block;
-        margin-left: 70px;
+        margin-left: 95px;
         vertical-align: top;
     }
     .cms-list-with-checkbox div.cms-list-item {
