@@ -31,9 +31,6 @@
         <ul id="' +   recentListId +    '" class="cms-item-list"></ul>\
     </div></div>';
    
-   var subcontainerItemStartHtml = '<li class="cms-subcontainer-item cms-item"><a class="cms-handle cms-move"></a><ul>';
-   var subcontainerItemEndHtml = '</ul></li>';
-   
    var favoriteList = cms.html.favoriteList = '<div id="' + favoriteMenuId + '" class="cms-menu">\
 	<div class="connect ui-corner-top"></div>\
 	<div class="ui-widget-shadow ui-corner-all"></div>\
@@ -159,17 +156,7 @@
     * @return the jQuery object representing the formatted element
     */
    var formatFavListItem = cms.html.formatFavListItem = /*jQuery*/ function(/*Object*/element) {
-      if (element.subItems) {
-         var result = subcontainerItemStartHtml;
-         for (var i = 0; i < element.subItems.length; i++) {
-            var subElement = cms.data.elements[element.subItems[i]];
-            result += subElement.getContent('_DEFAULT_');
-         }
-         result += subcontainerItemEndHtml;
-         return $(result).attr('rel', element.id).addClass('cms-element');
-      } else {
-         return element.getContent('_DEFAULT_');
-      }
+      return element.getContent('_DEFAULT_');
    }
    
    

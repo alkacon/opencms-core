@@ -1,4 +1,4 @@
-﻿﻿(function(cms) {
+﻿(function(cms) {
 
    /** Element state 'new' constant. */
    var /** String */ STATUS_NEW = cms.data.STATUS_NEW = 'N';
@@ -94,7 +94,7 @@
    var /** int */ newCounter = cms.data.newCounter = 0;
    
    /** Selector for sortable items. */
-   var /** String */ sortitems = cms.data.sortitems = '.cms-element';
+   var /** String */ sortitems = cms.data.sortitems = '.cms-element, .cms-subcontainer';
    
    /** Selector for deletable items. */
    var /** String */ deleteitems = cms.data.deleteitems = '.cms-element';
@@ -428,7 +428,7 @@
             if (elem.subItems) {
             
                isSubcontainer = true;
-               html = $('<div class="cms-subcontainer"></div>');
+               html = $('<div class="cms-subcontainer" rel="'+elementIds[i]+'"></div>');
                for (var j = 0; j < elem.subItems.length; j++) {
                   var subElem = elements[elem.subItems[j]];
                   subElem.getContent(containerType).appendTo(html);

@@ -121,6 +121,9 @@
     */
    var deleteItem = cms.toolbar.deleteItem = /** void */ function() {
       var $item = $(this).closest('.cms-element');
+      if (!$item || !$item.length){
+          $item = $(this).closest('.cms-subcontainer');
+      }
       var $container = $item.parent();
       cms.move.hoverOut();
       var elemId = $item.attr('rel');
@@ -159,11 +162,11 @@
          cms.data.deleteResources([elemId], function(ok) {
             var elemList = [elemId];
             deleteFromFavListAndRecList(elemList);
-            $(cms.util.getContainerSelector()).find('.cms-element[rel="' + elemId + '"]').remove();
+            $(cms.util.getContainerSelector()).find('.cms-element[rel="' + elemId + '"], .cms-subcontainer[rel="' + elemId + '"]').remove();
             for (var key in cms.data.containers) {
                cms.move.updateContainer(key);
             }
-            $(cms.util.getContainerSelector()).find('.cms-element:has(div.cms-editable)').each(function() {
+            $(cms.util.getContainerSelector()).find('.cms-element:has(div.cms-editable), .cms-subcontainer:has(div.cms-editable)').each(function() {
                elemList.push($(this).attr('rel'));
             });
             cms.data.loadElements(elemList, function(ok) {
@@ -630,7 +633,7 @@
       var list = $('#' + cms.html.favoriteDropMenuId);
       $('li.cms-item, button', list).css('display', 'block');
       resetFavList();
-      $('.cms-element div.cms-handle').remove();
+      $('.cms-element div.cms-handle, .cms-subcontainer div.cms-handle').remove();
    };
    
    
@@ -683,7 +686,6 @@
             cms.move.hoverInner(ui.helper.parent(), 2, true);
          },
          tolerance: 'pointer',
-         //           opacity: 0.7,
          stop: cms.move.onStopDrag,
          cursorAt: {
             right: 10,
@@ -691,7 +693,7 @@
          },
          zIndex: 20000,
          handle: 'a.cms-move',
-         items: '.cms-element',
+         items: cms.data.sortitems,
          revert: true,
          // replace ids
          deactivate: cms.move.onDeactivateDrag
@@ -1109,20 +1111,20 @@
       $('button.ui-state-active').trigger('click');
       if (modeMap[cms.toolbar.mode].isEdit) {
          // reorder handles
-         $('.cms-element div.cms-handle').each(function() {
+         $('.cms-element div.cms-handle, .cms-subcontainer div.cms-handle').each(function() {
             var handleDiv = $(this);
             $('a', handleDiv).css('display', 'none');
             $('a.cms-' + buttonMode, handleDiv).prependTo(handleDiv).css('display', 'block');
          });
          markAsInactive(cms.toolbar.dom.buttons[cms.toolbar.mode]);
-         containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering))').each(function() {
+         containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering)), .cms-subcontainer .cms-editable:not(:has(div.cms-hovering))').each(function() {
             cms.move.drawSiblingBorder($(this), 2, 'cms-editable', false, 'cms-test');
          });
          containers.find('div.cms-editable div.cms-directedit-buttons').removeClass('cms-' + cms.toolbar.mode + 'mode').addClass('cms-' + buttonMode + 'mode');
       } else {
          modeMap[cms.toolbar.mode].disable();
          
-         containers.children('.cms-element').each(function() {
+         containers.children('.cms-element, .cms-subcontainer').each(function() {
             var elem = $(this).css('position', 'relative');
             var elemId = elem.attr('rel');
             if (elemId && cms.data.elements[elemId]) {
@@ -1130,7 +1132,7 @@
             }
          });
          initMove();
-         containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering))').each(function() {
+         containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering)), .cms-subcontainer .cms-editable:not(:has(div.cms-hovering))').each(function() {
             cms.move.drawSiblingBorder($(this), 2, 'cms-editable', false, 'cms-test');
          });
          containers.find('div.cms-editable div.cms-directedit-buttons').addClass('cms-' + buttonMode + 'mode');
@@ -1222,7 +1224,7 @@
       var list = $('#' + cms.html.favoriteDropMenuId);
       $('li.cms-item, button', list).css('display', 'block');
       resetFavList();
-      $('.cms-element div.cms-handle').remove();
+      $('.cms-element div.cms-handle, .cms-subcontainer div.cms-handle').remove();
       $(containerSelector).find('div.cms-editable div.cms-directedit-buttons').removeClass('cms-' + mode + 'mode');
       //cms.toolbar.dom.buttons[mode].removeClass('ui-state-active');
    }

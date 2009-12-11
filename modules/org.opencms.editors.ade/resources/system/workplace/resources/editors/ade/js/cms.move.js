@@ -123,22 +123,7 @@
     */
    var isCompatibleWithContainer = cms.move.isCompatibleWithContainer = /*boolean*/ function(/*Object*/element, /*String*/ containerId) {
       var containerType = cms.data.containers[containerId].type;
-      if (element.subItems) {
-         var subItems = element.subItems;
-         for (var i = 0; i < subItems.length; i++) {
-            var element = cms.data.elements[subItems[i]];
-            if (!element) {
-               alert(M.ERR_SUBCONTAINER_ELEMENTS_NOT_LOADED);
-               return false;
-            }
-            if (!element.contents[containerType]) {
-               return false;
-            }
-         }
-         return true;
-      } else {
-         return !!(element.contents[containerType])
-      }
+      return !!(element.contents[containerType])
    }
    
    
