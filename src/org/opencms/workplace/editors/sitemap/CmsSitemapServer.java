@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/12/10 09:59:22 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/12/11 08:30:11 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -92,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 7.6
  */
@@ -319,6 +320,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     /** User additional info key constant. */
     protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
 
+    /** Container page resource type name constant. */
+    protected static final String CONTAINER_PAGE_TYPE_NAME = "containerpage";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapServer.class);
 
@@ -354,6 +358,26 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+    }
+
+    /**
+     * Returns the searchable resource types.<p>
+     * 
+     * @return the resource types
+     */
+    public static List<I_CmsResourceType> getSearchableResourceTypes() {
+
+        //TODO: the searchable resource types should be read from configuration
+
+        List<I_CmsResourceType> types = new ArrayList<I_CmsResourceType>();
+        try {
+            types.add(OpenCms.getResourceManager().getResourceType(CONTAINER_PAGE_TYPE_NAME));
+        } catch (CmsLoaderException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return types;
     }
 
     /**

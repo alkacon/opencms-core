@@ -67,7 +67,7 @@
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.property.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.publish.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.directinput.js"></script>
-    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.galleries.js"></script>
-    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.previewhandler.js"></script>
-	<script type="text/javascript" src="%(skinUri)editors/ade/js/cms.imagepreviewhandler.js"></script>
+	<script type="text/javascript" src="%(skinUri)editors/ade/js/cms.galleries.js"></script>
+	<script type="text/javascript" src="%(skinUri)editors/ade/js/cms.previewhandler.js"></script>
+	%(galleryAdditionalJavascript)
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.selectbox.js"></script>

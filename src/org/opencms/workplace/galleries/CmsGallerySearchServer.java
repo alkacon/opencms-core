@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/12/08 12:43:07 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/12/11 08:30:11 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 7.6
  */
@@ -457,6 +457,12 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     /** The JSON data request object. */
     private JSONObject m_reqDataObj;
 
+    /** The available resource types. */
+    private List<I_CmsResourceType> m_resourceTypes;
+
+    /** The available resource type id's. */
+    private JSONArray m_resourceTypeIds;
+
     /** The additional JSON data request object for image gallery. */
     private JSONObject m_reqImageDataObj;
 
@@ -516,9 +522,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             m_cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
             JSONObject data = new JSONObject(dataParam);
             if (action.equals(Action.ALL)) {
-                JSONArray resourceTypesParam = data.getJSONArray(JsonKeys.TYPES.getName());
-
-                result.merge(getAllLists(resourceTypesParam, null), true, true);
+                result.merge(getAllLists(null), true, true);
 
                 // TODO: Add containers.
             } else if (action.equals(Action.CATEGORIES)) {
@@ -881,30 +885,18 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     /**
      * Returns the JSON for type, galleries and categories tab. Uses the given types or all available resource types.<p>
      * 
-     * @param typeIds the requested resource type id's
      * @param modeName the dialog mode name
      * 
      * @return available types, galleries and categories as JSON 
      * 
      * @throws JSONException if something goes wrong generating the JSON
      */
-    public JSONObject getAllLists(JSONArray typeIds, String modeName) throws JSONException {
+    public JSONObject getAllLists(String modeName) throws JSONException {
 
         JSONObject result = new JSONObject();
-        // using all available types if typeIds is null or empty
-        List<I_CmsResourceType> resourceTypes;
-        if ((typeIds == null) || (typeIds.length() == 0)) {
-            resourceTypes = getResourceManager().getResourceTypes();
-            typeIds = new JSONArray();
-            for (I_CmsResourceType type : resourceTypes) {
-                typeIds.put(type.getTypeId());
-            }
-        } else {
-            resourceTypes = readContentTypes(typeIds);
-        }
-        result.put(JsonKeys.TYPES.getName(), buildJSONForTypes(resourceTypes));
-        result.put(JsonKeys.TYPEIDS.getName(), typeIds);
-        Map<String, CmsGalleryTypeInfo> galleryTypes = readGalleryTypes(resourceTypes);
+        result.put(JsonKeys.TYPES.getName(), buildJSONForTypes(getResourceTypes()));
+        result.put(JsonKeys.TYPEIDS.getName(), getResourceTypeIds());
+        Map<String, CmsGalleryTypeInfo> galleryTypes = readGalleryTypes(getResourceTypes());
 
         result.put(JsonKeys.GALLERIES.getName(), buildJSONForGalleries(galleryTypes));
         List<CmsResource> galleryFolders = new ArrayList<CmsResource>();
@@ -1059,6 +1051,49 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             m_resourceManager = OpenCms.getResourceManager();
         }
         return m_resourceManager;
+    }
+
+    /**
+     * Returns the available resource types.<p>
+     * 
+     * @return the resource types
+     */
+    private List<I_CmsResourceType> getResourceTypes() {
+
+        if (m_resourceTypes == null) {
+            m_resourceTypes = readContentTypes(getResourceTypeIds());
+        }
+        return m_resourceTypes;
+    }
+
+    /**
+     * Returns the available resource type id's.<p>
+     * 
+     * @return the resource type id's
+     */
+    private JSONArray getResourceTypeIds() {
+
+        if (m_resourceTypeIds == null) {
+            try {
+                JSONObject data = getReqDataObj();
+                if ((data != null) && data.has(JsonKeys.TYPES.getName())) {
+                    m_resourceTypeIds = data.getJSONArray(JsonKeys.TYPES.getName());
+                }
+            } catch (JSONException e) {
+                // TODO: improve error handling
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            if ((m_resourceTypeIds == null) || (m_resourceTypeIds.length() == 0)) {
+                // using all available types if typeIds is null or empty
+                m_resourceTypes = getResourceManager().getResourceTypes();
+                m_resourceTypeIds = new JSONArray();
+                for (I_CmsResourceType type : m_resourceTypes) {
+                    m_resourceTypeIds.put(type.getTypeId());
+                }
+            }
+
+        }
+        return m_resourceTypeIds;
     }
 
     /**
@@ -1480,17 +1515,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      */
     public String getListConfig() throws JSONException {
 
-        JSONArray resourceTypesParam = null;
-        try {
-            JSONObject data = getReqDataObj();
-            if ((data != null) && data.has(JsonKeys.TYPES.getName())) {
-                resourceTypesParam = data.getJSONArray(JsonKeys.TYPES.getName());
-            }
-        } catch (JSONException e) {
-            // TODO: improve error handling
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        JSONObject result = getAllLists(resourceTypesParam, getModeName());
+        JSONObject result = getAllLists(getModeName());
         return result.toString();
     }
 
@@ -1551,5 +1576,38 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         // TODO: read request parameter
         return "";
+    }
+
+    /**
+     * Returns script tags for resource type specific handling of the gallery preview.<p>
+     * 
+     * @return the script tags
+     */
+    public String getAdditionalJavaScript() {
+
+        return getAdditionalJavascriptForTypes(getResourceTypes());
+    }
+
+    /**
+     * Returns script tags for resource type specific handling of the gallery preview for the given types.<p>
+     * 
+     * @param types the resource types
+     * 
+     * @return the script tags
+     */
+    public static String getAdditionalJavascriptForTypes(List<I_CmsResourceType> types) {
+
+        StringBuffer result = new StringBuffer();
+        Iterator<I_CmsResourceType> resIt = types.iterator();
+        while (resIt.hasNext()) {
+            I_CmsResourceType type = resIt.next();
+            String jsPath = type.getGalleryJavascriptPath();
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(jsPath)) {
+                result.append("<script type=\"text/javascript\" src=\"");
+                result.append(CmsWorkplace.getResourceUri(jsPath));
+                result.append("\"></script>\n");
+            }
+        }
+        return result.toString();
     }
 }

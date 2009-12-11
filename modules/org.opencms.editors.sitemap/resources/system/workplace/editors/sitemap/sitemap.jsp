@@ -48,15 +48,15 @@
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.data.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.galleries.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.previewhandler.js")%>"></script>
-    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.imagepreviewhandler.js")%>"></script>
+    <%=jsp.getAdditionalGalleryJavascript() %>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.publish.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.property.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.util.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.sitemap.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.selectbox.js")%>"></script>
     <script type="text/javascript">
- // TODO: use config to set the gallery-types
-    cms.galleries.configContentTypes=[13];
+
+	  cms.galleries.configContentTypes=<%=jsp.getSearchableResourceTypeIds() %>;
     	
       $(document).ready(function() {
 

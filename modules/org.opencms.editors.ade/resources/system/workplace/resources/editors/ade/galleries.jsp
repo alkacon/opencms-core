@@ -24,7 +24,7 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 <script type="text/javascript" src="js/cms.directinput.js"></script>
 <script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript" src="js/cms.previewhandler.js"></script>
-<script type="text/javascript" src="js/cms.imagepreviewhandler.js"></script>
+<%=gallery.getAdditionalJavaScript() %>
 <script type="text/javascript">  
 	// set the ajax server path
     var vfsPathAjaxJsp = "${gallery.galleryUri}";  
