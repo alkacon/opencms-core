@@ -65,16 +65,16 @@
 				<param name="schema">/system/modules/org.opencms.frontend.template3/schemas/options.xsd</param>
                 <param name="gallery.type.names">downloadgallery</param>
 			</type>
-            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="searchgallery" id="160">
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="searchgallery" id="136">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
-            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="linkboxgallery" id="161">
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="linkboxgallery" id="137">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
-            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="textboxgallery" id="162">
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="textboxgallery" id="138">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
-            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="listboxgallery" id="163">
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="listboxgallery" id="139">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
         </resourcetypes>

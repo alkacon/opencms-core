@@ -51,16 +51,16 @@
 				<param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</param>
                 <param name="gallery.type.names">eventgallery</param>
 			</type>
-            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="newsgallery" id="150">
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="newsgallery" id="132">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="eventgallery" id="151">
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="eventgallery" id="133">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="articlegallery" id="152">
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="articlegallery" id="134">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
-            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="itemgallery" id="153">
+            <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="itemgallery" id="135">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
 		</resourcetypes>
