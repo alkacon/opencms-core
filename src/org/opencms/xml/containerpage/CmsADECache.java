@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADECache.java,v $
- * Date   : $Date: 2009/12/11 08:27:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/14 12:52:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,18 +31,15 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.cache.CmsVfsCache;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsEventListener;
-import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -52,11 +49,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
-public final class CmsADECache implements I_CmsEventListener {
+public final class CmsADECache extends CmsVfsCache {
 
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsADECache.class);
@@ -83,88 +80,8 @@ public final class CmsADECache implements I_CmsEventListener {
      */
     public CmsADECache(CmsMemoryMonitor memMonitor, CmsADECacheSettings cacheSettings) {
 
-        // container page caches
-        Map<String, CmsXmlContainerPage> lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
-        m_containerPagesOffline = Collections.synchronizedMap(lruMapCntPage);
-        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOffline", lruMapCntPage);
-
-        lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOnlineSize());
-        m_containerPagesOnline = Collections.synchronizedMap(lruMapCntPage);
-        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", lruMapCntPage);
-
-        // container page caches
-        Map<String, CmsXmlSubContainer> lruMapSubContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getSubContainerOfflineSize());
-        m_subContainersOffline = Collections.synchronizedMap(lruMapSubContainer);
-        memMonitor.register(CmsADECache.class.getName() + ".subContainersOffline", lruMapSubContainer);
-
-        lruMapSubContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getSubContainerOnlineSize());
-        m_subContainersOnline = Collections.synchronizedMap(lruMapSubContainer);
-        memMonitor.register(CmsADECache.class.getName() + ".subContainersOnline", lruMapSubContainer);
-
-        // add this class as an event handler to the cms event listener
-        OpenCms.addCmsEventListener(this, new int[] {
-            I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_DELETED,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
-    }
-
-    /**
-     * Takes care of cache synchronization and consistency.<p>
-     * 
-     * @param event the event to handle
-     */
-    public void cmsEvent(CmsEvent event) {
-
-        CmsResource resource = null;
-        List<CmsResource> resources = null;
-
-        switch (event.getType()) {
-            case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
-            case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-                // a resource has been modified in a way that it *IS NOT* necessary also to clear 
-                // lists of cached sub-resources where the specified resource might be contained inside.
-                // all siblings are removed from the cache, too.
-                resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
-                uncacheResource(resource);
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
-                // a list of resources and all of their properties have been modified
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                uncacheResources(resources);
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCE_DELETED:
-            case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
-                // a list of resources has been modified
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                uncacheResources(resources);
-                break;
-
-            case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-                flushContainerPages(true);
-                break;
-
-            case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                flushContainerPages(true);
-                flushContainerPages(false);
-                break;
-
-            case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:
-                flushContainerPages(false);
-                break;
-
-            default:
-                // noop
-                break;
-        }
+        initialize(memMonitor, cacheSettings);
+        registerEventListener();
     }
 
     /**
@@ -239,6 +156,19 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
+     * Returns the cache key for the given parameters.<p>
+     * 
+     * @param structureId the container page's structure id
+     * @param keepEncoding if to keep the encoding while unmarshalling
+     * 
+     * @return the cache key for the given container page and parameters
+     */
+    public String getCacheKey(CmsUUID structureId, boolean keepEncoding) {
+
+        return structureId.toString() + "_" + keepEncoding;
+    }
+
+    /**
      * Returns the cached sub container under the given key and for the given project.<p>
      * 
      * @param key the cache key
@@ -279,19 +209,6 @@ public final class CmsADECache implements I_CmsEventListener {
             }
         }
         return retValue;
-    }
-
-    /**
-     * Returns the cache key for the given parameters.<p>
-     * 
-     * @param structureId the container page's structure id
-     * @param keepEncoding if to keep the encoding while unmarshalling
-     * 
-     * @return the cache key for the given container page and parameters
-     */
-    public String getCacheKey(CmsUUID structureId, boolean keepEncoding) {
-
-        return structureId.toString() + "_" + keepEncoding;
     }
 
     /**
@@ -347,22 +264,6 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
-     * Clean up at shutdown time. Only intended to be called at system shutdown.<p>
-     * 
-     * @see org.opencms.main.OpenCmsCore#shutDown
-     */
-    public void shutdown() {
-
-        if (OpenCms.getMemoryMonitor() != null) {
-            // prevent accidental calls
-            return;
-
-        }
-        flushContainerPages(true);
-        flushContainerPages(false);
-    }
-
-    /**
      * Removes the container page identified by its structure id from the cache.<p>
      * 
      * @param structureId the container page's structure id
@@ -397,12 +298,19 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
-     * Removes a cached resource from the cache.<p>
-     * 
-     * The resource is removed both from the resource and sibling caches.
-     * 
-     * @param resource the resource
+     * @see org.opencms.cache.CmsVfsCache#flush(boolean)
      */
+    @Override
+    protected void flush(boolean online) {
+
+        flushContainerPages(online);
+        flushSubContainers(online);
+    }
+
+    /**
+     * @see org.opencms.cache.CmsVfsCache#uncacheResource(org.opencms.file.CmsResource)
+     */
+    @Override
     protected void uncacheResource(CmsResource resource) {
 
         if (resource == null) {
@@ -418,23 +326,29 @@ public final class CmsADECache implements I_CmsEventListener {
     }
 
     /**
-     * Removes a bunch of cached resources from the offline cache, but keeps their properties
-     * in the cache.<p>
+     * Initializes the caches.<p>
      * 
-     * @param resources a list of resources
-     * 
-     * @see #uncacheResource(CmsResource)
+     * @param memMonitor the memory monitor instance
+     * @param cacheSettings the system cache settings
      */
-    protected void uncacheResources(List<CmsResource> resources) {
+    private void initialize(CmsMemoryMonitor memMonitor, CmsADECacheSettings cacheSettings) {
 
-        if (resources == null) {
-            LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
-            return;
-        }
+        // container page caches
+        Map<String, CmsXmlContainerPage> lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
+        m_containerPagesOffline = Collections.synchronizedMap(lruMapCntPage);
+        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOffline", lruMapCntPage);
 
-        for (int i = 0, n = resources.size(); i < n; i++) {
-            // remove the resource
-            uncacheResource(resources.get(i));
-        }
+        lruMapCntPage = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getContainerPageOnlineSize());
+        m_containerPagesOnline = Collections.synchronizedMap(lruMapCntPage);
+        memMonitor.register(CmsADECache.class.getName() + ".containerPagesOnline", lruMapCntPage);
+
+        // container page caches
+        Map<String, CmsXmlSubContainer> lruMapSubContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getSubContainerOfflineSize());
+        m_subContainersOffline = Collections.synchronizedMap(lruMapSubContainer);
+        memMonitor.register(CmsADECache.class.getName() + ".subContainersOffline", lruMapSubContainer);
+
+        lruMapSubContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getSubContainerOnlineSize());
+        m_subContainersOnline = Collections.synchronizedMap(lruMapSubContainer);
+        memMonitor.register(CmsADECache.class.getName() + ".subContainersOnline", lruMapSubContainer);
     }
 }

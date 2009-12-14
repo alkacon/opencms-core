@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2009/12/14 11:07:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/14 12:52:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,11 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.cache.CmsVfsCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
-import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsEventListener;
-import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
@@ -45,7 +43,6 @@ import org.opencms.util.CmsUUID;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -55,20 +52,20 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
-public final class CmsSitemapCache implements I_CmsEventListener {
+public final class CmsSitemapCache extends CmsVfsCache {
 
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsSitemapCache.class);
 
     /** The offline default sitemap properties. */
-    protected Map<String, String> m_defPropsOffline;
+    private Map<String, String> m_defPropsOffline;
 
     /** The online default sitemap properties. */
-    protected Map<String, String> m_defPropsOnline;
+    private Map<String, String> m_defPropsOnline;
 
     /** Cache for offline sitemap documents. */
     private Map<String, CmsXmlSitemap> m_documentsOffline;
@@ -110,111 +107,8 @@ public final class CmsSitemapCache implements I_CmsEventListener {
      */
     public CmsSitemapCache(CmsMemoryMonitor memMonitor, CmsSitemapCacheSettings cacheSettings) {
 
-        // sitemap caches
-        Map<String, CmsXmlSitemap> lruMapDocs = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getDocumentOfflineSize());
-        m_documentsOffline = Collections.synchronizedMap(lruMapDocs);
-        memMonitor.register(CmsSitemapCache.class.getName() + ".sitemapDocsOffline", lruMapDocs);
-
-        lruMapDocs = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getDocumentOnlineSize());
-        m_documentsOnline = Collections.synchronizedMap(lruMapDocs);
-        memMonitor.register(CmsSitemapCache.class.getName() + ".sitemapDocsOnline", lruMapDocs);
-
-        Map<String, CmsFile> lruMapFiles = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getFileOfflineSize());
-        m_sitemapsOffline = Collections.synchronizedMap(lruMapFiles);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".sitemapFilesOffline", lruMapFiles);
-
-        lruMapFiles = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getFileOnlineSize());
-        m_sitemapsOnline = Collections.synchronizedMap(lruMapFiles);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".sitemapFilesOnline", lruMapFiles);
-
-        Map<String, CmsSiteEntryBean> lruMapUri = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUriOfflineSize());
-        m_urisOffline = Collections.synchronizedMap(lruMapUri);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".urisOffline", lruMapUri);
-
-        lruMapUri = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUriOnlineSize());
-        m_urisOnline = Collections.synchronizedMap(lruMapUri);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".urisOnline", lruMapUri);
-
-        Map<String, Boolean> lruMapMissed = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getMissingUriOfflineSize());
-        m_missingUrisOffline = Collections.synchronizedMap(lruMapMissed);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".missingUrisOffline", lruMapMissed);
-
-        lruMapMissed = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getMissingUriOnlineSize());
-        m_missingUrisOnline = Collections.synchronizedMap(lruMapMissed);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".missingUrisOnline", lruMapMissed);
-
-        Map<String, Map<String, String>> lruMapProperties = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getPropertyOfflineSize());
-        m_searchPropsOffline = Collections.synchronizedMap(lruMapProperties);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".searchPropsOffline", lruMapProperties);
-
-        lruMapProperties = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getPropertyOnlineSize());
-        m_searchPropsOnline = Collections.synchronizedMap(lruMapProperties);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".searchPropsOnline", lruMapProperties);
-
-        // add this class as an event handler to the cms event listener
-        OpenCms.addCmsEventListener(this, new int[] {
-            I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_DELETED,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
-    }
-
-    /**
-     * Takes care of cache synchronization and consistency.<p>
-     * 
-     * @param event the event to handle
-     */
-    public void cmsEvent(CmsEvent event) {
-
-        CmsResource resource = null;
-        List<CmsResource> resources = null;
-
-        switch (event.getType()) {
-            case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
-            case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-                // a resource has been modified in a way that it *IS NOT* necessary also to clear 
-                // lists of cached sub-resources where the specified resource might be contained inside.
-                // all siblings are removed from the cache, too.
-                resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
-                uncacheResource(resource);
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
-                // a list of resources and all of their properties have been modified
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                uncacheResources(resources);
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCE_DELETED:
-            case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
-                // a list of resources has been modified
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                uncacheResources(resources);
-                break;
-
-            case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-                flush(true);
-                break;
-
-            case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                flush(true);
-                flush(false);
-                break;
-
-            case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:
-                flush(false);
-                break;
-
-            default:
-                // noop
-                break;
-        }
+        initCaches(memMonitor, cacheSettings);
+        registerEventListener();
     }
 
     /**
@@ -476,22 +370,6 @@ public final class CmsSitemapCache implements I_CmsEventListener {
     }
 
     /**
-     * Clean up at shutdown time. Only intended to be called at system shutdown.<p>
-     * 
-     * @see org.opencms.main.OpenCmsCore#shutDown
-     */
-    public void shutdown() {
-
-        if (OpenCms.getMemoryMonitor() != null) {
-            // prevent accidental calls
-            return;
-
-        }
-        flush(true);
-        flush(false);
-    }
-
-    /**
      * Removes the sitemap identified by its structure id from the cache.<p>
      * 
      * @param structureId the sitemap's structure id
@@ -509,10 +387,9 @@ public final class CmsSitemapCache implements I_CmsEventListener {
     }
 
     /**
-     * Flushes the caches.<p>
-     * 
-     * @param online if to flush the online or offline caches
+     * @see org.opencms.cache.CmsVfsCache#flush(boolean)
      */
+    @Override
     protected void flush(boolean online) {
 
         flushSitemaps(online);
@@ -532,12 +409,9 @@ public final class CmsSitemapCache implements I_CmsEventListener {
     }
 
     /**
-     * Removes a cached resource from the cache.<p>
-     * 
-     * The resource is removed both from the resource and sibling caches.
-     * 
-     * @param resource the resource
+     * @see org.opencms.cache.CmsVfsCache#uncacheResource(org.opencms.file.CmsResource)
      */
+    @Override
     protected void uncacheResource(CmsResource resource) {
 
         if (resource == null) {
@@ -588,23 +462,51 @@ public final class CmsSitemapCache implements I_CmsEventListener {
     }
 
     /**
-     * Removes a bunch of cached resources from the offline cache, but keeps their properties
-     * in the cache.<p>
+     * Initializes the caches.<p>
      * 
-     * @param resources a list of resources
-     * 
-     * @see #uncacheResource(CmsResource)
+     * @param memMonitor the memory monitor instance
+     * @param cacheSettings the system cache settings
      */
-    protected void uncacheResources(List<CmsResource> resources) {
+    private void initCaches(CmsMemoryMonitor memMonitor, CmsSitemapCacheSettings cacheSettings) {
 
-        if (resources == null) {
-            LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
-            return;
-        }
+        Map<String, CmsXmlSitemap> lruMapDocs = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getDocumentOfflineSize());
+        m_documentsOffline = Collections.synchronizedMap(lruMapDocs);
+        memMonitor.register(CmsSitemapCache.class.getName() + ".sitemapDocsOffline", lruMapDocs);
 
-        for (int i = 0, n = resources.size(); i < n; i++) {
-            // remove the resource
-            uncacheResource(resources.get(i));
-        }
+        lruMapDocs = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getDocumentOnlineSize());
+        m_documentsOnline = Collections.synchronizedMap(lruMapDocs);
+        memMonitor.register(CmsSitemapCache.class.getName() + ".sitemapDocsOnline", lruMapDocs);
+
+        Map<String, CmsFile> lruMapFiles = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getFileOfflineSize());
+        m_sitemapsOffline = Collections.synchronizedMap(lruMapFiles);
+        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".sitemapFilesOffline", lruMapFiles);
+
+        lruMapFiles = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getFileOnlineSize());
+        m_sitemapsOnline = Collections.synchronizedMap(lruMapFiles);
+        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".sitemapFilesOnline", lruMapFiles);
+
+        Map<String, CmsSiteEntryBean> lruMapUri = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUriOfflineSize());
+        m_urisOffline = Collections.synchronizedMap(lruMapUri);
+        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".urisOffline", lruMapUri);
+
+        lruMapUri = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUriOnlineSize());
+        m_urisOnline = Collections.synchronizedMap(lruMapUri);
+        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".urisOnline", lruMapUri);
+
+        Map<String, Boolean> lruMapMissed = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getMissingUriOfflineSize());
+        m_missingUrisOffline = Collections.synchronizedMap(lruMapMissed);
+        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".missingUrisOffline", lruMapMissed);
+
+        lruMapMissed = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getMissingUriOnlineSize());
+        m_missingUrisOnline = Collections.synchronizedMap(lruMapMissed);
+        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".missingUrisOnline", lruMapMissed);
+
+        Map<String, Map<String, String>> lruMapProperties = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getPropertyOfflineSize());
+        m_searchPropsOffline = Collections.synchronizedMap(lruMapProperties);
+        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".searchPropsOffline", lruMapProperties);
+
+        lruMapProperties = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getPropertyOnlineSize());
+        m_searchPropsOnline = Collections.synchronizedMap(lruMapProperties);
+        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".searchPropsOnline", lruMapProperties);
     }
 }

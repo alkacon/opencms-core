@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2009/09/09 15:54:53 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2009/12/14 12:52:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,13 +33,8 @@ package org.opencms.cache;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.Messages;
-
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 
@@ -50,11 +45,11 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.7.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.1.3
  */
-public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
+public final class CmsVfsMemoryObjectCache extends CmsVfsCache {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsMemoryObjectCache.class);
@@ -85,38 +80,6 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
     }
 
     /**
-     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
-     */
-    public void cmsEvent(CmsEvent event) {
-
-        CmsResource resource;
-        switch (event.getType()) {
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-            case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                // flush cache   
-                OpenCms.getMemoryMonitor().flushVfsObjects();
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_FLUSHED_CACHES_0));
-                }
-                break;
-            case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-                resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
-                uncacheSystemId(resource.getRootPath());
-                break;
-            case I_CmsEventListener.EVENT_RESOURCE_DELETED:
-            case I_CmsEventListener.EVENT_RESOURCE_MOVED:
-                List<CmsResource> resources = (List<CmsResource>)event.getData().get(I_CmsEventListener.KEY_RESOURCES);
-                for (int i = 0; i < resources.size(); i++) {
-                    resource = resources.get(i);
-                    uncacheSystemId(resource.getRootPath());
-                }
-                break;
-            default:
-                // no operation
-        }
-    }
-
-    /**
      * Return an object from the cache.<p>
      * 
      * @param cms the current users OpenCms context
@@ -143,17 +106,21 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
     }
 
     /**
-     * Registers all required event listeners.<p>
+     * @see org.opencms.cache.CmsVfsCache#flush(boolean)
      */
-    protected void registerEventListener() {
+    @Override
+    protected void flush(boolean online) {
 
-        // register this object as event listener
-        OpenCms.addCmsEventListener(this, new int[] {
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_MOVED,
-            I_CmsEventListener.EVENT_RESOURCE_DELETED});
+        OpenCms.getMemoryMonitor().flushVfsObjects();
+    }
+
+    /**
+     * @see org.opencms.cache.CmsVfsCache#uncacheResource(org.opencms.file.CmsResource)
+     */
+    @Override
+    protected void uncacheResource(CmsResource resource) {
+
+        uncacheSystemId(resource.getRootPath());
     }
 
     /**
@@ -186,12 +153,11 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
 
         // check the project
         boolean project = (cms != null) ? cms.getRequestContext().currentProject().isOnlineProject() : false;
-
         return getCacheKey(rootPath, project);
     }
 
     /**
-     * Uncaches a system id (filename) from the internal offline temporary and content defintions caches.<p>
+     * Uncaches a system id (filename) from the internal offline temporary and content definitions caches.<p>
      * 
      * The online resources cached for the online project are only flushed when a project is published.<p>
      * 
@@ -203,7 +169,9 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
         Object o = OpenCms.getMemoryMonitor().getCachedVfsObject(key);
         OpenCms.getMemoryMonitor().uncacheVfsObject(key);
         if ((null != o) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_UNCACHED_SYS_ID_1, key));
+            LOG.debug(org.opencms.xml.Messages.get().getBundle().key(
+                org.opencms.xml.Messages.LOG_ERR_UNCACHED_SYS_ID_1,
+                key));
         }
     }
 }
