@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/12/14 11:06:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,8 +93,11 @@ public class CmsJspActionElement extends CmsJspBean {
     public static final CmsMessageContainer NOT_INITIALIZED = Messages.get().container(
         Messages.GUI_ERR_ACTIONELEM_NOT_INIT_0);
 
+    /** Sitemap based navigation builder. */
+    private CmsJspSitemapNavBuilder m_sitemapNav;
+
     /** JSP navigation builder. */
-    private CmsJspNavBuilder m_navigation;
+    private CmsJspNavBuilder m_vfsNav;
 
     /**
      * Empty constructor, required for every JavaBean.
@@ -363,14 +366,11 @@ public class CmsJspActionElement extends CmsJspBean {
         if (isNotInitialized()) {
             return null;
         }
-        if (m_navigation == null) {
-            if (OpenCms.getSitemapManager().getCurrentUri(getRequest()) == null) {
-                m_navigation = new CmsJspNavBuilder(getCmsObject());
-            } else {
-                m_navigation = new CmsJspSitemapNavBuilder(getCmsObject(), getRequest());
-            }
+        if (OpenCms.getSitemapManager().getCurrentUri(getRequest()) == null) {
+            return getVfsNavigation();
+        } else {
+            return getSitemapNavigation();
         }
-        return m_navigation;
     }
 
     /**
@@ -385,6 +385,42 @@ public class CmsJspActionElement extends CmsJspBean {
             uri = getCmsObject().getRequestContext().getUri();
         }
         return uri;
+    }
+
+    /**
+     * Returns an initialized sitemap navigation builder instance.<p>
+     *  
+     * @return an initialized sitemap navigation builder instance, or <code>null</code> if request is not sitemap based
+     * 
+     * @see CmsJspActionElement#getVfsNavigation()
+     */
+    public CmsJspSitemapNavBuilder getSitemapNavigation() {
+
+        if (isNotInitialized() || (OpenCms.getSitemapManager().getCurrentUri(getRequest()) == null)) {
+            return null;
+        }
+        if (m_sitemapNav == null) {
+            m_sitemapNav = new CmsJspSitemapNavBuilder(getCmsObject(), getRequest());
+        }
+        return m_sitemapNav;
+    }
+
+    /**
+     * Returns an initialized {@link CmsJspNavBuilder} instance.<p>
+     *  
+     * @return an initialized navigation builder instance
+     * 
+     * @see org.opencms.jsp.CmsJspNavBuilder
+     */
+    public CmsJspNavBuilder getVfsNavigation() {
+
+        if (isNotInitialized()) {
+            return null;
+        }
+        if (m_vfsNav == null) {
+            m_vfsNav = new CmsJspNavBuilder(getCmsObject());
+        }
+        return m_vfsNav;
     }
 
     /**
