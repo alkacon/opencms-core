@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/14 11:07:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -554,7 +554,7 @@ public final class CmsSitemapCache implements I_CmsEventListener {
             return;
         }
 
-        // this is could be a sitemap file as well as a site root folder, so remove it
+        // this could be a sitemap file as well as a folder with the sitemap property, so remove it
         CmsFile file = m_sitemapsOffline.remove(resource.getRootPath());
 
         // we care only more if the modified resource is a sitemap

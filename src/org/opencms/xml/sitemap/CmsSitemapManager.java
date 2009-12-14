@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/12/14 11:07:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.2
  */
@@ -442,18 +442,26 @@ public class CmsSitemapManager {
             logId = new CmsUUID(); // unique id to identify the request
             LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_ENTRY_3, logId, uri, Boolean.valueOf(online)).key());
         }
-        // find the root sitemap, at the root folder of the site
+        // find the sitemap
+        LinkedList<String> entryPaths = new LinkedList<String>(CmsStringUtil.splitAsList(normalizePath(uri), "/"));
+        String sitemapFolder = "";
         CmsXmlSitemap sitemapXml = getSitemap(cms, "/", online);
+        while (!entryPaths.isEmpty() && (sitemapXml == null)) {
+            String currentFolder = "/" + entryPaths.removeFirst();
+            sitemapFolder += currentFolder;
+            sitemapXml = getSitemap(cms, sitemapFolder, online);
+        }
+        if (sitemapXml == null) {
+            // sitemap not found 
+            return null;
+        }
         CmsSitemapBean sitemap = sitemapXml.getSitemap(cms, cms.getRequestContext().getLocale());
         if (sitemap == null) {
             return null;
         }
         // property collection
         Map<String, String> properties = new HashMap<String, String>();
-        // normalize the uri
-        String sitePath = normalizePath(uri);
-        LinkedList<String> entryPaths = new LinkedList<String>(CmsStringUtil.splitAsList(sitePath, "/"));
-
+        // get started
         if (entryPaths.isEmpty()) {
             // special case for '/'
             CmsSiteEntryBean entry = sitemap.getSiteEntries().get(0);
@@ -466,7 +474,7 @@ public class CmsSitemapManager {
             return new EntryData(entry, properties, sitemapXml);
         }
 
-        String uriPath = cms.getRequestContext().getSiteRoot();
+        String uriPath = cms.getRequestContext().getSiteRoot() + sitemapFolder;
         List<CmsSiteEntryBean> subEntries = sitemap.getSiteEntries().get(0).getSubEntries();
         boolean finished = false;
         while (!finished) {
@@ -479,9 +487,9 @@ public class CmsSitemapManager {
                 LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_ENTRY_MISSING_2, logId, uriPath).key());
                 return null;
             }
-            List<CmsSiteEntryBean> newSubEntries = null;
             int position = 0;
-            for (; position < subEntries.size(); position++) {
+            int size = subEntries.size();
+            for (; position < size; position++) {
                 CmsSiteEntryBean entry = subEntries.get(position);
                 if (!entry.getName().equals(name)) {
                     // no match
@@ -511,8 +519,8 @@ public class CmsSitemapManager {
                     return new EntryData(entry, properties, sitemapXml);
                 } else {
                     // continue with sub-entries
-                    newSubEntries = entry.getSubEntries();
-                    if (newSubEntries.isEmpty()) {
+                    subEntries = entry.getSubEntries();
+                    if (subEntries.isEmpty()) {
                         // check sitemap property
                         String subSitemapId = entry.getProperties().get(CmsSitemapManager.PROPERTY_SITEMAP);
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subSitemapId)) {
@@ -528,10 +536,10 @@ public class CmsSitemapManager {
                                 // no sitemap found
                                 return null;
                             }
-                            newSubEntries = sitemap.getSiteEntries();
+                            subEntries = sitemap.getSiteEntries();
                         }
                     }
-                    finished = newSubEntries.isEmpty();
+                    finished = subEntries.isEmpty();
                     if (finished) {
                         LOG.debug(Messages.get().container(
                             Messages.LOG_DEBUG_SITEMAP_NO_SUBENTRIES_3,
@@ -542,12 +550,11 @@ public class CmsSitemapManager {
                 }
                 break;
             }
-            if (position == subEntries.size()) {
+            if (position == size) {
                 // not found
                 finished = true;
                 LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_NOT_FOUND_2, logId, uriPath).key());
             }
-            subEntries = newSubEntries;
         }
 
         return null;
@@ -567,7 +574,7 @@ public class CmsSitemapManager {
     protected CmsXmlSitemap getSitemap(CmsObject cms, String path, boolean online) throws CmsException {
 
         // check the cache
-        // HACK: we are caching here sitemaps by root path, as well as property reference in case path = "/" 
+        // HACK: we are caching here sitemaps by root path, as well as property references from folders
         String cacheKey = cms.getRequestContext().addSiteRoot(path);
         CmsFile sitemapFile = m_cache.getFile(cacheKey, online);
         if (sitemapFile != null) {
@@ -577,32 +584,34 @@ public class CmsSitemapManager {
 
         // not found in cache
         String sitemapPath = path;
-        if (path.equals("/")) {
-            // read the sitemap property from the site folder
-            // TODO: bad default value!
-            sitemapPath = cms.readPropertyObject("/", CmsPropertyDefinition.PROPERTY_SITEMAP, false).getValue(
-                "/demo_t3/_config/sitemap");
-            String cacheKey2 = cms.getRequestContext().addSiteRoot(sitemapPath);
-            if (!cacheKey.equals(cacheKey2)) {
-                // recursive call with the correct path
-                CmsXmlSitemap sitemap = getSitemap(cms, sitemapPath, online);
-                if (sitemap != null) {
-                    // found: cache the sitemap
-                    CmsFile file = m_cache.getFile(cacheKey, online);
-                    m_cache.setFile(cacheKey2, file, online);
-                }
-                return sitemap;
-            }
-        }
-
         try {
             // try to read the sitemap file
             sitemapFile = cms.readFile(sitemapPath);
         } catch (Exception e) {
-            // can happen in case of bad configuration
-            LOG.error(e.getLocalizedMessage(), e);
-            // no sitemap found
-            return null;
+            // can happen 
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+
+        if (sitemapFile == null) {
+            // if still not found read the sitemap property
+            sitemapPath = cms.readPropertyObject(sitemapPath, CmsPropertyDefinition.PROPERTY_SITEMAP, false).getValue();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(sitemapPath)) {
+                // property not set
+                return null;
+            }
+            String cacheKey2 = cms.getRequestContext().addSiteRoot(sitemapPath);
+            if (cacheKey.equals(cacheKey2)) {
+                // property set to itself?
+                return null;
+            }
+            // recursive call with the correct path
+            CmsXmlSitemap sitemap = getSitemap(cms, sitemapPath, online);
+            if (sitemap != null) {
+                // found: cache the sitemap
+                CmsFile file = m_cache.getFile(cacheKey2, online);
+                m_cache.setFile(cacheKey, file, online);
+            }
+            return sitemap;
         }
 
         // found: cache the sitemap

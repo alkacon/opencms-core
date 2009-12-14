@@ -43,6 +43,10 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>NavText</name>
+					<value><![CDATA[OpenCms Demo]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[OpenCms Demo [EN]]]></value>
 				</property>
@@ -57,6 +61,10 @@
 				<property>
 					<name>locale</name>
 					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>sitemap</name>
+					<value><![CDATA[/demo_t3/_config/sitemap]]></value>
 				</property>
 				<property>
 					<name>style.config</name>
