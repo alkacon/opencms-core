@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/14 13:12:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,9 +39,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
-import org.opencms.xml.sitemap.CmsSitemapManager;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -81,6 +80,8 @@ import org.apache.commons.logging.Log;
  *   <DD>Look up the property by also checking all parent sitemap entries 
  *   for the property, starting with the current sitemap entry and 
  *   going "upward" if the property was not found there.</DD>
+ *   <DT>container</DT> 
+ *   <DD>reads from the current container element</DD> 
  *   <DT><B>{some-file-uri}</B></DT>
  *   <DD>Look up the property on that exact file 
  *   uri in the OpenCms VFS,<EM> fallback if no other valid option is 
@@ -103,7 +104,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,6 +113,8 @@ public class CmsJspTagProperty extends TagSupport {
     /** Constants for <code>file</code> attribute interpretation. */
     private enum FileUse {
 
+        /** Use container element. */
+        CONTAINER("container"),
         /** Use element uri. */
         ELEMENT_URI("element.uri"),
         /** Use parent (same as {@link #URI}). */
@@ -193,109 +196,10 @@ public class CmsJspTagProperty extends TagSupport {
     /**
      * Internal action method.<p>
      * 
-     * @param property the property to look up
-     * @param action the search action
-     * @param defaultValue the default value
-     * @param escape if the result html should be escaped or not
-     * @param req the current request
-     * 
-     * @return String the value of the property or <code>null</code> if not found (and no
-     *      defaultValue provided)
-     *      
-     * @throws CmsException if something goes wrong
-     */
-    public static String propertyTagAction(
-        String property,
-        String action,
-        String defaultValue,
-        boolean escape,
-        ServletRequest req) throws CmsException {
-
-        CmsFlexController controller = CmsFlexController.getController(req);
-
-        FileUse useAction = FileUse.URI;
-        if (action != null) {
-            // if action is set overwrite default
-            useAction = FileUse.parse(action);
-        }
-
-        String vfsUri = null;
-        String sitemapUri = null;
-        boolean search = false;
-        if (useAction != null) {
-            switch (useAction) {
-                case URI:
-                case PARENT:
-                    // read properties of parent (i.e. top requested) file
-                    vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                    break;
-                case SEARCH:
-                case SEARCH_URI:
-                case SEARCH_PARENT:
-                    // try to find property on parent file and all parent folders
-                    vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                    search = true;
-                    break;
-                case ELEMENT_URI:
-                case THIS:
-                    // read properties of this file            
-                    vfsUri = controller.getCurrentRequest().getElementUri();
-                    break;
-                case SEARCH_ELEMENT_URI:
-                case SEARCH_THIS:
-                    // try to find property on this file and all parent folders
-                    vfsUri = controller.getCurrentRequest().getElementUri();
-                    search = true;
-                    break;
-                case SITEMAP:
-                    // try to find property on this sitemap entry
-                    sitemapUri = OpenCms.getSitemapManager().getCurrentUri(req);
-                    if (sitemapUri == null) {
-                        // fall back
-                        vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                    }
-                    break;
-                case SEARCH_SITEMAP:
-                    // try to find property on this sitemap entry all parent entries
-                    sitemapUri = OpenCms.getSitemapManager().getCurrentUri(req);
-                    if (sitemapUri == null) {
-                        // fall back
-                        vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                    }
-                    search = true;
-                    break;
-            }
-        } else {
-            // read properties of the file named in the attribute  
-            vfsUri = CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri());
-            search = false;
-        }
-
-        // now read the property from the VFS
-        String value;
-        if (vfsUri != null) {
-            value = controller.getCmsObject().readPropertyObject(vfsUri, property, search).getValue(defaultValue);
-        } else if (!search) {
-            value = ((CmsSiteEntryBean)req.getAttribute(CmsSitemapManager.ATTR_SITEMAP_ENTRY)).getProperties().get(
-                property);
-        } else {
-            value = OpenCms.getSitemapManager().getSearchProperties(controller.getCmsObject(), sitemapUri).get(property);
-        }
-        if (escape) {
-            // HTML escape the value 
-            value = CmsEncoder.escapeHtml(value);
-        }
-        return value;
-    }
-
-    /**
-     * Internal action method.<p>
-     * 
      * @param action the search action
      * @param req the current request
      * 
-     * @return String the value of the property or <code>null</code> if not found (and no
-     *      defaultValue provided)
+     * @return String the value of the property or <code>null</code> if not found (and no defaultValue provided)
      *      
      * @throws CmsException if something goes wrong
      */
@@ -337,6 +241,15 @@ public class CmsJspTagProperty extends TagSupport {
                     vfsUri = controller.getCurrentRequest().getElementUri();
                     search = true;
                     break;
+                case CONTAINER:
+                    // try to find property on the container element
+                    try {
+                        return OpenCms.getADEManager().getCurrentElement(req).getProperties();
+                    } catch (CmsException e) {
+                        // most likely we are not in a container page
+                        LOG.debug(e.getLocalizedMessage(), e);
+                        return new HashMap<String, String>();
+                    }
                 case SITEMAP:
                     // try to find property on this sitemap entry
                     sitemapUri = OpenCms.getSitemapManager().getCurrentUri(req);
@@ -363,12 +276,44 @@ public class CmsJspTagProperty extends TagSupport {
 
         // now read the property from the VFS
         Map<String, String> value;
-        if (vfsUri == null) {
+        if (vfsUri != null) {
             value = CmsProperty.toMap(controller.getCmsObject().readPropertyObjects(vfsUri, search));
         } else if (!search) {
             value = OpenCms.getSitemapManager().getCurrentEntry(req).getProperties();
         } else {
             value = OpenCms.getSitemapManager().getSearchProperties(controller.getCmsObject(), sitemapUri);
+        }
+        return value;
+    }
+
+    /**
+     * Internal action method.<p>
+     * 
+     * @param property the property to look up
+     * @param action the search action
+     * @param defaultValue the default value
+     * @param escape if the result html should be escaped or not
+     * @param req the current request
+     * 
+     * @return String the value of the property or <code>null</code> if not found (and no
+     *      defaultValue provided)
+     *      
+     * @throws CmsException if something goes wrong
+     */
+    public static String propertyTagAction(
+        String property,
+        String action,
+        String defaultValue,
+        boolean escape,
+        ServletRequest req) throws CmsException {
+
+        String value = propertiesTagAction(action, req).get(property);
+        if (value == null) {
+            value = defaultValue;
+        }
+        if (escape) {
+            // HTML escape the value 
+            value = CmsEncoder.escapeHtml(value);
         }
         return value;
     }
