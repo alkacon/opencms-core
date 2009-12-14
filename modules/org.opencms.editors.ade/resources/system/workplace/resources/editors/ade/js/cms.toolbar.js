@@ -1257,7 +1257,7 @@
       $('ul', cms.toolbar.dom[mode + 'Menu']).add(cms.util.getContainerSelector()).sortable('destroy');
    }
    
-   var getCurrentMode = function() {
+   var getCurrentMode = cms.toolbar.getCurrentMode = function() {
       if (cms.toolbar.mode == '') {
          return NullMode;
       }
@@ -1362,6 +1362,8 @@
          if (!galleryInitialized){
              galleryInitialized=true;
              cms.galleries.initAddDialog();
+             // remove corner-all class from tabs after initialization 
+             $('#'+cms.html.galleryTabsId).removeClass('ui-corner-all');
          }
          callback(true, null);
       },

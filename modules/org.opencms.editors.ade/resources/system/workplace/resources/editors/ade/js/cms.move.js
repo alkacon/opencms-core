@@ -29,6 +29,7 @@
       this.startId = null;
       this.over = null;
       this.overflowElem = null;
+      this.preparing = true;
       
       this.isMoveFromFavorites = function() {
          return this.startId == cms.html.favoriteListId;
@@ -254,8 +255,7 @@
       moveState.hoverList = '';
       
       moveState.currentContainerId = moveState.startId;
-      moveState.currentResourceId = ui.self.currentItem.attr('rel');
-      
+      moveState.loadingResourceId = moveState.currentResourceId = ui.self.currentItem.attr('rel');
       if (moveState.isMoveFromNew()) {
          var typeElem = cms.data.elements[moveState.currentResourceId];
          if (typeElem) {
@@ -266,31 +266,7 @@
          moveState.element = cms.data.elements[moveState.currentResourceId];
       }
       
-      if (!moveState.element) {
-         if (moveState.isMoveFromResultList()) {
-            var resourceType = ui.self.currentItem.data('type');
-            moveState.isLoading = true;
-            moveState.loadingResourceId = moveState.currentResourceId;
-            moveState.currentResourceId = resourceType;
-            moveState.runningRequest = cms.data.loadElements([moveState.loadingResourceId], function() {
-               if (moveState.hasStoped) {
-                  moveState.currentResourceId = moveState.loadingResourceId;
-                  moveState.element = cms.data.elements[moveState.loadingResourceId];
-                  $('#' + moveState.currentContainerId + ' .cms-element[rel="' + moveState.loadingResourceId + '"]').replaceWith(moveState.element.getContent(moveState.currentContainerId))
-               } else {
-                  moveState.currentResourceId = moveState.loadingResourceId;
-                  moveState.element = cms.data.elements[moveState.loadingResourceId];
-                  replaceHelperElements(ui.self);
-               }
-               moveState.isLoading = false;
-               moveState.runningRequest = null;
-               
-            });
-            moveState.element = cms.data.elements[resourceType];
-         } else {
-            $(cms.util.getContainerSelector()).sortable('cancel');
-         }
-      }
+      
       
       
       
@@ -313,14 +289,12 @@
       
       cms.move.zIndexMap = {};
       
-      if (isMenuContainer(moveState.startId)) {
+      if (!cms.toolbar.getCurrentMode().isEdit || isMenuContainer(moveState.startId)) {
          startDragFromMenu(ui.self);
       } else {
          startDragFromNormalContainer(ui.self);
       }
-      for (var container_name in cms.data.containers) {
-         initContainerForDrag(ui.self, cms.data.containers[container_name]);
-      }
+      
       var placeholderSize = {
          height: ui.helper.height(),
          width: ui.helper.width()
@@ -343,12 +317,46 @@
          'height': placeholderSize.height
          //         'width': (/left|right/).test(ui.placeholder.css('float')) ? placeholderSize.width : ''
       });
+      if (!moveState.element) {
+         if (moveState.isMoveFromResultList()) {
+            var resourceType = ui.self.currentItem.data('type');
+            moveState.isLoading = true;
+            moveState.loadingResourceId = moveState.currentResourceId;
+            moveState.currentResourceId = resourceType;
+            moveState.runningRequest = cms.data.loadElements([moveState.loadingResourceId], function() {
+               if (moveState.hasStoped) {
+                  moveState.currentResourceId = moveState.loadingResourceId;
+                  moveState.element = cms.data.elements[moveState.loadingResourceId];
+                  $('#' + moveState.currentContainerId + ' .cms-element[rel="' + moveState.loadingResourceId + '"]').replaceWith(moveState.element.getContent(moveState.currentContainerId))
+               } else {
+                  moveState.currentResourceId = moveState.loadingResourceId;
+                  moveState.element = cms.data.elements[moveState.loadingResourceId];
+                  for (var container_name in cms.data.containers) {
+                     initContainerForDrag(ui.self, cms.data.containers[container_name]);
+                  }
+                  refreshHelperPositions(ui.self);
+                  hoverOut();
+                  $(moveState.hoverList).each(function() {
+                     hoverInner($(this), 2, true);
+                  });
+               }
+               moveState.isLoading = false;
+               moveState.runningRequest = null;
+               
+            });
+            moveState.element = cms.data.elements[resourceType];
+         }
+         refreshHelperPositions(ui.self);
+      } else {
+         for (var container_name in cms.data.containers) {
+            initContainerForDrag(ui.self, cms.data.containers[container_name]);
+         }
+         refreshHelperPositions(ui.self);
       
-      refreshHelperPositions(ui.self);
-      
-      $(moveState.hoverList).css('position', 'relative').each(function() {
-         hoverInner($(this), 2, true);
-      });
+         $(moveState.hoverList).css('position', 'relative').each(function() {
+            hoverInner($(this), 2, true);
+         });
+      }
       
       
    }
@@ -424,7 +432,7 @@
       var currentItem = ui.self.currentItem;
       
       if (moveState.cancel) {
-         if (moveState.isMoveFromMenu()) {
+         if (!cms.toolbar.getCurrentMode().isEdit || moveState.isMoveFromMenu()) {
             // show favorite list again after dragging a favorite from it.
             $('#' + cms.toolbar.currentMenu).css('display', 'block');
             if (moveState.isLoading && moveState.runningRequest) {
@@ -438,7 +446,7 @@
          origPlaceholder.remove();
       } else {
          var changed = false;
-         if (moveState.isMoveFromMenu()) {
+         if (!cms.toolbar.getCurrentMode().isEdit || moveState.isMoveFromMenu()) {
             // replace placeholder in the menu with the helper, i.e. the original item
             var startHelper = helpers[startContainer];
             origPlaceholder.replaceWith(startHelper);
@@ -521,7 +529,9 @@
             // just in case: remove leftover cms-overflow-element class
             $('.cms-overflow-element').removeClass('cms-overflow-element');
          }
-         updateContainer(startContainer);
+         if (cms.toolbar.getCurrentMode().isEdit){
+             updateContainer(startContainer);
+         }
          updateContainer(endContainer);
          if (moveState.isMoveFromNew()) {
             $('button[name="edit"]').trigger('click');
@@ -597,7 +607,7 @@
          ui.placeholder.appendTo(elem);
       }
       
-      if (reDoHover) {
+      if (reDoHover && moveState.hoverList !='') {
          hoverOut();
          $(moveState.hoverList).each(function() {
             hoverInner($(this), 2, true);
@@ -633,9 +643,11 @@
          
          moveState.over = false;
          hoverOut();
-         $(moveState.hoverList).each(function() {
-            hoverInner($(this), 2, true);
-         });
+         if (moveState.hoverList != '') {
+             $(moveState.hoverList).each(function() {
+                 hoverInner($(this), 2, true);
+             });
+         }
       }
       
    }
@@ -848,26 +860,37 @@
    };
    
    var replaceHelperElements = function(sortable) {
-   
+      var reDoHover = false;
       for (var container_name in cms.data.containers) {
          var containerType = cms.data.containers[container_name].type;
          //skip incompatible containers
          if (!isCompatibleWithContainer(cms.data.elements[moveState.currentResourceId], container_name) || container_name == moveState.startId) {
             continue;
          }
-         var helperContent = moveState.element.getContent(containerType);
-         helperContent.attr('class', moveState.helpers[container_name].attr('class'));
-         helperContent.attr('style', moveState.helpers[container_name].attr('style'));
-         helperContent.removeClass('cms-new-element');
-         moveState.helpers[container_name].replaceWith(helperContent);
-         moveState.helpers[container_name] = helperContent;
+         if (!moveState.helpers[container_name]) {
+            initContainerForDrag(sortable, cms.data.containers[container_name]);
+            reDoHover = true;
+         } else {
+            var helperContent = moveState.element.getContent(containerType);
+            helperContent.attr('class', moveState.helpers[container_name].attr('class'));
+            helperContent.attr('style', moveState.helpers[container_name].attr('style'));
+            helperContent.removeClass('cms-new-element');
+            moveState.helpers[container_name].replaceWith(helperContent);
+            moveState.helpers[container_name] = helperContent;
+         }
+         
          if (moveState.currentContainerId == container_name) {
             sortable.helper = helperContent;
             sortable.currentItem = helperContent;
             refreshHelperPositions(sortable);
          }
       }
-      
+      if (reDoHover) {
+         hoverOut();
+         $(moveState.hoverList).each(function() {
+            hoverInner($(this), 2, true);
+         });
+      }
    }
    
    
