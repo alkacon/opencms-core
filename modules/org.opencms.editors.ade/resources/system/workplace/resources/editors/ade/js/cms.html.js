@@ -6,6 +6,7 @@
    var favoriteListId = cms.html.favoriteListId = 'favorite_list_items';
    
    var galleryMenuId = cms.html.galleryMenuId ='cms-gallery';
+   var galleryTabsId = cms.html.galleryTabsId = 'cms-gallery-tabs';
    var galleryTypeListId = cms.html.galleryTypeListId ='cms-type-list';
    var galleryResultListPrefix = cms.html.galleryResultListPrefix ='searchresults_page';
    
@@ -76,8 +77,8 @@
       
       var html = ['<div id="', menuId, '" class="cms-menu" style="width: 343px; display:none">\
     	<div class="connect ui-corner-top"></div>\
-    	<div class="ui-widget-shadow ui-corner-all" style="width: 345px"></div>\
-    	<div class="cms-menu-content ui-widget-content ui-corner-bottom ui-corner-tl">\
+    	<div class="ui-widget-shadow ui-corner-bottom" style="width: 345px"></div>\
+    	<div class="cms-menu-content ui-widget-content ui-corner-bottom">\
             ', addMenuItem, '\
             <div class="cms-scrolling ui-corner-all">\
                 <ul id="', listId, '" class="cms-scrolling-inner cms-item-list">\
@@ -90,10 +91,10 @@
    
    var createGalleryMenu = cms.html.createGalleryMenu = function(){
        var html=['<div id="',galleryMenuId,'" class="cms-menu" style="width: 650px;">\
-    	<div class="connect ui-corner-top" style="background: #BFBFBF;"></div>\
-    	<div class="ui-widget-shadow ui-corner-all"></div>\
-        <div id="cms-gallery-main" class="ui-corner-all">\
-		    <div id="cms-gallery-tabs">\
+    	<div class="connect ui-corner-top" style="background: #CFCFCF;"></div>\
+    	<div class="ui-widget-shadow ui-corner-bottom"></div>\
+        <div id="cms-gallery-main" class="ui-corner-bottom">\
+		    <div id="',galleryTabsId,'" class="ui-corner-bottom">\
                 <ul>\
                      <li><a href="#tabs-result">Search results</a></li>\
                      <li><a href="#tabs-types">Type</a></li>\
