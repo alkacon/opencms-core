@@ -573,7 +573,7 @@ Each job can have an optional list of parameters.
 <!--
 # Cache sizes for ADE. 
 -->
-<!ELEMENT ade-cache (containerpages) >
+<!ELEMENT ade-cache (containerpages, subcontainers) >
 
 <!--
 # Container page caches. 
@@ -581,6 +581,13 @@ Each job can have an optional list of parameters.
 <!ELEMENT containerpages EMPTY >
 <!ATTLIST containerpages offline CDATA #REQUIRED>
 <!ATTLIST containerpages online CDATA #REQUIRED>
+
+<!--
+# Subcontainer caches. 
+-->
+<!ELEMENT subcontainers EMPTY >
+<!ATTLIST subcontainers offline CDATA #REQUIRED>
+<!ATTLIST subcontainers online CDATA #REQUIRED>
 
 <!--
 # The sitemap settings. 

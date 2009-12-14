@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/14 12:52:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -125,6 +125,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The ade node name. */
     public static final String N_ADE = "ade";
 
+    /** The ade-cache node name. */
+    public static final String N_ADE_CACHE = "ade-cache";
+
     /** The node name for the alias node. */
     public static final String N_ALIAS = "alias";
 
@@ -136,12 +139,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the browser-based node. */
     public static final String N_BROWSER_BASED = "browser-based";
-
-    /** The ade-cache node name. */
-    public static final String N_ADE_CACHE = "ade-cache";
-
-    /** The sitemap-cache node name. */
-    public static final String N_SITEMAP_CACHE = "sitemap-cache";
 
     /** The node name for the cache-enabled node. */
     public static final String N_CACHE_ENABLED = "cache-enabled";
@@ -380,6 +377,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The sitemap node name. */
     public static final String N_SITEMAP = "sitemap";
 
+    /** The sitemap-cache node name. */
+    public static final String N_SITEMAP_CACHE = "sitemap-cache";
+
     /** The node name for the context site root. */
     public static final String N_SITEROOT = "siteroot";
 
@@ -430,6 +430,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The size of the memory monitor's cache for users. */
     public static final String N_SIZE_USERS = "size-users";
+
+    /** The subcontainers node name. */
+    public static final String N_SUBCONTAINERS = "subcontainers";
 
     /** The main system configuration node name. */
     public static final String N_SYSTEM = "system";
@@ -1124,10 +1127,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // add rule for ADE cache settings
         String adeCachePath = "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_ADE_CACHE;
         digester.addObjectCreate(adeCachePath, CmsADECacheSettings.class);
+        // container page cache
         digester.addCallMethod(adeCachePath + "/" + N_CONTAINERPAGES, "setContainerPageOfflineSize", 1);
         digester.addCallParam(adeCachePath + "/" + N_CONTAINERPAGES, 0, A_OFFLINE);
         digester.addCallMethod(adeCachePath + "/" + N_CONTAINERPAGES, "setContainerPageOnlineSize", 1);
         digester.addCallParam(adeCachePath + "/" + N_CONTAINERPAGES, 0, A_ONLINE);
+        // subcontainer cache
+        digester.addCallMethod(adeCachePath + "/" + N_SUBCONTAINERS, "setSubContainerOfflineSize", 1);
+        digester.addCallParam(adeCachePath + "/" + N_SUBCONTAINERS, 0, A_OFFLINE);
+        digester.addCallMethod(adeCachePath + "/" + N_SUBCONTAINERS, "setSubContainerOnlineSize", 1);
+        digester.addCallParam(adeCachePath + "/" + N_SUBCONTAINERS, 0, A_ONLINE);
         // set the settings
         digester.addSetNext(adeCachePath, "setAdeCacheSettings");
 
@@ -1554,9 +1563,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             if (getAdeCacheSettings() != null) {
                 Element cacheElem = adeElem.addElement(N_ADE_CACHE);
+                // container page cache
                 Element cntPageCacheElem = cacheElem.addElement(N_CONTAINERPAGES);
                 cntPageCacheElem.addAttribute(A_OFFLINE, "" + getAdeCacheSettings().getContainerPageOfflineSize());
                 cntPageCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getContainerPageOnlineSize());
+                // sub-container cache
+                Element subContainerCacheElem = cacheElem.addElement(N_SUBCONTAINERS);
+                subContainerCacheElem.addAttribute(A_OFFLINE, "" + getAdeCacheSettings().getSubContainerOfflineSize());
+                subContainerCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getSubContainerOnlineSize());
             }
         }
 
@@ -1564,18 +1578,23 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         if (getSitemapCacheSettings() != null) {
             Element sitemapElem = systemElement.addElement(N_SITEMAP);
             Element cacheElem = sitemapElem.addElement(N_SITEMAP_CACHE);
+            // documents cache
             Element docsCacheElem = cacheElem.addElement(N_DOCUMENTS);
             docsCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getDocumentOfflineSize());
             docsCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getDocumentOnlineSize());
+            // files cache
             Element fileCacheElem = cacheElem.addElement(N_FILES);
             fileCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getFileOfflineSize());
             fileCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getFileOnlineSize());
+            // missing URIs cache
             Element missingCacheElem = cacheElem.addElement(N_MISSING_URIS);
             missingCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getMissingUriOfflineSize());
             missingCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getMissingUriOnlineSize());
+            // properties cache
             Element propsCacheElem = cacheElem.addElement(N_PROPERTIES);
             propsCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getPropertyOfflineSize());
             propsCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getPropertyOnlineSize());
+            // URIs cache
             Element uriCacheElem = cacheElem.addElement(N_URIS);
             uriCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getUriOfflineSize());
             uriCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getUriOnlineSize());

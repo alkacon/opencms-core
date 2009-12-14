@@ -107,6 +107,7 @@
             <configuration class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
             <ade-cache>
                 <containerpages offline="1024" online="1024" />
+                <subcontainers offline="64" online="64" />
             </ade-cache>
         </ade>
         <sitemap>
