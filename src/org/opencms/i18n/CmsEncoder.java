@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2009/09/14 14:29:45 $
- * Version: $Revision: 1.26.2.2 $
+ * Date   : $Date: 2009/12/14 13:07:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -473,7 +473,6 @@ public final class CmsEncoder {
      */
     public static String escapeHtml(String source) {
 
-        int terminatorIndex;
         if (source == null) {
             return null;
         }
@@ -482,7 +481,7 @@ public final class CmsEncoder {
             int ch = source.charAt(i);
             // avoid escaping already escaped characters            
             if (ch == 38) {
-                terminatorIndex = source.indexOf(";", i);
+                int terminatorIndex = source.indexOf(";", i);
                 if (terminatorIndex > 0) {
                     if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+|lt|gt|amp|quote")) {
                         result.append(source.substring(i, terminatorIndex + 1));
