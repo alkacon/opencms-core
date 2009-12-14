@@ -102,6 +102,7 @@ button.cms-button-wide {
 #toolbar button {
 	z-index: 10100;
 	position: relative;
+    padding: 0px;
 }
 
 /*   #toolbar button.right {
