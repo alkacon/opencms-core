@@ -26,8 +26,9 @@
 	}
     
     #cms-gallery-tabs .ui-tabs-nav{
-        background: #BFBFBF;
+        background: #AAAAAA url(custom-theme/images/ui-bg_highlight-soft_75_aaaaaa_1x100.png) repeat-x scroll 50% 50%;
         border-bottom: 1px solid #AAAAAA;
+        padding-top:8px;
 	}
     
     #cms-gallery-tabs li.ui-state-active{
@@ -57,11 +58,11 @@
     
     #cms-preview .edit-area,
     #cms-preview .edit-format-area{
-        height: 100px;
+        height: 100px;  
         /*height:240px; */ 
         margin: 2px;
         overflow: auto;
-    } 
+    }       
     
     /*TODO: remove as soon as layout is improved!!!! */
     #cms-preview .edit-format-area {

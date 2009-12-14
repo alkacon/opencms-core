@@ -115,6 +115,7 @@ div.cms-button {
 	width: 20px;
 	height: 20px;
 	overflow: hidden;
+    padding: 0px;
 }
 
 .ui-state-default .cms-icon-logo {
@@ -940,13 +941,13 @@ li.jTreePlacement, li.jTreePlaceholder {
 .cms-menu .connect {
 	background: #F9F9F9;
 	position: absolute;
-	left: 0px;
-	top: -35px;
-	width: 99px;
-	height: 36px;
-	z-index: 1;
-	border: 1px solid #aaaaaa;
-	border-bottom: 0px;
+    left: 0px;
+    top: -35px;
+    width: 99px;
+    height: 35px;
+    z-index: 1;
+    border: 1px solid #aaaaaa;
+    border-bottom: 0px;
 }
 
 /**
