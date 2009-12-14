@@ -105,9 +105,18 @@
 		<servletcontainer-settings mode="auto" />
         <ade>
             <configuration class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
-            <cache>
+            <ade-cache>
                 <containerpages offline="1024" online="1024" />
-            </cache>
+            </ade-cache>
         </ade>
+        <sitemap>
+            <sitemap-cache>
+                <documents offline="32" online="32" />
+                <files offline="32" online="32" />
+                <missing-uris offline="4096" online="4096" />
+                <properties offline="4096" online="4096" />
+                <uris offline="4096" online="4096" />
+            </sitemap-cache>
+        </sitemap>
 	</system>
 </opencms>
