@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2009/11/05 10:33:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/14 12:51:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -211,7 +211,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
         m_cacheContentDefinitions.put(cacheKey, contentDefinition);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_CACHED_SYSTEM_ID_1, cacheKey));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_CACHED_SYSTEM_ID_1, cacheKey));
         }
     }
 
@@ -228,7 +228,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cacheTemporary.clear();
                 m_cacheContentDefinitions.clear();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_FLUSHED_CACHES_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_FLUSHED_CACHES_0));
                 }
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
@@ -324,7 +324,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 // store content in cache
                 m_cacheTemporary.put(cacheKey, content);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_CACHED_SYS_ID_1, cacheKey));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_CACHED_SYS_ID_1, cacheKey));
                 }
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
@@ -410,7 +410,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             m_cacheContentDefinitions.clear();
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_ER_UNCACHED_SYS_ID_1,
+                    Messages.LOG_ERR_UNCACHED_SYS_ID_1,
                     getCacheKey(systemId, false)));
             }
         } else {
@@ -418,7 +418,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
             if ((null != o) && LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_ER_UNCACHED_CONTENT_DEF_1,
+                    Messages.LOG_ERR_UNCACHED_CONTENT_DEF_1,
                     getCacheKey(systemId, false)));
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/Messages.java,v $
- * Date   : $Date: 2009/09/04 15:01:18 $
- * Version: $Revision: 1.17.2.1 $
+ * Date   : $Date: 2009/12/14 12:51:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.17.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,19 +182,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ENTITY_RESOLVE_FAILED_1 = "LOG_ENTITY_RESOLVE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ER_CACHED_SYS_ID_1 = "LOG_ER_CACHED_SYS_ID_1";
+    public static final String LOG_ERR_CACHED_SYS_ID_1 = "LOG_ERR_CACHED_SYS_ID_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ER_CACHED_SYSTEM_ID_1 = "LOG_ER_CACHED_SYSTEM_ID_1";
+    public static final String LOG_ERR_CACHED_SYSTEM_ID_1 = "LOG_ERR_CACHED_SYSTEM_ID_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ER_FLUSHED_CACHES_0 = "LOG_ER_FLUSHED_CACHES_0";
+    public static final String LOG_ERR_FLUSHED_CACHES_0 = "LOG_ERR_FLUSHED_CACHES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ER_UNCACHED_CONTENT_DEF_1 = "LOG_ER_UNCACHED_CONTENT_DEF_1";
+    public static final String LOG_ERR_UNCACHED_CONTENT_DEF_1 = "LOG_ERR_UNCACHED_CONTENT_DEF_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ER_UNCACHED_SYS_ID_1 = "LOG_ER_UNCACHED_SYS_ID_1";
+    public static final String LOG_ERR_UNCACHED_SYS_ID_1 = "LOG_ERR_UNCACHED_SYS_ID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_DEFAULT_WIDGET_FOR_CONTENT_TYPE_2 = "LOG_INIT_DEFAULT_WIDGET_FOR_CONTENT_TYPE_2";

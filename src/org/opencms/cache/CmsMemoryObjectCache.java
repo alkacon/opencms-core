@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsMemoryObjectCache.java,v $
- * Date   : $Date: 2009/09/09 15:54:53 $
- * Version: $Revision: 1.7.2.2 $
+ * Date   : $Date: 2009/12/14 12:51:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.Messages;
 
 import org.apache.commons.logging.Log;
 
@@ -46,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.3
  */
@@ -90,7 +89,8 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
                 // flush cache   
                 OpenCms.getMemoryMonitor().flushMemObjects();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_FLUSHED_CACHES_0));
+                    LOG.debug(org.opencms.xml.Messages.get().getBundle().key(
+                        org.opencms.xml.Messages.LOG_ERR_FLUSHED_CACHES_0));
                 }
                 break;
             default:
