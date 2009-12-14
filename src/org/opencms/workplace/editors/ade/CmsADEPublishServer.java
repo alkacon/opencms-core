@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/11/23 15:18:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.A_CmsAjaxServer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.9.3
  */

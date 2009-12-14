@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2009/10/14 14:38:05 $
- * Version: $Revision: 1.68.2.5 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.List;
 import java.util.Map;
@@ -98,7 +99,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.68.2.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -453,6 +454,16 @@ public final class OpenCms {
     public static CmsSiteManagerImpl getSiteManager() {
 
         return OpenCmsCore.getInstance().getSiteManager();
+    }
+
+    /**
+     * Returns the sitemap manager.<p>
+     * 
+     * @return the sitemap manager
+     */
+    public static CmsSitemapManager getSitemapManager() {
+
+        return OpenCmsCore.getInstance().getSitemapManager();
     }
 
     /**

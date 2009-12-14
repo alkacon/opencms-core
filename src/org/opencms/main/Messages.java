@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2009/10/14 14:38:05 $
- * Version: $Revision: 1.39.2.3 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.3 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -394,6 +394,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1 = "LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_SITEMAP_MANAGER_SHUTDOWN_1 = "LOG_ERROR_SITEMAP_MANAGER_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_THREAD_SHUTDOWN_1 = "LOG_ERROR_THREAD_SHUTDOWN_1";

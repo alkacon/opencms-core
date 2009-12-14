@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/10/20 09:06:25 $
- * Version: $Revision: 1.51.2.5 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,6 +65,7 @@ import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
+import org.opencms.xml.sitemap.CmsSitemapCacheSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +86,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51.2.5 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -136,8 +137,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the browser-based node. */
     public static final String N_BROWSER_BASED = "browser-based";
 
-    /** The cache node name. */
-    public static final String N_CACHE = "cache";
+    /** The ade-cache node name. */
+    public static final String N_ADE_CACHE = "ade-cache";
+
+    /** The sitemap-cache node name. */
+    public static final String N_SITEMAP_CACHE = "sitemap-cache";
 
     /** The node name for the cache-enabled node. */
     public static final String N_CACHE_ENABLED = "cache-enabled";
@@ -373,6 +377,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the session-storageprovider node. */
     public static final String N_SESSION_STORAGEPROVIDER = "session-storageprovider";
 
+    /** The sitemap node name. */
+    public static final String N_SITEMAP = "sitemap";
+
     /** The node name for the context site root. */
     public static final String N_SITEROOT = "siteroot";
 
@@ -469,9 +476,25 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
 
+    /** The node name for the sitemap cache for documents. */
+    private static final String N_DOCUMENTS = "documents";
+
+    /** The node name for the sitemap cache for files. */
+    private static final String N_FILES = "files";
+
+    /** The node name for the sitemap cache for missing URIs. */
+    private static final String N_MISSING_URIS = "missing-uris";
+
+    /** The node name for the sitemap cache for properties. */
+    private static final String N_PROPERTIES = "properties";
+
+    /** The node name for the sitemap cache for URIs. */
+    private static final String N_URIS = "uris";
+
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
 
+    /** The ADE configuration. */
     private String m_adeConfiguration;
 
     /** The authorization handler. */
@@ -558,6 +581,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured site manager. */
     private CmsSiteManagerImpl m_siteManager;
+
+    /** The sitemap cache settings. */
+    private CmsSitemapCacheSettings m_sitemapCacheSettings;
 
     /** The temporary file project id. */
     private int m_tempFileProjectId;
@@ -1095,18 +1121,46 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CONFIGURATION, "setAdeConfiguration", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CONFIGURATION, 0, A_CLASS);
 
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE, CmsADECacheSettings.class);
-        digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_CONTAINERPAGES,
-            "setContainerPageOfflineSize",
-            1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_CONTAINERPAGES, 0, A_OFFLINE);
-        digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_CONTAINERPAGES,
-            "setContainerPageOnlineSize",
-            1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE + "/" + N_CONTAINERPAGES, 0, A_ONLINE);
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_ADE + "/" + N_CACHE, "setAdeCacheSettings");
+        // add rule for ADE cache settings
+        String adeCachePath = "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_ADE_CACHE;
+        digester.addObjectCreate(adeCachePath, CmsADECacheSettings.class);
+        digester.addCallMethod(adeCachePath + "/" + N_CONTAINERPAGES, "setContainerPageOfflineSize", 1);
+        digester.addCallParam(adeCachePath + "/" + N_CONTAINERPAGES, 0, A_OFFLINE);
+        digester.addCallMethod(adeCachePath + "/" + N_CONTAINERPAGES, "setContainerPageOnlineSize", 1);
+        digester.addCallParam(adeCachePath + "/" + N_CONTAINERPAGES, 0, A_ONLINE);
+        // set the settings
+        digester.addSetNext(adeCachePath, "setAdeCacheSettings");
+
+        // add rule for sitemap cache settings
+        String sitemapCachePath = "*/" + N_SYSTEM + "/" + N_SITEMAP + "/" + N_SITEMAP_CACHE;
+        digester.addObjectCreate(sitemapCachePath, CmsSitemapCacheSettings.class);
+        // file cache
+        digester.addCallMethod(sitemapCachePath + "/" + N_FILES, "setFileOfflineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_FILES, 0, A_OFFLINE);
+        digester.addCallMethod(sitemapCachePath + "/" + N_FILES, "setFileOnlineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_FILES, 0, A_ONLINE);
+        // document cache
+        digester.addCallMethod(sitemapCachePath + "/" + N_DOCUMENTS, "setDocumentOfflineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_DOCUMENTS, 0, A_OFFLINE);
+        digester.addCallMethod(sitemapCachePath + "/" + N_DOCUMENTS, "setDocumentOnlineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_DOCUMENTS, 0, A_ONLINE);
+        // URIs cache
+        digester.addCallMethod(sitemapCachePath + "/" + N_URIS, "setUriOfflineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_URIS, 0, A_OFFLINE);
+        digester.addCallMethod(sitemapCachePath + "/" + N_URIS, "setUriOnlineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_URIS, 0, A_ONLINE);
+        // missing URIs cache
+        digester.addCallMethod(sitemapCachePath + "/" + N_MISSING_URIS, "setMissingUriOfflineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_MISSING_URIS, 0, A_OFFLINE);
+        digester.addCallMethod(sitemapCachePath + "/" + N_MISSING_URIS, "setMissingUriOnlineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_MISSING_URIS, 0, A_ONLINE);
+        // properties cache
+        digester.addCallMethod(sitemapCachePath + "/" + N_PROPERTIES, "setPropertyOfflineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_PROPERTIES, 0, A_OFFLINE);
+        digester.addCallMethod(sitemapCachePath + "/" + N_PROPERTIES, "setPropertyOnlineSize", 1);
+        digester.addCallParam(sitemapCachePath + "/" + N_PROPERTIES, 0, A_ONLINE);
+        // set the settings
+        digester.addSetNext(sitemapCachePath, "setSitemapCacheSettings");
     }
 
     /**
@@ -1499,11 +1553,32 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 adeElem.addElement(N_CONFIGURATION).addAttribute(A_CLASS, getAdeConfiguration());
             }
             if (getAdeCacheSettings() != null) {
-                Element cacheElem = adeElem.addElement(N_CACHE);
+                Element cacheElem = adeElem.addElement(N_ADE_CACHE);
                 Element cntPageCacheElem = cacheElem.addElement(N_CONTAINERPAGES);
                 cntPageCacheElem.addAttribute(A_OFFLINE, "" + getAdeCacheSettings().getContainerPageOfflineSize());
                 cntPageCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getContainerPageOnlineSize());
             }
+        }
+
+        // sitemap settings
+        if (getSitemapCacheSettings() != null) {
+            Element sitemapElem = systemElement.addElement(N_SITEMAP);
+            Element cacheElem = sitemapElem.addElement(N_SITEMAP_CACHE);
+            Element docsCacheElem = cacheElem.addElement(N_DOCUMENTS);
+            docsCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getDocumentOfflineSize());
+            docsCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getDocumentOnlineSize());
+            Element fileCacheElem = cacheElem.addElement(N_FILES);
+            fileCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getFileOfflineSize());
+            fileCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getFileOnlineSize());
+            Element missingCacheElem = cacheElem.addElement(N_MISSING_URIS);
+            missingCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getMissingUriOfflineSize());
+            missingCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getMissingUriOnlineSize());
+            Element propsCacheElem = cacheElem.addElement(N_PROPERTIES);
+            propsCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getPropertyOfflineSize());
+            propsCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getPropertyOnlineSize());
+            Element uriCacheElem = cacheElem.addElement(N_URIS);
+            uriCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getUriOfflineSize());
+            uriCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getUriOnlineSize());
         }
 
         // return the system node
@@ -1854,6 +1929,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public CmsSiteManagerImpl getSiteManager() {
 
         return m_siteManager;
+    }
+
+    /**
+     * Returns the settings of the sitemap cache.<p>
+     *
+     * @return the settings of the sitemap cache
+     */
+    public CmsSitemapCacheSettings getSitemapCacheSettings() {
+
+        return m_sitemapCacheSettings;
     }
 
     /**
@@ -2309,6 +2394,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SITE_CONFIG_FINISHED_0));
         }
+    }
+
+    /**
+     * Sets the cache settings for the sitemap.<p>
+     *
+     * @param settings the cache settings for the sitemap
+     */
+    public void setSitemapCacheSettings(CmsSitemapCacheSettings settings) {
+
+        m_sitemapCacheSettings = settings;
     }
 
     /**

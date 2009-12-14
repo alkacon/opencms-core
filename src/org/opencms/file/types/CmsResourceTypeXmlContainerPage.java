@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2009/11/05 10:25:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,11 +72,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
 public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
+
+    /** The sub container resource type id. */
+    public static final int SUB_CONTAINER_TYPE_ID = 17;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContainerPage.class);
 
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;
@@ -109,81 +115,6 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     public static int getStaticTypeId() {
 
         return RESOURCE_TYPE_ID;
-    }
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContainerPage.class);
-
-    /**
-     * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
-     */
-    @Override
-    public List<CmsLink> parseLinks(CmsObject cms, CmsFile file) {
-
-        if (file.getLength() == 0) {
-            return Collections.emptyList();
-        }
-        CmsXmlContainerPage xmlContent;
-        long requestTime = cms.getRequestContext().getRequestTime();
-        try {
-            // prevent the check rules to remove the broken links
-            cms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
-            xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, file);
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(file)), e);
-            }
-            return Collections.emptyList();
-        } finally {
-            cms.getRequestContext().setRequestTime(requestTime);
-        }
-
-        Set<CmsLink> links = new HashSet<CmsLink>();
-        List<Locale> locales = xmlContent.getLocales();
-
-        // iterate over all languages
-        Iterator<Locale> i = locales.iterator();
-        while (i.hasNext()) {
-            Locale locale = i.next();
-            List<I_CmsXmlContentValue> values = xmlContent.getValues(locale);
-
-            // iterate over all body elements per language
-            Iterator<I_CmsXmlContentValue> j = values.iterator();
-            while (j.hasNext()) {
-                I_CmsXmlContentValue value = j.next();
-                if (value instanceof CmsXmlHtmlValue) {
-                    CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)value;
-                    CmsLinkTable linkTable = htmlValue.getLinkTable();
-
-                    // iterate over all links inside a body element
-                    Iterator<CmsLink> k = linkTable.iterator();
-                    while (k.hasNext()) {
-                        CmsLink link = k.next();
-
-                        // external links are omitted
-                        if (link.isInternal()) {
-                            link.checkConsistency(cms);
-                            links.add(link);
-                        }
-                    }
-                } else if (value instanceof CmsXmlVfsFileValue) {
-                    CmsXmlVfsFileValue refValue = (CmsXmlVfsFileValue)value;
-                    CmsLink link = refValue.getLink(cms);
-                    if (link != null) {
-                        links.add(link);
-                    }
-                } else if (value instanceof CmsXmlVarLinkValue) {
-                    CmsXmlVarLinkValue refValue = (CmsXmlVarLinkValue)value;
-                    CmsLink link = refValue.getLink(cms);
-                    if ((link != null) && link.isInternal()) {
-                        links.add(link);
-                    }
-                }
-            }
-        }
-        return new ArrayList<CmsLink>(links);
     }
 
     /**
@@ -319,6 +250,78 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         m_staticFrozen = true;
 
         super.initConfiguration(RESOURCE_TYPE_NAME, "" + RESOURCE_TYPE_ID, className);
+    }
+
+    /**
+     * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
+     */
+    @Override
+    public List<CmsLink> parseLinks(CmsObject cms, CmsFile file) {
+
+        if (file.getLength() == 0) {
+            return Collections.emptyList();
+        }
+        CmsXmlContainerPage xmlContent;
+        long requestTime = cms.getRequestContext().getRequestTime();
+        try {
+            // prevent the check rules to remove the broken links
+            cms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
+            xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, file);
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(org.opencms.db.Messages.get().getBundle().key(
+                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                    cms.getSitePath(file)), e);
+            }
+            return Collections.emptyList();
+        } finally {
+            cms.getRequestContext().setRequestTime(requestTime);
+        }
+
+        Set<CmsLink> links = new HashSet<CmsLink>();
+        List<Locale> locales = xmlContent.getLocales();
+
+        // iterate over all languages
+        Iterator<Locale> i = locales.iterator();
+        while (i.hasNext()) {
+            Locale locale = i.next();
+            List<I_CmsXmlContentValue> values = xmlContent.getValues(locale);
+
+            // iterate over all body elements per language
+            Iterator<I_CmsXmlContentValue> j = values.iterator();
+            while (j.hasNext()) {
+                I_CmsXmlContentValue value = j.next();
+                if (value instanceof CmsXmlHtmlValue) {
+                    CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)value;
+                    CmsLinkTable linkTable = htmlValue.getLinkTable();
+
+                    // iterate over all links inside a body element
+                    Iterator<CmsLink> k = linkTable.iterator();
+                    while (k.hasNext()) {
+                        CmsLink link = k.next();
+
+                        // external links are omitted
+                        if (link.isInternal()) {
+                            link.checkConsistency(cms);
+                            links.add(link);
+                        }
+                    }
+                } else if (value instanceof CmsXmlVfsFileValue) {
+                    CmsXmlVfsFileValue refValue = (CmsXmlVfsFileValue)value;
+                    CmsLink link = refValue.getLink(cms);
+                    if (link != null) {
+                        links.add(link);
+                    }
+                } else if (value instanceof CmsXmlVarLinkValue) {
+                    CmsXmlVarLinkValue refValue = (CmsXmlVarLinkValue)value;
+                    CmsLink link = refValue.getLink(cms);
+                    if ((link != null) && link.isInternal()) {
+                        links.add(link);
+                    }
+                }
+            }
+        }
+        return new ArrayList<CmsLink>(links);
     }
 
     /**

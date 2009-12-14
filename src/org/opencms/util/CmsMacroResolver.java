@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
-import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
@@ -67,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -618,10 +617,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         }
                         break;
                     case 9:
-                        // TODO: unify these beans!
                         try {
-                            CmsSiteEntryBean element = (CmsSiteEntryBean)m_jspPageContext.getRequest().getAttribute(
-                                CmsADEManager.ATTR_SITEMAP_ENTRY);
+                            CmsSiteEntryBean element = OpenCms.getSitemapManager().getCurrentEntry(
+                                m_jspPageContext.getRequest());
                             value = m_cms.getSitePath(m_cms.readResource(element.getResourceId()));
                         } catch (CmsException e) {
                             LOG.warn(e);

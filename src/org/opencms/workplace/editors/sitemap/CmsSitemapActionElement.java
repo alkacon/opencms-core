@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2009/12/11 08:30:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,17 +39,15 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.galleries.CmsGallerySearchServer;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Sitemap server used for client/server communication.<p>
@@ -58,14 +56,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.6
  */
 public class CmsSitemapActionElement extends CmsJspActionElement {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSitemapActionElement.class);
+    /** The sitemap manager instance. */
+    private CmsSitemapManager m_manager;
 
     /**
      * Constructor.<p>
@@ -77,6 +75,29 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
     public CmsSitemapActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
+        m_manager = OpenCms.getSitemapManager();
+    }
+
+    /**
+     * Returns script tags for resource type specific handling of the gallery preview.<p>
+     * 
+     * @return the script tags
+     */
+    public String getAdditionalGalleryJavascript() {
+
+        return CmsGallerySearchServer.getAdditionalJavascriptForTypes(m_manager.getSearchableResourceTypes());
+    }
+
+    /**
+     * Returns the URI for the gallery server JSP.<p>
+     * 
+     * @return the URI for the gallery server JSP
+     */
+    public String getGalleryServerUri() {
+
+        CmsLinkManager linkMan = OpenCms.getLinkManager();
+        String galleryServerUri = linkMan.substituteLink(getCmsObject(), CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
+        return galleryServerUri;
     }
 
     /**
@@ -91,6 +112,20 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
         CmsObject cms = getCmsObject();
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, getResource());
         return CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)));
+    }
+
+    /**
+     * Returns the string representation of the JSON array containing the searchable resource type id's.<p>
+     * 
+     * @return the resource type id's
+     */
+    public String getSearchableResourceTypeIds() {
+
+        JSONArray types = new JSONArray();
+        for (I_CmsResourceType type : m_manager.getSearchableResourceTypes()) {
+            types.put(type.getTypeId());
+        }
+        return types.toString();
     }
 
     /**
@@ -135,42 +170,6 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
             resource = getCmsObject().readResource(getCmsObject().getRequestContext().getUri());
         }
         return resource;
-    }
-
-    /**
-     * Returns the URI for the gallery server JSP.<p>
-     * 
-     * @return the URI for the gallery server JSP
-     */
-    public String getGalleryServerUri() {
-
-        CmsLinkManager linkMan = OpenCms.getLinkManager();
-        String galleryServerUri = linkMan.substituteLink(getCmsObject(), CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
-        return galleryServerUri;
-    }
-
-    /**
-     * Returns the string representation of the JSON array containing the searchable resource type id's.<p>
-     * 
-     * @return the resource type id's
-     */
-    public String getSearchableResourceTypeIds() {
-
-        JSONArray types = new JSONArray();
-        for (I_CmsResourceType type : CmsSitemapServer.getSearchableResourceTypes()) {
-            types.put(type.getTypeId());
-        }
-        return types.toString();
-    }
-
-    /**
-     * Returns script tags for resource type specific handling of the gallery preview.<p>
-     * 
-     * @return the script tags
-     */
-    public String getAdditionalGalleryJavascript() {
-
-        return CmsGallerySearchServer.getAdditionalJavascriptForTypes(CmsSitemapServer.getSearchableResourceTypes());
     }
 
 }

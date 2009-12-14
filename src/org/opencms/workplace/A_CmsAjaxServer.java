@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/A_CmsAjaxServer.java,v $
- * Date   : $Date: 2009/12/01 08:55:00 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/A_CmsAjaxServer.java,v $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.workplace;
 
 import org.opencms.flex.CmsFlexController;
 import org.opencms.json.JSONException;
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.9
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultListFormatterHelper.java,v $
- * Date   : $Date: 2009/12/11 08:27:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -55,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.6
  * 
@@ -94,13 +95,31 @@ public class CmsDefaultListFormatterHelper extends CmsJspActionElement {
         super(context, req, res);
 
         m_manager = OpenCms.getADEManager();
-
-        m_formatterInfo = m_manager.getFormatterInfo(req);
+        m_formatterInfo = getFormatterInfo(req);
 
         if (m_formatterInfo == null) {
             m_elementBean = m_manager.getCurrentElement(req);
             m_isContainerBeanMode = true;
         }
+    }
+
+    /**
+     * Gets the current formatter-info-bean from the request.<p>
+     * 
+     * @param req the servlet-request
+     * @return the info-bean or null if not available
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFormatterInfoBean getFormatterInfo(ServletRequest req) throws CmsException {
+
+        CmsFormatterInfoBean info = null;
+        try {
+            info = (CmsFormatterInfoBean)req.getAttribute(CmsADEManager.ATTR_FORMATTER_INFO);
+        } catch (Exception e) {
+            throw new CmsException(org.opencms.xml.containerpage.Messages.get().container(
+                org.opencms.xml.containerpage.Messages.ERR_READING_FORMATTER_INFO_FROM_REQUEST_0), e);
+        }
+        return info;
     }
 
     /**

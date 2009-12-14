@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2009/09/11 14:58:10 $
- * Version: $Revision: 1.19.2.3 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.19.2.3 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,6 +56,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0 = "ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_CONTENT_ENC_1 = "ERR_INVALID_CONTENT_ENC_1";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/12/07 09:17:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -95,11 +95,8 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
-import org.opencms.xml.containerpage.CmsADECache;
-import org.opencms.xml.containerpage.CmsADECacheSettings;
-import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.containerpage.CmsADEManager;
-import org.opencms.xml.containerpage.I_CmsADEConfiguration;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -146,7 +143,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,11 +161,11 @@ public final class OpenCmsCore {
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
 
-    /** The ade cache instance. */
-    private CmsADECache m_adeCache;
-
     /** The ade manager. */
     private CmsADEManager m_adeManager;
+
+    /** The sitemap manager. */
+    private CmsSitemapManager m_sitemapManager;
 
     /** The configured authorization handler. */
     private I_CmsAuthorizationHandler m_authorizationHandler;
@@ -700,6 +697,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the sitemap manager.<p>
+     * 
+     * @return the sitemap manager
+     */
+    protected CmsSitemapManager getSitemapManager() {
+
+        return m_sitemapManager;
+    }
+
+    /**
      * Returns an instance of the common sql manager.<p>
      * 
      * @return an instance of the common sql manager
@@ -1218,30 +1225,11 @@ public final class OpenCmsCore {
             // everything is initialized, now start publishing
             m_publishManager.startPublishing();
 
-            // initialize the ade cache
-            CmsADECacheSettings adeCacheSettings = systemConfiguration.getAdeCacheSettings();
-            if (adeCacheSettings == null) {
-                adeCacheSettings = new CmsADECacheSettings();
-            }
+            // initialize ade manager
+            m_adeManager = new CmsADEManager(m_memoryMonitor, systemConfiguration);
 
-            // initialize the ade configuration
-            I_CmsADEConfiguration adeConfiguration;
-            String adeConfigurationClassName = systemConfiguration.getAdeConfiguration();
-            if (adeConfigurationClassName == null) {
-                // use default implementation
-                adeConfiguration = new CmsADEDefaultConfiguration();
-            } else {
-                // use configured ade configuration
-                try {
-                    adeConfiguration = (I_CmsADEConfiguration)Class.forName(adeConfigurationClassName).newInstance();
-                } catch (Exception e) {
-                    throw new CmsInitException(org.opencms.main.Messages.get().container(
-                        org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
-                        adeConfigurationClassName), e);
-                }
-            }
-            m_adeCache = new CmsADECache(m_memoryMonitor, adeCacheSettings);
-            m_adeManager = new CmsADEManager(m_adeCache, adeConfiguration);
+            // initialize sitemap manager
+            m_sitemapManager = new CmsSitemapManager(m_memoryMonitor, systemConfiguration);
 
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
@@ -1671,12 +1659,21 @@ public final class OpenCmsCore {
                         e.getMessage()), e);
                 }
                 try {
-                    if (m_adeCache != null) {
-                        m_adeCache.shutdown();
+                    if (m_adeManager != null) {
+                        m_adeManager.shutdown();
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(
                         Messages.LOG_ERROR_ADE_MANAGER_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
+                try {
+                    if (m_sitemapManager != null) {
+                        m_sitemapManager.shutdown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_SITEMAP_MANAGER_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
@@ -2205,22 +2202,6 @@ public final class OpenCmsCore {
             private CmsObject m_adminCms;
 
             /**
-             * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#setCmsObject(org.opencms.file.CmsObject)
-             */
-            public void setCmsObject(CmsObject adminCms) {
-
-                m_adminCms = adminCms;
-            }
-            
-            /**
-             * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#getCmsObject()
-             */
-            public CmsObject getCmsObject() {
-
-            	return m_adminCms;
-            }
-
-            /**
              * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#doLogin(javax.servlet.http.HttpServletRequest, java.lang.String)
              */
             public CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException {
@@ -2238,25 +2219,43 @@ public final class OpenCmsCore {
                     CmsContextInfo contextInfo = new CmsContextInfo(m_adminCms.getRequestContext());
                     contextInfo.setUserName(principal);
                     CmsObject newCms = initCmsObject(m_adminCms, contextInfo);
-                    
-                    if (contextInfo.getRequestedUri().startsWith("/system/workplace/") && getRoleManager().hasRole(newCms, CmsRole.WORKPLACE_USER)) {
-	                    // set the default project of the user for workplace users
-	                    CmsUserSettings settings = new CmsUserSettings(newCms);	                    
-	                    try {
-	                        CmsProject project = newCms.readProject(settings.getStartProject());
-	                        if (getOrgUnitManager().getAllAccessibleProjects(newCms, project.getOuFqn(), false).contains(project)) {
-	                            // user has access to the project, set this as current project
-	                        	newCms.getRequestContext().setCurrentProject(project);
-	                        }
-	                    } catch (CmsException e) {
-	                        // unable to set the startup project, bad but not critical
-	                    }
+
+                    if (contextInfo.getRequestedUri().startsWith("/system/workplace/")
+                        && getRoleManager().hasRole(newCms, CmsRole.WORKPLACE_USER)) {
+                        // set the default project of the user for workplace users
+                        CmsUserSettings settings = new CmsUserSettings(newCms);
+                        try {
+                            CmsProject project = newCms.readProject(settings.getStartProject());
+                            if (getOrgUnitManager().getAllAccessibleProjects(newCms, project.getOuFqn(), false).contains(
+                                project)) {
+                                // user has access to the project, set this as current project
+                                newCms.getRequestContext().setCurrentProject(project);
+                            }
+                        } catch (CmsException e) {
+                            // unable to set the startup project, bad but not critical
+                        }
                     }
 
                     return newCms;
                 } finally {
                     m_adminCms = null;
                 }
+            }
+
+            /**
+             * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#getCmsObject()
+             */
+            public CmsObject getCmsObject() {
+
+                return m_adminCms;
+            }
+
+            /**
+             * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#setCmsObject(org.opencms.file.CmsObject)
+             */
+            public void setCmsObject(CmsObject adminCms) {
+
+                m_adminCms = adminCms;
             }
         };
         loginAction.setCmsObject(initCmsObject(req, res, OpenCms.getDefaultUsers().getUserAdmin(), null, null));

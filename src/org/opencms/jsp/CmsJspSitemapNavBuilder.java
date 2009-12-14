@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2009/12/09 10:41:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,9 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
-import org.opencms.xml.sitemap.CmsSitemapResourceHandler;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.9.2 
  * 
@@ -65,6 +66,9 @@ import org.apache.commons.logging.Log;
  * @see org.opencms.jsp.CmsJspNavElement
  */
 public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
+
+    /** The sitemap manager. */
+    protected CmsSitemapManager m_manager;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspSitemapNavBuilder.class);
@@ -102,7 +106,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
 
         CmsSiteEntryBean folderEntry = null;
         try {
-            folderEntry = CmsSitemapResourceHandler.getInstance().getUri(m_cms, folder);
+            folderEntry = m_manager.getEntryForUri(m_cms, folder);
         } catch (CmsException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -149,7 +153,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
 
         CmsSiteEntryBean uriEntry;
         try {
-            uriEntry = CmsSitemapResourceHandler.getInstance().getUri(m_cms, resource);
+            uriEntry = m_manager.getEntryForUri(m_cms, resource);
         } catch (CmsException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -178,7 +182,8 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
 
         m_request = req;
         m_cms = cms;
-        m_requestUri = (String)m_request.getAttribute(CmsSitemapResourceHandler.SITEMAP_CURRENT_URI);
+        m_manager = OpenCms.getSitemapManager();
+        m_requestUri = m_manager.getCurrentUri(req);
         m_requestUriFolder = CmsResource.getFolderPath(m_requestUri);
     }
 

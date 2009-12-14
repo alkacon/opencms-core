@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/12/11 08:30:11 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,9 +57,9 @@ import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
-import org.opencms.workplace.editors.ade.A_CmsAjaxServer;
 import org.opencms.workplace.editors.ade.CmsFormatterInfoBean;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsADEManager;
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 7.6
  */
@@ -133,13 +133,6 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The resource type of this gallery. */
         private I_CmsResourceType m_resourceType;
 
-        /**
-         * 
-         * 
-         * @param resourceType
-         * @param contentType
-         * @param galleries
-         */
         protected CmsGalleryTypeInfo(
             I_CmsResourceType resourceType,
             I_CmsResourceType contentType,

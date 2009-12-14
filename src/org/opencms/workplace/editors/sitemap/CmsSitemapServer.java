@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/12/11 15:47:07 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -47,7 +48,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -58,13 +58,13 @@ import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.editors.ade.A_CmsAjaxServer;
+import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlUtils;
-import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
 import org.opencms.xml.sitemap.CmsSitemapBean;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 7.6
  */
@@ -207,6 +207,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         ENTRY("entry"),
         /** The favorites list. */
         FAVORITES("favorites"),
+        /** Models of creatable types */
+        MODELS("models"),
         /** The validated/converted site entry name. */
         NAME("name"),
         /** The properties configuration. */
@@ -220,9 +222,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         /** List of the URIs of sitemaps which reference the current sitemap */
         SUPER_SITEMAPS("superSitemaps"),
         /** Creatable types */
-        TYPES("types"),
-        /** Models of creatable types */
-        MODELS("models");
+        TYPES("types");
 
         /** Property name. */
         private String m_name;
@@ -323,9 +323,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     /** User additional info key constant. */
     protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
 
-    /** Container page resource type name constant. */
-    protected static final String CONTAINER_PAGE_TYPE_NAME = "containerpage";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapServer.class);
 
@@ -364,26 +361,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Returns the searchable resource types.<p>
-     * 
-     * @return the resource types
-     */
-    public static List<I_CmsResourceType> getSearchableResourceTypes() {
-
-        //TODO: the searchable resource types should be read from configuration
-
-        List<I_CmsResourceType> types = new ArrayList<I_CmsResourceType>();
-        try {
-            types.add(OpenCms.getResourceManager().getResourceType(CONTAINER_PAGE_TYPE_NAME));
-        } catch (CmsLoaderException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-        return types;
-    }
-
-    /**
      * Handles all sitemap requests.<p>
      * 
      * @return the result
@@ -391,7 +368,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
      * @throws JSONException if there is any problem with JSON
      * @throws CmsException if there is a problem with the cms context
      * 
-     * @see org.opencms.workplace.editors.ade.A_CmsAjaxServer#executeAction()
+     * @see org.opencms.workplace.A_CmsAjaxServer#executeAction()
      */
     @Override
     public JSONObject executeAction() throws CmsException, JSONException {
@@ -428,8 +405,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes, request);
             result = getSitemap(sitemapRes, xmlSitemap);
 
-            CmsADEManager ade = OpenCms.getADEManager();
-            List<CmsResource> creatableElements = ade.getCreatableElements(cms, sitemapParam, request);
+            CmsSitemapManager manager = OpenCms.getSitemapManager();
+            List<CmsResource> creatableElements = manager.getCreatableElements(cms, sitemapParam, request);
             JSONArray creatableTypes = new JSONArray();
             JSONArray models = new JSONArray();
             for (CmsResource resource : creatableElements) {
@@ -495,9 +472,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             addContents(entries);
             result.put(JsonResponse.ENTRIES.getName().toLowerCase(), entries);
         } else if (action.equals(Action.NEW_ENTRY)) {
-            CmsADEManager ade = OpenCms.getADEManager();
+            CmsSitemapManager manager = OpenCms.getSitemapManager();
             String type = data.getString(JsonRequest.TYPE.getName());
-            CmsResource newResource = ade.createNewElement(cms, sitemapParam, request, type);
+            CmsResource newResource = manager.createNewElement(cms, sitemapParam, request, type);
             CmsProperty titleProp = cms.readPropertyObject(newResource, "Title", false);
             String title = titleProp.getValue();
             String name = newResource.getName();
@@ -527,37 +504,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         }
         return result;
     }
-    
-    
-    /**
-    * Converts a resource to a sitemap entry bean.<p>
-    *
-    * @param cms the CmsObject to use for VFS operations 
-    * @param resource the resource to convert
-    * @return the sitemap entry bean for the resource
-    * @throws CmsException if something goes wrong
-    **/
-    private CmsSiteEntryBean resourceToSiteEntryBean(CmsObject cms, CmsResource resource) throws CmsException {
-
-        CmsProperty titleProp = cms.readPropertyObject(resource, "Title", false);
-        String title = titleProp.getValue();
-        String name = resource.getName();
-        String extension = "";
-        int dotPos = name.lastIndexOf('.');
-        if (dotPos != -1) {
-            extension = name.substring(dotPos + 1, name.length());
-        }
-
-        CmsSiteEntryBean entryBean = new CmsSiteEntryBean(
-            resource.getStructureId(),
-            name.substring(0, dotPos),
-            extension,
-            title,
-            new HashMap<String, String>(),
-            new ArrayList<CmsSiteEntryBean>());
-
-        return entryBean;
-    }
 
     /**
      * Returns the content of an entry when rendered with the given formatter.<p> 
@@ -581,7 +527,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             getRequest(),
             getResponse(),
             I_CmsResourceType.Formatter.SITEMAP,
-            Collections.singletonMap(CmsADEManager.ATTR_SITEMAP_ENTRY, (Object)entry.cloneWithoutSubEntries()));
+            Collections.singletonMap(CmsSitemapManager.ATTR_SITEMAP_ENTRY, (Object)entry.cloneWithoutSubEntries()));
     }
 
     /**
@@ -704,13 +650,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         // check if this is a top-level sitemap, by checking that it is not linked from another sitemap
         boolean topLevel = true;
         JSONArray superSitemapsJSON = new JSONArray();
-        CmsRelationFilter filter = CmsRelationFilter.SOURCES;
+        CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_WEAK);
         for (CmsRelation relation : cms.getRelationsForResource(resource, filter)) {
-            // we don't want to force the links in properties to be strong links
-            if (!relation.getType().equals(CmsRelationType.XML_STRONG)
-                && !relation.getType().equals(CmsRelationType.XML_WEAK)) {
-                continue;
-            }
             CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
             if (CmsResourceTypeXmlSitemap.isSitemap(source)) {
                 topLevel = false;
@@ -788,11 +729,11 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
      */
     protected JSONArray addContents(JSONArray jsonEntriesList) {
 
-        List<CmsSiteEntryBean> favList = jsonToEntryList(jsonEntriesList, false);
+        List<CmsSiteEntryBean> list = jsonToEntryList(jsonEntriesList, false);
         for (int i = 0; i < jsonEntriesList.length(); i++) {
             try {
                 JSONObject json = jsonEntriesList.getJSONObject(i);
-                json.put(JsonSiteEntry.CONTENT.getName(), getEntryContent(favList.get(i)));
+                json.put(JsonSiteEntry.CONTENT.getName(), getEntryContent(list.get(i)));
                 addContents(json.getJSONArray(JsonSiteEntry.SUBENTRIES.getName()));
             } catch (Exception e) {
                 // should never happen, catches JSON parsing
@@ -955,7 +896,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         // the properties
         int j = 0;
         for (Map.Entry<String, String> property : entry.getProperties().entrySet()) {
-            if (!propertiesConf.containsKey(property.getKey())) {
+            boolean isSitemapProperty = CmsSitemapManager.PROPERTY_SITEMAP.equals(property.getKey());
+            if (!propertiesConf.containsKey(property.getKey()) && !isSitemapProperty) {
                 continue;
             }
             // only if the property is configured in the schema we will save it to the sitemap
@@ -970,7 +912,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 propValue.getPath(),
                 CmsXmlSitemap.XmlNode.VALUE.getName()), locale, 0);
 
-            if (propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+            if (!isSitemapProperty
+                && propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
                 I_CmsXmlContentValue filelistValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
                     valValue.getPath(),
                     CmsXmlSitemap.XmlNode.FILELIST.getName()), locale, 0);
@@ -1009,5 +952,37 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             saveEntry(cms, locale, entryValue.getPath(), xmlSitemap, subentry, subentryCount, propertiesConf);
             subentryCount++;
         }
+    }
+
+    /**
+     * Converts a resource to a sitemap entry bean.<p>
+     *
+     * @param cms the CmsObject to use for VFS operations 
+     * @param resource the resource to convert
+     * 
+     * @return the sitemap entry bean for the resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsSiteEntryBean resourceToSiteEntryBean(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        String title = titleProp.getValue();
+        String name = resource.getName();
+        String extension = "";
+        int dotPos = name.lastIndexOf('.');
+        if (dotPos != -1) {
+            extension = name.substring(dotPos + 1, name.length());
+        }
+
+        CmsSiteEntryBean entryBean = new CmsSiteEntryBean(
+            resource.getStructureId(),
+            name.substring(0, dotPos),
+            extension,
+            title,
+            new HashMap<String, String>(),
+            new ArrayList<CmsSiteEntryBean>());
+
+        return entryBean;
     }
 }

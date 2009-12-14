@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.9.2
  */
@@ -80,8 +79,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     public CmsSiteEntryBean getEntry() {
 
         if (m_entry == null) {
-            m_entry = (CmsSiteEntryBean)getRequest().getAttribute(CmsADEManager.ATTR_SITEMAP_ENTRY);
-
+            m_entry = OpenCms.getSitemapManager().getCurrentEntry(getRequest());
         }
         return m_entry;
     }

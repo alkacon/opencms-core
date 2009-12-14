@@ -35,7 +35,8 @@
 	session-storageprovider?,
 	permissionhandler?,
 	servletcontainer-settings?,
-	ade?)>
+	ade?,
+	sitemap?)>
 
 <!--
 # Version history settings.
@@ -561,7 +562,7 @@ Each job can have an optional list of parameters.
 # The advanced direct edit settings. 
 -->		
 <!ELEMENT ade (configuration,
-			   cache)>								   
+			   ade-cache)>								   
 
 <!--
 # Configuration class for ADE. 
@@ -572,7 +573,7 @@ Each job can have an optional list of parameters.
 <!--
 # Cache sizes for ADE. 
 -->
-<!ELEMENT cache (containerpages) >
+<!ELEMENT ade-cache (containerpages) >
 
 <!--
 # Container page caches. 
@@ -580,3 +581,48 @@ Each job can have an optional list of parameters.
 <!ELEMENT containerpages EMPTY >
 <!ATTLIST containerpages offline CDATA #REQUIRED>
 <!ATTLIST containerpages online CDATA #REQUIRED>
+
+<!--
+# The sitemap settings. 
+-->		
+<!ELEMENT sitemap (sitemap-cache)>								   
+
+<!--
+# Cache sizes for the sitemap. 
+-->
+<!ELEMENT sitemap-cache (documents, files, missing-uris, properties, uris) >
+
+<!--
+# Document caches. 
+-->
+<!ELEMENT documents EMPTY >
+<!ATTLIST documents offline CDATA #REQUIRED>
+<!ATTLIST documents online CDATA #REQUIRED>
+
+<!--
+# Files caches. 
+-->
+<!ELEMENT files EMPTY >
+<!ATTLIST files offline CDATA #REQUIRED>
+<!ATTLIST files online CDATA #REQUIRED>
+
+<!--
+# Missing URIs caches. 
+-->
+<!ELEMENT missing-uris EMPTY >
+<!ATTLIST missing-uris offline CDATA #REQUIRED>
+<!ATTLIST missing-uris online CDATA #REQUIRED>
+
+<!--
+# Properties caches. 
+-->
+<!ELEMENT properties EMPTY >
+<!ATTLIST properties offline CDATA #REQUIRED>
+<!ATTLIST properties online CDATA #REQUIRED>
+
+<!--
+# URIs caches. 
+-->
+<!ELEMENT uris EMPTY >
+<!ATTLIST uris offline CDATA #REQUIRED>
+<!ATTLIST uris online CDATA #REQUIRED>

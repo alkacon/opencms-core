@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemapFactory.java,v $
- * Date   : $Date: 2009/11/10 16:42:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,14 +61,14 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.2
  */
 public final class CmsXmlSitemapFactory {
 
     /** The sitemap cache. */
-    private static CmsSitemapCache m_cache = new CmsSitemapCache(null);
+    private static CmsSitemapCache m_cache = OpenCms.getSitemapManager().m_cache;
 
     /**
      * No instances of this class should be created.<p> 

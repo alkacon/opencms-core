@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2009/12/11 08:27:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/12/14 09:41:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -41,12 +42,13 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.editors.ade.CmsFormatterInfoBean;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
@@ -70,11 +72,21 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.6
  */
 public class CmsADEManager {
+
+    /** JSON property name constant. */
+    protected enum FavListProp {
+        /** element property. */
+        ELEMENT,
+        /** formatter property. */
+        FORMATTER,
+        /** properties property. */
+        PROPERTIES;
+    }
 
     /** The request attribute name for the current element-bean. */
     public static final String ATTR_CURRENT_ELEMENT = "__currentElement";
@@ -82,26 +94,11 @@ public class CmsADEManager {
     /** The request attribute name for the formatter-info-bean. */
     public static final String ATTR_FORMATTER_INFO = "__formatterInfo";
 
-    /** The sub container resource type id. */
-    public static final int SUB_CONTAINER_TYPE_ID = 17;
-
-    /** The request attribute name for the current sitemap entry-bean. */
-    public static final String ATTR_SITEMAP_ENTRY = "__currentSitemapEntry";
-
     /** User additional info key constant. */
     protected static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
 
     /** HTML id prefix constant. */
     protected static final String ADE_ID_PREFIX = "ade_";
-
-    /** JSON property name constant. */
-    private static final String JSON_ELEMENT = "element";
-
-    /** JSON property name constant. */
-    private static final String JSON_FORMATTER = "formatter";
-
-    /** JSON property name constant. */
-    private static final String JSON_PROPERTIES = "properties";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
@@ -115,12 +112,34 @@ public class CmsADEManager {
     /**
      * Creates a new ADE manager.<p>
      * 
-     * @param cache the ADE ache instance
-     * @param configuration the configured configuration object
+     * @param memoryMonitor the memory monitor instance
+     * @param systemConfiguration the system configuration
      */
-    public CmsADEManager(CmsADECache cache, I_CmsADEConfiguration configuration) {
+    public CmsADEManager(CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
 
-        m_cache = cache;
+        // initialize the ade cache
+        CmsADECacheSettings cacheSettings = systemConfiguration.getAdeCacheSettings();
+        if (cacheSettings == null) {
+            cacheSettings = new CmsADECacheSettings();
+        }
+        m_cache = new CmsADECache(memoryMonitor, cacheSettings);
+
+        // initialize the ade configuration
+        I_CmsADEConfiguration configuration;
+        String adeConfigurationClassName = systemConfiguration.getAdeConfiguration();
+        if (adeConfigurationClassName == null) {
+            // use default implementation
+            configuration = new CmsADEDefaultConfiguration();
+        } else {
+            // use configured ade configuration
+            try {
+                configuration = (I_CmsADEConfiguration)Class.forName(adeConfigurationClassName).newInstance();
+            } catch (Exception e) {
+                throw new CmsInitException(org.opencms.main.Messages.get().container(
+                    org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
+                    adeConfigurationClassName), e);
+            }
+        }
         m_configuration = configuration;
     }
 
@@ -182,66 +201,6 @@ public class CmsADEManager {
     throws CmsException {
 
         return m_configuration.createNewElement(cms, cntPageUri, request, type);
-    }
-
-    /**
-     * Creates an element from its serialized data.<p> 
-     * 
-     * @param data the serialized data
-     * 
-     * @return the restored element bean
-     * 
-     * @throws JSONException if the serialized data got corrupted
-     */
-    public CmsContainerElementBean elementFromJson(JSONObject data) throws JSONException {
-
-        CmsUUID element = new CmsUUID(data.getString(JSON_ELEMENT));
-        CmsUUID formatter = null;
-        if (data.has(JSON_FORMATTER)) {
-            formatter = new CmsUUID(data.getString(JSON_FORMATTER));
-        }
-        Map<String, String> properties = new HashMap<String, String>();
-
-        JSONObject props = data.getJSONObject(JSON_PROPERTIES);
-        Iterator<String> keys = props.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            properties.put(key, props.getString(key));
-        }
-
-        return new CmsContainerElementBean(element, formatter, properties);
-    }
-
-    /**
-     * Converts the given element to JSON.<p>
-     * 
-     * @param element the element to convert
-     * 
-     * @return the JSON representation
-     */
-    public JSONObject elementToJson(CmsContainerElementBean element) {
-
-        JSONObject data = null;
-        try {
-            data = new JSONObject();
-            data.put(JSON_ELEMENT, element.getElementId().toString());
-            if (element.getFormatterId() != null) {
-                data.put(JSON_FORMATTER, element.getFormatterId().toString());
-            }
-            JSONObject properties = new JSONObject();
-            for (Map.Entry<String, String> entry : element.getProperties().entrySet()) {
-                properties.put(entry.getKey(), entry.getValue());
-            }
-            data.put(JSON_PROPERTIES, properties);
-        } catch (JSONException e) {
-            // should never happen
-            if (!LOG.isDebugEnabled()) {
-                LOG.warn(e.getLocalizedMessage());
-            }
-            LOG.debug(e.getLocalizedMessage(), e);
-            return null;
-        }
-        return data;
     }
 
     /**
@@ -405,25 +364,6 @@ public class CmsADEManager {
     }
 
     /**
-     * Gets the current formatter-info-bean from the request.<p>
-     * 
-     * @param req the servlet-request
-     * @return the info-bean or null if not available
-     * @throws CmsException if something goes wrong
-     */
-    public CmsFormatterInfoBean getFormatterInfo(ServletRequest req) throws CmsException {
-
-        CmsFormatterInfoBean info = null;
-
-        try {
-            info = (CmsFormatterInfoBean)req.getAttribute(ATTR_FORMATTER_INFO);
-        } catch (Exception e) {
-            throw new CmsException(Messages.get().container(Messages.ERR_READING_FORMATTER_INFO_FROM_REQUEST_0), e);
-        }
-        return info;
-    }
-
-    /**
      * Returns the name of the next new file of the given type to be created.<p>
      * 
      * @param cms the current opencms context
@@ -547,5 +487,75 @@ public class CmsADEManager {
         CmsUser user = cms.getRequestContext().currentUser();
         user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, data.toString());
         cms.writeUser(user);
+    }
+
+    /**
+     * Clean up at shutdown time. Only intended to be called at system shutdown.<p>
+     * 
+     * @see org.opencms.main.OpenCmsCore#shutDown
+     */
+    public void shutdown() {
+
+        m_cache.shutdown();
+    }
+
+    /**
+     * Creates an element from its serialized data.<p> 
+     * 
+     * @param data the serialized data
+     * 
+     * @return the restored element bean
+     * 
+     * @throws JSONException if the serialized data got corrupted
+     */
+    protected CmsContainerElementBean elementFromJson(JSONObject data) throws JSONException {
+
+        CmsUUID element = new CmsUUID(data.getString(FavListProp.ELEMENT.name().toLowerCase()));
+        CmsUUID formatter = null;
+        if (data.has(FavListProp.FORMATTER.name().toLowerCase())) {
+            formatter = new CmsUUID(data.getString(FavListProp.FORMATTER.name().toLowerCase()));
+        }
+        Map<String, String> properties = new HashMap<String, String>();
+
+        JSONObject props = data.getJSONObject(FavListProp.PROPERTIES.name().toLowerCase());
+        Iterator<String> keys = props.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            properties.put(key, props.getString(key));
+        }
+
+        return new CmsContainerElementBean(element, formatter, properties);
+    }
+
+    /**
+     * Converts the given element to JSON.<p>
+     * 
+     * @param element the element to convert
+     * 
+     * @return the JSON representation
+     */
+    protected JSONObject elementToJson(CmsContainerElementBean element) {
+
+        JSONObject data = null;
+        try {
+            data = new JSONObject();
+            data.put(FavListProp.ELEMENT.name().toLowerCase(), element.getElementId().toString());
+            if (element.getFormatterId() != null) {
+                data.put(FavListProp.FORMATTER.name().toLowerCase(), element.getFormatterId().toString());
+            }
+            JSONObject properties = new JSONObject();
+            for (Map.Entry<String, String> entry : element.getProperties().entrySet()) {
+                properties.put(entry.getKey(), entry.getValue());
+            }
+            data.put(FavListProp.PROPERTIES.name().toLowerCase(), properties);
+        } catch (JSONException e) {
+            // should never happen
+            if (!LOG.isDebugEnabled()) {
+                LOG.warn(e.getLocalizedMessage());
+            }
+            LOG.debug(e.getLocalizedMessage(), e);
+            return null;
+        }
+        return data;
     }
 }
