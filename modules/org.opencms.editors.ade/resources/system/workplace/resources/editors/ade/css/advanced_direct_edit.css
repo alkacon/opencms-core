@@ -905,7 +905,8 @@ li.jTreePlacement, li.jTreePlaceholder {
     background: #ffffff;
 }
 .cms-scrolling ul.cms-scrolling-inner {
-	margin: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 #cms-search div.cms-loading {
