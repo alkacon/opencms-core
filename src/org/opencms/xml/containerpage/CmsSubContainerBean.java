@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsSubContainerBean.java,v $
- * Date   : $Date: 2009/12/11 08:27:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/12/15 10:06:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,14 +38,20 @@ import java.util.List;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.1
  */
 public class CmsSubContainerBean {
 
+    /** The sub container description. */
+    private String m_description;
+
     /** The sub container elements.*/
     private List<CmsContainerElementBean> m_elements;
+
+    /** The sub container title. */
+    private String m_title;
 
     /** The supported container types. */
     private List<String> m_types;
@@ -53,13 +59,31 @@ public class CmsSubContainerBean {
     /**
      * Creates a new sub container bean.<p>
      * 
+     * @param title the sub container title
+     * @param description the sub container description
      * @param elements the sub container elements
      * @param types the supported container types
      */
-    public CmsSubContainerBean(List<CmsContainerElementBean> elements, List<String> types) {
+    public CmsSubContainerBean(
+        String title,
+        String description,
+        List<CmsContainerElementBean> elements,
+        List<String> types) {
 
+        m_title = title;
+        m_description = description;
         m_elements = elements;
         m_types = types;
+    }
+
+    /**
+     * Returns the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
     }
 
     /**
@@ -73,6 +97,16 @@ public class CmsSubContainerBean {
     }
 
     /**
+     * Returns the title.<p>
+     *
+     * @return the title
+     */
+    public String getTitle() {
+
+        return m_title;
+    }
+
+    /**
      * Returns the types.<p>
      *
      * @return the types
@@ -83,6 +117,16 @@ public class CmsSubContainerBean {
     }
 
     /**
+     * Sets the description.<p>
+     *
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+
+        m_description = description;
+    }
+
+    /**
      * Sets the elements.<p>
      *
      * @param elements the elements to set
@@ -90,6 +134,16 @@ public class CmsSubContainerBean {
     public void setElements(List<CmsContainerElementBean> elements) {
 
         m_elements = elements;
+    }
+
+    /**
+     * Sets the title.<p>
+     *
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+
+        m_title = title;
     }
 
     /**

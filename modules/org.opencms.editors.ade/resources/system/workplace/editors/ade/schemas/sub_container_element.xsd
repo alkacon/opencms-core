@@ -12,8 +12,10 @@
 
 	<xsd:complexType name="OpenCmsAlkaconSubContainerElement">
 		<xsd:sequence>
-			<xsd:element name="Type" type="OpenCmsString" minOccurs="1" maxOccurs="unbounded" />
-			<xsd:element name="Element" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element name="Title" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Description" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Type" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="Element" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>

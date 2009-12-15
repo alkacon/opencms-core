@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2009/12/11 08:27:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/12/15 10:06:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -75,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.1
  */
@@ -84,10 +85,14 @@ public class CmsXmlSubContainer extends CmsXmlContent {
     /** XML node name constants. */
     public enum XmlNode {
 
-        /** Main node name. */
-        SUBCONTAINER("SubContainers"),
+        /** Container description node name. */
+        DESCRIPTION("Description"),
         /** Container elements node name. */
         ELEMENT("Element"),
+        /** Main node name. */
+        SUBCONTAINER("SubContainers"),
+        /** Container title node name. */
+        TITLE("Title"),
         /** Container type node name. */
         TYPE("Type");
 
@@ -309,14 +314,25 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                 addBookmark(cntPath, locale, true, cntValue);
                 CmsXmlContentDefinition cntDef = ((CmsXmlNestedContentDefinition)cntSchemaType).getNestedContentDefinition();
 
-                List<String> types = new ArrayList<String>();
+                //title
+                Element title = subContainer.element(XmlNode.TITLE.getName());
+                createBookmark(title, locale, subContainer, cntPath, cntDef);
+
+                //description
+                Element description = subContainer.element(XmlNode.DESCRIPTION.getName());
+                createBookmark(description, locale, subContainer, cntPath, cntDef);
+
                 // types
+                List<String> types = new ArrayList<String>();
                 for (Iterator<Element> itTypes = CmsXmlGenericWrapper.elementIterator(
                     subContainer,
                     XmlNode.TYPE.getName()); itTypes.hasNext();) {
                     Element type = itTypes.next();
                     createBookmark(type, locale, subContainer, cntPath, cntDef);
-                    types.add(type.getTextTrim());
+                    String typeName = type.getTextTrim();
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeName)) {
+                        types.add(typeName);
+                    }
                 }
 
                 List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
@@ -339,7 +355,11 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                         elements.add(new CmsContainerElementBean(elementId, null, null));
                     }
                 }
-                m_subContainers.put(locale, new CmsSubContainerBean(elements, types));
+                m_subContainers.put(locale, new CmsSubContainerBean(
+                    title.getText(),
+                    description.getText(),
+                    elements,
+                    types));
             } catch (NullPointerException e) {
                 LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
                     org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
