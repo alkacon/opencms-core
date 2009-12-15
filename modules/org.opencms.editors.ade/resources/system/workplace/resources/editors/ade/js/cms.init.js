@@ -161,7 +161,36 @@ $.extend($.ui.sortable.prototype, {
          };
                };
       
-         }
+     },
+     /**
+      * Internal event-handler for the mouse-move event. Introducing a workaround for a bug in IE8
+      * that sets the event.button property to 0 even with the mouse button still pressed.<p>
+      * 
+      * @param {Object} event the mouse-move event
+      */
+     _mouseMove: function(event) {
+		// IE mouseup check - mouseup happened when mouse was out of window
+        /*
+         * cms-addition:
+         * don't do this in IE8 as event.button may be 0 even with the mouse button down
+         */
+		if ($.browser.msie && $.browser.version < 8 && !event.button) {
+            return this._mouseUp(event);
+		}
+
+		if (this._mouseStarted) {
+			this._mouseDrag(event);
+			return event.preventDefault();
+		}
+
+		if (this._mouseDistanceMet(event) && this._mouseDelayMet(event)) {
+			this._mouseStarted =
+				(this._mouseStart(this._mouseDownEvent, event) !== false);
+			(this._mouseStarted ? this._mouseDrag(event) : this._mouseUp(event));
+		}
+
+		return !this._mouseStarted;
+	}
 })
 
 
