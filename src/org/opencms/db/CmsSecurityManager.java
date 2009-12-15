@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2009/11/26 11:32:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/15 09:56:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1552,6 +1552,47 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             readResource(dbc, resourcePath, filter);
+            result = true;
+        } catch (Exception e) {
+            result = false;
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Checks the availability of a resource in the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     *
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>.<p>  
+     *
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     * 
+     * This method also takes into account the user permissions, so if 
+     * the given resource exists, but the current user has not the required 
+     * permissions, then this method will return <code>false</code>.<p>
+     *
+     * @param context the current request context
+     * @param structureId the structure id of the resource to check
+     * @param filter the resource filter to use while reading
+     *
+     * @return <code>true</code> if the resource is available
+     * 
+     * @see CmsObject#existsResource(CmsUUID, CmsResourceFilter)
+     * @see CmsObject#existsResource(CmsUUID)
+     */
+    public boolean existsResource(CmsRequestContext context, CmsUUID structureId, CmsResourceFilter filter) {
+
+        boolean result = false;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            readResource(dbc, structureId, filter);
             result = true;
         } catch (Exception e) {
             result = false;

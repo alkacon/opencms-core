@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2009/11/16 17:03:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/15 09:56:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -806,6 +806,59 @@ public final class CmsObject {
     public void deleteUser(String username) throws CmsException {
 
         m_securityManager.deleteUser(m_context, username);
+    }
+
+    /**
+     * Checks the availability of a resource in the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     *
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>.<p>
+     * 
+     * This method also takes into account the user permissions, so if 
+     * the given resource exists, but the current user has not the required 
+     * permissions, then this method will return <code>false</code>.<p>
+     *
+     * @param structureId the structure id of the resource to check
+     *
+     * @return <code>true</code> if the resource is available
+     *
+     * @see #readResource(CmsUUID)
+     * @see #existsResource(CmsUUID, CmsResourceFilter)
+     */
+    public boolean existsResource(CmsUUID structureId) {
+
+        return existsResource(structureId, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Checks the availability of a resource in the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     *
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>.<p>  
+     *
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     * 
+     * This method also takes into account the user permissions, so if 
+     * the given resource exists, but the current user has not the required 
+     * permissions, then this method will return <code>false</code>.<p>
+     *
+     * @param structureId the structure id of the resource to check
+     * @param filter the resource filter to use while checking
+     *
+     * @return <code>true</code> if the resource is available
+     * 
+     * @see #readResource(CmsUUID)
+     * @see #readResource(CmsUUID, CmsResourceFilter)
+     */
+    public boolean existsResource(CmsUUID structureId, CmsResourceFilter filter) {
+
+        return m_securityManager.existsResource(m_context, structureId, filter);
     }
 
     /**
