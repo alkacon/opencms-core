@@ -479,11 +479,10 @@
          }
       };
       var id = $.isArray(ids) ? ids[0] : ids;
-      var dialogWidth = self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
-      dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
-      var dialogHeight = self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
-      dialogHeight = dialogHeight < 700 ? dialogHeight : 700;
-      var iFrameHeight = dialogHeight - 115 // mmoossen: resource name in body: - 126;
+      var windowSize=cms.util.getWindoDimensions();
+      var dialogWidth = windowSize['width'] > 1400 ? 1350 : (windowSize['width']-50);
+      var dialogHeight = windowSize['height'] - 20;
+      var iFrameHeight = dialogHeight - 115;
       var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
       if (newLink) {
          editorLink += newLink;

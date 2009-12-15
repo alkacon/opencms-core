@@ -118,6 +118,24 @@
       return dimension;
    }
    
+   var getScrollXY = cms.util.getScrollXY = function() {
+      var scrOfX = 0, scrOfY = 0;
+      if (typeof(window.pageYOffset) == 'number') {
+         //Netscape compliant
+         scrOfY = window.pageYOffset;
+         scrOfX = window.pageXOffset;
+      } else if (document.body && (document.body.scrollLeft || document.body.scrollTop)) {
+         //DOM compliant
+         scrOfY = document.body.scrollTop;
+         scrOfX = document.body.scrollLeft;
+      } else if (document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
+         //IE6 standards compliant mode
+         scrOfY = document.documentElement.scrollTop;
+         scrOfX = document.documentElement.scrollLeft;
+      }
+      return { 'scrollX': scrOfX, 'scrollY': scrOfY };
+   }
+   
    
    /**
     * Calculates dimensions for the following siblings of the given element.<p>
@@ -167,6 +185,28 @@
       dimension.width = dimension.right - dimension.left;
       return dimension;
    }
+   
+   var getWindowDimensions = cms.util.getWindoDimensions = function() {
+      var myWidth = 0, myHeight = 0;
+      if (typeof(window.innerWidth) == 'number') {
+         //Non-IE
+         myWidth = window.innerWidth;
+         myHeight = window.innerHeight;
+      } else if (document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
+         //IE 6+ in 'standards compliant mode'
+         myWidth = document.documentElement.clientWidth;
+         myHeight = document.documentElement.clientHeight;
+      } else if (document.body && (document.body.clientWidth || document.body.clientHeight)) {
+         //IE 4 compatible
+         myWidth = document.body.clientWidth;
+         myHeight = document.body.clientHeight;
+      }
+      return {
+         'height': myHeight,
+         'width': myWidth
+      };
+   }
+   
    
    var fixZIndex = cms.util.fixZIndex = function(currentId, zmap) {
       if (!$.browser.msie) {
@@ -546,17 +586,17 @@
          }, 0);
       }
    }
-   cms.util.checkboxClassName='cms-checkbox';
-   cms.util.checkboxDataName='cms-checkbox';
+   cms.util.checkboxClassName = 'cms-checkbox';
+   cms.util.checkboxDataName = 'cms-checkbox';
    $(function() {
-      $('.'+cms.util.checkboxClassName).live('click', function() {
+      $('.' + cms.util.checkboxClassName).live('click', function() {
          var checkbox = $(this).data(cms.util.checkboxDataName);
          checkbox.setCheckedIfEnabled(!checkbox.checked);
       });
-      $('.'+cms.util.checkboxClassName).live('mouseover', function() {
+      $('.' + cms.util.checkboxClassName).live('mouseover', function() {
          $(this).chooseClass(true, 'cms-checkbox-hover', 'cms-checkbox-nohover');
       });
-      $('.'+cms.util.checkboxClassName).live('mouseout', function() {
+      $('.' + cms.util.checkboxClassName).live('mouseout', function() {
          $(this).chooseClass(false, 'cms-checkbox-hover', 'cms-checkbox-nohover');
       });
       
@@ -598,7 +638,7 @@
     * @param {Object} context the jQuery context
     */
    Checkbox.getCheckboxes = function(context) {
-      return _getCheckboxes($('.'+cms.util.checkboxClassName, context));
+      return _getCheckboxes($('.' + cms.util.checkboxClassName, context));
    }
    
    /**
