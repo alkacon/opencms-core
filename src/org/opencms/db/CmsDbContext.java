@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2009/10/14 07:39:00 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2009/12/15 06:41:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,11 +51,14 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
 public class CmsDbContext {
+
+    /** Context attributes. */
+    protected Map<String, Object> m_attributes;
 
     /** The current Flex request context info (if available). */
     protected CmsFlexRequestContextInfo m_flexRequestContextInfo;
@@ -65,35 +68,6 @@ public class CmsDbContext {
 
     /** The wrapped user request context. */
     protected CmsRequestContext m_requestContext;
-
-    /** Context attributes. */
-    protected Map<String, Object> m_attributes;
-
-    /**
-     * Get an attribute from the dbc
-     * @param key the attrbute key
-     * @return the attribute value or null if the attribute does not exist
-     */
-    public Object getAttribute(String key) {
-
-        if (m_attributes == null) {
-            return null;
-        }
-        return m_attributes.get(key);
-    }
-
-    /**
-     * Sets an attribute in the dbc
-     * @param key the attribute key
-     * @param value the attribute value
-     */
-    public void setAttribute(String key, Object value) {
-
-        if (m_attributes == null) {
-            m_attributes = new HashMap<String, Object>(4);
-        }
-        m_attributes.put(key, value);
-    }
 
     /**
      * Creates a new, empty database context.<p> 
@@ -148,6 +122,21 @@ public class CmsDbContext {
     }
 
     /**
+     * Get an attribute from the DB context.<p>
+     * 
+     * @param key the attribute key
+     * 
+     * @return the attribute value or null if the attribute does not exist
+     */
+    public Object getAttribute(String key) {
+
+        if (m_attributes == null) {
+            return null;
+        }
+        return m_attributes.get(key);
+    }
+
+    /**
      * Returns the current Flex request context info.<p>
      * 
      * @return the current Flex request context info
@@ -178,9 +167,9 @@ public class CmsDbContext {
     }
 
     /**
-     * Returns true if the database context uses the default implementation.<p>
+     * Checks if the database context uses the default implementation.<p>
      * 
-     * @return true if the database context uses the default implementation
+     * @return <code>true</code> if the database context uses the default implementation
      */
     public boolean isDefaultDbContext() {
 
@@ -226,8 +215,8 @@ public class CmsDbContext {
      * @param message the message to write to the report / log
      * @param throwable the exception to write to the report / log
      * 
-     * @throws CmsException if the throwable parameter is not null and a CmsException
-     * @throws CmsVfsException if the throwable parameter is not null and no CmsException
+     * @throws CmsException if the <code>throwable</code> parameter is not <code>null</code> and a {@link CmsException}
+     * @throws CmsVfsException if the <code>throwable</code> parameter is not <code>null</code> and no {@link CmsException}
      */
     public void report(I_CmsReport report, CmsMessageContainer message, Throwable throwable)
     throws CmsVfsException, CmsException {
@@ -245,6 +234,20 @@ public class CmsDbContext {
     }
 
     /**
+     * Sets an attribute in the DB context.<p>
+     * 
+     * @param key the attribute key
+     * @param value the attribute value
+     */
+    public void setAttribute(String key, Object value) {
+
+        if (m_attributes == null) {
+            m_attributes = new HashMap<String, Object>(4);
+        }
+        m_attributes.put(key, value);
+    }
+
+    /**
      * Sets the project id of the context.<p>
      *
      * @param projectId the id of the project to set
@@ -255,14 +258,14 @@ public class CmsDbContext {
     }
 
     /**
-     * Returns an Exception of the same type as throwable if throwable is an OpenCms Exception
-     * with the message as a MessageContainer and the throwable as a cause.<p>
+     * Returns an exception of the same type as <code>throwable</code>, if <code>throwable</code> is an OpenCms Exception
+     * with the message as a {@link CmsMessageContainer} and the <code>throwable</code> as a cause.<p>
      * 
-     * @param message the MessageContainer for the Exception to create
+     * @param message the message container for the exception to create
      * @param throwable the cause of the exception
      * 
-     * @throws CmsVfsException if throwable is not an OpenCms Exception
-     * @throws CmsException of the same type as throwable if throwable is an OpenCms Exception
+     * @throws CmsException if the <code>throwable</code> parameter is not <code>null</code> and a {@link CmsException}
+     * @throws CmsVfsException if the <code>throwable</code> parameter is not <code>null</code> and no {@link CmsException}
      */
     void throwException(CmsMessageContainer message, Throwable throwable) throws CmsVfsException, CmsException {
 
