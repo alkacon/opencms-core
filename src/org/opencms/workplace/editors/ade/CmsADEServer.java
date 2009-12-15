@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/12/15 09:58:04 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
@@ -89,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 7.6
  */
@@ -578,7 +579,34 @@ public class CmsADEServer extends A_CmsAjaxServer {
             for (int i = 0; i < elems.length(); i++) {
                 String elemId = elems.getString(i);
                 CmsContainerElementBean element = getCachedElement(elemId);
-                resElements.put(element.getClientId(), elemUtil.getElementData(element, cntPage.getTypes()));
+                JSONObject elementData = elemUtil.getElementData(element, cntPage.getTypes());
+                resElements.put(element.getClientId(), elementData);
+                if (elementData.has(CmsElementUtil.JsonElement.SUBITEMS.getName())) {
+                    // this is a sub-container 
+                    Set<String> ids = new HashSet<String>();
+                    ids.add(elemId);
+                    CmsResource elementRes = cms.readResource(element.getElementId());
+                    CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(
+                        cms,
+                        elementRes,
+                        getRequest());
+                    CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                        cms,
+                        cms.getRequestContext().getLocale());
+
+                    // adding all sub-items to the elements data
+                    for (CmsContainerElementBean subElement : subContainer.getElements()) {
+                        if (!ids.contains(subElement.getElementId())) {
+                            String subId = subElement.getClientId();
+                            if (ids.contains(subId)) {
+                                continue;
+                            }
+                            JSONObject subItemData = elemUtil.getElementData(subElement, cntPage.getTypes());
+                            ids.add(subId);
+                            resElements.put(subId, subItemData);
+                        }
+                    }
+                }
             }
             result.put(JsonResponse.ELEMENTS.getName(), resElements);
         } else if (action.equals(Action.ELEMPROPS)) {
@@ -853,30 +881,34 @@ public class CmsADEServer extends A_CmsAjaxServer {
     public JSONArray getFavoriteList(JSONObject resElements, Collection<String> types) throws CmsException {
 
         JSONArray result = new JSONArray();
+        CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(
-            getCmsObject(),
+            cms,
             getRequest().getParameter(ReqParam.URI.getName()),
             getRequest(),
             getResponse());
 
         // iterate the list and create the missing elements
-        List<CmsContainerElementBean> favList = m_manager.getFavoriteList(getCmsObject());
+        List<CmsContainerElementBean> favList = m_manager.getFavoriteList(cms);
         for (CmsContainerElementBean element : favList) {
-            String id = element.getClientId();
-            if ((resElements != null) && !resElements.has(id)) {
-                try {
-                    resElements.put(id, elemUtil.getElementData(element, types));
-                    m_sessionCache.setCacheContainerElement(element.getClientId(), element);
-                    result.put(id);
-                } catch (Exception e) {
-                    // ignore any problems
-                    if (!LOG.isDebugEnabled()) {
-                        LOG.warn(e.getLocalizedMessage());
+            // checking if resource exists
+            if (cms.existsResource(element.getElementId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                String id = element.getClientId();
+                if ((resElements != null) && !resElements.has(id)) {
+                    try {
+                        resElements.put(id, elemUtil.getElementData(element, types));
+                        m_sessionCache.setCacheContainerElement(element.getClientId(), element);
+                        result.put(id);
+                    } catch (Exception e) {
+                        // ignore any problems
+                        if (!LOG.isDebugEnabled()) {
+                            LOG.warn(e.getLocalizedMessage());
+                        }
+                        LOG.debug(e.getLocalizedMessage(), e);
                     }
-                    LOG.debug(e.getLocalizedMessage(), e);
+                } else {
+                    result.put(id);
                 }
-            } else {
-                result.put(id);
             }
         }
 
@@ -918,8 +950,9 @@ public class CmsADEServer extends A_CmsAjaxServer {
     public JSONArray getRecentList(JSONObject resElements, Collection<String> types) throws CmsException {
 
         JSONArray result = new JSONArray();
+        CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(
-            getCmsObject(),
+            cms,
             getRequest().getParameter(ReqParam.URI.getName()),
             getRequest(),
             getResponse());
@@ -928,20 +961,23 @@ public class CmsADEServer extends A_CmsAjaxServer {
         List<CmsContainerElementBean> recentList = m_sessionCache.getRecentList();
         // iterate the list and create the missing elements
         for (CmsContainerElementBean element : recentList) {
-            String id = element.getClientId();
-            if ((resElements != null) && !resElements.has(id)) {
-                try {
-                    resElements.put(id, elemUtil.getElementData(element, types));
-                    result.put(id);
-                } catch (Exception e) {
-                    // ignore any problems
-                    if (!LOG.isDebugEnabled()) {
-                        LOG.warn(e.getLocalizedMessage());
+            // checking if the resource exists
+            if (cms.existsResource(element.getElementId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                String id = element.getClientId();
+                if ((resElements != null) && !resElements.has(id)) {
+                    try {
+                        resElements.put(id, elemUtil.getElementData(element, types));
+                        result.put(id);
+                    } catch (Exception e) {
+                        // ignore any problems
+                        if (!LOG.isDebugEnabled()) {
+                            LOG.warn(e.getLocalizedMessage());
+                        }
+                        LOG.debug(e.getLocalizedMessage(), e);
                     }
-                    LOG.debug(e.getLocalizedMessage(), e);
+                } else {
+                    result.put(id);
                 }
-            } else {
-                result.put(id);
             }
         }
 
