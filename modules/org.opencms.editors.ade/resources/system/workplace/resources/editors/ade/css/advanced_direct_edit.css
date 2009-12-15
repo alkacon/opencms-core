@@ -1034,9 +1034,17 @@ ol.ade-forms fieldset {
 #cms-new-list .cms-item .ui-widget-content {
 	border: 1px solid #333333;
 }
-
-#fav-dialog .cms-item-list { 
+	
+#fav-dialog .cms-item-list{ 
 	margin: 10px;
+}
+
+#fav-dialog .cms-item-list, #toolbar .cms-item-list { 
+    padding: 0px;
+}
+
+#toolbar .cms-placeholder{
+    margin: 0px;
 }
 
 .cms-type-fields {

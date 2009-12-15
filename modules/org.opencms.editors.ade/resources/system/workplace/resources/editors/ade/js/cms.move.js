@@ -74,7 +74,8 @@
     * @param {Object} container container-object
     */
    var isOverflowContainer = cms.move.isOverflowContainer = function(container) {
-      if (container) {
+      // in case maxElem of the container is <= 0 no limit will be set
+      if (container && (container.maxElem > 0)) {
          return container.elements.length >= container.maxElem;
       }
       return false;
@@ -98,7 +99,7 @@
          handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
       }
       $('#' + cms.html.favoriteDropListId + ' li').hide(200);
-      $('#' + cms.html.favoriteDropMenuId).css('visibility', 'hidden');
+      $('#' + cms.html.favoriteDropMenuId).css('display', 'none');
       $('.cms-handle').show();
       if ($.browser.msie) {
          setTimeout(function() {
@@ -237,7 +238,7 @@
          'zIndex': sortable.options.zIndex
       }).addClass('ui-sortable-helper');
       //#
-      $('#' + cms.html.favoriteDropMenuId).css('visibility', 'visible');
+      $('#' + cms.html.favoriteDropMenuId).show('blind', {}, 500);
    }
    
    

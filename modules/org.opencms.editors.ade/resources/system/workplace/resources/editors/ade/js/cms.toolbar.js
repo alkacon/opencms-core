@@ -166,6 +166,7 @@
             for (var key in cms.data.containers) {
                cms.move.updateContainer(key);
             }
+            elemList=[];
             $(cms.util.getContainerSelector()).find('.cms-element:has(div.cms-editable), .cms-subcontainer:has(div.cms-editable)').each(function() {
                elemList.push($(this).attr('rel'));
             });
@@ -183,7 +184,7 @@
          });
       }
       
-      buttons[N.DIRECT_DELETE_CANCEL] = function() {
+      buttons[M.DIRECT_DELETE_CANCEL] = function() {
          $(this).dialog('close');
       }
       $('<div id="cms-delete-dialog" style="display:none;" title="' + M.DIRECT_DELETE_TITLE + '">\
@@ -653,8 +654,7 @@
       list.css({
          top: 35,
          left: favLeft,
-         display: 'block',
-         visibility: 'hidden'
+         display: 'none'
       });
       
       // replace id
@@ -1423,7 +1423,7 @@
       enable: _enableEditMode,
       disable: _disableEditMode,
       initialize: function() {
-         $('a.cms-delete').live('click', deleteItem);
+         $('div.cms-handle a.cms-delete').live('click', deleteItem);
       }
    }
    
