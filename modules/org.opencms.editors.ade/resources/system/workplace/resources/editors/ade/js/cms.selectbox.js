@@ -77,9 +77,16 @@ $.fn.selectBox=function(options, additional){
 		}
 		
 		function _start(){
-            $(this).toggleClass('cms-open');
-            if ($.isFunction(opts.open) && $(this).hasClass('cms-open')){
-                opts.open(this);
+            var $this=$(this);
+            $this.toggleClass('cms-open');
+            if ($this.hasClass('cms-open')) {
+                if (($.isFunction(opts.selectorPosition) && opts.selectorPosition() == 'top') || opts.selectorPosition == 'top'){
+                    var top = 21 * $this.data('valueCount');
+                    $this.find('div.cms-selector').removeClass('ui-corner-bottom').addClass('ui-corner-top').css('top', '-'+top+'px')
+                }
+                if ($.isFunction(opts.open)) {
+                    opts.open(this);
+                }
             }
             return false;
         }
@@ -129,6 +136,7 @@ $.fn.selectBox=function(options, additional){
 			replacer.click(_start);
             $('span.cms-select-option', replacer).andSelf().hover(function(){$(this).addClass('ui-state-hover');}, function(){$(this).removeClass('ui-state-hover')});
             replacer.data('replacer', replacer);
+            replacer.data('valueCount', values.length);
             if (opts.width){
                 replacer.width(opts.width);
                 selector.width(opts.width);
