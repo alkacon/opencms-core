@@ -18,6 +18,8 @@
 			<xsd:element name="Text" type="OpenCmsHtml" />			
 			<xsd:element name="Image" type="OpenCmsT3Image" minOccurs="0" />
 			<xsd:element name="Links" type="OpenCmsT3ExtendedLink" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="ImageGallery" type="OpenCmsString" minOccurs="0" maxOccurs="5" />
+			<xsd:element name="DownloadGallery" type="OpenCmsString" minOccurs="0" maxOccurs="5" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
@@ -27,6 +29,8 @@
 			<resourcebundle name="org.opencms.frontend.template3.demo.workplace"/>
 			<layouts>
 				<layout element="Text" widget="HtmlWidget" configuration="height:500px,link,formatselect,source"/>
+				<layout element="ImageGallery" widget="AdvancedGalleryWidget" configuration="{resourcetypes:[3],type:'gallery',startup:'/demo_t3/images/',useforamts:true}"/>
+				<layout element="DownloadGallery" widget="AdvancedGalleryWidget" configuration="{resourcetypes:[2],type:'gallery',startup:'/demo_t3/documents/'}"/>
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  
