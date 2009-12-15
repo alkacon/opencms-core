@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/tree.js,v $
- * Date   : $Date: 2009/07/09 13:39:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/12/15 15:52:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -429,23 +429,24 @@ function getNodeIdByName(nodeName) {
     var nameParts = nodeName.substr(1).split("/");
 
     // search the tree and try to find a matching folder for each part of the path
-    for (var i=0; i<nameParts.length && node; i++) {
-        var children = node.childs;
+    if (nodeName != "/") {
+    	for (var i=0; i<nameParts.length && node; i++) {
+        	var children = node.childs;
         
-        // clear the current node until we find the next child node.
-        // if no child is found, then we know that the search was not successful, because 'node' will remain null
-        node = null;
+        	// clear the current node until we find the next child node.
+        	// if no child is found, then we know that the search was not successful, because 'node' will remain null
+        	node = null;
 
-        for (var j=0; children && j<children.length; j++) {
-            var subnode = getNodeById(children[j]);
-            if (subnode && subnode.name === nameParts[i]) {
-                // found the next sub-node => continue searching on the next level
-                node = subnode;
-                break;
-            }
-        }
+        	for (var j=0; children && j<children.length; j++) {
+            	var subnode = getNodeById(children[j]);
+            	if (subnode && subnode.name === nameParts[i]) {
+                	// found the next sub-node => continue searching on the next level
+                	node = subnode;
+                	break;
+            	}
+        	}
+    	}
     }
-
     if (node) {
         return node.id;
     } else {
