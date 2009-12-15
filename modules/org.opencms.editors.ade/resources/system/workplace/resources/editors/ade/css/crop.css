@@ -1,0 +1,49 @@
+* {
+    margin: 0;
+	padding: 0;
+}
+
+#cms-cropping-main {
+	font-size: 11px;    
+    background: #ffffff;
+    margin: 0;
+	padding: 0;
+}
+
+div.cms-border {
+    margin: 1px 1px 1px 1px;
+    padding: 2px 1px 2px 1px;
+}
+
+div.head {
+	padding: 6px 0 6px 4px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+div.imgbg {
+	height: 350px;
+	text-align: center;
+}
+
+div.container {
+}
+
+div.selection {
+	font-size: 12px;
+    text-align: center;
+	/*padding: 6px 0 6px 4px;*/
+}
+
+.cms-item-title span {
+    font-weight: normal;
+}
+
+/*div.buttons {
+	padding-top: 6px;
+	text-align: center;
+}*/
+
+/*button {
+	margin: 0 6px 0 4px;
+}*/

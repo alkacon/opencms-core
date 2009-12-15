@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2009/12/15 16:45:41 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 7.6
  */
@@ -1539,7 +1539,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Returns the JSON as string for the additinal parameters of the reouses of the type image.<p>
+     * Returns the JSON as string for the additional parameters of the resources of the type image.<p>
      * 
      * All parameters are taken from the request parameters.<p>
      * 

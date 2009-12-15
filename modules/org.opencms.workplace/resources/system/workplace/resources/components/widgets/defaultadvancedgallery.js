@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2009/12/09 08:43:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/12/15 16:45:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -118,7 +118,7 @@ function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
       paramString += "&imagedata=" + JSON.stringify(initialImageInfos);
    }
               
-   treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=680,height=520');
+   treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=yes,location=yes,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=680,height=520');
    
    //edited resource has to be provided to use custom categories
    //var editedResource = "";

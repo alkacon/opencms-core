@@ -58,17 +58,11 @@
     
     #cms-preview .edit-area,
     #cms-preview .edit-format-area{
-        height: 100px;  
-        /*height:240px; */ 
+        height: 112px;          
         margin: 2px;
-        overflow: auto;
+        padding: 0 4px;
     }       
-    
-    /*TODO: remove as soon as layout is improved!!!! */
-    #cms-preview .edit-format-area {
-        height:240px;
-    }      
-    
+      
     .edit-area span{
         font-size: 12px;
     }                 
@@ -80,10 +74,31 @@
         z-index:2;
     }
     
-    div.button-bar{
-        display:inline-block;
+    div.button-bar.cms-top-bottom{
+        margin-top: 4px;
         margin-bottom: 5px;
-        width: 644px;
+    } 
+    
+    div.button-bar.cms-top{
+        margin-top: 5px;
+    }      
+    
+    div.button-bar.cms-center-buttom {
+        text-align: center;
+        margin-top: 5px;
+    }
+    
+    #cms-preview button {
+        margin:0 0 0 2px;
+        padding: 0 3px;
+    }
+        
+    
+    div.button-bar span.cms-title {
+        font-size:14px;
+        font-weight:bold;  
+        line-height:24px;
+        /*display: inline-block;*/         
     }
        
     div.button-bar button{
@@ -92,14 +107,14 @@
         overflow:visible;
         padding:0 10px 2px !important;
         width:auto;
+        max-height:100px;
     }
     
     div.button-bar button[disabled=true]{
         color:#999999;
     }
     
-    button span.cms-galleries-button{         
-        display: inline-block;                
+    button span.cms-galleries-button{                      
         /*height:20px;
         line-height:20px;*/        
         height:19px;
@@ -125,11 +140,11 @@
     }
     
     button span.cms-galleries-icon-reset{                       
-        background: transparent url(images/16x16/reset.gif) no-repeat scroll left center;              
+        background: transparent url(images/16x16/reset.gif) no-repeat scroll left center;          
     }
     
     button span.cms-galleries-icon-locked{                       
-        background: transparent url(images/16x16/locked.gif) no-repeat scroll left center;              
+        background: transparent url(images/16x16/locked.gif) no-repeat scroll left center;                          
     }
     
     button span.cms-galleries-icon-unlocked{                       
@@ -148,31 +163,69 @@
         padding-left: 25px;
     }
     
+    .cms-icon{
+        padding-left: 10px;
+    }
+    
     .cms-text{
         padding-left: 20px;
     }     
     
     /** Editable properties in the edit area. */
+   
+    .edit-form {
+        /*margin: 2px;*/
+    }
+    
+    .edit-format-area button,
     .edit-form button {
-        margin: 0px 0px 0px 2px;
-        vertical-align:middle;
+       /* margin: 0px 0px 0px 2px;
+        vertical-align:middle;*/
+    }
+    
+    .cms-scrolling-properties {
+        margin: 0px;
+        padding: 0px;
+        height: 50px;
+        overflow:auto;
+        position: relative;
     }
     
     span.cms-item-title,
-    label.cms-item-title {
+    label.cms-item-title,
+    div.cms-item-title {
         display: inline-block;
-        width: 100px;
         font-weight:bold;
         line-height: 16px;
         margin-right: 10px;
     }
     
-    div.cms-editable-field {
-        margin: 2px;
+    div.cms-editable-field,
+    div.cms-format-line {
+        margin: 2px 0px 2px 0px;
     }
     
-    div.cms-editable-field input{
+    div.cms-editable-field {
+        width: 300px;
+    }        
+    
+    /*div.cms-editable-field input,*/
+    div.cms-format-line input {
         width: 50px;
+    }
+    
+    .cms-width-50 {
+        width:  50px;
+    }
+    
+    .cms-item-edit {
+        overflow: hidden;
+        height: 16px;
+        width:  200px;
+    }
+    
+    .cms-width-80 {
+        width:  80px;
     }
     
     input.cms-direct-input, input.cms-direct-input:focus, input.cms-direct-input:active {

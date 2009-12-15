@@ -1136,7 +1136,7 @@
      * @param {Object} typeId the type id of the resource
      * @param {Object} handler the specific handler for this resource
      */   
-    var addContentTypeHandler = cms.galleries.addContentTypeHandler = function(typeId, handler){
+    cms.galleries.addContentTypeHandler = function(typeId, handler){
         cms.galleries.contentTypeHandlers[typeId]= $.extend({}, cms.previewhandler.defaultContentTypeHandler, handler);
     }
 
@@ -1146,12 +1146,24 @@
      * 
      * @param {Object} typId the resource type id
      */
-    var getContentHandler = cms.galleries.getContentHandler = function(typeId){
+    cms.galleries.getContentHandler = function(typeId){
         if (typeId && cms.galleries.contentTypeHandlers[typeId]){
             return cms.galleries.contentTypeHandlers[typeId];
         }
         return cms.galleries.contentTypeHandlers['default'];
-    }   
+    }  
+    
+    /**
+     * Returns true, if specified handler is given and false otherwise.
+     * 
+     * @param {Object} typId the resource type id
+     */
+    cms.galleries.hasContentHandler = function(typeId){
+        if (typeId && cms.galleries.contentTypeHandlers[typeId]){
+            return true;
+        }
+        return false;
+    }    
    
     var toggleAdditionalInfo = cms.galleries.toggleAdditionalInfo = function() {
       var elem = $(this);

@@ -40,47 +40,45 @@
     * @param {Object} itemProperties server response as JSON object with the editable properties
     */
    var showEditArea = function(itemProperties) {
-      var buttonBar = $('<div class="button-bar"></div>');
-      if (itemProperties.length > 0) {
-         buttonBar.append('<button name="previewSave" disabled="true" class="ui-state-default ui-corner-all">\
-                                     <span class="cms-galleries-button">Save</span>\
-                               </button>');
-         /*.append('<button name="previewPublish" class="ui-state-default ui-corner-all">\
-         
-         
-          <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
-         
-         
-          </button>');*/
-         
-         
+      var target = $('.edit-area');
+      
+      if (cms.galleries.hasContentHandler('default')) {
+          // add button bar to the edit area
+          var switchBar = $('<div class="button-bar cms-top-bottom"></div>');        
+             switchBar.append('<button name="switchToProperties" class="cms-right ui-state-default ui-corner-all">\
+                                         <span class="cms-galleries-button">Image&nbsp;Format</span>\
+                                   </button>')
+                      .append('<span class="cms-title">File Properties:</span>');
+             /*.append('<button name="previewPublish" class="ui-state-default ui-corner-all">\                 
+              <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
+              </button>');*/                                            
+          target.append(switchBar);
       }
-      
-      
-      var target = $('.edit-area').append(buttonBar);
-      $('.edit-area').find('button[name="previewSave"]').click(cms.galleries.getContentHandler()['saveChangedProperty']);
-      // TODO: comment in for direct publish
-      /* $('.edit-area button[name="publishSave"]').click(publishChangedProperty);*/
-      
-      if (cms.galleries.isSelectableItem()) {
-         $('.edit-area').find('.button-bar').append('<button name="previewSelect" class="ui-state-default ui-corner-all">\
-                                <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
-                          </button>');
-         $('.edit-area').find('button[name="previewSelect"]').click(function() {
-            var itemType = '';
-            var itemId = $(this).closest('#cms-preview').attr('alt');
-            cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
-         });
-      }
-      
+            
       // generate editable form
-      var form = $('<div class="edit-form"></div>');
-      $.each(itemProperties, function() {
+      var form = $('<div class="edit-form cms-scrolling-properties"></div>');
+      for (var i = 0; i < itemProperties.length; i++) {
+          if ( i%2  == 0) {
+              $('<div class="cms-editable-field cms-left"></div>').attr('alt', itemProperties[i]['name'])
+                 .appendTo(form)
+                 .append('<span class="cms-item-title cms-width-80">' + itemProperties[i]['name'] + '</span>')
+                 .append('<span class="cms-item-edit">' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '') + '</span>');    
+          } else {
+              $('<div class="cms-editable-field cms-right"></div>').attr('alt', itemProperties[i]['name'])
+                 .appendTo(form)
+                 .append('<span class="cms-item-title cms-width-80">' + itemProperties[i]['name'] + '</span>')
+                 .append('<span class="cms-item-edit">' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '') + '</span>');
+          }
+          
+      }
+      
+      
+      /*$.each(itemProperties, function() {
          $('<div class="cms-editable-field"></div>').attr('alt', this.name)
          .appendTo(form)
          .append('<span class="cms-item-title">' + this.name + '</span>')
          .append('<span class="cms-item-edit">' + (this.value ? this.value : '') + '</span>');
-      });
+      });*/
       $(target).append(form);
       
       // bind direct input to the editable fields
@@ -92,6 +90,34 @@
             $('.edit-area').find('button[name="previewSave"]').removeAttr('disabled');
          }
       });
+      
+      // add button bar to the editet area
+      var buttonBar = $('<div class="button-bar cms-top"></div>');      
+      var closeButton = $('<button name="previewSave" disabled="true" class="cms-right ui-state-default ui-corner-all">\
+                                 <span class="cms-galleries-button">Save</span>\
+                           </button>')
+                               .appendTo(buttonBar)
+                               .after('<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
+                                            <span class="cms-galleries-button">Close</span>\
+                                       </button>');
+        /*.append('<button name="previewPublish" class="ui-state-default ui-corner-all">\                 
+          <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
+          </button>');*/                        
+      target.append(buttonBar);
+      $('.edit-area').find('button[name="previewSave"]').click(cms.galleries.getContentHandler()['saveChangedProperty']);
+      // TODO: comment in for direct publish
+      /* $('.edit-area button[name="publishSave"]').click(publishChangedProperty);*/
+      
+      if (cms.galleries.isSelectableItem()) {
+         closeButton.before('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+                                <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                          </button>');
+         $('.edit-area').find('button[name="previewSelect"]').click(function() {
+            var itemType = '';
+            var itemId = $(this).closest('#cms-preview').attr('alt');
+            cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
+         });
+      }
    }
    
    /**

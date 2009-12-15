@@ -1,7 +1,10 @@
 (function(cms) {
 
-   ///// Content Handler Function definition //////////////////////////    
-   /** Initial flag for the genrating of the values for the format select box. */
+   ///// Content Handler Function definition //////////////////////////       
+   /** Reouse type constant for the image. */
+   cms.imagepreviewhandler.typeConst = 'image';
+   
+   /** Initial flag for generating of the values for the format select box. */
    var isInitFormatSelectBox = true;
    
    /** Default values for the max size of the image in the preview. */
@@ -58,6 +61,7 @@
       // read the json object for the active item
       var jsonForActiveImage = JSON.parse($('.preview-area').find("input[type='hidden']").val());
       
+      
       // display editable properties
       showFormatEditArea(itemData['previewdata']['properties']);
       
@@ -100,12 +104,13 @@
       // display editable properties
       cms.galleries.getContentHandler()['showEditArea'](itemProperties);
       
+      //TODO switch between the buttons
       // add button to select the edit area
-      $('.edit-area').find('.button-bar').append('<button name="showEditArea" disabled="true" class="cms-right ui-state-default ui-corner-all">\
+      /*$('.edit-area').find('.button-bar').append('<button name="showEditArea" disabled="true" class="cms-right ui-state-default ui-corner-all">\
                                                     <span class="cms-galleries-button">Edit&nbsp;resource&nbsp;properties</span>\
                                               </button>').append('<button name="showFormEditArea" disabled="false" class="cms-right ui-state-default ui-corner-all">\
                                                     <span class="cms-galleries-button">Edit&nbsp;image&nbsp;formats</span>\
-                                                </button>');
+                                                </button>');*/
       
       
       $('.edit-area').hide();
@@ -113,59 +118,54 @@
       ////display format select parameters for image  
       // add format edit area to preview
       var target = $('<div class="edit-format-area ui-widget-content ui-corner-all"></div>').appendTo('#cms-preview');
-      // add the buttons to the button bar
-      var buttonBar = $('<div class="button-bar"></div>').appendTo(target);
-      if (cms.galleries.isSelectableItem()) {
-         buttonBar.append('<button name="previewSelect" class="cms-left ui-state-default ui-corner-all">\
-                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
-                             </button>');
-         buttonBar.find('button[name="previewSelect"]').click(function() {
-            var itemId = $(this).closest('#cms-preview').attr('alt');
-            cms.galleries.getContentHandler('image')['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
-         });
-      }
       
-      // add buttons to switch between the file properties and the image format option
-      buttonBar.append('<button name="showEditArea" class="cms-right ui-state-default ui-corner-all">\
-                                <span class="cms-galleries-button">Edit&nbsp;resource&nbsp;properties</span>\
-                        </button>').append('<button name="showFormEditArea" disabled="true" class="cms-right ui-state-default ui-corner-all">\
-                                <span class="cms-galleries-button">Edit&nbsp;image&nbsp;formats</span>\
-                        </button>');
+      // add button bar to switch between format and properties areas
+      var switchBar = $('<div class="button-bar cms-top-bottom"></div>');        
+      switchBar.append('<button name="switchToProperties" class="cms-right ui-state-default ui-corner-all">\
+                           <span class="cms-galleries-button">Properties</span>\
+                    </button>')
+                .append('<span class="cms-title">Image Format:</span>');                                                      
+      target.append(switchBar);
       
       // generate editable format fields for width and height
       var form = $('<div class="edit-form"></div>');
+      //var buttonBar = $('<span class="button-bar"></span>')
       // width input field    
-      $('<div class="cms-editable-field"></div>').attr('alt', keys['previewWidth']).appendTo(form).append('<span class="cms-item-title">Width:</span>').append('<input class="ui-corner-all ui-widget-content" disabled="true" type="text"/>');
+      $('<div class="cms-format-line"></div>').attr('alt', keys['previewWidth'])
+          .appendTo(form)
+          .append('<span class="cms-item-title cms-width-50">Width:</span>')
+          .append('<input class="ui-corner-all ui-widget-content" disabled="true" type="text"/>');
       // height input field    
-      $('<div class="cms-editable-field"></div>').attr('alt', keys['previewHeight']).appendTo(form).append('<span class="cms-item-title">Height:</span>').append('<input class="ui-corner-all ui-widget-content" disabled="true" type="text"/>');
-      //.append('<span class="cms-item-edit" style=" width: 100px;"></span>');
+      $('<div class="cms-format-line"></div>').attr('alt', keys['previewHeight'])
+          .appendTo(form)
+          //.append(buttonBar)
+          .append('<span class="cms-item-title cms-width-50">Height:</span>')
+          .append('<input class="ui-corner-all ui-widget-content" disabled="true" type="text"/>');      
       $(target).append(form);
       
       if (cms.galleries.isSelectableItem()) {
          $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false);
          $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false); 
          // bind changeFormat 
-         $('.cms-editable-field[alt="' + keys['previewWidth'] + '"]').find('input').blur(function() {
+         $('.cms-format-line[alt="' + keys['previewWidth'] + '"]').find('input').blur(function() {
             onSizeChanged('Width', $(this).val())
          });
-         $('.cms-editable-field[alt="' + keys['previewHeight'] + '"]').find('input').blur(function() {
+         $('.cms-format-line[alt="' + keys['previewHeight'] + '"]').find('input').blur(function() {
             onSizeChanged('Height', $(this).val())
          });
          
          // append locksize und reset button
-         $('.cms-editable-field[alt="' + keys['previewWidth'] + '"]').find('input').after('<button name="' + keys['locksizes'] + '" class="ui-state-default ui-corner-all">\
-                                <span class="cms-galleries-button cms-galleries-icon-locked cms-icon-text">Lock&nbsp;size</span>\
+         $('.cms-format-line[alt="' + keys['previewWidth'] + '"]').find('input').after('<button name="' + keys['locksizes'] + '" class="ui-state-default ui-corner-all">\
+                                <span class="cms-galleries-button cms-galleries-icon-locked cms-icon">&nbsp;</span>\
                           </button>').after('<button name="' + keys['resetsize'] + '" class="ui-state-default ui-corner-all">\
-                                <span class="cms-galleries-button cms-galleries-icon-reset cms-icon-text">Reset&nbsp;size</span>\
+                                <span class="cms-galleries-button cms-galleries-icon-reset cms-icon">&nbsp;</span>\
                           </button>');
          $('button[name="' + keys['locksizes'] + '"]').click(switchLock);
          $('button[name="' + keys['resetsize'] + '"]').click(resetSizes);
-      }
-      
-      // add format select box in widget or editor mode
-      if (cms.galleries.isSelectableItem()) {
+         
          // drop down to select format
-         $('<div class="cms-drop-down cms-editable-field"></div>').attr('alt', keys['imageFormat']).appendTo(form).append('<label class="cms-item-title">Format:</label>').append('<button class="ui-state-default ui-corner-all" name="' + keys['cropShow'] + '">\
+         $('<div class="cms-drop-down cms-format-line"></div>').attr('alt', keys['imageFormat'])
+             .prependTo(form).append('<label class="cms-item-title cms-width-50">Format:</label>').append('<button class="ui-state-default ui-corner-all" name="' + keys['cropShow'] + '">\
                             <span class="cms-galleries-button cms-galleries-icon-crop cms-icon-text">Cropping</span>\
                       </button>').append('<button class="ui-state-default ui-corner-all" name="' + keys['cropRemove'] + '">\
                             <span class="cms-galleries-button cms-galleries-icon-cropremove cms-icon-text">Remove&nbsp;cropping</span>\
@@ -185,6 +185,23 @@
                changeFormat(index);
             }
          }));
+      }
+      
+      // add the buttons to the button bar                      
+      $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('span').before('<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
+                        <span class="cms-galleries-button">Close</span>\
+                  </button>');
+      $('.edit-format-area').find('button[name="previewClose"]').click(function() {
+             $('#cms-preview').fadeOut('slow');
+         });
+      if (cms.galleries.isSelectableItem()) {
+         $('.edit-format-area').find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                             </button>');
+         $('.edit-format-area').find('button[name="previewSelect"]').click(function() {
+            var itemId = $(this).closest('#cms-preview').attr('alt');
+            cms.galleries.getContentHandler('image')['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
+         });
       }
    }
    
@@ -888,10 +905,11 @@
       window.close();
    }
    
-   var showCropDialog = function() {
+   var showCropDialog = function() {      
       $('#cms-image-crop').html('<iframe frameborder="0" style="width: 650px; height: 439px;" name="cropFrame" src="./crop.jsp?" hspace="0">\
            </iframe>');
       $('#cms-image-crop').show();
+      $('#cms-preview').hide();
    }
    
    /**
@@ -974,6 +992,7 @@
     * Close function for the crop dialog.
     */
    var closeCropDialog = cms.imagepreviewhandler.closeCropDialog = function() {
+      $('#cms-preview').show();
       $('#cms-image-crop').hide();
       $('#cms-image-crop').empty();
    };

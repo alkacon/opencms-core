@@ -8,14 +8,17 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 
 <head>
 <!--[if IE 7]>
-  <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/imgselector_hack_ie7.css" />
-  <![endif]-->
-<link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/crop.css" />
-<link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/css/ui-ocms/jquery.ui.css" />
-<link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/css/ui-ocms/jquery.ui.ocms.css" />
-<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.js"></script>
-<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.dimensions.js"></script>
-<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/js/jquery.imgareaselect.min.js"></script>
+  div.container {
+  	height: 1%;
+  }
+<![endif]-->
+<link rel="stylesheet" type="text/css" media="screen" href="css/custom-theme/jquery-ui-1.7.2.custom.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/advanced_direct_edit.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/galleries.css" />
+<link rel="stylesheet" type="text/css" href="css/crop.css" />
+<script type="text/javascript" src="lib/jquery-1.3.2.js"></script>
+<script type="text/javascript" src="lib/jquery.dimensions.js"></script>
+<script type="text/javascript" src="lib/jquery.imgareaselect.min.js"></script>
 <script type="text/javascript">
 var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
 </script>
@@ -27,7 +30,7 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 <script type="text/javascript" src="js/cms.previewhandler.js"></script>
 <script type="text/javascript" src="js/cms.imagepreviewhandler.js"></script>
 <script type="text/javascript">
-	var imgPreviewHeight = 320;
+	var imgPreviewHeight = 350;
 	if (parent.cms.galleries.initValues.dialogmode == "editor") {
 		imgPreviewHeight = 390;
 	}
@@ -246,29 +249,39 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 		// check if image is loaded and activate selector
 		checkImage();
 		uiButtons();
+
+		//bind event to the buttons
+		$('button[name="crop-ok"]').click(okPressed);
+		$('button[name="crop-cancel"]').click(parent.cms.imagepreviewhandler.closeCropDialog);
 	});
 </script>
 </head>
 <body>
-
-<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_CROP_HEADLINE_0) %></div>
-
-<div class="imgbg">
-	<div class="container">
-		<img id="cropimg" src="#" />
+	<div class="cms-cropping-main">
+	    <div class="cms-border ui-widget-content ui-corner-all">
+			<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_CROP_HEADLINE_0) %></div>
+			
+			<div class="imgbg">
+				<div class="container">
+					<img id="cropimg" src="#" />
+				</div>
+			</div>
+		</div>
+		<div class="cms-border ui-widget-content ui-corner-all">		
+			<div class="selection">
+				<div class="cms-item-title">Width:<span id="w"></span></div>
+				<div class="cms-item-title">Height:<span id="h"></span></div>
+				<div class="cms-item-title">Scale:<span id="r"></span></div>
+			</div>	
+			<div class="button-bar cms-center-buttom">
+				<button class="ui-state-default ui-corner-all" name="crop-ok">
+					<span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Ok</span>
+				</button>
+				<button class="ui-state-default ui-corner-all" name="crop-cancel">
+					<span class="cms-galleries-button">Cancel</span>
+				</button>
+			</div>
+		</div>
 	</div>
-</div>
-
-<div class="selection">
-	<div class="width"><%= wp.key(Messages.GUI_IMAGEGALLERY_CROP_WIDTH_0) %> <span id="w"></span></div>
-	<div class="height"><%= wp.key(Messages.GUI_IMAGEGALLERY_CROP_HEIGHT_0) %> <span id="h"></span></div>
-	<div class="ratio"><%= wp.key(Messages.GUI_IMAGEGALLERY_CROP_RATIO_0) %> <span id="r"></span></div>
-</div>
-
-<div class="buttons">
-	<button onclick="okPressed();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_OK_0) %></button>
-	<button onclick="parent.cms.imagepreviewhandler.closeCropDialog();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %></button>
-</div>
-
 </body>
 </html>
