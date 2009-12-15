@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/12/14 12:52:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/15 15:24:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -277,6 +277,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the maxkeys node. */
     public static final String N_MAXKEYS = "maxkeys";
+
+    /** The node name for the device selector node. */
+    public static final String N_DEVICESELECTOR = "device-selector";
 
     /** The node name for the maxusagepercent node. */
     public static final String N_MAXUSAGE_PERCENT = "maxusagepercent";
@@ -999,6 +1002,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_AVGCACHEBYTES, 3);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_MAXENTRYBYTES, 4);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_MAXKEYS, 5);
+        // add flexcache device selector
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_DEVICESELECTOR,
+            "setDeviceSelectorConfiguration",
+            1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_DEVICESELECTOR, 0, A_CLASS);
 
         // set the FlexCacheConfiguration initialized once before
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_FLEXCACHE, "setCmsFlexCacheConfiguration");
@@ -1458,6 +1467,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         flexcacheElement.addElement(N_MAXENTRYBYTES).addText(
             String.valueOf(m_cmsFlexCacheConfiguration.getMaxEntryBytes()));
         flexcacheElement.addElement(N_MAXKEYS).addText(String.valueOf(m_cmsFlexCacheConfiguration.getMaxKeys()));
+        if (m_cmsFlexCacheConfiguration.getDeviceSelectorConfiguration() != null) {
+            Element flexcacheDeviceSelectorElement = flexcacheElement.addElement(N_DEVICESELECTOR);
+            flexcacheDeviceSelectorElement.addAttribute(
+                A_CLASS,
+                m_cmsFlexCacheConfiguration.getDeviceSelectorConfiguration());
+        }
 
         // create <http-authentication> node
         Element httpAuthenticationElement = systemElement.addElement(N_HTTP_AUTHENTICATION);

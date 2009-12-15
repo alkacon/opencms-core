@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2009/10/20 13:43:07 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2009/12/15 15:24:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,6 +61,9 @@ public class CmsFlexRequestKey {
 
     /** The request context this request was made in. */
     private CmsRequestContext m_context;
+
+    /** Stores the device this request was made with. */
+    private String m_device;
 
     /** The (Flex) Http request this key was constructed for. */
     private HttpServletRequest m_request;
@@ -94,6 +97,9 @@ public class CmsFlexRequestKey {
         // calculate the resource name
         m_resource = CmsFlexCacheKey.getKeyName(m_context.addSiteRoot(target), online);
 
+        // calculate the request
+        m_device = CmsFlexController.getController(req).getCmsCache().getDeviceSelector().getDeviceType(req);
+
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUESTKEY_CREATED_NEW_KEY_1, m_resource));
         }
@@ -111,6 +117,16 @@ public class CmsFlexRequestKey {
             return null;
         }
         return attrs;
+    }
+
+    /**
+     * Returns the device.<p>
+     *
+     * @return the device
+     */
+    public String getDevice() {
+
+        return m_device;
     }
 
     /**

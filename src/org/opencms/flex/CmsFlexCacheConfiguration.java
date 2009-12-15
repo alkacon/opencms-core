@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/12/15 15:24:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,18 @@
 
 package org.opencms.flex;
 
+import org.opencms.jsp.util.CmsJspDeviceSelector;
+import org.opencms.jsp.util.I_CmsJspDeviceSelector;
+import org.opencms.main.CmsLog;
+
+import org.apache.commons.logging.Log;
+
 /**
  * Flex Cache configuration class.<p>
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,6 +70,15 @@ public class CmsFlexCacheConfiguration {
 
     private int m_maxKeys;
 
+    /** The device selector. */
+    private I_CmsJspDeviceSelector m_deviceSelector;
+
+    /** The device selector configuration. */
+    private String m_deviceSelectorConfiguration;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexCacheConfiguration.class);
+
     /**
      * Empty public constructor for the digester.
      */
@@ -80,6 +95,64 @@ public class CmsFlexCacheConfiguration {
     public long getAvgCacheBytes() {
 
         return m_avgCacheBytes;
+    }
+
+    /**
+     * Returns the deviceSelector.<p>
+     *
+     * @return the deviceSelector
+     */
+    public I_CmsJspDeviceSelector getDeviceSelector() {
+
+        if (m_deviceSelector == null) {
+            m_deviceSelector = new CmsJspDeviceSelector();
+        }
+        return m_deviceSelector;
+    }
+
+    /**
+     * Returns the device selector configuration.<p>
+     * 
+     * @return the device selector configuration
+     */
+    public String getDeviceSelectorConfiguration() {
+
+        return m_deviceSelectorConfiguration;
+    }
+
+    /**
+     * Sets the device selector configuration.<p>
+     *
+     * @param deviceSelector the device selector to set
+     */
+    public void setDeviceSelectorConfiguration(String deviceSelector) {
+
+        m_deviceSelectorConfiguration = deviceSelector;
+
+        Object objectInstance;
+
+        try {
+            objectInstance = Class.forName(m_deviceSelectorConfiguration).newInstance();
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_RESOURCE_INIT_FAILURE_1,
+                m_deviceSelectorConfiguration), t);
+            return;
+        }
+        if (objectInstance instanceof I_CmsJspDeviceSelector) {
+            m_deviceSelector = (I_CmsJspDeviceSelector)objectInstance;
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_FLEXCACHE_DEVICE_SELECTOR_SUCCESS_1,
+                    m_deviceSelectorConfiguration));
+            }
+        } else {
+            if (CmsLog.INIT.isFatalEnabled()) {
+                CmsLog.INIT.fatal(Messages.get().getBundle().key(
+                    Messages.INIT_FLEXCACHE_DEVICE_SELECTOR_FAILURE_1,
+                    m_deviceSelectorConfiguration));
+            }
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/Messages.java,v $
- * Date   : $Date: 2009/10/20 13:43:07 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2009/12/15 15:24:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Thomas Weckert 
  *   
- * @version $Revision: 1.16.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -260,6 +260,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1 = "LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_RESOURCE_INIT_FAILURE_1 = "LOG_RESOURCE_INIT_FAILURE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_FLEXCACHE_DEVICE_SELECTOR_FAILURE_1 = "INIT_FLEXCACHE_DEVICE_SELECTOR_FAILURE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_FLEXCACHE_DEVICE_SELECTOR_SUCCESS_1 = "INIT_FLEXCACHE_DEVICE_SELECTOR_SUCCESS_1";
 
     /**
      * Hides the public constructor for this utility class.<p>

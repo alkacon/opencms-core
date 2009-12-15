@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2009/10/20 13:43:07 $
- * Version: $Revision: 1.32.2.2 $
+ * Date   : $Date: 2009/12/15 15:24:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,6 +123,9 @@ public class CmsFlexCacheKey {
     /** Flex cache keyword: no-attrs. */
     private static final String CACHE_19_NO_ATTRS = "no-attrs";
 
+    /** Flex cache keyword: device. */
+    private static final String CACHE_20_DEVICE = "device";
+
     /** The list of keywords of the Flex cache language. */
     private static final List<String> CACHE_COMMANDS = Arrays.asList(new String[] {
         CACHE_00_ALWAYS,
@@ -144,7 +147,8 @@ public class CmsFlexCacheKey {
         CACHE_16_ENCODING,
         CACHE_17_SITE,
         CACHE_18_ATTRS,
-        CACHE_19_NO_ATTRS});
+        CACHE_19_NO_ATTRS,
+        CACHE_20_DEVICE});
 
     /** Marker to identify use of certain String key members (uri, ip etc.). */
     private static final String IS_USED = "/ /";
@@ -154,6 +158,9 @@ public class CmsFlexCacheKey {
 
     /** Cache key variable: Determines if this resource can be cached alwys, never or under certain conditions. -1 = never, 0=check, 1=always. */
     private int m_always;
+
+    /** Cache key variable: The current device. */
+    private String m_device;
 
     /** Cache key variable: The requested element. */
     private String m_element;
@@ -359,6 +366,10 @@ public class CmsFlexCacheKey {
 
         if (m_element != null) {
             appendKeyValue(str, CACHE_14_ELEMENT, key.getElement());
+        }
+
+        if (m_device != null) {
+            appendKeyValue(str, CACHE_20_DEVICE, key.getDevice());
         }
 
         if (m_locale != null) {
@@ -590,6 +601,9 @@ public class CmsFlexCacheKey {
         if (m_element != null) {
             // add element
             appendKeyValue(str, CACHE_14_ELEMENT, m_element);
+        }
+        if (m_device != null) {
+            appendKeyValue(str, CACHE_20_DEVICE, m_device);
         }
         if (m_locale != null) {
             // add locale
@@ -874,6 +888,9 @@ public class CmsFlexCacheKey {
                             // never cache with attributes
                             m_noattrs = Collections.emptySet();
                         }
+                        break;
+                    case 20: // device
+                        m_device = IS_USED; // marks m_device as being used
                         break;
                     default: // unknown directive, throw error
                         m_parseError = true;

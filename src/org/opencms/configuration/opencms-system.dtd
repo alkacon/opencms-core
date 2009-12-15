@@ -330,7 +330,7 @@ Each job can have an optional list of parameters.
 #
 # FlexCache configuration
 -->
-<!ELEMENT flexcache (cache-enabled, cache-offline, maxcachebytes, avgcachebytes, maxentrybytes, maxkeys)>
+<!ELEMENT flexcache (cache-enabled, cache-offline, maxcachebytes, avgcachebytes, maxentrybytes, maxkeys, device-selector?)>
 
 <!--
 # Enable or disable the FlexCache here with the "cache-enabled" node.
@@ -359,6 +359,13 @@ Each job can have an optional list of parameters.
 <!ELEMENT avgcachebytes (#PCDATA)>
 <!ELEMENT maxentrybytes (#PCDATA)>
 <!ELEMENT maxkeys (#PCDATA)>
+
+<!--
+# Setting the class for the device slector
+-->
+<!ELEMENT device-selector EMPTY>
+<!ATTLIST device-selector class CDATA #REQUIRED>
+
 
 <!--
 #
@@ -581,7 +588,6 @@ Each job can have an optional list of parameters.
 <!ELEMENT containerpages EMPTY >
 <!ATTLIST containerpages offline CDATA #REQUIRED>
 <!ATTLIST containerpages online CDATA #REQUIRED>
-
 <!--
 # Subcontainer caches. 
 -->

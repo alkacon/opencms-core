@@ -383,7 +383,20 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
     </tag>
-    
+
+    <tag>
+        <description>
+            This tag is used to output different HTML for various device types
+        </description>
+        <name>device</name>
+        <tag-class>org.opencms.jsp.CmsJspTagDevice</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>type</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
     <tag>
         <description>
             This tag is used to enable the advanced direct editing within a template.

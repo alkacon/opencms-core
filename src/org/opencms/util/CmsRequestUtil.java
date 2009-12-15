@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2009/10/20 13:43:06 $
- * Version: $Revision: 1.30.2.3 $
+ * Date   : $Date: 2009/12/15 15:24:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.30.2.3 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,6 +73,9 @@ public final class CmsRequestUtil {
 
     /** Request attribute that contains the original error code. */
     public static final String ATTRIBUTE_ERRORCODE = "org.opencms.util.CmsErrorCode";
+
+    /** HTTP Accept Header for the cms:device-tag. */
+    public static final String HEADER_ACCEPT = "Accept";
 
     /** HTTP Accept-Charset Header for internal requests used during static export. */
     public static final String HEADER_ACCEPT_CHARSET = "Accept-Charset";
