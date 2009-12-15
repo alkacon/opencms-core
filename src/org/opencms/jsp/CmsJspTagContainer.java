@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/12/15 09:57:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
@@ -189,11 +189,17 @@ public class CmsJspTagContainer extends TagSupport {
             }
             // actualize the cache
             container.setMaxElements(maxElements);
+        } else {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().container(
+                    Messages.LOG_MAXELEMENTS_NOT_SET_3,
+                    new Object[] {containerName, locale, cms.getSitePath(containerPage)}));
+            }
         }
 
         // get the actual number of elements to render
         int renderElems = container.getElements().size();
-        if ((maxElements > -1) && (renderElems > maxElements)) {
+        if ((maxElements > 0) && (renderElems > maxElements)) {
             renderElems = maxElements;
         }
         if (actAsTemplate) {
