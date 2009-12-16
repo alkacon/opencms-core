@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/12/16 15:10:21 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/12/16 15:21:10 $
+ * Version: $Revision: 1.19 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ OpenCms 7.9.1 - xxxx, 2009
 * Fixed issue that, no error when changing field structure in xsd from simple to optional nested content
 * Fixed issue #1809: Left site tree view is shown duplicated when creating a new folder in any site
 * Fixed issue #1807: CmsImportVersion7 contains a counter error in INFO log level
+* Fixed issue #1808: OpenCms.getLinkManager().getOnlineLink(CmsObject, link) does not work
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
