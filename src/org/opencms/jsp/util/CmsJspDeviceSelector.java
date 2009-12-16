@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspDeviceSelector.java,v $
- * Date   : $Date: 2009/12/15 15:24:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/12/16 13:22:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,9 @@
 package org.opencms.jsp.util;
 
 import org.opencms.util.CmsRequestUtil;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -234,10 +237,10 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
     /**
      * @see org.opencms.jsp.util.I_CmsJspDeviceSelector#getDeviceTypes()
      */
-    public String[] getDeviceTypes() {
+    public List<String> getDeviceTypes() {
 
         String[] devices = {C_MOBILE, C_CONSOLE, C_DESKTOP};
-        return devices;
+        return Arrays.asList(devices);
     }
 
     /**
@@ -365,7 +368,6 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
         if (detectSonyPlaystation() || detectNintendo() || detectXbox()) {
             return true;
         }
-
         return false;
     }
 
@@ -380,7 +382,6 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
         if ((m_userAgent.indexOf(DEVICE_IPHONE) != -1) && !detectIpod()) {
             return true;
         }
-
         return false;
     }
 
@@ -438,7 +439,8 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
     }
 
     /**
-     * The longer and more thorough way to detect for a mobile device.
+     * The longer and more thorough way to detect for a mobile device.<p>
+     * 
      * Will probably detect most feature phones,
      * smartphone-class devices, Internet Tablets,
      * Internet-enabled game consoles, etc.
@@ -498,7 +500,6 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
                 return true;
             }
         }
-
         //detect older phones from certain manufacturers and operators.
         if (m_userAgent.indexOf(UPLINK) != -1) {
             if (m_userAgent.indexOf(MANU_SONY_ERICSSON) != -1) {
@@ -533,7 +534,6 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
             || (m_userAgent.indexOf(DEVICE_NINTENDO_DS) != -1)) {
             return true;
         }
-
         return false;
     }
 
@@ -564,7 +564,6 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
             || (m_userAgent.indexOf(ENGINE_XIINO) != -1)) {
             return true;
         }
-
         return false;
     }
 
@@ -690,7 +689,6 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
         if (detectSmartphone() && (!detectTierIphone())) {
             return true;
         }
-
         return false;
     }
 
@@ -704,7 +702,6 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
         if ((m_httpAccept.indexOf(VND_WAP) != -1) || (m_httpAccept.indexOf(WML) != -1)) {
             return true;
         }
-
         return false;
     }
 

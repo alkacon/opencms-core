@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/I_CmsJspDeviceSelector.java,v $
- * Date   : $Date: 2009/12/15 15:24:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/12/16 13:22:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,17 @@
 
 package org.opencms.jsp.util;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface supports the basic functionality for the device detection.<p> 
  * 
  * @author Ruediger Kurz
+ * 
  * @since 7.9.3
+ * 
  * @version 1.0
  */
 public interface I_CmsJspDeviceSelector {
@@ -61,5 +65,5 @@ public interface I_CmsJspDeviceSelector {
      * 
      * @return an array of device types that can be detected
      */
-    public String[] getDeviceTypes();
+    public List<String> getDeviceTypes();
 }

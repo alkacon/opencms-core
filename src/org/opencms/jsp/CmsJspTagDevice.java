@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDevice.java,v $
- * Date   : $Date: 2009/12/15 15:24:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/12/16 13:22:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
@@ -40,6 +41,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+
+import org.apache.commons.logging.Log;
 
 /**
  * This class provides a <code>&lt;cms:device type="..."&gt;</code>-Tag 
@@ -55,6 +58,9 @@ public class CmsJspTagDevice extends BodyTagSupport {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 9175484824140856283L;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagDevice.class);
 
     /** Device for output. */
     protected String m_type;
@@ -93,25 +99,39 @@ public class CmsJspTagDevice extends BodyTagSupport {
         // get the device selector
         I_CmsJspDeviceSelector selector = controller.getCmsCache().getDeviceSelector();
 
-        // get the current device from the request
-        HttpServletRequest req = controller.getTopRequest();
-        String device = (String)req.getAttribute(I_CmsJspDeviceSelector.REQUEST_ATTRIBUTE_DEVICE);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(device)) {
-            // device not found in request
-            device = selector.getDeviceType(req);
-            if (CmsStringUtil.isNotEmpty(device)) {
-                // put the detected device into the request
-                req.setAttribute(I_CmsJspDeviceSelector.REQUEST_ATTRIBUTE_DEVICE, device);
+        List<String> supportedDevices = selector.getDeviceTypes();
+        List<String> selectedDevices = CmsStringUtil.splitAsList(m_type, ",", true);
+
+        // check if the selected device is in the list of supported devices
+        for (String selectedDevice : selectedDevices) {
+            if (supportedDevices.contains(selectedDevice)) {
+                // get the current device from the request
+                HttpServletRequest req = controller.getTopRequest();
+                String device = (String)req.getAttribute(I_CmsJspDeviceSelector.REQUEST_ATTRIBUTE_DEVICE);
+
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(device)) {
+                    // device not found in request
+                    device = selector.getDeviceType(req);
+                    if (CmsStringUtil.isNotEmpty(device)) {
+                        // put the detected device into the request
+                        req.setAttribute(I_CmsJspDeviceSelector.REQUEST_ATTRIBUTE_DEVICE, device);
+                    }
+                }
+
+                // check if the detected device is in the list of given types
+                if (selectedDevices.contains(device)) {
+                    return EVAL_BODY_INCLUDE;
+                } else {
+                    return SKIP_BODY;
+                }
+            } else {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_WRONG_DEVICE_TYPE_2,
+                    selectedDevice,
+                    controller.getCurrentRequest().getElementUri()));
             }
         }
-
-        // check if the detected device is in the list of given types
-        List<String> devices = CmsStringUtil.splitAsList(m_type, ",");
-        if (devices.contains(device)) {
-            return EVAL_BODY_INCLUDE;
-        } else {
-            return SKIP_BODY;
-        }
+        return SKIP_BODY;
     }
 
     /**
