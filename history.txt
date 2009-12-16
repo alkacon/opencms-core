@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/12/16 14:25:19 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/12/16 15:10:21 $
+ * Version: $Revision: 1.18 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -24,8 +24,9 @@ OpenCms 7.9.1 - xxxx, 2009
 ! Added new feature: Advanced Direct Edit
 ! Added request attributes support for flex cache
 ! Added new feature: Sitemap Editor
-! Added generic configuration parameters for resource types
+! Added generic configuration parameters for resource types 
 ! Added support for device detection via <cms:device type="...">-Tag 
+! Added new feature: Action Log
 * Fixed issue #1791: Template Two Content external link check fails for two resources 
 * Fixed issue #1787: Error when browsing the next result pages in the OpenCms backend search
 * Fixed issue #1751: Static Export: export-resources doesn't match a file resource
