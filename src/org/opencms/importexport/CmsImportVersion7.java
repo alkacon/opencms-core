@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2009/06/04 14:29:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/12/16 11:24:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.4
  */
@@ -1812,7 +1812,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                         LOG.info(Messages.get().getBundle().key(
                             Messages.LOG_IMPORTING_4,
                             new Object[] {
-                                String.valueOf(m_fileCounter + 1),
+                                String.valueOf(m_fileCounter),
                                 String.valueOf(m_totalFiles),
                                 translatedName,
                                 m_destination}));
@@ -1828,7 +1828,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                     if (LOG.isInfoEnabled()) {
                         LOG.info(Messages.get().getBundle().key(
                             Messages.LOG_SKIPPING_3,
-                            String.valueOf(m_fileCounter + 1),
+                            String.valueOf(m_fileCounter),
                             String.valueOf(m_totalFiles),
                             translatedName));
                     }
@@ -1845,7 +1845,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().getBundle().key(
                         Messages.LOG_SKIPPING_3,
-                        String.valueOf(m_fileCounter + 1),
+                        String.valueOf(m_fileCounter),
                         String.valueOf(m_totalFiles),
                         translatedName));
                 }
