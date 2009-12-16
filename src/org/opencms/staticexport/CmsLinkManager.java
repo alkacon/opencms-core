@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2009/09/29 14:54:29 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2009/12/16 15:00:23 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.79 $ 
+ * @version $Revision: 1.80 $ 
  * 
  * @since 6.0.0 
  */
@@ -257,10 +257,10 @@ public class CmsLinkManager {
             try {
                 cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                 result = substituteLinkForUnknownTarget(cms, resourceName);
+                result = appendServerPrefix(cms, result);
             } finally {
                 cms.getRequestContext().setCurrentProject(currentProject);
             }
-            result = appendServerPrefix(cms, result);
         } catch (CmsException e) {
             // should never happen
             result = e.getLocalizedMessage();
