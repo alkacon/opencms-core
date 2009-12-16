@@ -52,7 +52,7 @@
 					</mappings>
                     <param name="gallery.type.names">imagegallery</param>
                     <param name="gallery.javascript.path">editors/ade/js/cms.imagepreviewhandler.js</param>
-                    <param name="formatter_gallery_preview"></param>
+                    <param name="formatter_gallery_preview">/system/workplace/editors/ade/image-preview-formatter.jsp</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp" id="4">
 					<mappings>
@@ -691,6 +691,7 @@
 				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
 				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
 				<widget class="org.opencms.widgets.CmsVfsImageWidget" alias="VfsImageWidget"/>
+                <widget class="org.opencms.widgets.CmsAdvancedGalleryWidget" alias="AdvancedGalleryWidget"/>
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
