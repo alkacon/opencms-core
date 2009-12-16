@@ -2,6 +2,31 @@
 
    ///// Content Handler Function definition //////////////////////////    
    
+   /** Html sceleton for the upper button bar in the editable properties area. */
+   var switchToFormatBar = $('<div class="button-bar cms-top-bottom">\
+                               <button name="switchToFormat" class="cms-right ui-state-default ui-corner-all">\
+                                     <span class="cms-galleries-button">Image&nbsp;Format</span>\
+                               </button>\
+                               <span class="cms-title">File Properties:</span>\
+                            </div>');
+   /** Html sceleton for the lower button bar in the editable properties area. */                      
+   var okCloseButtonBar = $('<div class="button-bar cms-top">\
+                                 <button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
+                                       <span class="cms-galleries-button">Close</span>\
+                                 </button>\
+                                 <button name="previewSave" disabled="true" class="cms-right ui-state-default ui-corner-all">\
+                                     <span class="cms-galleries-button">Save</span>\
+                                 </button>\
+                             </div>');                             
+   
+   /** html fragment for the item preview. */
+   cms.previewhandler.htmlPreviewSceleton = $('<div id="cms-preview" class="ui-corner-all">\
+                                <div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>\
+            	                <div class="preview-area ui-widget-content ui-corner-all"></div>\
+				                <div class="edit-area ui-widget-content ui-corner-all">\
+                                </div>\
+                            </div>');                  
+   
    /**
     * Displays the content of the preview item.
     *
@@ -42,29 +67,11 @@
    var showEditArea = function(itemProperties) {
       var target = $('.edit-area');
       
-      
-      // add button bar to the edit area
-      var switchBar = $('<div class="button-bar cms-top-bottom"></div>');        
-      switchBar.append('<button name="switchToFormat" class="cms-right ui-state-default ui-corner-all">\
-                                         <span class="cms-galleries-button">Image&nbsp;Format</span>\
-                                   </button>')
-                .append('<span class="cms-title">File Properties:</span>');
-             /*.append('<button name="previewPublish" class="ui-state-default ui-corner-all">\                 
-              <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
-              </button>');*/                                                 
-      target.append(switchBar);
-      $('button[name="switchToFormat"]').hide().click(function() {
-         target.hide(); 
-         $('.edit-format-area').show()
-      });
-      
-      if (cms.galleries.hasContentHandler('image')) {
-          $('button[name="switchToFormat"]').show();
-          target.hide(); 
-          $('.edit-format-area').show();
-      }
-            
-      // generate editable form
+      // add the upper button bar      
+      target.append(switchToFormatBar);
+      $('button[name="switchToFormat"]').hide();
+                                                                                                                 
+      // generate editable form fields
       var form = $('<div class="edit-form cms-scrolling-properties"></div>');
       for (var i = 0; i < itemProperties.length; i++) {
           if ( i%2  == 0) {
@@ -79,15 +86,7 @@
                  .append('<span class="cms-item-edit">' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '') + '</span>');
           }
           
-      }
-      
-      
-      /*$.each(itemProperties, function() {
-         $('<div class="cms-editable-field"></div>').attr('alt', this.name)
-         .appendTo(form)
-         .append('<span class="cms-item-title">' + this.name + '</span>')
-         .append('<span class="cms-item-edit">' + (this.value ? this.value : '') + '</span>');
-      });*/
+      }      
       $(target).append(form);
       
       // bind direct input to the editable fields
@@ -98,32 +97,22 @@
          onChange: function(element, input) {
             $('.edit-area').find('button[name="previewSave"]').removeAttr('disabled');
          }
-      });
-      
-      // add button bar to the editet area
-      var buttonBar = $('<div class="button-bar cms-top"></div>');      
-      var closeButton = $('<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
-                                            <span class="cms-galleries-button">Close</span>\
-                                       </button>')
-                               .appendTo(buttonBar)
-                               .after('<button name="previewSave" disabled="true" class="cms-right ui-state-default ui-corner-all">\
-                                 <span class="cms-galleries-button">Save</span>\
-                           </button>');
-        /*.append('<button name="previewPublish" class="ui-state-default ui-corner-all">\                 
-          <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
-          </button>');*/                        
-      target.append(buttonBar);
-      $('.edit-area').find('button[name="previewSave"]')
+      });    
+         
+      // add ok-close button bar to the edit area                        
+      target.append(okCloseButtonBar);
+      target.find('button[name="previewSave"]')
           .click(cms.galleries.getContentHandler()['saveChangedProperty']);
-      $('.edit-area').find('button[name="previewClose"]')
+      target.find('button[name="previewClose"]')
           .click(function() {
              $('#cms-preview').fadeOut('slow');
          });
       // TODO: comment in for direct publish
       /* $('.edit-area button[name="publishSave"]').click(publishChangedProperty);*/
       
+      // add select button if in widget or editor mode
       if (cms.galleries.isSelectableItem()) {
-         closeButton.after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+         target.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
                                 <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                           </button>');
          $('.edit-area').find('button[name="previewSelect"]').click(function() {            
