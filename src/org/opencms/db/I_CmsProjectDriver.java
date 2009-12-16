@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2009/10/28 07:21:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.db.log.CmsLogEntry;
+import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -46,7 +48,6 @@ import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -56,7 +57,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -70,17 +71,6 @@ public interface I_CmsProjectDriver {
 
     /** The name of the temp file project. */
     String TEMP_FILE_PROJECT_NAME = "tempFileProject";
-
-    /**
-     * Adds a resource to the given user's publish list.<p>
-     * 
-     * @param dbc the database context
-     * @param userId the user's id
-     * @param structureId the resource's structure id
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    void addResourceToUsersPubList(CmsDbContext dbc, CmsUUID userId, CmsUUID structureId) throws CmsDataAccessException;
 
     /**
      * Creates a new project.<p>
@@ -140,6 +130,16 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     void deleteAllStaticExportPublishedResources(CmsDbContext dbc, int linkType) throws CmsDataAccessException;
+
+    /**
+     * Deletes log entries matching the given filter.<p>
+     * 
+     * @param dbc the database context
+     * @param filter the log entry filter
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void deleteLog(CmsDbContext dbc, CmsLogFilter filter) throws CmsDataAccessException;
 
     /**
      * Deletes a project from the cms.<p>
@@ -273,6 +273,16 @@ public interface I_CmsProjectDriver {
      * @return the SQL manager for this driver
      */
     org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
+
+    /**
+     * Logs the given log entry.<p>
+     * 
+     * @param dbc the database context
+     * @param logEntry the log entry
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void log(CmsDbContext dbc, CmsLogEntry logEntry) throws CmsDataAccessException;
 
     /**
      * Publishes a deleted folder.<p>
@@ -410,6 +420,18 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     List<CmsLock> readLocks(CmsDbContext dbc) throws CmsDataAccessException;
+
+    /**
+     * Reads log entries matching the given filter.<p>
+     * 
+     * @param dbc the database context
+     * @param filter the log entry filter
+     * 
+     * @return the list of log entries 
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List<CmsLogEntry> readLog(CmsDbContext dbc, CmsLogFilter filter) throws CmsDataAccessException;
 
     /**
      * Reads a project given the projects id.<p>
@@ -587,18 +609,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     List<String> readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
-    throws CmsDataAccessException;
-
-    /**
-     * Removes the given resource to the given user's publish list.<p>
-     * 
-     * @param dbc the database context
-     * @param userId the user's id
-     * @param structureIds the collection of structure IDs to remove
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    void removeResourceFromUsersPubList(CmsDbContext dbc, CmsUUID userId, Collection<CmsUUID> structureIds)
     throws CmsDataAccessException;
 
     /**

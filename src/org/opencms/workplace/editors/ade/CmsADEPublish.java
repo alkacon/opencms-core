@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublish.java,v $
- * Date   : $Date: 2009/11/24 15:48:47 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 7.9.3
  */
@@ -352,8 +352,7 @@ public class CmsADEPublish {
         pubResources.getRelatedResources().removeAll(permissions.getRelatedResources());
         pubResources.getRelatedResources().removeAll(locked.getRelatedResources());
 
-        // TODO: deleted resources won't be in the correct position since 
-        //       the modification date is not set during deletion
+        // sort the list
         List<CmsResource> sortedResources = new ArrayList<CmsResource>(getPublishResources().getResources());
         Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
 

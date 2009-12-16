@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2009/12/16 11:24:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.importexport;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.log.CmsLogEntry;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -90,7 +91,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.4
  */
@@ -357,7 +358,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     private CmsImportParameters m_parameters;
 
     /** The list of resource to be parsed, this is a global list, which will be handled at the end of the import. */
-    private List m_parseables;
+    private List<String> m_parseables;
 
     /** The project description. */
     private String m_projectDescription;
@@ -739,7 +740,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
                 // remove the meanwhile used first resource of the parent organizational unit
                 try {
-                    String resName = ((CmsResource)OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                    String resName = (OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                         getCms(),
                         CmsOrganizationalUnit.getParentFqn(orgUnitName)).get(0)).getRootPath();
                     if (!resources.contains(resName)) {
@@ -2191,45 +2192,45 @@ public class CmsImportVersion7 implements I_CmsImport {
             return;
         }
 
-        getReport().println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
+        I_CmsReport report = getReport();
+        CmsObject cms = getCms();
+        cms.getRequestContext().setAttribute(CmsLogEntry.ATTR_LOG_ENTRY, Boolean.FALSE);
+
+        report.println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
 
         int i = 0;
-        Iterator it = m_parseables.iterator();
+        Iterator<String> it = m_parseables.iterator();
         while (it.hasNext()) {
-            String resName = (String)it.next();
+            String resName = it.next();
 
-            getReport().print(
-                org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(m_parseables.size())),
-                I_CmsReport.FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                String.valueOf(i + 1),
+                String.valueOf(m_parseables.size())), I_CmsReport.FORMAT_NOTE);
 
-            getReport().print(
-                Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, resName),
-                I_CmsReport.FORMAT_NOTE);
-            getReport().print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+            report.print(Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, resName), I_CmsReport.FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             try {
-                CmsFile file = getCms().readFile(resName);
+                CmsFile file = cms.readFile(resName);
                 // make sure the date last modified is kept...
                 file.setDateLastModified(file.getDateLastModified());
                 // make sure the file is locked
-                CmsLock lock = getCms().getLock(file);
+                CmsLock lock = cms.getLock(file);
                 if (lock.isUnlocked()) {
-                    getCms().lockResource(resName);
-                } else if (!lock.isExclusiveOwnedBy(getCms().getRequestContext().currentUser())) {
-                    getCms().changeLock(resName);
+                    cms.lockResource(resName);
+                } else if (!lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser())) {
+                    cms.changeLock(resName);
                 }
                 // rewrite the file
-                getCms().writeFile(file);
+                cms.writeFile(file);
 
-                getReport().println(
+                report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
             } catch (Throwable e) {
-                getReport().addWarning(e);
-                getReport().println(
+                report.addWarning(e);
+                report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
                     I_CmsReport.FORMAT_ERROR);
                 if (LOG.isWarnEnabled()) {
@@ -2241,8 +2242,9 @@ public class CmsImportVersion7 implements I_CmsImport {
             }
             i++;
         }
+        cms.getRequestContext().removeAttribute(CmsLogEntry.ATTR_LOG_ENTRY);
 
-        getReport().println(Messages.get().container(Messages.RPT_END_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_END_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
         m_parseables = null;
     }
 

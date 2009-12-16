@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/11/26 11:33:02 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,9 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.db.log.CmsLogEntry;
+import org.opencms.db.log.CmsLogEntryType;
+import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -99,6 +102,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -428,7 +432,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // initialize each pool
         for (int p = 0; p < driverPoolNames.length; p++) {
-            driverManager.newPoolInstance(config, driverPoolNames[p]);
+            driverManager.newPoolInstance(CmsCollectionsGenericWrapper.<String, Object> map(config), driverPoolNames[p]);
         }
 
         // initialize the runtime info factory with the generated driver manager
@@ -528,9 +532,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsRelation relation = new CmsRelation(resource, target, type);
         m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
         if (!importCase) {
+            // log it
+            log(dbc, new CmsLogEntry(
+                dbc,
+                resource.getStructureId(),
+                CmsLogEntryType.RESOURCE_ADD_RELATION,
+                new String[] {relation.getSourcePath(), relation.getTargetPath()}));
+            // touch the resource
             setDateLastModified(dbc, resource, System.currentTimeMillis());
         }
-        addResourceToUsersPubList(dbc, resource);
     }
 
     /**
@@ -657,7 +667,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map eventData = new HashMap();
+        Map<String, String> eventData = new HashMap<String, String>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
@@ -845,6 +855,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // must operate on a clone to ensure resource is not modified in case permissions are not granted
         CmsResource clone = (CmsResource)resource.clone();
         clone.setFlags(flags);
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_FLAGS,
+            new String[] {resource.getRootPath()}));
+        // write it
         writeResource(dbc, clone);
     }
 
@@ -872,6 +889,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResource clone = (CmsResource)resource.clone();
         I_CmsResourceType newType = OpenCms.getResourceManager().getResourceType(type);
         clone.setType(newType.getTypeId());
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_TYPE,
+            new String[] {resource.getRootPath()}));
+        // write it
         writeResource(dbc, clone);
     }
 
@@ -954,6 +978,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 ace.getPermissions().getDeniedPermissions(),
                 ace.getFlags());
         }
+
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            destination.getStructureId(),
+            CmsLogEntryType.RESOURCE_PERMISSIONS,
+            new String[] {destination.getRootPath()}));
 
         // update the "last modified" information
         if (updateLastModifiedInfo) {
@@ -1101,6 +1132,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // trigger "is touched" state on resource (will ensure modification date is kept unchanged)
         newResource.setDateLastModified(dateLastModified);
 
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            newResource.getStructureId(),
+            CmsLogEntryType.RESOURCE_COPIED,
+            new String[] {newResource.getRootPath()}));
+
         // create the resource
         newResource = createResource(dbc, destination, newResource, content, properties, false);
         // copy relations
@@ -1239,7 +1277,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return group;
         }
         // fire group modified event
-        Map eventData = new HashMap();
+        Map<String, String> eventData = new HashMap<String, String>();
         eventData.put(I_CmsEventListener.KEY_GROUP_NAME, group.getName());
         eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_GROUP_MODIFIED_ACTION_CREATE);
@@ -1330,7 +1368,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // fire OU modified event
-        Map event2Data = new HashMap();
+        Map<String, String> event2Data = new HashMap<String, String>();
         event2Data.put(I_CmsEventListener.KEY_OU_NAME, orgUnit.getName());
         event2Data.put(I_CmsEventListener.KEY_OU_ID, orgUnit.getId().toString());
         event2Data.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_OU_MODIFIED_ACTION_CREATE);
@@ -1771,7 +1809,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             if (!importCase) {
-                addResourceToUsersPubList(dbc, newResource);
+                log(dbc, new CmsLogEntry(
+                    dbc,
+                    newResource.getStructureId(),
+                    CmsLogEntryType.RESOURCE_CREATED,
+                    new String[] {resource.getRootPath()}));
+            } else {
+                log(dbc, new CmsLogEntry(
+                    dbc,
+                    newResource.getStructureId(),
+                    CmsLogEntryType.RESOURCE_IMPORTED,
+                    new String[] {resource.getRootPath()}));
             }
         } finally {
             // clear the internal caches
@@ -1923,6 +1971,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // trigger "is touched" state on resource (will ensure modification date is kept unchanged)
         newResource.setDateLastModified(newResource.getDateLastModified());
 
+        log(dbc, new CmsLogEntry(
+            dbc,
+            newResource.getStructureId(),
+            CmsLogEntryType.RESOURCE_CLONED,
+            new String[] {newResource.getRootPath()}));
         // create the resource (null content signals creation of sibling)
         newResource = createResource(dbc, destination, newResource, null, properties, false);
 
@@ -2043,7 +2096,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return user;
         }
         // fire user modified event
-        Map eventData = new HashMap();
+        Map<String, String> eventData = new HashMap<String, String>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_CREATE_USER);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
@@ -2204,7 +2257,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire group modified event
-        Map eventData = new HashMap();
+        Map<String, String> eventData = new HashMap<String, String>();
         eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
         eventData.put(I_CmsEventListener.KEY_GROUP_NAME, group.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_GROUP_MODIFIED_ACTION_DELETE);
@@ -2343,6 +2396,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Deletes all log entries matching the given filter.<p>
+     * 
+     * @param dbc the current db context
+     * @param filter the filter to use for deletion
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#deleteLogEntries(CmsRequestContext, CmsLogFilter)
+     */
+    public void deleteLogEntries(CmsDbContext dbc, CmsLogFilter filter) throws CmsException {
+
+        m_projectDriver.deleteLog(dbc, filter);
+    }
+
+    /**
      * Deletes an organizational unit.<p>
      *
      * Only organizational units that contain no suborganizational unit can be deleted.<p>
@@ -2453,7 +2521,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire OU modified event
-        Map event2Data = new HashMap();
+        Map<String, String> event2Data = new HashMap<String, String>();
         event2Data.put(I_CmsEventListener.KEY_OU_NAME, organizationalUnit.getName());
         event2Data.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_OU_MODIFIED_ACTION_DELETE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_OU_MODIFIED, event2Data));
@@ -2664,6 +2732,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), resource, filter);
         setDateLastModified(dbc, resource, System.currentTimeMillis());
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_REMOVE_RELATION,
+            new String[] {resource.getRootPath(), filter.toString()}));
     }
 
     /**
@@ -2863,8 +2936,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         dbc.currentProject(),
                         dbc.currentProject().getUuid(),
                         currentResource);
-
-                    addResourceToUsersPubList(dbc, currentResource);
+                    // log it
+                    log(dbc, new CmsLogEntry(
+                        dbc,
+                        currentResource.getStructureId(),
+                        CmsLogEntryType.RESOURCE_DELETED,
+                        new String[] {currentResource.getRootPath()}));
                 }
             }
         }
@@ -2980,7 +3057,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map eventData = new HashMap();
+        Map<String, String> eventData = new HashMap<String, String>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_DELETE_USER);
@@ -3899,6 +3976,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns all log entries matching the given filter.<p> 
+     * 
+     * @param dbc the current db context
+     * @param filter the filter to match the log entries
+     * 
+     * @return all log entries matching the given filter
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#getLogEntries(CmsRequestContext, CmsLogFilter)
+     */
+    public List<CmsLogEntry> getLogEntries(CmsDbContext dbc, CmsLogFilter filter) throws CmsException {
+
+        return m_projectDriver.readLog(dbc, filter);
+    }
+
+    /**
      * Returns the next publish tag for the published historical resources.<p>
      *
      * @param dbc the current database context
@@ -4178,7 +4272,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param resource the resource to retrieve the relations for
      * @param filter the filter to match the relation 
      * 
-     * @return all {@link CmsRelation} objects for the given resource matching the given filter
+     * @return all relations for the given resource matching the given filter
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -4870,19 +4964,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // any other exception indicates database issues, these are not catched here
 
             // check if a user with this name exists at all 
-            boolean userExists = true;
+            CmsUser user = null;
             try {
-                readUser(dbc, userName);
+                user = readUser(dbc, userName);
             } catch (CmsDataAccessException e2) {
                 // apparently this user does not exist in the database
-                userExists = false;
             }
 
-            if (userExists) {
+            if (user != null) {
                 if (dbc.currentUser().isGuestUser()) {
                     // add an invalid login attempt for this user to the storage
                     OpenCms.getLoginManager().addInvalidLogin(userName, remoteAddress);
                 }
+                // log it
+                log(dbc, new CmsLogEntry(
+                    user.getId(),
+                    System.currentTimeMillis(),
+                    null,
+                    CmsLogEntryType.USER_LOGIN_FAILED,
+                    new String[] {user.getName(), remoteAddress}));
                 // check if this account is temporarily disabled because of too many invalid login attempts
                 // this will throw an exception if the test fails
                 OpenCms.getLoginManager().checkInvalidLogins(userName, remoteAddress);
@@ -4900,6 +5000,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         return loginUser(dbc, parentOu + uName, password, remoteAddress);
                     }
                 }
+                // log it
+                log(dbc, new CmsLogEntry(
+                    CmsUUID.getNullUUID(),
+                    System.currentTimeMillis(),
+                    null,
+                    CmsLogEntryType.USER_LOGIN_FAILED,
+                    new String[] {userName, remoteAddress}));
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                     org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2,
                     userName,
@@ -4908,6 +5015,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         // check if the "enabled" flag is set for the user
         if (!newUser.isEnabled()) {
+            // log it
+            log(dbc, new CmsLogEntry(
+                newUser.getId(),
+                System.currentTimeMillis(),
+                null,
+                CmsLogEntryType.USER_LOGIN_FAILED,
+                new String[] {newUser.getName(), remoteAddress}));
             // user is disabled, throw a securiy exception
             throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2,
@@ -4936,6 +5050,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // write the changed user object back to the user driver
         m_userDriver.writeUser(dbc, newUser);
+
+        // log it
+        log(dbc, new CmsLogEntry(
+            newUser.getId(),
+            System.currentTimeMillis(),
+            null,
+            CmsLogEntryType.USER_LOGIN_SUCCESSFUL,
+            new String[] {newUser.getName(), remoteAddress}));
 
         // update cache
         m_monitor.cacheUser(newUser);
@@ -5070,8 +5192,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 source,
                 CmsDriverManager.UPDATE_STRUCTURE_STATE,
                 false);
-            // safe since this operation always uses the ids instead of the resource path
-            addResourceToUsersPubList(dbc, source);
+            // log it
+            log(dbc, new CmsLogEntry(dbc, source.getStructureId(), CmsLogEntryType.RESOURCE_MOVED, new String[] {
+                source.getRootPath(),
+                destination}));
         }
 
         CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
@@ -6984,6 +7108,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // remove the ace
         m_userDriver.removeAccessControlEntry(dbc, dbc.currentProject(), resource.getResourceId(), principal);
 
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_PERMISSIONS,
+            new String[] {resource.getRootPath()}));
+
         // update the "last modified" information
         setDateLastModified(dbc, resource, resource.getDateLastModified());
 
@@ -7069,7 +7200,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void removeResourceFromUsersPubList(CmsDbContext dbc, CmsUUID userId, Collection<CmsUUID> structureIds)
     throws CmsDataAccessException {
 
-        m_projectDriver.removeResourceFromUsersPubList(dbc, userId, structureIds);
+        for (CmsUUID structureId : structureIds) {
+            CmsLogEntry entry = new CmsLogEntry(
+                userId,
+                System.currentTimeMillis(),
+                structureId,
+                CmsLogEntryType.RESOURCE_HIDDEN,
+                new String[] {readResource(dbc, structureId, CmsResourceFilter.ALL).getRootPath()});
+            log(dbc, entry);
+            // this is needed for getting the next written
+            dbc.removeAttribute(CmsLogEntry.ATTR_LOG_ENTRY);
+        }
     }
 
     /**
@@ -7168,7 +7309,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map eventData = new HashMap();
+        Map<String, String> eventData = new HashMap<String, String>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
         eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
@@ -7234,6 +7375,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         resource.setUserLastModified(dbc.currentUser().getId());
 
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_CONTENT_MODIFIED,
+            new String[] {resource.getRootPath()}));
+
         setDateLastModified(dbc, resource, System.currentTimeMillis());
 
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
@@ -7287,7 +7435,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 return;
             }
             // fire user modified event
-            Map eventData = new HashMap();
+            Map<String, String> eventData = new HashMap<String, String>();
             eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
             eventData.put(
                 I_CmsEventListener.KEY_USER_ACTION,
@@ -7410,6 +7558,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
             histRes.getDateContent(),
             histRes.getVersion());
 
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            newResource.getStructureId(),
+            CmsLogEntryType.RESOURCE_RESTORE_DELETED,
+            new String[] {newResource.getRootPath()}));
+
         // prevent the date last modified is set to the current time
         newResource.setDateLastModified(newResource.getDateLastModified());
         // restore the resource!
@@ -7477,6 +7632,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 newVersion,
                 readFile(dbc, (CmsHistoryFile)historyResource).getContents());
 
+            // log it
+            log(dbc, new CmsLogEntry(
+                dbc,
+                newFile.getStructureId(),
+                CmsLogEntryType.RESOURCE_HISTORY,
+                new String[] {newFile.getRootPath()}));
+
             newResource = writeFile(dbc, newFile);
         } else {
             // it is a folder!
@@ -7495,6 +7657,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 historyResource.getDateReleased(),
                 historyResource.getDateExpired(),
                 newVersion);
+
+            // log it
+            log(dbc, new CmsLogEntry(
+                dbc,
+                newResource.getStructureId(),
+                CmsLogEntryType.RESOURCE_HISTORY,
+                new String[] {newResource.getRootPath()}));
 
             writeResource(dbc, newResource);
         }
@@ -7537,7 +7706,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // modify the last modified project reference
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
-        addResourceToUsersPubList(dbc, resource);
+        // log
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_DATE_EXPIRED,
+            new String[] {resource.getRootPath()}));
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7575,7 +7749,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resource.setUserLastModified(dbc.currentUser().getId());
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
 
-        addResourceToUsersPubList(dbc, resource);
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_TOUCHED,
+            new String[] {resource.getRootPath()}));
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7611,7 +7789,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // modify the last modified project reference
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
-        addResourceToUsersPubList(dbc, resource);
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_DATE_RELEASED,
+            new String[] {resource.getRootPath()}));
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7704,7 +7887,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map eventData = new HashMap();
+        Map<String, String> eventData = new HashMap<String, String>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_OU_NAME, user.getOuFqn());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_SET_OU);
@@ -7734,8 +7917,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resource.setState(CmsResourceState.STATE_CHANGED);
         // perform the changes
         updateState(dbc, resource, false);
-
-        addResourceToUsersPubList(dbc, resource);
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_UNDELETED,
+            new String[] {resource.getRootPath()}));
         // clear the cache
         m_monitor.clearResourceCache();
 
@@ -8095,6 +8282,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // write the new ace
         m_userDriver.writeAccessControlEntry(dbc, dbc.currentProject(), ace);
 
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_PERMISSIONS,
+            new String[] {resource.getRootPath()}));
+
         // update the "last modified" information
         setDateLastModified(dbc, resource, resource.getDateLastModified());
 
@@ -8262,14 +8456,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         byte[] contents = resource.getContents();
         m_vfsDriver.writeContent(dbc, resource.getResourceId(), contents);
+        // log it
+        log(dbc, new CmsLogEntry(
+            dbc,
+            resource.getStructureId(),
+            CmsLogEntryType.RESOURCE_CONTENT_MODIFIED,
+            new String[] {resource.getRootPath()}));
 
         // read the file back from db
         resource = new CmsFile(readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL));
         resource.setContents(contents);
 
         deleteRelationsWithSiblings(dbc, resource);
-
-        addResourceToUsersPubList(dbc, resource);
 
         // update the cache
         m_monitor.clearResourceCache();
@@ -8307,7 +8505,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire group modified event
-        Map eventData = new HashMap();
+        Map<String, String> eventData = new HashMap<String, String>();
         eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
         eventData.put(I_CmsEventListener.KEY_GROUP_NAME, oldGroup.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_GROUP_MODIFIED_ACTION_WRITE);
@@ -8434,6 +8632,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
             if (updateState > 0) {
                 updateState(dbc, resource, updateState == 2);
             }
+            // log it
+            log(dbc, new CmsLogEntry(
+                dbc,
+                resource.getStructureId(),
+                CmsLogEntryType.RESOURCE_PROPERTIES,
+                new String[] {resource.getRootPath()}));
+
         } finally {
             // update the driver manager cache
             m_monitor.clearResourceCache();
@@ -8504,11 +8709,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             if (updateStateValue > 0) {
+                // update state
                 updateState(dbc, resource, (updateStateValue == 2));
             }
-
             if (updateState) {
-                addResourceToUsersPubList(dbc, resource);
+                // log it
+                log(dbc, new CmsLogEntry(
+                    dbc,
+                    resource.getStructureId(),
+                    CmsLogEntryType.RESOURCE_PROPERTIES,
+                    new String[] {resource.getRootPath()}));
             }
         } finally {
             // update the driver manager cache
@@ -8577,8 +8787,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             deleteRelationsWithSiblings(dbc, resource);
         }
 
-        addResourceToUsersPubList(dbc, resource);
-
         // update the cache
         m_monitor.clearResourceCache();
         Map<String, Object> data = new HashMap<String, Object>(2);
@@ -8635,27 +8843,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map eventData = new HashMap();
+        Map<String, String> eventData = new HashMap<String, String>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, oldUser.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
-    }
-
-    /**
-     * Adds the given resource to the current user's publish list.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource to add
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void addResourceToUsersPubList(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
-
-        if (dbc == null) {
-            return;
-        }
-        m_projectDriver.addResourceToUsersPubList(dbc, dbc.currentUser().getId(), resource.getStructureId());
     }
 
     /** 
@@ -8716,6 +8908,27 @@ public final class CmsDriverManager implements I_CmsEventListener {
     protected CmsLockManager getLockManager() {
 
         return m_lockManager;
+    }
+
+    /**
+     * Adds the given log entry to the current user's log.<p>
+     * 
+     * @param dbc the current database context
+     * @param logEntry the log entry to create
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void log(CmsDbContext dbc, CmsLogEntry logEntry) throws CmsDataAccessException {
+
+        if ((dbc == null) || (dbc.getAttribute(CmsLogEntry.ATTR_LOG_ENTRY) != null) // operation already logged
+            || (dbc.getRequestContext().getAttribute(CmsLogEntry.ATTR_LOG_ENTRY) != null)) { // allow to disable logging from outside
+            // no dbc or already logged operation
+            return;
+        }
+        // prevent several entries for the same operation
+        dbc.setAttribute(CmsLogEntry.ATTR_LOG_ENTRY, Boolean.TRUE);
+        // log it
+        m_projectDriver.log(dbc, logEntry);
     }
 
     /**
@@ -9764,7 +9977,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // delete all offline relations
-        m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), offlineResource, CmsRelationFilter.TARGETS);
+        if (offlineResource != null) {
+            m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), offlineResource, CmsRelationFilter.TARGETS);
+        }
         // get online relations
         List<CmsRelation> relations = m_vfsDriver.readRelations(
             dbc,
@@ -9778,12 +9993,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
             m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
         }
 
-        addResourceToUsersPubList(dbc, offlineResource);
         // update the cache
         m_monitor.clearResourceCache();
         m_monitor.flushProperties();
         m_monitor.flushPropertyLists();
 
+        if ((offlineResource == null) || offlineResource.getRootPath().equals(onlineResource.getRootPath())) {
+            log(dbc, new CmsLogEntry(
+                dbc,
+                onlineResource.getStructureId(),
+                CmsLogEntryType.RESOURCE_RESTORED,
+                new String[] {onlineResource.getRootPath()}));
+        } else {
+            log(dbc, new CmsLogEntry(
+                dbc,
+                offlineResource.getStructureId(),
+                CmsLogEntryType.RESOURCE_MOVE_RESTORED,
+                new String[] {offlineResource.getRootPath(), onlineResource.getRootPath()}));
+        }
         if (offlineResource != null) {
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,

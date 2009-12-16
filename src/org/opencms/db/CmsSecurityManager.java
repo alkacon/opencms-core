@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2009/12/15 09:56:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.db.log.CmsLogEntry;
+import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -1352,6 +1354,30 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Deletes all log entries matching the given filter.<p>
+     * 
+     * @param context the current user context
+     * @param filter the filter to use for deletion
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #getLogEntries(CmsRequestContext, CmsLogFilter)
+     * @see CmsObject#deleteLogEntries(CmsLogFilter)
+     */
+    public void deleteLogEntries(CmsRequestContext context, CmsLogFilter filter) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.WORKPLACE_MANAGER);
+            m_driverManager.deleteLogEntries(dbc, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_LOG_0), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Deletes a resource given its name.<p>
      * 
      * The <code>siblingMode</code> parameter controls how to handle siblings 
@@ -2220,6 +2246,32 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_RELATIONS_1,
                 context.removeSiteRoot(resource.getRootPath())), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns all log entries matching the given filter.<p> 
+     * 
+     * @param context the current user context
+     * @param filter the filter to match the log entries
+     * 
+     * @return all log entries matching the given filter
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#getLogEntries(CmsLogFilter)
+     */
+    public List<CmsLogEntry> getLogEntries(CmsRequestContext context, CmsLogFilter filter) throws CmsException {
+
+        List<CmsLogEntry> result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.getLogEntries(dbc, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_LOG_ENTRIES_0), e);
         } finally {
             dbc.clear();
         }

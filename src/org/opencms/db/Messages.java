@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2009/10/28 07:21:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -176,6 +176,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_HISTORY_4 = "ERR_DELETE_HISTORY_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_LOG_0 = "ERR_DELETE_LOG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_ORGUNIT_1 = "ERR_DELETE_ORGUNIT_1";
@@ -428,6 +431,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_HISTORY_PROJECT_2 = "ERR_READ_HISTORY_PROJECT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_LOG_ENTRIES_0 = "ERR_READ_LOG_ENTRIES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_ORGUNIT_1 = "ERR_READ_ORGUNIT_1";

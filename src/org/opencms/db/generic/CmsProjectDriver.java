@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/10/28 07:21:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,9 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
+import org.opencms.db.log.CmsLogEntry;
+import org.opencms.db.log.CmsLogEntryType;
+import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -99,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -116,30 +119,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#addResourceToUsersPubList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
-     */
-    public void addResourceToUsersPubList(CmsDbContext dbc, CmsUUID userId, CmsUUID structureId) {
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USER_PUBLIST_ADD_2");
-
-            stmt.setString(1, userId.toString());
-            stmt.setString(2, structureId.toString());
-
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            // ignore
-            // often we try to write the same data since we do not check before
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, CmsProject.CmsProjectType)
@@ -321,6 +300,43 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_ALL_PUBLISHED_LINKS");
             stmt.setInt(1, linkType);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#deleteLog(org.opencms.db.CmsDbContext, org.opencms.db.log.CmsLogFilter)
+     */
+    public void deleteLog(CmsDbContext dbc, CmsLogFilter filter) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+
+            // compose statement 
+            List<String> params = new ArrayList<String>(6);
+            StringBuffer queryBuf = new StringBuffer(256);
+            queryBuf.append(m_sqlManager.readQuery("C_LOG_DELETE_ENTRIES"));
+            queryBuf.append(prepareLogConditions(filter, params));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(queryBuf.toString());
+            }
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
+
+            // set parameters
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setString(i + 1, params.get(i));
+            }
+
+            // execute
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -704,13 +720,19 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         List<CmsResource> result = null;
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject().getUuid(), "C_USER_PUBLIST_READ_1");
+            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject().getUuid(), "C_LOG_READ_PUBLISH_LIST_2");
             stmt.setString(1, userId.toString());
+            stmt.setString(2, userId.toString());
             res = stmt.executeQuery();
 
             result = new ArrayList<CmsResource>();
             while (res.next()) {
-                result.add(m_driverManager.getVfsDriver().createResource(res, dbc.currentProject().getUuid()));
+                CmsResource resource = m_driverManager.getVfsDriver().createResource(
+                    res,
+                    dbc.currentProject().getUuid());
+                long date = res.getLong(m_sqlManager.readQuery("C_LOG_DATE"));
+                resource.setDateLastModified(date);
+                result.add(resource);
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -759,6 +781,41 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#log(org.opencms.db.CmsDbContext, org.opencms.db.log.CmsLogEntry)
+     */
+    public void log(CmsDbContext dbc, CmsLogEntry logEntry) {
+
+        // check log level
+        if (!logEntry.getType().isActive()) {
+            // do not log inactive entries
+            return;
+        }
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_LOG_CREATE_5");
+
+            stmt.setString(1, logEntry.getUserId().toString());
+            stmt.setLong(2, logEntry.getDate());
+            stmt.setString(3, logEntry.getResourceId() == null ? null : logEntry.getResourceId().toString());
+            stmt.setInt(4, logEntry.getType().getId());
+            stmt.setString(5, CmsStringUtil.arrayAsString(logEntry.getData(), "|"));
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            // ignore, most likely a duplicate entry
+            LOG.debug(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)).key(),
+                e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
     }
 
     /**
@@ -961,7 +1018,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsResource offlineResource,
-        Set publishedContentIds,
+        Set<CmsUUID> publishedContentIds,
         CmsUUID publishHistoryId,
         int publishTag) throws CmsDataAccessException {
 
@@ -1112,7 +1169,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsProject offlineProject,
         CmsProject onlineProject,
         CmsResource offlineResource,
-        Set publishedResourceIds,
+        Set<CmsUUID> publishedResourceIds,
         boolean needToUpdateContent,
         int publishTag) throws CmsDataAccessException {
 
@@ -1449,7 +1506,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         dbc.pop();
 
                         publishedIds.add(currentFolder.getStructureId());
-
+                        // log it
+                        CmsLogEntryType type = currentFolder.getState().isNew()
+                        ? CmsLogEntryType.RESOURCE_PUBLISHED_NEW
+                        : CmsLogEntryType.RESOURCE_PUBLISHED_MODIFIED;
+                        log(dbc, new CmsLogEntry(
+                            dbc,
+                            currentFolder.getStructureId(),
+                            type,
+                            new String[] {currentFolder.getRootPath()}));
                         // delete old historical entries
                         m_driverManager.getHistoryDriver().deleteEntries(
                             dbc,
@@ -1523,15 +1588,25 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         publishList.getPublishHistoryId(),
                         publishTag);
 
-                    if (!currentResource.getState().isDeleted()) {
+                    CmsResourceState state = currentResource.getState();
+                    if (!state.isDeleted()) {
                         // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
                         internalResetResourceState(dbc, currentResource);
                     }
 
+                    // unlock it
                     m_driverManager.unlockResource(dbc, currentResource, true, true);
+                    // log it
+                    CmsLogEntryType type = state.isNew() ? CmsLogEntryType.RESOURCE_PUBLISHED_NEW : (state.isDeleted()
+                    ? CmsLogEntryType.RESOURCE_PUBLISHED_DELETED
+                    : CmsLogEntryType.RESOURCE_PUBLISHED_MODIFIED);
+                    log(dbc, new CmsLogEntry(
+                        dbc,
+                        currentResource.getStructureId(),
+                        type,
+                        new String[] {currentResource.getRootPath()}));
 
                     publishedIds.add(currentResource.getStructureId());
-
                     dbc.pop();
                 } catch (Throwable t) {
                     dbc.report(report, Messages.get().container(
@@ -1585,8 +1660,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         -1);
 
                     publishedIds.add(currentFolder.getStructureId());
-
+                    // unlock it
                     m_driverManager.unlockResource(dbc, currentFolder, true, true);
+                    // log it
+                    log(dbc, new CmsLogEntry(
+                        dbc,
+                        currentFolder.getStructureId(),
+                        CmsLogEntryType.RESOURCE_PUBLISHED_DELETED,
+                        new String[] {currentFolder.getRootPath()}));
 
                     dbc.pop();
                 } catch (Throwable t) {
@@ -1618,9 +1699,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 String.valueOf(publishedFolderCount),
                 String.valueOf(deletedFolderCount),
                 report.formatRuntime()};
-
-            CmsUUID userId = dbc.currentUser().getId();
-            removeResourceFromUsersPubList(dbc, userId, publishedIds);
 
             CmsMessageContainer message = Messages.get().container(Messages.RPT_PUBLISH_STAT_4, msgArgs);
             if (LOG.isInfoEnabled()) {
@@ -1670,6 +1748,51 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
         return locks;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#readLog(org.opencms.db.CmsDbContext, org.opencms.db.log.CmsLogFilter)
+     */
+    public List<CmsLogEntry> readLog(CmsDbContext dbc, CmsLogFilter filter) throws CmsDataAccessException {
+
+        List<CmsLogEntry> entries = new ArrayList<CmsLogEntry>();
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+
+            // compose statement 
+            List<String> params = new ArrayList<String>(6);
+            StringBuffer queryBuf = new StringBuffer(256);
+            queryBuf.append(m_sqlManager.readQuery("C_LOG_READ_ENTRIES"));
+            queryBuf.append(prepareLogConditions(filter, params));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(queryBuf.toString());
+            }
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
+
+            // set parameters
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setString(i + 1, params.get(i));
+            }
+
+            // execute
+            res = stmt.executeQuery();
+            while (res.next()) {
+                // get results
+                entries.add(internalReadLogEntry(res));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return entries;
     }
 
     /**
@@ -2268,46 +2391,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#removeResourceFromUsersPubList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.util.Collection)
-     */
-    public void removeResourceFromUsersPubList(CmsDbContext dbc, CmsUUID userId, Collection<CmsUUID> structureIds)
-    throws CmsDataAccessException {
-
-        if (structureIds.isEmpty()) {
-            // nothing to do
-            return;
-        }
-
-        // execute
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-
-            StringBuffer queryBuf = new StringBuffer(256);
-            queryBuf.append(m_sqlManager.readQuery(dbc.getProjectId(), "C_USER_PUBLIST_REMOVE_2"));
-            queryBuf.append(getParameterString(structureIds));
-
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
-            // create the statement
-            stmt.setString(1, userId.toString());
-            // set the parameters
-            int i = 2;
-            for (CmsUUID id : structureIds) {
-                stmt.setString(i, id.toString());
-                i++;
-            }
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
      * @see org.opencms.db.I_CmsProjectDriver#unmarkProjectResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject)
      */
     public void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
@@ -2334,7 +2417,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writeLocks(org.opencms.db.CmsDbContext, java.util.List)
      */
-    public void writeLocks(CmsDbContext dbc, List locks) throws CmsDataAccessException {
+    public void writeLocks(CmsDbContext dbc, List<CmsLock> locks) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2713,6 +2796,25 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * Creates a new {@link CmsLogEntry} object from the given result set entry.<p>
+     * 
+     * @param res the result set 
+     *  
+     * @return the new {@link CmsLogEntry} object
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    protected CmsLogEntry internalReadLogEntry(ResultSet res) throws SQLException {
+
+        CmsUUID userId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LOG_USER_ID")));
+        long date = res.getLong(res.getString(m_sqlManager.readQuery("C_LOG_DATE")));
+        CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LOG_RESOURCE_ID")));
+        CmsLogEntryType type = CmsLogEntryType.valueOf(res.getInt(m_sqlManager.readQuery("C_LOG_TYPE")));
+        String[] data = CmsStringUtil.splitAsArray(res.getString(m_sqlManager.readQuery("C_LOG_DATA")), '|');
+        return new CmsLogEntry(userId, date, resourceId, type, data);
+    }
+
+    /**
      * Resets the state to UNCHANGED for a specified resource.<p>
      * 
      * @param dbc the current database context
@@ -2799,6 +2901,127 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
             throw e;
         }
+    }
+
+    /**
+     * Build the whole WHERE SQL statement part for the given log entry filter.<p>
+     * 
+     * @param filter the filter
+     * @param params the parameter values (return parameter)
+     * 
+     * @return the WHERE SQL statement part string
+     */
+    protected String prepareLogConditions(CmsLogFilter filter, List<String> params) {
+
+        StringBuffer conditions = new StringBuffer(128);
+        params.clear(); // be sure the parameters list is clear
+
+        // user id filter
+        if (filter.getUserId() != null) {
+            if (conditions.length() == 0) {
+                conditions.append(BEGIN_CONDITION);
+            } else {
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+            }
+            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_USER_ID"));
+            params.add(filter.getUserId().toString());
+            conditions.append(END_CONDITION);
+        }
+
+        // resource id filter
+        if (filter.getStructureId() != null) {
+            if (conditions.length() == 0) {
+                conditions.append(BEGIN_CONDITION);
+            } else {
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+            }
+            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_RESOURCE_ID"));
+            params.add(filter.getStructureId().toString());
+            conditions.append(END_CONDITION);
+        }
+
+        // user id filter
+        if (filter.getUserId() != null) {
+            if (conditions.length() == 0) {
+                conditions.append(BEGIN_CONDITION);
+            } else {
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+            }
+            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_USER_ID"));
+            params.add(filter.getUserId().toString());
+            conditions.append(END_CONDITION);
+        }
+
+        // date from filter
+        if (filter.getDateFrom() != CmsResource.DATE_RELEASED_DEFAULT) {
+            if (conditions.length() == 0) {
+                conditions.append(BEGIN_CONDITION);
+            } else {
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+            }
+            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_DATE_FROM"));
+            params.add(String.valueOf(filter.getDateFrom()));
+            conditions.append(END_CONDITION);
+        }
+
+        // date to filter
+        if (filter.getDateTo() != CmsResource.DATE_RELEASED_DEFAULT) {
+            if (conditions.length() == 0) {
+                conditions.append(BEGIN_CONDITION);
+            } else {
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+            }
+            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_DATE_TO"));
+            params.add(String.valueOf(filter.getDateTo()));
+            conditions.append(END_CONDITION);
+        }
+
+        // include type filter
+        Set<CmsLogEntryType> includeTypes = filter.getIncludeTypes();
+        if (!includeTypes.isEmpty()) {
+            if (conditions.length() == 0) {
+                conditions.append(BEGIN_CONDITION);
+            } else {
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+            }
+            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_INCLUDE_TYPE"));
+            conditions.append(BEGIN_CONDITION);
+            Iterator<CmsLogEntryType> it = includeTypes.iterator();
+            while (it.hasNext()) {
+                CmsLogEntryType type = it.next();
+                conditions.append("?");
+                params.add(String.valueOf(type.getId()));
+                if (it.hasNext()) {
+                    conditions.append(", ");
+                }
+            }
+            conditions.append(END_CONDITION);
+            conditions.append(END_CONDITION);
+        }
+
+        // exclude type filter
+        Set<CmsLogEntryType> excludeTypes = filter.getExcludeTypes();
+        if (!excludeTypes.isEmpty()) {
+            if (conditions.length() == 0) {
+                conditions.append(BEGIN_CONDITION);
+            } else {
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+            }
+            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_EXCLUDE_TYPE"));
+            conditions.append(BEGIN_CONDITION);
+            Iterator<CmsLogEntryType> it = excludeTypes.iterator();
+            while (it.hasNext()) {
+                CmsLogEntryType type = it.next();
+                conditions.append("?");
+                params.add(String.valueOf(type.getId()));
+                if (it.hasNext()) {
+                    conditions.append(", ");
+                }
+            }
+            conditions.append(END_CONDITION);
+            conditions.append(END_CONDITION);
+        }
+        return conditions.toString();
     }
 
     /**

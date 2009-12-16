@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/editors/ade/Attic/TestADEPublish.java,v $
- * Date   : $Date: 2009/11/02 10:20:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestADEPublish extends OpenCmsTestCase {
 
@@ -324,9 +324,20 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         // the resource was put to admin's publist when setting permissions
         cms = getCmsObject();
+
+        // check again
+        adePub = new CmsADEPublish(cms);
+        groups = adePub.getPublishGroups();
+        assertEquals(1, groups.size());
+
         OpenCms.getPublishManager().removeResourceFromUsersPubList(
             cms,
             Collections.singleton(resource.getStructureId()));
+
+        // check again
+        adePub = new CmsADEPublish(cms);
+        groups = adePub.getPublishGroups();
+        assertEquals(0, groups.size());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2009/12/15 09:56:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
+import org.opencms.db.log.CmsLogEntry;
+import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -94,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -694,6 +696,21 @@ public final class CmsObject {
     }
 
     /**
+     * Deletes the log entries matching the given filter.<p>
+     *
+     * @param filter the filter to use for deleting the log entries
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#deleteLogEntries(CmsRequestContext, CmsLogFilter)
+     * @see #getLogEntries(CmsLogFilter)
+     */
+    public void deleteLogEntries(CmsLogFilter filter) throws CmsException {
+
+        m_securityManager.deleteLogEntries(m_context, filter);
+    }
+
+    /**
      * Deletes a project.<p>
      *
      * All resources inside the project have to be be reset to their online state.<p>
@@ -1161,6 +1178,23 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
         return m_securityManager.getLockedResources(m_context, resource, filter);
+    }
+
+    /**
+     * Returns all log entries matching the given filter.<p> 
+     * 
+     * @param filter the filter to match the relation 
+     * 
+     * @return a list containing all log entries matching the given filter
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#getLogEntries(CmsRequestContext, CmsLogFilter)
+     * @see #deleteLogEntries(CmsLogFilter)
+     */
+    public List<CmsLogEntry> getLogEntries(CmsLogFilter filter) throws CmsException {
+
+        return m_securityManager.getLogEntries(m_context, filter);
     }
 
     /**

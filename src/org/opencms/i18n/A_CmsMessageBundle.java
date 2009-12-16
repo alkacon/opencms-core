@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/A_CmsMessageBundle.java,v $
- * Date   : $Date: 2009/11/04 14:56:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -56,6 +56,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.configuration.Messages.get(),
             org.opencms.db.Messages.get(),
             org.opencms.db.generic.Messages.get(),
+            org.opencms.db.log.Messages.get(),
             org.opencms.file.Messages.get(),
             org.opencms.file.collectors.Messages.get(),
             org.opencms.file.types.Messages.get(),

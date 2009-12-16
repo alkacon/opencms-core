@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/12/07 08:04:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/16 15:06:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.db.log.CmsLogEntry;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -94,7 +95,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -785,6 +786,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
         // create OpenCms user context initialized with "/" as site root to read all siblings
         CmsObject rootCms = OpenCms.initCmsObject(cms);
+        Object logEntry = cms.getRequestContext().getAttribute(CmsLogEntry.ATTR_LOG_ENTRY);
+        if (logEntry != null) {
+            rootCms.getRequestContext().setAttribute(CmsLogEntry.ATTR_LOG_ENTRY, logEntry);
+        }
         rootCms.getRequestContext().setSiteRoot("/");
         // read all siblings of the file
         List<CmsResource> siblings = rootCms.readSiblings(
