@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/12/15 15:52:53 $
- * Version: $Revision: 1.1167 $
+ * Date   : $Date: 2009/12/16 11:41:07 $
+ * Version: $Revision: 1.1168 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue #1802: CmsShell does work in Linux in TomCat6
 * Fixed issue that, no error when changing field structure in xsd from simple to optional nested content
 * Fixed issue #1809: Left site tree view is shown duplicated when creating a new folder in any site
+* Fixed issue #1807: CmsImportVersion7 contains a counter error in INFO log level
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
