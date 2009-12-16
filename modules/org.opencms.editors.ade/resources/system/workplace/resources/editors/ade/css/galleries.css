@@ -18,7 +18,7 @@
     }
     
     #cms-gallery-tabs {
-		height:440px;
+		height:456px;
 		width:650px;
         background: #f9f9f9;
         padding: 0px;
@@ -37,7 +37,7 @@
     
     /** Styles for the preview and crop html*/
     #cms-preview,
-    #cms-image-crop{
+    #cms-image-crop{        
         height:439px;
         left:1px;
         position:absolute;
@@ -48,6 +48,7 @@
     }
     
     #cms-preview .preview-area{
+        background: #F9F9F9 none repeat scroll 0 0;
         height:330px;
         margin:2px;
     }
@@ -58,7 +59,8 @@
     
     #cms-preview .edit-area,
     #cms-preview .edit-format-area{
-        height: 112px;          
+        background: #F9F9F9 none repeat scroll 0 0;
+        height: 115px;          
         margin: 2px;
         padding: 0 4px;
     }       
@@ -81,12 +83,7 @@
     
     div.button-bar.cms-top{
         margin-top: 5px;
-    }      
-    
-    div.button-bar.cms-center-buttom {
-        text-align: center;
-        margin-top: 5px;
-    }
+    }              
     
     #cms-preview button {
         margin:0 0 0 2px;
@@ -200,13 +197,13 @@
         margin-right: 10px;
     }
     
-    div.cms-editable-field,
-    div.cms-format-line {
+    div.cms-editable-field {
         margin: 2px 0px 2px 0px;
+         width: 300px;
     }
     
-    div.cms-editable-field {
-        width: 300px;
+    div.cms-format-line {
+        margin: 0px 0px 5px 0px;
     }        
     
     /*div.cms-editable-field input,*/
@@ -237,6 +234,10 @@
     
     .cms-item-changed {
         color: blue;
+    }
+    
+    .cms-drop-down button {
+        vertical-align:middle;    
     }
     
     .cms-drop-down div.cms-selectbox {

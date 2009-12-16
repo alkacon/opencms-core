@@ -5,19 +5,76 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-
 <head>
 <!--[if IE 7]>
+<style>
   div.container {
   	height: 1%;
   }
+</style>
 <![endif]-->
 <link rel="stylesheet" type="text/css" media="screen" href="css/custom-theme/jquery-ui-1.7.2.custom.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/advanced_direct_edit.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/galleries.css" />
-<link rel="stylesheet" type="text/css" href="css/crop.css" />
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	
+	#cms-cropping-main {
+		font-size: 11px;
+		background: #ffffff;
+		margin: 0;
+		padding: 0;
+	}
+	
+	div.cms-border {
+		background: #F9F9F9 none repeat scroll 0 0;
+		margin: 1px 1px 1px 1px;
+		padding: 2px 1px 2px 1px;
+	}
+	
+	div.head {
+		padding: 6px 0 6px 4px;
+		font-size: 12px;
+		font-weight: bold;
+	}
+	
+	div.imgbg {		
+		height: 366px;
+		text-align: center;
+	}
+	
+	div.container {
+		
+	}
+	
+	div.selection {
+		font-size: 12px;
+		text-align: center;
+		/*padding: 6px 0 6px 4px;*/
+	}
+	
+	span.cms-item-title {
+		display:inline-block;
+		font-weight:bold;
+		line-height:16px;
+		margin-right: 0px;
+	}
+	
+	span.cms-item-value {
+		display:inline-block;
+		margin-right:30px;
+		width:40px;
+	}
+	
+	div.button-bar.cms-center-buttom {
+        text-align: center;
+        margin-top: 5px;
+    }
+</style>
 <script type="text/javascript" src="lib/jquery-1.3.2.js"></script>
-<script type="text/javascript" src="lib/jquery.dimensions.js"></script>
 <script type="text/javascript" src="lib/jquery.imgareaselect.min.js"></script>
 <script type="text/javascript">
 var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
@@ -30,7 +87,7 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 <script type="text/javascript" src="js/cms.previewhandler.js"></script>
 <script type="text/javascript" src="js/cms.imagepreviewhandler.js"></script>
 <script type="text/javascript">
-	var imgPreviewHeight = 350;
+	var imgPreviewHeight = 366;
 	if (parent.cms.galleries.initValues.dialogmode == "editor") {
 		imgPreviewHeight = 390;
 	}
@@ -269,9 +326,9 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 		</div>
 		<div class="cms-border ui-widget-content ui-corner-all">		
 			<div class="selection">
-				<div class="cms-item-title">Width:<span id="w"></span></div>
-				<div class="cms-item-title">Height:<span id="h"></span></div>
-				<div class="cms-item-title">Scale:<span id="r"></span></div>
+				<span class="cms-item-title">Width:</span><span id="w" class="cms-item-value"></span>
+				<span class="cms-item-title">Height:</span><span id="h" class="cms-item-value"></span>
+				<span class="cms-item-title">Scale:</span><span id="r" class="cms-item-value"></span>
 			</div>	
 			<div class="button-bar cms-center-buttom">
 				<button class="ui-state-default ui-corner-all" name="crop-ok">

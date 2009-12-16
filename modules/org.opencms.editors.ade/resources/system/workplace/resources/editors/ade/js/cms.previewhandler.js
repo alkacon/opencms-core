@@ -42,17 +42,26 @@
    var showEditArea = function(itemProperties) {
       var target = $('.edit-area');
       
-      if (cms.galleries.hasContentHandler('default')) {
-          // add button bar to the edit area
-          var switchBar = $('<div class="button-bar cms-top-bottom"></div>');        
-             switchBar.append('<button name="switchToProperties" class="cms-right ui-state-default ui-corner-all">\
+      
+      // add button bar to the edit area
+      var switchBar = $('<div class="button-bar cms-top-bottom"></div>');        
+      switchBar.append('<button name="switchToFormat" class="cms-right ui-state-default ui-corner-all">\
                                          <span class="cms-galleries-button">Image&nbsp;Format</span>\
                                    </button>')
-                      .append('<span class="cms-title">File Properties:</span>');
+                .append('<span class="cms-title">File Properties:</span>');
              /*.append('<button name="previewPublish" class="ui-state-default ui-corner-all">\                 
               <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
-              </button>');*/                                            
-          target.append(switchBar);
+              </button>');*/                                                 
+      target.append(switchBar);
+      $('button[name="switchToFormat"]').hide().click(function() {
+         target.hide(); 
+         $('.edit-format-area').show()
+      });
+      
+      if (cms.galleries.hasContentHandler('image')) {
+          $('button[name="switchToFormat"]').show();
+          target.hide(); 
+          $('.edit-format-area').show();
       }
             
       // generate editable form
@@ -93,27 +102,32 @@
       
       // add button bar to the editet area
       var buttonBar = $('<div class="button-bar cms-top"></div>');      
-      var closeButton = $('<button name="previewSave" disabled="true" class="cms-right ui-state-default ui-corner-all">\
-                                 <span class="cms-galleries-button">Save</span>\
-                           </button>')
-                               .appendTo(buttonBar)
-                               .after('<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
+      var closeButton = $('<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
                                             <span class="cms-galleries-button">Close</span>\
-                                       </button>');
+                                       </button>')
+                               .appendTo(buttonBar)
+                               .after('<button name="previewSave" disabled="true" class="cms-right ui-state-default ui-corner-all">\
+                                 <span class="cms-galleries-button">Save</span>\
+                           </button>');
         /*.append('<button name="previewPublish" class="ui-state-default ui-corner-all">\                 
           <span class="cms-galleries-button cms-galleries-icon-publish cms-icon-text">Publish</span>\
           </button>');*/                        
       target.append(buttonBar);
-      $('.edit-area').find('button[name="previewSave"]').click(cms.galleries.getContentHandler()['saveChangedProperty']);
+      $('.edit-area').find('button[name="previewSave"]')
+          .click(cms.galleries.getContentHandler()['saveChangedProperty']);
+      $('.edit-area').find('button[name="previewClose"]')
+          .click(function() {
+             $('#cms-preview').fadeOut('slow');
+         });
       // TODO: comment in for direct publish
       /* $('.edit-area button[name="publishSave"]').click(publishChangedProperty);*/
       
       if (cms.galleries.isSelectableItem()) {
-         closeButton.before('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+         closeButton.after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
                                 <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                           </button>');
-         $('.edit-area').find('button[name="previewSelect"]').click(function() {
-            var itemType = '';
+         $('.edit-area').find('button[name="previewSelect"]').click(function() {            
+            var itemType = $('#results li[alt="' + cms.galleries.initValues['path'] + '"]').data('type');
             var itemId = $(this).closest('#cms-preview').attr('alt');
             cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
          });
