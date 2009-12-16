@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/12/16 08:55:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -293,6 +293,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RESOURCE_INIT_FAILURE_1 = "LOG_RESOURCE_INIT_FAILURE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CLASS_INIT_FAILURE_1 = "LOG_CLASS_INIT_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_CONFIG_SUCCESS_2 = "LOG_WRITE_CONFIG_SUCCESS_2";

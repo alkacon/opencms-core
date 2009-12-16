@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheConfiguration.java,v $
- * Date   : $Date: 2009/12/15 15:24:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/16 08:54:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsFlexCacheConfiguration {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFlexCacheConfiguration.class);
 
     private long m_avgCacheBytes;
 
@@ -55,6 +58,12 @@ public class CmsFlexCacheConfiguration {
 
     /** Indicates if offline resources should be cached or not. */
     private boolean m_cacheOffline;
+
+    /** The device selector. */
+    private I_CmsJspDeviceSelector m_deviceSelector;
+
+    /** The device selector configuration. */
+    private String m_deviceSelectorConfiguration;
 
     /** 
      * Sizing parameters for the cached "entries" (ie. pages) in the FlexCache.<p>
@@ -69,15 +78,6 @@ public class CmsFlexCacheConfiguration {
     private int m_maxEntryBytes;
 
     private int m_maxKeys;
-
-    /** The device selector. */
-    private I_CmsJspDeviceSelector m_deviceSelector;
-
-    /** The device selector configuration. */
-    private String m_deviceSelectorConfiguration;
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFlexCacheConfiguration.class);
 
     /**
      * Empty public constructor for the digester.
@@ -118,41 +118,6 @@ public class CmsFlexCacheConfiguration {
     public String getDeviceSelectorConfiguration() {
 
         return m_deviceSelectorConfiguration;
-    }
-
-    /**
-     * Sets the device selector configuration.<p>
-     *
-     * @param deviceSelector the device selector to set
-     */
-    public void setDeviceSelectorConfiguration(String deviceSelector) {
-
-        m_deviceSelectorConfiguration = deviceSelector;
-
-        Object objectInstance;
-
-        try {
-            objectInstance = Class.forName(m_deviceSelectorConfiguration).newInstance();
-        } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_RESOURCE_INIT_FAILURE_1,
-                m_deviceSelectorConfiguration), t);
-            return;
-        }
-        if (objectInstance instanceof I_CmsJspDeviceSelector) {
-            m_deviceSelector = (I_CmsJspDeviceSelector)objectInstance;
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_FLEXCACHE_DEVICE_SELECTOR_SUCCESS_1,
-                    m_deviceSelectorConfiguration));
-            }
-        } else {
-            if (CmsLog.INIT.isFatalEnabled()) {
-                CmsLog.INIT.fatal(Messages.get().getBundle().key(
-                    Messages.INIT_FLEXCACHE_DEVICE_SELECTOR_FAILURE_1,
-                    m_deviceSelectorConfiguration));
-            }
-        }
     }
 
     /**
@@ -259,6 +224,41 @@ public class CmsFlexCacheConfiguration {
     public void setCacheOffline(boolean cacheOffline) {
 
         m_cacheOffline = cacheOffline;
+    }
+
+    /**
+     * Sets the device selector configuration.<p>
+     *
+     * @param deviceSelector the device selector to set
+     */
+    public void setDeviceSelectorConfiguration(String deviceSelector) {
+
+        m_deviceSelectorConfiguration = deviceSelector;
+
+        Object objectInstance;
+
+        try {
+            objectInstance = Class.forName(m_deviceSelectorConfiguration).newInstance();
+        } catch (Throwable t) {
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_CLASS_INIT_FAILURE_1, m_deviceSelectorConfiguration),
+                t);
+            return;
+        }
+        if (objectInstance instanceof I_CmsJspDeviceSelector) {
+            m_deviceSelector = (I_CmsJspDeviceSelector)objectInstance;
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_FLEXCACHE_DEVICE_SELECTOR_SUCCESS_1,
+                    m_deviceSelectorConfiguration));
+            }
+        } else {
+            if (CmsLog.INIT.isFatalEnabled()) {
+                CmsLog.INIT.fatal(Messages.get().getBundle().key(
+                    Messages.INIT_FLEXCACHE_DEVICE_SELECTOR_FAILURE_1,
+                    m_deviceSelectorConfiguration));
+            }
+        }
     }
 
     /**

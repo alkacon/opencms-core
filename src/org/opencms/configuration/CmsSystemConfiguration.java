@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/12/15 15:24:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/16 08:55:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -2378,7 +2378,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         try {
             objectInstance = Class.forName(className).newInstance();
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_RESOURCE_INIT_FAILURE_1, className), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_CLASS_INIT_FAILURE_1, className), t);
             return;
         }
 
