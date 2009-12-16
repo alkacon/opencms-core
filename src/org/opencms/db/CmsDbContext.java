@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2009/12/15 06:41:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/16 15:04:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -186,6 +186,19 @@ public class CmsDbContext {
         if (!isDefaultDbContext()) {
             throw new CmsException(Messages.get().container(Messages.ERR_PROCESS_DB_CONTEXT_0));
         }
+    }
+
+    /**
+     * Removes the given attribute from the DB context.<p> 
+     * 
+     * @param key the attribute key
+     */
+    public void removeAttribute(String key) {
+
+        if (m_attributes == null) {
+            return;
+        }
+        m_attributes.remove(key);
     }
 
     /**
