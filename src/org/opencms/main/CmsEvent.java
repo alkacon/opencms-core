@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
- * Date   : $Date: 2009/09/08 12:52:23 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2009/12/17 13:10:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,12 @@ import java.util.Map;
 
 /**
  * Event class for OpenCms for system wide events that are thrown by various 
- * operations (e.g. publishing) and can be catched and processed by 
+ * operations (e.g. publishing) and can be caught and processed by 
  * classes that implement the {@link I_CmsEventListener} interface.<p>
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -49,7 +49,7 @@ import java.util.Map;
 public class CmsEvent {
 
     /** The event data associated with this event. */
-    private Map<String, ?> m_data;
+    private Map<String, Object> m_data;
 
     /** The event type this instance represents. */
     private Integer m_type;
@@ -69,7 +69,7 @@ public class CmsEvent {
      *
      * @see I_CmsEventListener
      */
-    public CmsEvent(int type, Map<String, ?> data) {
+    public CmsEvent(int type, Map<String, Object> data) {
 
         m_type = new Integer(type);
         m_data = data;
@@ -95,7 +95,7 @@ public class CmsEvent {
      * 
      * @return the event data of this event
      */
-    public Map<String, ?> getData() {
+    public Map<String, Object> getData() {
 
         return m_data;
     }
@@ -106,7 +106,7 @@ public class CmsEvent {
      * Event types of the core OpenCms classes are defined in {@link I_CmsEventListener}.
      * For your extensions, you should define them in a central class 
      * or interface as public member variables. Make sure the integer values 
-     * do not confict with the values from the core classes.<p>
+     * do not conflict with the values from the core classes.<p>
      * 
      * @return the event type of this event
      * 

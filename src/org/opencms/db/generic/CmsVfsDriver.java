@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2009/11/12 14:06:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/17 13:10:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.I_CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.main.CmsEvent;
@@ -89,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -552,10 +553,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-                    Collections.singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, existingResource)));
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, existingResource)));
             } else {
                 // we have a collision: there exists already a resource with the same path/name which cannot be removed
                 throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
@@ -774,10 +775,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-                    Collections.singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, existingSibling)));
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, existingSibling)));
             } else {
                 // we have a collision: there exists already a resource with the same path/name which could not be removed
                 throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
@@ -1428,7 +1429,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // sort result in memory, this is to avoid DB dependencies in the result order
-        Collections.sort(result, CmsResource.COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST);
+        Collections.sort(result, I_CmsResource.COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST);
         return result;
     }
 

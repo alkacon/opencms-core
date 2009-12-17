@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/17 13:10:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,7 +167,7 @@ public final class OpenCms {
      * @param type event type
      * @param data event data
      */
-    public static void fireCmsEvent(int type, Map<String, ?> data) {
+    public static void fireCmsEvent(int type, Map<String, Object> data) {
 
         OpenCmsCore.getInstance().getEventManager().fireEvent(type, data);
     }

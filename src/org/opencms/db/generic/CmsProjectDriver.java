@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/17 13:10:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -1004,7 +1004,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // notify the app. that the published folder and it's properties have been modified offline
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
+                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
         }
     }
 
@@ -1157,7 +1157,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // notify the app. that the published file and it's properties have been modified offline
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineResource)));
+                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineResource)));
         }
     }
 
@@ -1432,7 +1432,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // notify the app. that the published folder and it's properties have been modified offline
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineFolder)));
+                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineFolder)));
         }
     }
 

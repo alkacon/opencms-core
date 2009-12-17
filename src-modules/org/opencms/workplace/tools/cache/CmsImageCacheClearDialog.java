@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/CmsImageCacheClearDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/17 13:10:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.5
  */
@@ -96,9 +96,9 @@ public class CmsImageCacheClearDialog extends CmsWidgetDialog {
 
         try {
             float age = (System.currentTimeMillis() - Long.parseLong(m_time)) / (60f * 60f * 1000f);
-            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.singletonMap(
-                CmsImageLoader.PARAM_CLEAR_IMAGES_CACHE,
-                "" + age)));
+            OpenCms.fireCmsEvent(new CmsEvent(
+                I_CmsEventListener.EVENT_CLEAR_CACHES,
+                Collections.<String, Object> singletonMap(CmsImageLoader.PARAM_CLEAR_IMAGES_CACHE, "" + age)));
         } catch (Exception e) {
             setCommitErrors(Collections.singletonList(e));
         }

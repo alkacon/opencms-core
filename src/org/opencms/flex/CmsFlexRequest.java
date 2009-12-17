@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2009/10/20 13:43:07 $
- * Version: $Revision: 1.48.2.2 $
+ * Date   : $Date: 2009/12/17 13:10:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,40 +153,44 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                         new HashMap<String, Object>(0)));
                     OpenCms.fireCmsEvent(new CmsEvent(
                         I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                        Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+                        Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
                     dorecompile = false;
                 } else if ((paramList.contains("clearcache") || dorecompile) && firstCall) {
                     if (!(p_on || p_off)) {
                         OpenCms.fireCmsEvent(new CmsEvent(
                             I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                            Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_ALL))));
+                            Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ALL))));
                     } else {
                         if (p_on) {
                             OpenCms.fireCmsEvent(new CmsEvent(
                                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                                Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_ONLINE_ALL))));
+                                Collections.<String, Object> singletonMap("action", new Integer(
+                                    CmsFlexCache.CLEAR_ONLINE_ALL))));
                         }
                         if (p_off) {
                             OpenCms.fireCmsEvent(new CmsEvent(
                                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                                Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_OFFLINE_ALL))));
+                                Collections.<String, Object> singletonMap("action", new Integer(
+                                    CmsFlexCache.CLEAR_OFFLINE_ALL))));
                         }
                     }
                 } else if (paramList.contains("clearvariations") && firstCall) {
                     if (!(p_on || p_off)) {
                         OpenCms.fireCmsEvent(new CmsEvent(
                             I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                            Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+                            Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
                     } else {
                         if (p_on) {
                             OpenCms.fireCmsEvent(new CmsEvent(
                                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                                Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_ONLINE_ENTRIES))));
+                                Collections.<String, Object> singletonMap("action", new Integer(
+                                    CmsFlexCache.CLEAR_ONLINE_ENTRIES))));
                         }
                         if (p_off) {
                             OpenCms.fireCmsEvent(new CmsEvent(
                                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                                Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_OFFLINE_ENTRIES))));
+                                Collections.<String, Object> singletonMap("action", new Integer(
+                                    CmsFlexCache.CLEAR_OFFLINE_ENTRIES))));
                         }
                     }
                 }

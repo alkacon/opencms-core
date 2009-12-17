@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/CmsFlexCacheClearDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/17 13:10:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,6 @@ import org.opencms.workplace.CmsWidgetDialogParameter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.5
  */
@@ -154,9 +153,9 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
                     action = CmsFlexCache.CLEAR_ENTRIES;
                 }
             }
-            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap(
-                "action",
-                new Integer(action))));
+            OpenCms.fireCmsEvent(new CmsEvent(
+                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                Collections.<String, Object> singletonMap("action", new Integer(action))));
         } catch (Exception e) {
             setCommitErrors(Collections.singletonList(e));
         }
@@ -169,10 +168,12 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
      */
     public void actionPurgeJspRepository() throws JspException {
 
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, new HashMap(0)));
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap(
-            "action",
-            new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
+            Collections.<String, Object> emptyMap()));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+            Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
 
         setAction(CmsDialog.ACTION_CANCEL);
         actionCloseDialog();

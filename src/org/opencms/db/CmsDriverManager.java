@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/12/17 13:10:17 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -667,7 +667,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map<String, String> eventData = new HashMap<String, String>();
+        Map<String, Object> eventData = new HashMap<String, Object>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
@@ -1154,9 +1154,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         modifiedResources.add(source);
         modifiedResources.add(newResource);
         modifiedResources.add(destinationFolder);
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_COPIED, Collections.singletonMap(
-            I_CmsEventListener.KEY_RESOURCES,
-            modifiedResources)));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_RESOURCE_COPIED,
+            Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
     }
 
     /**
@@ -1192,9 +1192,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             } finally {
                 m_monitor.flushProjectResources();
 
-                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
-                    "project",
-                    dbc.currentProject())));
+                OpenCms.fireCmsEvent(new CmsEvent(
+                    I_CmsEventListener.EVENT_PROJECT_MODIFIED,
+                    Collections.<String, Object> singletonMap("project", dbc.currentProject())));
             }
         }
     }
@@ -1277,7 +1277,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return group;
         }
         // fire group modified event
-        Map<String, String> eventData = new HashMap<String, String>();
+        Map<String, Object> eventData = new HashMap<String, Object>();
         eventData.put(I_CmsEventListener.KEY_GROUP_NAME, group.getName());
         eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_GROUP_MODIFIED_ACTION_CREATE);
@@ -1368,7 +1368,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // fire OU modified event
-        Map<String, String> event2Data = new HashMap<String, String>();
+        Map<String, Object> event2Data = new HashMap<String, Object>();
         event2Data.put(I_CmsEventListener.KEY_OU_NAME, orgUnit.getName());
         event2Data.put(I_CmsEventListener.KEY_OU_ID, orgUnit.getId().toString());
         event2Data.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_OU_MODIFIED_ACTION_CREATE);
@@ -1478,7 +1478,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // fire an event that a property of a resource has been deleted
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_PROPERTY_DEFINITION_CREATED,
-                Collections.singletonMap("propertyDefinition", propertyDefinition)));
+                Collections.<String, Object> singletonMap("propertyDefinition", propertyDefinition)));
 
         }
 
@@ -1829,9 +1829,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             if (newResource != null) {
                 // fire an event that a new resource has been created
-                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_CREATED, Collections.singletonMap(
-                    I_CmsEventListener.KEY_RESOURCE,
-                    newResource)));
+                OpenCms.fireCmsEvent(new CmsEvent(
+                    I_CmsEventListener.EVENT_RESOURCE_CREATED,
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, newResource)));
             }
         }
         return newResource;
@@ -1991,7 +1991,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         modifiedResources.add(destinationFolder);
         OpenCms.fireCmsEvent(new CmsEvent(
             I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
-            Collections.singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
+            Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
 
         return newResource;
     }
@@ -2024,9 +2024,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsProject.PROJECT_TYPE_NORMAL);
         m_projectDriver.createProjectResource(dbc, tempProject.getUuid(), "/");
 
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
-            "project",
-            tempProject)));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_PROJECT_MODIFIED,
+            Collections.<String, Object> singletonMap("project", tempProject)));
 
         return tempProject;
     }
@@ -2096,7 +2096,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return user;
         }
         // fire user modified event
-        Map<String, String> eventData = new HashMap<String, String>();
+        Map<String, Object> eventData = new HashMap<String, Object>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_CREATE_USER);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
@@ -2160,7 +2160,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // fire an event that all properties of a resource have been deleted
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCES, resources)));
+                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, resources)));
         }
     }
 
@@ -2257,7 +2257,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire group modified event
-        Map<String, String> eventData = new HashMap<String, String>();
+        Map<String, Object> eventData = new HashMap<String, Object>();
         eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
         eventData.put(I_CmsEventListener.KEY_GROUP_NAME, group.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_GROUP_MODIFIED_ACTION_DELETE);
@@ -2521,7 +2521,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire OU modified event
-        Map<String, String> event2Data = new HashMap<String, String>();
+        Map<String, Object> event2Data = new HashMap<String, Object>();
         event2Data.put(I_CmsEventListener.KEY_OU_NAME, organizationalUnit.getName());
         event2Data.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_OU_MODIFIED_ACTION_DELETE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_OU_MODIFIED, event2Data));
@@ -2571,7 +2571,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // fire the corresponding event
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFile)));
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFile)));
             }
         }
 
@@ -2592,7 +2592,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // fire the corresponding event
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
             }
         }
 
@@ -2612,7 +2612,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // fire the corresponding event
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
             }
         }
 
@@ -2634,7 +2634,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // fire the corresponding event
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFile)));
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFile)));
             }
         }
 
@@ -2653,9 +2653,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.uncacheProject(deleteProject);
 
         // fire the corresponding event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
-            "project",
-            deleteProject)));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_PROJECT_MODIFIED,
+            Collections.<String, Object> singletonMap("project", deleteProject)));
 
     }
 
@@ -2681,7 +2681,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // fire an event that a property of a resource has been deleted
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_PROPERTY_DEFINITION_MODIFIED,
-                Collections.singletonMap("propertyDefinition", propertyDefinition)));
+                Collections.<String, Object> singletonMap("propertyDefinition", propertyDefinition)));
         }
     }
 
@@ -2959,9 +2959,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.flushPropertyLists();
         m_monitor.flushProjectResources();
 
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap(
-            I_CmsEventListener.KEY_RESOURCES,
-            resources)));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_RESOURCE_DELETED,
+            Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, resources)));
     }
 
     /**
@@ -3057,7 +3057,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map<String, String> eventData = new HashMap<String, String>();
+        Map<String, Object> eventData = new HashMap<String, Object>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_DELETE_USER);
@@ -5223,9 +5223,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resources.add(destinationFolder);
 
         // fire the events
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MOVED, Collections.singletonMap(
-            I_CmsEventListener.KEY_RESOURCES,
-            resources)));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_RESOURCE_MOVED,
+            Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, resources)));
     }
 
     /**
@@ -7181,9 +7181,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             } finally {
                 m_monitor.flushProjectResources();
 
-                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
-                    "project",
-                    dbc.currentProject())));
+                OpenCms.fireCmsEvent(new CmsEvent(
+                    I_CmsEventListener.EVENT_PROJECT_MODIFIED,
+                    Collections.<String, Object> singletonMap("project", dbc.currentProject())));
             }
         }
     }
@@ -7309,7 +7309,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map<String, String> eventData = new HashMap<String, String>();
+        Map<String, Object> eventData = new HashMap<String, Object>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
         eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
@@ -7435,7 +7435,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 return;
             }
             // fire user modified event
-            Map<String, String> eventData = new HashMap<String, String>();
+            Map<String, Object> eventData = new HashMap<String, Object>();
             eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
             eventData.put(
                 I_CmsEventListener.KEY_USER_ACTION,
@@ -7887,7 +7887,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map<String, String> eventData = new HashMap<String, String>();
+        Map<String, Object> eventData = new HashMap<String, Object>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_OU_NAME, user.getOuFqn());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_SET_OU);
@@ -8505,7 +8505,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire group modified event
-        Map<String, String> eventData = new HashMap<String, String>();
+        Map<String, Object> eventData = new HashMap<String, Object>();
         eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
         eventData.put(I_CmsEventListener.KEY_GROUP_NAME, oldGroup.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_GROUP_MODIFIED_ACTION_WRITE);
@@ -8729,7 +8729,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // fire an event that the properties of a resource have been modified
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, resource)));
+                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, resource)));
         }
     }
 
@@ -8843,7 +8843,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         // fire user modified event
-        Map<String, String> eventData = new HashMap<String, String>();
+        Map<String, Object> eventData = new HashMap<String, Object>();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
         eventData.put(I_CmsEventListener.KEY_USER_NAME, oldUser.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
@@ -10014,11 +10014,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (offlineResource != null) {
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineResource)));
+                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineResource)));
         } else {
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, onlineResource)));
+                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, onlineResource)));
         }
     }
 

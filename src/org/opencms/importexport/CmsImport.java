@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2009/11/12 07:26:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/17 13:10:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,7 @@ public class CmsImport {
         } finally {
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES,
-                Collections.<String, String> emptyMap()));
+                Collections.<String, Object> emptyMap()));
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEventManager.java,v $
- * Date   : $Date: 2009/09/08 12:52:23 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2009/12/17 13:10:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0
  * 
@@ -142,7 +142,7 @@ public class CmsEventManager {
      * @param type event type
      * @param data event data
      */
-    public void fireEvent(int type, Map<String, ?> data) {
+    public void fireEvent(int type, Map<String, Object> data) {
 
         fireEvent(new CmsEvent(type, data));
     }

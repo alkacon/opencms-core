@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/11/19 07:57:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/17 13:10:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -189,9 +189,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     orgUnit.getProjectId(),
                     resource.getRootPath());
 
-                OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
-                    "project",
-                    project));
+                OpenCms.fireCmsEvent(
+                    I_CmsEventListener.EVENT_PROJECT_MODIFIED,
+                    Collections.<String, Object> singletonMap("project", project));
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
             }
@@ -1679,9 +1679,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     orgUnit.getProjectId(),
                     resource.getRootPath());
 
-                OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
-                    "project",
-                    project));
+                OpenCms.fireCmsEvent(
+                    I_CmsEventListener.EVENT_PROJECT_MODIFIED,
+                    Collections.<String, Object> singletonMap("project", project));
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
             }
@@ -2322,9 +2322,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         OpenCms.getMemoryMonitor().flushPropertyLists();
 
         // fire an event that a new resource has been created
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_CREATED, Collections.singletonMap(
-            I_CmsEventListener.KEY_RESOURCE,
-            resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_RESOURCE_CREATED,
+            Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, resource)));
 
         return resource;
     }
@@ -2436,12 +2436,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         OpenCms.getMemoryMonitor().flushProjectResources();
 
         // fire events
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap(
-            I_CmsEventListener.KEY_RESOURCES,
-            Collections.singletonList(resource))));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_RESOURCE_DELETED,
+            Collections.<String, Object> singletonMap(
+                I_CmsEventListener.KEY_RESOURCES,
+                Collections.singletonList(resource))));
         OpenCms.fireCmsEvent(new CmsEvent(
             I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-            Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, resource)));
+            Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, resource)));
     }
 
     /**
