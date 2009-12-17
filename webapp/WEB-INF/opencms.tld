@@ -383,7 +383,7 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
     </tag>
-
+    
     <tag>
         <description>
             This tag is used to output different HTML for various device types
@@ -576,6 +576,16 @@
             <name>maxElements</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        	<name>tag</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        	<name>tagClass</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>        
     
