@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemapFactory.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/17 09:18:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.5.2
  */
@@ -394,7 +394,7 @@ public final class CmsXmlSitemapFactory {
         if (resource instanceof I_CmsHistoryResource) {
             return null;
         }
-        return m_cache.getCacheSitemap(
+        return m_cache.getDocument(
             m_cache.getCacheKey(resource.getStructureId(), keepEncoding),
             cms.getRequestContext().currentProject().isOnlineProject());
     }
@@ -412,7 +412,7 @@ public final class CmsXmlSitemapFactory {
             return;
         }
         boolean online = cms.getRequestContext().currentProject().isOnlineProject();
-        m_cache.setCacheSitemap(
+        m_cache.setDocument(
             m_cache.getCacheKey(xmlSitemap.getFile().getStructureId(), keepEncoding),
             xmlSitemap,
             online);

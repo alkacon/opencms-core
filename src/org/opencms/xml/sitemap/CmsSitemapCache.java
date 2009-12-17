@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2009/12/14 12:52:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/17 09:18:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -112,20 +112,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
     }
 
     /**
-     * Flushes the sitemaps cache.<p>
-     * 
-     * @param online if to flush the online or offline cache
-     */
-    public void flushSitemaps(boolean online) {
-
-        if (online) {
-            m_documentsOnline.clear();
-        } else {
-            m_documentsOffline.clear();
-        }
-    }
-
-    /**
      * Returns the cache key for the given parameters.<p>
      * 
      * @param structureId the sitemap's structure id
@@ -139,6 +125,22 @@ public final class CmsSitemapCache extends CmsVfsCache {
     }
 
     /**
+     * Returns the cached default properties.<p>
+     * 
+     * @param online if online or offline
+     * 
+     * @return the cached default properties
+     */
+    public Map<String, String> getDefaultProps(boolean online) {
+
+        if (online) {
+            return m_defPropsOnline;
+        } else {
+            return m_defPropsOffline;
+        }
+    }
+
+    /**
      * Returns the cached sitemap under the given key and for the given project.<p>
      * 
      * @param key the cache key
@@ -146,7 +148,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
      * 
      * @return the cached sitemap or <code>null</code> if not found
      */
-    public CmsXmlSitemap getCacheSitemap(String key, boolean online) {
+    public CmsXmlSitemap getDocument(String key, boolean online) {
 
         CmsXmlSitemap retValue;
         if (online) {
@@ -179,22 +181,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
             }
         }
         return retValue;
-    }
-
-    /**
-     * Returns the cached default properties.<p>
-     * 
-     * @param online if online or offline
-     * 
-     * @return the cached default properties
-     */
-    public Map<String, String> getDefaultProps(boolean online) {
-
-        if (online) {
-            return m_defPropsOnline;
-        } else {
-            return m_defPropsOffline;
-        }
     }
 
     /**
@@ -266,13 +252,28 @@ public final class CmsSitemapCache extends CmsVfsCache {
     }
 
     /**
+     * Sets the cached default properties.<p>
+     * 
+     * @param props the properties to cache
+     * @param online if online or offline
+     */
+    public void setDefaultProps(Map<String, String> props, boolean online) {
+
+        if (online) {
+            m_defPropsOnline = new HashMap<String, String>(props);
+        } else {
+            m_defPropsOffline = new HashMap<String, String>(props);
+        }
+    }
+
+    /**
      * Caches the given sitemap under the given key and for the given project.<p>
      * 
      * @param key the cache key
      * @param sitemap the object to cache
      * @param online if to cache in online or offline project
      */
-    public void setCacheSitemap(String key, CmsXmlSitemap sitemap, boolean online) {
+    public void setDocument(String key, CmsXmlSitemap sitemap, boolean online) {
 
         if (online) {
             m_documentsOnline.put(key, sitemap);
@@ -288,21 +289,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
                     Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
                     new Object[] {key, sitemap}));
             }
-        }
-    }
-
-    /**
-     * Sets the cached default properties.<p>
-     * 
-     * @param props the properties to cache
-     * @param online if online or offline
-     */
-    public void setDefaultProps(Map<String, String> props, boolean online) {
-
-        if (online) {
-            m_defPropsOnline = new HashMap<String, String>(props);
-        } else {
-            m_defPropsOffline = new HashMap<String, String>(props);
         }
     }
 
@@ -370,36 +356,20 @@ public final class CmsSitemapCache extends CmsVfsCache {
     }
 
     /**
-     * Removes the sitemap identified by its structure id from the cache.<p>
-     * 
-     * @param structureId the sitemap's structure id
-     * @param online if online or offline
-     */
-    public void uncacheDocument(CmsUUID structureId, boolean online) {
-
-        if (online) {
-            m_documentsOnline.remove(getCacheKey(structureId, true));
-            m_documentsOnline.remove(getCacheKey(structureId, false));
-        } else {
-            m_documentsOffline.remove(getCacheKey(structureId, true));
-            m_documentsOffline.remove(getCacheKey(structureId, false));
-        }
-    }
-
-    /**
      * @see org.opencms.cache.CmsVfsCache#flush(boolean)
      */
     @Override
     protected void flush(boolean online) {
 
-        flushSitemaps(online);
         if (online) {
+            m_documentsOnline.clear();
             m_missingUrisOnline.clear();
             m_sitemapsOnline.clear();
             m_urisOnline.clear();
             m_defPropsOnline = null;
             m_searchPropsOnline.clear();
         } else {
+            m_documentsOffline.clear();
             m_missingUrisOffline.clear();
             m_sitemapsOffline.clear();
             m_urisOffline.clear();
@@ -428,6 +398,10 @@ public final class CmsSitemapCache extends CmsVfsCache {
             return;
         }
 
+        // flush docs
+        m_documentsOffline.remove(getCacheKey(resource.getStructureId(), true));
+        m_documentsOffline.remove(getCacheKey(resource.getStructureId(), false));
+
         // this could be a sitemap file as well as a folder with the sitemap property, so remove it
         CmsFile file = m_sitemapsOffline.remove(resource.getRootPath());
 
@@ -441,12 +415,14 @@ public final class CmsSitemapCache extends CmsVfsCache {
         m_missingUrisOffline.clear();
         // flush properties
         m_searchPropsOffline.clear();
+
         if (file == null) {
             return;
         }
 
         // remove the file cached by it's structure ID
-        uncacheDocument(resource.getStructureId(), false);
+        m_documentsOffline.remove(getCacheKey(file.getStructureId(), true));
+        m_documentsOffline.remove(getCacheKey(file.getStructureId(), false));
 
         // this is the case of root sitemaps
         // we already removed the cached sitemap by its root path
