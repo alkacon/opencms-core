@@ -125,7 +125,12 @@
 			<datecreated>Tue, 15 Dec 2009 09:00:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+			    <property type="shared">
+			        <name>container-config</name>
+                    <value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
+			    </property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -434,7 +439,7 @@
 			</relations>
 			<accesscontrol/>
 		</file>
-        <file>
+		<file>
 			<source>demo_t3/_config/new/new_subcontainer.xml</source>
 			<destination>demo_t3/_config/new/new_subcontainer.xml</destination>
 			<type>subcontainer</type>
@@ -4926,7 +4931,7 @@
 			</relations>
 			<accesscontrol/>
 		</file>
-        <file>
+		<file>
 			<destination>demo_t3/subcontainers</destination>
 			<type>folder</type>
 			<uuidstructure>a2c5da47-ea1d-11de-a78f-6352bb47a664</uuidstructure>

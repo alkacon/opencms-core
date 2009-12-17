@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/12/17 10:11:28 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/12/17 14:31:38 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 7.6
  */
@@ -507,7 +507,11 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             result.put(JsonResponse.ENTRY.getName(), jsonEntry);
         } else if (action.equals(Action.NEW_SITEMAP)) {
             CmsSitemapManager manager = OpenCms.getSitemapManager();
-            CmsResource newSitemapRes = manager.createSitemap(cms, data.getString("title"), sitemapParam, request);
+            CmsResource newSitemapRes = manager.createSitemap(
+                cms,
+                data.getString(JsonRequest.TITLE.getName()),
+                sitemapParam,
+                request);
             saveSitemap(newSitemapRes, data);
             String sitemapId = newSitemapRes.getStructureId().toString();
             result.put(JsonResponse.ID.getName(), sitemapId);

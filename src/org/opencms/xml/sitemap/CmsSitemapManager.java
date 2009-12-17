@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2009/12/17 10:11:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/17 14:31:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.2
  */
@@ -208,13 +208,15 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Creates a new empty sitemap from a list of sitemap entries.
+     * Creates a new empty sitemap from a list of sitemap entries.<p>
      * 
      * @param cms the CmsObject to use for VFS operations
      * @param title the title for the new sitemap
      * @param sitemapUri the URI of the current sitemap
      * @param request the HTTP request
+     * 
      * @return the resource representing the new sitemap
+     * 
      * @throws CmsException if something goes wrong
      */
     public CmsResource createSitemap(CmsObject cms, String title, String sitemapUri, ServletRequest request)
@@ -228,11 +230,7 @@ public class CmsSitemapManager {
         CmsResource currentSitemapRes = cms.readResource(sitemapUri);
         String sitemapPath = cms.getSitePath(newSitemapRes);
         CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, title);
-        // we want to set the configuration file property to the same value as the current sitemap,
-        // which may have inherited the property value
-        CmsProperty configProp = cms.readPropertyObject(currentSitemapRes, PROPERTY_SITEMAP_CONFIG, true);
         List<CmsProperty> props = new ArrayList<CmsProperty>();
-        props.add(configProp);
         props.add(titleProp);
         cms.writePropertyObjects(sitemapPath, props);
         return newSitemapRes;
