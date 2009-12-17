@@ -434,6 +434,36 @@
 			</relations>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>demo_t3/_config/new/new_subcontainer.xml</source>
+			<destination>demo_t3/_config/new/new_subcontainer.xml</destination>
+			<type>subcontainer</type>
+			<uuidstructure>6d38befb-ea1d-11de-a78f-6352bb47a664</uuidstructure>
+			<uuidresource>6d38befc-ea1d-11de-a78f-6352bb47a664</uuidresource>
+			<datelastmodified>Wed, 16 Dec 2009 08:32:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Dec 2009 08:31:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Use as subcontainer new resource.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New Subcontainer]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>5a7d2853-e403-11de-8b28-975b367aae60</id>
+					<path>/system/workplace/editors/ade/schemas/sub_container.xsd</path>
+					<type>XSD</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>demo_t3/_config/new/news.html</source>
 			<destination>demo_t3/_config/new/news.html</destination>
@@ -4891,6 +4921,54 @@
 				<relation>
 					<id>f0a3e109-a1f3-11de-aa46-dd9f629b113b</id>
 					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/imagesource.xsd</path>
+					<type>XSD</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+        <file>
+			<destination>demo_t3/subcontainers</destination>
+			<type>folder</type>
+			<uuidstructure>a2c5da47-ea1d-11de-a78f-6352bb47a664</uuidstructure>
+			<datelastmodified>Wed, 16 Dec 2009 08:33:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Dec 2009 08:33:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subcontainers]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/subcontainers/toolbox_container.xml</source>
+			<destination>demo_t3/subcontainers/toolbox_container.xml</destination>
+			<type>subcontainer</type>
+			<uuidstructure>c0685ec0-ea1d-11de-a78f-6352bb47a664</uuidstructure>
+			<uuidresource>c0685ec1-ea1d-11de-a78f-6352bb47a664</uuidresource>
+			<datelastmodified>Wed, 16 Dec 2009 08:37:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Dec 2009 08:33:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Use in toolbox column.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Toolbox Container]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>5a7d2853-e403-11de-8b28-975b367aae60</id>
+					<path>/system/workplace/editors/ade/schemas/sub_container.xsd</path>
 					<type>XSD</type>
 				</relation>
 			</relations>

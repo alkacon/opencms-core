@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AlkaconSubContainers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/ade/schemas/sub_container.xsd">
+  <AlkaconSubContainer language="en">
+    <SubContainers>
+      <Title><![CDATA[Toolbox container]]></Title>
+      <Description><![CDATA[Use in toolbox column.]]></Description>
+      <Type><![CDATA[right]]></Type>
+      <Element>
+        <link type="STRONG">
+          <target><![CDATA[/sites/default/demo_t3/news/news_0005.html]]></target>
+          <uuid>5c56fdf9-9c82-11de-adde-dd9f629b113b</uuid>
+        </link>
+      </Element>
+    </SubContainers>
+  </AlkaconSubContainer>
+</AlkaconSubContainers>
