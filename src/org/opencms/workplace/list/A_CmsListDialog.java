@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2009/12/17 13:07:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,7 +165,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     private static final Log LOG = CmsLog.getLog(A_CmsListDialog.class);
 
     /** metadata map for all used list metadata objects. */
-    private static Map m_metadatas = new HashMap();
+    private static Map<String, CmsListMetadata> m_metadatas = new HashMap<String, CmsListMetadata>();
 
     /** Activation decision Flag. */
     private boolean m_active;
@@ -266,9 +267,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * 
      * @return the list object for this list dialog, or <code>null</code>
      */
-    public static CmsHtmlList getListObject(Class listDialog, CmsWorkplaceSettings settings) {
+    public static CmsHtmlList getListObject(Class<?> listDialog, CmsWorkplaceSettings settings) {
 
-        return (CmsHtmlList)getListObjectMap(settings).get(listDialog.getName());
+        return getListObjectMap(settings).get(listDialog.getName());
     }
 
     /**
@@ -280,7 +281,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public static CmsListMetadata getMetadata(String listDialogName) {
 
-        return (CmsListMetadata)m_metadatas.get(listDialogName);
+        return m_metadatas.get(listDialogName);
     }
 
     /**
@@ -290,12 +291,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * 
      * @return the (internal use only) map of list objects 
      */
-    private static Map getListObjectMap(CmsWorkplaceSettings settings) {
+    private static Map<String, CmsHtmlList> getListObjectMap(CmsWorkplaceSettings settings) {
 
-        Map objects = (Map)settings.getListObject();
+        Map<String, CmsHtmlList> objects = CmsCollectionsGenericWrapper.map(settings.getListObject());
         if (objects == null) {
             // using hashtable as most efficient version of a synchronized map
-            objects = new Hashtable();
+            objects = new Hashtable<String, CmsHtmlList>();
             settings.setListObject(objects);
         }
         return objects;
@@ -585,12 +586,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * 
      * @return a list of current selected items
      */
-    public List getSelectedItems() {
+    public List<CmsListItem> getSelectedItems() {
 
-        Iterator it = CmsStringUtil.splitAsList(getParamSelItems(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
-        List items = new ArrayList();
+        Iterator<String> it = CmsStringUtil.splitAsList(getParamSelItems(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        List<CmsListItem> items = new ArrayList<CmsListItem>();
         while (it.hasNext()) {
-            String id = (String)it.next();
+            String id = it.next();
             items.add(getList().getItem(id));
         }
         return items;
@@ -661,7 +662,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * @param listDialog the list dialog class
      * @param listObject the list to store
      */
-    public void setListObject(Class listDialog, CmsHtmlList listObject) {
+    public void setListObject(Class<?> listDialog, CmsHtmlList listObject) {
 
         if (listObject == null) {
             // null object: remove the entry from the map
@@ -882,9 +883,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
         try {
             getList().setContent(getListItems());
             // initialize detail columns
-            Iterator itDetails = getList().getMetadata().getItemDetailDefinitions().iterator();
+            Iterator<CmsListItemDetails> itDetails = getList().getMetadata().getItemDetailDefinitions().iterator();
             while (itDetails.hasNext()) {
-                initializeDetail(((CmsListItemDetails)itDetails.next()).getId());
+                initializeDetail(itDetails.next().getId());
             }
         } catch (Exception e) {
             throw new CmsRuntimeException(Messages.get().container(
@@ -901,7 +902,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract List getListItems() throws CmsException;
+    protected abstract List<CmsListItem> getListItems() throws CmsException;
 
     /**
      * Returns the current list state.<p>
@@ -928,8 +929,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
 
-        if ((m_metadatas.get(listDialogName) == null)
-            || ((CmsListMetadata)m_metadatas.get(listDialogName)).isVolatile()) {
+        if ((m_metadatas.get(listDialogName) == null) || m_metadatas.get(listDialogName).isVolatile()) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_METADATA_LIST_1, getListId()));
             }
@@ -982,6 +982,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);

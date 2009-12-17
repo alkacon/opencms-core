@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2009/09/09 15:54:54 $
- * Version: $Revision: 1.7.2.2 $
+ * Date   : $Date: 2009/12/17 13:08:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -129,9 +129,9 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
      * 
      * @return the filtered principal list
      */
-    public static List<CmsPrincipal> filterCoreFlag(List<CmsPrincipal> principals, int flag) {
+    public static List<? extends CmsPrincipal> filterCoreFlag(List<? extends CmsPrincipal> principals, int flag) {
 
-        Iterator<CmsPrincipal> it = principals.iterator();
+        Iterator<? extends CmsPrincipal> it = principals.iterator();
         while (it.hasNext()) {
             CmsPrincipal p = it.next();
             if ((p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) && ((p.getFlags() & flag) != flag)) {
@@ -151,9 +151,9 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
      * 
      * @return the filtered principal list
      */
-    public static List<CmsPrincipal> filterFlag(List<CmsPrincipal> principals, int flag) {
+    public static List<? extends CmsPrincipal> filterFlag(List<? extends CmsPrincipal> principals, int flag) {
 
-        Iterator<CmsPrincipal> it = principals.iterator();
+        Iterator<? extends CmsPrincipal> it = principals.iterator();
         while (it.hasNext()) {
             CmsPrincipal p = it.next();
             if ((p.getFlags() & flag) != flag) {
