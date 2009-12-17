@@ -919,7 +919,7 @@
    var initSitemap = cms.sitemap.initSitemap = function() {
       // setting options for draggable and sortable for dragging within tree
       cms.sitemap.dragOptions = {
-         handle: ' > div.' + itemClass + '> div.cms-handle > a.cms-move',
+ //        handle: ' > div.' + itemClass + '> div.cms-handle > a.cms-move',
          opacity: 0.8,
          addClasses: false,
          helper: 'clone',
@@ -947,8 +947,8 @@
       
       
       cms.sitemap.dragOptionsGallery = $.extend({}, cms.sitemap.dragOptionsMenu, {
-         start: cms.sitemap.startDragGallery,
-         handle: '.cms-move'
+         start: cms.sitemap.startDragGallery
+    //    handle: '.cms-move'
       
       });
       cms.sitemap.dragOptionsType = $.extend({}, cms.sitemap.dragOptionsMenu, {
@@ -1290,7 +1290,7 @@
       ui.helper.addClass('cms-dragged-menu-item');
       var newOffset = cms.util.getElementPosition(ui.helper);
       var newPos = ui.helper.position();
-      
+      ui.helper.width(width);
       cms.sitemap.dom.currentMenu.children('div').css('display', 'none');
       dragStatus = MENU_DRAG;
    }

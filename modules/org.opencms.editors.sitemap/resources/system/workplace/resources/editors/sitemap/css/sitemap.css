@@ -1,4 +1,4 @@
-﻿	
+	
 /************************************ sitemap ************************************************/	
 	
 	
@@ -18,18 +18,14 @@
       
       li.cms-sitemap-entry {
           display: block;
-          float: left;
-          clear: left;
           margin: 0px;
           padding: 0px;
-          width: 100%;
       }
       
       
       	
       
       li div.cms-sitemap-item {
-          width: 290px;
           margin-left: 20px;
           position: relative;
           padding: 1px 0px;
@@ -169,7 +165,7 @@
           margin: 2px 10px 0 0px;
           overflow: hidden;
           white-space: nowrap;
-          padding: none;
+          padding: 0;
           background-color: white;
       }
       
@@ -241,12 +237,8 @@
       }
       
       	
-      	.cms-menu ul {
-      		overflow-x: hidden !important;
-      	}
-      	
       	.cms-menu li {
-      		margin-left: 15px;
+      		margin: 0 5px;
       	}
       	
       	.cms-sitemap-links {
@@ -267,14 +259,14 @@
 
 .ui-state-default .cms-icon-open {
 	background-image: url(images/24x24/ade_open_sw.png) !important;
-	width: 24;
-	height: 24;
+	width: 24px;
+	height: 24px;
 }
 
 .ui-state-active .cms-icon-open {
 	background-image: url(images/24x24/ade_open.png) !important;
-	width: 24;
-	height: 24;
+	width: 24px;
+	height: 24px;
 }
 
 
@@ -304,16 +296,16 @@
 
 .ui-state-default .cms-icon-subsitemap {
 	background-image: url(images/24x24/ade_subsitemap_sw.png) !important;
-	width: 24;
-	height: 24;
+	width: 24px;
+	height: 24px;
 }
 
 
 
 .ui-state-active .cms-icon-subsitemap {
 	background-image: url(images/24x24/ade_subsitemap.png) !important;
-	width: 24;
-	height: 24;
+	width: 24px;
+	height: 24px;
 }
 
 
