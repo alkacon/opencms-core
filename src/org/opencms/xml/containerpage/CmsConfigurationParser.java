@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2009/12/17 12:36:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/17 14:15:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -112,7 +112,7 @@ public class CmsConfigurationParser {
     public CmsConfigurationParser(CmsObject cms, CmsResource config)
     throws CmsException {
 
-        if (config.getTypeId() != CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID) {
+        if (config.getTypeId() != CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_ID) {
             throw new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_CONFIG_WRONG_TYPE_2,
                 CmsADEDefaultConfiguration.PROPERTY_CONTAINER_CONFIG,
