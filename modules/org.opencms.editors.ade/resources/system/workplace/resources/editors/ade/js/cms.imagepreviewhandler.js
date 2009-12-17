@@ -28,7 +28,7 @@
    
    /** Default values for the max size of the image in the preview. */
    var defaultPreview = {
-      'height': 295,
+      'height': 300,
       'width': 550
    };
    
@@ -50,14 +50,14 @@
    ///////////////////////////////////////////////////////////////////
    
    /** Html sceleton for the upper button bar in the image format area. */
-   var switchToFormatBarHtml = $('<div class="button-bar cms-top-bottom">\
+   var switchToFormatBarHtml = '<div class="button-bar cms-top-bottom">\
                                    <button name="switchToProperties" class="cms-right ui-state-default ui-corner-all">\
                                        <span class="cms-galleries-button">Properties</span>\
                                    </button>\
                                    <span class="cms-title">Image Format:</span>\
-                             </div>');   
+                             </div>';   
     /** Html sceleton for width and height format fields. */                             
-    var  widthHeightFieldsHtml = $('<div class="cms-format-line" alt="' + keys['previewWidth'] + '" >\
+    var  widthHeightFieldsHtml = '<div class="cms-format-line" alt="' + keys['previewWidth'] + '" >\
                                 <span class="cms-item-title cms-width-50">Width:</span>\
                                 <input class="ui-corner-all ui-widget-content ui-state-disabled" disabled="true" type="text"/>\
                             </div>\
@@ -67,16 +67,18 @@
                                 </button>\
                                 <span class="cms-item-title cms-width-50">Height:</span>\
                                 <input class="ui-corner-all ui-widget-content ui-state-disabled" disabled="true" type="text"/>\
-                            </div>');
-    /** Html sceleton for the additinal buttons in the image format area. */                            
-    var lockResetButtonsHtml = $('<button name="' + keys['locksizes'] + '" class="ui-state-default ui-corner-all">\
+                            </div>';
+                            
+    /** Html sceleton for the additional buttons in the image format area. */                            
+    var lockRatioButtonsHtml = '<button name="' + keys['locksizes'] + '" class="ui-state-default ui-corner-all">\
                                     <span class="cms-galleries-button cms-galleries-icon-locked cms-icon">&nbsp;</span>\
-                              </button>\
-                              <button name="' + keys['resetsize'] + '" class="ui-state-default ui-corner-all">\
-                                    <span class="cms-galleries-button cms-galleries-icon-reset cms-icon">&nbsp;</span>\
-                              </button>');     
+                               </button>';     
+    var resetButtonHtml = '<button name="' + keys['resetsize'] + '" class="ui-state-default ui-corner-all">\
+                                <span class="cms-galleries-button cms-galleries-icon-reset cms-icon">&nbsp;</span>\
+                           </button>';                               
+                           
     /** Html sceleton for the format select box in the image format area. */                              
-    var selectBoxHtml = $('<div class="cms-drop-down cms-format-line" alt="' + keys['imageFormat'] + '">\
+    var selectBoxHtml = '<div class="cms-drop-down cms-format-line" alt="' + keys['imageFormat'] + '">\
                                <label class="cms-item-title cms-width-50">Format:</label>\
                                <button class="ui-state-default ui-corner-all" name="' + keys['cropShow'] + '">\
                                     <span class="cms-galleries-button cms-galleries-icon-crop cms-icon-text">Cropping</span>\
@@ -84,7 +86,7 @@
                                <button class="ui-state-default ui-corner-all" name="' + keys['cropRemove'] + '">\
                                     <span class="cms-galleries-button cms-galleries-icon-cropremove cms-icon-text">Remove&nbsp;cropping</span>\
                                </button>\
-                           </div>');                                                          
+                           </div>';                                                          
 
    /**
     * Displays the content of the preview item.
@@ -156,18 +158,18 @@
       
       ///////////  Display format select parameters for image ///////////////////////  
       // add format edit area to preview
-      var target = $('<div class="edit-format-area ui-widget-content ui-corner-all"></div>').appendTo('#cms-preview');
+      var targetFormat = $('<div class="edit-format-area ui-widget-content ui-corner-all"></div>').appendTo('#cms-preview');
       
       // add button bar to switch between format and properties areas                                                   
-      target.append(switchToFormatBarHtml);
+      targetFormat.append($(switchToFormatBarHtml));
       $('button[name="switchToProperties"]').click(function() {
-         target.hide(); 
+         targetFormat.hide(); 
          $('.edit-area').show()
       });                     
       
       // generate format fields for width and height
       var form = $('<div class="edit-form"></div>');
-      form.append(widthHeightFieldsHtml).appendTo(target); 
+      form.append($(widthHeightFieldsHtml)).appendTo(targetFormat); 
       $('.edit-format-area').find('button[name="previewClose"]').click(function() {
              $('#cms-preview').fadeOut('slow');
          });        
@@ -193,17 +195,18 @@
          });
          
          // append locksize und reset button
-         $('.cms-format-line[alt="' + keys['previewWidth'] + '"]').find('input').after(lockResetButtonsHtml);
+         $('.cms-format-line[alt="' + keys['previewWidth'] + '"]').find('input').after($(lockRatioButtonsHtml));
+         $('.cms-format-line[alt="' + keys['previewHeight'] + '"]').find('input').after($(resetButtonHtml));
          $('button[name="' + keys['locksizes'] + '"]').click(switchLock);
          $('button[name="' + keys['resetsize'] + '"]').click(resetSizes);
          
          // append drop down box to select format
-         form.prepend(selectBoxHtml);
+         form.prepend($(selectBoxHtml));
          $('button[name="' + keys['cropShow'] + '"]').click(showCropDialog);
          $('button[name="' + keys['cropRemove'] + '"]').click(function() {
             setCropActive(false);
             checkResetSizes();
-         });         
+         });        
          form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
             values: formatDropDown,
             width: 150,
@@ -213,6 +216,26 @@
             }
          }));
       }
+   }
+   
+   /**
+    * Refresh the preview after changes.
+    *
+    * @param {Object} itemData the data to update the preview
+    */
+   var refreshImagePreview = function(itemData) {
+      $('#cms-preview div.edit-area').empty();      
+      //display the html preview       
+      cms.galleries.getContentHandler()['showEditArea'](itemData['previewdata']['properties']);       
+      // add additional buttons to editable properties area
+      $('button[name="switchToFormat"]').show().click(function() {
+         $('.edit-area').hide(); 
+         $('.edit-format-area').show()
+      });
+      $('.edit-area').show(); 
+      $('.edit-format-area').hide();     
+      
+      
    }
    
    /**
@@ -1019,6 +1042,7 @@
       'type': 'image',
       'init': initFormatSelectBox,
       'openPreview': showItemPreview,
+      'refreshPreview': refreshImagePreview,
       'setValues': {
          'widget': setImagePath,
          'editor': 'test2'

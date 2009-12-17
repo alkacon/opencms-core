@@ -23,11 +23,21 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 	}
 	
 	#cms-cropping-main {
-		font-size: 11px;
+		font-size: 12px;
 		background: #ffffff;
 		margin: 0;
 		padding: 0;
 	}
+	
+	#cms-cropping-main button {
+        margin: 0 0 0 2px;
+        padding: 0 3px;
+        /* Fix for IE to avoid too wide buttons */
+        height:23px !important;        
+        padding: 0 3px 2px !important;
+        width:auto;
+        overflow:visible;
+    }
 	
 	div.cms-border {
 		background: #F9F9F9 none repeat scroll 0 0;
@@ -52,8 +62,8 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 	
 	div.selection {
 		font-size: 12px;
+		margin-top:2px;
 		text-align: center;
-		/*padding: 6px 0 6px 4px;*/
 	}
 	
 	span.cms-item-title {
@@ -70,9 +80,10 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 	}
 	
 	div.button-bar.cms-center-buttom {
-        text-align: center;
+        text-align: center;        
         margin-top: 5px;
     }
+        
 </style>
 <script type="text/javascript" src="lib/jquery-1.3.2.js"></script>
 <script type="text/javascript" src="lib/jquery.imgareaselect.min.js"></script>
@@ -314,7 +325,7 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 </script>
 </head>
 <body>
-	<div class="cms-cropping-main">
+	<div id="cms-cropping-main">
 	    <div class="cms-border ui-widget-content ui-corner-all">
 			<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_CROP_HEADLINE_0) %></div>
 			

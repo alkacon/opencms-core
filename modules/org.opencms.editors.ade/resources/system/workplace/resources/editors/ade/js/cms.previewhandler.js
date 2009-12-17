@@ -3,21 +3,21 @@
    ///// Content Handler Function definition //////////////////////////    
    
    /** Html sceleton for the upper button bar in the editable properties area. */
-   var switchToFormatBar = $('<div class="button-bar cms-top-bottom">\
+   var switchToFormatBar = '<div class="button-bar cms-top-bottom">\
                                <button name="switchToFormat" class="cms-right ui-state-default ui-corner-all">\
                                      <span class="cms-galleries-button">Image&nbsp;Format</span>\
                                </button>\
                                <span class="cms-title">File Properties:</span>\
-                            </div>');
+                            </div>';
    /** Html sceleton for the lower button bar in the editable properties area. */                      
-   var okCloseButtonBar = $('<div class="button-bar cms-top">\
+   var okCloseButtonBar = '<div class="button-bar cms-top">\
                                  <button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
                                        <span class="cms-galleries-button">Close</span>\
                                  </button>\
                                  <button name="previewSave" disabled="true" class="cms-right ui-state-default ui-corner-all">\
                                      <span class="cms-galleries-button">Save</span>\
                                  </button>\
-                             </div>');                             
+                           </div>';                             
    
    /** html fragment for the item preview. */
    cms.previewhandler.htmlPreviewSceleton = $('<div id="cms-preview" class="ui-corner-all">\
@@ -68,7 +68,7 @@
       var target = $('.edit-area');
       
       // add the upper button bar      
-      target.append(switchToFormatBar);
+      target.append($(switchToFormatBar));
       $('button[name="switchToFormat"]').hide();
                                                                                                                  
       // generate editable form fields
@@ -78,12 +78,12 @@
               $('<div class="cms-editable-field cms-left"></div>').attr('alt', itemProperties[i]['name'])
                  .appendTo(form)
                  .append('<span class="cms-item-title cms-width-80">' + itemProperties[i]['name'] + '</span>')
-                 .append('<span class="cms-item-edit">' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '') + '</span>');    
+                 .append('<span class="cms-item-edit">' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '&nbsp;') + '</span>');    
           } else {
               $('<div class="cms-editable-field cms-right"></div>').attr('alt', itemProperties[i]['name'])
                  .appendTo(form)
                  .append('<span class="cms-item-title cms-width-80">' + itemProperties[i]['name'] + '</span>')
-                 .append('<span class="cms-item-edit">' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '') + '</span>');
+                 .append('<span class="cms-item-edit">' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '&nbsp;') + '</span>');
           }
           
       }      
@@ -100,7 +100,7 @@
       });    
          
       // add ok-close button bar to the edit area                        
-      target.append(okCloseButtonBar);
+      target.append($(okCloseButtonBar));
       target.find('button[name="previewSave"]')
           .click(cms.galleries.getContentHandler()['saveChangedProperty']);
       target.find('button[name="previewClose"]')
@@ -146,7 +146,7 @@
     *
     * @param {Object} itemData the data to update the preview
     */
-   var refreshItemPreview = function(itemData) {
+   var refreshDefaultPreview = function(itemData) {
       $('#cms-preview div.preview-area, #cms-preview div.edit-area').empty();
       //display the html preview 
       $('.preview-area').append(itemData['previewdata']['itemhtml']);
@@ -171,6 +171,8 @@
          changes['properties'].push(property);
       });
       
+      var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');
+      
       // save changes via ajax if there are any
       if (changes['properties'].length != 0) {
          $.ajax({
@@ -184,7 +186,7 @@
             },
             'type': 'POST',
             'dataType': 'json',
-            'success': refreshItemPreview
+            'success': cms.galleries.getContentHandler(resType)['refreshPreview']
          });
          $('#cms-preview div.close-icon').addClass('cms-properties-changed');
       }
@@ -231,6 +233,7 @@
       'showEditArea': showEditArea,
       'markChangedProperty': markChangedProperty,
       'saveChangedProperty': saveChangedProperty,
+      'refreshPreview': refreshDefaultPreview,
       'setValues': {
          'widget': setResourcePath,
          'editor': 'test2'

@@ -12,7 +12,7 @@ pageContext.setAttribute("cms", cms);
 	}
 	
 	h3 {
-		margin-bottom: 3px;
+		margin: 3px;
 	}
 </style>
 <fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />

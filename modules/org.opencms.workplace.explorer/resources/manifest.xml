@@ -2348,6 +2348,30 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/commons/openadvancedgallery.jsp</source>
+			<destination>system/workplace/commons/openadvancedgallery.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d664ad03-eb1b-11de-89bd-b554eb6bd863</uuidstructure>
+			<uuidresource>d664ad04-eb1b-11de-89bd-b554eb6bd863</uuidresource>
+			<datelastmodified>Thu, 17 Dec 2009 14:52:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 17 Dec 2009 14:52:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[openadvancedgallery]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/commons/opengallery.jsp</source>
 			<destination>system/workplace/commons/opengallery.jsp</destination>

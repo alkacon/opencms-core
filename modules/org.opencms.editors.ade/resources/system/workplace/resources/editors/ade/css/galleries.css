@@ -38,7 +38,7 @@
     /** Styles for the preview and crop html*/
     #cms-preview,
     #cms-image-crop{        
-        height:439px;
+        height:455px;
         left:1px;
         position:absolute;
         top:2px;
@@ -86,8 +86,13 @@
     }              
     
     #cms-preview button {
-        margin:0 0 0 2px;
+        margin: 0 0 0 2px;
         padding: 0 3px;
+        /* Fix for IE to avoid too wide buttons */
+        height:23px !important;        
+        padding: 0 3px 2px !important;
+        width:auto;
+        overflow:visible;
     }
         
     
@@ -97,15 +102,7 @@
         line-height:24px;
         /*display: inline-block;*/         
     }
-       
-    div.button-bar button{
-        /* Fix for IE to avoid too wide buttons */
-        height:24px !important;
-        overflow:visible;
-        padding:0 10px 2px !important;
-        width:auto;
-        max-height:100px;
-    }
+           
     
     div.button-bar button[disabled=true]{
         color:#999999;
@@ -172,13 +169,7 @@
    
     .edit-form {
         /*margin: 2px;*/
-    }
-    
-    .edit-format-area button,
-    .edit-form button {
-       /* margin: 0px 0px 0px 2px;
-        vertical-align:middle;*/
-    }
+    }   
     
     .cms-scrolling-properties {
         margin: 0px;
@@ -188,8 +179,21 @@
         position: relative;
     }
     
-    span.cms-item-title,
-    label.cms-item-title,
+    .edit-format-area span.cms-item-title{
+        display: inline-block;
+        font-weight:bold;
+        line-height: 20px;
+        margin-right: 7px;
+    }
+    
+    .edit-format-area label.cms-item-title{
+        display: inline-block;
+        font-weight:bold;
+        line-height: 20px;
+        margin-right: 10px;
+    }
+    
+    .edit-area span.cms-item-title,    
     div.cms-item-title {
         display: inline-block;
         font-weight:bold;
@@ -203,12 +207,15 @@
     }
     
     div.cms-format-line {
-        margin: 0px 0px 5px 0px;
+        margin: 0px 0px 4px 0px;
     }        
     
     /*div.cms-editable-field input,*/
     div.cms-format-line input {
+        height: 19px;
+        vertical-align: top;
         width: 50px;
+        text-align: right;
     }
     
     .cms-width-50 {

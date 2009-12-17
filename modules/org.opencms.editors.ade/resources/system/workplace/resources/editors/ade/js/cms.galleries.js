@@ -1080,7 +1080,7 @@
       var itemId = $(this).attr('alt');
       
       // set the resouce id as alt attribute and empty the content of the preview
-      $('#cms-preview').attr('alt', itemId);
+      $('#cms-preview').attr('alt', itemId);            
       $('#cms-preview div.preview-area, #cms-preview div.edit-area').empty();
       $('#cms-preview div.edit-format-area').remove();
       
