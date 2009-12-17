@@ -1035,8 +1035,7 @@ ol.ade-forms fieldset {
 	border: 1px solid #333333;
 }
 	
-
-#fav-dialog .cms-item-list { 
+#fav-dialog .cms-item-list{ 
 	margin: 10px;
 }
 
@@ -1367,6 +1366,22 @@ div.cms-publish-scrolling {
     position: relative;
   
 }
+
+.cms-item-edit{
+    background-color:#cccccc;
+    min-width: 60px;
+}
+
+.cms-item-title, .cms-item-edit{
+    display: inline-block;
+    vertical-align: top;
+}
+
+.edit-form input.cms-direct-input, .edit-form input.cms-direct-input:active, .edit-form input.cms-direct-input:focus{
+    background-color:#ffffbb;
+}
+
+
 /*  select box plugin */
 
 div.cms-selectbox{

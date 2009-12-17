@@ -110,7 +110,7 @@
        */
       function _copyCss(orig, target) {
          // list of styles that will be copied. 'display' is left out intentionally.
-         var styleNames = ['width', 'height', 'font-size', 'font-weight', 'font-family', 'line-height', 'color', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'display'];
+         var styleNames = ['width', 'height', 'font-size', 'font-weight', 'font-family', 'line-height', 'color', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'display', 'vertical-align'];
          var styles = {};
          for (i = 0; i < styleNames.length; i++) {
             styles[styleNames[i]] = orig.css(styleNames[i]);
