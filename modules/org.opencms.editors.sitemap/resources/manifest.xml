@@ -34,32 +34,6 @@
 		<parameters/>
 	</module>
 	<files>
-  		<file>
-			<source>sitemap_restype.config</source>
-			<destination>sitemap_restype.config</destination>
-			<type>containerpage_config</type>
-			<uuidstructure>979addd7-e33e-11de-ad4c-9f305ad86e25</uuidstructure>
-			<uuidresource>979addd8-e33e-11de-ad4c-9f305ad86e25</uuidresource>
-			<datelastmodified>Mon, 07 Dec 2009 14:43:21 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 07 Dec 2009 14:41:23 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Resource Type Configuration]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>f5315b30-914f-11de-9f57-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/type_config.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
@@ -1628,6 +1602,47 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        		<file>
+			<source>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_gotopage_a.png</source>
+			<destination>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_gotopage_a.png</destination>
+			<type>image</type>
+			<uuidstructure>23eb42a3-e8a2-11de-8188-3b595668e7a6</uuidstructure>
+			<uuidresource>23eb42a4-e8a2-11de-8188-3b595668e7a6</uuidresource>
+			<datelastmodified>Mon, 14 Dec 2009 11:16:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Dec 2009 11:16:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_gotopage_i.png</source>
+			<destination>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_gotopage_i.png</destination>
+			<type>image</type>
+			<uuidstructure>23ce92e0-e8a2-11de-8188-3b595668e7a6</uuidstructure>
+			<uuidresource>23ce92e1-e8a2-11de-8188-3b595668e7a6</uuidresource>
+			<datelastmodified>Mon, 14 Dec 2009 11:16:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Dec 2009 11:16:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
 
 		<file>
 			<source>system/workplace/resources/editors/sitemap/css/images/16x16/check.png</source>
@@ -2470,6 +2485,67 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_open_a_f.png</source>
+			<destination>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_open_a_f.png</destination>
+			<type>image</type>
+			<uuidstructure>294053c9-e89b-11de-8188-3b595668e7a6</uuidstructure>
+			<uuidresource>294053ca-e89b-11de-8188-3b595668e7a6</uuidresource>
+			<datelastmodified>Mon, 14 Dec 2009 10:26:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Dec 2009 10:26:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_open_i_f.png</source>
+			<destination>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_open_i_f.png</destination>
+			<type>image</type>
+			<uuidstructure>29261506-e89b-11de-8188-3b595668e7a6</uuidstructure>
+			<uuidresource>29261507-e89b-11de-8188-3b595668e7a6</uuidresource>
+			<datelastmodified>Mon, 14 Dec 2009 10:26:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Dec 2009 10:26:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_open_sw_f.png</source>
+			<destination>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_open_sw_f.png</destination>
+			<type>image</type>
+			<uuidstructure>295a6b7c-e89b-11de-8188-3b595668e7a6</uuidstructure>
+			<uuidresource>295a6b7d-e89b-11de-8188-3b595668e7a6</uuidresource>
+			<datelastmodified>Mon, 14 Dec 2009 10:26:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Dec 2009 10:26:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
 
 		<file>
 			<source>system/workplace/resources/editors/sitemap/css/images/24x24/ade_add.png</source>

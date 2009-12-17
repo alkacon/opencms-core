@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2009/12/14 11:07:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/17 10:11:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,9 +34,11 @@ package org.opencms.xml.sitemap;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -69,11 +71,16 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.2
  */
 public class CmsSitemapManager {
+
+    /**
+     * Name of the property which points to the sitemap configuration file.
+     */
+    private static final String PROPERTY_SITEMAP_CONFIG = "container-config";
 
     /**
      * Entry data. As a result from calling the {@link #getEntry()} method.<p>
@@ -198,6 +205,37 @@ public class CmsSitemapManager {
         // TODO: implement this
         int todo;
         return OpenCms.getADEManager().createNewElement(cms, sitemapUri, request, type);
+    }
+
+    /**
+     * Creates a new empty sitemap from a list of sitemap entries.
+     * 
+     * @param cms the CmsObject to use for VFS operations
+     * @param title the title for the new sitemap
+     * @param sitemapUri the URI of the current sitemap
+     * @param request the HTTP request
+     * @return the resource representing the new sitemap
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource createSitemap(CmsObject cms, String title, String sitemapUri, ServletRequest request)
+    throws CmsException {
+
+        CmsResource newSitemapRes = createNewElement(
+            cms,
+            sitemapUri,
+            request,
+            CmsResourceTypeXmlSitemap.getStaticTypeName());
+        CmsResource currentSitemapRes = cms.readResource(sitemapUri);
+        String sitemapPath = cms.getSitePath(newSitemapRes);
+        CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, title);
+        // we want to set the configuration file property to the same value as the current sitemap,
+        // which may have inherited the property value
+        CmsProperty configProp = cms.readPropertyObject(currentSitemapRes, PROPERTY_SITEMAP_CONFIG, true);
+        List<CmsProperty> props = new ArrayList<CmsProperty>();
+        props.add(configProp);
+        props.add(titleProp);
+        cms.writePropertyObjects(sitemapPath, props);
+        return newSitemapRes;
     }
 
     /**

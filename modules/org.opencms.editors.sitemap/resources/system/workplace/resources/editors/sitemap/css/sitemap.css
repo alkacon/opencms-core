@@ -33,6 +33,7 @@
           margin-left: 20px;
           position: relative;
           padding: 1px 0px;
+          background-color: white !important;
       }
       
       #cms-sitemap li div.cms-sitemap-item {
@@ -169,6 +170,7 @@
           overflow: hidden;
           white-space: nowrap;
           padding: none;
+          background-color: white;
       }
       
       .cms-sitemap-entry-header {
@@ -238,11 +240,6 @@
       	clear: none;
       }
       
-      .cms-vfs-path {
-      	text-decoration: underline;
-      	cursor: pointer;
-      }
-      	
       	
       	.cms-menu ul {
       		overflow-x: hidden !important;
@@ -282,18 +279,28 @@
 
 
 .cms-xopen {
+	background: transparent url(images/16x16/ocms_de_open_i_f.png) no-repeat scroll 50% 50%;
+}
+
+.cms-xopen:hover {
+	background-image: url(images/16x16/ocms_de_open_a_f.png);
+}
+
+.cms-closed > .cms-sitemap-item .cms-xopen {
 	background: transparent url(images/16x16/ocms_de_open_i.png) no-repeat scroll 50% 50%;
 }
 
-div.ui-widget-header a.cms-xopen {
-	background-image: url(images/16x16/ocms_de_open_sw.png);
-}
-
-.cms-xopen:hover,div.ui-widget-header a.cms-xopen:hover {
+.cms-closed > .cms-sitemap-item .cms-xopen:hover {
 	background-image: url(images/16x16/ocms_de_open_a.png);
 }
+ 
+.cms-gotopage {
+	background: transparent url(images/16x16/ocms_de_gotopage_i.png) no-repeat scroll 50% 50%;
+}
 
-
+.cms-gotopage:hover {
+	background: transparent url(images/16x16/ocms_de_gotopage_a.png) no-repeat scroll 50% 50%;
+}
 
 .ui-state-default .cms-icon-subsitemap {
 	background-image: url(images/24x24/ade_subsitemap_sw.png) !important;
@@ -342,7 +349,7 @@ div.ui-widget-header a.cms-subsitemap {
 	border: none;
 }
 
-.cms-subsitemap-link {
+.cms-sub-sitemap-link {
 	display: block;
 	margin-top: 5px;
 	text-decoration: underline !important;
@@ -364,7 +371,10 @@ div.ui-widget-header a.cms-subsitemap {
 	opacity: 1;
 }
 
-
+.cms-menu .cms-sitemap-item .cms-additional-item[rel=url] {
+	display: none;
+}
+	
 
 
 

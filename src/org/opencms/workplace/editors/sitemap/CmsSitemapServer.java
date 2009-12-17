@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/12/17 10:11:28 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
@@ -92,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 7.6
  */
@@ -152,6 +153,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         GET,
         /** To create a new resource as a sitemap entry */
         NEW_ENTRY,
+        /** To create a new sitemap */
+        NEW_SITEMAP,
         /** To retrieve the sitemap's property definitions. */
         PROPS,
         /** To save the sitemap. */
@@ -175,6 +178,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         NAME("name"),
         /** To retrieve or save the recent list. */
         REC("rec"),
+        /** Title for a new sitemap */
+        TITLE("title"),
         /** The type for which a new entry should be created. */
         TYPE("type");
 
@@ -207,6 +212,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         ENTRY("entry"),
         /** The favorites list. */
         FAVORITES("favorites"),
+        /** id of newly created sitemap */
+        ID("id"),
         /** Models of creatable types */
         MODELS("models"),
         /** The validated/converted site entry name. */
@@ -413,7 +420,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 String typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
                 creatableTypes.put(typeName);
                 CmsSiteEntryBean siteEntryData = resourceToSiteEntryBean(cms, resource);
-                models.put(jsonifyEntry(siteEntryData));
+                if (typeName.equals(CmsResourceTypeXmlContainerPage.getStaticTypeName())) {
+                    models.put(jsonifyEntry(siteEntryData));
+                }
             }
             addContents(models);
             result.put(JsonResponse.TYPES.getName(), creatableTypes);
@@ -475,7 +484,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsSitemapManager manager = OpenCms.getSitemapManager();
             String type = data.getString(JsonRequest.TYPE.getName());
             CmsResource newResource = manager.createNewElement(cms, sitemapParam, request, type);
-            CmsProperty titleProp = cms.readPropertyObject(newResource, "Title", false);
+            CmsProperty titleProp = cms.readPropertyObject(newResource, CmsPropertyDefinition.PROPERTY_TITLE, false);
             String title = titleProp.getValue();
             String name = newResource.getName();
             String extension = "";
@@ -496,6 +505,12 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             entries.put(jsonEntry);
             addContents(entries);
             result.put(JsonResponse.ENTRY.getName(), jsonEntry);
+        } else if (action.equals(Action.NEW_SITEMAP)) {
+            CmsSitemapManager manager = OpenCms.getSitemapManager();
+            CmsResource newSitemapRes = manager.createSitemap(cms, data.getString("title"), sitemapParam, request);
+            saveSitemap(newSitemapRes, data);
+            String sitemapId = newSitemapRes.getStructureId().toString();
+            result.put(JsonResponse.ID.getName(), sitemapId);
         } else {
             error(result, Messages.get().getBundle(getWorkplaceLocale()).key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
@@ -912,8 +927,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 propValue.getPath(),
                 CmsXmlSitemap.XmlNode.VALUE.getName()), locale, 0);
 
-            if (!isSitemapProperty
-                && propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+            if (isSitemapProperty
+                || propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
                 I_CmsXmlContentValue filelistValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
                     valValue.getPath(),
                     CmsXmlSitemap.XmlNode.FILELIST.getName()), locale, 0);
@@ -969,15 +984,18 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
         String title = titleProp.getValue();
         String name = resource.getName();
+        String nameWithoutExtension = name;
+
         String extension = "";
         int dotPos = name.lastIndexOf('.');
         if (dotPos != -1) {
             extension = name.substring(dotPos + 1, name.length());
+            nameWithoutExtension = name.substring(0, dotPos);
         }
 
         CmsSiteEntryBean entryBean = new CmsSiteEntryBean(
             resource.getStructureId(),
-            name.substring(0, dotPos),
+            nameWithoutExtension,
             extension,
             title,
             new HashMap<String, String>(),

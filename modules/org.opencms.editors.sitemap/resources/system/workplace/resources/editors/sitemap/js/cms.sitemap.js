@@ -57,6 +57,7 @@
    var ACTION_ALL = 'all';
    var ACTION_VALIDATE = 'validate';
    
+   var classSubSitemapLink = 'cms-sub-sitemap-link';
    
    /**
     * This variable is set to a button if the button's corresponding menu is open while a drag
@@ -281,6 +282,8 @@
    $(function() {
       $('#cms-sitemap .' + itemClass).live('mouseover', function() {
          $(this).addClass('cms-list-item-hover');
+         // when dragging, we don't want the visibility of the handle buttons to change,
+         // especially the handle buttons in the dragged item.
          if (dragStatus == NO_DRAG) {
             var handleDiv = $(this).find('.cms-handle');
             handleDiv.children().andSelf().css('display', 'block');
@@ -288,6 +291,7 @@
       });
       $('#cms-sitemap .' + itemClass).live('mouseout', function() {
          $(this).removeClass('cms-list-item-hover');
+         // see above 
          if (dragStatus == NO_DRAG) {
             var handleDiv = $(this).find('.cms-handle');
             handleDiv.children().andSelf().css('display', 'none');
@@ -317,7 +321,7 @@
     * Creates an initialized toolbar button object and inserts it into the dom. This function is to be called on a mode-object only.
     *
     */
-   var createButton = function() {
+   var createButton = function(canEdit) {
       var self = this;
       if (self.wide) {
          self.button = makeWideButton(self.name, self.title, 'cms-icon-' + self.name);
@@ -347,7 +351,7 @@
          self.button.removeClass('cms-left').addClass('cms-right');
       }
       if ($.isFunction(self.init)) {
-         self.init();
+         self.init(canEdit);
       }
       return self.button;
    };
@@ -943,7 +947,8 @@
       
       
       cms.sitemap.dragOptionsGallery = $.extend({}, cms.sitemap.dragOptionsMenu, {
-         start: cms.sitemap.startDragGallery
+         start: cms.sitemap.startDragGallery,
+         handle: '.cms-move'
       
       });
       cms.sitemap.dragOptionsType = $.extend({}, cms.sitemap.dragOptionsMenu, {
@@ -961,7 +966,7 @@
          // TODO: check if this is wrong for non-root sitemaps 
          (new SitemapEntry(this)).setUrls('');
       });
-      
+      var canEdit = !cms.data.NO_EDIT_REASON && cms.data.DISPLAY_TOOLBAR;
       if (cms.data.DISPLAY_TOOLBAR) {
          // generating toolbar
          cms.sitemap.dom.toolbar = $(cms.html.toolbar).appendTo(document.body);
@@ -970,7 +975,7 @@
          cms.sitemap.currentMode = null;
          //create buttons:
          for (i = 0; i < sitemapModes.length; i++) {
-            sitemapModes[i].create().appendTo(cms.sitemap.dom.toolbarContent);
+            sitemapModes[i].create(canEdit).appendTo(cms.sitemap.dom.toolbarContent);
          }
          cms.sitemap.dom.favoriteDrop.css({
             top: '35px',
@@ -986,10 +991,10 @@
       $('#' + sitemapId + ' span.' + classOpener).live('click', function() {
          $(this).parent().toggleClass(classClosed);
       });
-      if (!cms.data.NO_EDIT_REASON && cms.data.DISPLAY_TOOLBAR) {
-         $('a.cms-delete').live('click', deletePage);
-         $('a.cms-new').live('click', newPage);
-         $('a.cms-edit').live('click', editPage);
+      if (canEdit) {
+         //         $('a.cms-delete').live('click', deletePage);
+         //         $('a.cms-new').live('click', newPage);
+         //         $('a.cms-edit').live('click', editPage);
          $('#' + sitemapId + ' div.' + itemClass + ' h3').directInput({
             marginHack: true,
             live: true,
@@ -1020,18 +1025,13 @@
             adjustMenuShadow(menu);
          }
       });
-      $('.' + classAdditionalInfo + ' span').jHelperTip({
+      $('.' + classAdditionalInfo + ' span.cms-additional-item-value').jHelperTip({
          trigger: 'hover',
          source: 'attribute',
          attrName: 'alt',
          topOff: -20,
          opacity: 0.8,
          live: true
-      });
-      $('.cms-vfs-path').live('click', function() {
-         var target = cms.data.CONTEXT + $(this).attr('alt');
-         window.open(target, '_blank');
-         //showLeaveDialog(target, 'Do you really want to leave the sitemap editor and discard your changes?', 'Leaving editor');
       });
       $('#' + sitemapId).children('li').each(function() {
          var entry = new SitemapEntry(this);
@@ -1188,7 +1188,7 @@
     */
    var outDrop = cms.sitemap.outDrop = function(e, ui) {
       if ($(this).is('#favorite-drop-list')) {
-          $('.ui-droppable:not(#favorite-drop-list)').droppable('enable');
+         $('.ui-droppable:not(#favorite-drop-list)').droppable('enable');
       }
       $(this).removeClass(classHovered);
       if (cms.sitemap.dom.currentMenu) {
@@ -1209,7 +1209,7 @@
     */
    var overDrop = cms.sitemap.overDrop = function(e, ui) {
       if ($(this).is('#favorite-drop-list')) {
-          $('.ui-droppable:not(#favorite-drop-list)').droppable('disable');
+         $('.ui-droppable:not(#favorite-drop-list)').droppable('disable');
       }
       $(this).addClass(classHovered);
       if ($(this).hasClass(itemClass)) {
@@ -1297,7 +1297,7 @@
    
    /**
     * Drag start handler for dragging from the 'New' menu
-    * @param {Object} e 
+    * @param {Object} e
     * @param {Object} ui
     */
    var startDragNew = cms.sitemap.startDragNew = function(e, ui) {
@@ -1476,10 +1476,32 @@
       
    }
    
+   var GoToPageMode = {
+      name: 'gotopage',
+      title: 'Go to page',
+      wide: false,
+      create: createWithoutButton,
+      enable: function() {
+            },
+      disable: function() {
+            },
+      
+      createHandle: function(elem) {
+         return $('<a class="cms-gotopage"></a>').attr('title', this.title);
+      },
+      
+      init: function() {
+         $('a.cms-gotopage').live('click', function() {
+            var $entry = $(this).closest('.' + classSitemapEntry);
+            var path = (new SitemapEntry($entry.get(0))).getPath();
+            window.open(cms.data.CONTEXT + path, '_blank');
+         });
+      }
+   };
    
    
    /** Array of mode-objects. These correspond to the buttons shown in the toolbar. */
-   var sitemapModes = [{
+   var sitemapModes = [GoToPageMode, {
       // save mode
       name: 'save',
       title: 'Save',
@@ -1517,10 +1539,11 @@
       disable: function() {
             },
       createHandle: function() {
-         return $('<a class="cms-edit cms-edit-enabled"></a>');
+         return $('<a class="cms-edit cms-edit-enabled"></a>').attr('title', this.title);
       },
       init: function() {
-            }
+         $('a.cms-edit').live('click', editPage);
+      }
    }, {
       // delete mode
       name: 'delete',
@@ -1539,15 +1562,17 @@
          if (p1 && p2) {
             return $([]);
          } else {
-            return $('<a class="cms-delete"></a>');
+            return $('<a class="cms-delete"></a>').attr('title', this.title);
          }
       },
-      init: function() {
-            }
+      init: function(canEdit) {
+         if (canEdit) {
+            $('a.cms-delete').live('click', deletePage);
+         }
+      }
    }, {
-      // delete mode
       name: 'xopen',
-      title: 'Open',
+      title: 'Open/close tree',
       wide: false,
       create: createWithoutButton,
       enable: function() {
@@ -1564,7 +1589,7 @@
       
       createHandle: function(elem) {
          if ($(elem).closest('.' + classSitemapEntry).find('ul:first').size() > 0) {
-            return $('<a class="cms-xopen"></a>');
+            return $('<a class="cms-xopen"></a>').attr('title', this.title);
          } else {
             return $([]);
          }
@@ -1602,30 +1627,37 @@
             // don't allow sub-sitemap conversion for leaf nodes, sub-sitemap nodes, or the root node
             return $([]);
          } else {
-            return $('<a class="cms-subsitemap"></a>');
+            return $('<a class="cms-subsitemap"></a>').attr('title', this.title);
          }
       },
-      init: function() {
-         $('a.cms-subsitemap').live('click', function() {
-            var $button = $(this);
-            cms.util.dialogConfirm('Do you really want to convert this entry and its children to a sub-sitemap?', 'Create sub-sitemap', 'Yes', 'No', function(ok) {
-               if (ok) {
-                  alert('Not implemented');
-                  return;
-                  var $element = $button.closest('.' + classSitemapEntry);
-                  var sitemap = serializeSitemap($element.children('ul'));
-                  cms.data.createSitemap(sitemap, function(ok, data) {
-                     if (!ok) {
-                        return;
-                     }
-                     var subelement = data.subelement;
-                     var $subSitemap = buildSitemapElement(subelement);
-                     $subSitemap.insertBefore($element);
-                     $element.remove();
-                  });
-               }
+      init: function(canEdit) {
+         if (canEdit) {
+            $('a.cms-subsitemap').live('click', function() {
+               var $button = $(this);
+               cms.util.dialogConfirm('Do you really want to convert this entry and its children to a sub-sitemap?', 'Create sub-sitemap', 'Yes', 'No', function(ok) {
+                  if (ok) {
+                  
+                     var $element = $button.closest('.' + classSitemapEntry);
+                     var entryObj = new SitemapEntry($element);
+                     var sitemap = serializeSitemap($element.children('ul'));
+                     cms.data.createSitemap(sitemap, entryObj.getTitle(), function(ok, data) {
+                        if (!ok) {
+                           return;
+                        }
+                        
+                        var id = data.id;
+                        $element.children('ul').remove();
+                        $element.addClass(classClosed);
+                        $element.addClass('cms-sub-sitemap-ref');
+                        $element.children('.' + classOpener).remove();
+                        var entryObj = new SitemapEntry($element);
+                        entryObj.setSitemap(id);
+                        setSitemapChanged(true);
+                     });
+                  }
+               });
             });
-         });
+         }
       }
    }, GalleryMode, {
       // new mode
@@ -1665,15 +1697,25 @@
          if ($entry.hasClass('cms-sub-sitemap-ref')) {
             return $([]);
          } else {
-            return $('<a class="cms-new"></a>');
+            return $('<a class="cms-new"></a>').attr('title', this.title);
          }
       },
-      init: function() {
+      init: function(canEdit) {
+         if (canEdit) {
+            $('a.cms-new').live('click', newPage);
+         }
+         
+         
          cms.sitemap.dom.newMenu = $(cms.html.createMenu(cms.html.newMenuId)).appendTo(cms.sitemap.dom.toolbarContent);
          for (var i = 0; i < cms.sitemap.models.length; i++) {
-             var model = cms.sitemap.models[i];
-             cms.sitemap.dom.newMenu.find('ul').append(_buildSitemapElement(model));
+            var model = cms.sitemap.models[i];
+            cms.sitemap.dom.newMenu.find('ul').append(_buildSitemapElement(model));
          }
+         if ($.browser.msie) {
+            // vertical spacer
+            $('<div/>').css('height', '1px').insertAfter(cms.sitemap.dom.newMenu.find('.cms-scrolling'));
+         }
+         
       }
    }, {
       // move mode
@@ -1686,7 +1728,7 @@
       disable: function() {
             },
       createHandle: function() {
-         return $('<a class="cms-move"></a>');
+         return $('<a class="cms-move"></a>').attr('title', this.title);
       },
       init: function() {
             }
@@ -1962,7 +2004,9 @@
          extension: data.extension
       });
       if (isSitemap) {
-         $li.addClass('cms-sub-sitemap-ref')
+         $li.addClass('cms-sub-sitemap-ref');
+         var entryObj = new SitemapEntry($li);
+         entryObj.setSitemap(isSitemap);
       }
       return $li;
    }
@@ -1990,10 +2034,10 @@
       
       initSitemap();
       if (!cms.data.NO_EDIT_REASON) {
-          $('#cms-sitemap .' + itemClass).each(function() {
-              addHandles(this, sitemapModes);
-          });
-          initDraggable();
+         $('#cms-sitemap .' + itemClass).each(function() {
+            addHandles(this, sitemapModes);
+         });
+         initDraggable();
       }
       // don't display the toolbar for historical resources
       if (!cms.data.DISPLAY_TOOLBAR) {
@@ -2206,6 +2250,15 @@
       }
    }
    
+   /**
+    * Creates a permalink url from a structure id.
+    *
+    * @param {Object} id a structure id
+    */
+   var makePermalink = function(id) {
+      return cms.data.CONTEXT + '/permalink/' + id;
+   }
+   
    
    /**
     * Constructor function for sitemap entries.
@@ -2413,6 +2466,26 @@
       isSitemap: function() {
          var entryData = getEntryData(this.$li);
          return entryData.sitemap;
+      },
+      
+      /**
+       * Sets the sub-sitemap id
+       * @param {Object} newValue the new value of the sub-sitemap id
+       */
+      setSitemap: function(newValue) {
+         this.$li.find('.' + classSubSitemapLink).remove();
+         
+         var entryData = getEntryData(this.$li);
+         entryData.sitemap = newValue;
+         setEntryData(this.$li, entryData);
+         if (newValue || true) {
+            var $link = $('<a/>').addClass(classSubSitemapLink);
+            $link.text('Go to sub-sitemap');
+            $link.attr('href', makePermalink(newValue));
+            $link.appendTo(this.$item.find('.' + classAdditionalInfo));
+            this.$li.droppable('destroy');
+         }
+         
       },
       
       /**
@@ -2754,6 +2827,5 @@
       });
       $dlg.nextAll('.ui-dialog-buttonpane').append($ok);
    }
-   
    
 })(cms);

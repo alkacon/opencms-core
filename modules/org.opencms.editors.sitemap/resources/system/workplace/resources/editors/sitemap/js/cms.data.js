@@ -29,6 +29,7 @@
    var ACTION_SET = 'set';
    var ACTION_ALL = 'all';
    var ACTION_VALIDATE = 'validate';
+   var ACTION_NEWSITEMAP = 'new_sitemap';
    
    
    /**
@@ -166,6 +167,14 @@
       cms.data.sitemapPostJSON(ACTION_SAVE, {
          'sitemap': sitemap
       }, callback);
+   }
+   
+   
+   var createSitemap = cms.data.createSitemap = function(sitemap, title, callback) {
+       cms.data.sitemapPostJSON(ACTION_NEWSITEMAP, {
+           'sitemap': sitemap,
+           'title':   title
+       }, callback);
    }
    
    

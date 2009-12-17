@@ -741,7 +741,7 @@ ul.cms-item-list,ul.cms-publish-options {
 	margin-left: 34px;
 }
 
-.cms-item .cms-additional {
+.cms-item .cms-additional, .cms-sitemap-item .cms-additional {
 	display: none;
 	padding: 5px 0 0 4px;
 }

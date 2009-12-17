@@ -116,6 +116,20 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+   		<file>
+			<destination>demo_t3/_config/subsitemaps</destination>
+			<type>folder</type>
+			<uuidstructure>3fbb5944-e958-11de-b3a4-a1401acbb1fd</uuidstructure>
+			<datelastmodified>Tue, 15 Dec 2009 09:00:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 15 Dec 2009 09:00:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+
 		<file>
 			<source>demo_t3/_config/options</source>
 			<destination>demo_t3/_config/options</destination>
@@ -142,6 +156,7 @@
 			</relations>
 			<accesscontrol/>
 		</file>
+        
 		<file>
 			<source>demo_t3/_config/restype.config</source>
 			<destination>demo_t3/_config/restype.config</destination>
@@ -151,6 +166,32 @@
 			<datelastmodified>Mon, 07 Dec 2009 15:54:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 10 Sep 2009 12:30:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resource Type Configuration]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>f5315b30-914f-11de-9f57-dd9f629b113b</id>
+					<path>/system/workplace/editors/ade/schemas/type_config.xsd</path>
+					<type>XSD</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+   		<file>
+			<source>demo_t3/_config/sitemap_restype.config</source>
+			<destination>demo_t3/_config/sitemap_restype.config</destination>
+			<type>containerpage_config</type>
+			<uuidstructure>979addd7-e33e-11de-ad4c-9f305ad86e25</uuidstructure>
+			<uuidresource>979addd8-e33e-11de-ad4c-9f305ad86e25</uuidresource>
+			<datelastmodified>Mon, 07 Dec 2009 14:43:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 07 Dec 2009 14:41:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -186,7 +227,7 @@
 				</property>
                 <property type="shared">
                     <name>container-config</name>
-                    <value><![CDATA[/sitemap_restype.config]]></value>
+					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
                 </property>
 			</properties>
 			<relations>
@@ -512,7 +553,12 @@
 			<datecreated>Mon, 23 Nov 2009 14:46:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+   				<property>
+					<name>Title</name>
+					<value><![CDATA[Container page]]></value>
+				</property>
+			</properties>
 			<relations>
 				<relation>
 					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>

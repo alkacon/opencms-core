@@ -14,12 +14,18 @@ pageContext.setAttribute("cms", cms);
   <h3>${cms.entry.title}</h3>
   </div>
   <div class="cms-additional">
-    <fmt:message key="GUI_DEFAULT_FORMATTER_URL_NAME_0" />&nbsp;<span class="cms-url-name" alt="${cms.entry.name}">${cms.entry.name}</span><br/>
-    <fmt:message key="GUI_DEFAULT_FORMATTER_URL_0" />&nbsp;<span class="cms-url"></span><br/>
-    <fmt:message key="GUI_DEFAULT_FORMATTER_VFSPATH_0" />&nbsp;<span class="cms-vfs-path" alt="${cms.path}">${cms.path}</span><br/>
-    <c:if test="${cms.entry.properties.sitemap}">
-    	<a href="${cms.entry.properties.sitemap}">SUBSITEMAP</a>
-    </c:if>
+    <div class="cms-additional-item" rel="url-name">
+    	<span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_URL_NAME_0" /></span> <%--
+    	--%><span class="cms-additional-item-value cms-url-name" alt="${cms.entry.name}">${cms.entry.name}</span>
+    </div>
+    <div class="cms-additional-item" rel="url">
+    	<span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_URL_0" /></span><%--
+    	--%><span class="cms-additional-item-value cms-url"></span>
+    </div>
+    <div class="cms-additional-item" rel="path">
+    	<span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_VFSPATH_0" /></span><%--
+    	--%><span class="cms-additional-item-value cms-vfs-path" alt="${cms.path}">${cms.path}</span>
+    </div>
   </div>
 </div>
 </fmt:bundle>
