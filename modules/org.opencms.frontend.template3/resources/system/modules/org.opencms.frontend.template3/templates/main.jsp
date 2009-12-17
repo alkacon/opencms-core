@@ -91,9 +91,7 @@
 					<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.template3/elements/menu/nav_left.jsp:c318822c-9c7a-11de-adde-dd9f629b113b)" />
 						
 					<!-- include the boxes on the left side -->
-					<div id="leftcnt">
-						<cms:container name="leftcnt" type="left" maxElements="3" />
-					</div>
+					<cms:container name="leftcnt" type="left" maxElements="3" />
 				</div>
 			</div>
 			<!-- end: left column -->
@@ -105,11 +103,10 @@
 						<c:set var="page" value="${cms:vfs(pageContext).readXml[cms:vfs(pageContext).context.uri]}" />
 					</c:catch>
 					
-					<div id="rightcnt">
-						<cms:container name="rightcnt" type="right" maxElements="3" />
-					</div>
-               			</div>
-            		</div>
+					<cms:container name="rightcnt" type="right" maxElements="3" />
+					
+               	</div>
+            </div>
             		<!-- end: right column -->
 			
 			<!-- begin: center column -->
@@ -117,19 +114,15 @@
 				<div id="col2_content" class="clearfix">
 					<!-- anchor for accessible link to main content -->
 					<a id="content" name="content"></a>
-					<div id="templatecnt">
-						<cms:container name="templatecnt" type="template" maxElements="1" />
-					</div>
-
+					<cms:container name="templatecnt" type="template" maxElements="1" />
+					
 					<!-- include the second body from an xml page, if available -->
 					<c:if test="${page.hasValue['body2']}">
 						<cms:include element="body2" editable="true"/>
 					</c:if>
 					<!-- include the boxes in the center -->
-					<div id="centercnt">
-						<cms:container name="centercnt" type="center" maxElements="3" />
-					</div>
-
+					<cms:container name="centercnt" type="center" maxElements="3" />
+					
 				</div>
 				<div class="clear">&nbsp;</div>
 			</div>
@@ -137,9 +130,7 @@
 		</div>
 		
 		<!-- begin: footer column -->
-		<div id="footercnt">
-			<cms:container name="footercnt" type="footer" maxElements="3" />
-		</div>
+		<cms:container name="footercnt" type="footer" maxElements="3" />
 		<!-- end: footer column -->
 		
 		<!-- end: content area -->

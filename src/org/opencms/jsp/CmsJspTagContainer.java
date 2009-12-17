@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/12/15 09:57:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/12/17 07:59:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Locale;
 
@@ -69,11 +70,17 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6 
  */
 public class CmsJspTagContainer extends TagSupport {
+
+    /** The create no tag attribute value constant. */
+    private static final String CREATE_NO_TAG = "none";
+
+    /** The default tag name constant. */
+    private static final String DEFAULT_TAG_NAME = "div";
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1228397990961282556L;
@@ -90,6 +97,52 @@ public class CmsJspTagContainer extends TagSupport {
     /** The type attribute value. */
     private String m_type;
 
+    /** The tag attribute value. */
+    private String m_tag;
+
+    /** The class attribute value. */
+    private String m_tagClass;
+
+    /**
+     * Returns the tag attribute.<p>
+     *
+     * @return the tag attribute
+     */
+    public String getTag() {
+
+        return m_tag;
+    }
+
+    /**
+     * Sets the tag attribute.<p>
+     *
+     * @param tag the createTag to set
+     */
+    public void setTag(String tag) {
+
+        m_tag = tag;
+    }
+
+    /**
+     * Returns the tag class attribute.<p>
+     *
+     * @return the tag class attribute
+     */
+    public String getTagClass() {
+
+        return m_tagClass;
+    }
+
+    /**
+     * Sets the tag class attribute.<p>
+     *
+     * @param tagClass the tag class attribute to set
+     */
+    public void setTagClass(String tagClass) {
+
+        m_tagClass = tagClass;
+    }
+
     /**
      * Internal action method.<p>
      * 
@@ -97,6 +150,8 @@ public class CmsJspTagContainer extends TagSupport {
      * @param containerName the name of the container
      * @param containerType the type of the container
      * @param containerMaxElements the maximal number of elements in the container 
+     * @param tag the tag to create
+     * @param tagClass the tag class attribute
      * @param req the current request
      * @param res the current response
      * 
@@ -108,6 +163,8 @@ public class CmsJspTagContainer extends TagSupport {
         String containerName,
         String containerType,
         String containerMaxElements,
+        String tag,
+        String tagClass,
         ServletRequest req,
         ServletResponse res) throws CmsException, JspException {
 
@@ -202,6 +259,18 @@ public class CmsJspTagContainer extends TagSupport {
         if ((maxElements > 0) && (renderElems > maxElements)) {
             renderElems = maxElements;
         }
+
+        // create tag for container if necessary
+        boolean createTag = false;
+        String tagName = CmsStringUtil.isEmptyOrWhitespaceOnly(tag) ? DEFAULT_TAG_NAME : tag;
+        if (!CREATE_NO_TAG.equals(tag)) {
+            createTag = true;
+            try {
+                pageContext.getOut().print(getTagOpen(tagName, containerName, tagClass));
+            } catch (IOException t) {
+                throw new JspException(t);
+            }
+        }
         if (actAsTemplate) {
             if (!cntPage.getTypes().contains(CmsContainerPageBean.TYPE_TEMPLATE)) {
                 throw new CmsIllegalStateException(Messages.get().container(
@@ -250,6 +319,7 @@ public class CmsJspTagContainer extends TagSupport {
                     Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)element),
                     req,
                     res);
+
             }
         }
 
@@ -319,6 +389,14 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             }
         }
+        // close tag for container
+        if (createTag) {
+            try {
+                pageContext.getOut().print(getTagClose(tagName));
+            } catch (IOException t) {
+                throw new JspException(t);
+            }
+        }
     }
 
     /**
@@ -336,7 +414,15 @@ public class CmsJspTagContainer extends TagSupport {
         if (CmsFlexController.isCmsRequest(req)) {
 
             try {
-                containerTagAction(pageContext, getName(), getType(), getMaxElements(), req, res);
+                containerTagAction(
+                    pageContext,
+                    getName(),
+                    getType(),
+                    getMaxElements(),
+                    getTag(),
+                    getTagClass(),
+                    req,
+                    res);
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "container"), ex);
@@ -419,4 +505,28 @@ public class CmsJspTagContainer extends TagSupport {
         m_type = type;
     }
 
+    /**
+     * Creates the opening tag for the container assigning the appropriate id and class attributes.<p>
+     * 
+     * @param tagName the tag name
+     * @param containerName the container name used as id attribute value
+     * @param tagClass the tag class attribute value
+     * @return the opening tag
+     */
+    private static String getTagOpen(String tagName, String containerName, String tagClass) {
+
+        String classAttr = CmsStringUtil.isEmptyOrWhitespaceOnly(tagClass) ? "" : "class=\"" + tagClass + "\" ";
+        return "<" + tagName + " id=\"" + containerName + "\" " + classAttr + ">";
+    }
+
+    /**
+     * Creates the closing tag for the container.<p>
+     * 
+     * @param tagName the tag name
+     * @return the closing tag
+     */
+    private static String getTagClose(String tagName) {
+
+        return "</" + tagName + ">";
+    }
 }
