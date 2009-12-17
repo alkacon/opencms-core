@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2009/12/07 08:04:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/17 12:36:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,10 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.PrintfFormat;
@@ -66,7 +68,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -109,6 +111,13 @@ public class CmsConfigurationParser {
      */
     public CmsConfigurationParser(CmsObject cms, CmsResource config)
     throws CmsException {
+
+        if (config.getTypeId() != CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_CONFIG_WRONG_TYPE_2,
+                CmsADEDefaultConfiguration.PROPERTY_CONTAINER_CONFIG,
+                cms.getSitePath(config)));
+        }
 
         m_configuration = new HashMap<String, CmsConfigurationItem>();
         m_newElements = new ArrayList<CmsResource>();

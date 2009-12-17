@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/17 12:36:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,11 +72,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
 public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
+
+    /** The configuration resource type id. */
+    public static final int CONFIGURATION_TYPE_ID = 14;
 
     /** The sub container resource type id. */
     public static final int SUB_CONTAINER_TYPE_ID = 17;

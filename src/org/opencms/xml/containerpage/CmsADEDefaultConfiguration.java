@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2009/10/20 15:25:51 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
+ * Date   : $Date: 2009/12/17 12:36:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
@@ -56,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -92,8 +91,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     public CmsResource createNewElement(CmsObject cms, String cntPageUri, ServletRequest request, String type)
     throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
-        CmsConfigurationParser parser = new CmsConfigurationParser(cms, cfg);
+        CmsConfigurationParser parser = getConfigurationParser(cms, cntPageUri);
         String newFileName = getNextNewFileName(cms, cntPageUri, request, type);
         cms.copyResource(parser.getConfiguration().get(type).getSourceFile(), newFileName);
         return cms.readResource(newFileName);
@@ -105,11 +103,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     public List<CmsResource> getCreatableElements(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
-        if (cfg == null) {
-            return new ArrayList<CmsResource>();
-        }
-        return new CmsConfigurationParser(cms, cfg).getNewElements();
+        return getConfigurationParser(cms, cntPageUri).getNewElements();
     }
 
     /**
@@ -131,8 +125,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     public synchronized String getNextNewFileName(CmsObject cms, String cntPageUri, ServletRequest request, String type)
     throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
-        CmsConfigurationParser parser = new CmsConfigurationParser(cms, cfg);
+        CmsConfigurationParser parser = getConfigurationParser(cms, cntPageUri);
         return parser.getNewFileName(cms, parser.getConfiguration().get(type).getDestination());
     }
 
@@ -204,14 +197,23 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
                     PROPERTY_CONTAINER_CONFIG,
                     cfgPath));
             }
-            if (resTypeConfigRes.getTypeId() != 14) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.ERR_CONFIG_WRONG_TYPE_3,
-                    containerPageUri,
-                    PROPERTY_CONTAINER_CONFIG,
-                    cfgPath));
-            }
         }
         return resTypeConfigRes;
+    }
+
+    /**
+     * Returns the configuration parser instance.<p>
+     * 
+     * @param cms the current CMS context
+     * @param cntPageUri the container page URI
+     * 
+     * @return the configuration parser instance
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsConfigurationParser getConfigurationParser(CmsObject cms, String cntPageUri) throws CmsException {
+
+        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
+        return new CmsConfigurationParser(cms, cfg);
     }
 }

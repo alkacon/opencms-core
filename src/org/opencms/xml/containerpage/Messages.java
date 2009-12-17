@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Messages.java,v $
- * Date   : $Date: 2009/11/19 13:26:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/17 12:36:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,7 +55,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CONFIG_NOT_SET_2 = "ERR_CONFIG_NOT_SET_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONFIG_WRONG_TYPE_3 = "ERR_CONFIG_WRONG_TYPE_3";
+    public static final String ERR_CONFIG_WRONG_TYPE_2 = "ERR_CONFIG_WRONG_TYPE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_ID_1 = "ERR_INVALID_ID_1";
