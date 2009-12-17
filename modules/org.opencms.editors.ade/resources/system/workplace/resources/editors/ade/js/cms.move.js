@@ -149,7 +149,7 @@
          
          // subcontainer stuff, this should go into the Element class
          if (moveState.element.subItems) {
-            helperElem = $('<div class="cms-subcontainer"></div>');
+            helperElem = $('<div class="'+cms.html.subcontainerClass+'"></div>');
             for (var j = 0; j < moveState.element.subItems.length; j++) {
                var subElem = cms.data.elements[moveState.element.subItems[j]];
                subElem.getContent(containerType).appendTo(helperElem);
@@ -198,7 +198,7 @@
       
       $('.cms-additional', sortable.currentItem).hide();
       
-      sortable.helper.appendTo(cms.toolbar.dom.appendBox);
+      sortable.helper.appendTo(cms.toolbar.dom.appendBox).css('z-index', 10000);
       cms.toolbar.dom.appendBox.css('position', 'absolute');
       $('#' + moveState.startId).closest('.cms-menu').css('display', 'none');
       moveState.over = false;
@@ -302,8 +302,8 @@
       }
       ui.self.placeholder.addClass(ui.self.currentItem.attr('class'));
       // placeholder should not have class cms-subcontainer
-      if (ui.placeholder.hasClass('cms-subcontainer')) {
-         ui.placeholder.removeClass('cms-subcontainer');
+      if (ui.placeholder.hasClass(cms.html.subcontainerClass)) {
+         ui.placeholder.removeClass(cms.html.subcontainerClass);
          var dim = cms.util.getInnerDimensions(ui.helper, 1);
          placeholderSize = {
             height: dim.height,
@@ -332,8 +332,12 @@
                } else {
                   moveState.currentResourceId = moveState.loadingResourceId;
                   moveState.element = cms.data.elements[moveState.loadingResourceId];
-                  for (var container_name in cms.data.containers) {
-                     initContainerForDrag(ui.self, cms.data.containers[container_name]);
+                  if (cms.toolbar.editingSubcontainerId != null) {
+                      initContainerForDrag(ui.self, cms.data.containers[cms.toolbar.editingSubcontainerId]);
+                  } else {
+                      for (var container_name in cms.data.containers) {
+                          initContainerForDrag(ui.self, cms.data.containers[container_name]);
+                      }
                   }
                   refreshHelperPositions(ui.self);
                   hoverOut();
@@ -349,8 +353,12 @@
          }
          refreshHelperPositions(ui.self);
       } else {
-         for (var container_name in cms.data.containers) {
-            initContainerForDrag(ui.self, cms.data.containers[container_name]);
+         if (cms.toolbar.editingSubcontainerId != null) {
+             initContainerForDrag(ui.self, cms.data.containers[cms.toolbar.editingSubcontainerId]);
+         } else {
+             for (var container_name in cms.data.containers) {
+                 initContainerForDrag(ui.self, cms.data.containers[container_name]);
+             }
          }
          refreshHelperPositions(ui.self);
       
@@ -588,7 +596,7 @@
          
          // in case of a subcontainer use inner height for placeholder and set a margin
          var helperHeight = ui.self.helper.height();
-         if (ui.self.helper.hasClass('cms-subcontainer')) {
+         if (ui.self.helper.hasClass(cms.html.subcontainerClass)) {
             var dimensions = cms.util.getInnerDimensions(ui.self.helper, 10);
             ui.placeholder.height(dimensions.height).css({
                'margin-bottom': helperHeight - dimensions.height

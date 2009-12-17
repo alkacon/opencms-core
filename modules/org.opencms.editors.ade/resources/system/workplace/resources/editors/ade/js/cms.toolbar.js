@@ -1,7 +1,7 @@
 ﻿(function(cms) {
    var $ = jQuery;
    var M = cms.messages;
-   var galleryInitialized= false;
+   var galleryInitialized = false;
    /** current toolbar-mode ('Move', 'Edit', 'Delete' etc.) */
    var /** string */ mode = cms.toolbar.mode = '';
    
@@ -40,6 +40,8 @@
    /** string */
    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
    
+   cms.toolbar.editingSubcontainerId = null;
+   
    /**
     * This function will check if the given mode-string is one of the three editing modes (edit, move, delete).<p>
     *
@@ -56,6 +58,50 @@
     */
    var doNothing = function() {
       }
+   
+   /**
+    * This function will open the sub container editing mode.
+    *
+    * @param {Object} container the sub container to edit
+    */
+   var editSubcontainer = function(container) {
+      toggleMode(getCurrentMode());
+      var containerType = container.parent().attr('id');
+      var parentContainer = cms.data.containers[containerType];
+      var cOffset = container.offset();
+      var bOffset = $(document.body).offset();
+      cOffset.left = cOffset.left - bOffset.left;
+      cOffset.top = cOffset.top - bOffset.top;
+      var cWidth = container.outerWidth();
+      cms.toolbar.editingSubcontainerId = container.attr('rel');
+      var containerElement = cms.data.elements[cms.toolbar.editingSubcontainerId];
+      var overlay = $('<div id="cms-overlay" style="width:100%; height: 100%; position: fixed; background: #888888; opacity: 0.7;"></div>').appendTo(cms.toolbar.dom.appendBox);
+      var overlayEditing = $(cms.html.subcontainerDialog()).appendTo(cms.toolbar.dom.appendBox);
+      overlayEditing.css({
+         'width': 312,
+         'zIndex': 8990,
+         'position': 'absolute',
+         'top': cOffset.top,
+         'left': cOffset.left - 322
+      });
+      var overlayContainer = container.clone().appendTo(cms.toolbar.dom.appendBox);
+      // overlayContainer.find('div.cms-handle').remove();
+      overlayContainer.attr('id', cms.toolbar.editingSubcontainerId);
+      overlayContainer.css({
+         'width': cWidth,
+         'zIndex': 9000,
+         'position': 'absolute',
+         'top': cOffset.top,
+         'left': cOffset.left
+      });
+      cms.data.containers[cms.toolbar.editingSubcontainerId] = new cms.data.Container({
+         'elements': containerElement.subItems,
+         'name': cms.toolbar.editingSubcontainerId,
+         'type': parentContainer.type,
+         'maxElem': parentContainer.maxElem,
+         'objType': parentContainer.objType
+      });
+   }
    
    /**
     * This function will display the publish dialog.<p>
@@ -121,8 +167,8 @@
     */
    var deleteItem = cms.toolbar.deleteItem = /** void */ function() {
       var $item = $(this).closest('.cms-element');
-      if (!$item || !$item.length){
-          $item = $(this).closest('.cms-subcontainer');
+      if (!$item || !$item.length) {
+         $item = $(this).closest('.' + cms.html.subcontainerClass);
       }
       var $container = $item.parent();
       cms.move.hoverOut();
@@ -162,12 +208,12 @@
          cms.data.deleteResources([elemId], function(ok) {
             var elemList = [elemId];
             deleteFromFavListAndRecList(elemList);
-            $(cms.util.getContainerSelector()).find('.cms-element[rel="' + elemId + '"], .cms-subcontainer[rel="' + elemId + '"]').remove();
+            $(cms.util.getContainerSelector()).find('.cms-element[rel="' + elemId + '"], .' + cms.html.subcontainerClass + '[rel="' + elemId + '"]').remove();
             for (var key in cms.data.containers) {
                cms.move.updateContainer(key);
             }
-            elemList=[];
-            $(cms.util.getContainerSelector()).find('.cms-element:has(div.cms-editable), .cms-subcontainer:has(div.cms-editable)').each(function() {
+            elemList = [];
+            $(cms.util.getContainerSelector()).find('.cms-element:has(div.cms-editable), .' + cms.html.subcontainerClass + ':has(div.cms-editable)').each(function() {
                elemList.push($(this).attr('rel'));
             });
             cms.data.loadElements(elemList, function(ok) {
@@ -398,32 +444,36 @@
     * Opens the content-editor-dialog.<p>
     */
    var openEditDialog = cms.toolbar.openEditDialog = /** void */ function() {
-      var $domElement = $(this).closest('.cms-element');
-      var elemId = $domElement.attr('rel');
-      
-      if (elemId && cms.data.elements[elemId]) {
-         if (!cms.data.elements[elemId].noEditReason) {
-            var element = cms.data.elements[elemId];
-            
-            if (element.status == cms.data.STATUS_NEWCONFIG) {
-               cms.data.createResource(element.type, function(ok, id, uri) {
-                  if (!ok) {
-                     // TODO
-                     return;
-                  }
-                  cms.move.removeBorder($domElement, '.' + cms.move.HOVER_NEW);
-                  var elem = cms.data.elements[elemId];
-                  delete cms.data.elements[elemId];
-                  cms.data.elements[id] = elem;
-                  elem.id = id;
-                  elem.status = cms.data.STATUS_CREATED;
-                  cms.util.replaceNewElement(elemId, id);
-                  _openContentEditor(uri, id);
-               });
+      var $domElement = $(this).closest('.cms-element, .' + cms.html.subcontainerClass);
+      if ($domElement.hasClass(cms.html.subcontainerClass)) {
+         editSubcontainer($domElement);
+      } else {
+         var elemId = $domElement.attr('rel');
+         
+         if (elemId && cms.data.elements[elemId]) {
+            if (!cms.data.elements[elemId].noEditReason) {
+               var element = cms.data.elements[elemId];
                
-            } else {
-               _openContentEditor(element.file, elemId);
-               
+               if (element.status == cms.data.STATUS_NEWCONFIG) {
+                  cms.data.createResource(element.type, function(ok, id, uri) {
+                     if (!ok) {
+                        // TODO
+                        return;
+                     }
+                     cms.move.removeBorder($domElement, '.' + cms.move.HOVER_NEW);
+                     var elem = cms.data.elements[elemId];
+                     delete cms.data.elements[elemId];
+                     cms.data.elements[id] = elem;
+                     elem.id = id;
+                     elem.status = cms.data.STATUS_CREATED;
+                     cms.util.replaceNewElement(elemId, id);
+                     _openContentEditor(uri, id);
+                  });
+                  
+               } else {
+                  _openContentEditor(element.file, elemId);
+                  
+               }
             }
          }
       }
@@ -479,8 +529,8 @@
          }
       };
       var id = $.isArray(ids) ? ids[0] : ids;
-      var windowSize=cms.util.getWindoDimensions();
-      var dialogWidth = windowSize['width'] > 1400 ? 1350 : (windowSize['width']-50);
+      var windowSize = cms.util.getWindoDimensions();
+      var dialogWidth = windowSize['width'] > 1400 ? 1350 : (windowSize['width'] - 50);
       var dialogHeight = windowSize['height'] - 20;
       var iFrameHeight = dialogHeight - 115;
       var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
@@ -633,15 +683,20 @@
       var list = $('#' + cms.html.favoriteDropMenuId);
       $('li.cms-item, button', list).css('display', 'block');
       resetFavList();
-      $('.cms-element div.cms-handle, .cms-subcontainer div.cms-handle').remove();
+      $('.cms-element div.cms-handle, .' + cms.html.subcontainerClass + ' div.cms-handle').remove();
    };
    
    
    /**
     * Initializes the sortable.<p>
     */
-   var initMove = /** void */ function() {
-      var containerSelector = cms.util.getContainerSelector();
+   var initMove = /** void */ function(selector) {
+      var containerSelector;
+      if (selector) {
+         containerSelector = selector;
+      } else {
+         containerSelector = cms.util.getContainerSelector();
+      }
       
       // replace id
       var list = cms.toolbar.dom.favoritesDrop;
@@ -944,26 +999,26 @@
       }
    }
    
-   var leavePage = cms.toolbar.leavePage = function(target){
-       if (cms.toolbar.pageChanged) {
-           cms.toolbar.pageChanged = false;
-           cms.data.stopEdit(function(ok) {
-               window.location.href = target;
-           }, true);
-       }else{
-           window.location.href = target;
-       }
+   var leavePage = cms.toolbar.leavePage = function(target) {
+      if (cms.toolbar.pageChanged) {
+         cms.toolbar.pageChanged = false;
+         cms.data.stopEdit(function(ok) {
+            window.location.href = target;
+         }, true);
+      } else {
+         window.location.href = target;
+      }
    }
    
-   var reloadPage = cms.toolbar.reloadPage = function(){
-       if (cms.toolbar.pageChanged) {
-           cms.toolbar.pageChanged = false;
-           cms.data.stopEdit(function(ok) {
-               window.location.reload();
-           }, true);
-       }else{
-           window.location.reload();
-       }
+   var reloadPage = cms.toolbar.reloadPage = function() {
+      if (cms.toolbar.pageChanged) {
+         cms.toolbar.pageChanged = false;
+         cms.data.stopEdit(function(ok) {
+            window.location.reload();
+         }, true);
+      } else {
+         window.location.reload();
+      }
    }
    
    /**
@@ -1106,32 +1161,33 @@
     */
    var _enableEditMode = function() {
       var buttonMode = this.name;
-      var containers = $(cms.util.getContainerSelector());
+      var containerSelector = (cms.toolbar.editingSubcontainerId != null) ? ('#' + cms.toolbar.editingSubcontainerId) : cms.util.getContainerSelector();
+      var containers = $(containerSelector);
       $('button.ui-state-active').trigger('click');
       if (modeMap[cms.toolbar.mode].isEdit) {
          // reorder handles
-         $('.cms-element div.cms-handle, .cms-subcontainer div.cms-handle').each(function() {
+         $('.cms-element div.cms-handle, .' + cms.html.subcontainerClass + ' div.cms-handle').each(function() {
             var handleDiv = $(this);
             $('a', handleDiv).css('display', 'none');
             $('a.cms-' + buttonMode, handleDiv).prependTo(handleDiv).css('display', 'block');
          });
          markAsInactive(cms.toolbar.dom.buttons[cms.toolbar.mode]);
-         containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering)), .cms-subcontainer .cms-editable:not(:has(div.cms-hovering))').each(function() {
+         containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering)), .' + cms.html.subcontainerClass + ' .cms-editable:not(:has(div.cms-hovering))').each(function() {
             cms.move.drawSiblingBorder($(this), 2, 'cms-editable', false, 'cms-test');
          });
          containers.find('div.cms-editable div.cms-directedit-buttons').removeClass('cms-' + cms.toolbar.mode + 'mode').addClass('cms-' + buttonMode + 'mode');
       } else {
          modeMap[cms.toolbar.mode].disable();
          
-         containers.children('.cms-element, .cms-subcontainer').each(function() {
+         containers.children('.cms-element, .' + cms.html.subcontainerClass).each(function() {
             var elem = $(this).css('position', 'relative');
             var elemId = elem.attr('rel');
             if (elemId && cms.data.elements[elemId]) {
                addHandles(elem, elemId, buttonMode);
             }
          });
-         initMove();
-         containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering)), .cms-subcontainer .cms-editable:not(:has(div.cms-hovering))').each(function() {
+         initMove(containerSelector);
+         containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering)), .' + cms.html.subcontainerClass + ' .cms-editable:not(:has(div.cms-hovering))').each(function() {
             cms.move.drawSiblingBorder($(this), 2, 'cms-editable', false, 'cms-test');
          });
          containers.find('div.cms-editable div.cms-directedit-buttons').addClass('cms-' + buttonMode + 'mode');
@@ -1146,6 +1202,7 @@
    var _enableListMode = function(button) {
       var self = this;
       var currentMode = getCurrentMode();
+      var containerSelector = (cms.toolbar.editingSubcontainerId != null) ? ('#' + cms.toolbar.editingSubcontainerId) : cms.util.getContainerSelector();
       cms.toolbar.currentMenu = self.menuId;
       currentMode.disable();
       $('button.ui-state-active').trigger('click');
@@ -1154,10 +1211,10 @@
          self.prepareAfterLoad();
          list = $('#' + self.menuId);
          if (self.menuId == cms.html.favoriteMenuId || self.menuId == cms.html.recentMenuId) {
-             $('.cms-list-itemcontent:not(:has(a.cms-move))', list).each(function() {
-                 var elem = $(this);
-                 $('<a class="cms-handle cms-move"></a>').appendTo(elem);
-             });
+            $('.cms-list-itemcontent:not(:has(a.cms-move))', list).each(function() {
+               var elem = $(this);
+               $('<a class="cms-handle cms-move"></a>').appendTo(elem);
+            });
          }
          list.css({
             /* position : 'fixed', */
@@ -1173,12 +1230,12 @@
                opacity: 0.6
             });
          });
-         $(cms.util.getContainerSelector()).css('position', 'relative').children('*:visible').css('position', 'relative');
+         $(containerSelector).css('position', 'relative').children('*:visible').css('position', 'relative');
          //fixMenuAlignment();
          // * current menu
-         $(cms.util.getContainerSelector() + ', #' + self.menuId + ' ul.cms-item-list').sortable({
+         $(containerSelector + ', #' + self.menuId + ' ul.cms-item-list').sortable({
             // * current menu
-            connectWith: cms.util.getContainerSelector() + ', #' + self.menuId + ' ul.cms-item-list',
+            connectWith: containerSelector + ', #' + self.menuId + ' ul.cms-item-list',
             placeholder: 'placeholder',
             dropOnEmpty: true,
             start: cms.move.onStartDrag,
@@ -1216,6 +1273,8 @@
       if (mode == '') {
          return;
       }
+      cms.move.hoverOut();
+      
       // disabling edit/move/delete
       var containerSelector = cms.util.getContainerSelector();
       // replace ids
@@ -1223,7 +1282,7 @@
       var list = $('#' + cms.html.favoriteDropMenuId);
       $('li.cms-item, button', list).css('display', 'block');
       resetFavList();
-      $('.cms-element div.cms-handle, .cms-subcontainer div.cms-handle').remove();
+      $('.cms-element div.cms-handle, .' + cms.html.subcontainerClass + ' div.cms-handle').remove();
       $(containerSelector).find('div.cms-editable div.cms-directedit-buttons').removeClass('cms-' + mode + 'mode');
       //cms.toolbar.dom.buttons[mode].removeClass('ui-state-active');
    }
@@ -1358,11 +1417,11 @@
       prepareAfterLoad: doNothing,
       
       load: function(callback) {
-         if (!galleryInitialized){
-             galleryInitialized=true;
-             cms.galleries.initAddDialog();
-             // remove corner-all class from tabs after initialization 
-             $('#'+cms.html.galleryTabsId).removeClass('ui-corner-all');
+         if (!galleryInitialized) {
+            galleryInitialized = true;
+            cms.galleries.initAddDialog();
+            // remove corner-all class from tabs after initialization 
+            $('#' + cms.html.galleryTabsId).removeClass('ui-corner-all');
          }
          callback(true, null);
       },
@@ -1568,7 +1627,7 @@
       };
       $(window).unload(onUnload); /* TODO */
       $('button[name="Save"]', cms.toolbar.dom.toolbar).click(showSaveDialog);
-
+      
       cms.toolbar.dom.showToolbar.click(toggleToolbar);
       $('#toolbar button, #show-button').mouseover(function() {
          if (!$(this).hasClass('cms-deactivated')) {
@@ -1579,7 +1638,7 @@
       });
       
       initLinks();
-     // $(window).resize(fixMenuAlignment);
+      // $(window).resize(fixMenuAlignment);
    };
    
    /**

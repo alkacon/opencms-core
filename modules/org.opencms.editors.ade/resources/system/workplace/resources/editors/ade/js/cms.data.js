@@ -428,7 +428,7 @@
             if (elem.subItems) {
             
                isSubcontainer = true;
-               html = $('<div class="cms-subcontainer" rel="'+elementIds[i]+'"></div>');
+               html = $('<div class="'+cms.html.subcontainerClass+'" rel="'+elementIds[i]+'"></div>');
                for (var j = 0; j < elem.subItems.length; j++) {
                   var subElem = elements[elem.subItems[j]];
                   subElem.getContent(containerType).appendTo(html);
@@ -586,7 +586,7 @@
     * Container constructor.
     * @param {Object} data the raw JSON container data
     */
-   var Container = function(data) {
+   var Container = cms.data.Container = function(data) {
       for (var key in data) {
          this[key] = data[key];
       }

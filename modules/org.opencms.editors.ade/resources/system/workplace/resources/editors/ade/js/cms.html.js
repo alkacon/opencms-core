@@ -1,5 +1,8 @@
 (function(cms) {
    var M = cms.messages;
+   
+   var elementClass = cms.html.elementClass = 'cms-element';
+   var subcontainerClass = cms.html.subcontainerClass ='cms-subcontainer';
    var recentMenuId = cms.html.recentMenuId = 'recentlist';
    var recentListId = cms.html.recentListId = 'recent_list_items';
    var favoriteMenuId = cms.html.favoriteMenuId = 'favoritelist';
@@ -197,7 +200,20 @@
       return html.join('');
    }
    
-   
+   var subcontainerDialog = cms.html.subcontainerDialog = function(){
+       var html = ['<div id="cms-overlay-editing" class="ui-corner-all" style="background: #FFFFFF;">\
+           <div style="margin:10px">\
+               <b>Edit sub-container</b><br /><br />\
+               <div class="cms-editable-field cms-left" alt="Title"><span class="cms-item-title cms-width-80">Title</span><span class="cms-item-edit">Subcontainer</span></div>\
+               <div class="cms-editable-field cms-left" alt="Title"><span class="cms-item-title cms-width-80">Description</span><span class="cms-item-edit">This is a sub-container</span></div>\
+               <div class="button-bar">\
+                   <button class="cms-right ui-state-default ui-corner-all" name="previewClose"><span class="cms-galleries-button">Save</span></button>\
+                   <button class="cms-right ui-state-default ui-corner-all" name="previewClose"><span class="cms-galleries-button">Close</span></button>\
+                   <br clear="all"/>\
+               </div>\
+           </div></div>'];
+       return html.join('');
+   }
    
    
 })(cms);
