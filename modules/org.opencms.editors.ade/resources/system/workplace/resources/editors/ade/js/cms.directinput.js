@@ -19,6 +19,9 @@
     *     If set, this function will be called when the value changes on key-press 
     * onReset: function(element) (default=null)
     *     If set, this function will be called, when the value is reset by pressing 'ESC'
+    * testEnabled: function(element)
+    *     If set, this function  will be called in the click handler, and direct input will
+    *     be enabled only if it returns true. 
     *
     * @param {Object} options the options
     */
@@ -26,6 +29,7 @@
    
       var self = this;
       var opts = $.extend({}, $.fn.directInput.defaults, options);
+      var testEnabled = opts.testEnabled;
       _init();
       return self;
       
@@ -40,6 +44,10 @@
       
       /** The click-handler. */
       function _click() {
+          if (!testEnabled(this)) {
+             return;
+          }
+        
          var elem = $(this);
          var previousValue = $.isFunction(opts.readValue) ? opts.readValue(elem) : elem.text();
          var input = $('<input name="directInput" type="text" class="' + opts.inputClass + '" value="' + previousValue + '" />');
@@ -152,6 +160,9 @@
       inputClass: 'cms-direct-input',
       marginHack: false,
       valueChanged: function() {
-            }
+            },
+      testEnabled: function() {
+          return true;
+      }      
    };
 })(jQuery);

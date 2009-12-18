@@ -14,10 +14,13 @@ public void setAllMessages(JspWriter out, ResourceBundle bundle) throws Exceptio
 %><%
     CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
     Locale locale = settings.getUserSettings().getLocale();
-    ResourceBundle bundle = ResourceBundle.getBundle("org.opencms.workplace.editors.sitemap.sitemap_messages", locale);
+    ResourceBundle adeBundle = ResourceBundle.getBundle("org.opencms.workplace.editors.ade.ade_messages", locale);
+    ResourceBundle sitemapBundle = ResourceBundle.getBundle("org.opencms.workplace.editors.sitemap.sitemap_messages", locale);
 %>
 (function(cms) { var M = cms.messages;
 <%
-    setAllMessages(out, bundle);
+    setAllMessages(out, adeBundle);
+	setAllMessages(out, sitemapBundle);
+
 %>
 })(cms);

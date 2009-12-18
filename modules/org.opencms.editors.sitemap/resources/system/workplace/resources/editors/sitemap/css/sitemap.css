@@ -1,4 +1,4 @@
-	
+﻿	
 /************************************ sitemap ************************************************/	
 	
 	
@@ -367,6 +367,26 @@ div.ui-widget-header a.cms-subsitemap {
 	display: none;
 }
 	
+.cms-esa-box {
+     position: fixed;
+     border: 1px solid #a9a9a9;
+     top: 200px;
+     right: 300px;
+     width: 390px;
+     padding: 10px;
+     background-image: none;
+     background-color: white;
+}
+          
+.cms-esa-title-and-path {
+	 margin-top: 10px;
+     margin-bottom: 10px;
+}
+
+.cms-subsitemap-entry-selected  .cms-sitemap-entry-header {
+	background-image: none;
+	background-color:  orange;
+}	
 
 
 
