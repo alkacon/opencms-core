@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/10/14 14:38:03 $
- * Version: $Revision: 1.69.2.11 $
+ * Date   : $Date: 2009/12/21 10:33:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,8 +67,8 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPermissionHandler;
-import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69.2.11 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1082,9 +1082,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return all cached publish jobs
      */
-    public List getAllCachedPublishJobs() {
+    public List<CmsPublishJobInfoBean> getAllCachedPublishJobs() {
 
-        return new ArrayList(m_publishQueue);
+        return new ArrayList<CmsPublishJobInfoBean>(m_publishQueue);
     }
 
     /**
@@ -1092,9 +1092,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return all cached publish jobs
      */
-    public List getAllCachedPublishJobsInHistory() {
+    public List<CmsPublishJobInfoBean> getAllCachedPublishJobsInHistory() {
 
-        return new ArrayList(m_publishHistory);
+        return new ArrayList<CmsPublishJobInfoBean>(m_publishHistory);
     }
 
     /**

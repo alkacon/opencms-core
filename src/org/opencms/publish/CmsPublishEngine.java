@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2009/10/29 10:37:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/21 10:33:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,9 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.I_CmsDbContextFactory;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.lock.CmsLockType;
@@ -63,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.5
  */
@@ -377,6 +379,16 @@ public final class CmsPublishEngine implements Runnable {
                 }
             }
         }
+
+        // write the log
+        try {
+            m_driverManager.updateLog(getDbContext(null));
+        } catch (CmsDataAccessException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(org.opencms.staticexport.Messages.get().getBundle().key(
                 org.opencms.staticexport.Messages.INIT_SHUTDOWN_1,
@@ -476,13 +488,15 @@ public final class CmsPublishEngine implements Runnable {
     }
 
     /**
-     * Returns the db context factory object.<p>
+     * Returns the a new db context object.<p>
      * 
-     * @return the db context factory object
+     * @param ctx optional request context, can be <code>null</code> 
+     * 
+     * @return the a new db context object
      */
-    protected I_CmsDbContextFactory getDbContextFactory() {
+    protected CmsDbContext getDbContext(CmsRequestContext ctx) {
 
-        return m_dbContextFactory;
+        return m_dbContextFactory.getDbContext(ctx);
     }
 
     /**
@@ -602,7 +616,7 @@ public final class CmsPublishEngine implements Runnable {
 
         CmsPublishList publishList = publishJob.getPublishList();
         // lock them
-        CmsDbContext dbc = getDbContextFactory().getDbContext(publishJob.getCmsObject().getRequestContext());
+        CmsDbContext dbc = getDbContext(publishJob.getCmsObject().getRequestContext());
         try {
             Iterator<CmsResource> itResources = publishList.getAllResources().iterator();
             while (itResources.hasNext()) {
@@ -761,7 +775,7 @@ public final class CmsPublishEngine implements Runnable {
         CmsPublishList publishList = publishJob.getPublishList();
         List<CmsResource> allResources = publishList.getAllResources();
         // unlock them
-        CmsDbContext dbc = getDbContextFactory().getDbContext(publishJob.getCmsObject().getRequestContext());
+        CmsDbContext dbc = getDbContext(publishJob.getCmsObject().getRequestContext());
         try {
             Iterator<CmsResource> itResources = allResources.iterator();
             while (itResources.hasNext()) {

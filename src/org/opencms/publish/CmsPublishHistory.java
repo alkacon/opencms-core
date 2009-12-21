@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishHistory.java,v $
- * Date   : $Date: 2009/10/29 10:37:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/21 10:33:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.5
  */
@@ -126,7 +126,7 @@ public class CmsPublishHistory {
         OpenCms.getMemoryMonitor().cachePublishJobInHistory(publishJob);
         // write job to db if necessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+            CmsDbContext dbc = m_publishEngine.getDbContext(null);
             try {
                 m_publishEngine.getDriverManager().writePublishJob(dbc, publishJob);
                 // additionally, write the publish report
@@ -162,7 +162,7 @@ public class CmsPublishHistory {
     protected void initialize() {
 
         CmsDriverManager driverManager = m_publishEngine.getDriverManager();
-        CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+        CmsDbContext dbc = m_publishEngine.getDbContext(null);
 
         try {
             OpenCms.getMemoryMonitor().flushPublishJobHistory();
@@ -193,7 +193,7 @@ public class CmsPublishHistory {
         OpenCms.getMemoryMonitor().uncachePublishJobInHistory(publishJob);
         // delete job from db if necessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+            CmsDbContext dbc = m_publishEngine.getDbContext(null);
             try {
                 OpenCms.getPublishManager().getEngine().getDriverManager().deletePublishJob(
                     dbc,

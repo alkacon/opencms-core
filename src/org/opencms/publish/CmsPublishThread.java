@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/12/21 10:33:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -117,6 +117,7 @@ final class CmsPublishThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -135,6 +136,7 @@ final class CmsPublishThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         // start the job
@@ -150,9 +152,9 @@ final class CmsPublishThread extends A_CmsReportThread {
 
         m_report.println(Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
 
-        Set includingFiles = new HashSet();
+        Set<String> includingFiles = new HashSet<String>();
         if (m_jspLoader != null) {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext(getCms().getRequestContext());
+            CmsDbContext dbc = m_publishEngine.getDbContext(getCms().getRequestContext());
             try {
                 // use the online project
                 CmsObject jspCms = OpenCms.initCmsObject(m_publishJob.getCmsObject());
@@ -161,9 +163,9 @@ final class CmsPublishThread extends A_CmsReportThread {
                 m_report.println(
                     Messages.get().container(Messages.RPT_JSPLOADER_UPDATE_CACHE_BEGIN_0),
                     I_CmsReport.FORMAT_HEADLINE);
-                Iterator it = m_publishJob.getPublishList().getFileList().iterator();
+                Iterator<CmsResource> it = m_publishJob.getPublishList().getFileList().iterator();
                 while (it.hasNext()) {
-                    CmsResource resource = (CmsResource)it.next();
+                    CmsResource resource = it.next();
                     if ((resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId())
                         || (resource.getTypeId() == CmsResourceTypePlain.getStaticTypeId())) {
                         m_report.print(
@@ -191,7 +193,7 @@ final class CmsPublishThread extends A_CmsReportThread {
             }
         }
         try {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext(getCms().getRequestContext());
+            CmsDbContext dbc = m_publishEngine.getDbContext(getCms().getRequestContext());
             try {
                 // publish
                 m_publishEngine.getDriverManager().publishJob(getCms(), dbc, m_publishJob.getPublishList(), m_report);
@@ -254,6 +256,7 @@ final class CmsPublishThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReport()
      */
+    @Override
     protected I_CmsReport getReport() {
 
         return m_report;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2009/10/29 10:37:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/21 10:33:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.5
  */
@@ -136,7 +136,7 @@ public class CmsPublishQueue {
 
         // add job to database if necessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+            CmsDbContext dbc = m_publishEngine.getDbContext(null);
             try {
                 // this operation may in rare circumstances fail with a DB exception 
                 // if this is the case the publish job must NOT be in the queue
@@ -202,7 +202,7 @@ public class CmsPublishQueue {
             OpenCms.getMemoryMonitor().flushPublishJobs();
             if (revive) {
                 // read all pending publish jobs from the database
-                CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+                CmsDbContext dbc = m_publishEngine.getDbContext(null);
                 List<CmsPublishJobInfoBean> publishJobs;
                 try {
                     publishJobs = driverManager.readPublishJobs(dbc, 0L, 0L);
@@ -212,7 +212,7 @@ public class CmsPublishQueue {
                 }
                 for (Iterator<CmsPublishJobInfoBean> i = publishJobs.iterator(); i.hasNext();) {
                     CmsPublishJobInfoBean job = i.next();
-                    dbc = m_publishEngine.getDbContextFactory().getDbContext();
+                    dbc = m_publishEngine.getDbContext(null);
                     if (!job.isStarted()) {
                         // add jobs not already started to queue again
                         try {
@@ -294,7 +294,7 @@ public class CmsPublishQueue {
 
         // remove job from database if necessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+            CmsDbContext dbc = m_publishEngine.getDbContext(null);
             try {
                 m_publishEngine.getDriverManager().deletePublishJob(dbc, publishJob.getPublishHistoryId());
             } finally {
@@ -311,7 +311,7 @@ public class CmsPublishQueue {
     protected void update(CmsPublishJobInfoBean publishJob) {
 
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+            CmsDbContext dbc = m_publishEngine.getDbContext(null);
             try {
                 m_publishEngine.getDriverManager().writePublishJob(dbc, publishJob);
             } catch (CmsException e) {
