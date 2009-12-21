@@ -732,4 +732,39 @@
             java.lang.String unescape(java.lang.String, java.lang.String)
         </function-signature>
     </function>
+
+    <function>
+        <description>
+            Returns the current container page element if available, so it can be null.
+        </description>    
+        <name>cntElem</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            org.opencms.xml.containerpage.CmsContainerElementBean getContainerElement(java.lang.Object)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+            Returns the current sitemap entry if available, so it can be null.
+        </description>    
+        <name>sitemap</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            org.opencms.xml.sitemap.CmsSiteEntryBean getSitemap(java.lang.Object)
+        </function-signature>
+    </function>
+
+    <function>
+        <description>
+            Returns the current navigation URI. Which can be the request URI or the
+            VFS resource URI. In case a sitemap is used, the navigation URI will be the
+            request URI, if not the VFS resource URI is returned.
+        </description>    
+        <name>navUri</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String getNavigationUri(java.lang.Object)
+        </function-signature>
+    </function>
 </taglib>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2009/06/04 14:29:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/12/21 11:22:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,8 @@ import org.opencms.util.CmsHtml2TextConverter;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -59,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
@@ -191,6 +193,29 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Tries to convert the given input object into a request.<p>
+     * 
+     * This is only possible if the input object is already a request
+     * or if it is a page context.<p>
+     * 
+     * If everything else, this method returns <code>null</code>.<p>
+     * 
+     * @param input the input object to convert to a request
+     * 
+     * @return a request object, or <code>null</code>
+     */
+    public static ServletRequest convertRequest(Object input) {
+
+        ServletRequest req = null;
+        if (input instanceof ServletRequest) {
+            req = (ServletRequest)input;
+        } else if (input instanceof PageContext) {
+            req = ((PageContext)input).getRequest();
+        }
+        return req;
+    }
+
+    /**
      * Returns a resource created from an Object.<p> 
      * 
      * <ul>
@@ -280,6 +305,52 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Returns the current container page element if available, so it can be <code>null</code>.<p> 
+     * 
+     * @param input the request convertible object to get the container element from
+     * 
+     * @return the current container element, or <code>null</code>
+     */
+    public static CmsContainerElementBean getContainerElement(Object input) {
+
+        ServletRequest req = convertRequest(input);
+        if (req == null) {
+            return null;
+        }
+        try {
+            return OpenCms.getADEManager().getCurrentElement(req);
+        } catch (CmsException e) {
+            // container page is not available
+            return null;
+        }
+    }
+
+    /**
+     * Returns the current navigation URI.<p> 
+     * 
+     * Which can be the request URI or the VFS resource URI.<p>
+     * 
+     * In case a sitemap is used, the navigation URI will be the
+     * request URI, if not the VFS resource URI is returned.<p>
+     * 
+     * @param input the request convertible object to get the navigation URI from
+     * 
+     * @return the current navigation URI
+     */
+    public static String getNavigationUri(Object input) {
+
+        ServletRequest req = convertRequest(input);
+        if (req == null) {
+            return null;
+        }
+        String ret = OpenCms.getSitemapManager().getCurrentUri(req);
+        if (ret == null) {
+            getCmsObject(input).getRequestContext().getUri();
+        }
+        return ret;
+    }
+
+    /**
      * Returns the link without parameters from a String that is formatted for a GET request.<p>
      * 
      * @param url the URL to remove the parameters from
@@ -299,18 +370,34 @@ public final class CmsJspElFunctions {
      */
     public static String getRequestParam(String url, String paramName) {
 
-        Map params = Collections.EMPTY_MAP;
+        Map<String, String[]> params = Collections.emptyMap();
         if (CmsStringUtil.isNotEmpty(url)) {
             int pos = url.indexOf(CmsRequestUtil.URL_DELIMITER);
             if (pos >= 0) {
                 params = CmsRequestUtil.createParameterMap(url.substring(pos + 1));
             }
         }
-        String[] result = (String[])params.get(paramName);
+        String[] result = params.get(paramName);
         if (result != null) {
             return result[0];
         }
         return null;
+    }
+
+    /**
+     * Returns the current sitemap entry if available, so it can be <code>null</code>.<p> 
+     * 
+     * @param input the request convertible object to get the sitemap entry from
+     * 
+     * @return the current sitemap entry, or <code>null</code>
+     */
+    public static CmsSiteEntryBean getSitemap(Object input) {
+
+        ServletRequest req = convertRequest(input);
+        if (req == null) {
+            return null;
+        }
+        return OpenCms.getSitemapManager().getCurrentEntry(req);
     }
 
     /**

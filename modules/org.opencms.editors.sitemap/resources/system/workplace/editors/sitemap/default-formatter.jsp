@@ -16,7 +16,7 @@ pageContext.setAttribute("cms", cms);
   <div class="cms-additional">
     <div class="cms-additional-item cms-editable-field" rel="url-name">
     	<span class="cms-additional-item-title cms-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_URL_NAME_0" /></span> <%--
-    	--%><span class="cms-additional-item-value cms-item-edit cms-url-name" alt="${cms.entry.name}">${cms.entry.name}</span>
+    	--%><span class="cms-additional-item-value cms-item-edit cms-url-name" alt="${cms.entry.name}">${cms:sitemap(pageContext).name}</span>
     </div>
     <div class="cms-additional-item" rel="url">
         <span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_URL_0" /></span><%--
