@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/21 10:33:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,35 +32,53 @@
 package org.opencms.workplace.editors.ade;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Helper bean to implement default formatters that differentiate between new and existing elements.<p>
+ * Helper bean to implement default formatters for list elements.<p>
  * 
- * @author Michael Moossen
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $
  * 
- * @since 7.6 
+ * @since 7.6
  */
 public class CmsDefaultFormatterHelper extends CmsJspActionElement {
+
+    /** The element-bean. */
+    private CmsContainerElementBean m_elementBean;
+
+    /** The formatter-info-bean. */
+    private CmsFormatterInfoBean m_formatterInfo;
+
+    /** Indicates if the formatter is using the container-bean or formatter-info-bean as data-source. */
+    private boolean m_isContainerBeanMode;
+
+    /** The ade manager. */
+    private CmsADEManager m_manager;
 
     /** The element's resource. */
     private CmsResource m_resource;
 
-    /** The ade manager. */
-    private CmsADEManager m_manager;
+    /** The workplace locale from the current user's settings. */
+    private Locale m_wpLocale;
 
     /**
      * Constructor, with parameters.
@@ -68,51 +86,93 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      * @param context the JSP page context object
      * @param req the JSP request 
      * @param res the JSP response 
+     * @throws CmsException 
      */
-    public CmsDefaultFormatterHelper(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsDefaultFormatterHelper(PageContext context, HttpServletRequest req, HttpServletResponse res)
+    throws CmsException {
 
         super(context, req, res);
-    }
 
-    /**
-     * Returns the resource type icon path for the resource.<p>
-     * 
-     * @return the resource type icon path for the resource
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public String getIconPath() throws CmsException {
+        m_manager = OpenCms.getADEManager();
+        m_formatterInfo = getFormatterInfo(req);
 
-        return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-            + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getType()).getIcon());
-    }
-
-    /**
-     * Returns the name of the next new file of the type to be created.<p>
-     * 
-     * @return the name of the next new file of the type to be created
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public String getNextNewFileName() throws CmsException {
-
-        if (!isNew()) {
-            return "";
+        if (m_formatterInfo == null) {
+            m_elementBean = m_manager.getCurrentElement(req);
+            m_isContainerBeanMode = true;
         }
-        CmsObject cms = getCmsObject();
-        return getManager().getNextNewFileName(cms, cms.getRequestContext().getUri(), getRequest(), getType());
     }
 
     /**
-     * Returns the element's path.<p>
+     * Gets the current formatter-info-bean from the request.<p>
      * 
-     * @return the element's path
-     * 
+     * @param req the servlet-request
+     * @return the info-bean or null if not available
      * @throws CmsException if something goes wrong
      */
-    public String getPath() throws CmsException {
+    public CmsFormatterInfoBean getFormatterInfo(ServletRequest req) throws CmsException {
 
-        return getCmsObject().getSitePath(getResource());
+        CmsFormatterInfoBean info = null;
+        try {
+            info = (CmsFormatterInfoBean)req.getAttribute(CmsADEManager.ATTR_FORMATTER_INFO);
+        } catch (Exception e) {
+            throw new CmsException(org.opencms.xml.containerpage.Messages.get().container(
+                org.opencms.xml.containerpage.Messages.ERR_READING_FORMATTER_INFO_FROM_REQUEST_0), e);
+        }
+        return info;
+    }
+
+    /**
+     * Returns a list of additional info.<p>
+     * 
+     * @return the additional info.
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsFieldInfoBean> getAdditionalInfo() throws CmsException {
+
+        if (m_isContainerBeanMode) {
+            List<CmsFieldInfoBean> result = new ArrayList<CmsFieldInfoBean>();
+            result.add(new CmsFieldInfoBean("path", Messages.get().getBundle(getWorkplaceLocale()).key(
+                Messages.GUI_LABEL_PATH_0), getSitePath()));
+            result.add(new CmsFieldInfoBean("type", Messages.get().getBundle(getWorkplaceLocale()).key(
+                Messages.GUI_LABEL_TYPE_0), CmsWorkplaceMessages.getResourceTypeName(
+                getWorkplaceLocale(),
+                OpenCms.getResourceManager().getResourceType(getTypeName()).getTypeName())));
+            result.add(new CmsFieldInfoBean(
+                "lastModified",
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_LABEL_LAST_MODIFIED_0),
+                OpenCms.getWorkplaceManager().getMessages(getWorkplaceLocale()).getDateTime(
+                    getResource().getDateLastModified())));
+            return result;
+        }
+        return m_formatterInfo.getAdditionalInfo();
+    }
+
+    /** 
+     * Returns the icon-path.<p>
+     * 
+     * @return the icon-path
+     * @throws CmsException if something goes wrong
+     */
+    public String getIcon() throws CmsException {
+
+        if (m_isContainerBeanMode) {
+            return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getTypeName()).getIcon());
+        }
+        return m_formatterInfo.getIcon();
+    }
+
+    /**
+     * Returns the container page manager.<p>
+     * 
+     * @return the container page manager
+     */
+    public CmsADEManager getManager() {
+
+        if (m_manager == null) {
+            m_manager = OpenCms.getADEManager();
+        }
+        return m_manager;
     }
 
     /**
@@ -125,36 +185,79 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     public CmsResource getResource() throws CmsException {
 
         if (m_resource == null) {
-            m_resource = getCmsObject().readResource(
-                OpenCms.getADEManager().getCurrentElement(getRequest()).getElementId());
+            if (m_isContainerBeanMode) {
+                m_resource = getCmsObject().readResource(m_elementBean.getElementId());
+            } else {
+                if (m_formatterInfo.getResource() != null) {
+                    m_resource = m_formatterInfo.getResource();
+                } else if (m_formatterInfo.getSitePath() != null) {
+                    m_resource = getCmsObject().readResource(m_formatterInfo.getSitePath());
+                } else if (m_formatterInfo.getResourceId() != null) {
+                    m_resource = getCmsObject().readResource(m_formatterInfo.getResourceId());
+                }
+            }
         }
         return m_resource;
     }
 
     /**
-     * Returns the element's resource type name.<p>
+     * The elements site-path.<p>
      * 
-     * @return the element's resource type name
-     * 
+     * @return the site-path
      * @throws CmsException if something goes wrong
      */
-    public String getType() throws CmsException {
+    public String getSitePath() throws CmsException {
 
-        return OpenCms.getResourceManager().getResourceType(getResource()).getTypeName();
+        if (m_isContainerBeanMode) {
+            return getCmsObject().getSitePath(getResource());
+        }
+        return m_formatterInfo.getSitePath();
     }
 
     /**
-     * Returns the element's resource type localized name.<p>
+     * Returns the sub-title info.<p>
      * 
-     * @return the element's resource type localized name
+     * @return the sub-title info
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFieldInfoBean getSubTitle() throws CmsException {
+
+        if (m_isContainerBeanMode) {
+            return new CmsFieldInfoBean("filename", "", getResource().getName());
+        }
+        return m_formatterInfo.getSubTitleInfo();
+    }
+
+    /**
+     * Returns the title info.<p>
      * 
+     * @return the title info
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFieldInfoBean getTitle() throws CmsException {
+
+        if (m_isContainerBeanMode) {
+            return new CmsFieldInfoBean(CmsPropertyDefinition.PROPERTY_TITLE, "", getCmsObject().readPropertyObject(
+                getSitePath(),
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                false).getValue(""));
+        }
+        return m_formatterInfo.getTitleInfo();
+    }
+
+    /**
+     * Returns the resource type name of the element.<p>
+     * 
+     * @return the resource type name
      * @throws CmsException if something goes wrong
      */
     public String getTypeName() throws CmsException {
 
-        return org.opencms.workplace.CmsWorkplaceMessages.getResourceTypeName(
-            getCmsObject().getRequestContext().getLocale(),
-            getType());
+        if (m_isContainerBeanMode) {
+            return OpenCms.getResourceManager().getResourceType(getResource().getTypeId()).getTypeName();
+        }
+        return m_formatterInfo.getResourceType().getTypeName();
+
     }
 
     /**
@@ -172,15 +275,15 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     }
 
     /**
-     * Returns the container page manager.<p>
+     * Returns the workplace locale from the current user's settings.<p>
      * 
-     * @return the container page manager
+     * @return the workplace locale
      */
-    public CmsADEManager getManager() {
+    protected Locale getWorkplaceLocale() {
 
-        if (m_manager == null) {
-            m_manager = OpenCms.getADEManager();
+        if (m_wpLocale == null) {
+            m_wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
         }
-        return m_manager;
+        return m_wpLocale;
     }
 }

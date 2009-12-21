@@ -193,7 +193,7 @@
       // save changes via ajax if there are any
       if (changes['properties'].length != 0) {
          $.ajax({
-            'url': vfsPathAjaxJsp,
+            'url': cms.data.GALLERY_SERVER_URL,
             'data': {
                'action': 'setproperties',
                'data': JSON.stringify({

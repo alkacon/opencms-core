@@ -393,7 +393,7 @@
           cms.galleries.fillCriteriaTabs(tabsContent, "success", initSearchResult);
       } else {
           $.ajax({
-             'url': vfsPathAjaxJsp,
+             'url': cms.data.GALLERY_SERVER_URL,
              'data': {
                 'action': 'all',
                 'data': JSON.stringify({
@@ -505,7 +505,7 @@
           var preparedSearchObject = prepareSearchObject();
           
           $.ajax({
-             'url': vfsPathAjaxJsp,
+             'url': cms.data.GALLERY_SERVER_URL,
              'data': {
                 'action': 'search',
                 'data': JSON.stringify({
@@ -553,7 +553,7 @@
                         // ajust the search object to provide a consistent search
                         var preparedSearchObject = prepareSearchObject();
                         $.ajax({
-                           'url': vfsPathAjaxJsp,
+                           'url': cms.data.GALLERY_SERVER_URL,
                            'data': {
                               'action': 'search',
                               'data': JSON.stringify({
@@ -1110,7 +1110,7 @@
     var loadItemPreview = cms.galleries.loadItemPreview = function(/**String*/ itemId, /**String*/itemType) {
       
       $.ajax({
-         'url': vfsPathAjaxJsp,
+         'url': cms.data.GALLERY_SERVER_URL,
          'data': {
             'action': 'preview',
             'data': JSON.stringify({

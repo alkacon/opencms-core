@@ -39,7 +39,6 @@
          previewhandler: {},
          imagepreviewhandler: {}
       };
-      var vfsPathAjaxJsp = cms.data["GALLERY_SERVER_URL"];
     </script>
     <script type="text/javascript" src="<cms:link>%(link.weak:/system/workplace/editors/sitemap/cms.messages.jsp:b829e977-c865-11de-a457-ab20365f6268)</cms:link>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.comm.js")%>"></script>

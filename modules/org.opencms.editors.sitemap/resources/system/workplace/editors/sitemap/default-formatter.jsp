@@ -19,12 +19,12 @@ pageContext.setAttribute("cms", cms);
     	--%><span class="cms-additional-item-value cms-item-edit cms-url-name" alt="${cms.entry.name}">${cms.entry.name}</span>
     </div>
     <div class="cms-additional-item" rel="url">
-    	<span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_URL_0" /></span><%--
-    	--%><span class="cms-additional-item-value cms-url"></span>
+        <span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_URL_0" /></span><%--
+    --%><span class="cms-additional-item-value cms-url"></span>
     </div>
     <div class="cms-additional-item" rel="path">
-    	<span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_VFSPATH_0" /></span><%--
-    	--%><span class="cms-additional-item-value cms-vfs-path" alt="${cms.path}">${cms.path}</span>
+        <span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_VFSPATH_0" /></span><%--
+    --%><span class="cms-additional-item-value cms-vfs-path" alt="${cms.path}">${cms.path}</span>
     </div>
   </div>
 </div>

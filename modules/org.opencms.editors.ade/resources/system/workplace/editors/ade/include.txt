@@ -51,9 +51,6 @@
         publish: {
           "SERVER_URL"      : "%(publishUri)"
         }, comm:{}, html:{}, toolbar:{}, move:{}, util:{}, search :{}, property: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {}};
-        
-      // the following is used by the galleries
-      var vfsPathAjaxJsp = cms.data["GALLERY_SERVER_URL"];
     </script>
     <script type="text/javascript" src="%(messagesUri)"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.comm.js"></script>

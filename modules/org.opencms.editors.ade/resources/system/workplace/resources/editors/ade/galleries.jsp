@@ -16,7 +16,7 @@
 <script type="text/javascript" src="lib/json2.js"></script>
 <script type="text/javascript" src="lib/jquery.pagination.js"></script>
 <script type="text/javascript">
-var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
+var cms = { data: { GALLERY_SERVER_URL: "${gallery.galleryUri}"}, html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
 </script>
 <script type="text/javascript" src="/opencms/opencms/system/workplace/editors/ade/cms.messages.jsp"></script>
 <script type="text/javascript" src="js/cms.html.js"></script>
@@ -26,8 +26,7 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 <script type="text/javascript" src="js/cms.previewhandler.js"></script>
 <%=gallery.getAdditionalJavaScript() %>
 <script type="text/javascript">  
-	// set the ajax server path
-    var vfsPathAjaxJsp = "${gallery.galleryUri}";  
+(function($){
  	// read and handle the request params
     var tabs = ${gallery.listConfig};	
     var requestData = ${gallery.initialSearch};
@@ -38,9 +37,7 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
     $(function() {        
         cms.galleries.initAddDialog(tabs, requestData);                                 
 	});
-
-    
-              
+})(jQuery);
 </script> 
 <title>Search demo</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/custom-theme/jquery-ui-1.7.2.custom.css" />
