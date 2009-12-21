@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/12/21 09:05:50 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/12/21 11:37:08 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 7.6
  */
@@ -1281,6 +1281,14 @@ public class CmsADEServer extends A_CmsAjaxServer {
         cms.writeFile(containerPage);
     }
 
+    /**
+     * Creates a new sub container resource.<p>
+     * 
+     * @param cntPageUri the container page uri to read the appropriate configuration
+     * @param request the current request object
+     * @return the new sub container resource
+     * @throws CmsException if something goes wrong
+     */
     public CmsResource createNewSubContainer(String cntPageUri, HttpServletRequest request) throws CmsException {
 
         return m_manager.createNewElement(
@@ -1290,6 +1298,14 @@ public class CmsADEServer extends A_CmsAjaxServer {
             CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME);
     }
 
+    /**
+     * Saves the new state of the sub container.<p>
+     * 
+     * @param subcontainer the sub container data
+     * @param localeParam the locale parameter
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if something goes wrong parsing the JSON
+     */
     public void setSubContainer(JSONObject subcontainer, String localeParam) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
@@ -1312,7 +1328,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
             locale,
             0);
         if (cntValue == null) {
-            xmlSubContainer.addValue(cms, CmsXmlSubContainer.XmlNode.SUBCONTAINER.getName(), locale, 0);
+            cntValue = xmlSubContainer.addValue(cms, CmsXmlSubContainer.XmlNode.SUBCONTAINER.getName(), locale, 0);
         }
         xmlSubContainer.getValue(
             CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlSubContainer.XmlNode.TITLE.getName()),
