@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/12/21 09:05:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.6
  */
@@ -91,6 +91,8 @@ public final class CmsElementUtil {
         CONTENTS("contents"),
         /** The last modification date. */
         DATE("date"),
+        /** The description. */
+        DESCRIPTION("description"),
         /** The URI. */
         FILE("file"),
         /** Array of formatter URIs. */
@@ -109,6 +111,8 @@ public final class CmsElementUtil {
         SUBITEMS("subItems"),
         /** Element's title. */
         TITLE("title"),
+        /** Container types. */
+        TYPES("types"),
         /** The name of the user that last modified the element. */
         USER("user");
 
@@ -304,6 +308,9 @@ public final class CmsElementUtil {
             CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
                 m_cms,
                 m_cms.getRequestContext().getLocale());
+            resElement.put(JsonElement.DESCRIPTION.getName(), subContainer.getDescription());
+            JSONArray jTypes = new JSONArray();
+            resElement.put(JsonElement.TYPES.getName(), jTypes);
             if (subContainer.getTypes().isEmpty()) {
                 if (subContainer.getElements().isEmpty()) {
                     //TODO: use formatter to generate the 'empty'-content
@@ -320,6 +327,7 @@ public final class CmsElementUtil {
             } else {
                 // add formatter and content entries for the supported types
                 for (String type : subContainer.getTypes()) {
+                    jTypes.put(type);
                     if (types.contains(type)) {
                         formatters.put(type, "formatter"); // empty formatters
                         resContents.put(type, "<div>should not be used</div>"); // empty contents

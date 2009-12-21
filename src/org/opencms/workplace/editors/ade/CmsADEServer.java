@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/12/15 09:58:04 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/12/21 09:05:50 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -90,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 7.6
  */
@@ -114,6 +115,8 @@ public class CmsADEServer extends A_CmsAjaxServer {
         LS,
         /** To create a new element. */
         NEW,
+        /** To create a new sub container element. */
+        NEWSUB,
         /** To retrieve the configured properties. */
         PROPS,
         /** To retrieve search results. */
@@ -123,7 +126,9 @@ public class CmsADEServer extends A_CmsAjaxServer {
         /** To lock the container page. */
         STARTEDIT,
         /** To unlock the container page. */
-        STOPEDIT;
+        STOPEDIT,
+        /** To save a sub container element. */
+        SUBCNT;
     }
 
     /** Json property name constants for container elements. */
@@ -571,44 +576,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 elems = new JSONArray();
                 elems.put(data.optString(JsonRequest.ELEM.getName()));
             }
-            CmsResource cntPageRes = cms.readResource(cntPageParam);
-            CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
-            CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
-            CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
-            JSONObject resElements = new JSONObject();
-            for (int i = 0; i < elems.length(); i++) {
-                String elemId = elems.getString(i);
-                CmsContainerElementBean element = getCachedElement(elemId);
-                JSONObject elementData = elemUtil.getElementData(element, cntPage.getTypes());
-                resElements.put(element.getClientId(), elementData);
-                if (elementData.has(CmsElementUtil.JsonElement.SUBITEMS.getName())) {
-                    // this is a sub-container 
-                    Set<String> ids = new HashSet<String>();
-                    ids.add(elemId);
-                    CmsResource elementRes = cms.readResource(element.getElementId());
-                    CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(
-                        cms,
-                        elementRes,
-                        getRequest());
-                    CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
-                        cms,
-                        cms.getRequestContext().getLocale());
-
-                    // adding all sub-items to the elements data
-                    for (CmsContainerElementBean subElement : subContainer.getElements()) {
-                        if (!ids.contains(subElement.getElementId())) {
-                            String subId = subElement.getClientId();
-                            if (ids.contains(subId)) {
-                                continue;
-                            }
-                            JSONObject subItemData = elemUtil.getElementData(subElement, cntPage.getTypes());
-                            ids.add(subId);
-                            resElements.put(subId, subItemData);
-                        }
-                    }
-                }
-            }
-            result.put(JsonResponse.ELEMENTS.getName(), resElements);
+            result.put(JsonResponse.ELEMENTS.getName(), getElements(elems, uriParam, cntPageParam, request));
         } else if (action.equals(Action.ELEMPROPS)) {
             // element formatted with the given properties
             if (!checkParameters(data, result, JsonRequest.ELEM.getName(), JsonRequest.PROPERTIES.getName())) {
@@ -720,6 +688,31 @@ public class CmsADEServer extends A_CmsAjaxServer {
             }
             JSONArray elems = data.optJSONArray(JsonRequest.ELEM.getName());
             deleteElements(elems);
+        } else if (action.equals(Action.SUBCNT)) {
+            // save sub container
+            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
+                return result;
+            }
+            try {
+                setSubContainer(data.getJSONObject(JsonRequest.ELEM.getName()), localeParam);
+            } catch (Exception e) {
+                error(result, e.getLocalizedMessage());
+            }
+        } else if (action.equals(Action.NEWSUB)) {
+            // save sub container
+            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
+                return result;
+            }
+            try {
+                CmsResource newSub = createNewSubContainer(cntPageParam, request);
+                JSONObject subcontainer = data.getJSONObject(JsonRequest.ELEM.getName());
+                subcontainer.put(CmsElementUtil.JsonElement.FILE.getName(), cms.getSitePath(newSub));
+                setSubContainer(subcontainer, localeParam);
+                result.put(JsonNewRes.ID.getName(), m_manager.convertToClientId(newSub.getStructureId()));
+                result.put(JsonNewRes.URI.getName(), cms.getSitePath(newSub));
+            } catch (Exception e) {
+                error(result, e.getLocalizedMessage());
+            }
         } else {
             error(result, Messages.get().getBundle(getWorkplaceLocale()).key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
@@ -840,6 +833,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                     // adding all sub-items to the elements data
                     for (CmsContainerElementBean subElement : subContainer.getElements()) {
                         if (!ids.contains(subElement.getElementId())) {
+                            m_sessionCache.setCacheContainerElement(subElement.getClientId(), subElement);
                             String subId = subElement.getClientId();
                             if (ids.contains(subId)) {
                                 continue;
@@ -896,7 +890,29 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 String id = element.getClientId();
                 if ((resElements != null) && !resElements.has(id)) {
                     try {
-                        resElements.put(id, elemUtil.getElementData(element, types));
+                        JSONObject elemData = elemUtil.getElementData(element, types);
+                        resElements.put(id, elemData);
+                        if (elemData.has(CmsElementUtil.JsonElement.SUBITEMS.getName())) {
+                            // this container page should contain exactly one container
+                            CmsResource elementRes = cms.readResource(element.getElementId());
+                            CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(
+                                cms,
+                                elementRes,
+                                getRequest());
+                            CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                                cms,
+                                cms.getRequestContext().getLocale());
+
+                            // adding all sub-items to the elements data
+                            for (CmsContainerElementBean subElement : subContainer.getElements()) {
+                                String subId = subElement.getClientId();
+                                if (!resElements.has(subId)) {
+                                    JSONObject subItemData = elemUtil.getElementData(subElement, types);
+                                    resElements.put(subId, subItemData);
+                                    m_sessionCache.setCacheContainerElement(subId, subElement);
+                                }
+                            }
+                        }
                         m_sessionCache.setCacheContainerElement(element.getClientId(), element);
                         result.put(id);
                     } catch (Exception e) {
@@ -966,7 +982,29 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 String id = element.getClientId();
                 if ((resElements != null) && !resElements.has(id)) {
                     try {
-                        resElements.put(id, elemUtil.getElementData(element, types));
+                        JSONObject elemData = elemUtil.getElementData(element, types);
+                        resElements.put(id, elemData);
+                        if (elemData.has(CmsElementUtil.JsonElement.SUBITEMS.getName())) {
+                            // this container page should contain exactly one container
+                            CmsResource elementRes = cms.readResource(element.getElementId());
+                            CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(
+                                cms,
+                                elementRes,
+                                getRequest());
+                            CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                                cms,
+                                cms.getRequestContext().getLocale());
+
+                            // adding all sub-items to the elements data
+                            for (CmsContainerElementBean subElement : subContainer.getElements()) {
+                                String subId = subElement.getClientId();
+                                if (!resElements.has(subId)) {
+                                    JSONObject subItemData = elemUtil.getElementData(subElement, types);
+                                    resElements.put(subId, subItemData);
+                                    m_sessionCache.setCacheContainerElement(subId, subElement);
+                                }
+                            }
+                        }
                         result.put(id);
                     } catch (Exception e) {
                         // ignore any problems
@@ -1241,6 +1279,114 @@ public class CmsADEServer extends A_CmsAjaxServer {
         }
         containerPage.setContents(xmlCnt.marshal());
         cms.writeFile(containerPage);
+    }
+
+    public CmsResource createNewSubContainer(String cntPageUri, HttpServletRequest request) throws CmsException {
+
+        return m_manager.createNewElement(
+            getCmsObject(),
+            cntPageUri,
+            request,
+            CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME);
+    }
+
+    public void setSubContainer(JSONObject subcontainer, String localeParam) throws CmsException, JSONException {
+
+        CmsObject cms = getCmsObject();
+        String resourceName = subcontainer.getString(CmsElementUtil.JsonElement.FILE.getName());
+        String title = subcontainer.getString(CmsElementUtil.JsonElement.TITLE.getName());
+        String description = subcontainer.getString(CmsElementUtil.JsonElement.DESCRIPTION.getName());
+        JSONArray types = subcontainer.getJSONArray(CmsElementUtil.JsonElement.TYPES.getName());
+        JSONArray subitems = subcontainer.getJSONArray(CmsElementUtil.JsonElement.SUBITEMS.getName());
+        cms.lockResourceTemporary(resourceName);
+        CmsFile subcontainerFile = cms.readFile(resourceName);
+        CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, subcontainerFile);
+        Locale locale = CmsLocaleManager.getLocale(localeParam);
+        if (xmlSubContainer.hasLocale(locale)) {
+            // remove the locale 
+            xmlSubContainer.removeLocale(locale);
+        }
+        xmlSubContainer.addLocale(cms, locale);
+        I_CmsXmlContentValue cntValue = xmlSubContainer.getValue(
+            CmsXmlSubContainer.XmlNode.SUBCONTAINER.getName(),
+            locale,
+            0);
+        if (cntValue == null) {
+            xmlSubContainer.addValue(cms, CmsXmlSubContainer.XmlNode.SUBCONTAINER.getName(), locale, 0);
+        }
+        xmlSubContainer.getValue(
+            CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlSubContainer.XmlNode.TITLE.getName()),
+            locale,
+            0).setStringValue(cms, title);
+        xmlSubContainer.getValue(
+            CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlSubContainer.XmlNode.DESCRIPTION.getName()),
+            locale,
+            0).setStringValue(cms, description);
+        if (types != null) {
+            for (int i = 0; i < types.length(); i++) {
+                xmlSubContainer.addValue(
+                    cms,
+                    CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlSubContainer.XmlNode.TYPE.getName()),
+                    locale,
+                    i).setStringValue(cms, types.getString(i));
+            }
+        }
+        if (subitems != null) {
+            for (int i = 0; i < subitems.length(); i++) {
+                xmlSubContainer.addValue(
+                    cms,
+                    CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlSubContainer.XmlNode.ELEMENT.getName()),
+                    locale,
+                    i).setStringValue(cms, subitems.getString(i));
+            }
+        }
+        subcontainerFile.setContents(xmlSubContainer.marshal());
+        cms.writeFile(subcontainerFile);
+    }
+
+    private JSONObject getElements(JSONArray elements, String uriParam, String cntPageUri, HttpServletRequest request)
+    throws CmsException, JSONException {
+
+        CmsObject cms = getCmsObject();
+        CmsResource cntPageRes = cms.readResource(cntPageUri);
+        CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
+        CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
+        JSONObject resElements = new JSONObject();
+        Set<String> ids = new HashSet<String>();
+        for (int i = 0; i < elements.length(); i++) {
+            String elemId = elements.getString(i);
+            if (ids.contains(elemId)) {
+                continue;
+            }
+            CmsContainerElementBean element = getCachedElement(elemId);
+            JSONObject elementData = elemUtil.getElementData(element, cntPage.getTypes());
+            resElements.put(element.getClientId(), elementData);
+            if (elementData.has(CmsElementUtil.JsonElement.SUBITEMS.getName())) {
+                // this is a sub-container 
+
+                CmsResource elementRes = cms.readResource(element.getElementId());
+                CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, elementRes, getRequest());
+                CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                    cms,
+                    cms.getRequestContext().getLocale());
+
+                // adding all sub-items to the elements data
+                for (CmsContainerElementBean subElement : subContainer.getElements()) {
+                    if (!ids.contains(subElement.getElementId())) {
+                        String subId = subElement.getClientId();
+                        if (ids.contains(subId)) {
+                            continue;
+                        }
+                        JSONObject subItemData = elemUtil.getElementData(subElement, cntPage.getTypes());
+                        ids.add(subId);
+                        resElements.put(subId, subItemData);
+                    }
+                }
+            }
+            ids.add(elemId);
+        }
+        return resElements;
     }
 
     /**

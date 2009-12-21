@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2009/12/17 12:36:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/21 09:05:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -83,6 +83,9 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
     /** The sub container resource type id. */
     public static final int SUB_CONTAINER_TYPE_ID = 17;
+
+    /** The sub container resource type name. */
+    public static final String SUB_CONTAINER_TYPE_NAME = "subcontainer";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContainerPage.class);

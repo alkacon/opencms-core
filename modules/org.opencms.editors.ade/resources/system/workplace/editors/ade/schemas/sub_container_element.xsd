@@ -23,6 +23,10 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Description" mapto="property:Description" />
+			</mappings>
 			<validationrules>
 				<rule element="Type" regex=".+" type="error" message="%(key.err.type.notempty)" />
 				<rule element="Element" regex=".+" type="error" message="%(key.err.uri.notempty)" />
