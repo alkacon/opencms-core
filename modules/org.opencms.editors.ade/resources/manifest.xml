@@ -1040,6 +1040,30 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/css/images/bg_striped.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/bg_striped.png</destination>
+			<type>image</type>
+			<uuidstructure>80636e5a-ee14-11de-a923-1dc485c77a70</uuidstructure>
+			<uuidresource>80636e5b-ee14-11de-a923-1dc485c77a70</uuidresource>
+			<datelastmodified>Mon, 21 Dec 2009 09:37:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Dec 2009 09:37:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[bg_striped]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:40,h:40]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/css/images/branch_element.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/branch_element.png</destination>
