@@ -116,45 +116,45 @@
     */
    var loadAllData = cms.data.loadAllData = /** void */ function(/** void Function(boolean) */afterLoad) {
    
-        postJSON(ACTION_ALL, {}, function(ok, jsonData) {
-                        
-            if (jsonData.favorites) {
-               cms.toolbar.favorites = jsonData.favorites;
-            }
-            if (jsonData.recent) {
-               cms.toolbar.recent = jsonData.recent;
-            }
-            if (jsonData.containers) {
-               containers = cms.data.containers = jsonData.containers;
-            }
-            if (jsonData.elements) {
+      postJSON(ACTION_ALL, {}, function(ok, jsonData) {
+      
+         if (jsonData.favorites) {
+            cms.toolbar.favorites = jsonData.favorites;
+         }
+         if (jsonData.recent) {
+            cms.toolbar.recent = jsonData.recent;
+         }
+         if (jsonData.containers) {
+            containers = cms.data.containers = jsonData.containers;
+         }
+         if (jsonData.elements) {
+         
+            elements = cms.data.elements = jsonData.elements;
             
-               elements = cms.data.elements = jsonData.elements;
-               
-               cms.data.newTypes = cms.data.elements.newOrder;
-               delete cms.data.elements.newOrder;
-              
-               cms.data.searchTypes = cms.data.elements.searchOrder;
-               cms.galleries.configContentTypes=[];
-               $.each(cms.data.searchTypes, function(){ 
-                   cms.galleries.configContentTypes.push(cms.data.elements[this].typeid); 
-               });
-               
-               delete cms.data.elements.searchOrder;
-               
-               _initNewCounter(elements);
-               
-            }
-            if (jsonData.newCounter) {
-               newCounter = cms.data.newCounter = jsonData.newCounter;
-            }
-            if (jsonData.locale) {
-               locale = cms.data.locale = jsonData.locale;
-            }
-            if (jsonData.recentListSize) {
-               cms.toolbar.recentSize = jsonData.recentListSize;
-            }
-            afterLoad(true);
+            cms.data.newTypes = cms.data.elements.newOrder;
+            delete cms.data.elements.newOrder;
+            
+            cms.data.searchTypes = cms.data.elements.searchOrder;
+            cms.galleries.configContentTypes = [];
+            $.each(cms.data.searchTypes, function() {
+               cms.galleries.configContentTypes.push(cms.data.elements[this].typeid);
+            });
+            
+            delete cms.data.elements.searchOrder;
+            
+            _initNewCounter(elements);
+            
+         }
+         if (jsonData.newCounter) {
+            newCounter = cms.data.newCounter = jsonData.newCounter;
+         }
+         if (jsonData.locale) {
+            locale = cms.data.locale = jsonData.locale;
+         }
+         if (jsonData.recentListSize) {
+            cms.toolbar.recentSize = jsonData.recentListSize;
+         }
+         afterLoad(true);
       });
    }
    
@@ -166,18 +166,18 @@
     * @param {Function} afterPost the callback that should be called after the server replied
     * @param {boolean} async optional flag to indicate is the request should synchronized or not, by default it is not
     * @param {int} timeout optional timeout in millisecs, default is #AJAX_TIMEOUT
-    * 
+    *
     * @return the XMLHttpRequest
     */
    var postJSON = cms.data.postJSON = /** void */ function(/** String */action, /** Object */ data, /** void Function(boolean, Object) */ afterPost, /** boolean */ sync, /** int */ timeout) {
    
       return cms.comm.postJSON(SERVER_URL, {
-            'cntpage': CURRENT_CNT_PAGE,
-            'uri': CURRENT_URI,
-            'locale': LOCALE,
-            'action': action,
-            'data': JSON.stringify(data)
-         }, afterPost, sync, timeout, _jsonRevive);
+         'cntpage': CURRENT_CNT_PAGE,
+         'uri': CURRENT_URI,
+         'locale': LOCALE,
+         'action': action,
+         'data': JSON.stringify(data)
+      }, afterPost, sync, timeout, _jsonRevive);
    }
    
    /**
@@ -191,7 +191,7 @@
    var createResource = cms.data.createResource = /** void */ function(/** String */type, /** void Function(boolean, String, String) */ afterCreate) {
    
       postJSON(ACTION_NEW, {
-          'type': type
+         'type': type
       }, function(ok, data) {
          afterCreate(ok, data.id, data.uri);
       });
@@ -206,7 +206,7 @@
    var deleteResources = cms.data.deleteResources = /** void */ function(/** Array */ids, /** void Function(boolean) */ afterDelete) {
    
       postJSON(ACTION_DEL, {
-          'elem': ids
+         'elem': ids
       }, afterDelete);
    }
    
@@ -215,7 +215,7 @@
     *
     * @param {Function} callback the callback that should be called
     */
-   var startEdit = cms.data.startEdit = /** void */ function(/** void Function(boolean) */ callback) {
+   var startEdit = cms.data.startEdit = /** void */ function(/** void Function(boolean) */callback) {
    
       postJSON(ACTION_STARTEDIT, {}, callback);
    }
@@ -225,7 +225,7 @@
     *
     * @param {Function} callback the callback that should be called
     */
-   var stopEdit = cms.data.stopEdit = /** void */ function(/** void Function(boolean) */ callback) {
+   var stopEdit = cms.data.stopEdit = /** void */ function(/** void Function(boolean) */callback) {
    
       postJSON(ACTION_STOPEDIT, {}, callback);
    }
@@ -243,7 +243,7 @@
          restoreState = true;
       }
       postJSON(ACTION_ELEM, {
-          'elem': id
+         'elem': id
       }, function(ok, data) {
          if (ok) {
             for (var id in data.elements) {
@@ -263,13 +263,13 @@
     *
     * @param {String} ids a list of ids of the form ade_structureid
     * @param {Function} afterLoad the callback that should be called after loading is finished
-    * 
+    *
     * @return the XMLHttpRequest
     */
    var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, Object) */ afterLoad) {
    
       return postJSON(ACTION_ELEM, {
-          'elem': ids
+         'elem': ids
       }, function(ok, data) {
          if (ok) {
             for (var id in data.elements) {
@@ -287,7 +287,9 @@
     */
    var loadFavorites = cms.data.loadFavorites = /** void */ function(/** void Function(boolean, Object) */afterFavoritesLoad) {
    
-      postJSON(ACTION_GET, {'fav': true}, function(ok, data) {
+      postJSON(ACTION_GET, {
+         'fav': true
+      }, function(ok, data) {
          if (ok) {
             cms.toolbar.favorites = data.favorites;
             
@@ -332,7 +334,9 @@
     */
    var loadRecent = cms.data.loadRecent = /** void */ function(/** void Function(boolean, Object) */afterRecentLoad) {
    
-      postJSON(ACTION_GET, {'rec': true}, function(ok, data) {
+      postJSON(ACTION_GET, {
+         'rec': true
+      }, function(ok, data) {
          if (ok) {
             cms.toolbar.recent = data.recent;
             
@@ -397,7 +401,9 @@
     */
    var persistFavorites = cms.data.persistFavorites = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
-      postJSON(ACTION_SET, {'fav': cms.toolbar.favorites}, afterSave);
+      postJSON(ACTION_SET, {
+         'fav': cms.toolbar.favorites
+      }, afterSave);
    }
    
    /**
@@ -407,7 +413,9 @@
     */
    var persistRecent = cms.data.persistRecent = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
-      postJSON(ACTION_SET, {'rec': cms.toolbar.recent}, afterSave);
+      postJSON(ACTION_SET, {
+         'rec': cms.toolbar.recent
+      }, afterSave);
    }
    
    /**
@@ -428,7 +436,7 @@
             if (elem.subItems) {
             
                isSubcontainer = true;
-               html = $('<div class="'+cms.html.subcontainerClass+'" rel="'+elementIds[i]+'"></div>');
+               html = $('<div class="' + cms.html.subcontainerClass + '" rel="' + elementIds[i] + '"></div>');
                for (var j = 0; j < elem.subItems.length; j++) {
                   var subElem = elements[elem.subItems[j]];
                   subElem.getContent(containerType).appendTo(html);
@@ -534,6 +542,13 @@
       getContent: function(containerType) {
          var content = this.contents[containerType];
          if (content) {
+            if (this.subItems && containerType != '_DEFAULT_') {
+               content = $('<div class="' + cms.html.subcontainerClass + '"></div>');
+               for (var j = 0; j < this.subItems.length; j++) {
+                  var subElem = cms.data.elements[this.subItems[j]];
+                  subElem.getContent(containerType).appendTo(content);
+               }
+            }
             var $result = $(content).addClass('cms-element').attr('rel', this.id).css('position', 'relative');
             if (containerType != '_DEFAULT_' && (this.status == STATUS_NEWCONFIG)) {
                $result = $result.addClass('cms-new-element');
@@ -611,14 +626,14 @@
    }
    
    var getProperties = cms.data.getProperties = function(id, callback) {
-
+   
       postJSON('props', {
-          'elem': id
+         'elem': id
       }, callback);
    }
    
    var getElementWithProperties = cms.data.getElementWithProperties = function(id, properties, callback) {
-
+   
       postJSON('elemProps', {
          elem: id,
          properties: properties
@@ -635,7 +650,7 @@
     * objects with methods with the actual objects.
     */
    var _jsonRevive = function(key, value) {
-
+   
       var Type = reviveTypeMap[value.objtype];
       if (Type) {
          return new Type(value);

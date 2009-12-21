@@ -200,15 +200,19 @@
       return html.join('');
    }
    
-   var subcontainerDialog = cms.html.subcontainerDialog = function(){
-       var html = ['<div id="cms-overlay-editing" class="ui-corner-all" style="background: #FFFFFF;">\
+   var subcontainerDialog = cms.html.subcontainerDialog = function(containerElement){
+       var html = ['<div id="cms-overlay-editing" class="ui-corner-all">\
            <div style="margin:10px">\
                <b>Edit sub-container</b><br /><br />\
-               <div class="cms-editable-field cms-left" alt="Title"><span class="cms-item-title cms-width-80">Title</span><span class="cms-item-edit">Subcontainer</span></div>\
-               <div class="cms-editable-field cms-left" alt="Title"><span class="cms-item-title cms-width-80">Description</span><span class="cms-item-edit">This is a sub-container</span></div>\
+               <div class="cms-editable-field cms-left" alt="title"><span class="cms-item-title cms-width-80">Title</span><input class="cms-item-edit ui-corner-all" name="title" title="Edit title" value="',
+               containerElement['title'],
+               '" /></div>\
+               <div class="cms-editable-field cms-left" alt="description"><span class="cms-item-title cms-width-80">Description</span><input name="description" title="Edit description" value="',
+               containerElement['description'],
+               '" class="cms-item-edit ui-corner-all" /></div>\
                <div class="button-bar">\
-                   <button class="cms-right ui-state-default ui-corner-all" name="previewClose"><span class="cms-galleries-button">Save</span></button>\
-                   <button class="cms-right ui-state-default ui-corner-all" name="previewClose"><span class="cms-galleries-button">Close</span></button>\
+                   <button class="cms-right ui-state-default ui-corner-all" name="subcontainerClose"><span class="cms-galleries-button">Close</span></button>\
+                   <button class="cms-right ui-state-default ui-corner-all" name="subcontainerSave"><span class="cms-galleries-button">Save</span></button>\
                    <br clear="all"/>\
                </div>\
            </div></div>'];

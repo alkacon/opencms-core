@@ -253,9 +253,34 @@ button.cms-deactivated span.cms-icon-save {
 	background-image: url(images/24x24/ade_publish.png)
 }
 
-div.cms-subcontainer-start,div.cms-subcontainer-end {
-	display: none;
+
+/** Subcontainer handling **/
+#cms_appendbox .cms-subcontainer, .cms-subcontainer.cms-new-element{
+	background: #ffffff url(images/bg_striped.png) repeat;
+    min-height: 40px;
+    z-index: 9000;
+    position: absolute;
 }
+
+#cms-overlay-editing{
+    width: 318px;
+    z-index: 8990;
+    position: absolute;
+    background: #FFFFFF;
+}
+
+#cms-overlay-editing .cms-item-edit{
+    width: 210px;
+}
+
+#cms-overlay {
+    width:100%;
+    height: 100%;
+    position: fixed;
+    background: #AAAAAA;
+    opacity: 0.7;
+    filter: alpha(opacity = 70);
+} 
 
 /** Highlighting effect **/
 div.cms-highlight-container {
@@ -1007,29 +1032,7 @@ ol.ade-forms fieldset {
 	padding: 4px;
 }
 
-.cms-subcontainer-item>ul {
-	margin-left: 0px !important;
-}
 
-.cms-subcontainer-item .cms-item .cms-move {
-	display: none;
-}
-
-.cms-subcontainer-item {
-	border: 1px dashed;
-	background-color: #6e9ce0;
-	margin-left: 0px !important;
-	margin-top: 10px !important;
-	margin-bottom: 10px !important;
-	position: relative;
-}
-
-/*#fav-dialog .cms-item {
-	position: relative;
-}*/
-.cms-subcontainer-item>.cms-handle {
-	z-index: 10;
-}
 
 #cms-new-list .cms-item .ui-widget-content {
 	border: 1px solid #333333;
@@ -1368,13 +1371,19 @@ div.cms-publish-scrolling {
 }
 
 .cms-item-edit{
-    background-color:#cccccc;
-    min-width: 60px;
+    background-color:#D9D9D9;
+    padding:1px 2px;
+    width:200px;
+    border:1px solid #AAAAAA;
+}
+
+.cms-item-edit:focus, .cms-item-edit:active{
+    background-color:#FFFFFF;
 }
 
 .cms-item-title, .cms-item-edit{
     display: inline-block;
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 .edit-form input.cms-direct-input, .edit-form input.cms-direct-input:active, .edit-form input.cms-direct-input:focus{

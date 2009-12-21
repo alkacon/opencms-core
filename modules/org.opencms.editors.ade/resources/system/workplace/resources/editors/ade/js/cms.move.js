@@ -145,18 +145,8 @@
       
       if (container.name != moveState.startId) {
          moveState.hoverList += ', #' + container.name;
-         var helperElem;
+         var helperElem = moveState.element.getContent(containerType);
          
-         // subcontainer stuff, this should go into the Element class
-         if (moveState.element.subItems) {
-            helperElem = $('<div class="'+cms.html.subcontainerClass+'"></div>');
-            for (var j = 0; j < moveState.element.subItems.length; j++) {
-               var subElem = cms.data.elements[moveState.element.subItems[j]];
-               subElem.getContent(containerType).appendTo(helperElem);
-            }
-         } else {
-            helperElem = moveState.element.getContent(containerType);
-         }
          moveState.helpers[container.name] = helperElem.css({
             'display': 'none',
             'position': 'absolute',
@@ -483,7 +473,7 @@
             });
          }
          
-         if (changed) {
+         if (changed && cms.toolbar.editingSubcontainerId == null) {
             // page has changed, enable saveButton
             cms.toolbar.setPageChanged(true);
          }
@@ -553,7 +543,9 @@
          moveState.hasStoped = true;
          currentItem.attr('rel', moveState.loadingResourceId)
       }
-      resetNewElementBorders();
+      if (cms.toolbar.editingSubcontainerId == null) {
+          resetNewElementBorders();
+      }
    }
    
    /**

@@ -66,6 +66,7 @@
     */
    var editSubcontainer = function(container) {
       toggleMode(getCurrentMode());
+      var isNew = container.hasClass('cms-new-element');
       var containerType = container.parent().attr('id');
       var parentContainer = cms.data.containers[containerType];
       var cOffset = container.offset();
@@ -75,22 +76,25 @@
       var cWidth = container.outerWidth();
       cms.toolbar.editingSubcontainerId = container.attr('rel');
       var containerElement = cms.data.elements[cms.toolbar.editingSubcontainerId];
-      var overlay = $('<div id="cms-overlay" style="width:100%; height: 100%; position: fixed; background: #888888; opacity: 0.7;"></div>').appendTo(cms.toolbar.dom.appendBox);
-      var overlayEditing = $(cms.html.subcontainerDialog()).appendTo(cms.toolbar.dom.appendBox);
+      if (isNew || containerElement['types'].length==0){
+          containerElement['types'].push(parentContainer['type']);
+      }
+      cms.toolbar.dom.appendBox.css('position', 'absolute');
+      var overlay = $('<div id="cms-overlay"></div>').appendTo(cms.toolbar.dom.appendBox);
+      var overlayEditing = $(cms.html.subcontainerDialog(containerElement)).appendTo(cms.toolbar.dom.appendBox);
       overlayEditing.css({
-         'width': 312,
-         'zIndex': 8990,
-         'position': 'absolute',
+         
          'top': cOffset.top,
-         'left': cOffset.left - 322
+         'left': cOffset.left - 328
       });
       var overlayContainer = container.clone().appendTo(cms.toolbar.dom.appendBox);
+      if (isNew){
+          overlayContainer.removeClass('cms-new-element');
+      }
       // overlayContainer.find('div.cms-handle').remove();
       overlayContainer.attr('id', cms.toolbar.editingSubcontainerId);
       overlayContainer.css({
          'width': cWidth,
-         'zIndex': 9000,
-         'position': 'absolute',
          'top': cOffset.top,
          'left': cOffset.left
       });
@@ -100,6 +104,58 @@
          'type': parentContainer.type,
          'maxElem': parentContainer.maxElem,
          'objType': parentContainer.objType
+      });
+      overlayEditing.find('button[name="subcontainerSave"]').click(function() {
+         toggleMode(getCurrentMode());
+         var subItems = new Array();
+         var subUris = new Array();
+         container.empty();
+         overlayContainer.children('.cms-element').each(function() {
+            var itemId = $(this).attr('rel')
+            subItems.push(itemId);
+            subUris.push(cms.data.elements[itemId]['file']);
+            $(this).appendTo(container);
+         });
+         containerElement.subItems = subItems;
+         containerElement['title']=$('input[name="title"]', overlayEditing).val();
+         containerElement['description']=$('input[name="description"]', overlayEditing).val();
+         var postElement = {
+            'file': containerElement['file'],
+            'title': containerElement['title'],
+            'description': containerElement['description'],
+            'types': containerElement['types'],
+            'subItems': subUris
+         };
+         if (isNew) {
+             cms.data.postJSON('newsub', {
+                 'elem': postElement
+             }, function(ok, data) {
+                  var newId = data['id'];
+                  delete cms.data.elements[containerElement['id']]
+                  containerElement['id']=newId;
+                  containerElement['status'] = cms.data.STATUS_CREATED;
+                  cms.data.elements[newId]=containerElement;
+                  container.attr('rel', newId);
+                  container.removeClass('cms-new-element');
+            });
+         } else {
+             cms.data.postJSON('subcnt', {
+                 'elem': postElement
+             }, function(ok, data) {
+                          //TODO: after post
+            });
+        }
+         delete cms.data.containers[cms.toolbar.editingSubcontainerId];
+         cms.toolbar.dom.appendBox.empty();
+         cms.toolbar.editingSubcontainerId = null;
+         cms.move.resetNewElementBorders();
+      });
+      overlayEditing.find('button[name="subcontainerClose"]').click(function() {
+         toggleMode(getCurrentMode());
+         delete cms.data.containers[cms.toolbar.editingSubcontainerId];
+         cms.toolbar.dom.appendBox.empty();
+         cms.toolbar.editingSubcontainerId = null;
+         cms.move.resetNewElementBorders();
       });
    }
    
@@ -193,7 +249,9 @@
       }
       $item.remove();
       cms.move.updateContainer($container.attr('id'));
-      setPageChanged(true);
+      if (cms.toolbar.editingSubcontainerId == null) {
+          setPageChanged(true);
+      }
    };
    
    /**
@@ -1140,7 +1198,7 @@
     * @param {Object} button the button of the mode
     */
    var toggleMode = cms.toolbar.toggleMode = /** void */ function(modeObject) {
-      if (!cms.toolbar.toolbarReady) {
+      if (!cms.toolbar.toolbarReady || modeObject == NullMode) {
          return;
       }
       if (modeObject.name == cms.toolbar.mode) {

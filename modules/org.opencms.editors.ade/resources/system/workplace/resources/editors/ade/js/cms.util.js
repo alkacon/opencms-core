@@ -107,11 +107,13 @@
             
          });
       } else {
+          var height = elem.outerHeight();
+          height = (height > minHeight) ? height : minHeight;
          var elemPos = getElementPosition(elem);
          dimension.top = elemPos.top;
          dimension.left = elemPos.left;
          dimension.right = dimension.left + elem.innerWidth();
-         dimension.bottom = dimension.top + minHeight;
+         dimension.bottom = dimension.top + height;
       }
       dimension.height = dimension.bottom - dimension.top;
       dimension.width = dimension.right - dimension.left;
