@@ -42,6 +42,7 @@
           "EDITOR_URL"      : "%(editorUri)",
           "SERVER_URL"      : "%(serverUri)",
           "GALLERY_SERVER_URL" : "%(galleryServerUri)",
+          "SITEMAP_URL"		: "%(sitemapUri)",
           "CURRENT_CNT_PAGE": "%(currentContainerPage)",
           "CURRENT_URI"     : "%(currentUri)",
           "LOCALE"          : "%(currentLocale)",

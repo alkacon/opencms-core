@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/12/11 08:27:48 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/12/21 11:00:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.6 
  */
@@ -107,6 +107,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
     /** Macro name constant. */
     public static final String MACRO_SERVER_URI = "serverUri";
+
+    /** Macro name constant. */
+    public static final String MACRO_SITEMAP_URI = "sitemapUri";
 
     /** Macro name constant. */
     public static final String MACRO_GALLERY_SERVER_URI = "galleryServerUri";
@@ -258,6 +261,12 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
                 currentUri = cms.getSitePath(cms.readResource(id));
             }
+            CmsProperty sitemapProperty = cms.readPropertyObject(
+                containerPage,
+                CmsPropertyDefinition.PROPERTY_SITEMAP,
+                true);
+            String sitemapUri = linkMan.substituteLink(cms, sitemapProperty.getValue());
+            resolver.addMacro(MACRO_SITEMAP_URI, sitemapUri);
             String containerPageUri = cms.getSitePath(containerPage);
             resolver.addMacro(MACRO_CURRENT_URI, currentUri);
             resolver.addMacro(MACRO_CURRENT_CNTPAGE, containerPageUri);
