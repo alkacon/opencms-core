@@ -2,6 +2,14 @@
 
    ///// Content Handler Function definition //////////////////////////    
    
+   var editableTabId = cms.previewhandler.editableTabId = 'cms-editable-tabs';
+   
+   var keys = cms.previewhandler.keys = {
+       'propertiesTabId' : 'tabs-edit-area'
+   };
+   
+   
+   
    /** Html sceleton for the upper button bar in the editable properties area. */
    var switchToFormatBar = '<div class="button-bar cms-top-bottom">\
                                <button name="switchToFormat" class="cms-right ui-state-default ui-corner-all">\
@@ -20,12 +28,13 @@
                            </div>';                             
    
    /** html fragment for the item preview. */
-   cms.previewhandler.htmlPreviewSceleton = $('<div id="cms-preview" class="ui-corner-all">\
-                                <div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>\
-            	                <div class="preview-area ui-widget-content ui-corner-all"></div>\
-				                <div class="edit-area ui-widget-content ui-corner-all">\
-                                </div>\
-                            </div>');                  
+   cms.previewhandler.htmlPreviewSceleton = '<div id="cms-preview" class="ui-corner-all">\
+                                                    <div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>\
+                                	                <div class="preview-area ui-widget-content ui-corner-all"></div>\
+                                                    <div id="' + cms.previewhandler.editableTabId + '"></div>\
+                                                </div>';
+                                                
+   var tabsNav = '<ul><li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">Properties</a></li></ul>'                                               
    
    /**
     * Displays the content of the preview item.
@@ -39,13 +48,18 @@
       // display editable properties
       cms.galleries.getContentHandler()['showEditArea'](itemData['previewdata']['properties']);
       
+      $('#' + cms.previewhandler.editableTabId).prepend(tabsNav);
+      
+      // bind the select tab event, fill the content of the result tab on selection
+      $('#' + cms.previewhandler.editableTabId).tabs({});                    
+                  
       //bind click event to preview close button 
       $('#cms-preview div.close-icon').click(function() {
          if ($(this).hasClass('cms-properties-changed')) {
             cms.galleries.loadSearchResults();
             $(this).removeClass('cms-properties-changed');
          }
-         $(this).parent().fadeOut('slow');
+         cms.galleries.getContentHandler()['closePreview']();
          
       });
       
@@ -60,17 +74,22 @@
    }
    
    /**
-    * Generates html for the editable properties and add to the dom.
+    * Generates html for the editable properties and add them to the dom.
     *
     * @param {Object} itemProperties server response as JSON object with the editable properties
     */
-   var showEditArea = function(itemProperties) {
-      var target = $('.edit-area');
-      
-      // add the upper button bar      
-      target.append($(switchToFormatBar));
-      $('button[name="switchToFormat"]').hide();
-                                                                                                                 
+   var getEditArea = function(itemProperties) {      
+      $('<div id="' + keys['propertiesTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
+      cms.galleries.getContentHandler()['fillProperties'](itemProperties);                                                                                                                         
+   }
+   
+   /**
+    * Generate html for the given properties.
+    * 
+    * @param {Object} itemProperties
+    */
+   var fillProperties = function(/**Json array*/itemProperties) {
+      var target = $('#' + keys['propertiesTabId']);
       // generate editable form fields
       var form = $('<div class="edit-form cms-scrolling-properties"></div>');
       for (var i = 0; i < itemProperties.length; i++) {
@@ -87,7 +106,7 @@
           }
           
       }      
-      $(target).append(form);
+      target.append(form);
       
       // bind direct input to the editable fields
       $('.cms-item-edit').directInput({
@@ -95,7 +114,7 @@
          live: false,
          setValue: cms.galleries.getContentHandler()['markChangedProperty'],
          onChange: function(element, input) {
-            $('.edit-area').find('button[name="previewSave"]').removeAttr('disabled');
+            target.find('button[name="previewSave"]').removeAttr('disabled');
          }
       });    
          
@@ -104,9 +123,7 @@
       target.find('button[name="previewSave"]')
           .click(cms.galleries.getContentHandler()['saveChangedProperty']);
       target.find('button[name="previewClose"]')
-          .click(function() {
-             $('#cms-preview').fadeOut('slow');
-         });
+          .click(cms.galleries.getContentHandler()['closePreview']);
       // TODO: comment in for direct publish
       /* $('.edit-area button[name="publishSave"]').click(publishChangedProperty);*/
       
@@ -115,7 +132,7 @@
          target.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
                                 <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                           </button>');
-         $('.edit-area').find('button[name="previewSelect"]').click(function() {            
+         target.find('button[name="previewSelect"]').click(function() {            
             var itemType = $('#results li[alt="' + cms.galleries.initValues['path'] + '"]').data('type');
             var itemId = $(this).closest('#cms-preview').attr('alt');
             cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
@@ -147,10 +164,10 @@
     * @param {Object} itemData the data to update the preview
     */
    var refreshDefaultPreview = function(itemData) {
-      $('#cms-preview div.preview-area, #cms-preview div.edit-area').empty();
+      $('#cms-preview div.preview-area, #' + cms.previewhandler.keys['propertiesTabId']).empty();
       //display the html preview 
       $('.preview-area').append(itemData['previewdata']['itemhtml']);
-      showEditArea(itemData['previewdata']['properties']);
+      cms.galleries.getContentHandler()['fillProperties'](itemData['previewdata']['properties']);
       
    }
    
@@ -220,6 +237,17 @@
       
    }
    
+   var closePreview = function() {
+       $('#cms-preview').fadeOut('slow');
+       cleanUpOnClose();       
+   }
+   
+   var cleanUpOnClose = function() {
+       $('#'+ cms.previewhandler.editableTabId).tabs('destroy');
+       $('#'+ cms.previewhandler.editableTabId).removeAttr('class').empty();
+       $('#cms-preview div.preview-area').empty();       
+   }
+   
    ///// Default Content Handler ////////////////              
    /**
     * Default handler to display the preview for a resource.
@@ -230,14 +258,17 @@
       'init': function() {
             },
       'openPreview': showItemPreview,
-      'showEditArea': showEditArea,
+      'showEditArea': getEditArea,
+      'fillProperties': fillProperties,
       'markChangedProperty': markChangedProperty,
       'saveChangedProperty': saveChangedProperty,
       'refreshPreview': refreshDefaultPreview,
       'setValues': {
          'widget': setResourcePath,
          'editor': 'test2'
-      }
+      },
+      'closePreview': closePreview
+      
    };
       
    cms.galleries.contentTypeHandlers[cms.previewhandler.defaultContentTypeHandler['type']] = cms.previewhandler.defaultContentTypeHandler; 

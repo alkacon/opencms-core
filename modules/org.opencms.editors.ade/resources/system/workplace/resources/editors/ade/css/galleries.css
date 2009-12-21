@@ -57,13 +57,41 @@
         margin: 2px;
     }
     
-    #cms-preview .edit-area,
-    #cms-preview .edit-format-area{
+    /*#cms-preview .edit-area,
+    #cms-preview .edit-format-area,
+    #cms-preview .cms-editable-tabs{
         background: #F9F9F9 none repeat scroll 0 0;
         height: 115px;          
         margin: 2px;
         padding: 0 4px;
-    }       
+    } */
+    
+    #cms-editable-tabs{
+        background: #F9F9F9 none repeat scroll 0 0;
+        height: 115px;          
+        margin: 2px;
+        padding: 0px;
+    }
+    
+    #cms-editable-tabs.ui-tabs .ui-tabs-nav {
+       padding:0.1em 0.1em 0; 
+    }
+           
+    #cms-editable-tabs.ui-tabs .ui-tabs-nav li {    
+        margin:0 0.05em -1px 0;    
+    }    
+    
+    #cms-editable-tabs.ui-tabs .ui-tabs-nav li a {
+        padding:1px 4px 2px;
+    }
+    
+    #cms-editable-tabs.ui-tabs .ui-tabs-panel {
+       padding:0.3em 0.15em 0.3em 0.5em;
+    }
+    
+    #tabs-edit-area {
+        height: 85px;
+    }     
       
     .edit-area span{
         font-size: 12px;
@@ -168,13 +196,13 @@
     /** Editable properties in the edit area. */
    
     .edit-form {
-        /*margin: 2px;*/
+        margin-top:3px;
     }   
     
     .cms-scrolling-properties {
         margin: 0px;
         padding: 0px;
-        height: 50px;
+        height: 57px;
         overflow:auto;
         position: relative;
     }
@@ -190,7 +218,6 @@
         display: inline-block;
         font-weight:bold;
         line-height: 20px;
-        margin-right: 10px;
     }
     
     .edit-area span.cms-item-title,    
@@ -207,7 +234,7 @@
     }
     
     div.cms-format-line {
-        margin: 0px 0px 4px 0px;
+        margin: 0px 0px 6px 0px;
     }        
     
     /*div.cms-editable-field input,*/
@@ -340,7 +367,7 @@
     }
     
     .cms-ft-search label, .cms-drop-down label {
-        margin-right: 10px;
+        margin-right: 5px;
     }
     
     .cms-drop-down {        

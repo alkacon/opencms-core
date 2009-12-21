@@ -285,7 +285,7 @@
           .append(categoriesTab)
           .append(cms.galleries.htmlTabFTSeachSceleton);
       // add preview to the galleries html
-      $('#' + cms.galleries.idGalleriesMain).append(cms.previewhandler.htmlPreviewSceleton);                  
+      $('#' + cms.galleries.idGalleriesMain).append($(cms.previewhandler.htmlPreviewSceleton));                  
       
       //TODO: blind out quick search dialog for the moment
       $('span.cms-ft-search').css('display', 'none');
@@ -1080,9 +1080,13 @@
       var itemId = $(this).attr('alt');
       
       // set the resouce id as alt attribute and empty the content of the preview
-      $('#cms-preview').attr('alt', itemId);            
-      $('#cms-preview div.preview-area, #cms-preview div.edit-area').empty();
-      $('#cms-preview div.edit-format-area').remove();
+      $('#cms-preview').attr('alt', itemId);  
+            
+      //$('#cms-preview div.preview-area,  #' + cms.previewhandler.keys['propertiesTabId']).empty();
+      //$('#' + cms.imagepreviewhandler.keys['formatTabId']).empty().remove();
+      //$('#' + cms.previewhandler.editableTabId).find('a[href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '"]').closest('li').remove();
+      
+      
       
       // reset the active item object
       cms.galleries.resetActiveItem();

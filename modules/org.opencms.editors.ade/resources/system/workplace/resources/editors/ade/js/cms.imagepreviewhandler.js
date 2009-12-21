@@ -10,7 +10,8 @@
    
    
    /** String constants to use in html. */
-   var keys = {
+   var keys = cms.imagepreviewhandler.keys = {
+      'formatTabId':'tabs-edit-format-area', 
       'previewWidth': 'width',
       'previewHeight': 'height',
       'imageFormat': 'format',
@@ -47,15 +48,16 @@
    /** html fragment for the image cropping dialog. */
    var htmlCropSceleton = '<div id="cms-image-crop" class="ui-corner-all"></div>';
    
+   /** html fragment for the image format tab html. */
+   var htmlForamtTabSceleton = '<li><a href="#' + keys['formatTabId'] + '">Image format</a></li>'
+   
+   var tabsNav = '<ul>\
+                      <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">Properties</a></li>\
+                      <li><a href="#' + keys['formatTabId'] + '">Image format</a></li>\
+                  </ul>';
+   
    ///////////////////////////////////////////////////////////////////
    
-   /** Html sceleton for the upper button bar in the image format area. */
-   var switchToFormatBarHtml = '<div class="button-bar cms-top-bottom">\
-                                   <button name="switchToProperties" class="cms-right ui-state-default ui-corner-all">\
-                                       <span class="cms-galleries-button">Properties</span>\
-                                   </button>\
-                                   <span class="cms-title">Image Format:</span>\
-                             </div>';   
     /** Html sceleton for width and height format fields. */                             
     var  widthHeightFieldsHtml = '<div class="cms-format-line" alt="' + keys['previewWidth'] + '" >\
                                 <span class="cms-item-title cms-width-50">Width:</span>\
@@ -112,15 +114,20 @@
       // display the image in the preview area
       showActiveItemPreviewArea(jsonForActiveImage, cms.galleries.activeItem['isInitial']);
       
-      
-      
+      $('#' + cms.previewhandler.editableTabId).prepend(tabsNav);
+
+      // bind the select tab event, fill the content of the result tab on selection
+      $('#' + cms.previewhandler.editableTabId).tabs({
+      }); 
+
       //bind click event to preview close button 
       $('#cms-preview div.close-icon').click(function() {
          if ($(this).hasClass('cms-properties-changed')) {
             cms.galleries.loadSearchResults();
             $(this).removeClass('cms-properties-changed');
          }
-         $(this).parent().fadeOut('slow');
+         //$(this).parent().fadeOut('slow');
+         cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']();
          
       });
       
@@ -147,46 +154,32 @@
    var showFormatEditArea = function(itemProperties) {
       // display editable properties
       cms.galleries.getContentHandler()['showEditArea'](itemProperties); 
+                                                                 
+      /////// TODO: switch to the format tab on open
       
-      // add additional buttons to editable properties area
-      $('button[name="switchToFormat"]').show().click(function() {
-         $('.edit-area').hide(); 
-         $('.edit-format-area').show()
-      });
-      $('.edit-area').hide(); 
-      $('.edit-format-area').show();                                                             
       
       ///////////  Display format select parameters for image ///////////////////////  
       // add format edit area to preview
-      var targetFormat = $('<div class="edit-format-area ui-widget-content ui-corner-all"></div>').appendTo('#cms-preview');
-      
-      // add button bar to switch between format and properties areas                                                   
-      targetFormat.append($(switchToFormatBarHtml));
-      $('button[name="switchToProperties"]').click(function() {
-         targetFormat.hide(); 
-         $('.edit-area').show()
-      });                     
+      var targetFormat = $('<div id="tabs-edit-format-area"></div>').appendTo('#' + cms.previewhandler.editableTabId);                          
       
       // generate format fields for width and height
       var form = $('<div class="edit-form"></div>');
       form.append($(widthHeightFieldsHtml)).appendTo(targetFormat); 
-      $('.edit-format-area').find('button[name="previewClose"]').click(function() {
-             $('#cms-preview').fadeOut('slow');
-         });        
+      targetFormat.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);        
             
       if (cms.galleries.isSelectableItem()) {
          // add select button
-         $('.edit-format-area').find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+         targetFormat.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
                                    <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                              </button>');
-         $('.edit-format-area').find('button[name="previewSelect"]').click(function() {
+         targetFormat.find('button[name="previewSelect"]').click(function() {
             var itemId = $(this).closest('#cms-preview').attr('alt');
             cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
          }); 
          
          // enable width and height fields and bind events 
-         $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
-         $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');          
+         targetFormat.find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
+         targetFormat.find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');          
          $('.cms-format-line[alt="' + keys['previewWidth'] + '"]').find('input').blur(function() {
             onSizeChanged('Width', $(this).val())
          });
@@ -224,18 +217,11 @@
     * @param {Object} itemData the data to update the preview
     */
    var refreshImagePreview = function(itemData) {
-      $('#cms-preview div.edit-area').empty();      
+      $('#' + cms.previewhandler.keys['propertiesTabId']).empty();      
       //display the html preview       
-      cms.galleries.getContentHandler()['showEditArea'](itemData['previewdata']['properties']);       
-      // add additional buttons to editable properties area
-      $('button[name="switchToFormat"]').show().click(function() {
-         $('.edit-area').hide(); 
-         $('.edit-format-area').show()
-      });
-      $('.edit-area').show(); 
-      $('.edit-format-area').hide();     
+      cms.galleries.getContentHandler()['fillProperties'](itemData['previewdata']['properties']);
       
-      
+      /////TODO: switch to the properties tab if necessary
    }
    
    /**
@@ -245,18 +231,19 @@
     * @param {Object} activeImageData the JSONobject with additional information for the image resource type
     * @param {Object} isInitial true, if true
     */
-   var showActiveItemPreviewArea = function(/**JSONobject*/activeImageData, /**Boolean*/ isInitial) {
+   var showActiveItemPreviewArea = function(/**JSONobject*/activeImageData, /**Boolean*/ isInitial) {       
       if (activeImageData == "none") {
          return;
       }
+      
       
       $.extend(cms.galleries.activeItem, activeImageData["activeimage"], {
          'newwidth': 0,
          'newheight': 0
       });
       
-      var widthField = $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input');
-      var heightField = $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input');
+      var widthField = $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input');
+      var heightField = $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input');
       
       if (isInitial == true) {
          // initial image loaded
@@ -317,19 +304,26 @@
                setCropActive(false);
             }
          } else {
+           try { 
             var sizeChanged = false;
             if (cms.galleries.initValues.imgwidth != "") {
                var newWidth = parseInt(cms.galleries.initValues.imgwidth);
-               widthField.text(newWidth);
+               widthField.val(newWidth);
                cms.galleries.activeItem.newwidth = newWidth;
                sizeChanged = true;
             }
             if (cms.galleries.initValues.imgheight != "") {
                var newHeight = parseInt(cms.galleries.initValues.imgheight);
-               heightField.text(newHeight);
+               heightField.val(newHeight);
                cms.galleries.activeItem.newheight = newHeight;
                sizeChanged = true;
             }
+            
+            } catch (e) {
+          alert('1' + e.name + "\n" + e.message);
+      }
+            
+            try { 
             if (sizeChanged == true) {
                var testW = cms.galleries.activeItem.newwidth > 0 ? cms.galleries.activeItem.newwidth : cms.galleries.activeItem.width;
                var testH = cms.galleries.activeItem.newheight > 0 ? cms.galleries.activeItem.newheight : cms.galleries.activeItem.height;
@@ -339,13 +333,22 @@
                   setLockRatio(false);
                }
             }
+            } catch (e) {
+          alert('2' + e.name + "\n" + e.message);
+      }
+      
+     
             setCropActive(cropIt);
+            
+
             if (cms.galleries.initValues.widgetmode != "simple" || cms.galleries.initValues.showformats == true) {
                // refresh the format select box
                refreshSelectBox();
             } else if (cms.galleries.initValues.showformats == false) {
                $('button[name="' + keys['cropShow'] + '"]').hide();
             }
+        
+             
          }
          cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "w");
          cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "h");
@@ -381,8 +384,8 @@
          // disable input fields and buttons for simple widget mode      
          
          
-         $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
-         $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
+         $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
+         $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
          
          
          //$('#formatselect').get(0).disabled = true;
@@ -393,8 +396,8 @@
          if (isCropped == true) {
             // cropping has been set, disable input fields and refresh view
             
-            $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
-            $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
+            $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
+            $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
             
             
             //$('#formatselect').get(0).disabled = true;                
@@ -409,8 +412,8 @@
                changeFormat();
             } else if (cms.galleries.initValues.useformats == false) {
                // only enable if not using formats
-               $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
-               $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
                
             }
             //$('#formatselect').get(0).disabled = false;
@@ -554,13 +557,13 @@
          lockRatio = true;
          
          
-         $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.galleries.activeItem.width);
-         $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.galleries.activeItem.height);
+         $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.galleries.activeItem.width);
+         $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.galleries.activeItem.height);
          if (cms.galleries.isSelectableItem()) {
             $('button[name="' + keys['locksizes'] + '"]').find('span').removeClass('cms-galleries-icon-unlocked');
             $('button[name="' + keys['locksizes'] + '"]').find('span').addClass('cms-galleries-icon-locked');
             // reset select box
-            $('.edit-format-area').find('.cms-selectbox').selectBox('setValue', formatDropDown[0]['value']);
+            $('#' + keys['formatTabId']).find('.cms-selectbox').selectBox('setValue', formatDropDown[0]['value']);
          }
          refreshActiveImagePreview();
       }
@@ -654,12 +657,12 @@
          if (cms.imagepreviewhandler.formatSelected.width != -1) {
             if (cms.imagepreviewhandler.formatSelected.height != -1) {
                // we have a width and height, we also have to check the lock ratio
-               $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.width);
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.width);
                onSizeChanged("Width", cms.imagepreviewhandler.formatSelected.width, false, false);
-               var txtHeight = $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val();
+               var txtHeight = $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').val();
                if (txtHeight != cms.imagepreviewhandler.formatSelected.height) {
                   setLockRatio(false);
-                  $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.height);
+                  $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.height);
                   onSizeChanged("Height", cms.imagepreviewhandler.formatSelected.height, true, false);
                }
             } else {
@@ -667,7 +670,7 @@
                if (cms.galleries.initValues.useformats == true) {
                   setLockRatio(true);
                }
-               $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.width)
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.width)
                onSizeChanged("Width", cms.imagepreviewhandler.formatSelected.width, true, false);
             }
          } else {
@@ -676,7 +679,7 @@
                if (cms.galleries.initValues.useformats == true) {
                   setLockRatio(true);
                }
-               $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.height)
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.imagepreviewhandler.formatSelected.height)
                onSizeChanged("Height", cms.imagepreviewhandler.formatSelected.height, true, false);
             }
          }
@@ -687,7 +690,7 @@
    var onSizeChanged = function(dimension, value, refreshImage, refreshSelect) {
       // verifies if the aspect ratio has to be mantained
       if (lockRatio == true) {
-         var e = dimension == 'Width' ? $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input') : $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input');
+         var e = dimension == 'Width' ? $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input') : $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input');
          
          if (value.length == 0 || isNaN(value)) {
             e.value = "";
@@ -704,8 +707,8 @@
          if (!isNaN(value)) 
             e.val(value);
       }
-      cms.galleries.activeItem.newwidth = parseInt($('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val());
-      cms.galleries.activeItem.newheight = parseInt($('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val());
+      cms.galleries.activeItem.newwidth = parseInt($('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').val());
+      cms.galleries.activeItem.newheight = parseInt($('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').val());
       if (refreshSelect == null || refreshSelect == true) {
          refreshSelectBox();
       }
@@ -730,8 +733,8 @@
    var setLockRatio = function(/**Boolean*/newRatio) {
       lockRatio = newRatio;
       if (lockRatio == true) {
-         var displayedWidth = $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val();
-         var displayedHeight = $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val();
+         var displayedWidth = $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').val();
+         var displayedHeight = $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').val();
          if (displayedWidth.length > 0) {
             onSizeChanged('Width', displayedWidth);
          } else {
@@ -794,7 +797,7 @@
             return;
          }
          cms.imagepreviewhandler.formatSelected = cms.imagepreviewhandler.formatSelections[selectedIndex];
-         $('.edit-format-area').find('.cms-selectbox').selectBox('setValue', formatDropDown[selectedIndex]['value']);
+         $('#' + keys['formatTabId']).find('.cms-selectbox').selectBox('setValue', formatDropDown[selectedIndex]['value']);
       }
    }
    
@@ -805,8 +808,8 @@
     * @param {Object} imgHeight image height
     */
    var setImageFormatFields = function(/**int*/imgWidth,/**int*/ imgHeight) {
-      $('.edit-format-area').find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(imgWidth);
-      $('.edit-format-area').find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(imgHeight);
+      $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(imgWidth);
+      $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(imgHeight);
    }
    
    /**
@@ -1046,7 +1049,8 @@
       'setValues': {
          'widget': setImagePath,
          'editor': 'test2'
-      }
+      },      
+      'closePreview': cms.galleries.getContentHandler()['closePreview']
    };
    
    cms.galleries.addContentTypeHandler(cms.imagepreviewhandler.imageContentTypeHandler['type'], cms.imagepreviewhandler.imageContentTypeHandler);
