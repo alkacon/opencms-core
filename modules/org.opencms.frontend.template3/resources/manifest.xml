@@ -384,7 +384,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement)]]></value>
+					<value><![CDATA[container-element]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -408,7 +408,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement)]]></value>
+					<value><![CDATA[container-element]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -432,7 +432,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(query,searchPage,searchaction);]]></value>
+					<value><![CDATA[container-element;params=(query,searchPage,searchaction);]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -627,7 +627,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement)]]></value>
+					<value><![CDATA[container-element]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -650,7 +650,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement)]]></value>
+					<value><![CDATA[container-element]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -674,7 +674,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement)]]></value>
+					<value><![CDATA[container-element]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -698,7 +698,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement)]]></value>
+					<value><![CDATA[container-element]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -1653,7 +1653,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);uri;params=(id)]]></value>
+					<value><![CDATA[container-element;uri;params=(id)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>

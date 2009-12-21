@@ -431,7 +431,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -455,7 +455,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -479,7 +479,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -516,7 +516,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -540,7 +540,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -564,7 +564,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -601,7 +601,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -625,7 +625,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -649,7 +649,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -686,7 +686,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -710,7 +710,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -734,7 +734,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[attrs=(__currentElement);params=(id);uri]]></value>
+					<value><![CDATA[container-element;params=(id);uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>

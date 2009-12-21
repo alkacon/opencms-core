@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2009/12/15 15:24:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/21 10:33:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,8 @@ import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.Map;
 
@@ -50,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,6 +60,9 @@ public class CmsFlexRequestKey {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexRequestKey.class);
+
+    /** The current container element. */
+    private String m_containerElement;
 
     /** The request context this request was made in. */
     private CmsRequestContext m_context;
@@ -70,6 +75,9 @@ public class CmsFlexRequestKey {
 
     /** The OpenCms resource that this key is used for. */
     private String m_resource;
+
+    /** The current sitemap entry. */
+    private String m_sitemapEntry;
 
     /**
      * This constructor is used when building a cache key from a request.<p>
@@ -97,8 +105,20 @@ public class CmsFlexRequestKey {
         // calculate the resource name
         m_resource = CmsFlexCacheKey.getKeyName(m_context.addSiteRoot(target), online);
 
-        // calculate the request
+        // calculate the device
         m_device = CmsFlexController.getController(req).getCmsCache().getDeviceSelector().getDeviceType(req);
+
+        // get the current sitemap entry
+        Object obj = req.getAttribute(CmsSitemapManager.ATTR_SITEMAP_ENTRY);
+        if (obj != null) {
+            m_sitemapEntry = obj.toString();
+        }
+
+        // get the current container element
+        obj = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
+        if (obj != null) {
+            m_containerElement = obj.toString();
+        }
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUESTKEY_CREATED_NEW_KEY_1, m_resource));
@@ -117,6 +137,16 @@ public class CmsFlexRequestKey {
             return null;
         }
         return attrs;
+    }
+
+    /**
+     * Returns the current container element.<p>
+     *
+     * @return the current container element
+     */
+    public String getContainerElement() {
+
+        return m_containerElement;
     }
 
     /**
@@ -233,6 +263,16 @@ public class CmsFlexRequestKey {
     public String getSite() {
 
         return m_context.getSiteRoot();
+    }
+
+    /**
+     * Returns the current sitemap entry.<p>
+     *
+     * @return the current sitemap entry
+     */
+    public String getSitemapEntry() {
+
+        return m_sitemapEntry;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2009/12/15 15:24:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/21 10:33:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,16 +48,14 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 
 /**
- * Implements the CmsFlexCacheKey,
- * which is a key used to describe the caching behaviour
- * of a specific resource.<p>
+ * Key used to describe the caching behaviour of a specific resource.<p>
  *
  * It has a lot of variables that are directly accessed (which isn't good style, I know)
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,6 +124,12 @@ public class CmsFlexCacheKey {
     /** Flex cache keyword: device. */
     private static final String CACHE_20_DEVICE = "device";
 
+    /** Flex cache keyword: sitemap-entry. */
+    private static final String CACHE_21_SITEMAP_ENTRY = "sitemap-entry";
+
+    /** Flex cache keyword: container-element. */
+    private static final String CACHE_22_CONTAINER_ELEMENT = "container-element";
+
     /** The list of keywords of the Flex cache language. */
     private static final List<String> CACHE_COMMANDS = Arrays.asList(new String[] {
         CACHE_00_ALWAYS,
@@ -148,7 +152,9 @@ public class CmsFlexCacheKey {
         CACHE_17_SITE,
         CACHE_18_ATTRS,
         CACHE_19_NO_ATTRS,
-        CACHE_20_DEVICE});
+        CACHE_20_DEVICE,
+        CACHE_21_SITEMAP_ENTRY,
+        CACHE_22_CONTAINER_ELEMENT});
 
     /** Marker to identify use of certain String key members (uri, ip etc.). */
     private static final String IS_USED = "/ /";
@@ -161,6 +167,12 @@ public class CmsFlexCacheKey {
 
     /** Cache key variable: The current device. */
     private String m_device;
+
+    /** Cache key variable: The current sitemap entry. */
+    private String m_sitemapEntry;
+
+    /** Cache key variable: The current container element. */
+    private String m_containerElement;
 
     /** Cache key variable: The requested element. */
     private String m_element;
@@ -370,6 +382,14 @@ public class CmsFlexCacheKey {
 
         if (m_device != null) {
             appendKeyValue(str, CACHE_20_DEVICE, key.getDevice());
+        }
+
+        if (m_sitemapEntry != null) {
+            appendKeyValue(str, CACHE_21_SITEMAP_ENTRY, key.getSitemapEntry());
+        }
+
+        if (m_containerElement != null) {
+            appendKeyValue(str, CACHE_22_CONTAINER_ELEMENT, key.getContainerElement());
         }
 
         if (m_locale != null) {
@@ -604,6 +624,12 @@ public class CmsFlexCacheKey {
         }
         if (m_device != null) {
             appendKeyValue(str, CACHE_20_DEVICE, m_device);
+        }
+        if (m_sitemapEntry != null) {
+            appendKeyValue(str, CACHE_21_SITEMAP_ENTRY, m_sitemapEntry);
+        }
+        if (m_containerElement != null) {
+            appendKeyValue(str, CACHE_22_CONTAINER_ELEMENT, m_containerElement);
         }
         if (m_locale != null) {
             // add locale
@@ -877,7 +903,7 @@ public class CmsFlexCacheKey {
                         if (v != null) {
                             m_attrs = parseValueList(v);
                         } else {
-                            m_attrs = Collections.emptySet();
+                            m_attrs = null;
                         }
                         break;
                     case 19: // no-attrs
@@ -892,14 +918,20 @@ public class CmsFlexCacheKey {
                     case 20: // device
                         m_device = IS_USED; // marks m_device as being used
                         break;
+                    case 21: // sitemap entry
+                        m_sitemapEntry = IS_USED;
+                        break;
+                    case 22: // container element
+                        m_containerElement = IS_USED;
+                        break;
                     default: // unknown directive, throw error
                         m_parseError = true;
                 }
             }
         } catch (Exception e) {
             // any Exception here indicates a parsing error
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_PARSE_ERROR_1, e.toString()));
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_PARSE_ERROR_1, e.toString()));
             }
             m_parseError = true;
         }
