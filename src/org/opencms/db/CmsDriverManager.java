@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/12/17 13:10:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/12/21 10:33:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -312,6 +312,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The lock manager. */
     private CmsLockManager m_lockManager;
 
+    private List<CmsLogEntry> m_log = new ArrayList<CmsLogEntry>();
+
     /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singelton. */
     private CmsMemoryMonitor m_monitor;
 
@@ -537,7 +539,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc,
                 resource.getStructureId(),
                 CmsLogEntryType.RESOURCE_ADD_RELATION,
-                new String[] {relation.getSourcePath(), relation.getTargetPath()}));
+                new String[] {relation.getSourcePath(), relation.getTargetPath()}), false);
             // touch the resource
             setDateLastModified(dbc, resource, System.currentTimeMillis());
         }
@@ -860,7 +862,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_FLAGS,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
         // write it
         writeResource(dbc, clone);
     }
@@ -894,7 +896,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_TYPE,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
         // write it
         writeResource(dbc, clone);
     }
@@ -984,7 +986,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             destination.getStructureId(),
             CmsLogEntryType.RESOURCE_PERMISSIONS,
-            new String[] {destination.getRootPath()}));
+            new String[] {destination.getRootPath()}), false);
 
         // update the "last modified" information
         if (updateLastModifiedInfo) {
@@ -1137,7 +1139,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             newResource.getStructureId(),
             CmsLogEntryType.RESOURCE_COPIED,
-            new String[] {newResource.getRootPath()}));
+            new String[] {newResource.getRootPath()}), false);
 
         // create the resource
         newResource = createResource(dbc, destination, newResource, content, properties, false);
@@ -1813,13 +1815,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     dbc,
                     newResource.getStructureId(),
                     CmsLogEntryType.RESOURCE_CREATED,
-                    new String[] {resource.getRootPath()}));
+                    new String[] {resource.getRootPath()}), false);
             } else {
                 log(dbc, new CmsLogEntry(
                     dbc,
                     newResource.getStructureId(),
                     CmsLogEntryType.RESOURCE_IMPORTED,
-                    new String[] {resource.getRootPath()}));
+                    new String[] {resource.getRootPath()}), false);
             }
         } finally {
             // clear the internal caches
@@ -1975,7 +1977,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             newResource.getStructureId(),
             CmsLogEntryType.RESOURCE_CLONED,
-            new String[] {newResource.getRootPath()}));
+            new String[] {newResource.getRootPath()}), false);
         // create the resource (null content signals creation of sibling)
         newResource = createResource(dbc, destination, newResource, null, properties, false);
 
@@ -2407,6 +2409,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void deleteLogEntries(CmsDbContext dbc, CmsLogFilter filter) throws CmsException {
 
+        updateLog(dbc);
         m_projectDriver.deleteLog(dbc, filter);
     }
 
@@ -2736,7 +2739,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_REMOVE_RELATION,
-            new String[] {resource.getRootPath(), filter.toString()}));
+            new String[] {resource.getRootPath(), filter.toString()}), false);
     }
 
     /**
@@ -2941,7 +2944,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         dbc,
                         currentResource.getStructureId(),
                         CmsLogEntryType.RESOURCE_DELETED,
-                        new String[] {currentResource.getRootPath()}));
+                        new String[] {currentResource.getRootPath()}), false);
                 }
             }
         }
@@ -3989,6 +3992,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List<CmsLogEntry> getLogEntries(CmsDbContext dbc, CmsLogFilter filter) throws CmsException {
 
+        updateLog(dbc);
         return m_projectDriver.readLog(dbc, filter);
     }
 
@@ -4578,6 +4582,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List<CmsResource> getUsersPubList(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
 
+        updateLog(dbc);
         return m_projectDriver.getUsersPubList(dbc, userId);
     }
 
@@ -4936,6 +4941,43 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Adds the given log entry to the current user's log.<p>
+     * 
+     * This opration works only on memory, to get the log entries actually 
+     * written to DB you have to call the {@link #updateLog(CmsDbContext)} method.<p>
+     * 
+     * @param dbc the current database context
+     * @param logEntry the log entry to create
+     * @param force forces the log entry to be counted, 
+     *              if not only the first log entry in a transaction will be taken into account
+     */
+    public void log(CmsDbContext dbc, CmsLogEntry logEntry, boolean force) {
+
+        if (dbc == null) {
+            return;
+        }
+        // check log level
+        if (!logEntry.getType().isActive()) {
+            // do not log inactive entries
+            return;
+        }
+        // if not forcing
+        if (!force) {
+            // operation already logged
+            boolean abort = (dbc.getAttribute(CmsLogEntry.ATTR_LOG_ENTRY) != null);
+            // disabled logging from outside
+            abort |= (dbc.getRequestContext().getAttribute(CmsLogEntry.ATTR_LOG_ENTRY) != null);
+            if (abort) {
+                return;
+            }
+        }
+        // prevent several entries for the same operation
+        dbc.setAttribute(CmsLogEntry.ATTR_LOG_ENTRY, Boolean.TRUE);
+        // keep it for later
+        m_log.add(logEntry);
+    }
+
+    /**
      * Attempts to authenticate a user into OpenCms with the given password.<p>
      * 
      * @param dbc the current database context
@@ -4982,7 +5024,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     System.currentTimeMillis(),
                     null,
                     CmsLogEntryType.USER_LOGIN_FAILED,
-                    new String[] {user.getName(), remoteAddress}));
+                    new String[] {user.getName(), remoteAddress}), false);
                 // check if this account is temporarily disabled because of too many invalid login attempts
                 // this will throw an exception if the test fails
                 OpenCms.getLoginManager().checkInvalidLogins(userName, remoteAddress);
@@ -5006,7 +5048,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     System.currentTimeMillis(),
                     null,
                     CmsLogEntryType.USER_LOGIN_FAILED,
-                    new String[] {userName, remoteAddress}));
+                    new String[] {userName, remoteAddress}), false);
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                     org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2,
                     userName,
@@ -5021,7 +5063,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 System.currentTimeMillis(),
                 null,
                 CmsLogEntryType.USER_LOGIN_FAILED,
-                new String[] {newUser.getName(), remoteAddress}));
+                new String[] {newUser.getName(), remoteAddress}), false);
             // user is disabled, throw a securiy exception
             throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2,
@@ -5057,7 +5099,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             System.currentTimeMillis(),
             null,
             CmsLogEntryType.USER_LOGIN_SUCCESSFUL,
-            new String[] {newUser.getName(), remoteAddress}));
+            new String[] {newUser.getName(), remoteAddress}), false);
 
         // update cache
         m_monitor.cacheUser(newUser);
@@ -5195,7 +5237,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // log it
             log(dbc, new CmsLogEntry(dbc, source.getStructureId(), CmsLogEntryType.RESOURCE_MOVED, new String[] {
                 source.getRootPath(),
-                destination}));
+                destination}), false);
         }
 
         CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
@@ -7113,7 +7155,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_PERMISSIONS,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
 
         // update the "last modified" information
         setDateLastModified(dbc, resource, resource.getDateLastModified());
@@ -7207,9 +7249,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 structureId,
                 CmsLogEntryType.RESOURCE_HIDDEN,
                 new String[] {readResource(dbc, structureId, CmsResourceFilter.ALL).getRootPath()});
-            log(dbc, entry);
-            // this is needed for getting the next written
-            dbc.removeAttribute(CmsLogEntry.ATTR_LOG_ENTRY);
+            log(dbc, entry, true);
         }
     }
 
@@ -7380,7 +7420,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_CONTENT_MODIFIED,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
 
         setDateLastModified(dbc, resource, System.currentTimeMillis());
 
@@ -7563,7 +7603,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             newResource.getStructureId(),
             CmsLogEntryType.RESOURCE_RESTORE_DELETED,
-            new String[] {newResource.getRootPath()}));
+            new String[] {newResource.getRootPath()}), false);
 
         // prevent the date last modified is set to the current time
         newResource.setDateLastModified(newResource.getDateLastModified());
@@ -7637,7 +7677,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc,
                 newFile.getStructureId(),
                 CmsLogEntryType.RESOURCE_HISTORY,
-                new String[] {newFile.getRootPath()}));
+                new String[] {newFile.getRootPath()}), false);
 
             newResource = writeFile(dbc, newFile);
         } else {
@@ -7663,7 +7703,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc,
                 newResource.getStructureId(),
                 CmsLogEntryType.RESOURCE_HISTORY,
-                new String[] {newResource.getRootPath()}));
+                new String[] {newResource.getRootPath()}), false);
 
             writeResource(dbc, newResource);
         }
@@ -7711,7 +7751,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_DATE_EXPIRED,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7753,7 +7793,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_TOUCHED,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7794,7 +7834,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_DATE_RELEASED,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7922,7 +7962,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_UNDELETED,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
         // clear the cache
         m_monitor.clearResourceCache();
 
@@ -8137,6 +8177,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Logs everything that has not been written to DB jet.<p>
+     * 
+     * @param dbc the current db context
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    public void updateLog(CmsDbContext dbc) throws CmsDataAccessException {
+
+        List<CmsLogEntry> log = new ArrayList<CmsLogEntry>(m_log);
+        m_log.clear();
+        m_projectDriver.log(dbc, log);
+    }
+
+    /**
      * Updates/Creates the given relations for the given resource.<p>
      * 
      * @param dbc the db context
@@ -8287,7 +8341,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_PERMISSIONS,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
 
         // update the "last modified" information
         setDateLastModified(dbc, resource, resource.getDateLastModified());
@@ -8461,7 +8515,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             resource.getStructureId(),
             CmsLogEntryType.RESOURCE_CONTENT_MODIFIED,
-            new String[] {resource.getRootPath()}));
+            new String[] {resource.getRootPath()}), false);
 
         // read the file back from db
         resource = new CmsFile(readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL));
@@ -8637,7 +8691,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc,
                 resource.getStructureId(),
                 CmsLogEntryType.RESOURCE_PROPERTIES,
-                new String[] {resource.getRootPath()}));
+                new String[] {resource.getRootPath()}), false);
 
         } finally {
             // update the driver manager cache
@@ -8718,7 +8772,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     dbc,
                     resource.getStructureId(),
                     CmsLogEntryType.RESOURCE_PROPERTIES,
-                    new String[] {resource.getRootPath()}));
+                    new String[] {resource.getRootPath()}), false);
             }
         } finally {
             // update the driver manager cache
@@ -8908,27 +8962,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     protected CmsLockManager getLockManager() {
 
         return m_lockManager;
-    }
-
-    /**
-     * Adds the given log entry to the current user's log.<p>
-     * 
-     * @param dbc the current database context
-     * @param logEntry the log entry to create
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void log(CmsDbContext dbc, CmsLogEntry logEntry) throws CmsDataAccessException {
-
-        if ((dbc == null) || (dbc.getAttribute(CmsLogEntry.ATTR_LOG_ENTRY) != null) // operation already logged
-            || (dbc.getRequestContext().getAttribute(CmsLogEntry.ATTR_LOG_ENTRY) != null)) { // allow to disable logging from outside
-            // no dbc or already logged operation
-            return;
-        }
-        // prevent several entries for the same operation
-        dbc.setAttribute(CmsLogEntry.ATTR_LOG_ENTRY, Boolean.TRUE);
-        // log it
-        m_projectDriver.log(dbc, logEntry);
     }
 
     /**
@@ -10003,13 +10036,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc,
                 onlineResource.getStructureId(),
                 CmsLogEntryType.RESOURCE_RESTORED,
-                new String[] {onlineResource.getRootPath()}));
+                new String[] {onlineResource.getRootPath()}), false);
         } else {
             log(dbc, new CmsLogEntry(
                 dbc,
                 offlineResource.getStructureId(),
                 CmsLogEntryType.RESOURCE_MOVE_RESTORED,
-                new String[] {offlineResource.getRootPath(), onlineResource.getRootPath()}));
+                new String[] {offlineResource.getRootPath(), onlineResource.getRootPath()}), false);
         }
         if (offlineResource != null) {
             OpenCms.fireCmsEvent(new CmsEvent(

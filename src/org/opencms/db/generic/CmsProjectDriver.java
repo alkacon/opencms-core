@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/12/17 13:10:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/21 10:33:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -784,15 +784,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#log(org.opencms.db.CmsDbContext, org.opencms.db.log.CmsLogEntry)
+     * @see org.opencms.db.I_CmsProjectDriver#log(CmsDbContext, List)
      */
-    public void log(CmsDbContext dbc, CmsLogEntry logEntry) {
-
-        // check log level
-        if (!logEntry.getType().isActive()) {
-            // do not log inactive entries
-            return;
-        }
+    public void log(CmsDbContext dbc, List<CmsLogEntry> logEntries) throws CmsDbSqlException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -801,18 +795,25 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_LOG_CREATE_5");
 
-            stmt.setString(1, logEntry.getUserId().toString());
-            stmt.setLong(2, logEntry.getDate());
-            stmt.setString(3, logEntry.getResourceId() == null ? null : logEntry.getResourceId().toString());
-            stmt.setInt(4, logEntry.getType().getId());
-            stmt.setString(5, CmsStringUtil.arrayAsString(logEntry.getData(), "|"));
-
-            stmt.executeUpdate();
+            for (CmsLogEntry logEntry : logEntries) {
+                stmt.setString(1, logEntry.getUserId().toString());
+                stmt.setLong(2, logEntry.getDate());
+                stmt.setString(3, logEntry.getResourceId() == null ? null : logEntry.getResourceId().toString());
+                stmt.setInt(4, logEntry.getType().getId());
+                stmt.setString(5, CmsStringUtil.arrayAsString(logEntry.getData(), "|"));
+                try {
+                    stmt.executeUpdate();
+                } catch (SQLException e) {
+                    // ignore, most likely a duplicate entry
+                    LOG.debug(Messages.get().container(
+                        Messages.ERR_GENERIC_SQL_1,
+                        CmsDbSqlException.getErrorQuery(stmt)).key(), e);
+                }
+            }
         } catch (SQLException e) {
-            // ignore, most likely a duplicate entry
-            LOG.debug(
-                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)).key(),
-                e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1510,11 +1511,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         CmsLogEntryType type = currentFolder.getState().isNew()
                         ? CmsLogEntryType.RESOURCE_PUBLISHED_NEW
                         : CmsLogEntryType.RESOURCE_PUBLISHED_MODIFIED;
-                        log(dbc, new CmsLogEntry(
+                        m_driverManager.log(dbc, new CmsLogEntry(
                             dbc,
                             currentFolder.getStructureId(),
                             type,
-                            new String[] {currentFolder.getRootPath()}));
+                            new String[] {currentFolder.getRootPath()}), true);
+
                         // delete old historical entries
                         m_driverManager.getHistoryDriver().deleteEntries(
                             dbc,
@@ -1600,11 +1602,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     CmsLogEntryType type = state.isNew() ? CmsLogEntryType.RESOURCE_PUBLISHED_NEW : (state.isDeleted()
                     ? CmsLogEntryType.RESOURCE_PUBLISHED_DELETED
                     : CmsLogEntryType.RESOURCE_PUBLISHED_MODIFIED);
-                    log(dbc, new CmsLogEntry(
+                    m_driverManager.log(dbc, new CmsLogEntry(
                         dbc,
                         currentResource.getStructureId(),
                         type,
-                        new String[] {currentResource.getRootPath()}));
+                        new String[] {currentResource.getRootPath()}), true);
 
                     publishedIds.add(currentResource.getStructureId());
                     dbc.pop();
@@ -1663,11 +1665,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     // unlock it
                     m_driverManager.unlockResource(dbc, currentFolder, true, true);
                     // log it
-                    log(dbc, new CmsLogEntry(
+                    m_driverManager.log(dbc, new CmsLogEntry(
                         dbc,
                         currentFolder.getStructureId(),
                         CmsLogEntryType.RESOURCE_PUBLISHED_DELETED,
-                        new String[] {currentFolder.getRootPath()}));
+                        new String[] {currentFolder.getRootPath()}), true);
 
                     dbc.pop();
                 } catch (Throwable t) {

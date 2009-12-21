@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/21 10:33:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1227,6 +1227,30 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Deletes all log entries matching the given filter.<p>
+     * 
+     * @param context the current user context
+     * @param filter the filter to use for deletion
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #getLogEntries(CmsRequestContext, CmsLogFilter)
+     * @see CmsObject#deleteLogEntries(CmsLogFilter)
+     */
+    public void deleteLogEntries(CmsRequestContext context, CmsLogFilter filter) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.WORKPLACE_MANAGER);
+            m_driverManager.deleteLogEntries(dbc, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_LOG_0), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Deletes an organizational unit.<p>
      *
      * Only organizational units that contain no sub organizational unit can be deleted.<p>
@@ -1348,30 +1372,6 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_DELETE_RELATIONS_1,
                 dbc.removeSiteRoot(resource.getRootPath())), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
-     * Deletes all log entries matching the given filter.<p>
-     * 
-     * @param context the current user context
-     * @param filter the filter to use for deletion
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see #getLogEntries(CmsRequestContext, CmsLogFilter)
-     * @see CmsObject#deleteLogEntries(CmsLogFilter)
-     */
-    public void deleteLogEntries(CmsRequestContext context, CmsLogFilter filter) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            checkRole(dbc, CmsRole.WORKPLACE_MANAGER);
-            m_driverManager.deleteLogEntries(dbc, filter);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_LOG_0), e);
         } finally {
             dbc.clear();
         }
@@ -1564,20 +1564,20 @@ public final class CmsSecurityManager {
      * permissions, then this method will return <code>false</code>.<p>
      *
      * @param context the current request context
-     * @param resourcePath the name of the resource to read (full path)
+     * @param structureId the structure id of the resource to check
      * @param filter the resource filter to use while reading
      *
      * @return <code>true</code> if the resource is available
      * 
-     * @see CmsObject#existsResource(String, CmsResourceFilter)
-     * @see CmsObject#existsResource(String)
+     * @see CmsObject#existsResource(CmsUUID, CmsResourceFilter)
+     * @see CmsObject#existsResource(CmsUUID)
      */
-    public boolean existsResource(CmsRequestContext context, String resourcePath, CmsResourceFilter filter) {
+    public boolean existsResource(CmsRequestContext context, CmsUUID structureId, CmsResourceFilter filter) {
 
         boolean result = false;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            readResource(dbc, resourcePath, filter);
+            readResource(dbc, structureId, filter);
             result = true;
         } catch (Exception e) {
             result = false;
@@ -1605,20 +1605,20 @@ public final class CmsSecurityManager {
      * permissions, then this method will return <code>false</code>.<p>
      *
      * @param context the current request context
-     * @param structureId the structure id of the resource to check
+     * @param resourcePath the name of the resource to read (full path)
      * @param filter the resource filter to use while reading
      *
      * @return <code>true</code> if the resource is available
      * 
-     * @see CmsObject#existsResource(CmsUUID, CmsResourceFilter)
-     * @see CmsObject#existsResource(CmsUUID)
+     * @see CmsObject#existsResource(String, CmsResourceFilter)
+     * @see CmsObject#existsResource(String)
      */
-    public boolean existsResource(CmsRequestContext context, CmsUUID structureId, CmsResourceFilter filter) {
+    public boolean existsResource(CmsRequestContext context, String resourcePath, CmsResourceFilter filter) {
 
         boolean result = false;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            readResource(dbc, structureId, filter);
+            readResource(dbc, resourcePath, filter);
             result = true;
         } catch (Exception e) {
             result = false;
@@ -2017,6 +2017,32 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns all log entries matching the given filter.<p> 
+     * 
+     * @param context the current user context
+     * @param filter the filter to match the log entries
+     * 
+     * @return all log entries matching the given filter
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#getLogEntries(CmsLogFilter)
+     */
+    public List<CmsLogEntry> getLogEntries(CmsRequestContext context, CmsLogFilter filter) throws CmsException {
+
+        List<CmsLogEntry> result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.getLogEntries(dbc, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_LOG_ENTRIES_0), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Returns all resources of organizational units for which the current user has 
      * the given role role.<p>
      * 
@@ -2246,32 +2272,6 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_RELATIONS_1,
                 context.removeSiteRoot(resource.getRootPath())), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Returns all log entries matching the given filter.<p> 
-     * 
-     * @param context the current user context
-     * @param filter the filter to match the log entries
-     * 
-     * @return all log entries matching the given filter
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#getLogEntries(CmsLogFilter)
-     */
-    public List<CmsLogEntry> getLogEntries(CmsRequestContext context, CmsLogFilter filter) throws CmsException {
-
-        List<CmsLogEntry> result = null;
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            result = m_driverManager.getLogEntries(dbc, filter);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_LOG_ENTRIES_0), e);
         } finally {
             dbc.clear();
         }
@@ -5080,6 +5080,25 @@ public final class CmsSecurityManager {
                 context.getSitePath(resource),
                 dbc.currentUser().getName(),
                 e.getLocalizedMessage(dbc.getRequestContext().getLocale())), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Logs everything that has not been written to DB jet.<p>
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void updateLog() throws CmsException {
+
+        if (m_dbContextFactory == null) {
+            // already shutdown
+            return;
+        }
+        CmsDbContext dbc = m_dbContextFactory.getDbContext();
+        try {
+            m_driverManager.updateLog(dbc);
         } finally {
             dbc.clear();
         }

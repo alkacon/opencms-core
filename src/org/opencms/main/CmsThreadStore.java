@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2009/09/11 15:29:15 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2009/12/21 10:33:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -183,9 +183,12 @@ public final class CmsThreadStore extends Thread {
                 } catch (Throwable t) {
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0), t);
                 }
-                // additionally every 5 minutes: save the resource locks to db
+                // additionally every 5 minutes
                 try {
+                    // save the resource locks to db
                     m_securityManager.writeLocks();
+                    // save the log entries to db
+                    m_securityManager.updateLog();
                 } catch (Throwable t) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(org.opencms.lock.Messages.get().getBundle().key(

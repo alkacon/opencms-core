@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/12/21 10:33:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -275,14 +275,14 @@ public interface I_CmsProjectDriver {
     org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
 
     /**
-     * Logs the given log entry.<p>
+     * Logs the given log entries.<p>
      * 
      * @param dbc the database context
-     * @param logEntry the log entry
+     * @param logEntries the log entries to write
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void log(CmsDbContext dbc, CmsLogEntry logEntry) throws CmsDataAccessException;
+    void log(CmsDbContext dbc, List<CmsLogEntry> logEntries) throws CmsDataAccessException;
 
     /**
      * Publishes a deleted folder.<p>
