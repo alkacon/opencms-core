@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/12/21 10:40:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -175,5 +175,16 @@ public class CmsSiteEntryBean {
     public void setPosition(int position) {
 
         m_properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(getName()).append(getExtension()).append(getResourceId()).append(getTitle()).append(getProperties());
+        return sb.toString();
     }
 }
