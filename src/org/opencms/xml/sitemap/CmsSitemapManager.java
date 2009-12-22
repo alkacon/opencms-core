@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2009/12/17 14:31:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/22 10:06:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
@@ -71,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.9.2
  */
@@ -561,12 +562,13 @@ public class CmsSitemapManager {
                         String subSitemapId = entry.getProperties().get(CmsSitemapManager.PROPERTY_SITEMAP);
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subSitemapId)) {
                             // switch to sub-sitemap
-                            CmsResource subSitemapPath = cms.readResource(new CmsUUID(subSitemapId));
+                            CmsResource subSitemap = cms.readResource(new CmsUUID(subSitemapId));
+                            String subSitemapPath = cms.getSitePath(subSitemap);
                             LOG.debug(Messages.get().container(
                                 Messages.LOG_DEBUG_SITEMAP_SUBSITEMAP_2,
                                 logId,
                                 subSitemapPath).key());
-                            sitemapXml = getSitemap(cms, cms.getSitePath(subSitemapPath), online);
+                            sitemapXml = getSitemap(cms, subSitemapPath, online);
                             sitemap = sitemapXml.getSitemap(cms, cms.getRequestContext().getLocale());
                             if (sitemap == null) {
                                 // no sitemap found
@@ -620,15 +622,21 @@ public class CmsSitemapManager {
 
         // not found in cache
         String sitemapPath = path;
+        CmsResource sitemapRes = null;
         try {
             // try to read the sitemap file
-            sitemapFile = cms.readFile(sitemapPath);
-        } catch (Exception e) {
-            // can happen 
+            sitemapRes = cms.readResource(sitemapPath);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // can happen
             LOG.debug(e.getLocalizedMessage(), e);
+            return null;
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
         }
 
-        if (sitemapFile == null) {
+        if ((sitemapRes == null) || !CmsResourceTypeXmlSitemap.isSitemap(sitemapRes)) {
             // if still not found read the sitemap property
             sitemapPath = cms.readPropertyObject(sitemapPath, CmsPropertyDefinition.PROPERTY_SITEMAP, false).getValue();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(sitemapPath)) {
@@ -637,6 +645,7 @@ public class CmsSitemapManager {
             }
             String cacheKey2 = cms.getRequestContext().addSiteRoot(sitemapPath);
             if (cacheKey.equals(cacheKey2)) {
+                // TODO: log this
                 // property set to itself?
                 return null;
             }
@@ -644,13 +653,14 @@ public class CmsSitemapManager {
             CmsXmlSitemap sitemap = getSitemap(cms, sitemapPath, online);
             if (sitemap != null) {
                 // found: cache the sitemap
-                CmsFile file = m_cache.getFile(cacheKey2, online);
-                m_cache.setFile(cacheKey, file, online);
+                sitemapFile = m_cache.getFile(cacheKey2, online);
+                m_cache.setFile(cacheKey, sitemapFile, online);
             }
             return sitemap;
         }
 
         // found: cache the sitemap
+        sitemapFile = cms.readFile(sitemapRes);
         m_cache.setFile(cacheKey, sitemapFile, online);
         return CmsXmlSitemapFactory.unmarshal(cms, sitemapFile);
     }
