@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2009/12/15 16:45:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/12/22 16:20:19 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -117,8 +117,11 @@ function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
       
       paramString += "&imagedata=" + JSON.stringify(initialImageInfos);
    }
-              
-   treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=yes,location=yes,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=680,height=520');
+   if ($.browser.msie) {
+       treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=no,resizable=yes,top=20,left=150,width=670,height=520');
+   } else {
+       treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=no,resizable=yes,top=20,left=150,width=670,height=510');
+   }
    
    //edited resource has to be provided to use custom categories
    //var editedResource = "";
@@ -132,7 +135,7 @@ function previewDefault(fieldId) {
    var downUri = document.getElementById(fieldId).value;
    downUri = downUri.replace(/ /, "");
    if ((downUri != "") && (downUri.charAt(0) == "/")) {
-      treewin = window.open(contextPath + downUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=680,height=520');
+      treewin = window.open(contextPath + downUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=653,height=605');
    }
 }
 
