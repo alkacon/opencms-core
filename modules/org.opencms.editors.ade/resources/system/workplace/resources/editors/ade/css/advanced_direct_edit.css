@@ -273,6 +273,10 @@ button.cms-deactivated span.cms-icon-save {
     width: 210px;
 }
 
+#cms-overlay-editing .cms-editable-field{
+    margin: 3px 0px;
+}
+
 #cms-overlay-editing .cms-button-bar{
     margin-top: 5px;
 }
@@ -1173,6 +1177,10 @@ ol.ade-forms fieldset {
 
 .cms-publish-items {
 	overflow: auto;
+}
+
+.cms-publish-buttons{
+    margin: 0 0 0 4px;
 }
 
 

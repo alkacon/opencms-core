@@ -93,30 +93,18 @@
       // generate editable form fields
       var form = $('<div class="edit-form cms-scrolling-properties"></div>');
       for (var i = 0; i < itemProperties.length; i++) {
-          if ( i%2  == 0) {
-              $('<div class="cms-editable-field cms-left"></div>').attr('alt', itemProperties[i]['name'])
-                 .appendTo(form)
-                 .append('<span class="cms-item-title cms-width-80">' + itemProperties[i]['name'] + '</span>')
-                 .append('<span class="cms-item-edit">' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '&nbsp;') + '</span>');    
-          } else {
-              $('<div class="cms-editable-field cms-right"></div>').attr('alt', itemProperties[i]['name'])
-                 .appendTo(form)
-                 .append('<span class="cms-item-title cms-width-80">' + itemProperties[i]['name'] + '</span>')
-                 .append('<span class="cms-item-edit">' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '&nbsp;') + '</span>');
-          }
-          
+          $('<div class="cms-editable-field '+( i%2  == 0 ? 'cms-left' : 'cms-right')+'"></div>').attr('alt', itemProperties[i]['name'])
+             .appendTo(form)
+             .append('<span class="cms-item-title cms-width-90">' + itemProperties[i]['name'] + '</span>')
+             .append('<input class="cms-item-edit ui-corner-all" name="' + itemProperties[i]['name'] + '" title="Edit ' + itemProperties[i]['name'] + '" value="' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '') + '" />');    
       }      
       target.append(form);
       
       // bind direct input to the editable fields
-      $('.cms-item-edit').directInput({
-         marginHack: true,
-         live: false,
-         setValue: cms.galleries.getContentHandler()['markChangedProperty'],
-         onChange: function(element, input) {
+      $('.cms-item-edit').change(function() {
             target.find('button[name="previewSave"]').removeAttr('disabled');
-         }
-      });    
+            $(this).addClass('cms-item-changed');
+         });    
          
       // add ok-close button bar to the edit area                        
       target.append($(okCloseButtonBar));
@@ -184,7 +172,7 @@
       $.each(changedProperties, function() {
          var property = {};
          property['name'] = $(this).closest('div').attr('alt');
-         property['value'] = $(this).text();
+         property['value'] = $(this).val();
          changes['properties'].push(property);
       });
       
