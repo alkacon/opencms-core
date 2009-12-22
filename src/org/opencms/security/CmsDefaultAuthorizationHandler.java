@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultAuthorizationHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/12/22 10:05:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.4 
  */
@@ -63,14 +63,14 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
     public static final String HEADER_AUTHORIZATION = "Authorization";
     /** Credentials separator constant. */
     public static final String SEPARATOR_CREDENTIALS = ":";
-    
+
     /**
      * @see org.opencms.security.I_CmsAuthorizationHandler#getLoginFormURL(java.lang.String, java.lang.String, java.lang.String)
      */
-    public String getLoginFormURL (String loginFormURL, String params, String callbackURL) {
-    
+    public String getLoginFormURL(String loginFormURL, String params, String callbackURL) {
+
         if (loginFormURL != null) {
-                        
+
             StringBuffer fullURL = new StringBuffer(loginFormURL);
             if (callbackURL != null) {
                 fullURL.append("?");
@@ -82,13 +82,13 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
                 fullURL.append((callbackURL != null) ? "&" : "?");
                 fullURL.append(params);
             }
-            
+
             return fullURL.toString();
         }
-        
+
         return null;
     }
-    
+
     /**
      * @see I_CmsAuthorizationHandler#initCmsObject(HttpServletRequest)
      */
@@ -109,12 +109,14 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
         // failed
         return null;
     }
-    
+
     /**
      * @see org.opencms.security.I_CmsAuthorizationHandler#initCmsObject(javax.servlet.http.HttpServletRequest, org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction)
      */
-    public CmsObject initCmsObject(HttpServletRequest request, I_CmsAuthorizationHandler.I_PrivilegedLoginAction loginAction) {
-        
+    public CmsObject initCmsObject(
+        HttpServletRequest request,
+        I_CmsAuthorizationHandler.I_PrivilegedLoginAction loginAction) {
+
         return initCmsObject(request);
     }
 
@@ -136,7 +138,7 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
         // return successful logged in user
         return registerSession(request, cms);
     }
- 
+
     /**
      * This method sends a request to the client to display a login form,
      * it is needed for HTTP-Authentication.<p>
@@ -147,10 +149,11 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
      * 
      * @throws IOException if something goes wrong
      */
-    public void requestAuthorization(HttpServletRequest req, HttpServletResponse res, String loginFormURL) throws IOException {
+    public void requestAuthorization(HttpServletRequest req, HttpServletResponse res, String loginFormURL)
+    throws IOException {
 
         CmsHttpAuthenticationSettings httpAuthenticationSettings = OpenCms.getSystemInfo().getHttpAuthenticationSettings();
-        
+
         if (loginFormURL == null) {
             if (httpAuthenticationSettings.useBrowserBasedHttpAuthentication()) {
                 // HTTP basic authentication is used
@@ -159,24 +162,28 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
                     + "\"");
                 res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
-                
+
             } else if (httpAuthenticationSettings.getFormBasedHttpAuthenticationUri() != null) {
                 loginFormURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri();
             } else {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_UNSUPPORTED_AUTHENTICATION_MECHANISM_1, 
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_UNSUPPORTED_AUTHENTICATION_MECHANISM_1,
                     httpAuthenticationSettings.getBrowserBasedAuthenticationMechanism()));
                 res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 return;
             }
-        } 
-        
+        }
+
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, loginFormURL, req.getRequestURI()));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_AUTHENTICATE_PROPERTY_2,
+                loginFormURL,
+                req.getRequestURI()));
         }
         // finally redirect to the login form
         res.sendRedirect(loginFormURL);
     }
-    
+
     /**
      * Checks if the current request contains HTTP basic authentication information in 
      * the headers, if so the user is tried to log in with this data, and on success a 
