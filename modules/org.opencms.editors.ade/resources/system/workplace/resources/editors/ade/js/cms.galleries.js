@@ -220,8 +220,9 @@
           width: 150,
           /* TODO: bind sort functionality */
           select: function($this, self, value){$(self).closest('div.cms-list-options').attr('id')}}));
+          resultTab.find('.cms-result-criteria').css('display','none');
       // TODO blind out for the moment
-      resultTab.find('.cms-drop-down').css('display','none');
+      //resultTab.find('.cms-drop-down').css('display','none');
       
       var typesTab = $(cms.galleries.htmlTabTypesSceleton);
       typesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
@@ -378,7 +379,7 @@
     * @param {String} searchCriteria the given search criteria
     */
    var addCreteriaToTab = cms.galleries.addCreteriaToTab =  function(/** String*/content, /** String*/ searchCriteria) {
-
+      $('.cms-result-criteria').removeAttr('style');  
       var target = $('<span id="selected' + searchCriteria + '" class="cms-criteria ui-widget-content ui-state-hover ui-corner-all"></span>')
           .appendTo($('.cms-result-criteria'));
       target.append('<div class="cms-search-title">' + content + '</div>')
@@ -524,23 +525,28 @@
    var fillResultList = cms.galleries.fillResultList = function(/**JSON*/data) {
       // remove old list with search results and pagination
       $('#results > ul').empty();
-      $('div.result-pagination').empty();
-      var resultCriteriaHeight = $('.cms-result-criteria').height();
-      var scrollingHeight = 290;
-      if(resultCriteriaHeight > 30 && resultCriteriaHeight < 80) {
-          scrollingHeight = 265;
-      } else if (resultCriteriaHeight > 79 && resultCriteriaHeight < 110) {
-          scrollingHeight = 235;
-      } else if (resultCriteriaHeight > 111) {
-          scrollingHeight = 210;
-      }      
+      $('div.result-pagination').empty().css('display', 'none');
+      
+      // adjust the height of the result list 
+      var resultContentInnerHeight = $('#cms-gallery-tabs').innerHeight();
+      var resultTabsOuterHeight = $('#cms-gallery-tabs ul').outerHeight();
+      var resultCriteriaOuterHeight = $('.cms-result-criteria').outerHeight(true);
+      var resultOptionsOuterHeight = $('#resultoptions').outerHeight(true);      
+      var scrollingHeight = resultContentInnerHeight - (resultTabsOuterHeight + resultCriteriaOuterHeight + resultOptionsOuterHeight + 20);      
       $('#results').height(scrollingHeight);
                       
       if (data.searchresult.resultcount > 0) {
-         // display
+         // display        
          cms.galleries.fillResultPage(data);
          // initialize pagination for result list, if there are many pages                  
          if (data.searchresult.resultcount > cms.galleries.searchObject.matchesperpage) {
+            
+            // adjust the height of the result list with pagination            
+            $('.result-pagination').removeAttr('style');
+            var resultPaginationOuterHeight = $('.result-pagination').outerHeight(true);
+            $('#results').height(scrollingHeight - resultPaginationOuterHeight);
+            
+            // initialize pagination            
             var firsttime = true;
             $('div.result-pagination').pagination(data.searchresult.resultcount, {
                items_per_page: cms.galleries.searchObject.matchesperpage,
@@ -577,7 +583,7 @@
             });
          }
       } else {
-            // handle empty list for search
+            
       }
    }
      
@@ -616,7 +622,6 @@
           $('#results li.cms-list[alt=' + cms.galleries.activeItem['path'] + ']').trigger('click');              	                    
           if (cms.galleries.activeItem['isInitial'] == true) {
               $('#results li.cms-list[alt=' + cms.galleries.activeItem['path'] + ']').trigger('dblclick');
-              //cms.galleries.activeItem['isInitial'] = false;
           }
               	          
       } 
@@ -662,11 +667,8 @@
             // Set the path to currently selected item            
             if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null' 
                 && cms.galleries.initValues['path'] != null && cms.galleries.initValues['path'] != 'null'){          
-                  //var itemField = window.opener.document.getElementById(cms.galleries.initValues['fieldId']);
-        	      //if (itemField.value != null && itemField.value != '') {
                         cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
-                        cms.galleries.activeItem['isInitial'] = true;
-            	  //}          
+                        cms.galleries.activeItem['isInitial'] = true;      
             	  }          
             }
         
@@ -1004,6 +1006,8 @@
             cms.galleries.removeItemsFromSearchObject(this);
          }
       });
+      $('.cms-result-criteria').css('display', 'none');
+      $('.cms-result-criteria:has(span)').removeAttr('style');
       
       // TODO: refresh the list of search results on the result tab
    }
