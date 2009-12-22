@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/12/22 10:03:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -143,7 +143,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -2196,7 +2196,6 @@ public final class OpenCmsCore {
         }
 
         // if does not work, try to authorize the request
-        CmsSite site = getSiteManager().matchRequest(req);
         I_CmsAuthorizationHandler.I_PrivilegedLoginAction loginAction = new I_CmsAuthorizationHandler.I_PrivilegedLoginAction() {
 
             private CmsObject m_adminCms;
@@ -2270,7 +2269,7 @@ public final class OpenCmsCore {
         cms = initCmsObject(
             req,
             m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
-            site.getSiteRoot(),
+            getSiteManager().matchRequest(req).getSiteRoot(),
             CmsProject.ONLINE_PROJECT_ID,
             "");
         // return the initialized cms user context object
@@ -2303,8 +2302,8 @@ public final class OpenCmsCore {
         String ouFqn) throws CmsException {
 
         String siteroot = null;
-        // gather information from request / response if provided
-        if ((req != null) && (res != null)) {
+        // gather information from request if provided
+        if (req != null) {
             siteroot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
         }
         // initialize the user        
