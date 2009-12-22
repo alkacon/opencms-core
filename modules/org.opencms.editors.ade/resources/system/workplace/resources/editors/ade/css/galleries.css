@@ -17,6 +17,10 @@
         padding:3px 5px 4px;
     }
     
+    .cms-menu .ui-tabs .ui-tabs-panel{
+        padding: 10px;
+    }
+    
     #cms-gallery-tabs {
 		height:456px;
 		width:650px;
@@ -31,7 +35,7 @@
         padding-top:8px;
 	}
     
-    #cms-gallery-tabs li.ui-state-active{
+    .cms-menu li.ui-tabs-selected{
         background: #f9f9f9;
     }
     
@@ -228,7 +232,7 @@
         margin-right: 10px;
     }
     
-    div.cms-editable-field {
+    .edit-form .cms-editable-field {
         margin: 2px 0px 2px 0px;
          width: 300px;
     }
@@ -315,12 +319,12 @@
     #tabs-result .cms-criteria{
     	display:inline-block;
         padding:2px;
-        margin: 1px;          
+        margin: 1px 0px;          
     }
     
            
     .cms-result-criteria {
-        margin: 5px 7px 10px 2px; 
+        margin: 5px 7px 10px 0px; 
     }       
     
     div.cms-search-title {       
