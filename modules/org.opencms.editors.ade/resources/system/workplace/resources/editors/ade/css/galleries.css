@@ -17,7 +17,7 @@
         padding:3px 5px 4px;
     }
     
-    .cms-menu .ui-tabs .ui-tabs-panel{
+    #cms-gallery-main .ui-tabs-panel, .cms-menu .ui-tabs .ui-tabs-panel{
         padding: 10px;
     }
     
