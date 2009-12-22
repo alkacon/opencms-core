@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlMessages.java,v $
- * Date   : $Date: 2009/09/04 15:01:18 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2009/12/22 10:06:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.4 
  */
@@ -273,6 +273,7 @@ public class CmsXmlMessages extends CmsMessages {
 
         CmsObject cms = null;
         try {
+            // this will always be in the root site
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
         } catch (CmsException e) {
             // error initializing cms object, log error
@@ -282,7 +283,7 @@ public class CmsXmlMessages extends CmsMessages {
                     OpenCms.getDefaultUsers().getUserGuest()));
             }
         }
-        if (cms != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(configurationFileName)) {
+        if ((cms != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(configurationFileName)) {
             // try to get XML content from cache
             Object o = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().getCachedObject(cms, configurationFileName);
             if (o != null) {
