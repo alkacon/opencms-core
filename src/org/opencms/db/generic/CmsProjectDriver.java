@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/12/21 10:33:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/12/22 07:15:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -815,7 +815,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
+            try {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            } catch (Throwable t) {
+                // this could happen during shutdown
+                LOG.debug(t.getLocalizedMessage(), t);
+            }
         }
     }
 
