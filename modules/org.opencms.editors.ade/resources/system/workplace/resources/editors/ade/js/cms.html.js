@@ -201,16 +201,16 @@
    }
    
    var subcontainerDialog = cms.html.subcontainerDialog = function(containerElement){
-       var html = ['<div id="cms-overlay-editing" class="ui-corner-all">\
+       var html = ['<div id="cms-overlay-editing" class="ui-dialog ui-widget ui-widget-content ui-corner-all">\
+           <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" unselectable="on" style="-moz-user-select: none;"><span class="ui-dialog-title" id="ui-dialog-title-cms-leave-dialog" unselectable="on" style="-moz-user-select: none;">Edit sub-container</span></div>\
            <div style="margin:10px">\
-               <b>Edit sub-container</b><br /><br />\
-               <div class="cms-editable-field cms-left" alt="title"><span class="cms-item-title cms-width-80">Title</span><input class="cms-item-edit ui-corner-all" name="title" title="Edit title" value="',
+               <div class="cms-editable-field" alt="title"><span class="cms-item-title cms-width-90">Title</span><input class="cms-item-edit ui-corner-all" name="title" title="Edit title" value="',
                containerElement['title'],
                '" /></div>\
-               <div class="cms-editable-field cms-left" alt="description"><span class="cms-item-title cms-width-80">Description</span><input name="description" title="Edit description" value="',
+               <div class="cms-editable-field" alt="description"><span class="cms-item-title cms-width-90">Description</span><input name="description" title="Edit description" value="',
                containerElement['description'],
                '" class="cms-item-edit ui-corner-all" /></div>\
-               <div class="button-bar">\
+               <div class="cms-button-bar">\
                    <button class="cms-right ui-state-default ui-corner-all" name="subcontainerClose"><span class="cms-galleries-button">Close</span></button>\
                    <button class="cms-right ui-state-default ui-corner-all" name="subcontainerSave"><span class="cms-galleries-button">Save</span></button>\
                    <br clear="all"/>\

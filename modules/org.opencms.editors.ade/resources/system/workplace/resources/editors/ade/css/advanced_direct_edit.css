@@ -263,7 +263,7 @@ button.cms-deactivated span.cms-icon-save {
 }
 
 #cms-overlay-editing{
-    width: 318px;
+    width: 328px;
     z-index: 8990;
     position: absolute;
     background: #FFFFFF;
@@ -271,6 +271,10 @@ button.cms-deactivated span.cms-icon-save {
 
 #cms-overlay-editing .cms-item-edit{
     width: 210px;
+}
+
+#cms-overlay-editing .cms-button-bar{
+    margin-top: 5px;
 }
 
 #cms-overlay {
@@ -1151,7 +1155,20 @@ ol.ade-forms fieldset {
 	width: 100%;
 }
 
+/* CONTENT EDITOR */
 
+#cms-editor{
+    padding: 2px 5px;
+}
+
+.ui-dialog div.ui-dialog-titlebar{
+    padding: 2px 10px;
+    margin: 0 5px;
+}
+
+.ui-dialog span.ui-dialog-title{
+    margin: 0px;
+}
 /* PUBLISH */
 
 .cms-publish-items {
@@ -1384,6 +1401,14 @@ div.cms-publish-scrolling {
 .cms-item-title, .cms-item-edit{
     display: inline-block;
     vertical-align: middle;
+}
+
+.cms-item-title{
+    font-weight:bold;
+}
+
+.cms-width-90{
+    width: 90px;
 }
 
 .edit-form input.cms-direct-input, .edit-form input.cms-direct-input:active, .edit-form input.cms-direct-input:focus{

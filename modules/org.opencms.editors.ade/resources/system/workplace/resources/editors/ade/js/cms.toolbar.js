@@ -76,20 +76,20 @@
       var cWidth = container.outerWidth();
       cms.toolbar.editingSubcontainerId = container.attr('rel');
       var containerElement = cms.data.elements[cms.toolbar.editingSubcontainerId];
-      if (isNew || containerElement['types'].length==0){
-          containerElement['types'].push(parentContainer['type']);
+      if (isNew || containerElement['types'].length == 0) {
+         containerElement['types'].push(parentContainer['type']);
       }
       cms.toolbar.dom.appendBox.css('position', 'absolute');
       var overlay = $('<div id="cms-overlay"></div>').appendTo(cms.toolbar.dom.appendBox);
       var overlayEditing = $(cms.html.subcontainerDialog(containerElement)).appendTo(cms.toolbar.dom.appendBox);
       overlayEditing.css({
-         
-         'top': cOffset.top,
-         'left': cOffset.left - 328
+      
+         'top': cOffset.top - 2,
+         'left': cOffset.left - 345
       });
       var overlayContainer = container.clone().appendTo(cms.toolbar.dom.appendBox);
-      if (isNew){
-          overlayContainer.removeClass('cms-new-element');
+      if (isNew) {
+         overlayContainer.removeClass('cms-new-element');
       }
       // overlayContainer.find('div.cms-handle').remove();
       overlayContainer.attr('id', cms.toolbar.editingSubcontainerId);
@@ -117,8 +117,8 @@
             $(this).appendTo(container);
          });
          containerElement.subItems = subItems;
-         containerElement['title']=$('input[name="title"]', overlayEditing).val();
-         containerElement['description']=$('input[name="description"]', overlayEditing).val();
+         containerElement['title'] = $('input[name="title"]', overlayEditing).val();
+         containerElement['description'] = $('input[name="description"]', overlayEditing).val();
          var postElement = {
             'file': containerElement['file'],
             'title': containerElement['title'],
@@ -127,24 +127,24 @@
             'subItems': subUris
          };
          if (isNew) {
-             cms.data.postJSON('newsub', {
-                 'elem': postElement
-             }, function(ok, data) {
-                  var newId = data['id'];
-                  delete cms.data.elements[containerElement['id']]
-                  containerElement['id']=newId;
-                  containerElement['status'] = cms.data.STATUS_CREATED;
-                  cms.data.elements[newId]=containerElement;
-                  container.attr('rel', newId);
-                  container.removeClass('cms-new-element');
+            cms.data.postJSON('newsub', {
+               'elem': postElement
+            }, function(ok, data) {
+               var newId = data['id'];
+               delete cms.data.elements[containerElement['id']]
+               containerElement['id'] = newId;
+               containerElement['status'] = cms.data.STATUS_CREATED;
+               cms.data.elements[newId] = containerElement;
+               container.attr('rel', newId);
+               container.removeClass('cms-new-element');
             });
          } else {
-             cms.data.postJSON('subcnt', {
-                 'elem': postElement
-             }, function(ok, data) {
-                          //TODO: after post
+            cms.data.postJSON('subcnt', {
+               'elem': postElement
+            }, function(ok, data) {
+                        //TODO: after post
             });
-        }
+         }
          delete cms.data.containers[cms.toolbar.editingSubcontainerId];
          cms.toolbar.dom.appendBox.empty();
          cms.toolbar.editingSubcontainerId = null;
@@ -250,7 +250,7 @@
       $item.remove();
       cms.move.updateContainer($container.attr('id'));
       if (cms.toolbar.editingSubcontainerId == null) {
-          setPageChanged(true);
+         setPageChanged(true);
       }
    };
    
@@ -589,8 +589,8 @@
       var id = $.isArray(ids) ? ids[0] : ids;
       var windowSize = cms.util.getWindoDimensions();
       var dialogWidth = windowSize['width'] > 1400 ? 1350 : (windowSize['width'] - 50);
-      var dialogHeight = windowSize['height'] - 20;
-      var iFrameHeight = dialogHeight - 115;
+      var dialogHeight = windowSize['height'] -10;
+      var iFrameHeight = dialogHeight - 31;
       var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
       if (newLink) {
          editorLink += newLink;
@@ -603,11 +603,10 @@
          editorDialog.empty().attr('rel', id);
       }
       
-      // mmoossen: resource name in body: editorDialog.append('<div class="cms-editor-subtitle">Resource: ' + (newLink) ? "new resource" : path + '</div>')
       editorDialog.append(editorFrame);
       editorDialog.dialog({
          width: dialogWidth - 50,
-         height: dialogHeight - 60,
+         height: dialogHeight,
          title: cms.util.format(M.EDITOR_TITLE, ((newLink) ? M.EDITOR_NEW_RESOURCE : path)), // mmoossen: resource name in title
          modal: true,
          autoOpen: true,
@@ -615,10 +614,10 @@
          draggable: true,
          resizable: true,
          resize: function(event) {
-            $('#cms-editor iframe').height($(this).height() - 20);
+            $('#cms-editor iframe').height($(this).height() - 5);
          },
          resizeStop: function(event) {
-            $('#cms-editor iframe').height($(this).height() - 20);
+            $('#cms-editor iframe').height($(this).height() - 5);
          },
          position: ['center', 0],
          open: function(event) {
@@ -1116,7 +1115,7 @@
     *
     */
    var initLinks = cms.toolbar.initLinks = function() {
-      $('<div id="cms-leave-dialog" style="display: none;">' + M.LEAVE_PAGE_CONFIRM + '</div>').appendTo('body');
+      
       $('a:not(.cms-left, .cms-move, .cms-delete, .cms-edit, .cms-properties, .cms-advanced-search, .cms-basic-search)').live('click', function() {
          if (!cms.toolbar.pageChanged) {
             cms.toolbar.leavingPage = true;
@@ -1124,39 +1123,45 @@
          }
          var $link = $(this);
          var target = $link.attr('href');
-         var buttons = {};
-         
-         
-         
-         buttons[M.LEAVE_PAGE_SAVE] = function() {
-            $(this).dialog('destroy');
-            savePage(function(ok) {
-               if (ok) {
-                  leavePage(target);
-               }
-            });
-         };
-         
-         buttons[M.LEAVE_PAGE_OK] = function() {
-            $(this).dialog('destroy');
-            leavePage(target);
-         };
-         
-         buttons[M.LEAVE_PAGE_CANCEL] = function() {
-            $(this).dialog('destroy');
-         };
-         
-         $('#cms-leave-dialog').dialog({
-            autoOpen: true,
-            modal: true,
-            title: M.LEAVE_PAGE_TITLE,
-            zIndex: 9999,
-            buttons: buttons,
-            close: function() {
-               $(this).dialog('destroy');
+         cms.toolbar.leavePageDialog(target);
+         return false;
+      });
+   }
+   
+   /**
+    * Opens the leave page confirm dialog (if page has changed)
+    * 
+    * @param {String} target the target page to open
+    */
+   var leavePageDialog = cms.toolbar.leavePageDialog = function(target) {
+      var buttons = {};
+      buttons[M.LEAVE_PAGE_SAVE] = function() {
+         $(this).dialog('destroy');
+         savePage(function(ok) {
+            if (ok) {
+               leavePage(target);
             }
          });
-         return false;
+      };
+      
+      buttons[M.LEAVE_PAGE_OK] = function() {
+         $(this).dialog('destroy');
+         leavePage(target);
+      };
+      
+      buttons[M.LEAVE_PAGE_CANCEL] = function() {
+         $(this).dialog('destroy');
+      };
+      
+      $('#cms-leave-dialog').dialog({
+         autoOpen: true,
+         modal: true,
+         title: M.LEAVE_PAGE_TITLE,
+         zIndex: 9999,
+         buttons: buttons,
+         close: function() {
+            $(this).dialog('destroy');
+         }
       });
    }
    
@@ -1398,6 +1403,27 @@
       initialize: doNothing
    
    
+   }
+   
+   var SitemapMode = {
+      name: 'sitemap',
+      createButton: function() {
+         var self = this;
+         self.button = $('<button name="sitemap" title="Sitemap" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-sitemap"/>&nbsp;</button>');
+         self.button.click(function() {
+            if ($(this).hasClass('cms-deactivated')) {
+               return;
+            }
+            if (!cms.toolbar.pageChanged) {
+                cms.toolbar.leavingPage = true;
+                window.location=cms.data.SITEMAP_URL;
+             }else{
+                 cms.toolbar.leavePageDialog(cms.data.SITEMAP_URL);
+             }
+         });
+         return self.button;
+      },
+      initialize: doNothing
    }
    
    var PublishMode = {
@@ -1694,7 +1720,7 @@
       }).mouseout(function() {
          $(this).removeClass('ui-state-hover');
       });
-      
+      $('<div id="cms-leave-dialog" style="display: none;">' + M.LEAVE_PAGE_CONFIRM + '</div>').appendTo('body');
       initLinks();
       // $(window).resize(fixMenuAlignment);
    };
@@ -1702,7 +1728,7 @@
    /**
     * The mode objects in the order in which the buttons should appear in the toolbar.
     */
-   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, GalleryMode, FavoritesListMode, RecentListMode, SaveMode, PublishMode];
+   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, GalleryMode, FavoritesListMode, RecentListMode, SaveMode, PublishMode, SitemapMode];
    
    /**
     * Gets a mode by mode name.
