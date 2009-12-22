@@ -1,8 +1,4 @@
-<%@ page import="org.opencms.workplace.galleries.*" %><%
-
-A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
-
-%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
@@ -42,7 +38,7 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 	div.cms-border {
 		background: #F9F9F9 none repeat scroll 0 0;
 		margin: 1px 1px 1px 1px;
-		padding: 2px 1px 2px 1px;
+		padding: 1px;
 	}
 	
 	div.head {
@@ -52,7 +48,7 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 	}
 	
 	div.imgbg {		
-		height: 366px;
+		height: 451px;
 		text-align: center;
 	}
 	
@@ -61,16 +57,20 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 	}
 	
 	div.selection {
-		font-size: 12px;
+		/*font-size: 12px;
 		margin-top:2px;
-		text-align: center;
+		text-align: center;*/
+		
+		font-size:12px;
+		height:24px;
+		line-height:20px;
 	}
 	
 	span.cms-item-title {
 		display:inline-block;
 		font-weight:bold;
-		line-height:16px;
-		margin-right: 0px;
+		margin-right:10px;
+		margin-left:5px;
 	}
 	
 	span.cms-item-value {
@@ -98,7 +98,7 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 <script type="text/javascript" src="js/cms.previewhandler.js"></script>
 <script type="text/javascript" src="js/cms.imagepreviewhandler.js"></script>
 <script type="text/javascript">
-	var imgPreviewHeight = 366;
+	var imgPreviewHeight = 451;
 	if (parent.cms.galleries.initValues.dialogmode == "editor") {
 		imgPreviewHeight = 390;
 	}
@@ -326,9 +326,7 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 </head>
 <body>
 	<div id="cms-cropping-main">
-	    <div class="cms-border ui-widget-content ui-corner-all">
-			<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_CROP_HEADLINE_0) %></div>
-			
+	    <div class="cms-border ui-widget-content ui-corner-all">						
 			<div class="imgbg">
 				<div class="container">
 					<img id="cropimg" src="#" />
@@ -336,19 +334,18 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 			</div>
 		</div>
 		<div class="cms-border ui-widget-content ui-corner-all">		
-			<div class="selection">
+			<div class="selection">				
+				<button class="cms-right ui-state-default ui-corner-all" name="crop-cancel">
+					<span class="cms-galleries-button">Cancel</span>
+				</button>
+				<button class="cms-right ui-state-default ui-corner-all" name="crop-ok">
+					<span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Ok</span>
+				</button>
 				<span class="cms-item-title">Width:</span><span id="w" class="cms-item-value"></span>
 				<span class="cms-item-title">Height:</span><span id="h" class="cms-item-value"></span>
 				<span class="cms-item-title">Scale:</span><span id="r" class="cms-item-value"></span>
+				
 			</div>	
-			<div class="button-bar cms-center-buttom">
-				<button class="ui-state-default ui-corner-all" name="crop-ok">
-					<span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Ok</span>
-				</button>
-				<button class="ui-state-default ui-corner-all" name="crop-cancel">
-					<span class="cms-galleries-button">Cancel</span>
-				</button>
-			</div>
 		</div>
 	</div>
 </body>

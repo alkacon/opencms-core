@@ -12,11 +12,18 @@ pageContext.setAttribute("cms", cms);
 	}
 	
 	h3 {
-		margin: 3px;
+		font-size:14px;
+		margin:3px 3px 6px;
+		padding:0;
+		position:absolute;
+		/*display:inline-block;*/
 	}
 </style>
 <fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
 <div>
+	<%-- <button class="ui-state-default ui-corner-all" name="showDetails">
+		<span class="cms-galleries-button cms-galleries-icon-movedown cms-icon"> </span>
+	</button>--%>
 	<h3>${cms.title}</h3>
 	<%-- <div>
 		<b>Last modified:</b>&nbsp;${cms.resource.dateLastModified}<br />

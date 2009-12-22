@@ -22,7 +22,7 @@
     }
     
     #cms-gallery-tabs {
-		height:456px;
+		height:487px;
 		width:650px;
         background: #f9f9f9;
         padding: 0px;
@@ -42,7 +42,7 @@
     /** Styles for the preview and crop html*/
     #cms-preview,
     #cms-image-crop{        
-        height:455px;
+        height:486px;
         left:1px;
         position:absolute;
         top:2px;
@@ -53,12 +53,12 @@
     
     #cms-preview .preview-area{
         background: #F9F9F9 none repeat scroll 0 0;
-        height:330px;
-        margin:2px;
+        height:364px;
+        margin: 1px;
     }
     
     #cms-preview .preview-area>div{
-        margin: 2px;
+        margin: 1px;
     }
     
     /*#cms-preview .edit-area,
@@ -73,16 +73,23 @@
     #cms-editable-tabs{
         background: #F9F9F9 none repeat scroll 0 0;
         height: 115px;          
-        margin: 2px;
+        margin: 1px;
         padding: 0px;
     }
     
     #cms-editable-tabs.ui-tabs .ui-tabs-nav {
+       border-left:medium none;
+       border-right:medium none;
+       border-top:medium none;
        padding:0.1em 0.1em 0; 
     }
            
     #cms-editable-tabs.ui-tabs .ui-tabs-nav li {    
         margin:0 0.05em -1px 0;    
+    }
+    
+    .ui-tabs .ui-tabs-nav li.ui-tabs-selected {    
+        padding-bottom:0;
     }    
     
     #cms-editable-tabs.ui-tabs .ui-tabs-nav li a {
@@ -91,6 +98,10 @@
     
     #cms-editable-tabs.ui-tabs .ui-tabs-panel {
        padding:0.3em 0.15em 0.3em 0.5em;
+    }
+    
+    #cms-editable-tabs.ui-state-active, .ui-widget-content .ui-state-active {
+        background:#F9F9F9 none repeat scroll 0 0;
     }
     
     #tabs-edit-area {
@@ -179,10 +190,26 @@
     
     button span.cms-galleries-icon-crop{                       
         background: transparent url(images/16x16/crop.png) no-repeat scroll left center;              
-    }
+    }       
     
     button span.cms-galleries-icon-cropremove{                       
         background: transparent url(images/16x16/cropremove.png) no-repeat scroll left center; 
+    }
+    
+    button span.cms-galleries-icon-moveup{                       
+        background: transparent url(images/16x16/move_up_in.png) no-repeat scroll left center;              
+    }
+    
+    button span.cms-galleries-icon-movedown{                       
+        background: transparent url(images/16x16/move_down_in.png) no-repeat scroll left center;              
+    }
+    
+    button span.cms-galleries-icon-moveup:hover{                       
+        background: transparent url(images/16x16/move_up.png) no-repeat scroll left center;              
+    }
+    
+    button span.cms-galleries-icon-movedown:hover{                       
+        background: transparent url(images/16x16/move_down.png) no-repeat scroll left center;              
     }
     
     .cms-icon-text{
@@ -287,7 +314,7 @@
     }
     
     .criteria-tab-scrolling {
-        height: 350px;
+        height: 396px;
     }
     
     /* List for search tabs */
@@ -387,7 +414,7 @@
    
    .cms-search-panel {
         border: 1px solid #AAAAAA;
-        height: 378px;
+        height: 424px;
         background: #ffffff;
     }
     

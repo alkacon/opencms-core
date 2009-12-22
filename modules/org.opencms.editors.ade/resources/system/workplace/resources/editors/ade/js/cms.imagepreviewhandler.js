@@ -29,8 +29,8 @@
    
    /** Default values for the max size of the image in the preview. */
    var defaultPreview = {
-      'height': 300,
-      'width': 550
+      'height': 362,
+      'width': 640
    };
    
    /** Array with format values for the drop down. */
@@ -946,7 +946,7 @@
    }
    
    var showCropDialog = function() {      
-      $('#cms-image-crop').html('<iframe frameborder="0" style="width: 650px; height: 455px;" name="cropFrame" src="./crop.jsp?" hspace="0">\
+      $('#cms-image-crop').html('<iframe frameborder="0" style="width: 650px; height: 486px;" name="cropFrame" src="./crop.jsp?" hspace="0">\
            </iframe>');
       $('#cms-image-crop').show();
       $('#cms-preview').hide();
