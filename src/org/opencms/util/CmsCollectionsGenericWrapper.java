@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsCollectionsGenericWrapper.java,v $
- * Date   : $Date: 2009/11/19 08:25:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/12/23 11:36:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LRUMap;
@@ -45,7 +46,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -144,5 +145,19 @@ public final class CmsCollectionsGenericWrapper {
     public static <K, V> Map<K, V> map(Object o) {
 
         return (Map<K, V>)o;
+    }
+
+    /**
+     * Provides a wrapper to convert an object into a set that avoids warnings with Java 1.5 generic code.<p> 
+     * 
+     * @param <K> the type of the returned set elements
+     * @param o the object to be converted
+     * 
+     * @return a {@link Set} with the required generic type
+     */
+    @SuppressWarnings("unchecked")
+    public static <K> Set<K> set(Object o) {
+
+        return (Set<K>)o;
     }
 }
