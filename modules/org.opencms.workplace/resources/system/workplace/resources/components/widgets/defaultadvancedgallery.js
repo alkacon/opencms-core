@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2009/12/22 16:20:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/04 16:12:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -111,14 +111,13 @@ function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
          "showformats": true,
          "scale": scaleParam,
          "imgwidth": imgWidth,
-         "imgheight": imgHeight
-      
-      };
-      
+         "imgheight": imgHeight      
+      };      
       paramString += "&imagedata=" + JSON.stringify(initialImageInfos);
    }
    if ($.browser.msie) {
-       treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=no,resizable=yes,top=20,left=150,width=670,height=520');
+       //treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=no,resizable=yes,top=20,left=150,width=670,height=520');
+       treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=yes,location=yes,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=690,height=600');
    } else {
        treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=no,resizable=yes,top=20,left=150,width=670,height=510');
    }

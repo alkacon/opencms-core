@@ -203,7 +203,7 @@
     */
    var publishChangedProperty = cms.galleries.publishChangedProperty = function() {
    
-      }
+   }
    
    /**
     * Select button was pressed, stores the image information back in the editor fields.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageFormatterHelper.java,v $
- * Date   : $Date: 2009/12/04 09:20:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/04 16:12:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,26 +31,33 @@
 
 package org.opencms.workplace.galleries;
 
+import org.opencms.file.CmsProperty;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Helper bean to implement gallery image formatters.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 
  * 
  */
 public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImageFormatterHelper.class);
 
     /** Json property name constants. */
     private enum JsonKeys {
@@ -77,7 +84,10 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
         WIDTH("width"),
 
         /** The height of the image. */
-        HEIGHT("height");
+        HEIGHT("height"),
+
+        /** The height of the image. */
+        TITLE("Title");
 
         /** Property name. */
         private String m_name;
@@ -155,6 +165,26 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
     }
 
     /**
+     * Returns the element's title property.<p>
+     *  
+     * @return the title property
+     */
+    @SuppressWarnings("null")
+    public String getPropertyTitle() {
+
+        CmsProperty currentProperty = null;
+        try {
+            currentProperty = getCmsObject().readPropertyObject(getResource(), JsonKeys.TITLE.getName(), false);
+        } catch (CmsException e) {
+            // TODO: improve error handling
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return currentProperty.getValue("");
+    }
+
+    /**
      * Returns the element's link path.<p>
      * 
      * @return the element's link path
@@ -164,6 +194,56 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
     public String getLinkPath() throws CmsException {
 
         return link(getResource().getRootPath());
+    }
+
+    /**
+     * Return the size of the given resource.<p>
+     * 
+     * @return the size
+     * @throws CmsException, if error occurred during reading resource 
+     */
+    public String getSize() throws CmsException {
+
+        return String.valueOf(getResource().getLength() / 1024);
+    }
+
+    /**
+     * Returns the ending of the resource.<p>
+     * 
+     * @return the ending
+     * @throws CmsException, if error occurred during reading resource 
+     */
+    public String getEnding() throws CmsException {
+
+        String ending = "";
+        int dotIndex = getResource().getName().lastIndexOf('.');
+        if (dotIndex != -1) {
+            ending = getResource().getName().substring(dotIndex + 1).toLowerCase();
+        }
+        return ending;
+    }
+
+    /**
+     * Returns the image format as string like 300x200.<p>
+     * 
+     * @return the image format
+     * @throws CmsException if resource could not be read
+     */
+    public String getFormat() throws CmsException {
+
+        CmsImageScaler scaler = new CmsImageScaler(getCmsObject(), getResource());
+        int width = -1;
+        int height = -1;
+        // 1: image width
+        if (scaler.isValid()) {
+            width = scaler.getWidth();
+        }
+        // 2: image height
+        if (scaler.isValid()) {
+            height = scaler.getHeight();
+        }
+        return String.valueOf(width + "x" + height);
+
     }
 
 }

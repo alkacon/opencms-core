@@ -49,6 +49,7 @@
         width:650px;
         display: none;
         background: #ffffff;
+        z-index: 2;
     }
     
     #cms-preview .preview-area{
@@ -60,15 +61,6 @@
     #cms-preview .preview-area>div{
         margin: 1px;
     }
-    
-    /*#cms-preview .edit-area,
-    #cms-preview .edit-format-area,
-    #cms-preview .cms-editable-tabs{
-        background: #F9F9F9 none repeat scroll 0 0;
-        height: 115px;          
-        margin: 2px;
-        padding: 0 4px;
-    } */
     
     #cms-editable-tabs{
         background: #F9F9F9 none repeat scroll 0 0;
@@ -142,8 +134,7 @@
     div.button-bar span.cms-title {
         font-size:14px;
         font-weight:bold;  
-        line-height:24px;
-        /*display: inline-block;*/         
+        line-height:24px;        
     }
            
     
@@ -197,19 +188,21 @@
     }
     
     button span.cms-galleries-icon-moveup{                       
-        background: transparent url(images/16x16/move_up_in.png) no-repeat scroll left center;              
+        background: transparent url(images/16x16/move_up_in.png) no-repeat scroll left center;  
+        padding-left: 20px;            
     }
     
     button span.cms-galleries-icon-movedown{                       
-        background: transparent url(images/16x16/move_down_in.png) no-repeat scroll left center;              
+        background: transparent url(images/16x16/move_down_in.png) no-repeat scroll left center;
+        padding-left: 20px;              
     }
     
-    button span.cms-galleries-icon-moveup:hover{                       
-        background: transparent url(images/16x16/move_up.png) no-repeat scroll left center;              
+    button:hover span.cms-galleries-icon-moveup{                       
+        background-image:url(images/16x16/move_up.png);              
     }
     
-    button span.cms-galleries-icon-movedown:hover{                       
-        background: transparent url(images/16x16/move_down.png) no-repeat scroll left center;              
+    button:hover span.cms-galleries-icon-movedown{                       
+        background-image: url(images/16x16/move_down.png);              
     }
     
     .cms-icon-text{

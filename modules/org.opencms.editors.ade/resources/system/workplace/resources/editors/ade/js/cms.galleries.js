@@ -39,7 +39,9 @@
     */
    var activeItem = cms.galleries.activeItem = {
        'path': '',
-       'isInitial': false       
+       'isInitial': false,
+       'newwidth': 0,
+       'newheight': 0       
    };
    
    /** html-class for the inner of the scrolled list with items. */
