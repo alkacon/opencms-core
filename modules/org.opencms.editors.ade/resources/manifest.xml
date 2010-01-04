@@ -625,21 +625,6 @@
 			<accesscontrol/>
 		</file>
         <file>
-			<source>system/workplace/resources/editors/ade/css/crop.css</source>
-			<destination>system/workplace/resources/editors/ade/css/crop.css</destination>
-			<type>plain</type>
-			<uuidstructure>ac78a2c0-e89d-11de-ba19-17a98b42e5a4</uuidstructure>
-			<uuidresource>ac78a2c1-e89d-11de-ba19-17a98b42e5a4</uuidresource>
-			<datelastmodified>Mon, 14 Dec 2009 13:34:18 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 14 Dec 2009 10:44:36 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/editors/ade/css/customInput.css</source>
 			<destination>system/workplace/resources/editors/ade/css/customInput.css</destination>
 			<type>plain</type>
@@ -4294,21 +4279,6 @@
 			<accesscontrol/>
 		</file>
         <file>
-			<source>system/workplace/resources/editors/ade/lib/jquery.dimensions.js</source>
-			<destination>system/workplace/resources/editors/ade/lib/jquery.dimensions.js</destination>
-			<type>plain</type>
-			<uuidstructure>d4cf6554-e89b-11de-ba19-17a98b42e5a4</uuidstructure>
-			<uuidresource>d4cf6555-e89b-11de-ba19-17a98b42e5a4</uuidresource>
-			<datelastmodified>Mon, 14 Dec 2009 10:31:25 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 14 Dec 2009 10:31:25 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>		
-		<file>
 			<source>system/workplace/resources/editors/ade/lib/jquery.dump.js</source>
 			<destination>system/workplace/resources/editors/ade/lib/jquery.dump.js</destination>
 			<type>plain</type>
