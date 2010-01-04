@@ -21,8 +21,9 @@
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.frontend.template3.demo" version="0"/>
-			<dependency name="org.opencms.frontend.template3" version="0"/>
+			<dependency name="org.opencms.frontend.template3.demo" version="7.6"/>
+			<dependency name="org.opencms.frontend.template3" version="7.6"/>
+            <dependency name="org.opencms.editors.sitemap" version="7.6"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
