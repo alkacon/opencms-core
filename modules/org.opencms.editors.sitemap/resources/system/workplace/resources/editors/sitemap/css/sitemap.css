@@ -1,4 +1,4 @@
-﻿	
+	
 /************************************ sitemap ************************************************/	
 	
 	
@@ -133,6 +133,7 @@
       #cms-main {
           margin: 50px auto;
           width: 950px;
+          position: relative;
       }
       
       #cms-main h1.cms-headline {
@@ -369,13 +370,10 @@ div.ui-widget-header a.cms-subsitemap {
 	
 .cms-esa-box {
      position: fixed;
-     border: 1px solid #a9a9a9;
-     top: 200px;
-     right: 300px;
-     width: 390px;
-     padding: 10px;
-     background-image: none;
-     background-color: white;
+     top: 10px;
+     right: 10px;
+     width: 330px;
+     background: #ffffff;
 }
           
 .cms-esa-title-and-path {

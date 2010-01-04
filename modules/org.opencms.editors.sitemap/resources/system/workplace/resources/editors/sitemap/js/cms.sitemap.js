@@ -1521,21 +1521,19 @@
       self.selector = selector;
       self.closeHandler = null;
       self.selectionClass = selectionClass;
-      var html = '<div class="cms-esa-box ui-state-default ui-corner-all">\
-           <span class="cms-esa-info"/>\
-           <table class="cms-esa-title-and-path">\
-               <tr><td class="cms-esa-title-label" /><td class="cms-esa-title-value"/></tr>\
-               <tr><td class="cms-esa-path-label" /><td class="cms-esa-path-value"/></tr>\
-           </table>\
-           <button class="cms-esa-ok ui-state-default ui-corner-all"/><button class="cms-esa-cancel ui-state-default ui-corner-all"/>\
-           </div>';
+      var html = ['<div class="cms-esa-box ui-dialog ui-widget ui-widget-content ui-corner-all">\
+              <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" unselectable="on" style="-moz-user-select: none;">',M.SITEMAP_DIALOG_TITLE_SUBSITEMAP,'<span class="ui-dialog-title" id="ui-dialog-title-cms-leave-dialog" unselectable="on" style="-moz-user-select: none;"></span></div>\
+              <div style="padding: 10px;">\
+                  <span class="cms-esa-info">',M.SITEMAP_SELECT_SUBSITEMAP,'</span>\
+                  <table class="cms-esa-title-and-path">\
+                       <tr><td class="cms-esa-title-label">',M.SITEMAP_LABEL_SUBSITEMAP_TITLE,'</td><td class="cms-esa-title-value"></td></tr>\
+                       <tr><td class="cms-esa-path-label">',M.SITEMAP_LABEL_SUBSITEMAP_PATH,'</td><td class="cms-esa-path-value"></td></tr>\
+                   </table>\
+                   <button class="cms-esa-ok ui-state-default ui-corner-all">',M.SITEMAP_BUTTON_CONVERT_TO_SUBSITEMAP_OK,'</button><button class="cms-esa-cancel ui-state-default ui-corner-all">',M.SITEMAP_BUTTON_CONVERT_TO_SUBSITEMAP_CANCEL,'</button>\
+               </div>\
+           </div>'];
       
-      var $frame = $(html);
-      $('.cms-esa-info', $frame).text(M.SITEMAP_SELECT_SUBSITEMAP);
-      $('.cms-esa-title-label', $frame).text(M.SITEMAP_LABEL_SUBSITEMAP_TITLE);
-      $('.cms-esa-path-label', $frame).text(M.SITEMAP_LABEL_SUBSITEMAP_PATH);
-      $('.cms-esa-ok', $frame).text(M.SITEMAP_BUTTON_CONVERT_TO_SUBSITEMAP_OK);
-      $('.cms-esa-cancel', $frame).text(M.SITEMAP_BUTTON_CONVERT_TO_SUBSITEMAP_CANCEL);
+      var $frame = $(html.join(''));
       
       self.$frame = $frame;
       self.selector = selector;
@@ -1816,8 +1814,10 @@
             $('button[name=' + self.name + '].ui-state-active').trigger('click');
          });
          
+         var boxOffset=$('#cms-main > .cms-box').offset();
          
          this.esa.$frame.appendTo('body');
+         this.esa.$frame.css({top: boxOffset.top+10, left: boxOffset.left + 603 });
          this.esa.$frame.draggable();
          this.button.addClass('ui-state-active');
       },
