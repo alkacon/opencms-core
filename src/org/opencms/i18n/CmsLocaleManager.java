@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2009/09/08 12:54:46 $
- * Version: $Revision: 1.57.2.2 $
+ * Date   : $Date: 2010/01/05 14:05:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.57.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -927,7 +928,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
     private void clearCaches() {
 
         // flush all caches   
-        OpenCms.getMemoryMonitor().flushLocales();
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.LOCALE);
         CmsResourceBundleLoader.flushBundleCache();
 
         if (LOG.isDebugEnabled()) {

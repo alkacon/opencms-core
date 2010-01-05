@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/12/21 10:33:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/01/05 14:05:44 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -312,6 +312,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The lock manager. */
     private CmsLockManager m_lockManager;
 
+    /** The log entry cache. */
     private List<CmsLogEntry> m_log = new ArrayList<CmsLogEntry>();
 
     /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singelton. */
@@ -560,8 +561,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void addResourceToOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsException {
 
-        m_monitor.flushRoles();
-        m_monitor.flushRoleLists();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE, CmsMemoryMonitor.CacheType.ROLE_LIST);
         m_userDriver.addResourceToOrganizationalUnit(dbc, orgUnit, resource);
     }
 
@@ -659,10 +659,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // flush the cache
         if (readRoles) {
-            m_monitor.flushRoles();
-            m_monitor.flushRoleLists();
+            m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE, CmsMemoryMonitor.CacheType.ROLE_LIST);
         }
-        m_monitor.flushUserGroups();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS, CmsMemoryMonitor.CacheType.USER_LIST);
 
         if (!dbc.getProjectId().isNullUUID()) {
             // user modified event is not needed
@@ -1192,7 +1191,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             } catch (CmsException exc) {
                 // if the subfolder exists already - all is ok
             } finally {
-                m_monitor.flushProjectResources();
+                m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROJECT_RESOURCES);
 
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_PROJECT_MODIFIED,
@@ -1343,8 +1342,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // flush relevant caches
         m_monitor.clearPrincipalsCache();
-        m_monitor.flushProperties();
-        m_monitor.flushPropertyLists();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY, CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
         // create a publish list for the 'virtual' publish event
         CmsResource ouRes = readResource(dbc, orgUnit.getId(), CmsResourceFilter.DEFAULT);
@@ -1826,8 +1824,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         } finally {
             // clear the internal caches
             m_monitor.clearAccessControlListCache();
-            m_monitor.flushProperties();
-            m_monitor.flushPropertyLists();
+            m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY, CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
             if (newResource != null) {
                 // fire an event that a new resource has been created
@@ -2156,8 +2153,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         } finally {
             // clear the driver manager cache
-            m_monitor.flushProperties();
-            m_monitor.flushPropertyLists();
+            m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY, CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
             // fire an event that all properties of a resource have been deleted
             OpenCms.fireCmsEvent(new CmsEvent(
@@ -2251,8 +2247,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // clear the relevant caches
         m_monitor.uncacheGroup(group);
-        m_monitor.flushUserGroups();
-        m_monitor.flushACLs();
+        m_monitor.flushCache(
+            CmsMemoryMonitor.CacheType.USERGROUPS,
+            CmsMemoryMonitor.CacheType.USER_LIST,
+            CmsMemoryMonitor.CacheType.ACL);
 
         if (!dbc.getProjectId().isNullUUID()) {
             // group modified event is not needed
@@ -2506,8 +2504,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // flush relevant caches
         m_monitor.clearPrincipalsCache();
-        m_monitor.flushProperties();
-        m_monitor.flushPropertyLists();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY, CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
         // fire the 'virtual' publish event
         Map<String, Object> eventData = new HashMap<String, Object>();
@@ -2958,9 +2955,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // flush all caches
         m_monitor.clearAccessControlListCache();
-        m_monitor.flushProperties();
-        m_monitor.flushPropertyLists();
-        m_monitor.flushProjectResources();
+        m_monitor.flushCache(
+            CmsMemoryMonitor.CacheType.PROPERTY,
+            CmsMemoryMonitor.CacheType.PROPERTY_LIST,
+            CmsMemoryMonitor.CacheType.PROJECT_RESOURCES);
 
         OpenCms.fireCmsEvent(new CmsEvent(
             I_CmsEventListener.EVENT_RESOURCE_DELETED,
@@ -4303,6 +4301,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         try {
             dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_RESOURCE_OUS, Boolean.TRUE);
+            // TODO: we need a new driver method for this
             List result = m_vfsDriver.readRelations(
                 dbc,
                 dbc.currentProject().getUuid(),
@@ -4931,10 +4930,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // we must also clear the permission cache
-        m_monitor.flushPermissions();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.PERMISSION);
 
         // fire resource modification event
-        HashMap<String, Object> data = new HashMap<String, Object>(2);
+        Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
         data.put(I_CmsEventListener.KEY_CHANGE, new Integer(NOTHING_CHANGED));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
@@ -5105,12 +5104,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.cacheUser(newUser);
 
         // invalidate all user dependent caches
-        m_monitor.flushACLs();
-        m_monitor.flushGroups();
-        m_monitor.flushOrgUnits();
-        m_monitor.flushUserGroups();
-        m_monitor.flushPermissions();
-        m_monitor.flushResourceLists();
+        m_monitor.flushCache(
+            CmsMemoryMonitor.CacheType.ACL,
+            CmsMemoryMonitor.CacheType.GROUP,
+            CmsMemoryMonitor.CacheType.ORG_UNIT,
+            CmsMemoryMonitor.CacheType.USERGROUPS,
+            CmsMemoryMonitor.CacheType.USER_LIST,
+            CmsMemoryMonitor.CacheType.PERMISSION,
+            CmsMemoryMonitor.CacheType.RESOURCE_LIST);
 
         // return the user object read from the driver
         return newUser;
@@ -5214,8 +5215,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResourceFilter.IGNORE_EXPIRATION);
 
         if (source.isFolder()) {
-            m_monitor.flushRoles();
-            m_monitor.flushRoleLists();
+            m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE, CmsMemoryMonitor.CacheType.ROLE_LIST);
         }
         m_vfsDriver.moveResource(dbc, dbc.getRequestContext().currentProject().getUuid(), source, destination);
 
@@ -5246,9 +5246,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // flush all relevant caches
         m_monitor.clearAccessControlListCache();
-        m_monitor.flushProperties();
-        m_monitor.flushPropertyLists();
-        m_monitor.flushProjectResources();
+        m_monitor.flushCache(
+            CmsMemoryMonitor.CacheType.PROPERTY,
+            CmsMemoryMonitor.CacheType.PROPERTY_LIST,
+            CmsMemoryMonitor.CacheType.PROJECT_RESOURCES);
 
         List<CmsResource> resources = new ArrayList<CmsResource>(4);
         // source
@@ -5784,7 +5785,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         String cacheKey = null;
         List<CmsResource> resourceList = null;
-        if (m_monitor.isCacheResourceList()) { // check this here to skip the complex cache key generation
+        if (m_monitor.isEnabled(CmsMemoryMonitor.CacheType.RESOURCE_LIST)) { // check this here to skip the complex cache key generation
             String time = "";
             if (checkPermissions) {
                 // ensure correct caching if site time offset is set
@@ -6649,7 +6650,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // set all properties in the result list as frozen
             CmsProperty.setFrozen(properties);
-            if ((search || m_monitor.isCachePropertyList()) && dbc.getProjectId().isNullUUID()) {
+            if (dbc.getProjectId().isNullUUID()) {
                 // store the result in the cache if needed
                 m_monitor.cachePropertyList(cacheKey, properties);
             }
@@ -7185,8 +7186,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void removeResourceFromOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsException {
 
-        m_monitor.flushRoles();
-        m_monitor.flushRoleLists();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE, CmsMemoryMonitor.CacheType.ROLE_LIST);
         m_userDriver.removeResourceFromOrganizationalUnit(dbc, orgUnit, resource);
     }
 
@@ -7221,7 +7221,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             } catch (CmsException exc) {
                 // if the subfolder exists already - all is ok
             } finally {
-                m_monitor.flushProjectResources();
+                m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROJECT_RESOURCES);
 
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_PROJECT_MODIFIED,
@@ -7339,10 +7339,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // flush relevant caches
         if (readRoles) {
-            m_monitor.flushRoles();
-            m_monitor.flushRoleLists();
+            m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE, CmsMemoryMonitor.CacheType.ROLE_LIST);
         }
-        m_monitor.flushUserGroups();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS, CmsMemoryMonitor.CacheType.USER_LIST);
 
         if (!dbc.getProjectId().isNullUUID()) {
             // user modified event is not needed
@@ -7405,8 +7404,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if ((properties != null) && !properties.isEmpty()) {
             // write the properties
             m_vfsDriver.writePropertyObjects(dbc, dbc.currentProject(), resource, properties);
-            m_monitor.flushProperties();
-            m_monitor.flushPropertyLists();
+            m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY, CmsMemoryMonitor.CacheType.PROPERTY_LIST);
         }
 
         // update the resource state
@@ -8049,9 +8047,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // unlock all resources in the project
         m_lockManager.removeResourcesInProject(project.getUuid(), false);
         m_monitor.clearResourceCache();
-        m_monitor.flushProjects();
-        // we must also clear the permission cache
-        m_monitor.flushPermissions();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROJECT, CmsMemoryMonitor.CacheType.PERMISSION);
     }
 
     /**
@@ -8077,7 +8073,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_lockManager.removeResource(dbc, resource, force, removeSystemLock);
 
         // we must also clear the permission cache
-        m_monitor.flushPermissions();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.PERMISSION);
 
         // fire resource modification event
         Map<String, Object> data = new HashMap<String, Object>(2);
@@ -8696,8 +8692,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         } finally {
             // update the driver manager cache
             m_monitor.clearResourceCache();
-            m_monitor.flushProperties();
-            m_monitor.flushPropertyLists();
+            m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY, CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
             // fire an event that a property of a resource has been modified
             Map<String, Object> data = new HashMap<String, Object>();
@@ -8766,6 +8761,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // update state
                 updateState(dbc, resource, (updateStateValue == 2));
             }
+
             if (updateState) {
                 // log it
                 log(dbc, new CmsLogEntry(
@@ -8777,8 +8773,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         } finally {
             // update the driver manager cache
             m_monitor.clearResourceCache();
-            m_monitor.flushProperties();
-            m_monitor.flushPropertyLists();
+            m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY, CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
             // fire an event that the properties of a resource have been modified
             OpenCms.fireCmsEvent(new CmsEvent(
@@ -8890,7 +8885,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsUser oldUser = readUser(dbc, user.getId());
         m_monitor.clearUserCache(oldUser);
         m_userDriver.writeUser(dbc, user);
-        m_monitor.flushUserGroups();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS, CmsMemoryMonitor.CacheType.USER_LIST);
 
         if (!dbc.getProjectId().isNullUUID()) {
             // user modified event is not needed
@@ -8904,7 +8899,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
-    /** 
+    /**
      * Converts a resource to a folder (if possible).<p>
      * 
      * @param resource the resource to convert
@@ -9583,88 +9578,86 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean readRoles) throws CmsException {
 
         CmsGroup group = readGroup(dbc, groupname); // check that the group really exists
-        if ((group != null) && ((!readRoles && !group.isRole()) || (readRoles && group.isRole()))) {
-            String prefix = "_" + includeOtherOuUsers + "_" + directUsersOnly + "_" + ouFqn;
-            String cacheKey = m_keyGenerator.getCacheKeyForGroupUsers(prefix, dbc, group);
-            List<CmsUser> allUsers = m_monitor.getCachedUserList(cacheKey);
-            if (allUsers == null) {
-                Set<CmsUser> users = new HashSet<CmsUser>(m_userDriver.readUsersOfGroup(
-                    dbc,
-                    groupname,
-                    includeOtherOuUsers));
-                if (readRoles && !directUsersOnly) {
-                    CmsRole role = CmsRole.valueOf(group);
-                    if (role.getParentRole() != null) {
-                        try {
-                            String parentGroup = role.getParentRole().getGroupName();
-                            readGroup(dbc, parentGroup);
-                            // iterate the parent roles
-                            users.addAll(internalUsersOfGroup(
-                                dbc,
-                                ouFqn,
-                                parentGroup,
-                                includeOtherOuUsers,
-                                directUsersOnly,
-                                readRoles));
-                        } catch (CmsDbEntryNotFoundException e) {
-                            // ignore, this may happen while deleting an orgunit
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug(e.getLocalizedMessage(), e);
-                            }
-                        }
-                    }
-                    String parentOu = CmsOrganizationalUnit.getParentFqn(group.getOuFqn());
-                    if (parentOu != null) {
-                        // iterate the parent ou's
+        if ((group == null) || (!((!readRoles && !group.isRole()) || (readRoles && group.isRole())))) {
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
+
+        String prefix = "_" + includeOtherOuUsers + "_" + directUsersOnly + "_" + ouFqn;
+        String cacheKey = m_keyGenerator.getCacheKeyForGroupUsers(prefix, dbc, group);
+        List<CmsUser> allUsers = m_monitor.getCachedUserList(cacheKey);
+        if (allUsers == null) {
+            Set<CmsUser> users = new HashSet<CmsUser>(
+                m_userDriver.readUsersOfGroup(dbc, groupname, includeOtherOuUsers));
+            if (readRoles && !directUsersOnly) {
+                CmsRole role = CmsRole.valueOf(group);
+                if (role.getParentRole() != null) {
+                    try {
+                        String parentGroup = role.getParentRole().getGroupName();
+                        readGroup(dbc, parentGroup);
+                        // iterate the parent roles
                         users.addAll(internalUsersOfGroup(
                             dbc,
                             ouFqn,
-                            parentOu + group.getSimpleName(),
+                            parentGroup,
                             includeOtherOuUsers,
                             directUsersOnly,
                             readRoles));
-                    }
-                } else if (!readRoles && !directUsersOnly) {
-                    List<CmsGroup> groups = getChildren(dbc, group, false);
-                    for (CmsGroup parentGroup : groups) {
-                        try {
-                            // iterate the parent groups
-                            users.addAll(internalUsersOfGroup(
-                                dbc,
-                                ouFqn,
-                                parentGroup.getName(),
-                                includeOtherOuUsers,
-                                directUsersOnly,
-                                readRoles));
-                        } catch (CmsDbEntryNotFoundException e) {
-                            // ignore, this may happen while deleting an orgunit
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug(e.getLocalizedMessage(), e);
-                            }
+                    } catch (CmsDbEntryNotFoundException e) {
+                        // ignore, this may happen while deleting an orgunit
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(e.getLocalizedMessage(), e);
                         }
                     }
                 }
-                // filter users from other ous
-                if (!includeOtherOuUsers) {
-                    Iterator<CmsUser> itUsers = users.iterator();
-                    while (itUsers.hasNext()) {
-                        CmsUser user = itUsers.next();
-                        if (!user.getOuFqn().equals(ouFqn)) {
-                            itUsers.remove();
+                String parentOu = CmsOrganizationalUnit.getParentFqn(group.getOuFqn());
+                if (parentOu != null) {
+                    // iterate the parent ou's
+                    users.addAll(internalUsersOfGroup(
+                        dbc,
+                        ouFqn,
+                        parentOu + group.getSimpleName(),
+                        includeOtherOuUsers,
+                        directUsersOnly,
+                        readRoles));
+                }
+            } else if (!readRoles && !directUsersOnly) {
+                List<CmsGroup> groups = getChildren(dbc, group, false);
+                for (CmsGroup parentGroup : groups) {
+                    try {
+                        // iterate the parent groups
+                        users.addAll(internalUsersOfGroup(
+                            dbc,
+                            ouFqn,
+                            parentGroup.getName(),
+                            includeOtherOuUsers,
+                            directUsersOnly,
+                            readRoles));
+                    } catch (CmsDbEntryNotFoundException e) {
+                        // ignore, this may happen while deleting an orgunit
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(e.getLocalizedMessage(), e);
                         }
                     }
-                }
-
-                // make user list unmodifiable for caching
-                allUsers = Collections.unmodifiableList(new ArrayList<CmsUser>(users));
-                if (dbc.getProjectId().isNullUUID()) {
-                    m_monitor.cacheUserList(cacheKey, allUsers);
                 }
             }
-            return allUsers;
-        } else {
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+            // filter users from other ous
+            if (!includeOtherOuUsers) {
+                Iterator<CmsUser> itUsers = users.iterator();
+                while (itUsers.hasNext()) {
+                    CmsUser user = itUsers.next();
+                    if (!user.getOuFqn().equals(ouFqn)) {
+                        itUsers.remove();
+                    }
+                }
+            }
+
+            // make user list unmodifiable for caching
+            allUsers = Collections.unmodifiableList(new ArrayList<CmsUser>(users));
+            if (dbc.getProjectId().isNullUUID()) {
+                m_monitor.cacheUserList(cacheKey, allUsers);
+            }
         }
+        return allUsers;
     }
 
     /**
@@ -10028,8 +10021,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // update the cache
         m_monitor.clearResourceCache();
-        m_monitor.flushProperties();
-        m_monitor.flushPropertyLists();
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY, CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
         if ((offlineResource == null) || offlineResource.getRootPath().equals(onlineResource.getRootPath())) {
             log(dbc, new CmsLogEntry(

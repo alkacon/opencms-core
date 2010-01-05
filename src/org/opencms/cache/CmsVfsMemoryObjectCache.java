@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2009/12/14 12:52:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/05 14:05:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 
 import org.apache.commons.logging.Log;
 
@@ -45,7 +46,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.1.3
  */
@@ -111,7 +112,7 @@ public final class CmsVfsMemoryObjectCache extends CmsVfsCache {
     @Override
     protected void flush(boolean online) {
 
-        OpenCms.getMemoryMonitor().flushVfsObjects();
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.VFS_OBJECT);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/12/17 13:10:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/05 14:05:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,6 +62,7 @@ import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -101,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -194,6 +195,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     Collections.<String, Object> singletonMap("project", project));
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
+            } finally {
+                // fire a resource modification event
+                Map<String, Object> data = new HashMap<String, Object>(2);
+                data.put(I_CmsEventListener.KEY_RESOURCE, ouResource);
+                data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CmsDriverManager.CHANGED_RESOURCE));
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
             }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
@@ -1684,6 +1691,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     Collections.<String, Object> singletonMap("project", project));
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
+            } finally {
+                Map<String, Object> data = new HashMap<String, Object>(2);
+                data.put(I_CmsEventListener.KEY_RESOURCE, ouResource);
+                data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CmsDriverManager.CHANGED_RESOURCE));
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
             }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
@@ -2318,8 +2330,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // clear the internal caches
         OpenCms.getMemoryMonitor().clearAccessControlListCache();
-        OpenCms.getMemoryMonitor().flushProperties();
-        OpenCms.getMemoryMonitor().flushPropertyLists();
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROPERTY);
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
         // fire an event that a new resource has been created
         OpenCms.fireCmsEvent(new CmsEvent(
@@ -2431,9 +2443,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // flush all relevant caches
         OpenCms.getMemoryMonitor().clearAccessControlListCache();
-        OpenCms.getMemoryMonitor().flushProperties();
-        OpenCms.getMemoryMonitor().flushPropertyLists();
-        OpenCms.getMemoryMonitor().flushProjectResources();
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROPERTY);
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROPERTY_LIST);
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROJECT_RESOURCES);
 
         // fire events
         OpenCms.fireCmsEvent(new CmsEvent(
@@ -2477,13 +2489,16 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List internalResourcesForOrgUnit(CmsDbContext dbc, CmsResource ouResource) throws CmsException {
+    protected List<String> internalResourcesForOrgUnit(CmsDbContext dbc, CmsResource ouResource) throws CmsException {
 
-        List relations = m_driverManager.getRelationsForResource(dbc, ouResource, CmsRelationFilter.TARGETS);
-        List paths = new ArrayList();
-        Iterator it = relations.iterator();
+        List<CmsRelation> relations = m_driverManager.getRelationsForResource(
+            dbc,
+            ouResource,
+            CmsRelationFilter.TARGETS);
+        List<String> paths = new ArrayList<String>();
+        Iterator<CmsRelation> it = relations.iterator();
         while (it.hasNext()) {
-            CmsRelation relation = (CmsRelation)it.next();
+            CmsRelation relation = it.next();
             paths.add(relation.getTargetPath());
         }
         return paths;
