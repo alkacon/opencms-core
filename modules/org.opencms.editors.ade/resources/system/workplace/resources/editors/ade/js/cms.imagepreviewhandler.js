@@ -833,9 +833,19 @@
    /**
     * OK Button was pressed, stores the image information back in the editor fields.    
     */
-   var setImagePath = function() {
+   var setValues = function() {
+        // the unique path to the resource
+        var itemId = $('#cms-preview').attr('alt');
+        setImagePath(itemId);        
+   }
+   
+   /**
+    * OK Button was pressed, stores the image information back in the editor fields.
+    * @param {Object} itemId
+    */
+   var setImagePath = function(itemId) {
       // the unique path to the resource
-      var itemId = $('#cms-preview').attr('alt');
+     // var itemId = $('#cms-preview').attr('alt');
       //the id of the input field in the xml content
       var fieldId = cms.galleries.initValues['fieldId'];
        
@@ -1081,9 +1091,13 @@
       'openPreview': showItemPreview,
       'refreshPreview': refreshImagePreview,
       'setValues': {
+         'widget': setValues,
+         'editor': 'test2'
+      },
+      'setValuesFromList': {
          'widget': setImagePath,
          'editor': 'test2'
-      }
+      },
    };
    
    cms.galleries.addContentTypeHandler(cms.imagepreviewhandler.imageContentTypeHandler['type'], cms.imagepreviewhandler.imageContentTypeHandler);

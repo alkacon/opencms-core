@@ -268,9 +268,30 @@
    /**
     * Select button was pressed, stores the item path back in the editor field.    
     */
-   var setResourcePath = function() {
+   var setValues = function() {
       // the unique path to the resource
       var itemId = $('#cms-preview').attr('alt');
+      setResourcePath(itemId);
+      
+      //the id of the input field in the xml content
+      /*var fieldId = cms.galleries.initValues['fieldId'];
+      
+      if (fieldId != null && fieldId != "") {
+         var imgField = window.opener.document.getElementById(fieldId);
+         imgField.value = itemId;
+         try {
+            // toggle preview icon if possible
+            window.opener.checkPreview(fieldid);
+         } catch (e) {
+                  }
+      }
+      window.close();*/      
+   }
+   
+   /**
+    * Select button was pressed, stores the item path back in the editor field.    
+    */
+   var setResourcePath = function(itemId) {      
       //the id of the input field in the xml content
       var fieldId = cms.galleries.initValues['fieldId'];
       
@@ -344,6 +365,10 @@
       'saveAndSelectItem':saveAndSelectItem,
       'refreshPreview': refreshDefaultPreview,
       'setValues': {
+         'widget': setValues,
+         'editor': 'test2'
+      },
+      'setValuesFromList': {
          'widget': setResourcePath,
          'editor': 'test2'
       },

@@ -362,9 +362,9 @@
       
       // bind click event to the select-button of the item in the result list(dialogmode = widget|editor)     
       $('.cms-handle-button.cms-select-item').live('click',function(e){        
-          var itemType = $(this).closest('li').data('type');          
+          var resType = $(this).closest('li').data('type');               
           var itemId = $(this).closest('li').attr('alt');          
-          cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
+          cms.galleries.getContentHandler()['setValuesFromList'][cms.galleries.initValues['dialogMode']](itemId);
           // avoid event propagation to the surround 'li'
           e.stopPropagation();                    
       });
