@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2009/07/08 11:11:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/05 11:49:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.xml.Messages;
 
 import java.util.List;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.1.3
  */
@@ -94,7 +95,7 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 // flush cache   
-                OpenCms.getMemoryMonitor().flushVfsObjects();
+                OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.VFS_OBJECT);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_FLUSHED_CACHES_0));
                 }

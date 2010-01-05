@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/06/04 14:29:48 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2010/01/05 11:49:07 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,6 +65,7 @@ import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
@@ -74,7 +75,6 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
@@ -101,11 +101,63 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69 $ 
+ * @version $Revision: 1.70 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsMemoryMonitor implements I_CmsScheduledJob {
+
+    /** Cache types. */
+    public enum CacheType {
+        /** Access Control Lists cache. */
+        ACL,
+        /** Content Definition cache. */
+        CONTENT_DEFINITION,
+        /** Group cache. */
+        GROUP,
+        /** Has Role cache. */
+        HAS_ROLE,
+        /** Locale cache. */
+        LOCALE,
+        /** Lock cache. */
+        LOCK,
+        /** Memory Object cache. */
+        MEMORY_OBJECT,
+        /** Organizational Unit cache. */
+        ORG_UNIT,
+        /** Permission cache. */
+        PERMISSION,
+        /** Offline Project cache. */
+        PROJECT,
+        /** Project resources cache. */
+        PROJECT_RESOURCES,
+        /** Property cache. */
+        PROPERTY,
+        /** Property List cache. */
+        PROPERTY_LIST,
+        /** Publish history cache. */
+        PUBLISH_HISTORY,
+        /** Publish queue cache. */
+        PUBLISH_QUEUE,
+        /** Published resources cache. */
+        PUBLISHED_RESOURCES,
+        /** Resource cache. */
+        RESOURCE,
+        /** Resource List cache. */
+        RESOURCE_LIST,
+        /** Role List cache. */
+        ROLE_LIST,
+        /** User cache. */
+        USER,
+        /** User Groups cache. */
+        USERGROUPS,
+        /** VFS Object cache. */
+        VFS_OBJECT,
+        /** XML Entity Permanent cache. */
+        XML_ENTITY_PERM,
+        /** XML Entity Temporary cache. */
+        XML_ENTITY_TEMP;
+    }
 
     /** Set interval for clearing the caches to 10 minutes. */
     private static final int INTERVAL_CLEAR = 1000 * 60 * 10;
@@ -120,28 +172,76 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     private static final int MAX_DEPTH = 5;
 
     /** Cache for access control lists. */
-    private Map m_accessControlListCache;
+    private Map<String, CmsAccessControlList> m_cacheAccessControlList;
 
-    /** If the property cache is enabled. */
-    private boolean m_cacheProperty = true;
+    /** A temporary cache for XML content definitions. */
+    private Map<String, CmsXmlContentDefinition> m_cacheContentDefinitions;
 
-    /** If the property list cache is enabled. */
-    private boolean m_cachePropertyList = true;
+    /** Cache for groups. */
+    private Map<String, CmsGroup> m_cacheGroup;
 
-    /** If the resource cache is enabled. */
-    private boolean m_cacheResource = true;
+    /** Cache for roles. */
+    private Map<String, Boolean> m_cacheHasRoles;
 
-    /** If the resource list cache is enabled. */
-    private boolean m_cacheResourceList = true;
+    /** A cache for accelerated locale lookup. */
+    private Map<String, Locale> m_cacheLocale;
+
+    /** Cache for the resource locks. */
+    private Map<String, CmsLock> m_cacheLock;
+
+    /** The memory object cache map. */
+    private Map<String, Object> m_cacheMemObject;
+
+    /** Cache for organizational units. */
+    private Map<String, CmsOrganizationalUnit> m_cacheOrgUnit;
+
+    /** Cache for permission checks. */
+    private Map<String, I_CmsPermissionHandler.CmsPermissionCheckResult> m_cachePermission;
+
+    /** Cache for offline projects. */
+    private Map<String, CmsProject> m_cacheProject;
+
+    /** Cache for project resources. */
+    private Map<String, List<CmsResource>> m_cacheProjectResources;
+
+    /** Cache for properties. */
+    private Map<String, CmsProperty> m_cacheProperty;
+
+    /** Cache for property lists. */
+    private Map<String, List<CmsProperty>> m_cachePropertyList;
+
+    /** Cache for published resources. */
+    private Map<String, List<CmsPublishedResource>> m_cachePublishedResources;
+
+    /** Cache for resources. */
+    private Map<String, CmsResource> m_cacheResource;
+
+    /** Cache for resource lists. */
+    private Map<String, List<CmsResource>> m_cacheResourceList;
+
+    /** Cache for role lists. */
+    private Map<String, List<CmsRole>> m_cacheRoleLists;
+
+    /** Cache for user data. */
+    private Map<String, CmsUser> m_cacheUser;
+
+    /** Cache for user groups. */
+    private Map<String, List<CmsGroup>> m_cacheUserGroups;
+
+    /** The vfs memory cache map. */
+    private Map<String, Object> m_cacheVfsObject;
+
+    /** A permanent cache to avoid multiple readings of often used files from the VFS. */
+    private Map<String, byte[]> m_cacheXmlPermanentEntity;
+
+    /** A temporary cache to avoid multiple readings of often used files from the VFS. */
+    private Map<String, byte[]> m_cacheXmlTemporaryEntity;
 
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_configuration;
 
-    /** A temporary cache for XML content definitions. */
-    private Map m_contentDefinitionsCache;
-
-    /** Cache for groups. */
-    private Map m_groupCache;
+    /** Map to keep track of disabled caches. */
+    private Map<CacheType, Boolean> m_disabled = new HashMap<CacheType, Boolean>();
 
     /** Interval in which emails are send. */
     private int m_intervalEmail;
@@ -167,20 +267,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** The time the last warning log was written. */
     private long m_lastLogWarning;
 
-    /** A cache for accelerated locale lookup. */
-    private Map m_localeCache;
-
-    /** Cache for the resource locks. */
-    private Map m_lockCache;
-
     /** The number of times the log entry was written. */
     private int m_logCount;
 
     /** Memory percentage to reach to go to warning level. */
     private int m_maxUsagePercent;
-
-    /** The memory object cache map. */
-    private Map m_memObjectCache;
 
     /** The average memory status. */
     private CmsMemoryStatus m_memoryAverage;
@@ -189,28 +280,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     private CmsMemoryStatus m_memoryCurrent;
 
     /** Contains the object to be monitored. */
-    private Map m_monitoredObjects;
-
-    /** Cache for organizational units. */
-    private Map m_orgUnitCache;
-
-    /** Cache for permission checks. */
-    private Map m_permissionCache;
-
-    /** Cache for offline projects. */
-    private Map m_projectCache;
-
-    /** Cache for project resources. */
-    private Map m_projectResourcesCache;
-
-    /** Cache for properties. */
-    private Map m_propertyCache;
-
-    /** Cache for property lists. */
-    private Map m_propertyListCache;
-
-    /** Cache for published resources. */
-    private Map m_publishedResourcesCache;
+    private Map<String, Object> m_monitoredObjects;
 
     /** Buffer for publish history. */
     private Buffer m_publishHistory;
@@ -218,45 +288,18 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Buffer for publish jobs. */
     private Buffer m_publishQueue;
 
-    /** Cache for resources. */
-    private Map m_resourceCache;
-
-    /** Cache for resource lists. */
-    private Map m_resourceListCache;
-
-    /** Cache for role lists. */
-    private Map m_roleListsCache;
-
-    /** Cache for roles. */
-    private Map m_rolesCache;
-
-    /** Cache for user data. */
-    private Map m_userCache;
-
-    /** Cache for user groups. */
-    private Map m_userGroupsCache;
-
-    /** The vfs memory cache map. */
-    private Map m_vfsObjectCache;
-
     /** Flag for memory warning mail send. */
     private boolean m_warningLoggedSinceLastStatus;
 
     /** Flag for memory warning mail send. */
     private boolean m_warningSendSinceLastStatus;
 
-    /** A permanent cache to avoid multiple readings of often used files from the VFS. */
-    private Map m_xmlPermanentEntityCache;
-
-    /** A temporary cache to avoid multiple readings of often used files from the VFS. */
-    private Map m_xmlTemporaryEntityCache;
-
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
      */
     public CmsMemoryMonitor() {
 
-        m_monitoredObjects = new HashMap();
+        m_monitoredObjects = new HashMap<String, Object>();
     }
 
     /**
@@ -362,7 +405,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the size of the list object
      */
-    public static long getValueSize(List listValue, int depth) {
+    public static long getValueSize(List<?> listValue, int depth) {
 
         long totalSize = 0;
         try {
@@ -380,12 +423,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 }
 
                 if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
-                    totalSize += getValueSize((Map)obj, depth + 1);
+                    totalSize += getValueSize((Map<?, ?>)obj, depth + 1);
                     continue;
                 }
 
                 if ((obj instanceof List) && (depth < MAX_DEPTH)) {
-                    totalSize += getValueSize((List)obj, depth + 1);
+                    totalSize += getValueSize((List<?>)obj, depth + 1);
                     continue;
                 }
 
@@ -411,7 +454,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the size of the map object
      */
-    public static long getValueSize(Map mapValue, int depth) {
+    public static long getValueSize(Map<?, ?> mapValue, int depth) {
 
         long totalSize = 0;
         try {
@@ -429,12 +472,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 }
 
                 if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
-                    totalSize += getValueSize((Map)obj, depth + 1);
+                    totalSize += getValueSize((Map<?, ?>)obj, depth + 1);
                     continue;
                 }
 
                 if ((obj instanceof List) && (depth < MAX_DEPTH)) {
-                    totalSize += getValueSize((List)obj, depth + 1);
+                    totalSize += getValueSize((List<?>)obj, depth + 1);
                     continue;
                 }
 
@@ -466,11 +509,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         if (obj instanceof Map) {
-            return getValueSize((Map)obj, 1);
+            return getValueSize((Map<?, ?>)obj, 1);
         }
 
         if (obj instanceof List) {
-            return getValueSize((List)obj, 1);
+            return getValueSize((List<?>)obj, 1);
         }
 
         try {
@@ -488,7 +531,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheACL(String key, CmsAccessControlList acl) {
 
-        m_accessControlListCache.put(key, acl);
+        if (m_disabled.get(CacheType.ACL) != null) {
+            return;
+        }
+        m_cacheAccessControlList.put(key, acl);
     }
 
     /**
@@ -499,7 +545,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheContentDefinition(String key, CmsXmlContentDefinition contentDefinition) {
 
-        m_contentDefinitionsCache.put(key, contentDefinition);
+        if (m_disabled.get(CacheType.CONTENT_DEFINITION) != null) {
+            return;
+        }
+        m_cacheContentDefinitions.put(key, contentDefinition);
     }
 
     /**
@@ -509,8 +558,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheGroup(CmsGroup group) {
 
-        m_groupCache.put(group.getId().toString(), group);
-        m_groupCache.put(group.getName(), group);
+        if (m_disabled.get(CacheType.GROUP) != null) {
+            return;
+        }
+        m_cacheGroup.put(group.getId().toString(), group);
+        m_cacheGroup.put(group.getName(), group);
     }
 
     /**
@@ -521,9 +573,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheLocale(String key, Locale locale) {
 
-        if (m_localeCache != null) {
+        if (m_cacheLocale != null) {
+            if (m_disabled.get(CacheType.LOCALE) != null) {
+                return;
+            }
             // this may be accessed before initialization
-            m_localeCache.put(key, locale);
+            m_cacheLocale.put(key, locale);
         }
     }
 
@@ -536,7 +591,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheLock(CmsLock lock) {
 
-        m_lockCache.put(lock.getResourceName(), lock);
+        if (m_disabled.get(CacheType.LOCK) != null) {
+            return;
+        }
+        m_cacheLock.put(lock.getResourceName(), lock);
     }
 
     /**
@@ -547,7 +605,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheMemObject(String key, Object obj) {
 
-        m_memObjectCache.put(key, obj);
+        if (m_disabled.get(CacheType.MEMORY_OBJECT) != null) {
+            return;
+        }
+        m_cacheMemObject.put(key, obj);
     }
 
     /**
@@ -557,8 +618,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheOrgUnit(CmsOrganizationalUnit orgUnit) {
 
-        m_orgUnitCache.put(orgUnit.getId().toString(), orgUnit);
-        m_orgUnitCache.put(orgUnit.getName(), orgUnit);
+        if (m_disabled.get(CacheType.ORG_UNIT) != null) {
+            return;
+        }
+        m_cacheOrgUnit.put(orgUnit.getId().toString(), orgUnit);
+        m_cacheOrgUnit.put(orgUnit.getName(), orgUnit);
     }
 
     /**
@@ -569,7 +633,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cachePermission(String key, I_CmsPermissionHandler.CmsPermissionCheckResult permission) {
 
-        m_permissionCache.put(key, permission);
+        if (m_disabled.get(CacheType.PERMISSION) != null) {
+            return;
+        }
+        m_cachePermission.put(key, permission);
     }
 
     /**
@@ -579,8 +646,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheProject(CmsProject project) {
 
-        m_projectCache.put(project.getUuid().toString(), project);
-        m_projectCache.put(project.getName(), project);
+        if (m_disabled.get(CacheType.PROJECT) != null) {
+            return;
+        }
+        m_cacheProject.put(project.getUuid().toString(), project);
+        m_cacheProject.put(project.getName(), project);
     }
 
     /**
@@ -589,9 +659,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param key the cache key
      * @param projectResources the project resources to cache
      */
-    public void cacheProjectResources(String key, List projectResources) {
+    public void cacheProjectResources(String key, List<CmsResource> projectResources) {
 
-        m_projectResourcesCache.put(key, projectResources);
+        if (m_disabled.get(CacheType.PROJECT_RESOURCES) != null) {
+            return;
+        }
+        m_cacheProjectResources.put(key, projectResources);
     }
 
     /**
@@ -602,10 +675,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheProperty(String key, CmsProperty property) {
 
-        if (!m_cacheProperty) {
+        if (m_disabled.get(CacheType.PROPERTY) != null) {
             return;
         }
-        m_propertyCache.put(key, property);
+        m_cacheProperty.put(key, property);
     }
 
     /**
@@ -614,12 +687,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param key the cache key
      * @param propertyList the property list to cache
      */
-    public void cachePropertyList(String key, List propertyList) {
+    public void cachePropertyList(String key, List<CmsProperty> propertyList) {
 
-        if (!m_cachePropertyList) {
+        if (m_disabled.get(CacheType.PROPERTY_LIST) != null) {
             return;
         }
-        m_propertyListCache.put(key, propertyList);
+        m_cachePropertyList.put(key, propertyList);
     }
 
     /**
@@ -628,9 +701,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param cacheKey the cache key
      * @param publishedResources the published resources list to cache
      */
-    public void cachePublishedResources(String cacheKey, List publishedResources) {
+    public void cachePublishedResources(String cacheKey, List<CmsPublishedResource> publishedResources) {
 
-        m_publishedResourcesCache.put(cacheKey, publishedResources);
+        if (m_disabled.get(CacheType.PUBLISHED_RESOURCES) != null) {
+            return;
+        }
+        m_cachePublishedResources.put(cacheKey, publishedResources);
     }
 
     /**
@@ -640,6 +716,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cachePublishJob(CmsPublishJobInfoBean publishJob) {
 
+        if (m_disabled.get(CacheType.PUBLISH_QUEUE) != null) {
+            return;
+        }
         m_publishQueue.add(publishJob);
     }
 
@@ -650,6 +729,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cachePublishJobInHistory(CmsPublishJobInfoBean publishJob) {
 
+        if (m_disabled.get(CacheType.PUBLISH_HISTORY) != null) {
+            return;
+        }
         m_publishHistory.add(publishJob);
     }
 
@@ -661,10 +743,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheResource(String key, CmsResource resource) {
 
-        if (!m_cacheResource) {
+        if (m_disabled.get(CacheType.RESOURCE) != null) {
             return;
         }
-        m_resourceCache.put(key, resource);
+        m_cacheResource.put(key, resource);
     }
 
     /**
@@ -673,12 +755,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param key the cache key
      * @param resourceList the resource list to cache
      */
-    public void cacheResourceList(String key, List resourceList) {
+    public void cacheResourceList(String key, List<CmsResource> resourceList) {
 
-        if (!m_cacheResourceList) {
+        if (m_disabled.get(CacheType.RESOURCE_LIST) != null) {
             return;
         }
-        m_resourceListCache.put(key, resourceList);
+        m_cacheResourceList.put(key, resourceList);
     }
 
     /**
@@ -689,7 +771,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheRole(String key, boolean hasRole) {
 
-        m_rolesCache.put(key, Boolean.valueOf(hasRole));
+        if (m_disabled.get(CacheType.HAS_ROLE) != null) {
+            return;
+        }
+        m_cacheHasRoles.put(key, Boolean.valueOf(hasRole));
     }
 
     /**
@@ -698,9 +783,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param key the cache key
      * @param roles the roles of the user
      */
-    public void cacheRoleList(String key, List roles) {
+    public void cacheRoleList(String key, List<CmsRole> roles) {
 
-        m_roleListsCache.put(key, roles);
+        if (m_disabled.get(CacheType.ROLE_LIST) != null) {
+            return;
+        }
+        m_cacheRoleLists.put(key, roles);
     }
 
     /**
@@ -710,8 +798,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheUser(CmsUser user) {
 
-        m_userCache.put(user.getId().toString(), user);
-        m_userCache.put(user.getName(), user);
+        if (m_disabled.get(CacheType.USER) != null) {
+            return;
+        }
+        m_cacheUser.put(user.getId().toString(), user);
+        m_cacheUser.put(user.getName(), user);
     }
 
     /**
@@ -720,9 +811,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param key the cache key
      * @param userGroups the list of user groups to cache
      */
-    public void cacheUserGroups(String key, List userGroups) {
+    public void cacheUserGroups(String key, List<CmsGroup> userGroups) {
 
-        m_userGroupsCache.put(key, userGroups);
+        if (m_disabled.get(CacheType.USERGROUPS) != null) {
+            return;
+        }
+        m_cacheUserGroups.put(key, userGroups);
     }
 
     /**
@@ -733,7 +827,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheVfsObject(String key, Object obj) {
 
-        m_vfsObjectCache.put(key, obj);
+        if (m_disabled.get(CacheType.VFS_OBJECT) != null) {
+            return;
+        }
+        m_cacheVfsObject.put(key, obj);
     }
 
     /**
@@ -744,7 +841,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheXmlPermanentEntity(String systemId, byte[] content) {
 
-        m_xmlPermanentEntityCache.put(systemId, content);
+        if (m_disabled.get(CacheType.XML_ENTITY_PERM) != null) {
+            return;
+        }
+        m_cacheXmlPermanentEntity.put(systemId, content);
     }
 
     /**
@@ -755,7 +855,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheXmlTemporaryEntity(String key, byte[] content) {
 
-        m_xmlTemporaryEntityCache.put(key, content);
+        if (m_disabled.get(CacheType.XML_ENTITY_TEMP) != null) {
+            return;
+        }
+        m_cacheXmlTemporaryEntity.put(key, content);
     }
 
     /**
@@ -763,8 +866,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void clearAccessControlListCache() {
 
-        flushACLs();
-        flushPermissions();
+        flushCache(CacheType.ACL);
+        flushCache(CacheType.PERMISSION);
         clearResourceCache();
     }
 
@@ -775,13 +878,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         clearPrincipalsCache();
 
-        flushProjects();
-        flushResources();
-        flushResourceLists();
-        flushProperties();
-        flushPropertyLists();
-        flushProjectResources();
-        flushPublishedResources();
+        flushCache(CacheType.PROJECT);
+        flushCache(CacheType.RESOURCE);
+        flushCache(CacheType.RESOURCE_LIST);
+        flushCache(CacheType.PROPERTY);
+        flushCache(CacheType.PROPERTY_LIST);
+        flushCache(CacheType.PROJECT_RESOURCES);
+        flushCache(CacheType.PUBLISHED_RESOURCES);
     }
 
     /**
@@ -789,14 +892,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void clearPrincipalsCache() {
 
-        flushUsers();
-        flushGroups();
-        flushOrgUnits();
-        flushUserGroups();
-        flushACLs();
-        flushPermissions();
-        flushRoles();
-        flushRoleLists();
+        flushCache(CacheType.USER);
+        flushCache(CacheType.GROUP);
+        flushCache(CacheType.ORG_UNIT);
+        flushCache(CacheType.ACL);
+        flushCache(CacheType.PERMISSION);
+        flushCache(CacheType.HAS_ROLE);
+        flushCache(CacheType.ROLE_LIST);
     }
 
     /**
@@ -804,10 +906,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void clearResourceCache() {
 
-        flushResources();
-        flushRoles();
-        flushRoleLists();
-        flushResourceLists();
+        flushCache(CacheType.RESOURCE);
+        flushCache(CacheType.RESOURCE_LIST);
+        flushCache(CacheType.HAS_ROLE);
+        flushCache(CacheType.ROLE_LIST);
     }
 
     /**
@@ -818,7 +920,32 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public void clearUserCache(CmsUser user) {
 
         uncacheUser(user);
-        flushResourceLists();
+        flushCache(CacheType.RESOURCE_LIST);
+    }
+
+    /**
+     * Disables the given cache.<p>
+     * 
+     * @param types the cache type to disable
+     */
+    public void disableCache(CacheType... types) {
+
+        for (CacheType type : types) {
+            m_disabled.put(type, Boolean.TRUE);
+        }
+        flushCache(types);
+    }
+
+    /**
+     * Enables the given cache.<p>
+     * 
+     * @param types the cache type to disable
+     */
+    public void enableCache(CacheType... types) {
+
+        for (CacheType type : types) {
+            m_disabled.remove(type);
+        }
     }
 
     /**
@@ -833,34 +960,132 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the ACL cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     public void flushACLs() {
 
-        m_accessControlListCache.clear();
+        flushCache(CacheType.ACL);
+    }
+
+    /**
+     * Flushes the given cache.<p>
+     * 
+     * @param types the cache types to flush
+     */
+    public void flushCache(CacheType... types) {
+
+        for (CacheType type : types) {
+            switch (type) {
+                case ACL:
+                    m_cacheAccessControlList.clear();
+                    break;
+                case CONTENT_DEFINITION:
+                    m_cacheContentDefinitions.clear();
+                    break;
+                case GROUP:
+                    m_cacheGroup.clear();
+                    break;
+                case HAS_ROLE:
+                    m_cacheHasRoles.clear();
+                    break;
+                case LOCALE:
+                    m_cacheLocale.clear();
+                    break;
+                case LOCK:
+                    m_cacheLock.clear();
+                    break;
+                case MEMORY_OBJECT:
+                    m_cacheMemObject.clear();
+                    break;
+                case ORG_UNIT:
+                    m_cacheOrgUnit.clear();
+                    break;
+                case PERMISSION:
+                    m_cachePermission.clear();
+                    break;
+                case PROJECT:
+                    m_cacheProject.clear();
+                    break;
+                case PROJECT_RESOURCES:
+                    m_cacheProjectResources.clear();
+                    break;
+                case PROPERTY:
+                    m_cacheProperty.clear();
+                    break;
+                case PROPERTY_LIST:
+                    m_cachePropertyList.clear();
+                    break;
+                case PUBLISHED_RESOURCES:
+                    m_cachePublishedResources.clear();
+                    break;
+                case PUBLISH_HISTORY:
+                    m_publishHistory.clear();
+                    break;
+                case PUBLISH_QUEUE:
+                    m_publishQueue.clear();
+                    break;
+                case RESOURCE:
+                    m_cacheResource.clear();
+                    break;
+                case RESOURCE_LIST:
+                    m_cacheResourceList.clear();
+                    break;
+                case ROLE_LIST:
+                    m_cacheRoleLists.clear();
+                    break;
+                case USER:
+                    m_cacheUser.clear();
+                    break;
+                case USERGROUPS:
+                    m_cacheUserGroups.clear();
+                    break;
+                case VFS_OBJECT:
+                    m_cacheVfsObject.clear();
+                    break;
+                case XML_ENTITY_PERM:
+                    m_cacheXmlPermanentEntity.clear();
+                    break;
+                case XML_ENTITY_TEMP:
+                    m_cacheXmlTemporaryEntity.clear();
+                    break;
+                default:
+                    // can't happen
+            }
+        }
     }
 
     /**
      * Flushes the xml content definitions cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushContentDefinitions() {
 
-        m_contentDefinitionsCache.clear();
+        flushCache(CacheType.CONTENT_DEFINITION);
     }
 
     /**
      * Flushes the group cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushGroups() {
 
-        m_groupCache.clear();
+        flushCache(CacheType.GROUP);
     }
 
     /**
      * Flushes the locale cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushLocales() {
 
-        m_localeCache.clear();
+        flushCache(CacheType.LOCALE);
     }
 
     /**
@@ -868,176 +1093,231 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param newLocks if not <code>null</code> the lock cache is replaced by the given map 
      */
-    public void flushLocks(Map newLocks) {
+    public void flushLocks(Map<String, CmsLock> newLocks) {
 
         if ((newLocks == null) || newLocks.isEmpty()) {
-            m_lockCache.clear();
+            flushCache(CacheType.LOCK);
             return;
         }
         // initialize new lock cache
-        Map newLockCache = Collections.synchronizedMap(newLocks);
+        Map<String, CmsLock> newLockCache = Collections.synchronizedMap(newLocks);
         // register it
         register(CmsLockManager.class.getName(), newLockCache);
         // save the old cache
-        Map oldCache = m_lockCache;
+        Map<String, CmsLock> oldCache = m_cacheLock;
         // replace the old by the new cache
-        m_lockCache = newLockCache;
+        m_cacheLock = newLockCache;
         // clean up the old cache
         oldCache.clear();
     }
 
     /**
      * Flushes the memory object cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushMemObjects() {
 
-        m_memObjectCache.clear();
+        flushCache(CacheType.MEMORY_OBJECT);
     }
 
     /**
      * Flushes the organizational unit cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushOrgUnits() {
 
-        m_orgUnitCache.clear();
+        flushCache(CacheType.ORG_UNIT);
     }
 
     /**
      * Flushes the permission check result cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushPermissions() {
 
-        m_permissionCache.clear();
+        flushCache(CacheType.PERMISSION);
     }
 
     /**
      * Flushes the project resources cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushProjectResources() {
 
-        m_projectResourcesCache.clear();
+        flushCache(CacheType.PROJECT_RESOURCES);
     }
 
     /**
      * Flushes the project cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushProjects() {
 
-        m_projectCache.clear();
+        flushCache(CacheType.PROJECT);
     }
 
     /**
      * Flushes the property cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushProperties() {
 
-        m_propertyCache.clear();
+        flushCache(CacheType.PROPERTY);
     }
 
     /**
      * Flushes the property list cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushPropertyLists() {
 
-        m_propertyListCache.clear();
+        flushCache(CacheType.PROPERTY_LIST);
     }
 
     /**
      * Flushes the published resources cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushPublishedResources() {
 
-        m_publishedResourcesCache.clear();
+        flushCache(CacheType.PUBLISHED_RESOURCES);
     }
 
     /**
      * Flushes the publish history.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushPublishJobHistory() {
 
-        m_publishHistory.clear();
+        flushCache(CacheType.PUBLISH_HISTORY);
     }
 
     /**
      * Flushes the publish queue.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushPublishJobs() {
 
-        m_publishQueue.clear();
+        flushCache(CacheType.PUBLISH_QUEUE);
     }
 
     /**
      * Flushes the resource list cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushResourceLists() {
 
-        m_resourceListCache.clear();
+        flushCache(CacheType.RESOURCE_LIST);
     }
 
     /**
      * Flushes the resource cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushResources() {
 
-        m_resourceCache.clear();
+        flushCache(CacheType.RESOURCE);
     }
 
     /**
      * Flushes the role lists cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushRoleLists() {
 
-        m_roleListsCache.clear();
+        flushCache(CacheType.ROLE_LIST);
     }
 
     /**
      * Flushes the roles cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushRoles() {
 
-        m_rolesCache.clear();
+        flushCache(CacheType.HAS_ROLE);
     }
 
     /**
      * Flushes the user groups cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushUserGroups() {
 
-        m_userGroupsCache.clear();
+        flushCache(CacheType.USERGROUPS);
     }
 
     /**
      * Flushes the users cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushUsers() {
 
-        m_userCache.clear();
+        flushCache(CacheType.USER);
     }
 
     /**
      * Flushes the vfs object cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushVfsObjects() {
 
-        m_vfsObjectCache.clear();
+        flushCache(CacheType.VFS_OBJECT);
     }
 
     /**
      * Flushes the xml permanent entities cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushXmlPermanentEntities() {
 
-        m_xmlPermanentEntityCache.clear();
-
+        flushCache(CacheType.XML_ENTITY_PERM);
     }
 
     /**
      * Flushes the xml temporary entities cache.<p>
+     * 
+     * @deprecated use {@link #flushCache(CacheType[])} instead
      */
+    @Deprecated
     public void flushXmlTemporaryEntities() {
 
-        m_xmlTemporaryEntityCache.clear();
-
+        flushCache(CacheType.XML_ENTITY_TEMP);
     }
 
     /**
@@ -1045,9 +1325,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return a list of {@link String} objects
      */
-    public List getAllCachedLockPaths() {
+    public List<String> getAllCachedLockPaths() {
 
-        return new ArrayList(m_lockCache.keySet());
+        return new ArrayList<String>(m_cacheLock.keySet());
     }
 
     /**
@@ -1055,9 +1335,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return a list of {@link CmsLock} objects
      */
-    public List getAllCachedLocks() {
+    public List<CmsLock> getAllCachedLocks() {
 
-        return new ArrayList(m_lockCache.values());
+        return new ArrayList<CmsLock>(m_cacheLock.values());
     }
 
     /**
@@ -1065,9 +1345,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return all cached publish jobs
      */
-    public List getAllCachedPublishJobs() {
+    public List<CmsPublishJobInfoBean> getAllCachedPublishJobs() {
 
-        return new ArrayList(m_publishQueue);
+        return new ArrayList<CmsPublishJobInfoBean>(m_publishQueue);
     }
 
     /**
@@ -1075,9 +1355,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return all cached publish jobs
      */
-    public List getAllCachedPublishJobsInHistory() {
+    public List<CmsPublishJobInfoBean> getAllCachedPublishJobsInHistory() {
 
-        return new ArrayList(m_publishHistory);
+        return new ArrayList<CmsPublishJobInfoBean>(m_publishHistory);
     }
 
     /**
@@ -1089,7 +1369,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsAccessControlList getCachedACL(String key) {
 
-        return (CmsAccessControlList)m_accessControlListCache.get(key);
+        return m_cacheAccessControlList.get(key);
     }
 
     /**
@@ -1101,7 +1381,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsXmlContentDefinition getCachedContentDefinition(String key) {
 
-        return (CmsXmlContentDefinition)m_contentDefinitionsCache.get(key);
+        return m_cacheContentDefinitions.get(key);
     }
 
     /**
@@ -1113,7 +1393,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsGroup getCachedGroup(String key) {
 
-        return (CmsGroup)m_groupCache.get(key);
+        return m_cacheGroup.get(key);
     }
 
     /**
@@ -1125,11 +1405,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public Locale getCachedLocale(String key) {
 
-        if (m_localeCache == null) {
+        if (m_cacheLocale == null) {
             // this may be accessed before initialization
             return null;
         }
-        return (Locale)m_localeCache.get(key);
+        return m_cacheLocale.get(key);
     }
 
     /**
@@ -1141,7 +1421,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsLock getCachedLock(String rootPath) {
 
-        return (CmsLock)m_lockCache.get(rootPath);
+        return m_cacheLock.get(rootPath);
     }
 
     /**
@@ -1153,7 +1433,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public Object getCachedMemObject(String key) {
 
-        return m_memObjectCache.get(key);
+        return m_cacheMemObject.get(key);
     }
 
     /**
@@ -1165,7 +1445,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsOrganizationalUnit getCachedOrgUnit(String key) {
 
-        return (CmsOrganizationalUnit)m_orgUnitCache.get(key);
+        return m_cacheOrgUnit.get(key);
     }
 
     /**
@@ -1177,7 +1457,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public I_CmsPermissionHandler.CmsPermissionCheckResult getCachedPermission(String key) {
 
-        return (I_CmsPermissionHandler.CmsPermissionCheckResult)m_permissionCache.get(key);
+        return m_cachePermission.get(key);
     }
 
     /**
@@ -1189,7 +1469,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsProject getCachedProject(String key) {
 
-        return (CmsProject)m_projectCache.get(key);
+        return m_cacheProject.get(key);
     }
 
     /**
@@ -1199,9 +1479,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the project resources list cached with the given cache key
      */
-    public List getCachedProjectResources(String key) {
+    public List<CmsResource> getCachedProjectResources(String key) {
 
-        return (List)m_projectResourcesCache.get(key);
+        return m_cacheProjectResources.get(key);
     }
 
     /**
@@ -1213,10 +1493,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsProperty getCachedProperty(String key) {
 
-        if (!m_cacheProperty) {
-            return null;
-        }
-        return (CmsProperty)m_propertyCache.get(key);
+        return m_cacheProperty.get(key);
     }
 
     /**
@@ -1226,12 +1503,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the property list cached with the given cache key
      */
-    public List getCachedPropertyList(String key) {
+    public List<CmsProperty> getCachedPropertyList(String key) {
 
-        if (!m_cachePropertyList) {
-            return null;
-        }
-        return (List)m_propertyListCache.get(key);
+        return m_cachePropertyList.get(key);
     }
 
     /**
@@ -1241,9 +1515,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the published resources list cached with the given cache key
      */
-    public List getCachedPublishedResources(String cacheKey) {
+    public List<CmsPublishedResource> getCachedPublishedResources(String cacheKey) {
 
-        return (List)m_publishedResourcesCache.get(cacheKey);
+        return m_cachePublishedResources.get(cacheKey);
     }
 
     /**
@@ -1255,8 +1529,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsPublishJobInfoBean getCachedPublishJob(String key) {
 
-        for (Iterator i = m_publishQueue.iterator(); i.hasNext();) {
-            CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)i.next();
+        for (Iterator<CmsPublishJobInfoBean> i = m_publishQueue.iterator(); i.hasNext();) {
+            CmsPublishJobInfoBean publishJob = i.next();
             if (publishJob.getPublishHistoryId().toString().equals(key)) {
                 return publishJob;
             }
@@ -1274,8 +1548,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsPublishJobInfoBean getCachedPublishJobInHistory(String key) {
 
-        for (Iterator i = m_publishHistory.iterator(); i.hasNext();) {
-            CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)i.next();
+        for (Iterator<CmsPublishJobInfoBean> i = m_publishHistory.iterator(); i.hasNext();) {
+            CmsPublishJobInfoBean publishJob = i.next();
             if (publishJob.getPublishHistoryId().toString().equals(key)) {
                 return publishJob;
             }
@@ -1293,10 +1567,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsResource getCachedResource(String key) {
 
-        if (!m_cacheResource) {
-            return null;
-        }
-        return (CmsResource)m_resourceCache.get(key);
+        return m_cacheResource.get(key);
     }
 
     /**
@@ -1306,12 +1577,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the resource list cached with the given cache key
      */
-    public List getCachedResourceList(String key) {
+    public List<CmsResource> getCachedResourceList(String key) {
 
-        if (!m_cacheResourceList) {
-            return null;
-        }
-        return (List)m_resourceListCache.get(key);
+        return m_cacheResourceList.get(key);
     }
 
     /**
@@ -1323,7 +1591,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public Boolean getCachedRole(String key) {
 
-        return (Boolean)m_rolesCache.get(key);
+        return m_cacheHasRoles.get(key);
     }
 
     /**
@@ -1333,9 +1601,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return list of roles
      */
-    public List getCachedRoleList(String key) {
+    public List<CmsRole> getCachedRoleList(String key) {
 
-        return (List)m_roleListsCache.get(key);
+        return m_cacheRoleLists.get(key);
     }
 
     /**
@@ -1347,7 +1615,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsUser getCachedUser(String key) {
 
-        return (CmsUser)m_userCache.get(key);
+        return m_cacheUser.get(key);
     }
 
     /**
@@ -1357,9 +1625,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the user groups list cached with the given cache key
      */
-    public List getCachedUserGroups(String key) {
+    public List<CmsGroup> getCachedUserGroups(String key) {
 
-        return (List)m_userGroupsCache.get(key);
+        return m_cacheUserGroups.get(key);
     }
 
     /**
@@ -1371,7 +1639,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public Object getCachedVfsObject(String key) {
 
-        return m_vfsObjectCache.get(key);
+        return m_cacheVfsObject.get(key);
     }
 
     /**
@@ -1383,7 +1651,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public byte[] getCachedXmlPermanentEntity(String systemId) {
 
-        return (byte[])m_xmlPermanentEntityCache.get(systemId);
+        return m_cacheXmlPermanentEntity.get(systemId);
     }
 
     /**
@@ -1395,7 +1663,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public byte[] getCachedXmlTemporaryEntity(String key) {
 
-        return (byte[])m_xmlTemporaryEntityCache.get(key);
+        return m_cacheXmlTemporaryEntity.get(key);
     }
 
     /**
@@ -1488,7 +1756,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.LOG_MM_EMAIL_SENDER_1,
                     m_configuration.getEmailSender()));
-                Iterator i = m_configuration.getEmailReceiver().iterator();
+                Iterator<String> i = m_configuration.getEmailReceiver().iterator();
                 int n = 0;
                 while (i.hasNext()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(
@@ -1504,62 +1772,62 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         // temporary xml entities cache
         LRUMap xmlTemporaryCache = new LRUMap(128);
-        m_xmlTemporaryEntityCache = Collections.synchronizedMap(xmlTemporaryCache);
-        register(CmsXmlEntityResolver.class.getName() + ".xmlEntityTemporaryCache", m_xmlTemporaryEntityCache);
+        m_cacheXmlTemporaryEntity = Collections.synchronizedMap(xmlTemporaryCache);
+        register(CmsXmlEntityResolver.class.getName() + ".xmlEntityTemporaryCache", m_cacheXmlTemporaryEntity);
 
         // permanent xml entities cache
-        Map xmlPermanentCache = new HashMap(32);
-        m_xmlPermanentEntityCache = Collections.synchronizedMap(xmlPermanentCache);
-        register(CmsXmlEntityResolver.class.getName() + ".xmlEntityPermanentCache", m_xmlPermanentEntityCache);
+        Map<String, byte[]> xmlPermanentCache = new HashMap<String, byte[]>(32);
+        m_cacheXmlPermanentEntity = Collections.synchronizedMap(xmlPermanentCache);
+        register(CmsXmlEntityResolver.class.getName() + ".xmlEntityPermanentCache", m_cacheXmlPermanentEntity);
 
         // xml content definitions cache
         LRUMap contentDefinitionsCache = new LRUMap(64);
-        m_contentDefinitionsCache = Collections.synchronizedMap(contentDefinitionsCache);
-        register(CmsXmlEntityResolver.class.getName() + ".contentDefinitionsCache", m_contentDefinitionsCache);
+        m_cacheContentDefinitions = Collections.synchronizedMap(contentDefinitionsCache);
+        register(CmsXmlEntityResolver.class.getName() + ".contentDefinitionsCache", m_cacheContentDefinitions);
 
         // lock cache
-        Map lockCache = new HashMap();
-        m_lockCache = Collections.synchronizedMap(lockCache);
+        Map<String, CmsLock> lockCache = new HashMap<String, CmsLock>();
+        m_cacheLock = Collections.synchronizedMap(lockCache);
         register(CmsLockManager.class.getName(), lockCache);
 
         // locale cache
-        Map map = new HashMap();
-        m_localeCache = Collections.synchronizedMap(map);
+        Map<String, Locale> map = new HashMap<String, Locale>();
+        m_cacheLocale = Collections.synchronizedMap(map);
         register(CmsLocaleManager.class.getName(), map);
 
         // permissions cache
         LRUMap lruMap = new LRUMap(cacheSettings.getPermissionCacheSize());
-        m_permissionCache = Collections.synchronizedMap(lruMap);
+        m_cachePermission = Collections.synchronizedMap(lruMap);
         register(CmsSecurityManager.class.getName(), lruMap);
 
         // user cache
         lruMap = new LRUMap(cacheSettings.getUserCacheSize());
-        m_userCache = Collections.synchronizedMap(lruMap);
+        m_cacheUser = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".userCache", lruMap);
 
         // group cache
         lruMap = new LRUMap(cacheSettings.getGroupCacheSize());
-        m_groupCache = Collections.synchronizedMap(lruMap);
+        m_cacheGroup = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".groupCache", lruMap);
 
         // organizational unit cache
         lruMap = new LRUMap(cacheSettings.getOrgUnitCacheSize());
-        m_orgUnitCache = Collections.synchronizedMap(lruMap);
+        m_cacheOrgUnit = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".orgUnitCache", lruMap);
 
         // user groups list cache
         lruMap = new LRUMap(cacheSettings.getUserGroupsCacheSize());
-        m_userGroupsCache = Collections.synchronizedMap(lruMap);
+        m_cacheUserGroups = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".userGroupsCache", lruMap);
 
         // project cache
         lruMap = new LRUMap(cacheSettings.getProjectCacheSize());
-        m_projectCache = Collections.synchronizedMap(lruMap);
+        m_cacheProject = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".projectCache", lruMap);
 
         // project resources cache cache
         lruMap = new LRUMap(cacheSettings.getProjectResourcesCacheSize());
-        m_projectResourcesCache = Collections.synchronizedMap(lruMap);
+        m_cacheProjectResources = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruMap);
 
         // publish history
@@ -1575,52 +1843,52 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         // resource cache
         lruMap = new LRUMap(cacheSettings.getResourceCacheSize());
-        m_resourceCache = Collections.synchronizedMap(lruMap);
+        m_cacheResource = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".resourceCache", lruMap);
 
         // roles cache
         lruMap = new LRUMap(cacheSettings.getRolesCacheSize());
-        m_rolesCache = Collections.synchronizedMap(lruMap);
+        m_cacheHasRoles = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".rolesCache", lruMap);
 
         // role lists cache
         lruMap = new LRUMap(cacheSettings.getRolesCacheSize());
-        m_roleListsCache = Collections.synchronizedMap(lruMap);
+        m_cacheRoleLists = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".roleListsCache", lruMap);
 
         // resource list cache
         lruMap = new LRUMap(cacheSettings.getResourcelistCacheSize());
-        m_resourceListCache = Collections.synchronizedMap(lruMap);
+        m_cacheResourceList = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".resourceListCache", lruMap);
 
         // property cache
         lruMap = new LRUMap(cacheSettings.getPropertyCacheSize());
-        m_propertyCache = Collections.synchronizedMap(lruMap);
+        m_cacheProperty = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".propertyCache", lruMap);
 
         // property list cache
         lruMap = new LRUMap(cacheSettings.getPropertyListsCacheSize());
-        m_propertyListCache = Collections.synchronizedMap(lruMap);
+        m_cachePropertyList = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".propertyListCache", lruMap);
 
         // published resources list cache
         lruMap = new LRUMap(5);
-        m_publishedResourcesCache = Collections.synchronizedMap(lruMap);
+        m_cachePublishedResources = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".publishedResourcesCache", lruMap);
 
         // acl cache
         lruMap = new LRUMap(cacheSettings.getAclCacheSize());
-        m_accessControlListCache = Collections.synchronizedMap(lruMap);
+        m_cacheAccessControlList = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".accessControlListCache", lruMap);
 
         // vfs object cache
-        Map vfsObjectCache = new HashMap();
-        m_vfsObjectCache = Collections.synchronizedMap(vfsObjectCache);
+        Map<String, Object> vfsObjectCache = new HashMap<String, Object>();
+        m_cacheVfsObject = Collections.synchronizedMap(vfsObjectCache);
         register(CmsVfsMemoryObjectCache.class.getName(), vfsObjectCache);
 
         // memory object cache
-        Map memObjectCache = new HashMap();
-        m_memObjectCache = Collections.synchronizedMap(memObjectCache);
+        Map<String, Object> memObjectCache = new HashMap<String, Object>();
+        m_cacheMemObject = Collections.synchronizedMap(memObjectCache);
         register(CmsMemoryObjectCache.class.getName(), memObjectCache);
 
         if (LOG.isDebugEnabled()) {
@@ -1633,40 +1901,64 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Checks if the property cache is enabled.<p>
      * 
      * @return <code>true</code> if the property cache is enabled
+     * 
+     * @deprecated use {@link #isEnabled(CacheType)} instead
      */
+    @Deprecated
     public boolean isCacheProperty() {
 
-        return m_cacheProperty;
+        return isEnabled(CacheType.PROPERTY);
     }
 
     /**
      * Checks if the property list cache is enabled.<p>
      * 
      * @return <code>true</code> if the property list cache is enabled
+     * 
+     * @deprecated use {@link #isEnabled(CacheType)} instead
      */
+    @Deprecated
     public boolean isCachePropertyList() {
 
-        return m_cachePropertyList;
+        return isEnabled(CacheType.PROPERTY_LIST);
     }
 
     /**
      * Checks if the resource cache is enabled.<p>
      * 
      * @return <code>true</code> if the resource cache is enabled
+     * 
+     * @deprecated use {@link #isEnabled(CacheType)} instead
      */
+    @Deprecated
     public boolean isCacheResource() {
 
-        return m_cacheResource;
+        return isEnabled(CacheType.RESOURCE);
     }
 
     /**
      * Checks if the resource list cache is enabled.<p>
      * 
      * @return <code>true</code> if the resource list cache is enabled
+     * 
+     * @deprecated use {@link #isEnabled(CacheType)} instead
      */
+    @Deprecated
     public boolean isCacheResourceList() {
 
-        return m_cacheResourceList;
+        return isEnabled(CacheType.RESOURCE_LIST);
+    }
+
+    /**
+     * Checks if the given cache is enabled.<p>
+     * 
+     * @param type the cache type to check 
+     * 
+     * @return <code>true</code> if the given cache is enabled
+     */
+    public boolean isEnabled(CacheType type) {
+
+        return (m_disabled.get(type) == null);
     }
 
     /**
@@ -1766,44 +2058,68 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Sets if the property cache is enabled.<p>
      *
      * @param cacheProperty if the property cache is enabled
+     * 
+     * @deprecated use {@link #enableCache(CacheType[])} or {@link #disableCache(CacheType[])} instead
      */
+    @Deprecated
     public void setCacheProperty(boolean cacheProperty) {
 
-        m_cacheProperty = cacheProperty;
-        flushProperties();
+        if (cacheProperty) {
+            enableCache(CacheType.PROPERTY);
+        } else {
+            disableCache(CacheType.PROPERTY);
+        }
     }
 
     /**
      * Sets if the property list cache is enabled.<p>
      *
      * @param cachePropertyList if the property list cache is enabled
+     * 
+     * @deprecated use {@link #enableCache(CacheType[])} or {@link #disableCache(CacheType[])} instead
      */
+    @Deprecated
     public void setCachePropertyList(boolean cachePropertyList) {
 
-        m_cachePropertyList = cachePropertyList;
-        flushPropertyLists();
+        if (cachePropertyList) {
+            enableCache(CacheType.PROPERTY_LIST);
+        } else {
+            disableCache(CacheType.PROPERTY_LIST);
+        }
     }
 
     /**
      * Sets if the resource cache is enabled.<p>
      *
      * @param cacheResource if the resource cache is enabled
+     * 
+     * @deprecated use {@link #enableCache(CacheType[])} or {@link #disableCache(CacheType[])} instead
      */
+    @Deprecated
     public void setCacheResource(boolean cacheResource) {
 
-        m_cacheResource = cacheResource;
-        flushResources();
+        if (cacheResource) {
+            enableCache(CacheType.RESOURCE);
+        } else {
+            disableCache(CacheType.RESOURCE);
+        }
     }
 
     /**
      * Sets if the resource list cache is enabled.<p>
      *
      * @param cacheResourceList if the resource list cache is enabled
+     * 
+     * @deprecated use {@link #enableCache(CacheType[])} or {@link #disableCache(CacheType[])} instead
      */
+    @Deprecated
     public void setCacheResourceList(boolean cacheResourceList) {
 
-        m_cacheResourceList = cacheResourceList;
-        flushResourceLists();
+        if (cacheResourceList) {
+            enableCache(CacheType.RESOURCE_LIST);
+        } else {
+            disableCache(CacheType.RESOURCE_LIST);
+        }
     }
 
     /**
@@ -1813,27 +2129,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void shutdown() throws Exception {
 
-        flushACLs();
-        flushGroups();
-        flushLocales();
-        flushMemObjects();
-        flushOrgUnits();
-        flushPermissions();
-        flushProjectResources();
-        flushProjects();
-        flushProperties();
-        flushPropertyLists();
-        flushResourceLists();
-        flushResources();
-        flushUserGroups();
-        flushUsers();
-        flushVfsObjects();
-        flushLocks(null);
-        flushContentDefinitions();
-        flushXmlPermanentEntities();
-        flushXmlTemporaryEntities();
-        flushRoles();
-        flushRoleLists();
+        for (CacheType type : CacheType.values()) {
+            flushCache(type);
+        }
     }
 
     /**
@@ -1843,7 +2141,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void uncacheContentDefinition(String key) {
 
-        m_contentDefinitionsCache.remove(key);
+        m_cacheContentDefinitions.remove(key);
     }
 
     /**
@@ -1855,8 +2153,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void uncacheGroup(CmsGroup group) {
 
-        m_groupCache.remove(group.getId().toString());
-        m_groupCache.remove(group.getName());
+        m_cacheGroup.remove(group.getId().toString());
+        m_cacheGroup.remove(group.getName());
     }
 
     /**
@@ -1866,7 +2164,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void uncacheLock(String rootPath) {
 
-        m_lockCache.remove(rootPath);
+        m_cacheLock.remove(rootPath);
     }
 
     /**
@@ -1878,8 +2176,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void uncacheOrgUnit(CmsOrganizationalUnit orgUnit) {
 
-        m_orgUnitCache.remove(orgUnit.getId().toString());
-        m_orgUnitCache.remove(orgUnit.getName());
+        m_cacheOrgUnit.remove(orgUnit.getId().toString());
+        m_cacheOrgUnit.remove(orgUnit.getName());
     }
 
     /**
@@ -1891,8 +2189,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void uncacheProject(CmsProject project) {
 
-        m_projectCache.remove(project.getUuid().toString());
-        m_projectCache.remove(project.getName());
+        m_cacheProject.remove(project.getUuid().toString());
+        m_cacheProject.remove(project.getName());
     }
 
     /**
@@ -1924,8 +2222,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void uncacheUser(CmsUser user) {
 
-        m_userCache.remove(user.getId().toString());
-        m_userCache.remove(user.getName());
+        m_cacheUser.remove(user.getId().toString());
+        m_cacheUser.remove(user.getName());
     }
 
     /**
@@ -1935,7 +2233,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void uncacheVfsObject(String key) {
 
-        m_vfsObjectCache.remove(key);
+        m_cacheVfsObject.remove(key);
     }
 
     /**
@@ -1945,13 +2243,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void uncacheXmlTemporaryEntity(String key) {
 
-        m_xmlTemporaryEntityCache.remove(key);
+        m_cacheXmlTemporaryEntity.remove(key);
     }
 
     /**
      * Clears the OpenCms caches.<p> 
      */
-    private void clearCaches() {
+    protected void clearCaches() {
 
         if ((m_lastClearCache + INTERVAL_CLEAR) > System.currentTimeMillis()) {
             // if the cache has already been cleared less then 15 minutes ago we skip this because 
@@ -1963,7 +2261,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (LOG.isWarnEnabled()) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_CLEAR_CACHE_MEM_CONS_0));
         }
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_CLEAR_CACHES,
+            Collections.<String, Object> emptyMap()));
         System.gc();
     }
 
@@ -1976,7 +2276,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the cache costs or "-"
      */
-    private long getCosts(Object obj) {
+    protected long getCosts(Object obj) {
 
         long costs = 0;
         if (obj instanceof CmsLruCache) {
@@ -1998,13 +2298,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the number of items or "-"
      */
-    private String getItems(Object obj) {
+    protected String getItems(Object obj) {
 
         if (obj instanceof CmsLruCache) {
             return Integer.toString(((CmsLruCache)obj).size());
         }
         if (obj instanceof Map) {
-            return Integer.toString(((Map)obj).size());
+            return Integer.toString(((Map<?, ?>)obj).size());
         }
         return "-";
     }
@@ -2019,7 +2319,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return total size of key strings
      */
-    private long getKeySize(Map map, int depth) {
+    protected long getKeySize(Map<?, ?> map, int depth) {
 
         long keySize = 0;
         try {
@@ -2029,7 +2329,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 Object obj = values[i];
 
                 if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
-                    keySize += getKeySize((Map)obj, depth + 1);
+                    keySize += getKeySize((Map<?, ?>)obj, depth + 1);
                     continue;
                 }
             }
@@ -2066,10 +2366,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the total size of key strings
      */
-    private long getKeySize(Object obj) {
+    protected long getKeySize(Object obj) {
 
         if (obj instanceof Map) {
-            return getKeySize((Map)obj, 1);
+            return getKeySize((Map<?, ?>)obj, 1);
         }
 
         return 0;
@@ -2084,7 +2384,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return max cost limit or "-"
      */
-    private String getLimit(Object obj) {
+    protected String getLimit(Object obj) {
 
         if (obj instanceof CmsLruCache) {
             return Long.toString(((CmsLruCache)obj).getMaxCacheCosts());
@@ -2101,7 +2401,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param warning if true, send a memory warning email 
      */
-    private void monitorSendEmail(boolean warning) {
+    protected void monitorSendEmail(boolean warning) {
 
         if ((m_configuration.getEmailSender() == null) || (m_configuration.getEmailReceiver() == null)) {
             // send no mails if not fully configured
@@ -2178,11 +2478,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         sm = null;
 
         content += "Current status of the caches:\n\n";
-        List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
+        List<String> keyList = new ArrayList<String>(m_monitoredObjects.keySet());
         Collections.sort(keyList);
         long totalSize = 0;
-        for (Iterator keys = keyList.iterator(); keys.hasNext();) {
-            String key = (String)keys.next();
+        for (Iterator<String> keys = keyList.iterator(); keys.hasNext();) {
+            String key = keys.next();
             String[] shortKeys = key.split("\\.");
             String shortKey = shortKeys[shortKeys.length - 2] + '.' + shortKeys[shortKeys.length - 1];
             PrintfFormat form = new PrintfFormat("%9s");
@@ -2206,13 +2506,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         content += "\nTotal size of cache memory monitored: " + totalSize + " (" + totalSize / 1048576 + ")\n\n";
 
         String from = m_configuration.getEmailSender();
-        List receivers = new ArrayList();
-        List receiverEmails = m_configuration.getEmailReceiver();
+        List<InternetAddress> receivers = new ArrayList<InternetAddress>();
+        List<String> receiverEmails = m_configuration.getEmailReceiver();
         try {
             if ((from != null) && (receiverEmails != null) && !receiverEmails.isEmpty()) {
-                Iterator i = receiverEmails.iterator();
+                Iterator<String> i = receiverEmails.iterator();
                 while (i.hasNext()) {
-                    receivers.add(new InternetAddress((String)i.next()));
+                    receivers.add(new InternetAddress(i.next()));
                 }
                 CmsSimpleMail email = new CmsSimpleMail();
                 email.setFrom(from);
@@ -2238,7 +2538,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param warning if true, write a memory warning log entry 
      */
-    private void monitorWriteLog(boolean warning) {
+    protected void monitorWriteLog(boolean warning) {
 
         if (!LOG.isWarnEnabled()) {
             // we need at last warn level for this output
@@ -2285,12 +2585,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 OpenCms.getSystemInfo().getServerName().toUpperCase(),
                 String.valueOf(m_logCount)));
 
-            List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
+            List<String> keyList = new ArrayList<String>(m_monitoredObjects.keySet());
             Collections.sort(keyList);
             long totalSize = 0;
-            for (Iterator keys = keyList.iterator(); keys.hasNext();) {
-
-                String key = (String)keys.next();
+            for (Iterator<String> keys = keyList.iterator(); keys.hasNext();) {
+                String key = keys.next();
                 Object obj = m_monitoredObjects.get(key);
 
                 long size = getKeySize(obj) + getValueSize(obj) + getCosts(obj);
@@ -2343,8 +2642,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             }
             sm = null;
 
-            for (Iterator i = OpenCms.getSqlManager().getDbPoolUrls().iterator(); i.hasNext();) {
-                String poolname = (String)i.next();
+            for (Iterator<String> i = OpenCms.getSqlManager().getDbPoolUrls().iterator(); i.hasNext();) {
+                String poolname = i.next();
                 try {
                     LOG.info(Messages.get().getBundle().key(
                         Messages.LOG_MM_CONNECTIONS_3,
@@ -2370,7 +2669,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /**
      * Updates the memory information of the memory monitor.<p> 
      */
-    private void updateStatus() {
+    protected void updateStatus() {
 
         m_memoryCurrent.update();
         m_memoryAverage.calculateAverage(m_memoryCurrent);

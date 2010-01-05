@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2009/08/20 11:31:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/05 11:49:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.5.5
  */
@@ -199,7 +200,7 @@ public class CmsPublishQueue {
         CmsDriverManager driverManager = m_publishEngine.getDriverManager();
 
         try {
-            OpenCms.getMemoryMonitor().flushPublishJobs();
+            OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PUBLISH_QUEUE);
             if (revive) {
                 // read all pending publish jobs from the database
                 CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();

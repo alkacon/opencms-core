@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishHistory.java,v $
- * Date   : $Date: 2009/08/20 11:31:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/05 11:49:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.5
  */
@@ -165,7 +166,7 @@ public class CmsPublishHistory {
         CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
 
         try {
-            OpenCms.getMemoryMonitor().flushPublishJobHistory();
+            OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PUBLISH_HISTORY);
             // read all finished published jobs from the database
             List publishJobs = driverManager.readPublishJobs(dbc, 1L, Long.MAX_VALUE);
             for (Iterator i = publishJobs.iterator(); i.hasNext();) {
