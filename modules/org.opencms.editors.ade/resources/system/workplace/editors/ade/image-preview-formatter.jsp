@@ -29,15 +29,34 @@ pageContext.setAttribute("cms", cms);
 	}
 	
 	.cms-image-info .cms-value {
-		vertical-align: middle;		
+		display:inline-block;
+		height:16px;
+		overflow:hidden;
+		vertical-align:middle;			
 	}
 	
 	.cms-width-300 {
 		width:300px;
 	}
 	
+	.cms-width-200 {
+		width:200px;
+	}
+	
 	.cms-width-600 {
 		width:600px;
+	}
+	
+	.cms-width-500 {
+		width:500px;
+	}
+	
+	.cms-width-95 {
+		width:95px;
+	}
+	
+	.cms-width-50 {
+		width:50px;
 	}		
 		 
 </style>
@@ -45,14 +64,14 @@ pageContext.setAttribute("cms", cms);
 	<h3>${cms.title}</h3>
 	<div class="cms-image-preview"></div>
 	<div class="cms-image-info">
-			<div class="cms-field cms-left cms-width-600"><span class="cms-item-title cms-width-90">Path:</span><span class="cms-value">${cms.path}</span></div>			
-			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-90">Name:</span><span class="cms-value">${cms.title}</span></div>
-			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-90">Format:</span><span class="cms-value">${cms.format}</span></div>
-			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-90">Title:</span><span class="cms-value">${cms.propertyTitle}</span></div>
+			<div class="cms-field cms-left cms-width-600"><span class="cms-item-title cms-width-95">Path:</span><span class="cms-value cms-width-500">${cms.path}</span></div>			
+			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95">Name:</span><span class="cms-value cms-width-200">${cms.title}</span></div>
+			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95">Format:</span><span class="cms-value cms-width-200">${cms.format}</span></div>
+			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95">Title:</span><span class="cms-value cms-width-200">${cms.propertyTitle}</span></div>
 			<c:set var="dateModified" value="<%=new java.util.Date(cms.getResource().getDateLastModified()) %>" />
-			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-90">Last modified:</span><span class="cms-value">${dateModified}</span></div>
-			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-90">Type:</span><span class="cms-value">${cms.ending}</span></div>						
-			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-90">Size:</span><span class="cms-value">${cms.size}</span></div>
+			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95">Last modified:</span><span class="cms-value cms-width-200">${dateModified}</span></div>
+			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95">Type:</span><span class="cms-value cms-width-200">${cms.ending}</span></div>						
+			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95">Size:</span><span class="cms-value cms-width-50">${cms.size}</span></div>
     </div>	
 	<input type="hidden" value='${cms.jsonForActiveImage}'>
 </div>

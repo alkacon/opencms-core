@@ -19,14 +19,13 @@
                             </div>';
    /** Html sceleton for the lower button bar in the editable properties area. */                      
    var okCloseButtonBar = '<div class="button-bar cms-top">\
-                                 <button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
-                                       <span class="cms-galleries-button">Close</span>\
-                                 </button>\
                                  <button name="previewSave" disabled="true" class="cms-right ui-state-default ui-corner-all">\
                                      <span class="cms-galleries-button">Save</span>\
                                  </button>\
                            </div>';                             
-   
+   //<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
+                                 //      <span class="cms-galleries-button">Close</span>\
+                                 //</button>\
    /** html fragment for the item preview. */
    cms.previewhandler.htmlPreviewSceleton = '<div id="cms-preview" class="ui-corner-all">\
                                                     <div class="close-icon ui-icon ui-icon-closethick ui-corner-all" ></div>\
@@ -54,14 +53,7 @@
       $('#' + cms.previewhandler.editableTabId).tabs({});                    
                   
       //bind click event to preview close button 
-      $('#cms-preview div.close-icon').click(function() {
-         if ($(this).hasClass('cms-properties-changed')) {
-            cms.galleries.loadSearchResults();
-            $(this).removeClass('cms-properties-changed');
-         }
-         cms.galleries.getContentHandler()['closePreview']();
-         
-      });
+      $('#cms-preview div.close-icon').click(cms.galleries.getContentHandler()['closePreviewWithConfirmation']);             
       
       $('.button-bar button').live('mouseover', function() {
          $(this).toggleClass('ui-state-hover', true);
@@ -71,7 +63,7 @@
       
       // fade in the preview      
       $('#cms-preview').fadeIn('slow');
-   }
+   }      
    
    /**
     * Generates html for the editable properties and add them to the dom.
@@ -102,48 +94,28 @@
       
       // bind direct input to the editable fields
       $('.cms-item-edit').change(function() {
-            target.find('button[name="previewSave"]').removeAttr('disabled');
-            $(this).addClass('cms-item-changed');
-         });    
+           $('#' + cms.previewhandler.keys['propertiesTabId']).find('button[name="previewSave"]').removeAttr('disabled');
+           $(this).addClass('cms-item-changed');
+           $('#cms-preview div.close-icon').addClass('cms-properties-changed').removeClass('cms-properties-saved');
+           $('#cms-preview').find('button[name="previewSelect"]').addClass('cms-properties-changed');
+      });    
          
       // add ok-close button bar to the edit area                        
       target.append($(okCloseButtonBar));
       target.find('button[name="previewSave"]')
-          .click(cms.galleries.getContentHandler()['saveChangedProperty']);
-      target.find('button[name="previewClose"]')
-          .click(cms.galleries.getContentHandler()['closePreview']);
+          .click(cms.galleries.getContentHandler()['saveAndRefreshProperties']);
+      /*target.find('button[name="previewClose"]')
+          .click(cms.galleries.getContentHandler()['closePreview']);*/
       // TODO: comment in for direct publish
       /* $('.edit-area button[name="publishSave"]').click(publishChangedProperty);*/
       
       // add select button if in widget or editor mode
       if (cms.galleries.isSelectableItem()) {
-         target.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+         target.find('button[name="previewSave"]').before('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
                                 <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                           </button>');
-         target.find('button[name="previewSelect"]').click(function() {            
-            var itemType = $('#results li[alt="' + cms.galleries.initValues['path'] + '"]').data('type');
-            var itemId = $(this).closest('#cms-preview').attr('alt');
-            cms.galleries.getContentHandler(itemType)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
-         });
+         target.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);        
       }
-   }
-   
-   /**
-    * Updates the value of the changed property in the preview and marks the element as changed.
-    * This function overwrites 'setValue' method from the 'directInput' extension.
-    *
-    * @param {Object} elem the html element to be changed
-    * @param {Object} input the input field used to change the content of the html element
-    */
-   var markChangedProperty = function(elem, input) {
-      var previous = elem.text();
-      var current = input.val();
-      if (previous != current) {
-         elem.text(current);
-         elem.addClass('cms-item-changed');
-      }
-      elem.css('display', '');
-      input.remove();
    }
    
    /**
@@ -151,7 +123,8 @@
     *
     * @param {Object} itemData the data to update the preview
     */
-   var refreshDefaultPreview = function(itemData) {
+   var refreshDefaultPreview = function(itemData) {       
+      $('#cms-preview div.close-icon').removeClass('cms-properties-changed').addClass('cms-properties-saved');
       $('#cms-preview div.preview-area, #' + cms.previewhandler.keys['propertiesTabId']).empty();
       //display the html preview 
       $('.preview-area').append(itemData['previewdata']['itemhtml']);
@@ -162,7 +135,7 @@
    /**
     * Callback function for click event on the 'save' button.
     */
-   var saveChangedProperty = function() {
+   var saveAndRefreshProperties = function() {
       var changedProperties = $('.cms-item-edit.cms-item-changed');
       
       // build json object with changed properties
@@ -177,7 +150,6 @@
       });
       
       var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');
-      
       // save changes via ajax if there are any
       if (changes['properties'].length != 0) {
          $.ajax({
@@ -192,10 +164,98 @@
             'type': 'POST',
             'dataType': 'json',
             'success': cms.galleries.getContentHandler(resType)['refreshPreview']
-         });
-         $('#cms-preview div.close-icon').addClass('cms-properties-changed');
-      }
-      
+         });         
+      }     
+   }
+   
+   /**
+    * Callback function for the closing preview dialog with confirmation.
+    * 
+    * @param {Object} isConfirmed true if yes-button is clicked, false otherwise
+    */
+   var saveAndClosePreview = function(/***Boolean*/isConfirmed) {
+      if (isConfirmed) {
+          var changedProperties = $('.cms-item-edit.cms-item-changed');      
+          // build json object with changed properties
+          var changes = {
+             'properties': []
+          };
+          $.each(changedProperties, function() {
+             var property = {};
+             property['name'] = $(this).closest('div').attr('alt');
+             property['value'] = $(this).val();
+             changes['properties'].push(property);
+          });
+          
+          var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');
+          // save changes via ajax if there are any
+          if (changes['properties'].length != 0) {
+             $.ajax({
+                'url': cms.data.GALLERY_SERVER_URL,
+                'data': {
+                   'action': 'setproperties',
+                   'data': JSON.stringify({
+                      'path': $('#cms-preview').attr('alt'),
+                      'properties': changes['properties']
+                   })
+                },
+                'type': 'POST',
+                'dataType': 'json',
+                // TODO: error handling
+                'success': function () {
+                    cms.galleries.loadSearchResults();
+                    cms.galleries.getContentHandler()['closePreview']();   
+                }
+             });         
+          } else {
+              
+          }
+      } else {
+          cms.galleries.getContentHandler()['closePreview']();
+      }            
+   }
+   
+    /**
+    * Callback function for the closing preview dialog with confirmation.
+    * 
+    * @param {Object} isConfirmed true if yes-button is clicked, false otherwise
+    */
+   var saveAndSelectItem = function(/***Boolean*/isConfirmed) {
+      var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');
+      if (isConfirmed) {
+          var changedProperties = $('.cms-item-edit.cms-item-changed');      
+          // build json object with changed properties
+          var changes = {
+             'properties': []
+          };
+          $.each(changedProperties, function() {
+             var property = {};
+             property['name'] = $(this).closest('div').attr('alt');
+             property['value'] = $(this).val();
+             changes['properties'].push(property);
+          });                   
+          // save changes via ajax if there are any
+          if (changes['properties'].length != 0) {
+             $.ajax({
+                'url': cms.data.GALLERY_SERVER_URL,
+                'data': {
+                   'action': 'setproperties',
+                   'data': JSON.stringify({
+                      'path': $('#cms-preview').attr('alt'),
+                      'properties': changes['properties']
+                   })
+                },
+                'type': 'POST',
+                'dataType': 'json',
+                // TODO: error handling
+                'success': cms.galleries.getContentHandler(resType)['setValues'][cms.galleries.initValues['dialogMode']]
+            });         
+          } else {
+              cms.galleries.getContentHandler(resType)['setValues'][cms.galleries.initValues['dialogMode']]();
+          }
+      } else {
+          cms.galleries.getContentHandler(resType)['setValues'][cms.galleries.initValues['dialogMode']]();
+      }            
    }
    
    /**
@@ -206,12 +266,14 @@
    }
    
    /**
-    * Select button was pressed, stores the image information back in the editor fields.
-    * 
-    * @param {Object} itemId the unique path to the resource
-    * @param {Object} fieldId the id of the input field in the xml content
+    * Select button was pressed, stores the item path back in the editor field.    
     */
-   var setResourcePath = function(/**String*/itemId, /**String*/fieldId) {
+   var setResourcePath = function() {
+      // the unique path to the resource
+      var itemId = $('#cms-preview').attr('alt');
+      //the id of the input field in the xml content
+      var fieldId = cms.galleries.initValues['fieldId'];
+      
       if (fieldId != null && fieldId != "") {
          var imgField = window.opener.document.getElementById(fieldId);
          imgField.value = itemId;
@@ -221,8 +283,35 @@
          } catch (e) {
                   }
       }
-      window.close();
-      
+      window.close();      
+   }
+   
+   /**
+    * Closes the preview with confirmation to save changed properties.
+    */
+   var closePreviewWithConfirmation = function () {      
+         if ($(this).hasClass('cms-properties-saved')) {
+            cms.galleries.loadSearchResults();
+            cms.galleries.getContentHandler()['closePreview']();
+         } else if ($(this).hasClass('cms-properties-changed')) {            
+            //text, title, yesLabel, noLabel, callback
+            cms.util.dialogConfirmCancel('Do you want to save the changes?', 'Save', 'Yes', 'No', 'Cancel', saveAndClosePreview);
+         } else {
+             cms.galleries.getContentHandler()['closePreview']();     
+         }                   
+   }
+   
+   /**
+    * Pastes the path to the selected item with confirmation to save changed properties.
+    */
+   var selectItemWithConfirmation = function () { 
+         var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');       
+         if ($(this).hasClass('cms-properties-changed')) {            
+            //text, title, yesLabel, noLabel, callback
+            cms.util.dialogConfirmCancel('Do you want to save changes?', 'Save', 'Yes', 'No', 'Cancel', cms.galleries.getContentHandler()['saveAndSelectItem']);
+         } else {
+            cms.galleries.getContentHandler(resType)['setValues'][cms.galleries.initValues['dialogMode']]();  
+         }                   
    }
    
    var closePreview = function() {
@@ -233,6 +322,8 @@
    var cleanUpOnClose = function() {
        $('#'+ cms.previewhandler.editableTabId).tabs('destroy');
        $('#'+ cms.previewhandler.editableTabId).removeAttr('class').empty();
+       $('#cms-preview div.close-icon').removeClass('cms-properties-changed cms-properties-saved'); 
+       //$('#' + cms.previewhandler.keys['propertiesTabId']).find('button[name="previewSelect"]').removeClass('cms-properties-changed');      
        $('#cms-preview div.preview-area').empty();       
    }
    
@@ -248,13 +339,15 @@
       'openPreview': showItemPreview,
       'showEditArea': getEditArea,
       'fillProperties': fillProperties,
-      'markChangedProperty': markChangedProperty,
-      'saveChangedProperty': saveChangedProperty,
+      'saveAndRefreshProperties': saveAndRefreshProperties,
+      'selectItemWithConfirmation':selectItemWithConfirmation,
+      'saveAndSelectItem':saveAndSelectItem,
       'refreshPreview': refreshDefaultPreview,
       'setValues': {
          'widget': setResourcePath,
          'editor': 'test2'
       },
+      'closePreviewWithConfirmation': closePreviewWithConfirmation,
       'closePreview': closePreview
       
    };

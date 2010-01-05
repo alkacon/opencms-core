@@ -396,6 +396,33 @@
       });
    }
    
+   var dialogConfirmCancel = cms.util.dialogConfirmCancel = function(text, title, yesLabel, noLabel, cancelLabel, callback) {
+      var $dlg = $('<div/>').text(text).appendTo('body');
+      var buttons = {};
+      buttons[cancelLabel] = function() {
+         $dlg.dialog('destroy').remove();        
+      }
+      buttons[noLabel] = function() {
+         $dlg.dialog('destroy').remove();
+         callback(false);
+      }
+      buttons[yesLabel] = function() {
+         $dlg.dialog('destroy').remove();
+         callback(true);
+      }
+            
+      $dlg.dialog({
+         autoOpen: true,
+         zIndex: 9999,
+         buttons: buttons,
+         title: title,
+         modal: true,
+         close: function() {
+            $dlg.dialog('destroy').remove();            
+         }
+      });
+   }
+   
    
    var addToElementList = cms.util.addToElementList = function(list, item, maxLen) {
       var rId = getResourceId(item);

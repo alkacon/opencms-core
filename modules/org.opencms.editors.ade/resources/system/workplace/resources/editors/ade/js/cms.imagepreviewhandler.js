@@ -65,13 +65,13 @@
                                 <input class="ui-corner-all ui-widget-content ui-state-disabled" disabled="true" type="text"/>\
                             </div>\
                             <div class="cms-format-line" alt="' + keys['previewHeight'] + '">\
-                                <button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
-                                    <span class="cms-galleries-button">Close</span>\
-                                </button>\
                                 <span class="cms-item-title cms-width-50">Height:</span>\
                                 <input class="ui-corner-all ui-widget-content ui-state-disabled" disabled="true" type="text"/>\
                             </div>';
-                            
+    // TODO: eventual comment on as cancel button    
+                            /*<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
+                                    <span class="cms-galleries-button">Close</span>\
+                                </button>\*/
     /** Html sceleton for the additional buttons in the image format area. */                            
     var lockRatioButtonsHtml = '<button name="' + keys['locksizes'] + '" class="ui-state-default ui-corner-all">\
                                     <span class="cms-galleries-button cms-galleries-icon-locked cms-icon">&nbsp;</span>\
@@ -120,14 +120,7 @@
       $('#' + cms.previewhandler.editableTabId).tabs({}); 
 
       //bind click event to preview close button 
-      $('#cms-preview div.close-icon').click(function() {
-         if ($(this).hasClass('cms-properties-changed')) {
-            cms.galleries.loadSearchResults();
-            $(this).removeClass('cms-properties-changed');
-         }
-         cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']();
-         
-      });
+      $('#cms-preview div.close-icon').click(cms.galleries.getContentHandler()['closePreviewWithConfirmation']);
       
       $('#cms-preview button').live('mouseover', function() {
          $(this).toggleClass('ui-state-hover', true);
@@ -178,20 +171,22 @@
       // add image infos edit area to preview
       var targetInfos = $('#' + cms.imagepreviewhandler.keys['imageInfosTabId']); 
       targetInfos.append($(imageInfos));   
-      $('#' + cms.imagepreviewhandler.keys['imageInfosTabId']).find('div.cms-field:last')
+      // TODO: eventual comment on as cancel button    
+      /*$('#' + cms.imagepreviewhandler.keys['imageInfosTabId']).find('div.cms-field:last')
           .prepend('<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
                           <span class="cms-galleries-button">Close</span>\
-                    </button>');
-      targetInfos.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);
+                    </button>');*/          
+      /*targetInfos.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);*/
       if (cms.galleries.isSelectableItem()) {
           // add select button
-          targetInfos.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+          /*targetInfos.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
                                    <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
-                             </button>');
-          targetInfos.find('button[name="previewSelect"]').click(function() {
-             var itemId = $(this).closest('#cms-preview').attr('alt');
-             cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
-          });
+                             </button>');*/
+          $('#' + cms.imagepreviewhandler.keys['imageInfosTabId']).find('div.cms-field:last')
+              .prepend('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                             </button>');                              
+          targetInfos.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);
        }          
    }
    
@@ -203,17 +198,17 @@
       var targetFormat = $('#' + cms.imagepreviewhandler.keys['formatTabId']);
       var form = $('<div class="edit-form"></div>');
       form.append($(widthHeightFieldsHtml)).appendTo(targetFormat); 
-      targetFormat.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);        
+      //targetFormat.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);        
             
       if (cms.galleries.isSelectableItem()) {
          // add select button
-         targetFormat.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+         targetFormat.find('div[alt="' + keys['previewHeight'] + '"]').prepend('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
                                    <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                              </button>');
-         targetFormat.find('button[name="previewSelect"]').click(function() {
-            var itemId = $(this).closest('#cms-preview').attr('alt');
-            cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['setValues'][cms.galleries.initValues['dialogMode']](itemId, cms.galleries.initValues['fieldId']);
-         }); 
+         /*targetFormat.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                             </button>');*/
+         targetFormat.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']); 
          
          // enable width and height fields and bind events 
          targetFormat.find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
@@ -255,6 +250,7 @@
     * @param {Object} itemData the data to update the preview
     */
    var refreshImagePreview = function(itemData) {
+      $('#cms-preview div.close-icon').removeClass('cms-properties-changed').addClass('cms-properties-saved');
       $('#' + cms.previewhandler.keys['propertiesTabId'] + ', #' + cms.imagepreviewhandler.keys['imageInfosTabId']).empty();
       // refresh the editable properties
       cms.galleries.getContentHandler()['fillProperties'](itemData['previewdata']['properties']);      
@@ -835,12 +831,14 @@
    }
    
    /**
-    * OK Button was pressed, stores the image information back in the editor fields.
-    *
-    * @param {Object} itemId the unique path to the resource
-    * @param {Object} fieldId the id of the input field in the xml content
+    * OK Button was pressed, stores the image information back in the editor fields.    
     */
-   var setImagePath = function(/**String*/itemId, /**String*/ fieldId) {
+   var setImagePath = function() {
+      // the unique path to the resource
+      var itemId = $('#cms-preview').attr('alt');
+      //the id of the input field in the xml content
+      var fieldId = cms.galleries.initValues['fieldId'];
+       
       if (cms.galleries.initValues.widgetmode == "simple") {
          // simple image gallery widget
          if (fieldId != null && fieldId != "") {
@@ -896,8 +894,7 @@
             }
             
             // write the path with request parameters to the input field
-            imgField.value = imagePath;
-            
+            imgField.value = imagePath;            
          }
       } else {
             // widget mode: VFS image widget
@@ -1070,6 +1067,7 @@
    var cleanUpOnClose = function() {       
        $('#'+ cms.previewhandler.editableTabId).tabs('destroy');
        $('#'+ cms.previewhandler.editableTabId).removeAttr('class').empty();
+       $('#cms-preview div.close-icon').removeClass('cms-properties-changed cms-properties-saved'); 
        $('#cms-preview div.preview-area').empty();       
    }
    
@@ -1085,8 +1083,7 @@
       'setValues': {
          'widget': setImagePath,
          'editor': 'test2'
-      },      
-      'closePreview': closePreview
+      }
    };
    
    cms.galleries.addContentTypeHandler(cms.imagepreviewhandler.imageContentTypeHandler['type'], cms.imagepreviewhandler.imageContentTypeHandler);

@@ -16,12 +16,12 @@
 <script type="text/javascript" src="lib/json2.js"></script>
 <script type="text/javascript" src="lib/jquery.pagination.js"></script>
 <script type="text/javascript">
-var cms = { data: { GALLERY_SERVER_URL: "${gallery.galleryUri}"}, html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
+var cms = { data: { GALLERY_SERVER_URL: "${gallery.galleryUri}"}, html: {}, util: {} , previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
 </script>
 <script type="text/javascript" src="/opencms/opencms/system/workplace/editors/ade/cms.messages.jsp"></script>
 <script type="text/javascript" src="js/cms.html.js"></script>
+<script type="text/javascript" src="js/cms.util.js"></script>
 <script type="text/javascript" src="js/cms.selectbox.js"></script>
-<script type="text/javascript" src="js/cms.directinput.js"></script>
 <script type="text/javascript" src="js/cms.galleries.js"></script>
 <script type="text/javascript" src="js/cms.previewhandler.js"></script>
 <%=gallery.getAdditionalJavaScript() %>
