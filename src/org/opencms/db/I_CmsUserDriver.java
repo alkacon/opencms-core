@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:16 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2010/01/05 11:49:54 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 6.0.0 
  */
@@ -310,7 +310,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @throws CmsDataAccessException if operation was not successful
      */
-    List getGroups(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean includeSubOus, boolean readRoles)
+    List<CmsGroup> getGroups(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean includeSubOus, boolean readRoles)
     throws CmsDataAccessException;
 
     /**
@@ -323,10 +323,12 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
      * 
-     * @throws CmsDataAccessException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not successful
      */
-    List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChildren)
-    throws CmsDataAccessException;
+    List<CmsOrganizationalUnit> getOrganizationalUnits(
+        CmsDbContext dbc,
+        CmsOrganizationalUnit parent,
+        boolean includeChildren) throws CmsDataAccessException;
 
     /**
      * Returns all resources of the given organizational unit.<p>
@@ -359,7 +361,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @throws CmsDataAccessException if operation was not successful
      */
-    List getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive) throws CmsDataAccessException;
+    List<CmsUser> getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    throws CmsDataAccessException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -406,8 +409,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource, boolean inheritedOnly)
-    throws CmsDataAccessException;
+    List<CmsAccessControlEntry> readAccessControlEntries(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsUUID resource,
+        boolean inheritedOnly) throws CmsDataAccessException;
 
     /**
      * Reads an access control entry for a given principal that is attached to a resource.<p>
@@ -437,7 +443,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsDataAccessException if operation was not succesful
      */
-    List readChildGroups(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException;
+    List<CmsGroup> readChildGroups(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException;
 
     /**
      * Reads a group based on the group id.<p>
@@ -477,7 +483,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readGroupsOfUser(
+    List<CmsGroup> readGroupsOfUser(
         CmsDbContext dbc,
         CmsUUID userId,
         String ouFqn,
@@ -547,7 +553,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    Map readUserInfos(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException;
+    Map<String, Object> readUserInfos(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException;
 
     /**
      * Reads all users that are members of the given group.<p>
@@ -560,7 +566,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readUsersOfGroup(CmsDbContext dbc, String groupFqn, boolean includeOtherOuUsers) throws CmsDataAccessException;
+    List<CmsUser> readUsersOfGroup(CmsDbContext dbc, String groupFqn, boolean includeOtherOuUsers)
+    throws CmsDataAccessException;
 
     /**
      * Removes all access control entries belonging to a resource.<p>
