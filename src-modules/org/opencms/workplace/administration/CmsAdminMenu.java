@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2009/11/12 14:34:50 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/01/05 11:49:23 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +87,7 @@ public class CmsAdminMenu extends CmsToolDialog {
      * 
      * @param group the group
      * 
-     * @see I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addGroup(CmsAdminMenuGroup group) {
 
@@ -100,7 +100,7 @@ public class CmsAdminMenu extends CmsToolDialog {
      * @param group the group
      * @param position the position
      * 
-     * @see I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addGroup(CmsAdminMenuGroup group, float position) {
 
@@ -188,7 +188,7 @@ public class CmsAdminMenu extends CmsToolDialog {
      * 
      * @return the group
      * 
-     * @see I_CmsIdentifiableObjectContainer#getObject(String)
+     * @see CmsIdentifiableObjectContainer#getObject(String)
      */
     public CmsAdminMenuGroup getGroup(String name) {
 

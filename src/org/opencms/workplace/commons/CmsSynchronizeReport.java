@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2009/08/20 11:30:50 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/01/05 11:49:22 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +83,7 @@ public class CmsSynchronizeReport extends CmsReport {
      * 
      * @throws JspException if problems including sub-elements occur
      */
+    @SuppressWarnings("fallthrough")
     public void actionReport() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements

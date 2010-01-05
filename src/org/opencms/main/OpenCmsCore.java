@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/12/07 09:40:42 $
- * Version: $Revision: 1.248 $
+ * Date   : $Date: 2010/01/05 11:49:23 $
+ * Version: $Revision: 1.249 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.248 $ 
+ * @version $Revision: 1.249 $ 
  * 
  * @since 6.0.0 
  */
@@ -2153,13 +2153,13 @@ public final class OpenCmsCore {
 
                 m_adminCms = adminCms;
             }
-            
+
             /**
              * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#getCmsObject()
              */
             public CmsObject getCmsObject() {
 
-            	return m_adminCms;
+                return m_adminCms;
             }
 
             /**
@@ -2180,19 +2180,21 @@ public final class OpenCmsCore {
                     CmsContextInfo contextInfo = new CmsContextInfo(m_adminCms.getRequestContext());
                     contextInfo.setUserName(principal);
                     CmsObject newCms = initCmsObject(m_adminCms, contextInfo);
-                    
-                    if (contextInfo.getRequestedUri().startsWith("/system/workplace/") && getRoleManager().hasRole(newCms, CmsRole.WORKPLACE_USER)) {
-	                    // set the default project of the user for workplace users
-	                    CmsUserSettings settings = new CmsUserSettings(newCms);	                    
-	                    try {
-	                        CmsProject project = newCms.readProject(settings.getStartProject());
-	                        if (getOrgUnitManager().getAllAccessibleProjects(newCms, project.getOuFqn(), false).contains(project)) {
-	                            // user has access to the project, set this as current project
-	                        	newCms.getRequestContext().setCurrentProject(project);
-	                        }
-	                    } catch (CmsException e) {
-	                        // unable to set the startup project, bad but not critical
-	                    }
+
+                    if (contextInfo.getRequestedUri().startsWith("/system/workplace/")
+                        && getRoleManager().hasRole(newCms, CmsRole.WORKPLACE_USER)) {
+                        // set the default project of the user for workplace users
+                        CmsUserSettings settings = new CmsUserSettings(newCms);
+                        try {
+                            CmsProject project = newCms.readProject(settings.getStartProject());
+                            if (getOrgUnitManager().getAllAccessibleProjects(newCms, project.getOuFqn(), false).contains(
+                                project)) {
+                                // user has access to the project, set this as current project
+                                newCms.getRequestContext().setCurrentProject(project);
+                            }
+                        } catch (CmsException e) {
+                            // unable to set the startup project, bad but not critical
+                        }
                     }
 
                     return newCms;

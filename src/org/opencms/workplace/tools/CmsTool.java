@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2009/08/20 11:31:06 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/01/05 11:49:22 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,7 @@ public class CmsTool {
      * 
      * @param group the group
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addToolGroup(CmsToolGroup group) {
 
@@ -93,7 +93,7 @@ public class CmsTool {
      * @param group the group
      * @param position the position
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addToolGroup(CmsToolGroup group, float position) {
 
@@ -174,7 +174,7 @@ public class CmsTool {
      * 
      * @return the group
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#getObject(String)
+     * @see CmsIdentifiableObjectContainer#getObject(String)
      */
     public CmsToolGroup getToolGroup(String name) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2009/11/16 17:32:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/01/05 11:49:22 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.2 
  */
@@ -376,8 +376,8 @@ public class CmsHistoryList extends A_CmsListDialog {
     public void executeListMultiActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_MACTION_COMPARE)) {
-            CmsListItem item1 = (CmsListItem)getSelectedItems().get(0);
-            CmsListItem item2 = (CmsListItem)getSelectedItems().get(1);
+            CmsListItem item1 = getSelectedItems().get(0);
+            CmsListItem item2 = getSelectedItems().get(1);
             Map params = new HashMap();
             if (((Comparable)item2.get(LIST_COLUMN_VERSION)).compareTo(item1.get(LIST_COLUMN_VERSION)) > 0) {
                 params.put(PARAM_VERSION_1, item1.get(LIST_COLUMN_VERSION));
@@ -596,7 +596,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     protected void performRestoreOperation() throws CmsException {
 
         CmsUUID structureId = new CmsUUID((String)getSelectedItem().get(LIST_COLUMN_STRUCTURE_ID));
-        int version = Integer.parseInt(((CmsListItem)getSelectedItems().get(0)).getId());
+        int version = Integer.parseInt((getSelectedItems().get(0)).getId());
         if (version == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
             // it is not possible to restore the offline version
             return;

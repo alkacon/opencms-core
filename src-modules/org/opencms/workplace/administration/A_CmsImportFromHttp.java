@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/A_CmsImportFromHttp.java,v $
- * Date   : $Date: 2009/08/20 11:31:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/01/05 11:49:23 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Andreas Zahner 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +118,7 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page
      */
+    @SuppressWarnings("fallthrough")
     public void displayDialog() throws IOException, JspException, ServletException {
 
         switch (getAction()) {

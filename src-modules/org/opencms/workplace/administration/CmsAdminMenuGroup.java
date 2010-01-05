@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenuGroup.java,v $
- * Date   : $Date: 2009/06/04 14:33:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/05 11:49:22 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public class CmsAdminMenuGroup {
      * 
      * @param item the item
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addMenuItem(CmsAdminMenuItem item) {
 
@@ -88,7 +88,7 @@ public class CmsAdminMenuGroup {
      * @param item the item
      * @param position the position
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addMenuItem(CmsAdminMenuItem item, float position) {
 

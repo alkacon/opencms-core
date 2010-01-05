@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2009/09/08 14:46:52 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2010/01/05 11:49:23 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.71 $ 
+ * @version $Revision: 1.72 $ 
  * 
  * @since 6.0.0 
  */
@@ -377,6 +377,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page
      */
+    @SuppressWarnings("fallthrough")
     public void displayDialog(boolean writeLater) throws JspException, IOException, ServletException {
 
         if (isForwarded()) {
