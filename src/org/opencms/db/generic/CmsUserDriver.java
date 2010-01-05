@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/11/19 08:25:44 $
- * Version: $Revision: 1.133 $
+ * Date   : $Date: 2010/01/05 11:48:28 $
+ * Version: $Revision: 1.134 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,6 +62,7 @@ import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -101,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.133 $
+ * @version $Revision: 1.134 $
  * 
  * @since 6.0.0 
  */
@@ -194,6 +195,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     project));
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
+            } finally {
+                // fire a resource modification event
+                Map<String, Object> data = new HashMap<String, Object>(2);
+                data.put(I_CmsEventListener.KEY_RESOURCE, ouResource);
+                data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CmsDriverManager.CHANGED_RESOURCE));
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
             }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
@@ -1683,6 +1690,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     project));
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
+            } finally {
+                Map<String, Object> data = new HashMap<String, Object>(2);
+                data.put(I_CmsEventListener.KEY_RESOURCE, ouResource);
+                data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CmsDriverManager.CHANGED_RESOURCE));
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
             }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
@@ -2299,8 +2311,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // clear the internal caches
         OpenCms.getMemoryMonitor().clearAccessControlListCache();
-        OpenCms.getMemoryMonitor().flushProperties();
-        OpenCms.getMemoryMonitor().flushPropertyLists();
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROPERTY);
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
         // fire an event that a new resource has been created
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_CREATED, Collections.singletonMap(
@@ -2412,9 +2424,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // flush all relevant caches
         OpenCms.getMemoryMonitor().clearAccessControlListCache();
-        OpenCms.getMemoryMonitor().flushProperties();
-        OpenCms.getMemoryMonitor().flushPropertyLists();
-        OpenCms.getMemoryMonitor().flushProjectResources();
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROPERTY);
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROPERTY_LIST);
+        OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PROJECT_RESOURCES);
 
         // fire events
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap(
