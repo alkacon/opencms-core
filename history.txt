@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/12/16 15:21:10 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/01/05 14:05:53 $
+ * Version: $Revision: 1.20 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -38,18 +38,20 @@ OpenCms 7.9.1 - xxxx, 2009
 * Fixed 'go up' button in account management view
 * Fixed access to indirect group users
 * Fixed double explorer action execution
-- Assign roles also to indirect group users when updating from v6 to v7
-- Purge jsp repository after module import
-- Improved handling for writing additional infos of a cms user
-* Adjustment for resource type "xmlpage" in extended mode in webdav
+* Fixed issue with resource type "xmlpage" for WebDAV in extended mode
+* Fixed issue with selected versions in the resource history
+* Fixed NPE during shutdown
 * Fixed issue with selected versions in the resource history
 * Fixed issue #1800: Still not released resources are indexed
 * Fixed issue #1803: Template Two Demo Article links with target="_blank"
 * Fixed issue #1802: CmsShell does work in Linux in TomCat6
-* Fixed issue that, no error when changing field structure in xsd from simple to optional nested content
+* Fixed issue with changing field structure in xsd from simple to optional nested content
 * Fixed issue #1809: Left site tree view is shown duplicated when creating a new folder in any site
 * Fixed issue #1807: CmsImportVersion7 contains a counter error in INFO log level
 * Fixed issue #1808: OpenCms.getLinkManager().getOnlineLink(CmsObject, link) does not work
+- Assign roles also to indirect group users when updating from v6 to v7
+- Purge jsp repository after module import
+- Improved handling writing user's additional infos
 
 OpenCms 7.5.1 - October 1, 2009
 ! Added context menu entry "Publish scheduled" to publish files at a specified date
