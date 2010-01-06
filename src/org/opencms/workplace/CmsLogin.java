@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2009/06/09 08:23:53 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2010/01/06 16:10:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,10 +35,14 @@ import org.opencms.db.CmsLoginMessage;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspLoginBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -70,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,6 +89,9 @@ public class CmsLogin extends CmsJspLoginBean {
     /** Action constant: Logout. */
     public static final int ACTION_LOGOUT = 2;
 
+    /** The parameter name for the "getoulist" action. */
+    public static final String PARAM_ACTION_GETOULIST = "getoulist";
+
     /** The parameter name for the "login" action. */
     public static final String PARAM_ACTION_LOGIN = "login";
 
@@ -97,6 +104,9 @@ public class CmsLogin extends CmsJspLoginBean {
     /** The parameter name for the organizational unit. */
     public static final String PARAM_OUFQN = "ocOuFqn";
 
+    /** The parameter name for the search organizational unit. */
+    public static final String PARAM_OUSEARCH = "ocOuSearch";
+
     /** The parameter name for the password. */
     public static final String PARAM_PASSWORD = "ocPword";
 
@@ -106,11 +116,17 @@ public class CmsLogin extends CmsJspLoginBean {
     /** The parameter name for the user name. */
     public static final String PARAM_USERNAME = "ocUname";
 
+    /** The parameter name for the workplace data. */
+    public static final String PARAM_WPDATA = "ocWpData";
+
     /** The oufqn cookie name. */
     private static final String COOKIE_OUFQN = "OpenCmsOuFqn";
 
     /** The username cookie name. */
     private static final String COOKIE_USERNAME = "OpenCmsUserName";
+
+    /** The workplace data cookie name, value stores following information: ${left},${top},${width},${height}. */
+    private static final String COOKIE_WP_DATA = "OpenCmsWpData";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLogin.class);
@@ -216,7 +232,7 @@ public class CmsLogin extends CmsJspLoginBean {
             && !OpenCms.getSiteManager().isWorkplaceRequest(getRequest())) {
 
             // this is a multi site-configuration, but not a request to the configured Workplace site
-            StringBuffer loginLink = new StringBuffer();
+            StringBuffer loginLink = new StringBuffer(256);
             loginLink.append(OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString());
             loginLink.append(getFormLink());
             // send a redirect to the workplace site
@@ -250,10 +266,16 @@ public class CmsLogin extends CmsJspLoginBean {
             m_actionLogout = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGOUT);
         }
 
-        // initialize the right ou
         if (m_oufqn == null) {
             m_oufqn = CmsOrganizationalUnit.SEPARATOR;
         }
+
+        String actionGetOus = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_GETOULIST);
+        if (Boolean.TRUE.toString().equals(actionGetOus)) {
+            return getJsonOrgUnitList();
+        }
+
+        // initialize the right ou
         m_ou = null;
         try {
             m_ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), m_oufqn);
@@ -338,6 +360,13 @@ public class CmsLogin extends CmsJspLoginBean {
             }
         } else if (Boolean.valueOf(m_actionLogout).booleanValue()) {
             m_action = ACTION_LOGOUT;
+            // store the workplace window data
+            Cookie wpDataCookie = getCookie(COOKIE_WP_DATA);
+            String wpData = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_WPDATA);
+            if (wpData != null) {
+                wpDataCookie.setValue(wpData);
+                setCookie(wpDataCookie);
+            }
             // after logout this will automatically redirect to the login form again
             logout();
             return null;
@@ -421,12 +450,58 @@ public class CmsLogin extends CmsJspLoginBean {
     /**
      * @see org.opencms.jsp.CmsJspLoginBean#getFormLink()
      */
+    @Override
     public String getFormLink() {
 
         if (getPreDefOuFqn() == null) {
             return super.getFormLink();
         }
         return link("/system/login" + (String)getRequest().getAttribute(PARAM_PREDEF_OUFQN));
+    }
+
+    /**
+     * Returns the available organizational units as JSON array string.<p>
+     * 
+     * @return the available organizational units as JSON array string
+     */
+    public String getJsonOrgUnitList() {
+
+        List<CmsOrganizationalUnit> allOus = getOus();
+        List<JSONObject> jsonOus = new ArrayList<JSONObject>(allOus.size());
+        int index = 0;
+        for (Iterator<CmsOrganizationalUnit> i = allOus.iterator(); i.hasNext();) {
+            CmsOrganizationalUnit ou = i.next();
+            JSONObject jsonObj = new JSONObject();
+            try {
+                // 1: OU fully qualified name
+                jsonObj.put("name", ou.getName());
+                // 2: OU display name
+                jsonObj.put("displayname", ou.getDisplayName(m_locale));
+                // 3: OU simple name
+                jsonObj.put("simplename", ou.getSimpleName());
+                // 4: OU description
+                jsonObj.put("description", ou.getDescription(m_locale));
+                // 5: selection flag
+                boolean isSelected = false;
+                if (ou.getName().equals(m_oufqn)
+                    || (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_oufqn) && ou.getName().equals(m_oufqn.substring(1)))) {
+                    isSelected = true;
+                }
+                jsonObj.put("active", isSelected);
+                // 6: level of the OU
+                jsonObj.put("level", CmsResource.getPathLevel(ou.getName()));
+                // 7: OU index
+                jsonObj.put("index", index);
+                // add the generated JSON object to the result list
+                jsonOus.add(jsonObj);
+                index++;
+            } catch (JSONException e) {
+                // error creating JSON object, skip this OU
+            }
+        }
+        // generate a JSON array from the JSON object list
+        JSONArray jsonArr = new JSONArray(jsonOus);
+        return jsonArr.toString();
     }
 
     /**
@@ -454,6 +529,9 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     protected void appendDefaultLoginScript(StringBuffer html, CmsMessageContainer message) {
 
+        html.append("<script type=\"text/javascript\" src=\"");
+        html.append(CmsWorkplace.getSkinUri()).append("jquery/packed/jquery.js");
+        html.append("\"></script>\n");
         html.append("<script type=\"text/javascript\">\n");
         if (message != null) {
             html.append("function showAlert() {\n");
@@ -463,16 +541,34 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("}\n");
         }
         html.append("var orgUnitShow = false;\n");
+        html.append("var orgUnits = null;\n");
+        html.append("var activeOu = -1;\n");
+        html.append("var searchTimeout;\n");
+        html.append("var searchDefaultValue = \"");
+        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SEARCH_0));
+        html.append("\";\n");
+
+        // triggers the options to select the OU to login to
         html.append("function orgUnitSelection() {\n");
         html.append("\tif (!orgUnitShow) {\n");
+        html.append("\t\tif (orgUnits == null) {\n");
+        html.append("\t\t\t$.post(\"");
+        html.append(getFormLink());
+        html.append("\", { ");
+        html.append(PARAM_ACTION_GETOULIST);
+        html.append(": \"true\" }");
+        html.append(", function(data){ fillOrgUnits(data); });\n");
+        html.append("\t\t}\n");
         html.append("\t\tdocument.getElementById('ouSelId').style.display = 'block';\n");
         html.append("\t\tdocument.getElementById('ouLabelId').style.display = 'block';\n");
+        html.append("\t\tdocument.getElementById('ouSearchId').style.display = 'block';\n");
         html.append("\t\tdocument.getElementById('ouBtnId').value = '");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SELECT_OFF_0));
         html.append("';\n");
         html.append("\t} else {\n");
         html.append("\t\tdocument.getElementById('ouSelId').style.display = 'none';\n");
         html.append("\t\tdocument.getElementById('ouLabelId').style.display = 'none';\n");
+        html.append("\t\tdocument.getElementById('ouSearchId').style.display = 'none';\n");
         html.append("\t\tdocument.getElementById('ouBtnId').value = '");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SELECT_ON_0));
         html.append("';\n");
@@ -482,6 +578,145 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("\tdocument.getElementById('titleIdOu').style.display = 'none';\n");
         html.append("}\n");
 
+        // creates the HTML for the OUs to login to
+        html.append("function fillOrgUnits(data) {\n");
+        html.append("\torgUnits = eval(data);\n");
+        html.append("\tvar html = \"\";\n");
+        html.append("\tvar foundOu = false;\n");
+        html.append("\tvar activeIndex = -1;\n");
+        html.append("\tfor (var i = 0; i < orgUnits.length; i++) {\n");
+        html.append("\t\tvar currOu = orgUnits[i];\n");
+        html.append("\t\tvar actClass = \"\";\n");
+        html.append("\t\tif (currOu.active == true) {\n");
+        html.append("\t\t\t// this is the active OU\n");
+        html.append("\t\t\tactiveOu = currOu.index;\n");
+        html.append("\t\t\tactClass = \" class=\\\"active\\\"\";\n");
+        html.append("\t\t}\n");
+        html.append("\t\tvar actStyle = \"\";\n");
+        html.append("\t\tif (currOu.level > 0) {\n");
+        html.append("\t\t\tactStyle = \" style=\\\"margin-left: \" + (currOu.level * 20) + \"px;\\\"\";\n");
+        html.append("\t\t}\n");
+        html.append("\t\thtml += \"<div\";\n");
+        html.append("\t\thtml += actClass;\n");
+        html.append("\t\thtml += actStyle;\n");
+        html.append("\t\thtml += \" id=\\\"ou\" + currOu.index;\n");
+        html.append("\t\thtml += \"\\\" onclick=\\\"selectOu('\";\n");
+        html.append("\t\thtml += currOu.name;\n");
+        html.append("\t\thtml += \"', \" + currOu.index;\n");
+        html.append("\t\thtml += \");\\\"><span class=\\\"name\\\">\";\n");
+        html.append("\t\thtml += currOu.description;\n");
+        html.append("\t\thtml += \"</span>\";\n");
+        html.append("\t\tif (currOu.name != \"\") {\n");
+        html.append("\t\t\thtml += \"<span class=\\\"path\\\"\";\n");
+        html.append("\t\t\thtml += \" title=\\\"\";\n");
+        html.append("\t\t\thtml += currOu.name;\n");
+        html.append("\t\t\thtml += \"\\\">\";\n");
+        html.append("\t\t\thtml += currOu.simplename;\n");
+        html.append("\t\t\thtml += \"</span>\";\n");
+        html.append("\t\t}\n");
+        html.append("\t\thtml += \"</div>\";\n");
+        html.append("\t}\n");
+        html.append("\thtml += \"<div id=\\\"nooufound\\\" style=\\\"display: none;\\\"><span class=\\\"name\\\">\";\n");
+        html.append("\thtml += \"");
+        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SEARCH_NORESULTS_0));
+        html.append("\";\n");
+        html.append("\thtml += \"</span></div>\";\n");
+        html.append("\t$(\"#ouSelId\").append(html);\n");
+        html.append("\t$(\"#ouSelId\").slideDown();\n");
+        html.append("\tscrollToActiveOu();\n");
+        html.append("}\n");
+
+        // shows the list of OUs matching the search term or all OUs if the search term is empty
+        html.append("function showOrgUnits(searchTerm) {\n");
+        html.append("\tvar html = \"\";\n");
+        html.append("\tvar foundOu = false;\n");
+        html.append("\tfor (var i = 0; i < orgUnits.length; i++) {\n");
+        html.append("\t\tvar currOu = orgUnits[i];\n");
+        html.append("\t\tif (searchTerm != \"\") {\n");
+        html.append("\t\t\tvar stLower = searchTerm.toLowerCase();\n");
+        html.append("\t\t\tif (currOu.name.toLowerCase().indexOf(stLower )== -1 && currOu.description.toLowerCase().indexOf(stLower) == -1) {\n");
+        html.append("\t\t\t\t$(\"#ou\" + i + \":visible\").slideUp();\n");
+        html.append("\t\t\t} else {\n");
+        html.append("\t\t\t\t$(\"#ou\" + i + \":hidden\").slideDown();\n");
+        html.append("\t\t\t\t$(\"#ou\" + i).removeAttr(\"style\");\n");
+        html.append("\t\t\t\tfoundOu = true;\n");
+        html.append("\t\t\t}\n");
+        html.append("\t\t} else {\n");
+        html.append("\t\t\tfoundOu = true;\n");
+        html.append("\t\t\tvar actStyle = \"\";\n");
+        html.append("\t\t\tif (currOu.level > 0) {\n");
+        html.append("\t\t\t\tactStyle = \"margin-left: \" + (currOu.level * 20) + \"px;\";\n");
+        html.append("\t\t\t}\n");
+        html.append("\t\t\t$(\"#ou\" + i).attr(\"style\", actStyle);\n");
+        html.append("\t\t\t$(\"#ou\" + i + \":hidden\").slideDown();\n");
+        html.append("\t\t}\n");
+        html.append("\t}\n");
+        html.append("\tif (searchTerm != \"\" && foundOu == false) {\n");
+        html.append("\t\t$(\"#nooufound:hidden\").slideDown();\n");
+        html.append("\t} else {\n");
+        html.append("\t\t$(\"#nooufound:visible\").slideUp();\n");
+        html.append("\t}\n");
+        html.append("\tif (searchTerm == \"\") {\n");
+        html.append("\t\tscrollToActiveOu();\n");
+        html.append("\t}\n");
+        html.append("}\n");
+
+        // selects the OU to login to
+        html.append("function selectOu(ouPath, ouIndex) {\n");
+        html.append("\tif (ouIndex != -1 && ouIndex != activeOu) {\n");
+        html.append("\t\t$(\"#ou\" + ouIndex).addClass(\"active\");\n");
+        html.append("\t\torgUnits[ouIndex].active = true;\n");
+        html.append("\t\t$(\"#");
+        html.append(PARAM_OUFQN);
+        html.append("\").val(ouPath);\n");
+        html.append("\t\tif (activeOu != -1) {\n");
+        html.append("\t\t\torgUnits[activeOu].active = false;\n");
+        html.append("\t\t\t$(\"#ou\" + activeOu).removeClass();\n");
+        html.append("\t\t}\n");
+        html.append("\t\tactiveOu = ouIndex;\n");
+        html.append("\t}\n");
+        html.append("}\n");
+
+        // filters the OUs by the provided search term using a timeout, called by the onkeyup event of the search input field
+        html.append("function searchOu() {\n");
+        html.append("\tvar searchElem = $(\"#");
+        html.append(PARAM_OUSEARCH);
+        html.append("\");\n");
+        html.append("\tvar searchTerm = searchElem.val();\n");
+        html.append("\tif (searchTerm == searchDefaultValue) {");
+        html.append("\t\tsearchTerm = \"\";");
+        html.append("\t}");
+        html.append("\tclearTimeout(searchTimeout);\n");
+        html.append("\tsearchTimeout = setTimeout(\"showOrgUnits(\\\"\" + trim(searchTerm) + \"\\\");\", 750);\n");
+        html.append("}\n");
+
+        // sets the value of the OU search input field, called by the onfocus and onblur event of the field
+        html.append("function checkOuValue() {\n");
+        html.append("\tvar searchElem = $(\"#");
+        html.append(PARAM_OUSEARCH);
+        html.append("\");\n");
+        html.append("\tif (searchElem.val() == searchDefaultValue) {");
+        html.append("\t\tsearchElem.val(\"\");");
+        html.append("\t\tsearchElem.removeAttr(\"class\");");
+        html.append("\t} else if (searchElem.val() == \"\") {");
+        html.append("\t\tsearchElem.val(searchDefaultValue);");
+        html.append("\t\tsearchElem.attr(\"class\", \"inactive\");");
+        html.append("\t}");
+        html.append("}\n");
+
+        // scrolls to the currently selected OU if it is out of visible range
+        html.append("function scrollToActiveOu() {\n");
+        html.append("\tif (activeOu != -1) {\n");
+        html.append("\t\tvar activeOffset = $(\"#ou\" + activeOu).offset().top;\n");
+        html.append("\t\tvar parentOffset = $(\"#ouSelId\").offset().top;\n");
+        html.append("\t\tactiveOffset = activeOffset - parentOffset;\n");
+        html.append("\t\tif (activeOffset > $(\"#ouSelId\").height()) {;\n");
+        html.append("\t\t\t$(\"#ouSelId\").animate({scrollTop: activeOffset}, 500);\n");
+        html.append("\t\t};\n");
+        html.append("\t}\n");
+        html.append("}\n");
+
+        // called when the login form page is loaded
         html.append("function doOnload() {\n");
         html.append("\tdocument.");
         html.append(PARAM_FORM);
@@ -496,6 +731,11 @@ public class CmsLogin extends CmsJspLoginBean {
         if (message != null) {
             html.append("\tshowAlert();\n");
         }
+        html.append("}\n");
+
+        // helper function to trim a given string
+        html.append("function trim (myStr) {\n");
+        html.append("\treturn myStr.replace(/^\\s+/, '').replace (/\\s+$/, '');\n");
         html.append("}\n");
 
         html.append("</script>\n");
@@ -575,34 +815,51 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("}\n");
 
         html.append("function openWorkplace(url, name) {\n");
-        html.append("\tvar isInWin = (window.name.match(/^OpenCms\\d+$/) != null);\n");
-        html.append("\tif (window.innerHeight) {\n");
-        // Mozilla
-        html.append("\t\tvar winHeight = window.innerHeight;\n");
-        html.append("\t\tvar winWidth = window.innerWidth;\n");
-        html.append("\t} else if (document.documentElement && document.documentElement.clientHeight) {\n");
-        // IE 6 "strict" mode
-        html.append("\t\tvar winHeight = document.documentElement.clientHeight;\n");
-        html.append("\t\tvar winWidth = document.documentElement.clientWidth;\n");
-        html.append("\t} else if (document.body && document.body.clientHeight) {\n");
-        // IE 5, IE 6 "relaxed" mode
-        html.append("\t\tvar winHeight = document.body.clientWidth;\n");
-        html.append("\t\tvar winWidth = document.body.clientHeight;\n");
-        html.append("\t}\n");
-        html.append("\tif (window.screenY) {\n");
-        // Mozilla
-        html.append("\t\tvar winTop = window.screenY;\n");
-        html.append("\t\tvar winLeft = window.screenX;\n");
-        html.append("\t\tif (! isInWin) {\n");
-        html.append("\t\t\twinTop += 25;\n");
-        html.append("\t\t\twinLeft += 25;\n");
-        html.append("\t\t}\n");
-        html.append("\t} else if (window.screenTop) {\n");
-        // IE
-        html.append("\t\tvar winTop = window.screenTop;\n");
-        html.append("\t\tvar winLeft = window.screenLeft;\n");
-        html.append("\t}\n");
-        html.append("\n");
+
+        Cookie wpDataCookie = getCookie(COOKIE_WP_DATA);
+        boolean useCookieData = false;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(wpDataCookie.getValue())) {
+            String[] winValues = CmsStringUtil.splitAsArray(wpDataCookie.getValue(), '|');
+            if (winValues.length == 4) {
+                useCookieData = true;
+                html.append("\tvar winLeft = ").append(winValues[0]).append(";\n");
+                html.append("\tvar winTop = ").append(winValues[1]).append(";\n");
+                html.append("\tvar winWidth = ").append(winValues[2]).append(";\n");
+                html.append("\tvar winHeight = ").append(winValues[3]).append(";\n");
+            }
+        }
+
+        if (!useCookieData) {
+            html.append("\tvar isInWin = (window.name.match(/^OpenCms\\d+$/) != null);\n");
+            html.append("\tvar winHeight = 0, winWidth = 0, winTop = 0, winLeft = 0;\n");
+            html.append("\tif (window.innerHeight) {\n");
+            // Mozilla
+            html.append("\t\twinHeight = window.innerHeight;\n");
+            html.append("\t\twinWidth = window.innerWidth;\n");
+            html.append("\t} else if (document.documentElement && document.documentElement.clientHeight) {\n");
+            // IE 6 "strict" mode
+            html.append("\t\twinHeight = document.documentElement.clientHeight;\n");
+            html.append("\t\twinWidth = document.documentElement.clientWidth;\n");
+            html.append("\t} else if (document.body && document.body.clientHeight) {\n");
+            // IE 5, IE 6 "relaxed" mode
+            html.append("\t\twinHeight = document.body.clientWidth;\n");
+            html.append("\t\twinWidth = document.body.clientHeight;\n");
+            html.append("\t}\n");
+            html.append("\tif (window.screenY) {\n");
+            // Mozilla
+            html.append("\t\twinTop = window.screenY;\n");
+            html.append("\t\twinLeft = window.screenX;\n");
+            html.append("\t\tif (! isInWin) {\n");
+            html.append("\t\t\twinTop += 25;\n");
+            html.append("\t\t\twinLeft += 25;\n");
+            html.append("\t\t}\n");
+            html.append("\t} else if (window.screenTop) {\n");
+            // IE
+            html.append("\t\twinTop = window.screenTop;\n");
+            html.append("\t\twinLeft = window.screenLeft;\n");
+            html.append("\t}\n");
+            html.append("\n");
+        }
 
         if (requestedResource.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
             html.append("\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes\";\n");
@@ -633,7 +890,7 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     protected String displayLoginForm() {
 
-        StringBuffer html = new StringBuffer(4096);
+        StringBuffer html = new StringBuffer(8192);
 
         html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
         html.append("<html><head>\n");
@@ -736,7 +993,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
         html.append("<tr>\n");
 
-        html.append("<td style=\"width: 60px; text-align: center; vertical-align: top\" rowspan=\"4\">");
+        html.append("<td style=\"width: 60px; text-align: center; vertical-align: top\" rowspan=\"5\">");
         html.append("<img src=\"");
         html.append(CmsWorkplace.getResourceUri("commons/login.png"));
         html.append("\" height=\"48\" width=\"48\" alt=\"\">");
@@ -780,10 +1037,27 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_0)).append(
                 "</b>&nbsp;&nbsp;\n");
             html.append("</div></td>\n");
-            html.append("<td style=\"width: 300px; white-space: nowrap;\"><div id='ouSelId' style='display: none;'>");
-            html.append(buildOrgUnitSelector());
+            html.append("<td style=\"width: 300px; white-space: nowrap;\"><div id='ouSearchId' style='display: none;'><input class=\"inactive\" style=\"width: 300px;\" type=\"text\" value=\"");
+            html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SEARCH_0));
+            html.append("\"");
+            appendId(html, PARAM_OUSEARCH);
+            html.append(" onfocus=\"checkOuValue();\"");
+            html.append(" onblur=\"checkOuValue();\"");
+            html.append(" onkeyup=\"searchOu();\"");
+            html.append("/>");
+            html.append("<input type=\"hidden\" value=\"");
+            html.append(m_oufqn == null ? "" : m_oufqn);
+            html.append("\"");
+            appendId(html, PARAM_OUFQN);
+            html.append("/>");
             html.append("</div></td>\n");
             html.append("</tr>\n");
+
+            html.append("<tr>\n");
+            html.append("<td colspan=\"2\"><div id='ouSelId' style='display: none;'>");
+            html.append("</div></td>\n");
+            html.append("</tr>\n");
+
             html.append("<tr>\n");
             html.append("<td>\n");
             html.append("</td>\n");

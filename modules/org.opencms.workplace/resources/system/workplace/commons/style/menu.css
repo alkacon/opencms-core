@@ -917,6 +917,57 @@ input.loginbutton {
 	overflow: visible;
 }
 
+#ouSelId {
+	padding: 6px 4px;
+	min-width: 300px;
+	max-width: 420px;
+	min-height: 100px;
+	max-height: 250px;
+	overflow: auto;
+	background-color: InfoBackground;
+	border: 2px inset ButtonFace;
+}
+
+#ouSelId div {
+	margin-bottom: 6px;
+	padding: 4px;
+	background-color: Window;
+	border: 1px solid ButtonShadow;
+	cursor: pointer;
+}
+
+#ouSelId div:hover, #ouSelId div.active:hover {
+	background-color: #a8adb4;
+}
+
+#ouSelId div.active {
+	background-color: #003082;
+}
+
+#ouSelId div span.name {
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+	color: InfoText;
+	padding-bottom: 2px;
+}
+
+#ouSelId div span.path {
+	display: block;
+	color: GrayText;
+	font-size: 11px;
+	font-style: italic;
+	overflow: hidden;
+}
+
+#ouSelId div:hover span.name, #ouSelId div:hover span.path, #ouSelId div.active span.name, #ouSelId div.active span.path {
+	color: HighlightText;
+}
+
+#ouSearchId input.inactive {
+	color: GrayText;
+}
+
 .timewarp {
 	border: 1px solid #000066; 
 	background: #990000; 

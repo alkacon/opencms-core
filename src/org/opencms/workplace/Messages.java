@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/06 16:10:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -273,6 +273,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_ORGUNIT_0 = "GUI_LOGIN_ORGUNIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_ORGUNIT_SEARCH_0 = "GUI_LOGIN_ORGUNIT_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_ORGUNIT_SEARCH_NORESULTS_0 = "GUI_LOGIN_ORGUNIT_SEARCH_NORESULTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_ORGUNIT_SELECT_OFF_0 = "GUI_LOGIN_ORGUNIT_SELECT_OFF_0";

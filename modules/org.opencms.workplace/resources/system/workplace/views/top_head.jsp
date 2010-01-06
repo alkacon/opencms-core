@@ -30,6 +30,14 @@
         var link = document.forms.wpViewSelect.wpView.options[document.forms.wpViewSelect.wpView.selectedIndex].value;
         window.top.body.location.href = link;
     }
+<%
+	String loginJsp = cms.getCmsObject().readPropertyObject(cms.getRequestContext().getUri(), CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true).getValue("/system/login/index.html");
+	String exitLink = cms.link(CmsRequestUtil.appendParameter(loginJsp, CmsLogin.PARAM_ACTION_LOGOUT, String.valueOf(true)));
+%>    
+    function doLogout() {
+    	var windowCoords = calculateWinCoords();
+    	window.top.location.href = "<%= exitLink %>&<%= CmsLogin.PARAM_WPDATA %>=" + windowCoords;
+    }
 
     function doReload() {
 		window.top.location.href = "<%= wp.getWorkplaceReloadUri() %>";
@@ -40,9 +48,32 @@
 		loadBody();
     }
     
+    function calculateWinCoords() {
+        var winWidth = 0, winHeight = 0, winTop = 0, winLeft = 0;
+        if(typeof( window.outerWidth ) == 'number' ) {
+            //Non-IE
+            winWidth = window.outerWidth;
+            winHeight = window.outerHeight;
+        } else if (top.document.documentElement && top.document.documentElement.clientHeight) {
+            winHeight = top.document.documentElement.clientHeight + 20;
+            winWidth = top.document.documentElement.clientWidth + 10;
+        } else if (top.document.body && top.document.body.clientHeight) {
+            winWidth = top.document.body.clientWidth + 10;
+            winHeight = top.document.body.clientHeight + 20;
+        }
+        if (window.screenY) {
+            winTop = window.screenY;
+            winLeft = window.screenX;
+        } else if (window.screenTop) {
+            winTop = window.screenTop - 20;
+            winLeft = window.screenLeft;
+        }
+        return winLeft + "|" + winTop + "|" + winWidth + "|" + winHeight;
+    }
+    
     function openwin(url, name, w, h) {
         window.open(url, name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
-    }     
+    }  
 </script>
 </head>
 
@@ -101,10 +132,8 @@ if (wp.isHelpEnabled()) {
 %>
        
 <td style="width: 100%">&nbsp;</td>
-<%= wp.buttonBarSeparator(5, 0) %><% 
-	String loginJsp = cms.getCmsObject().readPropertyObject(cms.getRequestContext().getUri(), CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true).getValue("/system/login/index.html");
-	String exitLink = cms.link(CmsRequestUtil.appendParameter(loginJsp, CmsLogin.PARAM_ACTION_LOGOUT, String.valueOf(true))); %>
-<%= wp.button(exitLink, "_top", "logout.png", org.opencms.workplace.Messages.GUI_BUTTON_EXIT_0, buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 0) %>
+<%= wp.button("javascript:doLogout()", null, "logout.png", org.opencms.workplace.Messages.GUI_BUTTON_EXIT_0, buttonStyle) %>
 
 <% if (buttonStyle != 2) {%>
 
