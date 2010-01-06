@@ -160,6 +160,10 @@
          if (!helperElem.css('border') || !helperElem.css('border') == 'none' || helperElem.css('border') == '') {
             helperElem.addClass('cms-helper-border');
          }
+         // check if helper element is floated and add cms-float-container class
+         if ((/left|right/).test(moveState.helpers[container.name].css('float'))){
+            $('#' + container.name).addClass('cms-float-container');
+         }
       } else {
          moveState.helpers[container.name] = sortable.helper;
          // to increase visibility of the helper
@@ -170,7 +174,13 @@
             sortable.helper.addClass('cms-helper-border');
          }
          moveState.over = true;
+         
+         // check if helper element is floated and add cms-float-container class
+         if ((/left|right/).test(sortable.placeholder.css('float'))){
+            $('#' + container.name).addClass('cms-float-container');
+         }
       }
+
    }
    
    
@@ -212,7 +222,7 @@
       $('div.cms-handle').not(thisHandleDiv).hide();
       thisHandleDiv.removeClass('ui-widget-header').children('*:not(.cms-move)').hide();
       
-      moveState.hoverList += ', #' + moveState.startId;
+      moveState.hoverList += '#' + moveState.startId;
       cms.util.fixZIndex(moveState.startId, cms.move.zIndexMap);
       // show drop zone for new favorites
       var list_item = cms.html.formatFavListItem(moveState.element).append('<a class="cms-handle cms-move"></a>');
@@ -228,7 +238,7 @@
          'zIndex': sortable.options.zIndex
       }).addClass('ui-sortable-helper');
       //#
-      $('#' + cms.html.favoriteDropMenuId).show('blind', {}, 500);
+      $('#' + cms.html.favoriteDropMenuId).show();
    }
    
    
@@ -256,12 +266,6 @@
       } else {
          moveState.element = cms.data.elements[moveState.currentResourceId];
       }
-      
-      
-      
-      
-      
-      
       // save the current offset. this is needed by ui.sortable._mouseStop for the reverting-animation in case the move is canceled
       ui.self.cmsStartOffset = {
          top: ui.self.offset.top,
@@ -397,6 +401,12 @@
     */
    var _removeHelpers = function(helpers, startContainer, endContainer) {
       for (var containerName in helpers) {
+         // remove cms-float-container class and reset min-height
+         var container = $('#'+containerName);
+         container.css('min-height', '');
+         if (container.hasClass('cms-float-container')){
+             container.removeClass('cms-float-container');
+         }
          var helper = helpers[containerName];
          if (containerName == endContainer) {
             // don't remove helper from end container
@@ -412,6 +422,8 @@
             continue;
          }
          helper.remove();
+         
+         
       }
    }
    
@@ -607,7 +619,6 @@
       if ((containerId == cms.html.favoriteDropListId) && (ui.placeholder.parent().attr('id') != containerId)) {
          ui.placeholder.appendTo(elem);
       }
-      
       if (reDoHover && moveState.hoverList !='') {
          hoverOut();
          $(moveState.hoverList).each(function() {
@@ -648,6 +659,7 @@
              $(moveState.hoverList).each(function() {
                  hoverInner($(this), 2, true);
              });
+             refreshHelperPositions(ui.self);
          }
       }
       
@@ -755,7 +767,9 @@
          inner.width +
          'px;"></div>').addClass(additionalClass).prependTo(elem);
       }
-      
+      if (elem.hasClass('ui-sortable')){
+          elem.css('min-height', inner.height);
+      }
       if (elem.css('position') == 'relative') {
          // top
          $('<div class="cms-hovering cms-hovering-top"></div>').addClass(additionalClass).height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);

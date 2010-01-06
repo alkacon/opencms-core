@@ -589,7 +589,7 @@
       var id = $.isArray(ids) ? ids[0] : ids;
       var windowSize = cms.util.getWindoDimensions();
       var dialogWidth = windowSize['width'] > 1400 ? 1350 : (windowSize['width'] - 50);
-      var dialogHeight = windowSize['height'] -10;
+      var dialogHeight = windowSize['height'] - 10;
       var iFrameHeight = dialogHeight - 31;
       var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
       if (newLink) {
@@ -761,7 +761,7 @@
       
       //unnecessary
       $('li.cms-item, button', list).css('display', 'none');
-      var favLeft = $('button[name="favorites"]').position().left - 1;
+      var favLeft = $('button[name="storage"]').position().left - 1;
       list.css({
          top: 35,
          left: favLeft,
@@ -793,8 +793,11 @@
          over: cms.move.onDragOverContainer,
          out: cms.move.onDragOutOfContainer,
          change: function(event, ui) {
-            cms.move.hoverOut(ui.helper.parent());
-            cms.move.hoverInner(ui.helper.parent(), 2, true);
+            var helperParent = ui.helper.parent();
+            if (helperParent.attr('id') != cms.html.favoriteDropListId) {
+               cms.move.hoverOut(helperParent);
+               cms.move.hoverInner(helperParent, 2, true);
+            }
          },
          tolerance: 'pointer',
          stop: cms.move.onStopDrag,
@@ -951,10 +954,12 @@
     * Reloads the favorites-list.<p>
     */
    var resetFavList = cms.toolbar.resetFavList = function() {
-      $("#" + cms.html.favoriteMenuId + " .cms-item-list > li.cms-item").remove();
-      var $favlist = $("#" + cms.html.favoriteMenuId + " .cms-item-list");
+      $("#" + cms.html.favoriteListId + " > li.cms-item").remove();
+      var $favlist = $("#" + cms.html.favoriteListId);
       for (var i = 0; i < cms.toolbar.favorites.length; i++) {
-         $favlist.append(cms.html.createItemFavListHtml(cms.toolbar.favorites[i]))
+         if (cms.data.elements[cms.toolbar.favorites[i]]) {
+            $favlist.append(cms.html.createItemFavListHtml(cms.toolbar.favorites[i]));
+         }
       }
    }
    
@@ -1115,7 +1120,7 @@
     *
     */
    var initLinks = cms.toolbar.initLinks = function() {
-      
+   
       $('a:not(.cms-left, .cms-move, .cms-delete, .cms-edit, .cms-properties, .cms-advanced-search, .cms-basic-search)').live('click', function() {
          if (!cms.toolbar.pageChanged) {
             cms.toolbar.leavingPage = true;
@@ -1130,7 +1135,7 @@
    
    /**
     * Opens the leave page confirm dialog (if page has changed)
-    * 
+    *
     * @param {String} target the target page to open
     */
    var leavePageDialog = cms.toolbar.leavePageDialog = function(target) {
@@ -1170,7 +1175,7 @@
     * Reloads the recent-list.<p>
     */
    var resetRecentList = cms.toolbar.resetRecentList = function() {
-      $("#" + cms.html.recentMenuId + " li.cms-item").remove();
+      $("#" + cms.html.recentListId + " > li.cms-item").remove();
       var $recentlist = $("#" + cms.html.recentListId);
       for (var i = 0; i < cms.toolbar.recent.length; i++) {
          $recentlist.append(cms.html.createItemFavListHtml(cms.toolbar.recent[i]));
@@ -1272,23 +1277,23 @@
       markAsActive(button);
       self.load(function(ok, data) {
          self.prepareAfterLoad();
-         list = $('#' + self.menuId);
-         if (self.menuId == cms.html.favoriteMenuId || self.menuId == cms.html.recentMenuId) {
-            $('.cms-list-itemcontent:not(:has(a.cms-move))', list).each(function() {
+         var menu = $('#' + self.menuId);
+         if (self.menuId == cms.html.storageMenuId) {
+            $('.cms-list-itemcontent:not(:has(a.cms-move))', menu).each(function() {
                var elem = $(this);
                $('<a class="cms-handle cms-move"></a>').appendTo(elem);
             });
          }
-         list.css({
+         menu.css({
             /* position : 'fixed', */
             top: 35,
             left: button.position().left - 1
          }).slideDown(100, function() {
-            $('div.ui-widget-shadow', list).css({
+            $('div.ui-widget-shadow', menu).css({
                top: 0,
                left: -3,
-               width: list.outerWidth() + 8,
-               height: list.outerHeight() + 1,
+               width: menu.outerWidth() + 8,
+               height: menu.outerHeight() + 1,
                border: '0px solid',
                opacity: 0.6
             });
@@ -1415,11 +1420,11 @@
                return;
             }
             if (!cms.toolbar.pageChanged) {
-                cms.toolbar.leavingPage = true;
-                window.location=cms.data.SITEMAP_URL;
-             }else{
-                 cms.toolbar.leavePageDialog(cms.data.SITEMAP_URL);
-             }
+               cms.toolbar.leavingPage = true;
+               window.location = cms.data.SITEMAP_URL;
+            } else {
+               cms.toolbar.leavePageDialog(cms.data.SITEMAP_URL);
+            }
          });
          return self.button;
       },
@@ -1445,26 +1450,39 @@
    }
    
    
-   var FavoritesListMode = {
-      name: 'favorites',
+   var StorageMode = {
+      name: 'storage',
       createButton: function() {
          var self = this;
-         self.button = makeWideButton('favorites', M.FAV_BUTTON_TITLE, 'cms-icon-favorites');
+         self.button = makeWideButton('storage', M.STORAGE_BUTTON_TITLE, 'cms-icon-favorites');
          self.button.click(function() {
             toggleMode(self);
          })
          return self.button;
       },
-      menuId: cms.html.favoriteMenuId,
-      load: cms.data.loadFavorites,
-      prepareAfterLoad: resetFavList,
+      menuId: cms.html.storageMenuId,
+      load: cms.data.loadStorage,
+      prepareAfterLoad: function() {
+         resetFavList();
+         resetRecentList()
+      },
       enable: _enableListMode,
       disable: _disableListMode,
       initialize: function() {
-         cms.toolbar.dom.favoritesMenu = $(cms.html.createMenu(cms.html.favoriteMenuId)).appendTo(cms.toolbar.dom.toolbarContent);
+         cms.toolbar.dom.storageMenu = $(cms.html.createStorageMenu()).appendTo(cms.toolbar.dom.toolbarContent);
          cms.toolbar.dom.favoritesDrop = $(cms.html.createFavDrop()).appendTo(cms.toolbar.dom.toolbarContent);
          cms.toolbar.dom.favoritesDialog = $(cms.html.favoriteDialog).appendTo(_bodyEl);
          initFavDialog();
+         var self = this;
+         $('#menuTabs').tabs({
+            show: function() {
+               var list = $('#' + self.menuId);
+               $('div.ui-widget-shadow', list).css({
+                  height: list.outerHeight() + 1
+               });
+            }
+         }).removeClass('ui-corner-all');
+         $('#menuTabs .ui-tabs-nav').removeClass('ui-widget-header').removeClass('ui-corner-all');
       }
    }
    
@@ -1728,7 +1746,7 @@
    /**
     * The mode objects in the order in which the buttons should appear in the toolbar.
     */
-   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, GalleryMode, FavoritesListMode, RecentListMode, SaveMode, PublishMode, SitemapMode];
+   var modes = [ResetMode, EditMode, MoveMode, DeleteMode, PropertyMode, GalleryMode, StorageMode, SaveMode, PublishMode, SitemapMode];
    
    /**
     * Gets a mode by mode name.

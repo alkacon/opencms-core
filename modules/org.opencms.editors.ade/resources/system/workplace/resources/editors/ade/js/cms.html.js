@@ -5,6 +5,7 @@
    var subcontainerClass = cms.html.subcontainerClass ='cms-subcontainer';
    var recentMenuId = cms.html.recentMenuId = 'recentlist';
    var recentListId = cms.html.recentListId = 'recent_list_items';
+   var storageMenuId = cms.html.storageMenuId = 'storageMenu';
    var favoriteMenuId = cms.html.favoriteMenuId = 'favoritelist';
    var favoriteListId = cms.html.favoriteListId = 'favorite_list_items';
    
@@ -35,16 +36,16 @@
         <ul id="' +   recentListId +    '" class="cms-item-list"></ul>\
     </div></div>';
    
-   var favoriteList = cms.html.favoriteList = '<div id="' + favoriteMenuId + '" class="cms-menu">\
-	<div class="connect ui-corner-top"></div>\
-	<div class="ui-widget-shadow ui-corner-all"></div>\
-	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
-	    <ul id="' +
-   favoriteListId +
-   '" class="cms-item-list">\
-	        <button id="fav-edit" name="Edit_Favorites" title="'+M.EDIT_FAVORITES_BUTTON+'" class="ui-state-default ui-corner-all">'+M.EDIT_FAVORITES_BUTTON+'</button>\
-	    </ul>\
-	</div></div>';
+//   var favoriteList = cms.html.favoriteList = '<div id="' + favoriteMenuId + '" class="cms-menu">\
+//	<div class="connect ui-corner-top"></div>\
+//	<div class="ui-widget-shadow ui-corner-all"></div>\
+//	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
+//	    <ul id="' +
+//   favoriteListId +
+//   '" class="cms-item-list">\
+//	        <button id="fav-edit" name="Edit_Favorites" title="'+M.EDIT_FAVORITES_BUTTON+'" class="ui-state-default ui-corner-all">'+M.EDIT_FAVORITES_BUTTON+'</button>\
+//	    </ul>\
+//	</div></div>';
    
    /**
     * Creates the drop zone for favorites.
@@ -54,11 +55,13 @@
       var menuId = cms.html.favoriteDropMenuId;
       var listId = cms.html.favoriteDropListId;
       
-      var html = ['<div id="', menuId, '" class="cms-menu" style="width: 343px; display:none">\
+      var html = ['<div id="', menuId, '" class="cms-menu" style="width: 650px; display:none">\
     	<div class="connect ui-corner-top"></div>\
     	<div class="ui-widget-shadow ui-corner-all"></div>\
-    	<div class="cms-menu-content ui-widget-content ui-corner-bottom ui-corner-tl">\
-    	    <ul id="', listId, '" class="cms-item-list"></ul>\
+    	<div class="cms-menu-content ui-widget-content ui-corner-bottom">\
+        <div class="cms-list-scrolling ui-corner-all">\
+    	    <ul id="', listId, '" class="cms-list-scrolling-inner cms-item-list"></ul>\
+        </div>\
     	</div></div>'];
       
       return html.join('');
@@ -90,6 +93,35 @@
         </div></div>'];
       
       return html.join('');
+   }
+   
+   var createStorageMenu = cms.html.createStorageMenu = function(){
+       var html=['<div id="', storageMenuId, '" class="cms-menu" style="width: 650px;">\
+    	<div class="connect ui-corner-top" style="background: #CFCFCF;"></div>\
+    	<div class="ui-widget-shadow ui-corner-bottom"></div>\
+        <div class="ui-corner-bottom">\
+		    <div id="menuTabs" class="ui-corner-bottom">\
+                <ul>\
+                     <li><a href="#favorite-tab">Favorites</a></li>\
+                     <li><a href="#recent-tab">Recent</a></li>\
+                </ul>\
+                <div id="favorite-tab">\
+                    <div class="cms-list-scrolling ui-corner-all">\
+                        <ul id="', favoriteListId, '" class="cms-list-scrolling-inner cms-item-list">\
+                        </ul>\
+                    </div>\
+                    <button id="fav-edit" name="Edit_Favorites" title="', M.EDIT_FAVORITES_BUTTON, '" class="ui-state-default ui-corner-all cms-edit-favorites">',M.EDIT_FAVORITES_BUTTON,'</button>\
+                </div>\
+                <div id="recent-tab">\
+                    <div class="cms-list-scrolling ui-corner-all">\
+                        <ul id="', recentListId, '" class="cms-list-scrolling-inner cms-item-list">\
+                        </ul>\
+                    </div>\
+                </div>\
+            </div>\
+        </div></div>'];
+       
+       return html.join('');
    }
    
    var createGalleryMenu = cms.html.createGalleryMenu = function(){

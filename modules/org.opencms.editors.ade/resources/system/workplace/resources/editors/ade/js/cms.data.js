@@ -326,7 +326,35 @@
       
    }
    
-   
+   var loadStorage  = cms.data.loadStorage = function(afterLoad){
+       postJSON(ACTION_GET, {
+         'rec': true,
+         'fav': true
+      }, function(ok, data) {
+          if (ok) {
+            cms.toolbar.recent = data.recent;
+            cms.toolbar.favorites = data.favorites;
+            
+            var joinedArray = $.makeArray(cms.toolbar.recent);
+            $.merge(joinedArray, cms.toolbar.favorites);
+            $.unique(joinedArray);
+            var idsToLoad = getElementsToLoad(joinedArray);
+            if (idsToLoad.length != 0) {
+               loadElements(idsToLoad, function(ok2, data2) {
+                  if (ok2) {
+                     loadNecessarySubcontainerElements(cms.data.elements, function(ok3, data3) {
+                        afterLoad(ok2, data)
+                     });
+                  }
+               });
+            } else {
+               loadNecessarySubcontainerElements(cms.data.elements, function(ok3, data3) {
+                  afterLoad(ok, data);
+               });
+            }
+         }
+      });
+   }
    /**
     * Loads the recent list and saves it in cms.toolbar.recent.
     *
