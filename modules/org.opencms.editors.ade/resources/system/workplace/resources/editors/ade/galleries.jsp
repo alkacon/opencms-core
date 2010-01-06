@@ -52,7 +52,7 @@ div.cms-selectbox{
 </style>
 <![endif]-->
 	</head>
-	<body>
+	<body style="margin:1px; padding:0px;">
 	    <div id="cms-gallery-main"> 
 		    <div id="cms-gallery-tabs">
                 <ul>
