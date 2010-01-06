@@ -45,7 +45,7 @@
    };
    
    /** html-class for the inner of the scrolled list with items. */
-   var classScrollingInner = cms.galleries.classScrollingInner = 'cms-list-scrolling-innner';
+   var classScrollingInner = cms.galleries.classScrollingInner = 'cms-list-scrolling-inner';
    
    /** html-class for hovered list item elements. */
    var classListItemHover = cms.galleries.classListItemHover = 'cms-list-item-hover';
@@ -118,7 +118,7 @@
                         </span>\
              </div>\
              <div id="results" class="cms-list-scrolling ui-corner-all result-tab-scrolling">\
-                        <ul class="cms-list-scrolling-innner cms-item-list"></ul>\
+                        <ul class="'+classScrollingInner+' cms-item-list"></ul>\
              </div>\
              <div class="result-pagination"></div>\
          </div>';
@@ -132,7 +132,7 @@
                     <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="types" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
-                    <ul id="'+cms.html.galleryTypeListId+'" class="cms-list-scrolling-innner cms-item-list"></ul>\
+                    <ul id="'+cms.html.galleryTypeListId+'" class="'+classScrollingInner+' cms-item-list"></ul>\
                 </div>\
               </div>';
    
@@ -145,7 +145,7 @@
                     <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="galleries" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
-                    <ul class="cms-list-scrolling-innner"></ul>\
+                    <ul class="'+classScrollingInner+'"></ul>\
                 </div>\
               </div>';
    
@@ -158,7 +158,7 @@
                     <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="categories" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
-                    <ul class="cms-list-scrolling-innner"></ul>\
+                    <ul class="'+classScrollingInner+'"></ul>\
                 </div>\
               </div>';
    
