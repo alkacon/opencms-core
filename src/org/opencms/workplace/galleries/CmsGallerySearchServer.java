@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2009/12/15 16:45:41 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2010/01/06 07:54:39 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,6 +63,7 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.editors.ade.CmsFormatterInfoBean;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 7.6
  */
@@ -998,6 +999,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         reqItem.setTypeId(resource.getTypeId());
         reqItem.setTypeName(type.getTypeName());
         reqAttributes.put(ReqParam.GALLERYITEM.getName(), reqItem);
+        reqAttributes.put(CmsADEManager.ATTR_CURRENT_ELEMENT, new CmsContainerElementBean(
+            resource.getStructureId(),
+            null,
+            null));
         result.put(JsonKeys.ITEMHTML.getName(), type.getFormattedContent(
             m_cms,
             getRequest(),
