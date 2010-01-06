@@ -10,8 +10,8 @@ pageContext.setAttribute("cms", cms);
 <div class="cms-list-item ui-widget-content ui-corner-all">
 	<div class="cms-list-itemcontent  ui-state-default ui-corner-all">
 		<div style="background-image: url(${cms.icon});" class="cms-list-image"></div>
-    	<div class="cms-list-title" rel="${cms.title.name}"><c:if test="${not empty cms.additionalInfo}"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a></c:if>${cms.title.value}</div>
-		<div rel="${cms.subTitle.name}">${cms.subTitle.value}</div>
+    	<div class="cms-list-title" rel="${cms.title.name}" unselectable="on"><c:if test="${not empty cms.additionalInfo}"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a></c:if>${cms.title.value}</div>
+		<div rel="${cms.subTitle.name}" unselectable="on">${cms.subTitle.value}</div>
 	</div>
 	<c:if test="${not empty cms.additionalInfo}">
 		<div class="cms-additional">
