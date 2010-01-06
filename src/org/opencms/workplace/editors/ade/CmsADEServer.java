@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/12/21 11:37:08 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/01/06 13:05:38 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 7.6
  */
@@ -603,12 +603,12 @@ public class CmsADEServer extends A_CmsAjaxServer {
             if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // get the favorite list
                 result.put(JsonResponse.FAVORITES.getName(), getFavoriteList(null, cntPage.getTypes()));
-            } else if (checkParameters(data, result, JsonRequest.REC.getName())) {
+            }
+            if (checkParameters(data, result, JsonRequest.REC.getName())) {
                 // get recent list
                 result.put(JsonResponse.RECENT.getName(), getRecentList(null, cntPage.getTypes()));
-            } else {
-                return result;
             }
+            return result;
         } else if (action.equals(Action.SEARCH)) {
             // new search
             CmsSearchOptions searchOptions = getSearchOptions(data);

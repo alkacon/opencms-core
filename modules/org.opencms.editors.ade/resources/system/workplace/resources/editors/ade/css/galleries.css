@@ -21,15 +21,18 @@
         padding: 10px;
     }
     
-    #cms-gallery-tabs {
-		height:487px;
+    #cms-gallery-tabs, #menuTabs {
 		width:650px;
         background: #f9f9f9;
         padding: 0px;
         margin: 0px;
 	}
     
-    #cms-gallery-tabs .ui-tabs-nav{
+    #cms-gallery-tabs {
+		height:487px;
+    }
+    
+    #cms-gallery-tabs .ui-tabs-nav, #menuTabs .ui-tabs-nav{
         background: #AAAAAA url(custom-theme/images/ui-bg_highlight-soft_75_aaaaaa_1x100.png) repeat-x scroll 50% 50%;
         border-bottom: 1px solid #AAAAAA;
         padding-top:8px;
@@ -134,7 +137,7 @@
     div.button-bar span.cms-title {
         font-size:14px;
         font-weight:bold;  
-        line-height:24px;        
+        line-height:24px;
     }
            
     
@@ -188,12 +191,12 @@
     }
     
     button span.cms-galleries-icon-moveup{                       
-        background: transparent url(images/16x16/move_up_in.png) no-repeat scroll left center;  
+        background: transparent url(images/16x16/move_up_in.png) no-repeat scroll left center;              
         padding-left: 20px;            
     }
     
     button span.cms-galleries-icon-movedown{                       
-        background: transparent url(images/16x16/move_down_in.png) no-repeat scroll left center;
+        background: transparent url(images/16x16/move_down_in.png) no-repeat scroll left center;              
         padding-left: 20px;              
     }
     
@@ -316,14 +319,16 @@
         background: #ffffff;
     }
      
-    .cms-list-scrolling-innner {
+    .cms-list-scrolling-inner {
         margin: 0px;
         padding: 0px;
         height: 100%;
         overflow:auto;
         position: relative;
     }
-    
+    #menuTabs .cms-list-scrolling-inner{
+        min-height: 35px;
+    }
     .cms-item-invisible {
         display: none;
     }
@@ -432,7 +437,7 @@
     .cms-search-options button.cms-item-left-bottom{
         height:auto !important;
         margin-left:0;
-        padding: 2px 10px;
+        padding: 2px 10px !important;
     }
         
     .cms-search-options div.cms-item-left {

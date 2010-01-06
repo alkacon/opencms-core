@@ -107,6 +107,7 @@
             
          });
       } else {
+          elem.filter('.ui-sortable').css('min-height','');
           var height = elem.outerHeight();
           height = (height > minHeight) ? height : minHeight;
          var elemPos = getElementPosition(elem);
