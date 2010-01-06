@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2009/06/04 14:29:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/01/06 13:05:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.Node;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
@@ -416,6 +416,21 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * Returns the xml node name of the wrapped content value.<p>
+     * 
+     * @return the xml node name
+     * 
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#getName()
+     */
+    public String getName() {
+
+        if (m_contentValue == null) {
+            return null;
+        }
+        return m_contentValue.getName();
+    }
+
+    /**
      * Returns the path to the current XML content value.<p>
      * 
      * In case the XML content value does not exist, an empty String <code>""</code> is returned.<p> 
@@ -492,6 +507,21 @@ public final class CmsJspContentAccessValueWrapper {
     public String getStringValue() {
 
         return toString();
+    }
+
+    /**
+     * Returns the schema type name of the wrapped content value.<p>
+     * 
+     * @return the type name
+     * 
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#getTypeName()
+     */
+    public String getTypeName() {
+
+        if (m_contentValue != null) {
+            return m_contentValue.getTypeName();
+        }
+        return null;
     }
 
     /**
