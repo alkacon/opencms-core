@@ -22,7 +22,7 @@ $.extend($.ui.sortable.prototype, {
          helper: self.helper,
          placeholder: self.placeholder || $([]),
          position: self.position,
-         absolutePosition: self.positionAbs, //deprecated
+         originalPosition: self.originalPosition,
          offset: self.positionAbs,
          item: self.currentItem,
          sender: inst ? inst.element : null,
@@ -134,8 +134,8 @@ $.extend($.ui.sortable.prototype, {
                   this.containers.push(inst);
                }
             };
-                     };
-               } else {
+         };
+      } else {
          this.containers = [this];
          queries = [[$.isFunction(this.options.items) ? this.options.items.call(this.element[0], event, {
             item: this.currentItem
@@ -159,7 +159,7 @@ $.extend($.ui.sortable.prototype, {
                top: 0
             });
          };
-               };
+      };
       
      },
      /**
