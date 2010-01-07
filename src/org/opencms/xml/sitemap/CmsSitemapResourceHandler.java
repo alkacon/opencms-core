@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/07 14:18:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.9.2
  */
@@ -93,10 +93,12 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
             }
             // read the resource
             resource = cms.readResource(entry.getResourceId());
-            // set the element
-            req.setAttribute(CmsSitemapManager.ATTR_SITEMAP_ENTRY, entry.cloneWithoutSubEntries());
-            // store the requested path 
-            req.setAttribute(CmsSitemapManager.ATTR_SITEMAP_CURRENT_URI, cms.getRequestContext().getUri());
+            if (req != null) {
+                // set the element
+                req.setAttribute(CmsSitemapManager.ATTR_SITEMAP_ENTRY, entry.cloneWithoutSubEntries());
+                // store the requested path 
+                req.setAttribute(CmsSitemapManager.ATTR_SITEMAP_CURRENT_URI, cms.getRequestContext().getUri());
+            }
             // set the resource path
             cms.getRequestContext().setUri(cms.getSitePath(resource));
         } catch (Throwable e) {
