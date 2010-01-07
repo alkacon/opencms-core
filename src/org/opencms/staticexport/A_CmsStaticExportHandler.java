@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/01/07 14:19:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.7 
  * 
@@ -148,6 +148,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         // get a export user cms context        
         CmsObject cms;
         try {
+            // this will always use the root site
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
         } catch (CmsException e) {
             // this should never happen
