@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlContainerPageLoader.java,v $
- * Date   : $Date: 2009/11/03 13:29:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/07 15:27:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import javax.servlet.ServletRequest;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6
  */
@@ -98,7 +98,7 @@ public class CmsXmlContainerPageLoader extends A_CmsXmlDocumentLoader {
     @Override
     protected String getTemplatePropertyDefinition() {
 
-        return CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS;
+        return CmsPropertyDefinition.PROPERTY_TEMPLATE;
     }
 
     /**
