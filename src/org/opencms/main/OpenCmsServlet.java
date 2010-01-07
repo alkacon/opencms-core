@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2009/09/11 15:29:16 $
- * Version: $Revision: 1.66.2.1 $
+ * Date   : $Date: 2010/01/07 14:14:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.66.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -192,6 +192,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 CmsObject cms = null;
                 CmsStaticExportData exportData = null;
                 try {
+                	// this will be set in the root site
                     cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
                     exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
                 } catch (CmsException e) {
@@ -293,7 +294,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         CmsObject cms;
         CmsFile file;
         try {
-            // create OpenCms context
+            // create OpenCms context, this will be set in the root site            
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             cms.getRequestContext().setUri(handlerUri);
             // read the error handler file
