@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2009/10/26 13:16:37 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2010/01/07 14:21:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -40,6 +41,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import java.net.URI;
 
@@ -50,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.8.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
@@ -154,12 +156,20 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             if (exportManager.relativeLinksInExport(cms.getRequestContext().getSiteRoot()
                 + cms.getRequestContext().getUri())) {
                 // try to get base URI from cache  
-                uriBaseName = exportManager.getCachedOnlineLink(exportManager.getCacheKey(
+                String cacheKey = exportManager.getCacheKey(
                     cms.getRequestContext().getSiteRoot(),
-                    cms.getRequestContext().getUri()));
+                    cms.getRequestContext().getUri());
+                uriBaseName = exportManager.getCachedOnlineLink(cacheKey);
                 if (uriBaseName == null) {
                     // base not cached, check if we must export it
-                    if (exportManager.isExportLink(cms, cms.getRequestContext().getUri())) {
+                    CmsResource resource = null;
+                    try {
+                        resource = cms.readResource(cms.getRequestContext().getUri());
+                    } catch (CmsException e) {
+                        // should never happen
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    if ((resource != null) && exportManager.isExportLink(cms, resource)) {
                         // base URI must also be exported
                         uriBaseName = exportManager.getRfsName(cms, cms.getRequestContext().getUri());
                     } else {
@@ -167,9 +177,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         uriBaseName = exportManager.getVfsPrefix() + cms.getRequestContext().getUri();
                     }
                     // cache export base URI
-                    exportManager.cacheOnlineLink(exportManager.getCacheKey(
-                        cms.getRequestContext().getSiteRoot(),
-                        cms.getRequestContext().getUri()), uriBaseName);
+                    exportManager.cacheOnlineLink(cacheKey, uriBaseName);
                 }
                 // use relative links only on pages that get exported
                 useRelativeLinks = uriBaseName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix(
@@ -177,13 +185,29 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             }
 
             // check if we have the absolute VFS name for the link target cached
-            resultLink = exportManager.getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
+            String cacheKey = cms.getRequestContext().getSiteRoot() + ":" + absoluteLink;
+            resultLink = exportManager.getCachedOnlineLink(cacheKey);
             if (resultLink == null) {
                 String storedSiteRoot = cms.getRequestContext().getSiteRoot();
                 try {
                     cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
                     // didn't find the link in the cache
-                    if (exportManager.isExportLink(cms, vfsName)) {
+                    CmsResource resource = null;
+                    try {
+                        resource = cms.readResource(vfsName);
+                    } catch (CmsException e) {
+                        // sitemap case
+                        try {
+                            CmsSiteEntryBean entry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
+                            if (entry != null) {
+                                resource = cms.readResource(entry.getResourceId());
+                            }
+                        } catch (CmsException e1) {
+                            // should never happen
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                    if ((resource != null) && exportManager.isExportLink(cms, resource)) {
                         // export required, get export name for target link
                         resultLink = exportManager.getRfsName(cms, vfsName, parameters);
                         // now set the parameters to null, we do not need them anymore
@@ -200,7 +224,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     cms.getRequestContext().setSiteRoot(storedSiteRoot);
                 }
                 // cache the result
-                exportManager.cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink, resultLink);
+                exportManager.cacheOnlineLink(cacheKey, resultLink);
             }
 
             // now check for the secure settings 
