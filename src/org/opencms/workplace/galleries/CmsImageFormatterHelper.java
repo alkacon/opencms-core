@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageFormatterHelper.java,v $
- * Date   : $Date: 2010/01/04 16:12:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/07 14:13:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 
  * 
@@ -86,7 +86,7 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
         /** The height of the image. */
         HEIGHT("height"),
 
-        /** The height of the image. */
+        /** The title of the image. */
         TITLE("Title");
 
         /** Property name. */
@@ -169,7 +169,6 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
      *  
      * @return the title property
      */
-    @SuppressWarnings("null")
     public String getPropertyTitle() {
 
         CmsProperty currentProperty = null;
@@ -180,6 +179,7 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
+            return "";
         }
         return currentProperty.getValue("");
     }
