@@ -236,8 +236,8 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>USER.Guest</uuidprincipal>
-					<flags>18</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>1</allowed>
 						<denied>0</denied>
