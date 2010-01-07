@@ -52,7 +52,7 @@
 					<value><![CDATA[OpenCms Demo [EN]]]></value>
 				</property>
 				<property>
-					<name>container-config</name>
+					<name>ade.cntpage.config</name>
 					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
 				</property>
 				<property>
@@ -84,7 +84,7 @@
 					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/resources/css/style.css]]></value>
 				</property>
 				<property>
-					<name>template-elements</name>
+					<name>template</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.template3/templates/main.jsp]]></value>
 				</property>
 			</properties>
@@ -128,7 +128,7 @@
 			<flags>0</flags>
 			<properties>
 			    <property type="shared">
-			        <name>container-config</name>
+			        <name>ade.cntpage.config</name>
                     <value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
 			    </property>
 			</properties>
@@ -232,7 +232,7 @@
 					<value><![CDATA[/system/workplace/editors/sitemap/sitemap.jsp]]></value>
 				</property>
                 <property type="shared">
-                    <name>container-config</name>
+                    <name>ade.cntpage.config</name>
 					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
                 </property>
 			</properties>
@@ -300,10 +300,6 @@
 					<name>Title</name>
 					<value><![CDATA[New Article]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/article.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -334,10 +330,6 @@
 					<name>collector.date</name>
 					<value><![CDATA[0]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/event.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -363,10 +355,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[New Item]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/item.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -489,10 +477,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1253010960000]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/news.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -667,10 +651,6 @@
 					<name>Title</name>
 					<value><![CDATA[Wonderful World of Flowers]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/article.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -696,10 +676,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Flower dictionary]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/dictionary]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -727,10 +703,6 @@
 					<name>Title</name>
 					<value><![CDATA[Flower-related events]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/article.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -756,10 +728,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Extranet of Flowers]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/news_recent]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -787,10 +755,6 @@
 					<name>Title</name>
 					<value><![CDATA[Welcome to our extranet]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/docs]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -816,10 +780,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Images]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/article.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -847,10 +807,6 @@
 					<name>Title</name>
 					<value><![CDATA[Welcome to the OpenCms Demo]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/wp_and_intro]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -876,10 +832,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Login for the Extranet]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/login]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -907,10 +859,6 @@
 					<name>Title</name>
 					<value><![CDATA[Flower-related news]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/article.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -937,10 +885,6 @@
 					<name>Title</name>
 					<value><![CDATA[Rare plants and flowers]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/news_recent]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -966,10 +910,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Flower Today]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/article.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -1005,10 +945,6 @@
 					<name>Title</name>
 					<value><![CDATA[UTF-8 Demo]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/utf8]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -1042,10 +978,6 @@
 				<property>
 					<name>style.preset</name>
 					<value><![CDATA[/demo/_config_/layout/threecolumns]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/article.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -2251,10 +2183,6 @@
 					<name>collector.date</name>
 					<value><![CDATA[1215244800000]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -2290,10 +2218,6 @@
 					<name>collector.date</name>
 					<value><![CDATA[1217628000000]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -2323,10 +2247,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1244280720000]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -2362,10 +2282,6 @@
 					<name>collector.date</name>
 					<value><![CDATA[1227987000000]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -2399,10 +2315,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1250409600000]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -2438,10 +2350,6 @@
 					<name>collector.date</name>
 					<value><![CDATA[1240473600000]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -2475,10 +2383,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1226652180000]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -2514,10 +2418,6 @@
 					<name>collector.date</name>
 					<value><![CDATA[1236416400000]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -2547,10 +2447,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1222341780000]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -3915,10 +3811,6 @@
 					<name>Title</name>
 					<value><![CDATA[Common yarrow]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/item_composite]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -3962,10 +3854,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dahlia]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/item_composite]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -4011,10 +3899,6 @@
 					<name>Title</name>
 					<value><![CDATA[Gerbera]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/item_composite]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4058,10 +3942,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Lily]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/item_liliaceous]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -4107,10 +3987,6 @@
 					<name>Title</name>
 					<value><![CDATA[Meadowsweet]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/item_rosaceous]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4154,10 +4030,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Mountain Avens]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/item_rosaceous]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -4203,10 +4075,6 @@
 					<name>Title</name>
 					<value><![CDATA[Radnor Lily]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/item_liliaceous]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4251,10 +4119,6 @@
 					<name>Title</name>
 					<value><![CDATA[Rose]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/item_rosaceous]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4298,10 +4162,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Tulip]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/item_liliaceous]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -4560,10 +4420,6 @@
 					<name>style.preset</name>
 					<value><![CDATA[/demo/_config_/layouts/threecolumns]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/news.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4594,10 +4450,6 @@
 					<name>collector.date</name>
 					<value><![CDATA[1228471800000]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/news.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4627,10 +4479,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1228472220000]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/news.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -4667,10 +4515,6 @@
 					<name>collector.priority</name>
 					<value><![CDATA[1]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/news.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4700,10 +4544,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1231151580000]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/news.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -4735,10 +4575,6 @@
 					<name>collector.date</name>
 					<value><![CDATA[1224503100000]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/news.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4769,10 +4605,6 @@
 					<name>collector.date</name>
 					<value><![CDATA[1228914240000]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/news.jsp]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4802,10 +4634,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1219755240000]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3.demo/pages/news.jsp]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -4880,10 +4708,6 @@
 					<name>search.root</name>
 					<value><![CDATA[/demo_t3/]]></value>
 				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/wp_and_intro]]></value>
-				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4917,10 +4741,6 @@
 				<property>
 					<name>search.root</name>
 					<value><![CDATA[/demo_t3/]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/demo_t3/_config_/layout/wp_and_intro]]></value>
 				</property>
 			</properties>
 			<relations>

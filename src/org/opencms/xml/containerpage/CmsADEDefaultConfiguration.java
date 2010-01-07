@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2009/12/17 12:36:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/07 15:27:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -80,7 +81,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     public static final int DEFAULT_SEARCH_PAGE_SIZE = 10;
 
     /** property name constant. */
-    protected static final String PROPERTY_CONTAINER_CONFIG = "container-config";
+    protected static final String PROPERTY_CONTAINER_CONFIG = "ade.cntpage.config";
 
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsADEDefaultConfiguration.class);
@@ -174,31 +175,50 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      */
     protected CmsResource getConfigurationFile(CmsObject cms, String containerPageUri) {
 
-        // get the resource type configuration file, will be the same for every locale
         String cfgPath = null;
         try {
+            // get the resource type configuration file from the vfs tree
             cfgPath = cms.readPropertyObject(containerPageUri, PROPERTY_CONTAINER_CONFIG, true).getValue();
         } catch (CmsException e) {
-            LOG.debug(e.getLocalizedMessage(), e);
+            // should never happen 
+            LOG.error(e.getLocalizedMessage(), e);
         }
-        CmsResource resTypeConfigRes = null;
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(cfgPath)) {
+            // if not found try at the template
+            try {
+                // retrieve the template uri
+                String templateUri = cms.readPropertyObject(
+                    containerPageUri,
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                    true).getValue();
+                // get the resource type configuration file from the template itself
+                cfgPath = cms.readPropertyObject(templateUri, PROPERTY_CONTAINER_CONFIG, true).getValue();
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(cfgPath)) {
+            // configuration could not be found
             LOG.warn(Messages.get().getBundle().key(
                 Messages.ERR_CONFIG_NOT_SET_2,
                 containerPageUri,
                 PROPERTY_CONTAINER_CONFIG));
-        } else {
-            try {
-                resTypeConfigRes = cms.readResource(cfgPath);
-            } catch (Exception e) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.ERR_CONFIG_NOT_FOUND_3,
-                    containerPageUri,
-                    PROPERTY_CONTAINER_CONFIG,
-                    cfgPath));
-            }
+            return null;
         }
-        return resTypeConfigRes;
+
+        try {
+            // read configuration file
+            return cms.readResource(cfgPath);
+        } catch (Exception e) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_CONFIG_NOT_FOUND_3,
+                containerPageUri,
+                PROPERTY_CONTAINER_CONFIG,
+                cfgPath));
+        }
     }
 
     /**
