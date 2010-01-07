@@ -170,7 +170,6 @@
         <sitemap>
             <sitemap-cache>
                 <documents offline="1" online="2" />
-                <files offline="3" online="4" />
                 <missing-uris offline="5" online="6" />
                 <properties offline="7" online="8" />
                 <uris offline="9" online="10" />

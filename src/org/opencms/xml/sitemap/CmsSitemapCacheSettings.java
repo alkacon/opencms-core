@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCacheSettings.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/07 14:19:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.xml.sitemap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.2
  */
@@ -44,9 +44,6 @@ public class CmsSitemapCacheSettings {
 
     /** Default size for documents caches. */
     private static final int DEFAULT_DOCUMENT_SIZE = 32;
-
-    /** Default size for file caches. */
-    private static final int DEFAULT_FILE_SIZE = 32;
 
     /** Default size for missing URI caches. */
     private static final int DEFAULT_MISSING_URI_SIZE = 4096;
@@ -62,12 +59,6 @@ public class CmsSitemapCacheSettings {
 
     /** The size of the documents online cache. */
     private int m_documentOnlineSize;
-
-    /** The size of the file offline cache. */
-    private int m_fileOfflineSize;
-
-    /** The size of the file online cache. */
-    private int m_fileOnlineSize;
 
     /** The size of the missing URI offline cache. */
     private int m_missingUriOfflineSize;
@@ -119,32 +110,6 @@ public class CmsSitemapCacheSettings {
             return DEFAULT_DOCUMENT_SIZE;
         }
         return m_documentOnlineSize;
-    }
-
-    /**
-     * Returns the size of the file offline cache.<p>
-     * 
-     * @return the size of the file offline cache
-     */
-    public int getFileOfflineSize() {
-
-        if (m_fileOfflineSize <= 0) {
-            return DEFAULT_FILE_SIZE;
-        }
-        return m_fileOfflineSize;
-    }
-
-    /**
-     * Returns the size of the file online cache.<p>
-     * 
-     * @return the size of the file online cache
-     */
-    public int getFileOnlineSize() {
-
-        if (m_fileOnlineSize <= 0) {
-            return DEFAULT_FILE_SIZE;
-        }
-        return m_fileOnlineSize;
     }
 
     /**
@@ -243,26 +208,6 @@ public class CmsSitemapCacheSettings {
     public void setDocumentOnlineSize(String size) {
 
         m_documentOnlineSize = getIntValue(size, DEFAULT_DOCUMENT_SIZE);
-    }
-
-    /**
-     * Sets the size of the cache for sitemap files.<p>
-     *
-     * @param size the size of the cache for sitemap files
-     */
-    public void setFileOfflineSize(String size) {
-
-        m_fileOfflineSize = getIntValue(size, DEFAULT_FILE_SIZE);
-    }
-
-    /**
-     * Sets the size of the cache for sitemap files.<p>
-     *
-     * @param size the size of the cache for sitemap files
-     */
-    public void setFileOnlineSize(String size) {
-
-        m_fileOnlineSize = getIntValue(size, DEFAULT_FILE_SIZE);
     }
 
     /**

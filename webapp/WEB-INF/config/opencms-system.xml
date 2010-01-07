@@ -113,7 +113,6 @@
         <sitemap>
             <sitemap-cache>
                 <documents offline="32" online="32" />
-                <files offline="32" online="32" />
                 <missing-uris offline="4096" online="4096" />
                 <properties offline="4096" online="4096" />
                 <uris offline="4096" online="4096" />

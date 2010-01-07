@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/12/16 08:55:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/07 14:19:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -477,25 +477,22 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public static final String N_WORKPLACE_SERVER = "workplace-server";
 
     /** The attribute name for the deleted node. */
-    private static final String A_DELETED = "deleted";
+    public static final String A_DELETED = "deleted";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
 
     /** The node name for the sitemap cache for documents. */
-    private static final String N_DOCUMENTS = "documents";
-
-    /** The node name for the sitemap cache for files. */
-    private static final String N_FILES = "files";
+    public static final String N_DOCUMENTS = "documents";
 
     /** The node name for the sitemap cache for missing URIs. */
-    private static final String N_MISSING_URIS = "missing-uris";
+    public static final String N_MISSING_URIS = "missing-uris";
 
     /** The node name for the sitemap cache for properties. */
-    private static final String N_PROPERTIES = "properties";
+    public static final String N_PROPERTIES = "properties";
 
     /** The node name for the sitemap cache for URIs. */
-    private static final String N_URIS = "uris";
+    public static final String N_URIS = "uris";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
@@ -1152,11 +1149,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // add rule for sitemap cache settings
         String sitemapCachePath = "*/" + N_SYSTEM + "/" + N_SITEMAP + "/" + N_SITEMAP_CACHE;
         digester.addObjectCreate(sitemapCachePath, CmsSitemapCacheSettings.class);
-        // file cache
-        digester.addCallMethod(sitemapCachePath + "/" + N_FILES, "setFileOfflineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_FILES, 0, A_OFFLINE);
-        digester.addCallMethod(sitemapCachePath + "/" + N_FILES, "setFileOnlineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_FILES, 0, A_ONLINE);
         // document cache
         digester.addCallMethod(sitemapCachePath + "/" + N_DOCUMENTS, "setDocumentOfflineSize", 1);
         digester.addCallParam(sitemapCachePath + "/" + N_DOCUMENTS, 0, A_OFFLINE);
@@ -1597,10 +1589,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             Element docsCacheElem = cacheElem.addElement(N_DOCUMENTS);
             docsCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getDocumentOfflineSize());
             docsCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getDocumentOnlineSize());
-            // files cache
-            Element fileCacheElem = cacheElem.addElement(N_FILES);
-            fileCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getFileOfflineSize());
-            fileCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getFileOnlineSize());
             // missing URIs cache
             Element missingCacheElem = cacheElem.addElement(N_MISSING_URIS);
             missingCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getMissingUriOfflineSize());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2009/12/17 09:18:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/07 14:19:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.xml.sitemap;
 
 import org.opencms.cache.CmsVfsCache;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.main.CmsLog;
@@ -42,7 +41,6 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -52,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -84,12 +82,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
 
     /** Cache for online search properties. */
     private Map<String, Map<String, String>> m_searchPropsOnline;
-
-    /** Cache for offline sitemaps. */
-    private Map<String, CmsFile> m_sitemapsOffline;
-
-    /** Cache for online sitemaps. */
-    private Map<String, CmsFile> m_sitemapsOnline;
 
     /** Cache for offline site entries. */
     private Map<String, CmsSiteEntryBean> m_urisOffline;
@@ -181,23 +173,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
             }
         }
         return retValue;
-    }
-
-    /**
-     * Returns the content of the file cache for the given parameters.<p>
-     * 
-     * @param path the cache key
-     * @param online if online or offline
-     * 
-     * @return the content of the file cache
-     */
-    public CmsFile getFile(String path, boolean online) {
-
-        if (online) {
-            return m_sitemapsOnline.get(path);
-        } else {
-            return m_sitemapsOffline.get(path);
-        }
     }
 
     /**
@@ -293,22 +268,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
     }
 
     /**
-     * Sets the file cache for the given parameters.<p>
-     * 
-     * @param path the cache key
-     * @param file the file to cache
-     * @param online if online or offline
-     */
-    public void setFile(String path, CmsFile file, boolean online) {
-
-        if (online) {
-            m_sitemapsOnline.put(path, file);
-        } else {
-            m_sitemapsOffline.put(path, file);
-        }
-    }
-
-    /**
      * Sets the missing URIs cache for the given parameters.<p>
      * 
      * @param path the cache key
@@ -364,14 +323,12 @@ public final class CmsSitemapCache extends CmsVfsCache {
         if (online) {
             m_documentsOnline.clear();
             m_missingUrisOnline.clear();
-            m_sitemapsOnline.clear();
             m_urisOnline.clear();
             m_defPropsOnline = null;
             m_searchPropsOnline.clear();
         } else {
             m_documentsOffline.clear();
             m_missingUrisOffline.clear();
-            m_sitemapsOffline.clear();
             m_urisOffline.clear();
             m_defPropsOffline = null;
             m_searchPropsOffline.clear();
@@ -402,9 +359,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
         m_documentsOffline.remove(getCacheKey(resource.getStructureId(), true));
         m_documentsOffline.remove(getCacheKey(resource.getStructureId(), false));
 
-        // this could be a sitemap file as well as a folder with the sitemap property, so remove it
-        CmsFile file = m_sitemapsOffline.remove(resource.getRootPath());
-
         // we care only more if the modified resource is a sitemap
         if (!CmsResourceTypeXmlSitemap.isSitemap(resource)) {
             return;
@@ -415,26 +369,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
         m_missingUrisOffline.clear();
         // flush properties
         m_searchPropsOffline.clear();
-
-        if (file == null) {
-            return;
-        }
-
-        // remove the file cached by it's structure ID
-        m_documentsOffline.remove(getCacheKey(file.getStructureId(), true));
-        m_documentsOffline.remove(getCacheKey(file.getStructureId(), false));
-
-        // this is the case of root sitemaps
-        // we already removed the cached sitemap by its root path
-        // but know we have also to remove it by the site root path, 
-        // which is unknown, so let's iterate an remove all suspicious entries
-        Iterator<Map.Entry<String, CmsFile>> i = m_sitemapsOffline.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry<String, CmsFile> e = i.next();
-            if (file.equals(e.getValue())) {
-                i.remove();
-            }
-        }
     }
 
     /**
@@ -452,14 +386,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
         lruMapDocs = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getDocumentOnlineSize());
         m_documentsOnline = Collections.synchronizedMap(lruMapDocs);
         memMonitor.register(CmsSitemapCache.class.getName() + ".sitemapDocsOnline", lruMapDocs);
-
-        Map<String, CmsFile> lruMapFiles = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getFileOfflineSize());
-        m_sitemapsOffline = Collections.synchronizedMap(lruMapFiles);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".sitemapFilesOffline", lruMapFiles);
-
-        lruMapFiles = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getFileOnlineSize());
-        m_sitemapsOnline = Collections.synchronizedMap(lruMapFiles);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".sitemapFilesOnline", lruMapFiles);
 
         Map<String, CmsSiteEntryBean> lruMapUri = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUriOfflineSize());
         m_urisOffline = Collections.synchronizedMap(lruMapUri);
