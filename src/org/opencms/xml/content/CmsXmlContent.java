@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2009/12/09 09:24:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/07 14:14:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -757,11 +757,13 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         try {
             return CmsXmlContentDefinition.unmarshal(schemaLocation, resolver);
         } catch (SAXException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_0), e);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_1, schemaLocation), e);
         } catch (IOException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_IO_0), e);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_IO_1, schemaLocation), e);
         } catch (CmsXmlException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
+            throw new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_1, schemaLocation),
+                e);
         }
     }
 
