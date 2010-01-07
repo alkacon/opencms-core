@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportData.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/01/07 14:22:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.file.CmsResource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,35 +57,6 @@ public class CmsStaticExportData {
     private String m_vfsName;
 
     /**
-     * Creates a new static export data object for use in the cache.<p>
-     * 
-     * @param vfsName the vfs name of the resource
-     * @param parameters the parameter string of a resource
-     */
-    public CmsStaticExportData(String vfsName, String parameters) {
-
-        m_vfsName = vfsName;
-        m_rfsName = null;
-        m_resource = null;
-        m_parameters = parameters;
-    }
-
-    /**
-     * Creates a new static export data object.<p>
-     * 
-     * @param vfsName the vfs name of the resource
-     * @param rfsName the rfs name of the resource
-     * @param resource the resource object
-     */
-    public CmsStaticExportData(String vfsName, String rfsName, CmsResource resource) {
-
-        m_vfsName = vfsName;
-        m_rfsName = rfsName;
-        m_resource = resource;
-        m_parameters = null;
-    }
-
-    /**
      * Creates a new static export data object.<p>
      * 
      * @param vfsName the vfs name of the resource
@@ -99,7 +70,6 @@ public class CmsStaticExportData {
         m_rfsName = rfsName;
         m_resource = resource;
         m_parameters = parameters;
-
     }
 
     /**
@@ -145,6 +115,7 @@ public class CmsStaticExportData {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();
@@ -159,5 +130,25 @@ public class CmsStaticExportData {
         }
         result.append("]");
         return result.toString();
+    }
+
+    /**
+     * Sets the parameters.<p>
+     * 
+     * @param parameters the parameters to set
+     */
+    protected void setParameters(String parameters) {
+
+        m_parameters = parameters;
+    }
+
+    /**
+     * Sets the RFS name.<p>
+     * 
+     * @param rfsName the RFS name to set
+     */
+    protected void setRfsName(String rfsName) {
+
+        m_rfsName = rfsName;
     }
 }

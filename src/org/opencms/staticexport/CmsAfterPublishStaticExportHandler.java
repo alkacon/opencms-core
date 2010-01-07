@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2009/06/22 09:23:23 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/01/07 14:22:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -108,6 +108,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         boolean templatesFound;
 
         // export must be done in the context of the export user 
+        // this will always use the root site
         CmsObject cmsExportObject = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
 
         List resourcesToExport = getRelatedResources(cmsExportObject, resources);
@@ -366,18 +367,19 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     }
 
     /**
-     * Exports a single (template) resource specified by its vfsName and rsfName.<p>
+     * Exports a single (template) resource specified by its export data.<p>
      * 
-     * @param vfsName the vfsName of the resource
-     * @param rfsName the target rfs name
+     * @param data the export data
      * @param cookies cookies to keep the session
      * 
      * @return the status of the http request used to perform the export
      * 
      * @throws IOException if the http request fails
      */
-    protected int exportTemplateResource(String rfsName, String vfsName, StringBuffer cookies) throws IOException {
+    protected int exportTemplateResource(CmsStaticExportData data, StringBuffer cookies) throws IOException {
 
+        String vfsName = data.getVfsName();
+        String rfsName = data.getRfsName();
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
         String exportUrlStr = manager.getExportUrl() + manager.getRfsPrefix(vfsName) + rfsName;
         if (LOG.isDebugEnabled()) {
@@ -401,6 +403,19 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_CHARSET, manager.getAcceptCharsetHeader());
         } else {
             urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_CHARSET, manager.getDefaultAcceptCharsetHeader());
+        }
+
+        if (data.getResource().isFile() && CmsResource.isFolder(rfsName)) {
+            // vfs file over sitemap case
+            try {
+                CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+                CmsResource file = OpenCms.initResource(exportCms, vfsName, null, null);
+                vfsName = exportCms.getSitePath(file);
+                rfsName += CmsStaticExportManager.EXPORT_DEFAULT_FILE;
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
 
         // get the last modified date and add it to the request
@@ -459,7 +474,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     /**
      * Exports all template resources found in a list of published resources.<p>
      * 
-     * @param cms the cms context
+     * @param cms the cms context, in the root site as Export user
      * @param publishedTemplateResources list of potential candidates to export
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file    
      */
@@ -481,16 +496,17 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         Iterator i = publishedTemplateResources.iterator();
         while (i.hasNext()) {
             String rfsName = (String)i.next();
-            String vfsName = manager.getVfsNameInternal(cms, rfsName);
-            if (vfsName == null) {
+            CmsStaticExportData data = manager.getVfsNameInternal(cms, rfsName);
+            if (data == null) {
                 String rfsBaseName = rfsName;
                 int pos = rfsName.lastIndexOf('_');
                 if (pos >= 0) {
                     rfsBaseName = rfsName.substring(0, pos);
                 }
-                vfsName = manager.getVfsNameInternal(cms, rfsBaseName);
+                data = manager.getVfsNameInternal(cms, rfsBaseName);
             }
-            if (vfsName != null) {
+            if (data != null) {
+                data.setRfsName(rfsName);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_2,
                     new Integer(count++),
@@ -506,7 +522,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             }
 
             try {
-                int status = exportTemplateResource(rfsName, vfsName, cookies);
+                int status = exportTemplateResource(data, cookies);
 
                 // write the report
                 if (status == HttpServletResponse.SC_OK) {
@@ -659,7 +675,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             // only process this resource, if it is within the tree of allowed folders for static export
             if (manager.getExportFolderMatcher().match(vfsName)) {
                 // get the export data object, if null is returned, this resource cannot be exported
-                CmsStaticExportData exportData = manager.getExportData(vfsName, cms);
+                CmsStaticExportData exportData = manager.getVfsExportData(cms, vfsName);
                 if (exportData != null) {
                     CmsResource resource = null;
                     if (pupRes.isFile()) {
