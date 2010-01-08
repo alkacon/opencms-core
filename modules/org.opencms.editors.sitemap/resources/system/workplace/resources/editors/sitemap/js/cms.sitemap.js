@@ -883,38 +883,7 @@
    }
    
    
-   /**
-    * Merges a set of property definition with a set of properties
-    *
-    * @param {Object} propDefs object containing the property definitions
-    * @param {Object} properties object containing the properties
-    *
-    **/
-   var mergePropertiesWithDefinitions = function(propDefs, properties) {
-      var result = JSON.parse(JSON.stringify(propDefs));
-      for (var key in result) {
-         if (properties.hasOwnProperty(key)) {
-            result[key].value = properties[key];
-         }
-      }
-      return result;
-   }
-   
-   
-   /**
-    * Returns the properties of a sitemap entry, merged with the property settings of the sitemap.
-    *
-    * @param {Object} $entry the sitemap entry for which the properties should be read
-    * @return an object containing the merged properties with their settings
-    */
-   var getMergedProperties = function($entry) {
-      var propDefs = JSON.parse(JSON.stringify(cms.sitemap.propertyDefinitions));
-      var entryData = getEntryData($entry);
-      var props = entryData.properties;
-      var propEntries = mergePropertiesWithDefinitions(propDefs, props);
-      return propEntries;
-   }
-   
+    
    /**
     * Checks whether a given sitemap entry is the last remaining entry at the root level of the sitemap.
     * @param {Object} $entry the entry which should be checked
@@ -1511,7 +1480,24 @@
          $('a.cms-gotopage').live('click', function() {
             var $entry = $(this).closest('.' + classSitemapEntry);
             var path = (new SitemapEntry($entry.get(0))).getPath();
-            window.open(cms.data.CONTEXT + path, '_blank');
+            var target=cms.data.CONTEXT + path;
+            if (sitemapChanged) {
+                cms.util.leavePageDialog(target, function(callback) {
+                    var sitemap = serializeSitemap($('#' + sitemapId));
+                    cms.data.saveSitemap(sitemap, callback);
+                }, function(){
+                    if (sitemapChanged) {
+                        sitemapChanged = false;
+                        cms.data.sitemapPostJSON('stopedit', {}, function() {
+                            window.location.href = target;
+                        });
+                    } else {
+                        window.location.href = target;
+                    }
+                });
+            } else {
+                window.location.href = target;
+            }
          });
       }
    };
@@ -2149,8 +2135,8 @@
     */
    var _buildSitemapElement = function(data) {
       var $li = $('<li></li>').addClass(classSitemapEntry);
-      $('.' + dropzoneClass, $li).remove();
-      $('.' + classOpener, $li).remove();
+//      $('.' + dropzoneClass, $li).remove();
+//      $('.' + classOpener, $li).remove();
       var isSitemap = data.properties.sitemap;
       $('<div></div>').addClass(dropzoneClass).appendTo($li);
       if (data.subentries && data.subentries.length > 0) {
@@ -2620,10 +2606,7 @@
        * Merges this entry's properties with the sitemap property definitions and returns the result.
        */
       getPropertiesWithDefinitions: function() {
-         var self = this;
-         var propDefs = JSON.parse(JSON.stringify(cms.sitemap.propertyDefinitions));
-         var props = self.getProperties();
-         var propEntries = mergePropertiesWithDefinitions(propDefs, props);
+         var propEntries = $.extend({}, cms.sitemap.propertyDefinitions, this.getProperties());
          delete propEntries['sitemap'];
          return propEntries;
       },
@@ -2911,13 +2894,13 @@
       $dlg.dialog(options);
       
       // align middle columns of both tables
-      var colOffset1 = $table.find('td:eq(1)').position().left;
-      var colOffset2 = titleAndName.$dom.find('td:eq(1)').position().left;
-      if (colOffset1 > colOffset2) {
-         titleAndName.$dom.css('margin-left', (colOffset1 - colOffset2) + 'px');
-      } else {
-         $table.css('margin-left', (colOffset2 - colOffset1) + 'px');
-      }
+//      var colOffset1 = $table.find('td:eq(1)').position().left;
+//      var colOffset2 = titleAndName.$dom.find('td:eq(1)').position().left;
+//      if (colOffset1 > colOffset2) {
+//         titleAndName.$dom.css('margin-left', (colOffset1 - colOffset2) + 'px');
+//      } else {
+//         $table.css('margin-left', (colOffset2 - colOffset1) + 'px');
+//      }
       
       
       var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text(M.SITEMAP_BUTTON_EDIT_DIALOG_OK);

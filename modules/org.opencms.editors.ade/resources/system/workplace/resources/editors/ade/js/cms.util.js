@@ -276,7 +276,47 @@
    }
    
    
-   
+      /**
+    * Opens the leave page confirm dialog (if page has changed)
+    *
+    * @param {String} target the target page to open
+    * @param {Function} saveFunction function to save the page
+    * @param {Function} leaveFunction function to leave the page (optional)
+    */
+   var leavePageDialog = cms.util.leavePageDialog = function(target, saveFunction, leaveFunction) {
+      var buttons = {};
+      buttons[M.LEAVE_PAGE_SAVE] = function() {
+         $(this).dialog('destroy');
+         saveFunction(function(ok) {
+            if (ok) {
+               $.isFunction(leaveFunction) ? leaveFunction(target) : window.location.href=target;
+            }
+         });
+      };
+      
+      buttons[M.LEAVE_PAGE_OK] = function() {
+         $(this).dialog('destroy');
+         $.isFunction(leaveFunction) ? leaveFunction(target) : window.location.href=target;
+      };
+      
+      buttons[M.LEAVE_PAGE_CANCEL] = function() {
+         $(this).dialog('destroy');
+      };
+      var $dialogDiv = $('#cms-leave-dialog');
+      if (!$dialogDiv.length){
+          $dialogDiv=$('<div id="cms-leave-dialog" style="display: none;">' + M.LEAVE_PAGE_CONFIRM + '</div>').appendTo('body');
+      }
+      $dialogDiv.dialog({
+         autoOpen: true,
+         modal: true,
+         title: M.LEAVE_PAGE_TITLE,
+         zIndex: 9999,
+         buttons: buttons,
+         close: function() {
+            $(this).dialog('destroy');
+         }
+      });
+   }
    
    var loadFavoriteAndRecentElements = function(afterLoad) {
       var toLoad = {};

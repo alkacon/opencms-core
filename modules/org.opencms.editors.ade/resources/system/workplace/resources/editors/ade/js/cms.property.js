@@ -28,7 +28,7 @@
       var niceName = entry.niceName ? entry.niceName : name;
       var isDefault = !(entry.value);
       $('<td></td>').text(niceName).appendTo($row);
-      var widget = new widgetClass(entry.widgetConf);
+      var widget = new widgetClass(entry.widgetConf, entry.defaultValue);
       var widgetWrapper = new WidgetWrapper(widget, name, entry, $row);
       var $widget = widget.$widget;
       $('<td></td>').append($widget).appendTo($row);
@@ -40,13 +40,37 @@
       return $row;
    };
    
+   var buildPropertyRow = function(name, entry, widgets) {
+      var widgetClass = widgetTypes[entry.widget];
+      var niceName = entry.niceName ? entry.niceName : name;
+      var isDefault = !(entry.value);
+      var $row = $('<div class="cms-editable-field' + (isDefault ? ' cms-default-value' : '') + '" rel="' + name + '" style="margin:3px 0px;"><span class="cms-item-title cms-width-90">' + niceName + '</span></div>')
+      var widgetClass = widgetTypes[entry.widget];
+      var niceName = entry.niceName ? entry.niceName : name;
+      var isDefault = !(entry.value);
+      var widget = new widgetClass(entry.widgetConf, entry.defaultValue);
+      widget.$widget.appendTo($row);
+      var widgetWrapper = new WidgetWrapper(widget, name, entry, $row);
+      
+      widgets[name] = widgetWrapper;
+      return $row;
+   }
+   
    
    /**
     * Constructor for the basic text input widget.
     * @param configuration not needed for this widget
     */
-   var StringWidget = cms.property.StringWidget = function(configuration) {
-      var $widget = this.$widget = $('<input type="text"></input>');
+   var StringWidget = cms.property.StringWidget = function(configuration, defaultValue) {
+      var self = this;
+      var $widget = self.$widget = $('<input type="text" class="cms-item-edit ui-corner-all" value="" />');
+      $widget.focus(function() {
+         self.onFocus();
+      });
+      $widget.blur(function() {
+         self.onBlur();
+      });
+      self.defaultValue = defaultValue;
    }
    
    StringWidget.prototype = {
@@ -56,18 +80,40 @@
        * @param {Boolean}
        */
       setEnabled: function(/**Boolean*/enabled) {
-         this.$widget.attr('disabled', !enabled);
+         if (enabled) {
+            this.$widget.closest('.cms-editable-field').removeClass('cms-default-value');
+         } else {
+            this.$widget.closest('.cms-editable-field').addClass('cms-default-value');
+            this.setValue(this.defaultValue);
+         }
+         //this.$widget.attr('disabled', !enabled);
       },
       
       /**
        * Helper function that returns the current value of the text field.
        */
       getValue: function() {
+         if (this.$widget.closest('.cms-editable-field').hasClass('cms-default-value')) {
+            return null;
+         }
          return this.$widget.val();
       },
       
       setValue: function(newValue) {
          this.$widget.val(newValue);
+      },
+      
+      onFocus: function() {
+         if (this.$widget.closest('.cms-editable-field').hasClass('cms-default-value')) {
+            this.$widget.val('');
+            this.setEnabled(true);
+         }
+      },
+      
+      onBlur: function() {
+         if ($.trim(this.$widget.val()) == '') {
+            this.setEnabled(false);
+         }
       }
    };
    
@@ -106,27 +152,81 @@
     *
     * @param {Object} configuration not needed for this class
     */
-   var CheckboxWidget = cms.property.CheckboxWidget = function(configuration) {
-      this.$widget = $('<input type="checkbox"></input>');
+   var CheckboxWidget = cms.property.CheckboxWidget = function(configuration, defaultValue) {
+      var self = this;
+      this.$widget = $('<div class="cms-checkbox-widget" style="position: relative; display: inline-block; width: 200px; vertical-align: top;"></div>');
+      this.$widgetOverlay = $('<div class="cms-widget-overlay" style="display: none; position: absolute; top: 0px; left: 0px; width: 200px; background: #FFFFFF; border: solid 1px #999999; padding: 2px;"></div>').appendTo(this.$widget);
+      if (configuration) {
+         var config = JSON.parse(configuration);
+         if (config && config.values && config.values.length) {
+            for (var i = 0; i < config.values.length; i++) {
+               this.$widget.append('<div class="cms-checkbox-widget-row"><input type="checkbox" value="' + config.values[i] + '" style="vertical-align: middle;" /><span class="cms-checkbox-label">' + config.values[i] + '</span></div>');
+            }
+            this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>Use default</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
+            $('input:checkbox', this.$defaultSwitch).change(function() {
+               self.setEnabled(!this.checked);
+            });
+            this.$widget.hover(function() {
+               self.hoverIn();
+            }, function() {
+               self.hoverOut();
+            })
+         }
+      }
+      
+      this.defaultValue = defaultValue;
    }
    
    CheckboxWidget.prototype = {
    
       getValue: function() {
-         return "" + this.$widget.get(0).checked;
+         if (this.$widget.closest('.cms-editable-field').hasClass('cms-default-value')) {
+            return null;
+         }
+         var result = '';
+         var selected=$('input:checked', this.$widget)
+         selected.each(function() {
+            result += $(this).val() + '|';
+         });
+         result = result.substring(0, result.length - 1);
+         return result;
       },
       
       setValue: function(newValue) {
-         var realValue = false;
-         if (newValue == "true" || newValue == "checked" || newValue == true) {
-            realValue = true;
+         $('input:checkbox[name!="defaultswitch"]', this.$widget).removeAttr('checked');
+         if (newValue == null) {
+            return;
+         }
+         var values = newValue.split('|');
+         for (var i = 0; i < values.length; i++) {
+            $('input[value="' + values[i] + '"]', this.$widget).attr('checked', 'checked');
          }
          
-         this.$widget.get(0).checked = realValue;
       },
       
-      setEnabled: function(enabled) {
-         this.$widget.attr('disabled', !enabled);
+      hoverIn: function() {
+         $('div.cms-checkbox-widget-row', this.$widget).prependTo(this.$widgetOverlay);
+         this.$widgetOverlay.show();
+      },
+      
+      hoverOut: function() {
+         $('div.cms-checkbox-widget-row', this.$widgetOverlay).prependTo(this.$widget);
+         this.$widgetOverlay.hide();
+      },
+      
+      /**
+       * Helper function to enable or disable the widget
+       * @param {Boolean}
+       */
+      setEnabled: function(/**Boolean*/enabled) {
+         if (enabled) {
+            $('input:checkbox[name="defaultswitch"]', this.$widget).removeAttr('checked');
+            this.$widget.closest('.cms-editable-field').removeClass('cms-default-value');
+         } else {
+            $('input:checkbox[name!="defaultswitch"]', this.$widget).attr('checked','checked');
+            this.$widget.closest('.cms-editable-field').addClass('cms-default-value');
+            this.setValue(this.defaultValue);
+         }
       }
    };
    
@@ -310,24 +410,33 @@
       },
       
       save: function(properties) {
-         if (this.isDefault) {
-            delete properties[this.name];
+         var val = this.widget.getValue();
+         if (val != null) {
+            properties[this.name] = val;
          } else {
-            properties[this.name] = this.widget.getValue();
+            delete properties[this.name];
          }
+         //         if (this.isDefault) {
+         //            delete properties[this.name];
+         //         } else {
+         //            properties[this.name] = this.widget.getValue();
+         //         }
       },
       
       validate: function() {
          var validationOK = !this.validation || this.isDefault || validateString(this.validation, this.widget.getValue());
-         this.$row.next('.cms-validation-error').remove();
-         
+         $('.cms-validation-error', this.$row).remove();
          if (!validationOK) {
-            var $validationRow = $('<tr class="cms-validation-error"></tr>').css('color', '#ff0000');
-            $validationRow.append('<td>&#x25B2;</td>');
-            var $validationError = $('<td colspan="2"></td>').text(this.validationError);
-            $validationRow.append($validationError);
-            this.$row.after($validationRow);
+            $('<div class="cms-validation-error">&#x25B2; ' + this.validationError + '</div>').appendTo(this.$row);
          }
+         /*  this.$row.next('.cms-validation-error').remove();
+          if (!validationOK) {
+          var $validationRow = $('<tr class="cms-validation-error"></tr>').css('color', '#ff0000');
+          $validationRow.append('<td>&#x25B2;</td>');
+          var $validationError = $('<td colspan="2"></td>').text(this.validationError);
+          $validationRow.append($validationError);
+          this.$row.after($validationRow);
+          }  */
          return validationOK;
       }
    };
@@ -356,21 +465,22 @@
    var buildPropertyTable = cms.property.buildPropertyTable = function(properties, widgets) {
       var $table = $('<table cellspacing="0" cellpadding="3" align="left"></table>');
       $table.append('<tr><th><b>' + M.PROPERTIES_HEADING_NAME + '</b></th><th><b>' + M.PROPERTIES_HEADING_EDIT + '</b></th><th><b>' + M.PROPERTIES_HEADING_DEFAULT + '</b></th></tr>');
+      var $fields = $('<div></div>')
       for (var propName in properties) {
-         var defaultEntry = properties[propName];
-         var widgetClass = widgetTypes[_getWidgetType(defaultEntry)];
-         var defaultValue = _getDefaultValue(defaultEntry);
-         var configuration = _getWidgetConfiguration(defaultEntry);
-         var value = null;
-         var isDefault = true;
-         if (defaultEntry.hasOwnProperty('value')) {
-            value = defaultEntry.value;
-            isDefault = false;
-         }
-         var $row = buildRow(propName, properties[propName], widgets);
-         $row.appendTo($table);
+         //         var defaultEntry = properties[propName];
+         //         var widgetClass = widgetTypes[_getWidgetType(defaultEntry)];
+         //         var defaultValue = _getDefaultValue(defaultEntry);
+         //         var configuration = _getWidgetConfiguration(defaultEntry);
+         //         var value = null;
+         //         var isDefault = true;
+         //         if (defaultEntry.hasOwnProperty('value')) {
+         //            value = defaultEntry.value;
+         //            isDefault = false;
+         //         }
+         var $row = buildPropertyRow(propName, properties[propName], widgets);
+         $row.appendTo($fields);
       }
-      return $table;
+      return $fields;
       
    }
    

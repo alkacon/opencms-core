@@ -354,11 +354,10 @@
                  initContainerForDrag(ui.self, cms.data.containers[container_name]);
              }
          }
-         refreshHelperPositions(ui.self);
-      
          $(moveState.hoverList).css('position', 'relative').each(function() {
             hoverInner($(this), 2, true);
          });
+         refreshHelperPositions(ui.self);
       }
       
       

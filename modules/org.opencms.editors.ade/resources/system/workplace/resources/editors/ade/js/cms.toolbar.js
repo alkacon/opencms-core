@@ -1128,7 +1128,7 @@
          }
          var $link = $(this);
          var target = $link.attr('href');
-         cms.toolbar.leavePageDialog(target);
+         cms.util.leavePageDialog(target, savePage, leavePage);
          return false;
       });
    }
@@ -1423,7 +1423,7 @@
                cms.toolbar.leavingPage = true;
                window.location = cms.data.SITEMAP_URL;
             } else {
-               cms.toolbar.leavePageDialog(cms.data.SITEMAP_URL);
+               cms.util.leavePageDialog(cms.data.SITEMAP_URL, savePage, leavePage);
             }
          });
          return self.button;
@@ -1738,7 +1738,6 @@
       }).mouseout(function() {
          $(this).removeClass('ui-state-hover');
       });
-      $('<div id="cms-leave-dialog" style="display: none;">' + M.LEAVE_PAGE_CONFIRM + '</div>').appendTo('body');
       initLinks();
       // $(window).resize(fixMenuAlignment);
    };
