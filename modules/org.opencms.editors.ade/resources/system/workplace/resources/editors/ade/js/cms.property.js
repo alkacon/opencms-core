@@ -164,7 +164,8 @@
             }
             this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>Use default</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
             $('input:checkbox', this.$defaultSwitch).change(function() {
-               self.setEnabled(!this.checked);
+               self.setEnabled($(this).closest('.cms-editable-field').hasClass('cms-default-value'));
+               return false;
             });
             this.$widget.hover(function() {
                self.hoverIn();
@@ -223,7 +224,7 @@
             $('input:checkbox[name="defaultswitch"]', this.$widget).removeAttr('checked');
             this.$widget.closest('.cms-editable-field').removeClass('cms-default-value');
          } else {
-            $('input:checkbox[name!="defaultswitch"]', this.$widget).attr('checked','checked');
+            $('input:checkbox[name="defaultswitch"]', this.$widget).attr('checked',true);
             this.$widget.closest('.cms-editable-field').addClass('cms-default-value');
             this.setValue(this.defaultValue);
          }
@@ -412,7 +413,7 @@
       save: function(properties) {
          var val = this.widget.getValue();
          if (val != null) {
-            properties[this.name] = val;
+            properties[this.name]=val;
          } else {
             delete properties[this.name];
          }

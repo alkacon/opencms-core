@@ -882,7 +882,22 @@
       return result;
    }
    
-   
+   /**
+    * Merges a set of property definition with a set of properties
+    *
+    * @param {Object} propDefs object containing the property definitions
+    * @param {Object} properties object containing the properties
+    *
+    **/
+   var mergePropertiesWithDefinitions = function(propDefs, properties) {
+      var result = JSON.parse(JSON.stringify(propDefs));
+      for (var key in result) {
+         if (properties.hasOwnProperty(key)) {
+            result[key].value = properties[key];
+         }
+      }
+      return result;
+   }
     
    /**
     * Checks whether a given sitemap entry is the last remaining entry at the root level of the sitemap.
@@ -2606,7 +2621,10 @@
        * Merges this entry's properties with the sitemap property definitions and returns the result.
        */
       getPropertiesWithDefinitions: function() {
-         var propEntries = $.extend({}, cms.sitemap.propertyDefinitions, this.getProperties());
+         var self = this;
+         var propDefs = JSON.parse(JSON.stringify(cms.sitemap.propertyDefinitions));
+         var props = self.getProperties();
+         var propEntries = mergePropertiesWithDefinitions(propDefs, props);
          delete propEntries['sitemap'];
          return propEntries;
       },

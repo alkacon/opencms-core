@@ -1427,6 +1427,10 @@ div.cms-publish-scrolling {
     vertical-align: middle;
 }
 
+.cms-default-value {
+    color: #444444;
+}
+
 .cms-item-title{
     font-weight:bold;
 }
