@@ -131,12 +131,15 @@
                'elem': postElement
             }, function(ok, data) {
                var newId = data['id'];
-               delete cms.data.elements[containerElement['id']]
+               var oldId=containerElement['id'];
+               delete cms.data.elements[oldId];
                containerElement['id'] = newId;
                containerElement['status'] = cms.data.STATUS_CREATED;
+               containerElement['file'] = data['uri'];
                cms.data.elements[newId] = containerElement;
                container.attr('rel', newId);
                container.removeClass('cms-new-element');
+               cms.util.replaceNewElement(oldId, newId);
             });
          } else {
             cms.data.postJSON('subcnt', {
@@ -1223,7 +1226,22 @@
       }
    };
    
-   
+   var _reinitEditModeHandles=function(){
+       var buttonMode = this.name;
+       var containerSelector = (cms.toolbar.editingSubcontainerId != null) ? ('#' + cms.toolbar.editingSubcontainerId) : cms.util.getContainerSelector();
+       var containers = $(containerSelector);
+       if (this.isEdit()){
+           $('.cms-element div.cms-handle, .' + cms.html.subcontainerClass + ' div.cms-handle').remove();
+           containers.children('.cms-element, .' + cms.html.subcontainerClass).each(function() {
+            var elem = $(this).css('position', 'relative');
+            var elemId = elem.attr('rel');
+            if (elemId && cms.data.elements[elemId]) {
+               addHandles(elem, elemId, buttonMode);
+            }
+            containers.find('div.cms-editable div.cms-directedit-buttons').addClass('cms-' + buttonMode + 'mode');
+         });
+       }
+   }
    /**
     * Shared method that enables an edit mode (edit, move, delete, properties).
     */
@@ -1231,7 +1249,7 @@
       var buttonMode = this.name;
       var containerSelector = (cms.toolbar.editingSubcontainerId != null) ? ('#' + cms.toolbar.editingSubcontainerId) : cms.util.getContainerSelector();
       var containers = $(containerSelector);
-      $('button.ui-state-active').trigger('click');
+      $('button.ui-state-active[name!="'+this.name+'"]', cms.toolbar.dom.toolbar).trigger('click');
       if (modeMap[cms.toolbar.mode].isEdit) {
          // reorder handles
          $('.cms-element div.cms-handle, .' + cms.html.subcontainerClass + ' div.cms-handle').each(function() {
@@ -1239,7 +1257,9 @@
             $('a', handleDiv).css('display', 'none');
             $('a.cms-' + buttonMode, handleDiv).prependTo(handleDiv).css('display', 'block');
          });
-         markAsInactive(cms.toolbar.dom.buttons[cms.toolbar.mode]);
+         if (buttonMode!=cms.toolbar.mode){
+             markAsInactive(cms.toolbar.dom.buttons[cms.toolbar.mode]);
+         }
          containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering)), .' + cms.html.subcontainerClass + ' .cms-editable:not(:has(div.cms-hovering))').each(function() {
             cms.move.drawSiblingBorder($(this), 2, 'cms-editable', false, 'cms-test');
          });
