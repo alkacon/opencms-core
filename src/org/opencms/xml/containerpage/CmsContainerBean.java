@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerBean.java,v $
- * Date   : $Date: 2009/10/28 11:18:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/11 14:40:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -70,7 +70,9 @@ public class CmsContainerBean {
         m_name = name;
         m_type = type;
         m_maxElements = maxElements;
-        m_elements = Collections.unmodifiableList(elements);
+        m_elements = (elements == null
+        ? Collections.<CmsContainerElementBean> emptyList()
+        : Collections.unmodifiableList(elements));
     }
 
     /**

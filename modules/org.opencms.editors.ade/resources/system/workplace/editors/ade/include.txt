@@ -34,6 +34,7 @@
     <!-- DEBUG -->
     
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/json2.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.metadata.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.pagination.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/lib/customInput.js"></script>
     <script type="text/javascript">

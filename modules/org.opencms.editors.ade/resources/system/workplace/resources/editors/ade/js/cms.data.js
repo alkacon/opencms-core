@@ -109,6 +109,9 @@
    /** Search element type names. */
    cms.data.searchTypes = [];
    
+   /** Container type names. */
+   var cntTypes = [];
+   
    /**
     * Initial load function that loads all data needed for ADE to start.
     *
@@ -116,16 +119,23 @@
     */
    var loadAllData = cms.data.loadAllData = /** void */ function(/** void Function(boolean) */afterLoad) {
    
-      postJSON(ACTION_ALL, {}, function(ok, jsonData) {
+     // containers data is embedded in the html
+     containers = cms.data.containers = {};
+     $('div.cms-ade-cnt-data').each(function() {
+       var $this = $(this);
+       var cntData = $this.metadata();
+       cntData.objtype = 'Container';
+       containers[cntData.name] = cntData;
+       cntTypes.push(cntData.type);
+     });        
+         
+      postJSON(ACTION_ALL, { containers: cntTypes }, function(ok, jsonData) {
       
          if (jsonData.favorites) {
             cms.toolbar.favorites = jsonData.favorites;
          }
          if (jsonData.recent) {
             cms.toolbar.recent = jsonData.recent;
-         }
-         if (jsonData.containers) {
-            containers = cms.data.containers = jsonData.containers;
          }
          if (jsonData.elements) {
          
@@ -243,7 +253,8 @@
          restoreState = true;
       }
       postJSON(ACTION_ELEM, {
-         'elem': id
+         'elem': id,
+         'containers': cntTypes
       }, function(ok, data) {
          if (ok) {
             for (var id in data.elements) {
@@ -269,7 +280,8 @@
    var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, Object) */ afterLoad) {
    
       return postJSON(ACTION_ELEM, {
-         'elem': ids
+         'elem': ids,
+         'containers': cntTypes
       }, function(ok, data) {
          if (ok) {
             for (var id in data.elements) {

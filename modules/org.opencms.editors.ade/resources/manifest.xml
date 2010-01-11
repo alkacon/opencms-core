@@ -4348,6 +4348,21 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/resources/editors/ade/lib/jquery.metadata.js</source>
+			<destination>system/workplace/resources/editors/ade/lib/jquery.metadata.js</destination>
+			<type>plain</type>
+			<uuidstructure>b31aeadd-cdd4-11de-a87a-12abceaf9fad</uuidstructure>
+			<uuidresource>b31aeade-cdd4-11de-a87a-12abceaf9fad</uuidresource>
+			<datelastmodified>Tue, 10 Nov 2009 08:40:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Nov 2009 08:40:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/resources/editors/ade/lib/jquery.jtree.1.0.js</source>
 			<destination>system/workplace/resources/editors/ade/lib/jquery.jtree.1.0.js</destination>

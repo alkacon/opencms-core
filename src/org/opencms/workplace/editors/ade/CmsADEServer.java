@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/06 13:05:38 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/01/11 14:40:37 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -91,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 7.6
  */
@@ -188,40 +189,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
 
         /** Constructor.<p> */
         private JsonCntPage(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-
-    /** Json property name constants for containers. */
-    protected enum JsonContainer {
-
-        /** The list of elements. */
-        ELEMENTS("elements"),
-        /** The max allowed number of elements in the container. */
-        MAXELEMENTS("maxElem"),
-        /** The container name. */
-        NAME("name"),
-        /** The object type: container. */
-        OBJTYPE("objtype"),
-        /** The container type. */
-        TYPE("type");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonContainer(String name) {
 
             m_name = name;
         }
@@ -486,6 +453,23 @@ public class CmsADEServer extends A_CmsAjaxServer {
     }
 
     /**
+     * Creates a new sub container resource.<p>
+     * 
+     * @param cntPageUri the container page uri to read the appropriate configuration
+     * @param request the current request object
+     * @return the new sub container resource
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource createNewSubContainer(String cntPageUri, HttpServletRequest request) throws CmsException {
+
+        return m_manager.createNewElement(
+            getCmsObject(),
+            cntPageUri,
+            request,
+            CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME);
+    }
+
+    /**
      * Deletes the given elements from server.<p>
      * 
      * @param elems the array of client-side element ids
@@ -560,23 +544,38 @@ public class CmsADEServer extends A_CmsAjaxServer {
         }
 
         if (action.equals(Action.ALL)) {
+            // get container types
+            if (!checkParameters(data, result, JsonCntPage.CONTAINERS.getName())) {
+                return result;
+            }
+            Set<String> cntTypes = new HashSet<String>();
+            JSONArray types = data.optJSONArray(JsonCntPage.CONTAINERS.getName());
+            for (int i = 0; i < types.length(); i++) {
+                cntTypes.add(types.getString(i));
+            }
             // first load, get everything
             CmsResource cntPageRes = cms.readResource(cntPageParam);
             CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
             CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
-            result = getContainerPage(cntPageRes, cntPage, uriParam.equals(cntPageParam) ? null : uriParam);
+            result = getContainerPage(cntPageRes, cntPage, uriParam.equals(cntPageParam) ? null : uriParam, cntTypes);
         } else if (action.equals(Action.ELEM)) {
-            // get element data
-            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
+            if (!checkParameters(data, result, JsonRequest.ELEM.getName(), JsonCntPage.CONTAINERS.getName())) {
                 return result;
             }
+            // get container types
+            Set<String> cntTypes = new HashSet<String>();
+            JSONArray types = data.optJSONArray(JsonCntPage.CONTAINERS.getName());
+            for (int i = 0; i < types.length(); i++) {
+                cntTypes.add(types.getString(i));
+            }
+            // get elements
             JSONArray elems = data.optJSONArray(JsonRequest.ELEM.getName());
             if (elems == null) {
                 // single element
                 elems = new JSONArray();
                 elems.put(data.optString(JsonRequest.ELEM.getName()));
             }
-            result.put(JsonResponse.ELEMENTS.getName(), getElements(elems, uriParam, cntPageParam, request));
+            result.put(JsonResponse.ELEMENTS.getName(), getElements(elems, uriParam, request, cntTypes));
         } else if (action.equals(Action.ELEMPROPS)) {
             // element formatted with the given properties
             if (!checkParameters(data, result, JsonRequest.ELEM.getName(), JsonRequest.PROPERTIES.getName())) {
@@ -728,28 +727,28 @@ public class CmsADEServer extends A_CmsAjaxServer {
      * @param resource the container page's resource 
      * @param cntPage the container page to use
      * @param elemUri the current element uri, <code>null</code> if not to be used as template
+     * @param types ythe container page types
      * 
      * @return the data for the given container page
      * 
      * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    public JSONObject getContainerPage(CmsResource resource, CmsContainerPageBean cntPage, String elemUri)
-    throws CmsException, JSONException {
+    public JSONObject getContainerPage(
+        CmsResource resource,
+        CmsContainerPageBean cntPage,
+        String elemUri,
+        Set<String> types) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
 
         // create empty result object
         JSONObject result = new JSONObject();
         JSONObject resElements = new JSONObject();
-        JSONObject resContainers = new JSONObject();
         result.put(JsonCntPage.ELEMENTS.getName(), resElements);
-        result.put(JsonCntPage.CONTAINERS.getName(), resContainers);
         result.put(JsonCntPage.LOCALE.getName(), cms.getRequestContext().getLocale().toString());
         result.put(JsonCntPage.RECENT_LIST_SIZE.getName(), m_manager.getRecentListMaxSize(cms));
 
-        // get the container page itself
-        Set<String> types = cntPage.getTypes();
         // collect creatable type elements
         resElements.merge(getNewResourceTypes(cms.getSitePath(resource), types), true, false);
         // collect searchable type elements
@@ -764,15 +763,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
         Set<String> ids = new HashSet<String>();
         for (Map.Entry<String, CmsContainerBean> entry : cntPage.getContainers().entrySet()) {
             CmsContainerBean container = entry.getValue();
-
-            // set the container data
-            JSONObject resContainer = new JSONObject();
-            resContainer.put(JsonContainer.OBJTYPE.getName(), TYPE_CONTAINER);
-            resContainer.put(JsonContainer.NAME.getName(), container.getName());
-            resContainer.put(JsonContainer.TYPE.getName(), container.getType());
-            resContainer.put(JsonContainer.MAXELEMENTS.getName(), container.getMaxElements());
-            JSONArray resContainerElems = new JSONArray();
-            resContainer.put(JsonContainer.ELEMENTS.getName(), resContainerElems);
 
             // get the actual number of elements to render
             int renderElems = container.getElements().size();
@@ -789,7 +779,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 // check if the element already exists
                 String id = element.getClientId();
                 // collect ids
-                resContainerElems.put(id);
                 if (ids.contains(id)) {
                     continue;
                 }
@@ -810,7 +799,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
 
                 // collect ids
                 String id = element.getClientId();
-                resContainerElems.put(id);
                 if (ids.contains(id)) {
                     continue;
                 }
@@ -849,8 +837,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 ids.add(id);
                 resElements.put(id, resElement);
             }
-
-            resContainers.put(container.getName(), resContainer);
         }
         // collect the favorites
         JSONArray resFavorites = getFavoriteList(resElements, types);
@@ -1171,13 +1157,13 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 cntValue = xmlCnt.addValue(cms, CmsXmlContainerPage.XmlNode.CONTAINER.getName(), locale, cntCount);
             }
 
-            String name = cnt.getString(JsonContainer.NAME.getName());
+            String name = cnt.getString(CmsJspTagContainer.JsonContainer.NAME.getName());
             xmlCnt.getValue(
                 CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
                 locale,
                 0).setStringValue(cms, name);
 
-            String type = cnt.getString(JsonContainer.TYPE.getName());
+            String type = cnt.getString(CmsJspTagContainer.JsonContainer.TYPE.getName());
             xmlCnt.getValue(
                 CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlContainerPage.XmlNode.TYPE.getName()),
                 locale,
@@ -1282,23 +1268,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Creates a new sub container resource.<p>
-     * 
-     * @param cntPageUri the container page uri to read the appropriate configuration
-     * @param request the current request object
-     * @return the new sub container resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createNewSubContainer(String cntPageUri, HttpServletRequest request) throws CmsException {
-
-        return m_manager.createNewElement(
-            getCmsObject(),
-            cntPageUri,
-            request,
-            CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME);
-    }
-
-    /**
      * Saves the new state of the sub container.<p>
      * 
      * @param subcontainer the sub container data
@@ -1358,51 +1327,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
         }
         subcontainerFile.setContents(xmlSubContainer.marshal());
         cms.writeFile(subcontainerFile);
-    }
-
-    private JSONObject getElements(JSONArray elements, String uriParam, String cntPageUri, HttpServletRequest request)
-    throws CmsException, JSONException {
-
-        CmsObject cms = getCmsObject();
-        CmsResource cntPageRes = cms.readResource(cntPageUri);
-        CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
-        CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
-        CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
-        JSONObject resElements = new JSONObject();
-        Set<String> ids = new HashSet<String>();
-        for (int i = 0; i < elements.length(); i++) {
-            String elemId = elements.getString(i);
-            if (ids.contains(elemId)) {
-                continue;
-            }
-            CmsContainerElementBean element = getCachedElement(elemId);
-            JSONObject elementData = elemUtil.getElementData(element, cntPage.getTypes());
-            resElements.put(element.getClientId(), elementData);
-            if (elementData.has(CmsElementUtil.JsonElement.SUBITEMS.getName())) {
-                // this is a sub-container 
-
-                CmsResource elementRes = cms.readResource(element.getElementId());
-                CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, elementRes, getRequest());
-                CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
-                    cms,
-                    cms.getRequestContext().getLocale());
-
-                // adding all sub-items to the elements data
-                for (CmsContainerElementBean subElement : subContainer.getElements()) {
-                    if (!ids.contains(subElement.getElementId())) {
-                        String subId = subElement.getClientId();
-                        if (ids.contains(subId)) {
-                            continue;
-                        }
-                        JSONObject subItemData = elemUtil.getElementData(subElement, cntPage.getTypes());
-                        ids.add(subId);
-                        resElements.put(subId, subItemData);
-                    }
-                }
-            }
-            ids.add(elemId);
-        }
-        return resElements;
     }
 
     /**
@@ -1489,6 +1413,61 @@ public class CmsADEServer extends A_CmsAjaxServer {
         element = new CmsContainerElementBean(m_manager.convertToServerId(id), null, null);
         m_sessionCache.setCacheContainerElement(id, element);
         return element;
+    }
+
+    /**
+     * Returns the data of the given elements.<p>
+     * 
+     * @param elements the list of IDs of the elements to retrieve the data for
+     * @param uriParam the current URI
+     * @param request the current request
+     * @param types the container types to consider
+     * 
+     * @return the elements data
+     * 
+     * @throws CmsException if something really bad happens
+     * @throws JSONException if there is a problem with JSON operation
+     */
+    protected JSONObject getElements(JSONArray elements, String uriParam, HttpServletRequest request, Set<String> types)
+    throws CmsException, JSONException {
+
+        CmsObject cms = getCmsObject();
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
+        JSONObject resElements = new JSONObject();
+        Set<String> ids = new HashSet<String>();
+        for (int i = 0; i < elements.length(); i++) {
+            String elemId = elements.getString(i);
+            if (ids.contains(elemId)) {
+                continue;
+            }
+            CmsContainerElementBean element = getCachedElement(elemId);
+            JSONObject elementData = elemUtil.getElementData(element, types);
+            resElements.put(element.getClientId(), elementData);
+            if (elementData.has(CmsElementUtil.JsonElement.SUBITEMS.getName())) {
+                // this is a sub-container 
+
+                CmsResource elementRes = cms.readResource(element.getElementId());
+                CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, elementRes, getRequest());
+                CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                    cms,
+                    cms.getRequestContext().getLocale());
+
+                // adding all sub-items to the elements data
+                for (CmsContainerElementBean subElement : subContainer.getElements()) {
+                    if (!ids.contains(subElement.getElementId())) {
+                        String subId = subElement.getClientId();
+                        if (ids.contains(subId)) {
+                            continue;
+                        }
+                        JSONObject subItemData = elemUtil.getElementData(subElement, types);
+                        ids.add(subId);
+                        resElements.put(subId, subItemData);
+                    }
+                }
+            }
+            ids.add(elemId);
+        }
+        return resElements;
     }
 
     /**
