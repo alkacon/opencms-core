@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/12/17 07:59:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/11 08:03:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.6 
  */
@@ -208,24 +208,16 @@ public class CmsJspTagContainer extends TagSupport {
         Locale locale = cntPage.getLocale();
 
         // get the container
-        if (!cntPage.getContainers().containsKey(containerName)) {
-            if (!cms.getRequestContext().currentProject().isOnlineProject()) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.LOG_CONTAINER_NOT_FOUND_3,
-                    cms.getSitePath(containerPage),
-                    locale,
-                    containerName));
-            } else {
-                // be silent online
-                LOG.error(Messages.get().container(
-                    Messages.LOG_CONTAINER_NOT_FOUND_3,
-                    cms.getSitePath(containerPage),
-                    locale,
-                    containerName).key());
-                return;
-            }
-        }
         CmsContainerBean container = cntPage.getContainers().get(containerName);
+        if (container == null) {
+            // container not found
+            LOG.error(Messages.get().container(
+                Messages.LOG_CONTAINER_NOT_FOUND_3,
+                cms.getSitePath(containerPage),
+                locale,
+                containerName).key());
+            return;
+        }
 
         // validate the type
         if (!containerType.equals(container.getType())) {
