@@ -383,20 +383,20 @@
       timer.id = null;
       var numButtons = $(timer.handleDiv).children().size();
       
-      var right = (1 - numButtons) * 24 + 'px';
+     // var right = (1 - numButtons) * 24 + 'px';
       var width = numButtons * 24 + 'px';
       
       timer.handleDiv.addClass('ui-widget-header').css({
-         'width': width,
-         'right': right
+         'width': width
+    //     'right': right
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
       
-      if ($.browser.msie || (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width())) {
-         // always show the additional handles within the element for IE to avoid z-index problems.
-         timer.handleDiv.addClass('cms-handle-reverse').css('right', '0px');
-      } else {
-         timer.handleDiv.removeClass('cms-handle-reverse');
-      }
+//      if ($.browser.msie || (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width())) {
+//         // always show the additional handles within the element for IE to avoid z-index problems.
+//         timer.handleDiv.addClass('cms-handle-reverse').css('right', '0px');
+//      } else {
+//         timer.handleDiv.removeClass('cms-handle-reverse');
+//      }
    }
    
    /**

@@ -162,6 +162,9 @@
             for (var i = 0; i < config.values.length; i++) {
                this.$widget.append('<div class="cms-checkbox-widget-row"><input type="checkbox" value="' + config.values[i] + '" style="vertical-align: middle;" /><span class="cms-checkbox-label">' + config.values[i] + '</span></div>');
             }
+            $('input:checkbox', this.$widget).click(function(){
+                self.setEnabled(true);
+            });
             this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>Use default</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
             $('input:checkbox', this.$defaultSwitch).change(function() {
                self.setEnabled($(this).closest('.cms-editable-field').hasClass('cms-default-value'));

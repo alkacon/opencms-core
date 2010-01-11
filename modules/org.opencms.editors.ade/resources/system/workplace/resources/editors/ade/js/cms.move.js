@@ -697,7 +697,8 @@
       }
       
       
-      if (elem.css('position') == 'relative') {
+     // if (elem.css('position') == 'relative') {
+      if (false) {
          // if position relative highlighting div's are appended to the element itself
          var tlrTop = -(hOff + hWidth);
          var tblLeft = -(hOff + hWidth);

@@ -430,13 +430,14 @@ div.cms-handle a {
 	height: 22px;
 	width: 22px;
 	display: block;
-	float: left;
+	float: right;
 }
 
+/*
 div.cms-handle-reverse a {
 	float: right !important;
 }
-
+*/
 div.ui-widget-header a.ui-corner-all {
 	background-color: #eeeeee;
 }
