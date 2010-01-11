@@ -67,37 +67,27 @@
    var editSubcontainer = function(container) {
       toggleMode(getCurrentMode());
       var isNew = container.hasClass('cms-new-element');
-      var containerType = container.parent().attr('id');
-      var parentContainer = cms.data.containers[containerType];
+      var parentContainerElement = container.parent();
+      var containerName = parentContainerElement.attr('id');
+      var parentContainer = cms.data.containers[containerName];
       var cOffset = container.offset();
-      var bOffset = $(document.body).offset();
-      cOffset.left = cOffset.left - bOffset.left;
-      cOffset.top = cOffset.top - bOffset.top;
-      var cWidth = container.outerWidth();
       cms.toolbar.editingSubcontainerId = container.attr('rel');
       var containerElement = cms.data.elements[cms.toolbar.editingSubcontainerId];
       if (isNew || containerElement['types'].length == 0) {
          containerElement['types'].push(parentContainer['type']);
       }
       cms.toolbar.dom.appendBox.css('position', 'absolute');
-      var overlay = $('<div id="cms-overlay"></div>').appendTo(cms.toolbar.dom.appendBox);
-      var overlayEditing = $(cms.html.subcontainerDialog(containerElement)).appendTo(cms.toolbar.dom.appendBox);
+      var overlay = $('<div id="cms-overlay"></div>').appendTo(parentContainerElement);
+      var overlayEditing = $(cms.html.subcontainerDialog(containerElement)).appendTo(parentContainerElement);
       overlayEditing.css({
-      
-         'top': cOffset.top - 2,
-         'left': cOffset.left - 345
+         'top': container.position().top - 2,
+         'left': container.position().left - 345
       });
-      var overlayContainer = container.clone().appendTo(cms.toolbar.dom.appendBox);
       if (isNew) {
-         overlayContainer.removeClass('cms-new-element');
+         container.removeClass('cms-new-element');
       }
-      // overlayContainer.find('div.cms-handle').remove();
-      overlayContainer.attr('id', cms.toolbar.editingSubcontainerId);
-      overlayContainer.css({
-         'width': cWidth,
-         'top': cOffset.top,
-         'left': cOffset.left
-      });
+      container.attr('id', cms.toolbar.editingSubcontainerId).addClass('cms-editing-subcontainer');
+      container.css('z-index', 1000);
       cms.data.containers[cms.toolbar.editingSubcontainerId] = new cms.data.Container({
          'elements': containerElement.subItems,
          'name': cms.toolbar.editingSubcontainerId,
@@ -109,12 +99,10 @@
          toggleMode(getCurrentMode());
          var subItems = new Array();
          var subUris = new Array();
-         container.empty();
-         overlayContainer.children('.cms-element').each(function() {
+         container.children('.cms-element').each(function() {
             var itemId = $(this).attr('rel')
             subItems.push(itemId);
             subUris.push(cms.data.elements[itemId]['file']);
-            $(this).appendTo(container);
          });
          containerElement.subItems = subItems;
          containerElement['title'] = $('input[name="title"]', overlayEditing).val();
@@ -149,14 +137,21 @@
             });
          }
          delete cms.data.containers[cms.toolbar.editingSubcontainerId];
-         cms.toolbar.dom.appendBox.empty();
+         container.removeAttr('id').removeClass('cms-editing-subcontainer').css('z-index', '');
+         overlay.remove();
+         overlayEditing.remove();
          cms.toolbar.editingSubcontainerId = null;
          cms.move.resetNewElementBorders();
       });
-      overlayEditing.find('button[name="subcontainerClose"]').click(function() {
+      overlayEditing.find('button[name="subcontainerCancel"]').click(function() {
          toggleMode(getCurrentMode());
          delete cms.data.containers[cms.toolbar.editingSubcontainerId];
-         cms.toolbar.dom.appendBox.empty();
+         container.replaceWith(containerElement.getContent(parentContainer['type']));
+         overlay.remove();
+         overlayEditing.remove();
+//         if (isNew){
+//             container.addClass('cms-new-element');
+//         }
          cms.toolbar.editingSubcontainerId = null;
          cms.move.resetNewElementBorders();
       });

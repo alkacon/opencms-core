@@ -255,11 +255,18 @@ button.cms-deactivated span.cms-icon-save {
 
 
 /** Subcontainer handling **/
-#cms_appendbox .cms-subcontainer, .cms-subcontainer.cms-new-element{
+.cms-subcontainer.cms-new-element, .cms-subcontainer.cms-editing-subcontainer{
 	background: #ffffff url(images/bg_striped.png) repeat;
     min-height: 40px;
-    z-index: 9000;
-    position: absolute;
+    margin:2px 0px;
+}
+
+.ui-sortable .cms-subcontainer{
+    background: #ffffff url(images/bg_striped.png) repeat;
+}
+
+.cms-subcontainer{
+    min-height: 25px;
 }
 
 #cms-overlay-editing{
@@ -284,6 +291,8 @@ button.cms-deactivated span.cms-icon-save {
 #cms-overlay {
     width:100%;
     height: 100%;
+    top: 0px;
+    left: 0px;
     position: fixed;
     background: #AAAAAA;
     opacity: 0.7;

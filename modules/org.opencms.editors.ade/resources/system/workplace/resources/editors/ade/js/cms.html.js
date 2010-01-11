@@ -243,7 +243,7 @@
                containerElement['description'],
                '" class="cms-item-edit ui-corner-all" /></div>\
                <div class="cms-button-bar">\
-                   <button class="cms-right ui-state-default ui-corner-all" name="subcontainerClose"><span class="cms-galleries-button">Close</span></button>\
+                   <button class="cms-right ui-state-default ui-corner-all" name="subcontainerCancel"><span class="cms-galleries-button">Cancel</span></button>\
                    <button class="cms-right ui-state-default ui-corner-all" name="subcontainerSave"><span class="cms-galleries-button">Save</span></button>\
                    <br clear="all"/>\
                </div>\

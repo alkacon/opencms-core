@@ -21,6 +21,10 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<mappings>
+				<mapping element="SubContainers/Title" mapto="property:Title" />
+				<mapping element="SubContainers/Description" mapto="property:Description" />
+			</mappings>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

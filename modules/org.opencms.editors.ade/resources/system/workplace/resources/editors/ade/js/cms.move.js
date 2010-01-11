@@ -296,7 +296,7 @@
       }
       ui.self.placeholder.addClass(ui.self.currentItem.attr('class'));
       // placeholder should not have class cms-subcontainer
-      if (ui.placeholder.hasClass(cms.html.subcontainerClass)) {
+      if (ui.placeholder.hasClass(cms.html.subcontainerClass) && ui.placeholder.filter(':not(:empty)').length) {
          ui.placeholder.removeClass(cms.html.subcontainerClass);
          var dim = cms.util.getInnerDimensions(ui.helper, 1);
          placeholderSize = {
