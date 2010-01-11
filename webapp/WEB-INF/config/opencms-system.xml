@@ -67,10 +67,10 @@
 		<flexcache>
 			<cache-enabled>true</cache-enabled>
 			<cache-offline>false</cache-offline>
-			<maxcachebytes>8000000</maxcachebytes>
-			<avgcachebytes>6000000</avgcachebytes>
-			<maxentrybytes>400000</maxentrybytes>
-			<maxkeys>2000</maxkeys>
+			<maxcachebytes>80000000</maxcachebytes>
+			<avgcachebytes>60000000</avgcachebytes>
+			<maxentrybytes>4000000</maxentrybytes>
+			<maxkeys>5000</maxkeys>
 		</flexcache>
 		<http-authentication>
 			<browser-based>true</browser-based>
