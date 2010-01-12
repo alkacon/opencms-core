@@ -98,11 +98,11 @@
       overlayEditing.find('button[name="subcontainerSave"]').click(function() {
          toggleMode(getCurrentMode());
          var subItems = new Array();
-         var subUris = new Array();
+         var subElements = new Array();
          container.children('.cms-element').each(function() {
             var itemId = $(this).attr('rel')
             subItems.push(itemId);
-            subUris.push(cms.data.elements[itemId]['file']);
+            subElements.push({ 'id': itemId, 'uri':cms.data.elements[itemId]['file']});
          });
          containerElement.subItems = subItems;
          containerElement['title'] = $('input[name="title"]', overlayEditing).val();
@@ -112,7 +112,7 @@
             'title': containerElement['title'],
             'description': containerElement['description'],
             'types': containerElement['types'],
-            'subItems': subUris
+            'subItems': subElements
          };
          if (isNew) {
             cms.data.postJSON('newsub', {

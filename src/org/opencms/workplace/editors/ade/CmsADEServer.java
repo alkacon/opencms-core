@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/11 14:40:37 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/01/12 12:37:30 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 7.6
  */
@@ -1318,11 +1318,87 @@ public class CmsADEServer extends A_CmsAjaxServer {
         }
         if (subitems != null) {
             for (int i = 0; i < subitems.length(); i++) {
-                xmlSubContainer.addValue(
-                    cms,
-                    CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlSubContainer.XmlNode.ELEMENT.getName()),
+                JSONObject subElement = subitems.getJSONObject(i);
+                I_CmsXmlContentValue elemValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
+                    cntValue.getPath(),
+                    CmsXmlSubContainer.XmlNode.ELEMENT.getName()), locale, i);
+
+                String elemUri = subElement.getString(JsonCntElem.URI.getName());
+
+                String clientId = subElement.getString(JsonCntElem.ID.getName());
+                xmlSubContainer.getValue(
+                    CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.XmlNode.URI.getName()),
                     locale,
-                    i).setStringValue(cms, subitems.getString(i));
+                    0).setStringValue(cms, elemUri);
+
+                // checking if there are any properties to set
+                if (clientId.contains("#")) {
+                    CmsContainerElementBean element = getCachedElement(clientId);
+                    Map<String, CmsProperty> properties = m_manager.getElementProperties(cms, element);
+                    Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(
+                        cms,
+                        cms.readResource(element.getElementId()));
+                    Iterator<String> itProps = properties.keySet().iterator();
+
+                    // index of the property
+                    int j = 0;
+
+                    // iterating all properties
+                    while (itProps.hasNext()) {
+                        String propertyName = itProps.next();
+
+                        if ((properties.get(propertyName).getStructureValue() == null)
+                            || !propertiesConf.containsKey(propertyName)) {
+                            continue;
+                        }
+                        // only if there is a value set and the property is configured in the schema we will save it to the container-page 
+                        I_CmsXmlContentValue propValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
+                            elemValue.getPath(),
+                            CmsXmlContainerPage.XmlNode.PROPERTIES.getName()), locale, j);
+                        xmlSubContainer.getValue(
+                            CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
+                            locale,
+                            0).setStringValue(cms, propertyName);
+                        I_CmsXmlContentValue valValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
+                            propValue.getPath(),
+                            CmsXmlContainerPage.XmlNode.VALUE.getName()), locale, 0);
+                        if (propertiesConf.get(propertyName).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+                            I_CmsXmlContentValue filelistValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
+                                valValue.getPath(),
+                                CmsXmlContainerPage.XmlNode.FILELIST.getName()), locale, 0);
+                            int index = 0;
+                            for (String strId : CmsStringUtil.splitAsList(
+                                properties.get(propertyName).getStructureValue(),
+                                CmsXmlContainerPage.IDS_SEPARATOR)) {
+                                try {
+                                    CmsResource res = cms.readResource(new CmsUUID(strId));
+                                    I_CmsXmlContentValue fileValue = xmlSubContainer.getValue(CmsXmlUtils.concatXpath(
+                                        filelistValue.getPath(),
+                                        CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
+                                    if (fileValue == null) {
+                                        fileValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
+                                            filelistValue.getPath(),
+                                            CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
+                                    }
+                                    fileValue.setStringValue(cms, cms.getSitePath(res));
+                                    index++;
+                                } catch (CmsException e) {
+                                    // could happen when the resource are meanwhile deleted
+                                    LOG.error(e.getLocalizedMessage(), e);
+                                }
+                            }
+                        } else {
+                            xmlSubContainer.addValue(
+                                cms,
+                                CmsXmlUtils.concatXpath(
+                                    valValue.getPath(),
+                                    CmsXmlContainerPage.XmlNode.STRING.getName()),
+                                locale,
+                                0).setStringValue(cms, properties.get(propertyName).getStructureValue());
+                        }
+                        j++;
+                    }
+                }
             }
         }
         subcontainerFile.setContents(xmlSubContainer.marshal());

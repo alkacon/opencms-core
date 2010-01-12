@@ -432,6 +432,21 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/schemas/sub_container_content_element.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/sub_container_content_element.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>842a6815-ff58-11de-9b94-5179c4152632</uuidstructure>
+			<uuidresource>842a6816-ff58-11de-9b94-5179c4152632</uuidresource>
+			<datelastmodified>Tue, 12 Jan 2010 08:57:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Jan 2010 08:57:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/schemas/sub_container_element.xsd</source>
 			<destination>system/workplace/editors/ade/schemas/sub_container_element.xsd</destination>

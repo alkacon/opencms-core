@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2009/12/15 10:06:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/12 12:37:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.1
  */
@@ -94,7 +94,9 @@ public class CmsXmlSubContainer extends CmsXmlContent {
         /** Container title node name. */
         TITLE("Title"),
         /** Container type node name. */
-        TYPE("Type");
+        TYPE("Type"),
+        /** File list URI node name. */
+        URI("Uri");
 
         /** Property name. */
         private String m_name;
@@ -341,8 +343,21 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                     subContainer,
                     XmlNode.ELEMENT.getName()); itElems.hasNext();) {
                     Element element = itElems.next();
-                    createBookmark(element, locale, subContainer, cntPath, cntDef);
-                    Element uriLink = element.element(CmsXmlPage.NODE_LINK);
+
+                    // element itself
+                    int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(subContainer));
+                    String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
+                        element.getName(),
+                        elemIndex));
+                    I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
+                    I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
+                    addBookmark(elemPath, locale, true, elemValue);
+                    CmsXmlContentDefinition elemDef = ((CmsXmlNestedContentDefinition)elemSchemaType).getNestedContentDefinition();
+
+                    // uri
+                    Element uri = element.element(XmlNode.URI.getName());
+                    createBookmark(uri, locale, element, elemPath, elemDef);
+                    Element uriLink = uri.element(CmsXmlPage.NODE_LINK);
                     CmsUUID elementId = null;
                     if (uriLink == null) {
                         // this can happen when adding the elements node to the xml content
@@ -351,9 +366,109 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                         elementId = new CmsLink(uriLink).getStructureId();
                     }
 
-                    if (elementId != null) {
-                        elements.add(new CmsContainerElementBean(elementId, null, null));
+                    Map<String, String> propertiesMap = new HashMap<String, String>();
+
+                    // Properties
+                    for (Iterator<Element> itProps = CmsXmlGenericWrapper.elementIterator(
+                        element,
+                        CmsXmlContainerPage.XmlNode.PROPERTIES.getName()); itProps.hasNext();) {
+                        Element property = itProps.next();
+
+                        // property itself
+                        int propIndex = CmsXmlUtils.getXpathIndexInt(property.getUniquePath(element));
+                        String propPath = CmsXmlUtils.concatXpath(elemPath, CmsXmlUtils.createXpathElement(
+                            property.getName(),
+                            propIndex));
+                        I_CmsXmlSchemaType propSchemaType = elemDef.getSchemaType(property.getName());
+                        I_CmsXmlContentValue propValue = propSchemaType.createValue(this, property, locale);
+                        addBookmark(propPath, locale, true, propValue);
+                        CmsXmlContentDefinition propDef = ((CmsXmlNestedContentDefinition)propSchemaType).getNestedContentDefinition();
+
+                        // name
+                        Element propName = property.element(CmsXmlContainerPage.XmlNode.NAME.getName());
+                        createBookmark(propName, locale, property, propPath, propDef);
+
+                        // choice value 
+                        Element value = property.element(CmsXmlContainerPage.XmlNode.VALUE.getName());
+                        if (value == null) {
+                            // this can happen when adding the elements node to the xml content
+                            continue;
+                        }
+                        int valueIndex = CmsXmlUtils.getXpathIndexInt(value.getUniquePath(property));
+                        String valuePath = CmsXmlUtils.concatXpath(propPath, CmsXmlUtils.createXpathElement(
+                            value.getName(),
+                            valueIndex));
+                        I_CmsXmlSchemaType valueSchemaType = propDef.getSchemaType(value.getName());
+                        I_CmsXmlContentValue valueValue = valueSchemaType.createValue(this, value, locale);
+                        addBookmark(valuePath, locale, true, valueValue);
+                        CmsXmlContentDefinition valueDef = ((CmsXmlNestedContentDefinition)valueSchemaType).getNestedContentDefinition();
+
+                        String val = null;
+                        Element string = value.element(CmsXmlContainerPage.XmlNode.STRING.getName());
+                        if (string != null) {
+                            // string value
+                            createBookmark(string, locale, value, valuePath, valueDef);
+                            val = string.getTextTrim();
+                        } else {
+                            // file list value
+                            Element valueFileList = value.element(CmsXmlContainerPage.XmlNode.FILELIST.getName());
+                            if (valueFileList == null) {
+                                // this can happen when adding the elements node to the xml content
+                                continue;
+                            }
+                            int valueFileListIndex = CmsXmlUtils.getXpathIndexInt(valueFileList.getUniquePath(value));
+                            String valueFileListPath = CmsXmlUtils.concatXpath(
+                                valuePath,
+                                CmsXmlUtils.createXpathElement(valueFileList.getName(), valueFileListIndex));
+                            I_CmsXmlSchemaType valueFileListSchemaType = valueDef.getSchemaType(valueFileList.getName());
+                            I_CmsXmlContentValue valueFileListValue = valueFileListSchemaType.createValue(
+                                this,
+                                valueFileList,
+                                locale);
+                            addBookmark(valueFileListPath, locale, true, valueFileListValue);
+                            CmsXmlContentDefinition valueFileListDef = ((CmsXmlNestedContentDefinition)valueFileListSchemaType).getNestedContentDefinition();
+
+                            List<CmsUUID> idList = new ArrayList<CmsUUID>();
+                            // files
+                            for (Iterator<Element> itFiles = CmsXmlGenericWrapper.elementIterator(
+                                valueFileList,
+                                XmlNode.URI.getName()); itFiles.hasNext();) {
+
+                                Element valueUri = itFiles.next();
+                                createBookmark(valueUri, locale, valueFileList, valueFileListPath, valueFileListDef);
+                                Element valueUriLink = valueUri.element(CmsXmlPage.NODE_LINK);
+                                CmsUUID fileId = null;
+                                if (valueUriLink == null) {
+                                    // this can happen when adding the elements node to the xml content
+                                    // it is not dangerous since the link has to be set before saving 
+                                } else {
+                                    fileId = new CmsLink(valueUriLink).getStructureId();
+                                }
+                                idList.add(fileId);
+                            }
+                            // comma separated list of UUIDs
+                            val = CmsStringUtil.listAsString(idList, CmsXmlContainerPage.IDS_SEPARATOR);
+                        }
+
+                        propertiesMap.put(propName.getTextTrim(), val);
                     }
+                    if (elementId != null) {
+                        elements.add(new CmsContainerElementBean(elementId, null, propertiesMap));
+                    }
+
+                    //                    createBookmark(element, locale, subContainer, cntPath, cntDef);
+                    //                    Element uriLink = element.element(CmsXmlPage.NODE_LINK);
+                    //                    CmsUUID elementId = null;
+                    //                    if (uriLink == null) {
+                    //                        // this can happen when adding the elements node to the xml content
+                    //                        // it is not dangerous since the link has to be set before saving 
+                    //                    } else {
+                    //                        elementId = new CmsLink(uriLink).getStructureId();
+                    //                    }
+                    //
+                    //                    if (elementId != null) {
+                    //                        elements.add(new CmsContainerElementBean(elementId, null, null));
+                    //                    }
                 }
                 m_subContainers.put(locale, new CmsSubContainerBean(
                     title.getText(),

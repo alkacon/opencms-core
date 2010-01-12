@@ -1,6 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/workplace/editors/ade/schemas/sub_container_content_element.xsd"/>
 		
 	<xsd:element name="AlkaconSubContainerElements" type="OpenCmsAlkaconSubContainerElements"/>
 	
@@ -15,7 +16,7 @@
 			<xsd:element name="Title" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="Description" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="Type" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
-			<xsd:element name="Element" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="Element" type="OpenCmsAlkaconSubContainerContentElement" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
@@ -29,11 +30,7 @@
 			</mappings>
 			<validationrules>
 				<rule element="Type" regex=".+" type="error" message="%(key.err.type.notempty)" />
-				<rule element="Element" regex=".+" type="error" message="%(key.err.uri.notempty)" />
 			</validationrules>
-			<relations>
-				<relation element="Element" type="strong" invalidate="false" />
-			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  
