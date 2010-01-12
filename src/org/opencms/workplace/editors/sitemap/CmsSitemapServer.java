@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/12 09:38:13 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/01/12 11:14:31 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 7.6
  */
@@ -766,6 +766,31 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     }
 
     /**
+     * Returns the request content value if available, if not a new one will be created.<p>
+     * 
+     * @param cms the current cms context
+     * @param xmlSitemap the sitemap xml
+     * @param path the value's path
+     * @param locale the value's locale
+     * @param index the value's index
+     * 
+     * @return the request content value
+     */
+    protected I_CmsXmlContentValue getContentValue(
+        CmsObject cms,
+        CmsXmlSitemap xmlSitemap,
+        String path,
+        Locale locale,
+        int index) {
+
+        I_CmsXmlContentValue idValue = xmlSitemap.getValue(path, locale, index);
+        if (idValue == null) {
+            idValue = xmlSitemap.addValue(cms, path, locale, index);
+        }
+        return idValue;
+    }
+
+    /**
      * Converts a site entry bean into a JSON object.<p>
      * 
      * @param entry the entry to convert
@@ -837,10 +862,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 try {
                     id = new CmsUUID(json.optString(JsonSiteEntry.ID.getName()));
                 } catch (NumberFormatException e) {
-                    if (!LOG.isDebugEnabled()) {
-                        LOG.warn(e.getLocalizedMessage());
-                    }
-                    LOG.debug(e.getLocalizedMessage(), e);
+                    LOG.error(e.getLocalizedMessage());
                     continue;
                 }
             } else {
@@ -851,10 +873,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             try {
                 linkId = new CmsUUID(json.optString(JsonSiteEntry.LINK_ID.getName()));
             } catch (NumberFormatException e) {
-                if (!LOG.isDebugEnabled()) {
-                    LOG.warn(e.getLocalizedMessage());
-                }
-                LOG.debug(e.getLocalizedMessage(), e);
+                LOG.error(e.getLocalizedMessage());
                 continue;
             }
             String name = json.optString(JsonSiteEntry.NAME.getName());
@@ -934,26 +953,31 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         String entryPath = (rootPath == null ? CmsXmlSitemap.XmlNode.SITEENTRY.getName() : CmsXmlUtils.concatXpath(
             rootPath,
             CmsXmlSitemap.XmlNode.SITEENTRY.getName()));
-        I_CmsXmlContentValue entryValue = xmlSitemap.getValue(entryPath, locale, entryCount);
-        if (entryValue == null) {
-            entryValue = xmlSitemap.addValue(cms, entryPath, locale, entryCount);
-        }
+        I_CmsXmlContentValue entryValue = getContentValue(cms, xmlSitemap, entryPath, locale, entryCount);
 
         // entry info
-        xmlSitemap.getValue(
+        getContentValue(
+            cms,
+            xmlSitemap,
             CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.ID.getName()),
             locale,
             0).setStringValue(cms, entry.getId().toString());
-        xmlSitemap.getValue(
+        getContentValue(
+            cms,
+            xmlSitemap,
             CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.NAME.getName()),
             locale,
             0).setStringValue(cms, entry.getName());
-        xmlSitemap.getValue(
+        getContentValue(
+            cms,
+            xmlSitemap,
             CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.TITLE.getName()),
             locale,
             0).setStringValue(cms, entry.getTitle());
         CmsResource res = cms.readResource(entry.getResourceId());
-        xmlSitemap.getValue(
+        getContentValue(
+            cms,
+            xmlSitemap,
             CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.VFSFILE.getName()),
             locale,
             0).setStringValue(cms, cms.getSitePath(res));
@@ -966,31 +990,33 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 continue;
             }
             // only if the property is configured in the schema we will save it to the sitemap
-            I_CmsXmlContentValue propValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
+            I_CmsXmlContentValue propValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
                 entryValue.getPath(),
                 CmsXmlSitemap.XmlNode.PROPERTIES.getName()), locale, j);
-            xmlSitemap.getValue(
+            getContentValue(
+                cms,
+                xmlSitemap,
                 CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlSitemap.XmlNode.NAME.getName()),
                 locale,
                 0).setStringValue(cms, property.getKey());
-            I_CmsXmlContentValue valValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
+            I_CmsXmlContentValue valValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
                 propValue.getPath(),
                 CmsXmlSitemap.XmlNode.VALUE.getName()), locale, 0);
 
             if (isSitemapProperty
                 || propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                I_CmsXmlContentValue filelistValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
+                I_CmsXmlContentValue filelistValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
                     valValue.getPath(),
                     CmsXmlSitemap.XmlNode.FILELIST.getName()), locale, 0);
                 int index = 0;
                 for (String strId : CmsStringUtil.splitAsList(property.getValue(), CmsXmlSitemap.IDS_SEPARATOR)) {
                     try {
                         CmsResource fileRes = cms.readResource(new CmsUUID(strId));
-                        I_CmsXmlContentValue fileValue = xmlSitemap.getValue(CmsXmlUtils.concatXpath(
+                        I_CmsXmlContentValue fileValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
                             filelistValue.getPath(),
                             CmsXmlSitemap.XmlNode.URI.getName()), locale, index);
                         if (fileValue == null) {
-                            fileValue = xmlSitemap.addValue(cms, CmsXmlUtils.concatXpath(
+                            fileValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
                                 filelistValue.getPath(),
                                 CmsXmlSitemap.XmlNode.URI.getName()), locale, index);
                         }
@@ -1002,8 +1028,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                     }
                 }
             } else {
-                xmlSitemap.addValue(
+                getContentValue(
                     cms,
+                    xmlSitemap,
                     CmsXmlUtils.concatXpath(valValue.getPath(), CmsXmlSitemap.XmlNode.STRING.getName()),
                     locale,
                     0).setStringValue(cms, property.getValue());

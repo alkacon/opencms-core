@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/01/12 09:38:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/12 11:14:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.5.2
  * 
@@ -521,6 +521,10 @@ public class CmsXmlSitemap extends CmsXmlContent {
             // id
             Element id = entry.element(XmlNode.ID.getName());
             createBookmark(id, locale, entry, entryPath, entryDef);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(id.getTextTrim())) {
+                // skip this entry
+                continue;
+            }
             CmsUUID entryId = new CmsUUID(id.getTextTrim());
 
             // name

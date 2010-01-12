@@ -115,23 +115,6 @@
    }
    
    /**
-    * Adds a file name extension to a resource name.
-    *
-    * If the extension is empty or null, the original resource name will be returned.
-    *
-    * @param {Object} name the resource name
-    * @param {Object} extension the extension to add
-    */
-   var _addExtension = function(name, extension) {
-      if (extension) {
-         return name + '.' + extension;
-      } else {
-         return name;
-      }
-   }
-   
-   
-   /**
     * Shows/hides the additional item info in list-views.<p>
     */
    var toggleAdditionalInfo = function() {
@@ -568,10 +551,10 @@
          var parentEntry = new SitemapEntry($parentLi.get(0));
          
          if ($parentLi.length) {
-            parentURL = _removeExtension(parentEntry.getUrl());
+            parentURL = parentEntry.getUrl();
          }
       } else {
-         parentURL = _removeExtension(dropzoneEntry.getUrl());
+         parentURL = dropzoneEntry.getUrl();
       }
       return parentURL;
    }
@@ -676,39 +659,6 @@
    }
    
    /**
-    * Helper function for extracting a file extension from a resource name.
-    *
-    * If the resource name doesn't have a file extension, an empty string will be returned.
-    * @param {Object} name
-    */
-   var _getExtensionFromName = function(name) {
-       
-      var dotPos = name.lastIndexOf('.');
-      if (dotPos == -1) {
-         return '';
-      } else {
-         return name.substring(dotPos + 1);
-      }
-   }
-   
-   /**
-    * Helper function for extracting everything except the file extension from a resource name.
-    * @param {Object} name
-    */
-   var _getExtensionlessName = function(name) {
-       
-      // TODO: is not this the same than _removeExtension??
-      var dotPos = name.lastIndexOf('.');
-      if (dotPos == -1) {
-         return name;
-      } else {
-         return name.substring(0, dotPos);
-      }
-   }
-   
-   
-   
-   /**
     * Converts a dragged item to the element which should be inserted into the drop target.
     *
     * This is necessary because the items in the gallery result list are not normal sitemap entries.
@@ -723,15 +673,14 @@
          var elementData = $draggable.data('elementData');
          var path = elementData.path;
          var name = _getResourceNameFromPath(path);
-         var urlName = _getExtensionlessName(name);
-         var extension = _getExtensionFromName(name);
+         var urlName = _removeExtension(name);
          
          var newEntry = {
-            id: elementData.clientid.substring(4),
+            linkId: elementData.clientid.substring(4),
             title: elementData.title || '[no title]',
             properties: {},
             name: urlName,
-            extension: extension
+            id: ''
          };
          
          cms.data.addContent([newEntry], function(ok, data) {
@@ -2181,8 +2130,8 @@
       setEntryData($li, {
          properties: props,
          id: data.id,
-         sitemap: isSitemap,
-         extension: data.extension
+         linkId: data.linkId,
+         sitemap: isSitemap
       });
       if (isSitemap) {
          $li.addClass('cms-sub-sitemap-ref');
@@ -2567,14 +2516,14 @@
       setUrls: function(parentUrl) {
          var self = this;
          if (self.isRootOfRootSitemap()) {
-            self.setUrl(_addExtension('/index', self.getExtension()));
+            self.setUrl('/index');
             var children = self.getChildren();
             for (var i = 0; i < children.length; i++) {
                children[i].setUrls('');
             }
          } else {
             var pathName = self.getUrlName();
-            self.setUrl(_addExtension(parentUrl + '/' + pathName, self.getExtension()));
+            self.setUrl(parentUrl + '/' + pathName);
             var children = self.getChildren();
             for (var i = 0; i < children.length; i++) {
                children[i].setUrls(parentUrl + '/' + pathName);
@@ -2583,7 +2532,7 @@
       },
       
       /**
-       * Returns the resource id of this entry.
+       * Returns the id of this entry.
        */
       getId: function() {
          var entryData = getEntryData(this.$li);
@@ -2591,9 +2540,9 @@
       },
       
       /**
-       * Sets the resource id of this entry.
+       * Sets the id of this entry.
        *
-       * @param {Object} newValue the new resource id value.
+       * @param {Object} newValue the new id value.
        */
       setId: function(newValue) {
          var entryData = getEntryData(this.$li);
@@ -2697,10 +2646,10 @@
          var result = {
             title: title,
             id: self.getId(),
+            linkId: self.getLinkId(),
             name: urlName,
             subentries: childrenResults,
-            properties: properties,
-            extension: self.getExtension()
+            properties: properties
          };
          if (includeContent) {
             var content = $('<p></p>').append(self.$item.clone()).html();
@@ -2710,10 +2659,22 @@
       },
       
       /**
-       * Returns the extension of this entry.
+       * Returns the resource id of this entry.
        */
-      getExtension: function() {
-         return getEntryData(this.$li).extension;
+      getLinkId: function() {
+         var entryData = getEntryData(this.$li);
+         return entryData.linkId;
+      },
+      
+      /**
+       * Sets the resource id of this entry.
+       *
+       * @param {Object} newValue the new resource id value.
+       */
+      setLinkId: function(newValue) {
+         var entryData = getEntryData(this.$li);
+         entryData.linkId = newValue;
+         setEntryData(this.$li, entryData);
       },
       
       /**
@@ -2724,10 +2685,7 @@
          if (self.isRootOfRootSitemap()) {
             return '';
          } else {
-            var url = self.getUrl();
-            // remove extension (suffix consisting of a dot and a sequence of non-dot, non-slash characters) 
-            var result = url.replace(/\.[^\/\.]*$/, '');
-            return result;
+            return self.getUrl();
          }
       }
    }

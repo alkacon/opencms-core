@@ -14,10 +14,10 @@
 
 	<xsd:complexType name="OpenCmsAlkaconSiteEntry">
 		<xsd:sequence>
-			<xsd:element name="Id" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
-			<xsd:element name="Name" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
-			<xsd:element name="Title" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
-			<xsd:element name="VfsFile" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Id" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Title" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="VfsFile" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Properties" type="OpenCmsAlkaconSiteEntryProperty" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="SiteEntry" type="OpenCmsAlkaconSiteEntry" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
