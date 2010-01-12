@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/12/16 15:00:23 $
- * Version: $Revision: 1.1169 $
+ * Date   : $Date: 2010/01/12 09:00:58 $
+ * Version: $Revision: 1.1170 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - month day, year
+* Fixed cached CmsResource lists are not cleared after publishing a project
 * Fixed issue #1791: Template Two Content external link check fails for two resources
 * Fixed issue #1787: Error when browsing the next result pages in the OpenCms backend search
 * If an error occurs while changing the user password in the preferences tab, so the error dialog can be closed with the close button
