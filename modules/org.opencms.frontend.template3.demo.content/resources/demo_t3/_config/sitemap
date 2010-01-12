@@ -3,8 +3,8 @@
 <AlkaconSitemaps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/sitemap/schemas/sitemap.xsd">
   <AlkaconSitemap language="en">
     <SiteEntry>
+      <Id><![CDATA[6a92725e-ff5c-11de-afed-5b6dea36776d]]></Id>
       <Name><![CDATA[intro]]></Name>
-      <Extension><![CDATA[html]]></Extension>
       <Title><![CDATA[Demo T3]]></Title>
       <VfsFile>
         <link type="STRONG">
@@ -13,8 +13,8 @@
         </link>
       </VfsFile>
       <SiteEntry>
+        <Id><![CDATA[6a92725f-ff5c-11de-afed-5b6dea36776d]]></Id>
         <Name><![CDATA[dictionary]]></Name>
-        <Extension><![CDATA[html]]></Extension>
         <Title><![CDATA[Flower Dictionary]]></Title>
         <VfsFile>
           <link type="STRONG">
@@ -23,8 +23,8 @@
           </link>
         </VfsFile>
         <SiteEntry>
+          <Id><![CDATA[6a927260-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[item_composite]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Composite Plants]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -40,8 +40,8 @@
           </Properties>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a927261-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[item_liliaceous]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Liliaceous Plants]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -57,8 +57,8 @@
           </Properties>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a927262-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[item_rosaceous]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Rosaceous Plants]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -74,8 +74,8 @@
           </Properties>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a927263-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[common-yarrow]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Common Yarrow]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -85,8 +85,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a927264-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[dahlia]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Dahlia]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -96,8 +96,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a927265-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[gerbera]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Gerbera]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -107,8 +107,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a927266-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[lily]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Lily]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -118,8 +118,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a927267-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[meadowsweet]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Meadowsweet]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -129,8 +129,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a927268-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[mountain-avens]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Mountain Avens]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -140,8 +140,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a927269-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[radnor-lily]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Radnor Lily]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -151,8 +151,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a92726a-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[rose]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Rose]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -162,8 +162,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a92726b-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[tulip]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Tulip]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -174,8 +174,8 @@
         </SiteEntry>
       </SiteEntry>
       <SiteEntry>
+        <Id><![CDATA[6a92726c-ff5c-11de-afed-5b6dea36776d]]></Id>
         <Name><![CDATA[extra]]></Name>
-        <Extension><![CDATA[html]]></Extension>
         <Title><![CDATA[Flower Extranet]]></Title>
         <VfsFile>
           <link type="STRONG">
@@ -184,8 +184,8 @@
           </link>
         </VfsFile>
         <SiteEntry>
+          <Id><![CDATA[6a92726d-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[rare]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Rare plants and flowers]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -195,8 +195,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a92726e-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[utf-8]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[I18N Example]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -206,8 +206,8 @@
           </VfsFile>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[6a92726f-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[index]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Secrets of Flower]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -218,8 +218,8 @@
         </SiteEntry>
       </SiteEntry>
       <SiteEntry>
+        <Id><![CDATA[6a927270-ff5c-11de-afed-5b6dea36776d]]></Id>
         <Name><![CDATA[today]]></Name>
-        <Extension><![CDATA[html]]></Extension>
         <Title><![CDATA[Flower Today]]></Title>
         <VfsFile>
           <link type="STRONG">
@@ -228,8 +228,8 @@
           </link>
         </VfsFile>
         <SiteEntry>
+          <Id><![CDATA[6a927271-ff5c-11de-afed-5b6dea36776d]]></Id>
           <Name><![CDATA[events]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[Events]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -238,8 +238,8 @@
             </link>
           </VfsFile>
           <SiteEntry>
+            <Id><![CDATA[f22775f5-ff5c-11de-8297-efb64a7400e0]]></Id>
             <Name><![CDATA[event]]></Name>
-            <Extension><![CDATA[html]]></Extension>
             <Title><![CDATA[Events Template]]></Title>
             <VfsFile>
               <link type="STRONG">
@@ -256,8 +256,8 @@
           </SiteEntry>
         </SiteEntry>
         <SiteEntry>
+          <Id><![CDATA[f22775f6-ff5c-11de-8297-efb64a7400e0]]></Id>
           <Name><![CDATA[news]]></Name>
-          <Extension><![CDATA[html]]></Extension>
           <Title><![CDATA[News]]></Title>
           <VfsFile>
             <link type="STRONG">
@@ -266,8 +266,8 @@
             </link>
           </VfsFile>
           <SiteEntry>
+            <Id><![CDATA[f22775f7-ff5c-11de-8297-efb64a7400e0]]></Id>
             <Name><![CDATA[news]]></Name>
-            <Extension><![CDATA[html]]></Extension>
             <Title><![CDATA[News Template]]></Title>
             <VfsFile>
               <link type="STRONG">
@@ -285,8 +285,8 @@
         </SiteEntry>
       </SiteEntry>
       <SiteEntry>
+        <Id><![CDATA[f22775f8-ff5c-11de-8297-efb64a7400e0]]></Id>
         <Name><![CDATA[view]]></Name>
-        <Extension><![CDATA[html]]></Extension>
         <Title><![CDATA[Flower View]]></Title>
         <VfsFile>
           <link type="STRONG">

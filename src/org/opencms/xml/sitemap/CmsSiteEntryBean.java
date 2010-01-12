@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2009/12/21 10:40:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/12 09:38:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,14 +44,14 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6 
  */
 public class CmsSiteEntryBean {
 
-    /** The entry extension. */
-    private final String m_extension;
+    /** The entry id. */
+    private final CmsUUID m_id;
 
     /** The entry name. */
     private final String m_name;
@@ -71,24 +71,24 @@ public class CmsSiteEntryBean {
     /**
      * Creates a new sitemap entry bean.<p> 
      * 
+     * @param id the entry's id
      * @param resourceId the file's structure id
      * @param name the entry's name
-     * @param extension the entry's extension
      * @param title the entry's title
      * @param properties the properties as a map of name/value pairs
      * @param subEntries the list of sub-entries
      **/
     public CmsSiteEntryBean(
+        CmsUUID id,
         CmsUUID resourceId,
         String name,
-        String extension,
         String title,
         Map<String, String> properties,
         List<CmsSiteEntryBean> subEntries) {
 
+        m_id = id;
         m_resourceId = resourceId;
         m_name = name;
-        m_extension = extension;
         m_title = title;
         m_subEntries = (subEntries == null
         ? Collections.<CmsSiteEntryBean> emptyList()
@@ -104,17 +104,17 @@ public class CmsSiteEntryBean {
      */
     public CmsSiteEntryBean cloneWithoutSubEntries() {
 
-        return new CmsSiteEntryBean(m_resourceId, m_name, m_extension, m_title, m_properties, null);
+        return new CmsSiteEntryBean(m_id, m_resourceId, m_name, m_title, m_properties, null);
     }
 
     /**
-     * Returns the extension.<p>
+     * Returns the id.<p>
      *
-     * @return the extension
+     * @return the id
      */
-    public String getExtension() {
+    public CmsUUID getId() {
 
-        return m_extension;
+        return m_id;
     }
 
     /**
@@ -184,7 +184,7 @@ public class CmsSiteEntryBean {
     public String toString() {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(getName()).append(getExtension()).append(getResourceId()).append(getTitle()).append(getProperties());
+        sb.append(getId()).append(getName()).append(getResourceId()).append(getTitle()).append(getProperties());
         return sb.toString();
     }
 }

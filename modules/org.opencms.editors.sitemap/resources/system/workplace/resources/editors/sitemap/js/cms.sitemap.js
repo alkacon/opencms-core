@@ -35,6 +35,7 @@
    /** html-class for sitemap-item. */
    var itemClass = 'cms-sitemap-item';
    
+   var classId = 'cms-id';
    var classUrlName = 'cms-url-name';
    var classVfsPath = 'cms-vfs-path';
    var classSitemapEntry = 'cms-sitemap-entry';
@@ -681,6 +682,7 @@
     * @param {Object} name
     */
    var _getExtensionFromName = function(name) {
+       
       var dotPos = name.lastIndexOf('.');
       if (dotPos == -1) {
          return '';
@@ -694,6 +696,8 @@
     * @param {Object} name
     */
    var _getExtensionlessName = function(name) {
+       
+      // TODO: is not this the same than _removeExtension??
       var dotPos = name.lastIndexOf('.');
       if (dotPos == -1) {
          return name;

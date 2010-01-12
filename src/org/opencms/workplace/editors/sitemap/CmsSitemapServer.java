@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2009/12/17 14:31:38 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/01/12 09:38:13 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 7.6
  */
@@ -256,10 +256,10 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         /** The HTML content. */
         CONTENT("content"),
-        /** The extension. */
-        EXTENSION("extension"),
-        /** The resource id. */
+        /** The entry id. */
         ID("id"),
+        /** The resource id. */
+        LINK_ID("linkId"),
         /** The name. */
         NAME("name"),
         /** The properties. */
@@ -490,12 +490,12 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             String extension = "";
             int dotPos = name.lastIndexOf('.');
             if (dotPos != -1) {
-                extension = name.substring(dotPos + 1, name.length());
+                name = name.substring(0, dotPos);
             }
 
             CmsSiteEntryBean entryBean = new CmsSiteEntryBean(
+                new CmsUUID(),
                 newResource.getStructureId(),
-                name.substring(0, dotPos),
                 extension,
                 title,
                 new HashMap<String, String>(),
@@ -777,10 +777,10 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     protected JSONObject jsonifyEntry(CmsSiteEntryBean entry) throws JSONException {
 
         JSONObject result = new JSONObject();
+        result.put(JsonSiteEntry.ID.getName(), entry.getId().toString());
         result.put(JsonSiteEntry.NAME.getName(), entry.getName());
-        result.put(JsonSiteEntry.EXTENSION.getName(), entry.getExtension());
         result.put(JsonSiteEntry.TITLE.getName(), entry.getTitle());
-        result.put(JsonSiteEntry.ID.getName(), entry.getResourceId().toString());
+        result.put(JsonSiteEntry.LINK_ID.getName(), entry.getResourceId().toString());
 
         // properties
         JSONObject props = new JSONObject();
@@ -832,9 +832,24 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         List<CmsSiteEntryBean> result = new ArrayList<CmsSiteEntryBean>(array.length());
         for (int i = 0; i < array.length(); i++) {
             JSONObject json = array.optJSONObject(i);
-            CmsUUID id = null;
+            CmsUUID id;
+            if (json.has(JsonSiteEntry.ID.getName())) {
+                try {
+                    id = new CmsUUID(json.optString(JsonSiteEntry.ID.getName()));
+                } catch (NumberFormatException e) {
+                    if (!LOG.isDebugEnabled()) {
+                        LOG.warn(e.getLocalizedMessage());
+                    }
+                    LOG.debug(e.getLocalizedMessage(), e);
+                    continue;
+                }
+            } else {
+                // create a new id if missing
+                id = new CmsUUID();
+            }
+            CmsUUID linkId;
             try {
-                id = new CmsUUID(json.optString(JsonSiteEntry.ID.getName()));
+                linkId = new CmsUUID(json.optString(JsonSiteEntry.LINK_ID.getName()));
             } catch (NumberFormatException e) {
                 if (!LOG.isDebugEnabled()) {
                     LOG.warn(e.getLocalizedMessage());
@@ -843,7 +858,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 continue;
             }
             String name = json.optString(JsonSiteEntry.NAME.getName());
-            String extension = json.optString(JsonSiteEntry.EXTENSION.getName());
             String title = json.optString(JsonSiteEntry.TITLE.getName());
             Map<String, String> properties = new HashMap<String, String>();
             JSONObject jsonProps = json.optJSONObject(JsonSiteEntry.PROPERTIES.getName());
@@ -854,12 +868,44 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 properties.put(key, value);
             }
             JSONArray jsonSub = json.optJSONArray(JsonSiteEntry.SUBENTRIES.getName());
-            CmsSiteEntryBean entry = new CmsSiteEntryBean(id, name, extension, title, properties, recursive
+            CmsSiteEntryBean entry = new CmsSiteEntryBean(id, linkId, name, title, properties, recursive
             ? jsonToEntryList(jsonSub, true)
             : Collections.<CmsSiteEntryBean> emptyList());
             result.add(entry);
         }
         return result;
+    }
+
+    /**
+     * Converts a resource to a sitemap entry bean.<p>
+     *
+     * @param cms the CmsObject to use for VFS operations 
+     * @param resource the resource to convert
+     * 
+     * @return the sitemap entry bean for the resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsSiteEntryBean resourceToSiteEntryBean(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        String title = titleProp.getValue();
+        String name = resource.getName();
+
+        int dotPos = name.lastIndexOf('.');
+        if (dotPos != -1) {
+            name = name.substring(0, dotPos);
+        }
+
+        CmsSiteEntryBean entryBean = new CmsSiteEntryBean(
+            new CmsUUID(),
+            resource.getStructureId(),
+            name,
+            title,
+            new HashMap<String, String>(),
+            new ArrayList<CmsSiteEntryBean>());
+
+        return entryBean;
     }
 
     /**
@@ -895,13 +941,13 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         // entry info
         xmlSitemap.getValue(
+            CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.ID.getName()),
+            locale,
+            0).setStringValue(cms, entry.getId().toString());
+        xmlSitemap.getValue(
             CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.NAME.getName()),
             locale,
             0).setStringValue(cms, entry.getName());
-        xmlSitemap.getValue(
-            CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.EXTENSION.getName()),
-            locale,
-            0).setStringValue(cms, entry.getExtension());
         xmlSitemap.getValue(
             CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.TITLE.getName()),
             locale,
@@ -971,40 +1017,5 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             saveEntry(cms, locale, entryValue.getPath(), xmlSitemap, subentry, subentryCount, propertiesConf);
             subentryCount++;
         }
-    }
-
-    /**
-     * Converts a resource to a sitemap entry bean.<p>
-     *
-     * @param cms the CmsObject to use for VFS operations 
-     * @param resource the resource to convert
-     * 
-     * @return the sitemap entry bean for the resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private CmsSiteEntryBean resourceToSiteEntryBean(CmsObject cms, CmsResource resource) throws CmsException {
-
-        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        String title = titleProp.getValue();
-        String name = resource.getName();
-        String nameWithoutExtension = name;
-
-        String extension = "";
-        int dotPos = name.lastIndexOf('.');
-        if (dotPos != -1) {
-            extension = name.substring(dotPos + 1, name.length());
-            nameWithoutExtension = name.substring(0, dotPos);
-        }
-
-        CmsSiteEntryBean entryBean = new CmsSiteEntryBean(
-            resource.getStructureId(),
-            nameWithoutExtension,
-            extension,
-            title,
-            new HashMap<String, String>(),
-            new ArrayList<CmsSiteEntryBean>());
-
-        return entryBean;
     }
 }

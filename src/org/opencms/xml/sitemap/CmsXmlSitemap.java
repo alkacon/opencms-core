@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2009/11/25 15:26:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/12 09:38:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.5.2
  * 
@@ -92,8 +92,8 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         /** Value file list node name. */
         FILELIST("FileList"),
-        /** Entry extension node name. */
-        EXTENSION("Extension"),
+        /** Entry ID node name. */
+        ID("Id"),
         /** Entry or property name node name. */
         NAME("Name"),
         /** Element properties node name. */
@@ -518,15 +518,15 @@ public class CmsXmlSitemap extends CmsXmlContent {
             addBookmark(entryPath, locale, true, entryValue);
             CmsXmlContentDefinition entryDef = ((CmsXmlNestedContentDefinition)entrySchemaType).getNestedContentDefinition();
 
+            // id
+            Element id = entry.element(XmlNode.ID.getName());
+            createBookmark(id, locale, entry, entryPath, entryDef);
+            CmsUUID entryId = new CmsUUID(id.getTextTrim());
+
             // name
             Element name = entry.element(XmlNode.NAME.getName());
             createBookmark(name, locale, entry, entryPath, entryDef);
             String entryName = name.getTextTrim();
-
-            // extension
-            Element extension = entry.element(XmlNode.EXTENSION.getName());
-            createBookmark(extension, locale, entry, entryPath, entryDef);
-            String entryExtension = extension.getTextTrim();
 
             // title
             Element title = entry.element(XmlNode.TITLE.getName());
@@ -536,13 +536,13 @@ public class CmsXmlSitemap extends CmsXmlContent {
             // vfs file
             Element uri = entry.element(XmlNode.VFSFILE.getName());
             createBookmark(uri, locale, entry, entryPath, entryDef);
-            Element uriLink = uri.element(CmsXmlPage.NODE_LINK);
-            CmsUUID entryId = null;
-            if (uriLink == null) {
+            Element linkUri = uri.element(CmsXmlPage.NODE_LINK);
+            CmsUUID linkId = null;
+            if (linkUri == null) {
                 // this can happen when adding the entry node to the xml content
                 // it is not dangerous since the link has to be set before saving 
             } else {
-                entryId = new CmsLink(uriLink).getStructureId();
+                linkId = new CmsLink(linkUri).getStructureId();
             }
 
             Map<String, String> propertiesMap = new HashMap<String, String>();
@@ -632,7 +632,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
             List<CmsSiteEntryBean> subEntries = readSiteEntries(entry, entryPath, entryDef, locale);
 
-            entries.add(new CmsSiteEntryBean(entryId, entryName, entryExtension, titleValue, propertiesMap, subEntries));
+            entries.add(new CmsSiteEntryBean(entryId, linkId, entryName, titleValue, propertiesMap, subEntries));
         }
         return entries;
     }

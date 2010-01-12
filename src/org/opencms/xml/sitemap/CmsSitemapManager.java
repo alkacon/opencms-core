@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/07 14:18:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/12 09:38:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,6 @@ import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.site.CmsSite;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -71,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.9.2
  */
@@ -319,17 +318,7 @@ public class CmsSitemapManager {
         }
 
         // get it
-        String extension = uri.substring(uri.length() - CmsFileUtil.getExtension(uri).length());
-        String uriNoExt = uri.substring(0, uri.length() - extension.length());
-        EntryData data = getEntry(cms, uriNoExt, online, false);
-
-        // match the extension 
-        if ((data != null) && (extension.length() > 0)) {
-            if (!data.getEntry().getExtension().equals(extension.substring(1))) {
-                data = null;
-            }
-        }
-
+        EntryData data = getEntry(cms, uri, online, false);
         if (data == null) {
             // cache the missed attempt
             m_cache.setMissingUri(path, online);
