@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/13 14:17:37 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2010/01/13 14:52:49 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 7.6
  */
@@ -553,16 +553,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 result.put(JsonKeys.PREVIEWDATA.getName(), setProperties(resourcePath, properties));
             } else if (action.equals(Action.VFSPATH)) {
                 String path = data.getString(JsonKeys.LINKPATH.getName());
-                String rootPath = OpenCms.getLinkManager().getRootPath(getCmsObject(), path);
-                // String rootSite = OpenCms.getSiteManager().getSiteForRootPath(rootPath);
-                String test = OpenCms.getSystemInfo().getOpenCmsContext();
                 if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
-                LOG.debug(rootPath);
-                LOG.debug(path);
-                //CmsResource resource = getCmsObject().readResource(linkPath);
-                CmsResource resource1 = getCmsObject().readResource(path);
                 result.put(JsonKeys.PATH.getName(), path);
             }
         }
