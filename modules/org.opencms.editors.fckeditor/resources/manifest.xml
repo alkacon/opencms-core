@@ -468,6 +468,59 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<destination>system/workplace/editors/fckeditor/plugins/imagegallery</destination>
+			<type>folder</type>
+			<uuidstructure>d29b0ff9-fb70-11de-b5f5-c7b77b1e3efa</uuidstructure>
+			<datelastmodified>Thu, 07 Jan 2010 09:41:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Jan 2010 09:41:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/imagegallery/fckplugin.js</source>
+			<destination>system/workplace/editors/fckeditor/plugins/imagegallery/fckplugin.js</destination>
+			<type>jsp</type>
+			<uuidstructure>df431d1b-fb70-11de-b5f5-c7b77b1e3efa</uuidstructure>
+			<uuidresource>df431d1c-fb70-11de-b5f5-c7b77b1e3efa</uuidresource>
+			<datelastmodified>Mon, 11 Jan 2010 14:42:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Jan 2010 09:41:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/imagegallery/integrator.js</source>
+			<destination>system/workplace/editors/fckeditor/plugins/imagegallery/integrator.js</destination>
+			<type>jsp</type>
+			<uuidstructure>215e0ec7-fc57-11de-a75b-c7b77b1e3efa</uuidstructure>
+			<uuidresource>215e0ec8-fc57-11de-a75b-c7b77b1e3efa</uuidresource>
+			<datelastmodified>Mon, 11 Jan 2010 15:10:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Jan 2010 13:10:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<destination>system/workplace/editors/fckeditor/plugins/ocmsimage</destination>
 			<type>folder</type>

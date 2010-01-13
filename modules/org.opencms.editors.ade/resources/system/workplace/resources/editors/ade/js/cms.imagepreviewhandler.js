@@ -11,6 +11,8 @@
    var keys = cms.imagepreviewhandler.keys = {
       'formatTabId':'tabs-edit-format-area', 
       'imageInfosTabId':'tabs-image-infos-area',
+      'editorFormatTabId':'tabs-editor-formats-area',
+      'editorAdvancedTabId':'tabs-editor-advanced-area',
       'previewWidth': 'width',
       'previewHeight': 'height',
       'imageFormat': 'format',
@@ -20,6 +22,31 @@
       'resetsize': 'resetsize'
    };
    
+   /** String constants to use in html. */
+   var editorKeys = cms.imagepreviewhandler.editorKeys = {
+      'fckAlt': 'txtAlt',
+      'fckInsertAlt':'insertAlt',
+      'fckResetTitle':'btnSetAlt',
+      'fckCopy':'txtCopyright',
+      'fckInsertCr':'insertCopyright',
+      'fckReserCr':'btnSetCopy',
+      'imgSpacing':'imageBorder',
+      'imgAlign': 'cmbAlign',
+      'hSpace':'txtHSpace',
+      'vSpace':'txtvSpace',
+      'linkOrginal':'linkOriginal',
+      'advLinkUrl': 'txtLnkUrl',
+      'advBrowseServer':'btbrowerserver',
+      'advLinkTarget': 'cmbLnkTarget',
+      'advId':'txtAttId',
+      'advClasses':'txtAttClasses',
+      'advStyle':'txtAttStyle',
+      'advLongDesc':'txtLongDesc',
+      'advAdvTitle':'txtAttTitle',
+      'advLangDir':'cmbAttLngDir',
+      'advLangCode':'txtAttLangCode'      
+   };
+      
    ///// Additional infos for image format processing ////////
    /** Default format value for the drop down. */
    //TODO: change width of small foramt to '200'!!!
@@ -34,6 +61,51 @@
    
    /** Array with format values for the drop down. */
    var formatDropDown = [];
+   
+   /** Array with format values for the drop down. */
+   var editorAlignDropDown = [
+       {  'value':'',
+           'title':'' 
+       },
+       {   'value':'left',
+           'title':'left'                
+       },
+       {    'value':'right',
+            'title':'right'           
+       }       
+   ];
+   
+   /** Array with format values for the drop down. */
+   var editorTargetDropDown = [
+       {  'value':'',
+           'title':'<not set>' 
+       },
+       {   'value':'_blank',
+           'title':'New Window (_blank)'                
+       },
+       {    'value':'_top',
+            'title':'Topmost Window (_top)'           
+       },        
+       {    'value':'_self',
+            'title':'Same Window (_self)'           
+       },
+       {    'value':'_parent',
+            'title':'Parent Window (_parent)'           
+       }       
+   ];
+   
+   /** Array with format values for the drop down. */
+   var editorLangDropDown = [
+       {  'value':'',
+           'title':'<not set>' 
+       },
+       {   'value':'ltr',
+           'title':'Left to Right (LTR)'                
+       },
+       {    'value':'rtl',
+            'title':'Right to Left (LTR)'           
+       }       
+   ];
    
    /** An array with format values for image size calculation. */
    cms.imagepreviewhandler.formatSelections = [];
@@ -51,11 +123,20 @@
    var htmlForamtTabSceleton = '<li><a href="#' + keys['formatTabId'] + '">Image format</a></li>'
    
    /** html fragment for the tab navigation. */
-   var tabsNav = '<ul>\
+   var tabsNav = {
+       'widget': '<ul>\
                       <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">Properties</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">Image format</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">Image infos</a></li>\
-                  </ul>';
+                  </ul>',
+        'editor' : '<ul>\
+                      <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">Properties</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">Image format</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">Image infos</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['editorFormatTabId'] + '">Editor formats</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['editorAdvancedTabId'] + '">Advanced</a></li>\
+                  </ul>'     
+   } ;
    
    ///////////////////////////////////////////////////////////////////
    
@@ -116,7 +197,7 @@
       showActiveItemPreviewArea(JSON.parse(jsonForActiveImage), cms.galleries.activeItem['isInitial']);
       
       // bind the select tab event, fill the content of the result tab on selection
-      $('#' + cms.previewhandler.editableTabId).prepend(tabsNav);      
+      $('#' + cms.previewhandler.editableTabId).prepend(tabsNav[cms.galleries.initValues['dialogMode']]);      
       $('#' + cms.previewhandler.editableTabId).tabs({}); 
 
       //bind click event to preview close button 
@@ -151,15 +232,23 @@
       ///////////// Display format select parameters for image ///////////////////////  
       
       // add format edit area to preview
-      var targetFormat = $('<div id="' + cms.imagepreviewhandler.keys['formatTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);      
+      $('<div id="' + cms.imagepreviewhandler.keys['formatTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);      
       fillImageFormatInfos();
             
       ////////////// Display image infos ////////////////////////////////////////////
       
       // add image infos edit area to preview
       $('<div id="' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
-      fillImageInfos(imageInfos);                                            
+      fillImageInfos(imageInfos);   
       
+      // add additional tabs for editor
+      if (cms.galleries.isEditorMode()) {
+          $('<div id="' + cms.imagepreviewhandler.keys['editorFormatTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
+          fillEditorFormatInfos();                                            
+          
+          $('<div id="' + cms.imagepreviewhandler.keys['editorAdvancedTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
+          fillEditorAdvancedInfos();    
+      }
    }
    
    /**
@@ -198,18 +287,20 @@
       var targetFormat = $('#' + cms.imagepreviewhandler.keys['formatTabId']);
       var form = $('<div class="edit-form"></div>');
       form.append($(widthHeightFieldsHtml)).appendTo(targetFormat); 
-      //targetFormat.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);        
-            
+      
       if (cms.galleries.isSelectableItem()) {
-         // add select button
-         targetFormat.find('div[alt="' + keys['previewHeight'] + '"]').prepend('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
-                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
-                             </button>');
-         /*targetFormat.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
-                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
-                             </button>');*/
-         targetFormat.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']); 
-         
+            //targetFormat.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);
+            // add select button
+            targetFormat.find('div[alt="' + keys['previewHeight'] + '"]').prepend('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+                                       <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                                 </button>');
+            /*targetFormat.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+             <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+             </button>');*/
+            targetFormat.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);
+      }         
+            
+      if (cms.galleries.isFullDisplayMode()) {                 
          // enable width and height fields and bind events 
          targetFormat.find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
          targetFormat.find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');          
@@ -242,6 +333,117 @@
             }
          }));
       }
+   }
+   
+   /**
+    * Fills the additional editor area with content.
+    */
+   var fillEditorFormatInfos = function () {
+       
+      var target = $('#' + keys['editorFormatTabId']);
+      // generate editable form fields
+      var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');
+     
+      form.append($('<div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
+          <span class="cms-item-title cms-width-95">Title&nbsp;/&nbsp;Alt-Text</span>\
+          <input id="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
+      </div>\
+      <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertAlt'] + '" class="cms-checkbox cms-checkbox-unchecked cms-left"></div>\
+      <div class="cms-checkbox-label cms-left">Insert subtitle</div>\
+      <button id="' + cms.imagepreviewhandler.editorKeys['fckResetTitle'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" >\
+          <span class="cms-galleries-button">Reset Title</span>\
+      </button>\
+      <div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '">\
+          <span class="cms-item-title cms-width-95">Copyright</span>\
+          <input id="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
+      </div>\
+      <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertCr'] + '" class="cms-checkbox cms-checkbox-unchecked cms-left"></div>\
+      <div class="cms-checkbox-label cms-left">Insert Copyright</div>\
+      <button id="' + cms.imagepreviewhandler.editorKeys['fckReserCr'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" style="clear:right;">\
+          <span class="cms-galleries-button">Reset Copyright</span>\
+      </button>\
+      <div class="cms-editable-field cms-left cms-width-305" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
+          <span class="cms-item-title cms-editor-title cms-width-150 cms-left">Create image spacing</span>\
+          <div id="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '" class="cms-checkbox cms-checkbox-unchecked cms-left"></div>\
+          <div class="cms-format-line cms-right" alt="width">\
+              <span class="cms-item-title cms-editor-title cms-width-60">HSpace:</span>\
+              <input id="' + cms.imagepreviewhandler.editorKeys['hSpace'] + '" class="ui-corner-all ui-widget-content" type="text"/>\
+          </div>\
+      </div>\
+      <div id="' + cms.imagepreviewhandler.editorKeys['linkOrginal'] + '" class="cms-checkbox cms-checkbox-unchecked cms-left checkbox-margin"></div>\
+      <div class="cms-checkbox-title cms-left">Insert link to image in original format</div>\
+      <div class="cms-drop-down cms-format-line cms-right" id="' + editorKeys['imgAlign'] + '">\
+          <label class="cms-item-title cms-width-50">Align:</label>\
+      </div>\
+      <div class="cms-format-line cms-width-305" alt="width" style="clear:left;">\
+          <input id="' + cms.imagepreviewhandler.editorKeys['vSpace'] + '" class="ui-corner-all ui-widget-content cms-right" type="text"/>\
+          <span class="cms-item-title cms-editor-title cms-width-60 cms-right">VSpace:</span>\
+      </div>'));
+      target.append(form);      
+      /*form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
+            selectorPosition:'top',
+            values: editorAlignDropDown,
+            width: 100
+         })); */              
+   }
+   
+   /**
+    * Fills the additional advanced editor area with content.
+    */
+   var fillEditorAdvancedInfos = function () {
+       var target = $('#' + keys['editorAdvancedTabId']);
+      // generate editable form fields
+      var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');
+      form.append($('<div class="cms-header-small cms-clear-right">Link</div>\
+                     <div class="cms-editable-field cms-left cms-width-500" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
+                          <span class="cms-item-title cms-width-95">Url:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLinkUrl'] + '" class="cms-item-edit cms-width-390 ui-corner-all" name="TODO" title="Edit ' + '' + '" value="" />\
+                     </div>\
+                     <button id="' + cms.imagepreviewhandler.editorKeys['advBrowseServer'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all">\
+                          <span class="cms-galleries-button">Browse Server</span>\
+                     </button>\
+                     <div class="cms-drop-down cms-format-line cms-left" id="' + editorKeys['advLinkTarget'] + '">\
+                         <label class="cms-item-title cms-width-95">Target:</label>\
+                     </div>\
+                     <div class="cms-header-small cms-clear-left">Other Attributes</div>\
+                     <div class="cms-editable-field cms-left cms-width-620 cms-clear-right" alt="' + cms.imagepreviewhandler.editorKeys['advId'] + '">\
+                          <span class="cms-item-title cms-width-150">Id:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advId'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '">\
+                          <span class="cms-item-title cms-width-150">Stylesheet Classes:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '">\
+                          <span class="cms-item-title cms-width-150">Style:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '">\
+                          <span class="cms-item-title cms-width-150">Long Description URL:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '">\
+                          <span class="cms-item-title cms-width-150">Advisory Title:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-drop-down cms-format-line cms-left cms-width-620" id="' + editorKeys['advLangDir'] + '">\
+                         <label class="cms-item-title cms-width-150">Language Direction:</label>\
+                     </div>\
+                     <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '">\
+                          <span class="cms-item-title cms-width-150">Language Code:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>'));
+      target.append(form);
+      form.find('#' + editorKeys['advLinkTarget'] + ' label').after($.fn.selectBox('generate', {
+            selectorPosition:'top',
+            values: editorTargetDropDown,
+            width: 200
+         }));
+      form.find('#' + editorKeys['advLangDir'] + ' label').after($.fn.selectBox('generate', {
+            selectorPosition:'top',
+            values: editorLangDropDown,
+            width: 200
+         }));
    }
    
    /**
@@ -367,22 +569,22 @@
       } else {
          // image loaded by user selection         
          resetSizes();
-         if (cms.galleries.isSelectableItem()) {
+         if (cms.galleries.isFullDisplayMode()) {
             setCropActive(false);
          }
-         if (cms.galleries.initValues.useformats != true && cms.galleries.isSelectableItem()) {
+         if (cms.galleries.initValues.useformats != true && cms.galleries.isFullDisplayMode()) {
          
             $('button[name="' + keys['cropShow'] + '"]').hide();
          }
-         if (cms.galleries.initValues.useformats == true && initValues.showformats == true && cms.galleries.isSelectableItem()) {
+         if (cms.galleries.initValues.useformats == true && initValues.showformats == true && cms.galleries.isFullDisplayMode()) {
             $('button[name="' + keys['cropShow'] + '"]').show();
          }
       }
       try {
-            // do additional stuff with the active image if necessary
-         //activeImageAdditionalActions(isInitial);
+          // do additional stuff with the active image if necessary
+          activeImageAdditionalActions(isInitial);
       } catch (e) {
-            }
+      }
    }
    
    /**
@@ -565,7 +767,7 @@
          
          $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.galleries.activeItem.width);
          $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.galleries.activeItem.height);
-         if (cms.galleries.isSelectableItem()) {
+         if (cms.galleries.isFullDisplayMode()) {
             $('button[name="' + keys['locksizes'] + '"]').find('span').removeClass('cms-galleries-icon-unlocked');
             $('button[name="' + keys['locksizes'] + '"]').find('span').addClass('cms-galleries-icon-locked');
             // reset select box
@@ -573,7 +775,7 @@
          }
          refreshActiveImagePreview();
       }
-      if (cms.galleries.isSelectableItem()) {
+      if (cms.galleries.isFullDisplayMode()) {
          $('button[name="' + keys['cropShow'] + '"]').hide();
       }
    }
@@ -1098,6 +1300,8 @@
          'widget': setImagePath,
          'editor': 'test2'
       },
+      'getScaleValue' : getScaleValue,
+      'removeScaleValue': removeScaleValue
    };
    
    cms.galleries.addContentTypeHandler(cms.imagepreviewhandler.imageContentTypeHandler['type'], cms.imagepreviewhandler.imageContentTypeHandler);

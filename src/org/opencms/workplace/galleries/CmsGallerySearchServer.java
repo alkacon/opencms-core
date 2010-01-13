@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/11 13:26:40 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2010/01/13 14:17:37 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 7.6
  */
@@ -117,7 +117,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         SEARCH,
 
         /** To set the resource properties. */
-        SETPROPERTIES;
+        SETPROPERTIES,
+
+        /** To retrieve the path to the given resource. */
+        VFSPATH;
     }
 
     /**
@@ -291,6 +294,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The level. */
         LEVEL("level"),
 
+        /** The linkpath of the resource. */
+        LINKPATH("linkpath"),
+
         /** The matches per page. */
         MATCHESPERPAGE("matchesperpage"),
 
@@ -395,8 +401,11 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** Generic data parameter. */
         DATA("data"),
 
-        /** Generic data parameter. */
+        /** Specific image data parameter. */
         IMAGEDATA("imagedata"),
+
+        /** The path to the editor plugin script. */
+        INTEGRATOR("integrator"),
 
         /** The dialog mode. */
         DIALOGMODE("dialogmode"),
@@ -428,7 +437,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /** The advanced gallery path to the JSPs in the workplace. */
-    public static final String ADVANCED_GALLERY_PATH = "/system/workplace/resources/editors/ade/galleries.jsp";
+    public static final String ADVANCED_GALLERY_PATH = "/system/workplace/editors/ade/galleries.jsp";
 
     /** The excerpt field constant. */
     public static final String EXCERPT_FIELD_NAME = "excerpt";
@@ -447,6 +456,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
     /** The users locale. */
     private Locale m_locale;
+
+    /** The galleries mode name(widget,view, editor, ade, sitemap). */
+    private String m_modeName;
 
     /** The JSON data request object. */
     private JSONObject m_reqDataObj;
@@ -539,6 +551,19 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 String resourcePath = data.getString(JsonKeys.PATH.getName());
                 JSONArray properties = data.getJSONArray(JsonKeys.PROPERTIES.getName());
                 result.put(JsonKeys.PREVIEWDATA.getName(), setProperties(resourcePath, properties));
+            } else if (action.equals(Action.VFSPATH)) {
+                String path = data.getString(JsonKeys.LINKPATH.getName());
+                String rootPath = OpenCms.getLinkManager().getRootPath(getCmsObject(), path);
+                // String rootSite = OpenCms.getSiteManager().getSiteForRootPath(rootPath);
+                String test = OpenCms.getSystemInfo().getOpenCmsContext();
+                if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                    path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                }
+                LOG.debug(rootPath);
+                LOG.debug(path);
+                //CmsResource resource = getCmsObject().readResource(linkPath);
+                CmsResource resource1 = getCmsObject().readResource(path);
+                result.put(JsonKeys.PATH.getName(), path);
             }
         }
         return result;
@@ -1570,20 +1595,41 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * 
      * @return the mode name
      */
-    public String getModeName() {
+    private String getModeName() {
 
-        // TODO: read request parameter
-        return "";
+        if (m_modeName == null) {
+            String dialogMode = getRequest().getParameter(ReqParam.DIALOGMODE.getName());
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(dialogMode)) {
+                m_modeName = dialogMode;
+            }
+        }
+        return m_modeName;
     }
 
     /**
-     * Returns script tags for resource type specific handling of the gallery preview.<p>
+     * Returns the current dialog mode name.<p>
+     * 
+     * @return the mode name
+     */
+    private String getIntegratorPath() {
+
+        String integratorPath = getRequest().getParameter(ReqParam.INTEGRATOR.getName());
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(integratorPath) ? integratorPath : "";
+
+    }
+
+    /**
+     * Returns specific script tags for the handling of the galleries and the gallery preview.<p>
      * 
      * @return the script tags
      */
     public String getAdditionalJavaScript() {
 
-        return getAdditionalJavascriptForTypes(getResourceTypes());
+        StringBuffer result = new StringBuffer();
+        result.append(getAdditionalJavascriptForTypes(getResourceTypes()));
+        result.append("\n");
+        result.append(getAdditionalJavascriptForEditor());
+        return result.toString();
     }
 
     /**
@@ -1605,6 +1651,29 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 result.append(CmsWorkplace.getResourceUri(jsPath));
                 result.append("\"></script>\n");
             }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns script tags for editor specific handling of the galleries preview.<p>
+     * 
+     * @return the script tags
+     */
+    public String getAdditionalJavascriptForEditor() {
+
+        StringBuffer result = new StringBuffer();
+        String modeName = getModeName();
+        String integratorPath = link(CmsWorkplace.VFS_PATH_EDITORS + getIntegratorPath());
+        String fckCommenDialogPath = CmsWorkplace.getSkinUri()
+            + "editors/fckeditor/editor/dialog/common/fck_dialog_common.js";
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modeName) && modeName.equals(GalleryMode.EDITOR.getName())) {
+            result.append("<script type=\"text/javascript\" src=\"");
+            result.append(fckCommenDialogPath);
+            result.append("\"></script>\n");
+            result.append("<script type=\"text/javascript\" src=\"");
+            result.append(integratorPath);
+            result.append("\"></script>\n");
         }
         return result.toString();
     }

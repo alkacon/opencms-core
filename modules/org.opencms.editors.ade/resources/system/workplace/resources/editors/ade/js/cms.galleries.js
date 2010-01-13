@@ -169,7 +169,7 @@
                     <div class="cms-search-options">\
                         <span id="searchQuery" class="cms-item-left"><label>Search for:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
-                 <!--   <div class="cms-search-options">\
+                    <!-- <div class="cms-search-options">\
                         <div class="cms-item-left">Search in:</div>\
                         <div id="searchInTitle" class="cms-list-checkbox"></div>\
                         <div class="cms-checkbox-label">Title</div>\
@@ -179,7 +179,7 @@
                     <div class="cms-search-options">\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed after:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
-                    </div> -->\
+                    </div>-->\
                     <div class="cms-search-options">\
                         <button class="ui-state-default ui-corner-all cms-item-left-bottom">Search</button>\
                     </div>\
@@ -591,9 +591,27 @@
      
    /**
     * Returns true, if the select button should be displayed.
+    * TODO: to rename in displaySelectButton()!!!!
     */
    var isSelectableItem = cms.galleries.isSelectableItem = function () {      // displaySelectButton
-      if (cms.galleries.initValues['dialogMode'] == 'widget' || cms.galleries.initValues['dialogMode'] == 'editor'){
+      if (cms.galleries.initValues['dialogMode'] == 'widget'){
+          return true;
+      }
+      return false;
+   }
+   
+   var isFullMode = cms.galleries.isFullDisplayMode = function () {
+       if (cms.galleries.initValues['dialogMode'] == 'editor' || cms.galleries.initValues['dialogMode'] == 'widget') {
+           return true;
+       }
+       return false;
+   }
+   
+   /**
+    * Returns true, if the select button should be displayed.
+    */
+   var isEditorMode = cms.galleries.isEditorMode = function () {      // displaySelectButton
+      if (cms.galleries.initValues['dialogMode'] == 'editor'){
           return true;
       }
       return false;
@@ -665,14 +683,24 @@
                     cms.galleries.searchObject['tabid'] = cms.galleries.arrayOfTabIds[requestData.querydata.tabid];
                 }
             }
-            
-            // Set the path to currently selected item            
-            if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null' 
-                && cms.galleries.initValues['path'] != null && cms.galleries.initValues['path'] != 'null'){          
+                if (cms.galleries.initValues['dialogMode'] == 'editor') {
+                    // Set the path to currently selected item            
+                    if (cms.galleries.initValues['path'] != null && cms.galleries.initValues['path'] != 'null') {
                         cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
-                        cms.galleries.activeItem['isInitial'] = true;      
-            	  }          
-            }
+                        cms.galleries.activeItem['isInitial'] = true;
+                    }
+                    
+                } else if (cms.galleries.initValues['dialogMode'] == 'widget') {
+                    // Set the path to currently selected item            
+                    if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null' &&
+                    cms.galleries.initValues['path'] != null &&
+                    cms.galleries.initValues['path'] != 'null') {
+                        cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
+                        cms.galleries.activeItem['isInitial'] = true;
+                    }
+                }
+        }
+            
         
     }
    

@@ -133,6 +133,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/crop.jsp</source>
+			<destination>system/workplace/editors/ade/crop.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>85873c9c-fb63-11de-9e4d-c7b77b1e3efa</uuidstructure>
+			<uuidresource>85873c9d-fb63-11de-9e4d-c7b77b1e3efa</uuidresource>
+			<datelastmodified>Thu, 07 Jan 2010 08:26:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 07 Jan 2010 08:06:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/default-formatter.jsp</source>
 			<destination>system/workplace/editors/ade/default-formatter.jsp</destination>
@@ -205,6 +225,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/galleries.jsp</source>
+			<destination>system/workplace/editors/ade/galleries.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>431afb24-fae5-11de-a754-c7b77b1e3efa</uuidstructure>
+			<uuidresource>431afb25-fae5-11de-a754-c7b77b1e3efa</uuidresource>
+			<datelastmodified>Mon, 11 Jan 2010 14:30:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 06 Jan 2010 17:02:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/image-preview-formatter.jsp</source>
 			<destination>system/workplace/editors/ade/image-preview-formatter.jsp</destination>
@@ -244,7 +284,7 @@
 			</properties>
 			<relations/>
 			<accesscontrol/>
-		</file>
+		</file>        
 		<file>
 			<source>system/workplace/editors/ade/include.txt</source>
 			<destination>system/workplace/editors/ade/include.txt</destination>
@@ -563,46 +603,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-        <file>
-			<source>system/workplace/resources/editors/ade/crop.jsp</source>
-			<destination>system/workplace/resources/editors/ade/crop.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>42cd585d-e4b9-11de-884c-f5d9e9f1b46a</uuidstructure>
-			<uuidresource>42cd585e-e4b9-11de-884c-f5d9e9f1b46a</uuidresource>
-			<datelastmodified>Fri, 11 Dec 2009 10:54:38 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 11:52:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-        <file>
-			<source>system/workplace/resources/editors/ade/galleries.jsp</source>
-			<destination>system/workplace/resources/editors/ade/galleries.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>b2df6878-cdd4-11de-a87a-ffdffeaf9fad</uuidstructure>
-			<uuidresource>b2df6879-cdd4-11de-a87a-ffdffeaf9fad</uuidresource>
-			<datelastmodified>Tue, 10 Nov 2009 08:40:28 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 10 Nov 2009 08:40:28 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>

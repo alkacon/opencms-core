@@ -20,7 +20,7 @@
 body
 {
 	margin: 0px;
-	padding: 10px;
+	padding 0px;	/* Changed for advanced galleries to adjust the hight, previos value: padding: 10px;*/
 }
 
 body, td, input, select, textarea
@@ -46,7 +46,7 @@ body, .BackColor
 .PopupTitle
 {
 	font-weight: bold;
-	font-size: 14pt;
+	font-size: 10tp;	/* Changed for advanced galleries to adjust the hight, previos value: font-size: 14pt;*/
 	color: MenuText;
 	background-color: ButtonFace;
 	padding: 3px 10px 3px 10px;
@@ -320,7 +320,7 @@ body, .BackColor
 	position: absolute;
 	right: 0px;
 	top: 0px;
-	margin-top: 5px;
+	margin-top: 0px;	/* Changed for advanced galleries to adjust the hight, previos value: margin-top: 5px; */
 	margin-right: 10px;
 	width: 20px;
 	height: 20px;

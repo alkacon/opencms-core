@@ -137,7 +137,7 @@
     div.button-bar span.cms-title {
         font-size:14px;
         font-weight:bold;  
-        line-height:24px;
+        line-height:24px;        
     }
            
     
@@ -191,12 +191,12 @@
     }
     
     button span.cms-galleries-icon-moveup{                       
-        background: transparent url(images/16x16/move_up_in.png) no-repeat scroll left center;              
+        background: transparent url(images/16x16/move_up_in.png) no-repeat scroll left center;  
         padding-left: 20px;            
     }
     
     button span.cms-galleries-icon-movedown{                       
-        background: transparent url(images/16x16/move_down_in.png) no-repeat scroll left center;              
+        background: transparent url(images/16x16/move_down_in.png) no-repeat scroll left center;
         padding-left: 20px;              
     }
     
@@ -224,7 +224,11 @@
    
     .edit-form {
         margin-top:3px;
-    }   
+    } 
+    
+    .edit-advanced-form {
+        margin-top:3px;
+    }     
     
     .cms-scrolling-properties {
         margin: 0px;
@@ -256,8 +260,38 @@
     }
     
     .edit-form .cms-editable-field {
-        margin: 2px 0px 2px 0px;
+        margin: 2px 0px 2px 0px;        
          width: 300px;
+    }
+    
+    .edit-advanced-form .cms-editable-field {
+		margin:2px 0;
+	}
+    
+    .cms-scrolling-editor-advanced {
+        margin: 0px;
+        padding: 0px;
+        height: 90px;
+        overflow:auto;
+        position: relative;
+    }
+    
+    span.cms-checkbox-label,
+    div.cms-checkbox-label {        
+        margin-top:5px;     
+        margin-left: 5px;
+    }
+    
+    div.cms-header-small {       
+       font-weight:bold;
+    }
+    
+    .cms-clear-left {
+        clear:left;
+    }
+    
+    .cms-clear-right {
+        clear:right;
     }
     
     div.cms-format-line {
@@ -276,16 +310,102 @@
         width:  50px;
     }
     
-    .cms-item-edit {
-        overflow: hidden;
-        height: 16px;
-        width:  200px;
+    .cms-width-60 {
+        width:60px;
     }
     
     .cms-width-80 {
         width:  80px;
     }
     
+    .cms-width-300 {
+		width:300px;
+	}
+    
+    .cms-width-305{
+		width:305px;
+	}
+    
+    .cms-width-320 {
+		width:320px;
+	}
+    
+    .cms-width-390 {
+		width:390px;
+	}
+    
+    .cms-width-400 {
+		width:400px;
+	}
+	
+	.cms-width-200 {
+		width:200px;
+	}
+    
+    .cms-width-230 {
+		width:230px;
+	}
+	
+	.cms-width-600 {
+		width:600px;
+	}
+    
+    .cms-width-620 {
+		width:620px;
+	}
+	
+	.cms-width-500 {
+		width:500px;
+	}
+    
+    .cms-width-450 {
+		width:450px;
+	}
+	
+	.cms-width-95 {
+		width:150px;
+	}
+    
+    .cms-width-100 {
+		width:100px;
+	}
+    
+    .cms-width-150 {
+		width:150px;
+	}
+	
+	.cms-width-80 {
+       width:  80px;
+    }
+			
+    
+    .cms-item-edit {
+        overflow: hidden;
+        height: 16px;
+        /*width:  200px;*/
+    }
+    
+    .cms-item-edit-middle {
+        overflow: hidden;
+        height: 16px;
+        width:  400px;
+    }
+    
+    
+    .checkbox-margin {        
+        margin-left: 15px;
+        margin-right:5px;
+    }
+    
+    .cms-editor-title{        
+        line-height: 24px;
+    }
+    
+    .cms-checkbox-title{        
+        line-height: 26px;
+        font-weight:bold;        
+    }
+        
     input.cms-direct-input, input.cms-direct-input:focus, input.cms-direct-input:active {
           border: none;
           background: transparent;
@@ -326,7 +446,7 @@
         overflow:auto;
         position: relative;
     }
-    #menuTabs .cms-list-scrolling-inner{
+	#menuTabs .cms-list-scrolling-inner{
         min-height: 35px;
     }
     .cms-item-invisible {

@@ -1,4 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
+String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "editors/ade/";
+%><%-- 
+--%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
@@ -9,9 +12,9 @@
   }
 </style>
 <![endif]-->
-<link rel="stylesheet" type="text/css" media="screen" href="css/custom-theme/jquery-ui-1.7.2.custom.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/advanced_direct_edit.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/galleries.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="<%= adeResourcePath %>css/custom-theme/jquery-ui-1.7.2.custom.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="<%= adeResourcePath %>css/advanced_direct_edit.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="<%= adeResourcePath %>css/galleries.css" />
 <style>
 	* {
 		margin: 0;
@@ -85,18 +88,18 @@
     }
         
 </style>
-<script type="text/javascript" src="lib/jquery-1.3.2.js"></script>
-<script type="text/javascript" src="lib/jquery.imgareaselect.min.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-1.3.2.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery.imgareaselect.min.js"></script>
 <script type="text/javascript">
 var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
 </script>
-<script type="text/javascript" src="/opencms/opencms/system/workplace/editors/ade/cms.messages.jsp"></script>
-<script type="text/javascript" src="js/cms.html.js"></script>
-<script type="text/javascript" src="js/cms.selectbox.js"></script>
-<script type="text/javascript" src="js/cms.directinput.js"></script>
-<script type="text/javascript" src="js/cms.galleries.js"></script>
-<script type="text/javascript" src="js/cms.previewhandler.js"></script>
-<script type="text/javascript" src="js/cms.imagepreviewhandler.js"></script>
+<script type="text/javascript" src="<cms:link>/system/workplace/editors/ade/cms.messages.jsp</cms:link>"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>js/cms.html.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>js/cms.selectbox.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>js/cms.directinput.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>js/cms.galleries.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>js/cms.previewhandler.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>js/cms.imagepreviewhandler.js"></script>
 <script type="text/javascript">
 	var imgPreviewHeight = 451;
 	if (parent.cms.galleries.initValues.dialogmode == "editor") {
