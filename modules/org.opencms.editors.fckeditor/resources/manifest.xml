@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module adds the popular Open Source HTML editor "FCKeditor" to the OpenCms Workplace.</p>
 <p>Install this module if you want a WYSIWYG editor for Mozilla based browsers, Internet Explorer, Safari or Google Chrome. The version of FCKeditor is 2.6.5</p>
 <p><i>(c) 2009 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.5.1</version>
+		<version>7.5.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -394,7 +394,7 @@
 			<type>plain</type>
 			<uuidstructure>5262295f-5cf1-11db-85b1-432854714568</uuidstructure>
 			<uuidresource>4967c2db-2a83-11da-8917-45526fcb35b4</uuidresource>
-			<datelastmodified>Thu, 06 Nov 2008 08:39:43 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Jan 2010 09:51:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 21 Sep 2005 09:37:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
