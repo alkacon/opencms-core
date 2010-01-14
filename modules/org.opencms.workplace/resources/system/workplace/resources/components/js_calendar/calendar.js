@@ -1,4 +1,4 @@
-/*  Copyright Mihai Bazon, 2002-2005  |  www.bazon.net/mishoo
+ie7u/*  Copyright Mihai Bazon, 2002-2005  |  www.bazon.net/mishoo
  * -----------------------------------------------------------
  *
  * The DHTML Calendar, version 1.0 "It is happening again"
@@ -88,6 +88,7 @@ Calendar.is_ie = ( /msie/i.test(navigator.userAgent) &&
 		   !/opera/i.test(navigator.userAgent) );
 
 Calendar.is_ie5 = ( Calendar.is_ie && /msie 5\.0/i.test(navigator.userAgent) );
+Calendar.is_ie7up = ( Calendar.is_ie && parseFloat(navigator.userAgent.replace(/.*msie ([0-9]+).*/i, "$1" )) >= 7 );
 
 /// detect Opera browser
 Calendar.is_opera = /opera/i.test(navigator.userAgent);
@@ -1389,7 +1390,7 @@ Calendar.prototype.showAtElement = function (el, opts) {
 		document.body.appendChild(cp);
 		var br = Calendar.getAbsolutePos(cp);
 		document.body.removeChild(cp);
-		if (Calendar.is_ie) {
+		if (Calendar.is_ie && !Calendar.is_ie7up) {
 			br.y += document.body.scrollTop;
 			br.x += document.body.scrollLeft;
 		} else {
@@ -1801,6 +1802,5 @@ Date.prototype.setFullYear = function(y) {
 
 // END: DATE OBJECT PATCHES
 
-
 // global object that remembers the calendar
-window._dynarch_popupCalendar = null;
+window._dynarch_popupCalendar = null;	  
