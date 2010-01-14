@@ -3,7 +3,8 @@
 */
 
 editAreaLoader.load_syntax["xml"] = {
-	'COMMENT_SINGLE' : {}
+	'DISPLAY_NAME' : 'XML'
+	,'COMMENT_SINGLE' : {}
 	,'COMMENT_MULTI' : {'<!--' : '-->'}
 	,'QUOTEMARKS' : {1: "'", 2: '"'}
 	,'KEYWORD_CASE_SENSITIVE' : false

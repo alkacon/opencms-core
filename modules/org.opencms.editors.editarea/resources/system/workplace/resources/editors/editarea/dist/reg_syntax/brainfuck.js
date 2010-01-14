@@ -1,5 +1,6 @@
 editAreaLoader.load_syntax["brainfuck"] = {
-	'COMMENT_SINGLE' : {}
+	'DISPLAY_NAME' : 'Brainfuck'
+	,'COMMENT_SINGLE' : {}
 	,'COMMENT_MULTI' : {}
 	,'QUOTEMARKS' : {}
 	,'KEYWORD_CASE_SENSITIVE' : true

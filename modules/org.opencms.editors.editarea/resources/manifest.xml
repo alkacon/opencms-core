@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.5</opencms_version>
-		<createdate>Wed, 13 May 2009 12:23:40 GMT</createdate>
+		<opencms_version>7.5.1</opencms_version>
+		<createdate>Thu, 14 Jan 2010 15:56:45 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,9 +14,9 @@
 		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[<p>This module adds the Open Source text editor "EditArea" to the OpenCms Workplace.</p>
-<p>Install this module if you want a source code editor with syntax highlighting. The version of EditArea is 0.8.1.1</p>
-<p><i>(c) 2009 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.5.0</version>
+<p>Install this module if you want a source code editor with syntax highlighting. The version of EditArea is 0.8.2</p>
+<p><i>(c) 2010 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>7.5.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -38,10 +38,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>41f49e25-358b-11de-9835-f9441ff21e44</uuidstructure>
-			<datelastmodified>Thu, 30 Apr 2009 13:31:49 GMT</datelastmodified>
+			<uuidstructure>1c0cb4ed-0115-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:00:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 30 Apr 2009 13:31:49 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:00:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -343,11 +343,11 @@
 			<source>system/workplace/resources/editors/editarea/changed/edit_area.css</source>
 			<destination>system/workplace/resources/editors/editarea/changed/edit_area.css</destination>
 			<type>plain</type>
-			<uuidstructure>99ff4ecb-f427-11dc-a434-734b16235bd3</uuidstructure>
-			<uuidresource>99ff4ecc-f427-11dc-a434-734b16235bd3</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 12:16:45 GMT</datelastmodified>
+			<uuidstructure>9070ef47-0117-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>9070ef48-0117-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 17 Mar 2008 13:39:43 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:17:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -363,11 +363,11 @@
 			<source>system/workplace/resources/editors/editarea/changed/edit_area_full.js</source>
 			<destination>system/workplace/resources/editors/editarea/changed/edit_area_full.js</destination>
 			<type>plain</type>
-			<uuidstructure>4e9cb9de-f4c9-11dc-bfe8-734b16235bd3</uuidstructure>
-			<uuidresource>4e9cb9df-f4c9-11dc-bfe8-734b16235bd3</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 12:16:58 GMT</datelastmodified>
+			<uuidstructure>907a6529-0117-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>907a652a-0117-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Mar 2008 08:57:15 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:17:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -401,11 +401,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/autocompletion.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/autocompletion.js</destination>
 			<type>plain</type>
-			<uuidstructure>628ac5e6-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>628ac5e7-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e3e04c3e-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3e04c3f-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -416,11 +416,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/edit_area.css</source>
 			<destination>system/workplace/resources/editors/editarea/dist/edit_area.css</destination>
 			<type>plain</type>
-			<uuidstructure>628f80d9-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>628f80da-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 12:17:23 GMT</datelastmodified>
+			<uuidstructure>e3e50731-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3e50732-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -431,11 +431,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/edit_area.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/edit_area.js</destination>
 			<type>plain</type>
-			<uuidstructure>62943bcc-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62943bcd-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e3e9e934-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3e9e935-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -446,11 +446,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/edit_area_compressor.php</source>
 			<destination>system/workplace/resources/editors/editarea/dist/edit_area_compressor.php</destination>
 			<type>plain</type>
-			<uuidstructure>629b67bf-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>629b67c0-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e3f11527-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3f11528-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -461,11 +461,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/edit_area_full.gz</source>
 			<destination>system/workplace/resources/editors/editarea/dist/edit_area_full.gz</destination>
 			<type>plain</type>
-			<uuidstructure>62a022b2-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62a022b3-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e3f5d01a-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3f5d01b-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -476,41 +476,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/edit_area_full.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/edit_area_full.js</destination>
 			<type>plain</type>
-			<uuidstructure>62a504b5-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62a504b6-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 12:17:35 GMT</datelastmodified>
+			<uuidstructure>e3fcfc0d-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3fcfc0e-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/editors/editarea/dist/edit_area_full_with_plugins.gz</source>
-			<destination>system/workplace/resources/editors/editarea/dist/edit_area_full_with_plugins.gz</destination>
-			<type>plain</type>
-			<uuidstructure>62ac0998-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62ac0999-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/editors/editarea/dist/edit_area_full_with_plugins.js</source>
-			<destination>system/workplace/resources/editors/editarea/dist/edit_area_full_with_plugins.js</destination>
-			<type>plain</type>
-			<uuidstructure>62b5a68b-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62b5a68c-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -521,11 +491,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/edit_area_functions.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/edit_area_functions.js</destination>
 			<type>plain</type>
-			<uuidstructure>62bcd27e-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62bcd27f-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e4042800-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e4042801-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -536,11 +506,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/edit_area_loader.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/edit_area_loader.js</destination>
 			<type>plain</type>
-			<uuidstructure>62c3fe71-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62c3fe72-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e408e2f3-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e408e2f4-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -551,11 +521,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/elements_functions.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/elements_functions.js</destination>
 			<type>plain</type>
-			<uuidstructure>62c8b964-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62c8b965-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e4100ee6-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e4100ee7-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -566,11 +536,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/highlight.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/highlight.js</destination>
 			<type>plain</type>
-			<uuidstructure>62cd7457-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62cd7458-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e414c9d9-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e414c9da-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -581,11 +551,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/keyboard.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/keyboard.js</destination>
 			<type>plain</type>
-			<uuidstructure>62d22f4a-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62d22f4b-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e41984cc-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e41984cd-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -596,11 +566,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/license_apache.txt</source>
 			<destination>system/workplace/resources/editors/editarea/dist/license_apache.txt</destination>
 			<type>plain</type>
-			<uuidstructure>62d95b3d-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62d95b3e-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e420b0bf-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e420b0c0-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -611,11 +581,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/license_bsd.txt</source>
 			<destination>system/workplace/resources/editors/editarea/dist/license_bsd.txt</destination>
 			<type>plain</type>
-			<uuidstructure>62de3d40-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62de3d41-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e4256bb2-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e4256bb3-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -626,11 +596,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/license_lgpl.txt</source>
 			<destination>system/workplace/resources/editors/editarea/dist/license_lgpl.txt</destination>
 			<type>plain</type>
-			<uuidstructure>62e2f833-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62e2f834-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e42a4db5-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e42a4db6-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -641,11 +611,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/manage_area.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/manage_area.js</destination>
 			<type>plain</type>
-			<uuidstructure>62ea2426-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62ea2427-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e4315298-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e4315299-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -656,11 +626,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax.js</destination>
 			<type>plain</type>
-			<uuidstructure>62eedf19-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62eedf1a-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e436349b-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e436349c-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -671,11 +641,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/regexp.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/regexp.js</destination>
 			<type>plain</type>
-			<uuidstructure>62f39a0c-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62f39a0d-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e43aef8e-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e43aef8f-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -686,11 +656,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/resize_area.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/resize_area.js</destination>
 			<type>plain</type>
-			<uuidstructure>62f854ff-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62f85500-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e43faa81-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e43faa82-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -701,11 +671,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/search_replace.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/search_replace.js</destination>
 			<type>plain</type>
-			<uuidstructure>62ff80f2-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62ff80f3-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e44b9164-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e44b9165-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -716,11 +686,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/template.html</source>
 			<destination>system/workplace/resources/editors/editarea/dist/template.html</destination>
 			<type>plain</type>
-			<uuidstructure>630462f5-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>630462f6-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e4507367-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e4507368-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:09 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -730,10 +700,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/images</destination>
 			<type>folder</type>
-			<uuidstructure>5fbab58b-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:04 GMT</datelastmodified>
+			<uuidstructure>e10b80f6-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -744,11 +714,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/autocompletion.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/autocompletion.gif</destination>
 			<type>image</type>
-			<uuidstructure>5fcdc85d-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>5fcdc85e-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e1151de8-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1151de9-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -764,11 +734,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/close.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/close.gif</destination>
 			<type>image</type>
-			<uuidstructure>5fd9af41-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>5fd9af42-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e11c49dc-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e11c49dd-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -784,11 +754,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/fullscreen.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/fullscreen.gif</destination>
 			<type>image</type>
-			<uuidstructure>5fe0db35-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>5fe0db36-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e1234ec0-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1234ec1-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -804,11 +774,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/go_to_line.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/go_to_line.gif</destination>
 			<type>image</type>
-			<uuidstructure>5fe80729-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>5fe8072a-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e12830c4-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e12830c5-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -824,11 +794,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/help.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/help.gif</destination>
 			<type>image</type>
-			<uuidstructure>5fecc21d-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>5fecc21e-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e131a6a8-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e131a6a9-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -844,11 +814,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/highlight.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/highlight.gif</destination>
 			<type>image</type>
-			<uuidstructure>5ff3ee11-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>5ff3ee12-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e138d29c-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e138d29d-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -864,11 +834,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/load.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/load.gif</destination>
 			<type>image</type>
-			<uuidstructure>5ffb1a05-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>5ffb1a06-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e13d8d90-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e13d8d91-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -884,11 +854,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/move.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/move.gif</destination>
 			<type>image</type>
-			<uuidstructure>60048fe9-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60048fea-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e144b984-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e144b985-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -904,11 +874,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/newdocument.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/newdocument.gif</destination>
 			<type>image</type>
-			<uuidstructure>600971ed-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>600971ee-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e14e5678-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e14e5679-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -924,11 +894,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/opacity.png</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/opacity.png</destination>
 			<type>image</type>
-			<uuidstructure>601558d1-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>601558d2-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e155826c-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e155826d-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -944,11 +914,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/processing.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/processing.gif</destination>
 			<type>image</type>
-			<uuidstructure>601c84c5-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>601c84c6-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e15c8750-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e15c8751-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -964,11 +934,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/redo.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/redo.gif</destination>
 			<type>image</type>
-			<uuidstructure>60213fb9-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60213fba-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e1616954-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1616955-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -984,11 +954,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/reset_highlight.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/reset_highlight.gif</destination>
 			<type>image</type>
-			<uuidstructure>60286bad-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60286bae-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e1689548-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1689549-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1004,11 +974,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/save.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/save.gif</destination>
 			<type>image</type>
-			<uuidstructure>602f97a1-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>602f97a2-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e16f9a2c-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e16f9a2d-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1024,11 +994,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/search.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/search.gif</destination>
 			<type>image</type>
-			<uuidstructure>60345295-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60345296-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e176c620-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e176c621-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1044,11 +1014,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/smooth_selection.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/smooth_selection.gif</destination>
 			<type>image</type>
-			<uuidstructure>603b7e89-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>603b7e8a-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e17df214-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e17df215-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1064,11 +1034,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/spacer.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/spacer.gif</destination>
 			<type>image</type>
-			<uuidstructure>6042aa7d-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6042aa7e-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e1851e08-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1851e09-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:04 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1084,11 +1054,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/statusbar_resize.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/statusbar_resize.gif</destination>
 			<type>image</type>
-			<uuidstructure>6049af61-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6049af62-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:44 GMT</datelastmodified>
+			<uuidstructure>e189d8fc-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e189d8fd-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1104,11 +1074,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/undo.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/undo.gif</destination>
 			<type>image</type>
-			<uuidstructure>6050db55-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6050db56-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e19104f0-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e19104f1-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1124,11 +1094,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/images/word_wrap.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/images/word_wrap.gif</destination>
 			<type>image</type>
-			<uuidstructure>60580749-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6058074a-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e19830e4-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e19830e5-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1143,10 +1113,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/langs</destination>
 			<type>folder</type>
-			<uuidstructure>605cc23d-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:05 GMT</datelastmodified>
+			<uuidstructure>e19f5cd8-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1157,11 +1127,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/bg.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/bg.js</destination>
 			<type>plain</type>
-			<uuidstructure>6061a43f-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6061a440-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1a417ca-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1a417cb-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1172,11 +1142,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/cs.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/cs.js</destination>
 			<type>plain</type>
-			<uuidstructure>60665f32-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60665f33-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1a8d2bd-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1a8d2be-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1187,11 +1157,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/de.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/de.js</destination>
 			<type>plain</type>
-			<uuidstructure>606b1a25-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>606b1a26-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1adb4c0-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1adb4c1-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1202,11 +1172,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/dk.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/dk.js</destination>
 			<type>plain</type>
-			<uuidstructure>606fd518-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>606fd519-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1b26fb3-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1b26fb4-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1217,11 +1187,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/en.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/en.js</destination>
 			<type>plain</type>
-			<uuidstructure>6077010b-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6077010c-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1b99ba6-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1b99ba7-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1232,11 +1202,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/eo.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/eo.js</destination>
 			<type>plain</type>
-			<uuidstructure>607be30e-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>607be30f-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1be5699-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1be569a-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1247,11 +1217,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/es.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/es.js</destination>
 			<type>plain</type>
-			<uuidstructure>60809e01-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60809e02-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1c3118c-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1c3118d-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1262,11 +1232,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/fi.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/fi.js</destination>
 			<type>plain</type>
-			<uuidstructure>608558f4-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>608558f5-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1ca3d7f-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1ca3d80-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1277,11 +1247,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/fr.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/fr.js</destination>
 			<type>plain</type>
-			<uuidstructure>608a13e7-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>608a13e8-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1d16972-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1d16973-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1292,11 +1262,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/hr.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/hr.js</destination>
 			<type>plain</type>
-			<uuidstructure>60913fda-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60913fdb-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1d62465-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1d62466-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1307,11 +1277,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/it.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/it.js</destination>
 			<type>plain</type>
-			<uuidstructure>6095facd-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6095face-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1db0668-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1db0669-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1322,11 +1292,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/ja.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/ja.js</destination>
 			<type>plain</type>
-			<uuidstructure>609d26c0-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>609d26c1-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1dfc15b-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1dfc15c-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1337,11 +1307,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/mk.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/mk.js</destination>
 			<type>plain</type>
-			<uuidstructure>60a208c3-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60a208c4-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1eba83e-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1eba83f-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1352,11 +1322,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/nl.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/nl.js</destination>
 			<type>plain</type>
-			<uuidstructure>60a90da6-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60a90da7-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1f06331-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1f06332-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1367,11 +1337,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/pl.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/pl.js</destination>
 			<type>plain</type>
-			<uuidstructure>60adefa9-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60adefaa-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1f51e24-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1f51e25-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1382,11 +1352,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/pt.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/pt.js</destination>
 			<type>plain</type>
-			<uuidstructure>60b2aa9c-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60b2aa9d-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e1fc4a17-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e1fc4a18-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1397,11 +1367,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/ru.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/ru.js</destination>
 			<type>plain</type>
-			<uuidstructure>60b9d68f-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60b9d690-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2012c1a-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2012c1b-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1412,11 +1382,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/sk.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/sk.js</destination>
 			<type>plain</type>
-			<uuidstructure>60be9182-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60be9183-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e205e70d-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e205e70e-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1427,11 +1397,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/langs/zh.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/langs/zh.js</destination>
 			<type>plain</type>
-			<uuidstructure>60c34c75-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60c34c76-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e20d1300-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e20d1301-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1441,10 +1411,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins</destination>
 			<type>folder</type>
-			<uuidstructure>60c82e78-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:05 GMT</datelastmodified>
+			<uuidstructure>e211cdf3-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1454,10 +1424,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap</destination>
 			<type>folder</type>
-			<uuidstructure>60cce96a-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:05 GMT</datelastmodified>
+			<uuidstructure>e21688e5-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1468,11 +1438,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/charmap.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/charmap.js</destination>
 			<type>plain</type>
-			<uuidstructure>60d4155c-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60d4155d-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e21b43d7-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e21b43d8-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1483,11 +1453,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/popup.html</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/popup.html</destination>
 			<type>plain</type>
-			<uuidstructure>6173d717-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6173d718-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2bd7792-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2bd7793-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1497,10 +1467,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/css</destination>
 			<type>folder</type>
-			<uuidstructure>60db414f-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:05 GMT</datelastmodified>
+			<uuidstructure>e22025da-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1511,11 +1481,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/css/charmap.css</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/css/charmap.css</destination>
 			<type>plain</type>
-			<uuidstructure>60dffc41-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60dffc42-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e224e0cc-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e224e0cd-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:05 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1525,10 +1495,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/images</destination>
 			<type>folder</type>
-			<uuidstructure>60e72834-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:06 GMT</datelastmodified>
+			<uuidstructure>e22c0cbf-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1539,11 +1509,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/images/charmap.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/images/charmap.gif</destination>
 			<type>image</type>
-			<uuidstructure>60ebe326-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60ebe327-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e23338b1-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e23338b2-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1558,10 +1528,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/jscripts</destination>
 			<type>folder</type>
-			<uuidstructure>60f30f1a-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:06 GMT</datelastmodified>
+			<uuidstructure>e23a64a5-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1572,11 +1542,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/jscripts/map.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/jscripts/map.js</destination>
 			<type>plain</type>
-			<uuidstructure>60fa3b0c-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>60fa3b0d-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e23f1f97-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e23f1f98-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1586,10 +1556,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs</destination>
 			<type>folder</type>
-			<uuidstructure>610166ff-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:06 GMT</datelastmodified>
+			<uuidstructure>e243da8a-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1600,11 +1570,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/bg.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/bg.js</destination>
 			<type>plain</type>
-			<uuidstructure>610621f1-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>610621f2-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e248957c-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e248957d-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1615,11 +1585,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/cs.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/cs.js</destination>
 			<type>plain</type>
-			<uuidstructure>610adce4-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>610adce5-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e24fc16f-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e24fc170-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1630,11 +1600,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/de.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/de.js</destination>
 			<type>plain</type>
-			<uuidstructure>611208d7-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>611208d8-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2547c62-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2547c63-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1645,11 +1615,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/dk.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/dk.js</destination>
 			<type>plain</type>
-			<uuidstructure>6116c3ca-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6116c3cb-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e25ba855-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e25ba856-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1660,11 +1630,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/en.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/en.js</destination>
 			<type>plain</type>
-			<uuidstructure>611defbd-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>611defbe-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e262d448-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e262d449-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1675,11 +1645,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/eo.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/eo.js</destination>
 			<type>plain</type>
-			<uuidstructure>6122aab0-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6122aab1-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2678f3b-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2678f3c-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1690,11 +1660,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/es.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/es.js</destination>
 			<type>plain</type>
-			<uuidstructure>6129d6a3-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6129d6a4-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e26ebb2e-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e26ebb2f-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1705,11 +1675,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/fr.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/fr.js</destination>
 			<type>plain</type>
-			<uuidstructure>61310296-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61310297-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e275e721-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e275e722-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1720,11 +1690,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/hr.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/hr.js</destination>
 			<type>plain</type>
-			<uuidstructure>6135bd89-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6135bd8a-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e27f8414-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e27f8415-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1735,11 +1705,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/it.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/it.js</destination>
 			<type>plain</type>
-			<uuidstructure>613ce97c-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>613ce97d-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e286b007-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e286b008-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1750,11 +1720,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/ja.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/ja.js</destination>
 			<type>plain</type>
-			<uuidstructure>6141a46f-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6141a470-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e28b6afa-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e28b6afb-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1765,11 +1735,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/mk.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/mk.js</destination>
 			<type>plain</type>
-			<uuidstructure>6148cf62-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6148cf63-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e29296ed-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e29296ee-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1780,11 +1750,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/nl.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/nl.js</destination>
 			<type>plain</type>
-			<uuidstructure>614db165-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>614db166-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e29751e0-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e29751e1-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1795,11 +1765,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/pl.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/pl.js</destination>
 			<type>plain</type>
-			<uuidstructure>61526c58-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61526c59-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e29e7dd3-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e29e7dd4-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1810,11 +1780,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/pt.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/pt.js</destination>
 			<type>plain</type>
-			<uuidstructure>6159984b-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6159984c-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2a338c6-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2a338c7-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1825,11 +1795,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/ru.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/ru.js</destination>
 			<type>plain</type>
-			<uuidstructure>6160c43e-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6160c43f-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2aa64b9-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2aa64ba-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1840,11 +1810,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/sk.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/sk.js</destination>
 			<type>plain</type>
-			<uuidstructure>6167c921-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6167c922-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2b190ac-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2b190ad-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1855,11 +1825,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/zh.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/charmap/langs/zh.js</destination>
 			<type>plain</type>
-			<uuidstructure>616ef514-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>616ef515-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2b64b9f-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2b64ba0-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:06 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1869,10 +1839,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/opencms</destination>
 			<type>folder</type>
-			<uuidstructure>b94bfab7-3fad-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 11:03:43 GMT</datelastmodified>
+			<uuidstructure>1d6ac256-0119-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:28:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 11:03:43 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:28:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1883,11 +1853,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/opencms/opencms.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/opencms/opencms.js</destination>
 			<type>plain</type>
-			<uuidstructure>b979254f-3fad-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>b9792550-3fad-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 11:03:54 GMT</datelastmodified>
+			<uuidstructure>1dfe9d28-0119-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>1dfe9d29-0119-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:29:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 11:03:44 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:28:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1897,10 +1867,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/opencms/images</destination>
 			<type>folder</type>
-			<uuidstructure>b950b5a9-3fad-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 11:03:43 GMT</datelastmodified>
+			<uuidstructure>1d8e9e16-0119-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:28:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 11:03:43 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:28:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1911,11 +1881,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/opencms/images/exit.png</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/opencms/images/exit.png</destination>
 			<type>image</type>
-			<uuidstructure>b957e19b-3fad-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>b957e19c-3fad-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 11:04:17 GMT</datelastmodified>
+			<uuidstructure>1db97db6-0119-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>1db97db7-0119-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:29:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 11:03:43 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:28:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1931,11 +1901,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/opencms/images/save.png</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/opencms/images/save.png</destination>
 			<type>image</type>
-			<uuidstructure>b95f0d8f-3fad-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>b95f0d90-3fad-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 11:04:23 GMT</datelastmodified>
+			<uuidstructure>1dc0a9aa-0119-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>1dc0a9ab-0119-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:29:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 11:03:43 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:28:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1951,11 +1921,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/opencms/images/save_exit.png</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/opencms/images/save_exit.png</destination>
 			<type>image</type>
-			<uuidstructure>b963c883-3fad-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>b963c884-3fad-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 11:04:28 GMT</datelastmodified>
+			<uuidstructure>1dc7d59e-0119-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>1dc7d59f-0119-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:30:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 11:03:44 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:28:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1970,10 +1940,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/opencms/langs</destination>
 			<type>folder</type>
-			<uuidstructure>b96af477-3fad-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 11:03:44 GMT</datelastmodified>
+			<uuidstructure>1dcf0192-0119-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:28:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 11:03:44 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:28:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1984,11 +1954,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/opencms/langs/de.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/opencms/langs/de.js</destination>
 			<type>plain</type>
-			<uuidstructure>b96d3e69-3fad-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>b96d3e6a-3fad-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 11:04:02 GMT</datelastmodified>
+			<uuidstructure>1df2b642-0119-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>1df2b643-0119-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:29:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 11:03:44 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:28:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1999,11 +1969,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/opencms/langs/en.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/opencms/langs/en.js</destination>
 			<type>plain</type>
-			<uuidstructure>b9746a5c-3fad-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>b9746a5d-3fad-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 11:04:06 GMT</datelastmodified>
+			<uuidstructure>1df9e235-0119-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>1df9e236-0119-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:29:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 11:03:44 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:28:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2013,10 +1983,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test</destination>
 			<type>folder</type>
-			<uuidstructure>6178920a-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:07 GMT</datelastmodified>
+			<uuidstructure>e2c23285-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2027,11 +1997,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/test.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/test.js</destination>
 			<type>plain</type>
-			<uuidstructure>620eb7d2-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>620eb7d3-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e35d394d-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e35d394e-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2042,11 +2012,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/test2.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/test2.js</destination>
 			<type>plain</type>
-			<uuidstructure>6215e3c5-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6215e3c6-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e3646540-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3646541-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2056,10 +2026,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/css</destination>
 			<type>folder</type>
-			<uuidstructure>617fbdfc-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:07 GMT</datelastmodified>
+			<uuidstructure>e2c6ed77-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2070,11 +2040,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/css/test.css</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/css/test.css</destination>
 			<type>plain</type>
-			<uuidstructure>618478ee-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>618478ef-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2ce1969-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2ce196a-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2084,10 +2054,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/images</destination>
 			<type>folder</type>
-			<uuidstructure>618933e1-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:07 GMT</datelastmodified>
+			<uuidstructure>e2d2fb6c-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2098,11 +2068,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/images/test.gif</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/images/test.gif</destination>
 			<type>image</type>
-			<uuidstructure>61905fd3-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61905fd4-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2da004e-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2da004f-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2118,11 +2088,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/images/Thumbs.db</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/images/Thumbs.db</destination>
 			<type>plain</type>
-			<uuidstructure>61978bc7-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61978bc8-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2dee152-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2dee153-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2132,10 +2102,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs</destination>
 			<type>folder</type>
-			<uuidstructure>619c46ba-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:07 GMT</datelastmodified>
+			<uuidstructure>e2e39c45-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2146,11 +2116,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/bg.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/bg.js</destination>
 			<type>plain</type>
-			<uuidstructure>61a101ac-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61a101ad-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2eac837-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2eac838-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2161,11 +2131,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/cs.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/cs.js</destination>
 			<type>plain</type>
-			<uuidstructure>61a5e3af-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61a5e3b0-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2f1f42a-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2f1f42b-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2176,11 +2146,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/de.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/de.js</destination>
 			<type>plain</type>
-			<uuidstructure>61ad0fa2-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61ad0fa3-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2f6af1d-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2f6af1e-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2191,11 +2161,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/dk.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/dk.js</destination>
 			<type>plain</type>
-			<uuidstructure>61b1ca95-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61b1ca96-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e2fddb10-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e2fddb11-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2206,11 +2176,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/en.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/en.js</destination>
 			<type>plain</type>
-			<uuidstructure>61b8f688-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61b8f689-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e3050703-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3050704-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2221,11 +2191,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/eo.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/eo.js</destination>
 			<type>plain</type>
-			<uuidstructure>61bdb17b-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61bdb17c-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e30c32f6-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e30c32f7-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2236,11 +2206,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/es.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/es.js</destination>
 			<type>plain</type>
-			<uuidstructure>61c4dd6e-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61c4dd6f-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e310ede9-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e310edea-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2251,11 +2221,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/fr.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/fr.js</destination>
 			<type>plain</type>
-			<uuidstructure>61cc0961-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61cc0962-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e31cd4cc-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e31cd4cd-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2266,11 +2236,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/hr.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/hr.js</destination>
 			<type>plain</type>
-			<uuidstructure>61d33554-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61d33555-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e3218fbf-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3218fc0-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2281,11 +2251,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/it.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/it.js</destination>
 			<type>plain</type>
-			<uuidstructure>61d7f047-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61d7f048-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e328bbb2-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e328bbb3-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2296,11 +2266,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/ja.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/ja.js</destination>
 			<type>plain</type>
-			<uuidstructure>61df1c3a-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61df1c3b-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e32d76a5-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e32d76a6-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2311,11 +2281,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/mk.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/mk.js</destination>
 			<type>plain</type>
-			<uuidstructure>61e6482d-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61e6482e-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e334a298-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e334a299-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2326,11 +2296,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/nl.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/nl.js</destination>
 			<type>plain</type>
-			<uuidstructure>61eb0320-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61eb0321-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e3395d8b-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3395d8c-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2341,11 +2311,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/pl.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/pl.js</destination>
 			<type>plain</type>
-			<uuidstructure>61f22f13-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61f22f14-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e340897e-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e340897f-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2356,11 +2326,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/pt.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/pt.js</destination>
 			<type>plain</type>
-			<uuidstructure>61f6ea06-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61f6ea07-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e3456b81-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3456b82-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2371,11 +2341,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/ru.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/ru.js</destination>
 			<type>plain</type>
-			<uuidstructure>61fe15f9-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>61fe15fa-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e34c7064-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e34c7065-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2386,11 +2356,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/sk.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/sk.js</destination>
 			<type>plain</type>
-			<uuidstructure>6202d0ec-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6202d0ed-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e3515267-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3515268-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2401,11 +2371,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/plugins/test/langs/zh.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/plugins/test/langs/zh.js</destination>
 			<type>plain</type>
-			<uuidstructure>6209fcdf-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6209fce0-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e3587e5a-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3587e5b-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:07 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2415,10 +2385,10 @@
 		<file>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax</destination>
 			<type>folder</type>
-			<uuidstructure>621a9eb8-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<datelastmodified>Wed, 13 May 2009 10:54:08 GMT</datelastmodified>
+			<uuidstructure>e36b9133-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<datelastmodified>Thu, 14 Jan 2010 14:12:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2429,11 +2399,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/basic.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/basic.js</destination>
 			<type>plain</type>
-			<uuidstructure>621f80ba-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>621f80bb-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e3704c25-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3704c26-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2444,11 +2414,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/brainfuck.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/brainfuck.js</destination>
 			<type>plain</type>
-			<uuidstructure>6226859d-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6226859e-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:43 GMT</datelastmodified>
+			<uuidstructure>e3750718-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3750719-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2459,11 +2429,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/c.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/c.js</destination>
 			<type>plain</type>
-			<uuidstructure>622b67a0-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>622b67a1-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e379c20b-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e379c20c-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2474,11 +2444,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/coldfusion.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/coldfusion.js</destination>
 			<type>plain</type>
-			<uuidstructure>62302293-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62302294-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e380edfe-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e380edff-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2489,11 +2459,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/cpp.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/cpp.js</destination>
 			<type>plain</type>
-			<uuidstructure>6234dd86-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6234dd87-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e385a8f1-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e385a8f2-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2504,11 +2474,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/css.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/css.js</destination>
 			<type>plain</type>
-			<uuidstructure>623c0979-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>623c097a-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e38a8af4-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e38a8af5-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2519,11 +2489,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/html.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/html.js</destination>
 			<type>plain</type>
-			<uuidstructure>6240c46c-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6240c46d-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e391b6e7-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e391b6e8-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2534,11 +2504,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/java.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/java.js</destination>
 			<type>plain</type>
-			<uuidstructure>6245a66f-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6245a670-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e39671da-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e39671db-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2549,11 +2519,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/js.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/js.js</destination>
 			<type>plain</type>
-			<uuidstructure>624a6162-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>624a6163-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e39b2ccd-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e39b2cce-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2564,11 +2534,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/jsp.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/jsp.js</destination>
 			<type>plain</type>
-			<uuidstructure>624f1c55-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>624f1c56-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>08688847-011a-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>08688848-011a-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:36:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:35:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2579,11 +2549,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/pas.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/pas.js</destination>
 			<type>plain</type>
-			<uuidstructure>6253d748-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6253d749-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3a258c0-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3a258c1-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2594,11 +2564,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/perl.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/perl.js</destination>
 			<type>plain</type>
-			<uuidstructure>6258b94b-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6258b94c-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3a713b3-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3a713b4-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2609,11 +2579,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/php.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/php.js</destination>
 			<type>plain</type>
-			<uuidstructure>625fbe2e-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>625fbe2f-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3b0b0a6-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3b0b0a7-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2624,11 +2594,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/python.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/python.js</destination>
 			<type>plain</type>
-			<uuidstructure>6264a031-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6264a032-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3b7dc99-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3b7dc9a-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2639,11 +2609,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/robotstxt.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/robotstxt.js</destination>
 			<type>plain</type>
-			<uuidstructure>626bcc24-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>626bcc25-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3bc978c-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3bc978d-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2654,11 +2624,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/ruby.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/ruby.js</destination>
 			<type>plain</type>
-			<uuidstructure>62708717-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>62708718-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3c3c37f-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3c3c380-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2669,11 +2639,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/sql.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/sql.js</destination>
 			<type>plain</type>
-			<uuidstructure>6275420a-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6275420b-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3c87e72-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3c87e73-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2684,11 +2654,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/tsql.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/tsql.js</destination>
 			<type>plain</type>
-			<uuidstructure>6279fcfd-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6279fcfe-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3cfaa65-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3cfaa66-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2699,11 +2669,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/vb.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/vb.js</destination>
 			<type>plain</type>
-			<uuidstructure>627edf00-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>627edf01-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3d46558-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3d46559-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2714,11 +2684,11 @@
 			<source>system/workplace/resources/editors/editarea/dist/reg_syntax/xml.js</source>
 			<destination>system/workplace/resources/editors/editarea/dist/reg_syntax/xml.js</destination>
 			<type>plain</type>
-			<uuidstructure>6285e3e3-3fac-11de-a300-f9441ff21e44</uuidstructure>
-			<uuidresource>6285e3e4-3fac-11de-a300-f9441ff21e44</uuidresource>
-			<datelastmodified>Wed, 13 May 2009 10:55:42 GMT</datelastmodified>
+			<uuidstructure>e3db914b-0116-11df-8fe8-0db05d68d8d5</uuidstructure>
+			<uuidresource>e3db914c-0116-11df-8fe8-0db05d68d8d5</uuidresource>
+			<datelastmodified>Thu, 14 Jan 2010 14:13:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 May 2009 10:54:08 GMT</datecreated>
+			<datecreated>Thu, 14 Jan 2010 14:12:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
