@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/12 11:14:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/14 13:31:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.9.2
  */
@@ -489,7 +489,7 @@ public class CmsSitemapManager {
             return null;
         }
         CmsSitemapBean sitemap = sitemapXml.getSitemap(cms, cms.getRequestContext().getLocale());
-        if (sitemap == null) {
+        if ((sitemap == null) || sitemap.getSiteEntries().isEmpty()) {
             return null;
         }
         LinkedList<String> entryPaths = new LinkedList<String>(CmsStringUtil.splitAsList(
