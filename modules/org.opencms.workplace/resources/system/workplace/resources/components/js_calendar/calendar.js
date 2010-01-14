@@ -1,4 +1,4 @@
-ie7u/*  Copyright Mihai Bazon, 2002-2005  |  www.bazon.net/mishoo
+/*  Copyright Mihai Bazon, 2002-2005  |  www.bazon.net/mishoo
  * -----------------------------------------------------------
  *
  * The DHTML Calendar, version 1.0 "It is happening again"
