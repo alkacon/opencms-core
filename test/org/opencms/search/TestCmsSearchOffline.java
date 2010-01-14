@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchOffline.java,v $
- * Date   : $Date: 2009/09/02 05:54:20 $
- * Version: $Revision: 1.1.4.1 $
+ * Date   : $Date: 2010/01/14 15:30:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.4.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsSearchOffline extends OpenCmsTestCase {
 
@@ -144,6 +144,12 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         assertEquals("/sites/default/xmlcontent/article_0001.html", searchResult.get(0).getPath());
     }
 
+    protected void waitForUpdate() throws InterruptedException {
+
+        // wait for the offline index
+        Thread.sleep(OpenCms.getSearchManager().getOfflineUpdateFrequency() * 2);
+    }
+
     /**
      * Tests automatic index update after modification of a resource.<p>
      * 
@@ -164,16 +170,16 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         cms.createResource(fileName, CmsResourceTypePlain.getStaticTypeId(), text1.getBytes(), null);
 
         // wait for the offline index
-        Thread.sleep(1500);
+        waitForUpdate();
 
         // search for the new resource in the offline index
         CmsSearch cmsSearchBean = new CmsSearch();
-        cmsSearchBean.init(cms);
         cmsSearchBean.setIndex(INDEX_SPECIAL);
         cmsSearchBean.setSearchRoot("/");
-        List<CmsSearchResult> results;
-
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
+        List<CmsSearchResult> results;
+        cmsSearchBean.init(cms);
+
         results = cmsSearchBean.getSearchResult();
 
         TestCmsSearch.printResults(results, cms);
@@ -186,7 +192,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
             ""));
 
         // wait for the offline index
-        Thread.sleep(1500);
+        waitForUpdate();
         // repeat the last search with the same parameters
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();
@@ -195,13 +201,15 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         assertEquals(8, results.size());
         assertEquals("/sites/default/test/test.txt", (results.get(1)).getPath());
 
+        echo("Delete Test - start");
+
         // delete a resource
         String deleteFileName = "/types/text.txt";
         cms.lockResource(deleteFileName);
         cms.deleteResource(deleteFileName, CmsResource.DELETE_PRESERVE_SIBLINGS);
 
         // wait for the offline index
-        Thread.sleep(1500);
+        waitForUpdate();
         // repeat the last search with the same parameters
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();
@@ -210,12 +218,14 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         assertEquals(7, results.size());
         assertEquals("/sites/default/test/test.txt", (results.get(0)).getPath());
 
+        echo("Delete Test - end");
+
         // move a resource
         String moveFileName = "/test/test_moved.txt";
         cms.moveResource(fileName, moveFileName);
 
         // wait for the offline index
-        Thread.sleep(1500);
+        waitForUpdate();
         // repeat the last search with the same parameters
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();

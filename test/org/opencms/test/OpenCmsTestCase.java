@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2009/10/19 11:09:29 $
- * Version: $Revision: 1.109.2.3 $
+ * Date   : $Date: 2010/01/14 15:30:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.109.2.3 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -604,6 +604,13 @@ public class OpenCmsTestCase extends TestCase {
         // exit the shell
         m_shell.exit();
 
+        try {
+            // sleep 0.5 seconds - sometimes other Threads need to finish before the next test case can start
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+
         // remove the database
         removeDatabase();
 
@@ -636,13 +643,6 @@ public class OpenCmsTestCase extends TestCase {
         path = getTestDataPath("export/");
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
-        }
-
-        try {
-            // sleep 0.5 seconds - sometimes other Threads need to finish before the next test case can start
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            // ignore
         }
     }
 
