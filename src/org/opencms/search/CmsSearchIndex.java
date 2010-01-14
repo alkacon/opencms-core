@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/10/28 15:58:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,6 +88,7 @@ import org.apache.lucene.search.TermsFilter;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
@@ -95,7 +96,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,6 +171,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         "30",
         "31"};
 
+    /** Constant for a field list that contains the "meta" field as well as the "content" field. */
+    public static final String[] DOC_META_FIELDS = new String[] {
+        CmsSearchField.FIELD_META,
+        CmsSearchField.FIELD_CONTENT};
+
     /** Constant for additional parameter to enable excerpt creation (default: true). */
     public static final String EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
 
@@ -198,7 +204,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final int MAX_HITS_DEFAULT = 5000;
 
     /** Constant for years max range span in document search. */
-    public static final int MAX_YEAR_RANGE = 6;
+    public static final int MAX_YEAR_RANGE = 12;
 
     /** Constant for additional parameter to enable permission checks (default: true). */
     public static final String PERMISSIONS = CmsSearchIndex.class.getName() + ".checkPermissions";
@@ -245,9 +251,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             return FieldSelectorResult.LOAD;
         }
     };
-
-    /** Constant for a field list that contains the "meta" field as well as the "content" field. */
-    static final String[] DOC_META_FIELDS = new String[] {CmsSearchField.FIELD_META, CmsSearchField.FIELD_CONTENT};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
@@ -795,7 +798,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             // open file directory for Lucene
-            FSDirectory dir = FSDirectory.getDirectory(m_path);
+            FSDirectory dir = FSDirectory.open(new File(m_path));
             // index already exists
             indexWriter = new IndexWriter(dir, getAnalyzer(), create, MaxFieldLength.UNLIMITED);
 
@@ -1177,53 +1180,20 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             // several search options are searched using filters
             BooleanFilter filter = new BooleanFilter();
-            // complete the search root
-            TermsFilter pathFilter = new TermsFilter();
-            if ((params.getRoots() != null) && (params.getRoots().size() > 0)) {
-                // add the all configured search roots with will request context
-                for (int i = 0; i < params.getRoots().size(); i++) {
-                    String searchRoot = searchCms.getRequestContext().addSiteRoot(params.getRoots().get(i));
-                    extendPathFilter(pathFilter, searchRoot);
-                }
-            } else {
-                // just use the current site root as the search root
-                extendPathFilter(pathFilter, searchCms.getRequestContext().getSiteRoot());
-            }
-            // add the calculated phrase query for the root path
-            filter.add(new FilterClause(pathFilter, BooleanClause.Occur.MUST));
+            // append root path filter
+            filter = appendPathFilter(searchCms, filter, params.getRoots());
+            // append category filter
+            filter = appendCategoryFilter(searchCms, filter, params.getCategories());
+            // append resource type filter
+            filter = appendResourceTypeFilter(searchCms, filter, params.getResourceTypes());
 
-            if ((params.getCategories() != null) && (params.getCategories().size() > 0)) {
-                // add query categories (if required)
-                filter.add(new FilterClause(getMultiTermQueryFilter(
-                    CmsSearchField.FIELD_CATEGORY,
-                    params.getCategories()), BooleanClause.Occur.MUST));
-            }
-
-            if ((params.getResourceTypes() != null) && (params.getResourceTypes().size() > 0)) {
-                // add query resource types (if required)
-                filter.add(new FilterClause(getMultiTermQueryFilter(
-                    CmsSearchField.FIELD_TYPE,
-                    params.getResourceTypes()), BooleanClause.Occur.MUST));
-            }
-
-            // create special optimized sub-filter for the date last modified search
-            Filter dateFilter = createDateRangeFilter(
-                CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP,
+            // append date last modified filter
+            filter = appendDateLastModifiedFilter(
+                filter,
                 params.getMinDateLastModified(),
                 params.getMaxDateLastModified());
-            if (dateFilter != null) {
-                // extend main filter with the created date filter
-                filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
-            }
-            // create special optimized sub-filter for the date created search
-            dateFilter = createDateRangeFilter(
-                CmsSearchField.FIELD_DATE_CREATED_LOOKUP,
-                params.getMinDateCreated(),
-                params.getMaxDateCreated());
-            if (dateFilter != null) {
-                // extend main filter with the created date filter
-                filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
-            }
+            // append date created filter
+            filter = appendDateCreatedFilter(filter, params.getMinDateCreated(), params.getMaxDateCreated());
 
             // the search query to use, will be constructed in the next lines 
             Query query = null;
@@ -1231,7 +1201,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             Query fieldsQuery = null;
 
             if (!params.isIgnoreQuery()) {
-                // since OpenCms 8 the query can be empty in which case only filtes are used for the result
+                // since OpenCms 8 the query can be empty in which case only filters are used for the result
                 if (params.getFieldQueries() != null) {
                     // each field has an individual query
                     BooleanQuery mustOccur = null;
@@ -1240,7 +1210,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     while (i.hasNext()) {
                         CmsSearchParameters.CmsSearchFieldQuery fq = i.next();
                         // add one sub-query for each defined field
-                        QueryParser p = new QueryParser(fq.getFieldName(), getAnalyzer());
+                        QueryParser p = new QueryParser(Version.LUCENE_CURRENT, fq.getFieldName(), getAnalyzer());
                         if (BooleanClause.Occur.SHOULD.equals(fq.getOccur())) {
                             if (shouldOccur == null) {
                                 shouldOccur = new BooleanQuery();
@@ -1267,23 +1237,26 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     // this is a "regular" query over one or more fields
                     // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                     for (int i = 0; i < params.getFields().size(); i++) {
-                        QueryParser p = new QueryParser(params.getFields().get(i), getAnalyzer());
+                        QueryParser p = new QueryParser(
+                            Version.LUCENE_CURRENT,
+                            params.getFields().get(i),
+                            getAnalyzer());
                         booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                     }
                     fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
                 } else {
                     // if no fields are provided, just use the "content" field by default
-                    QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
+                    QueryParser p = new QueryParser(Version.LUCENE_CURRENT, CmsSearchField.FIELD_CONTENT, getAnalyzer());
                     fieldsQuery = getSearcher().rewrite(p.parse(params.getQuery()));
                 }
 
-                // finally add the field queries to the main query
+                // finally set the main query to the fields query
+                // please note that we still need both variables in case the query is a MatchAllDocsQuery - see below
                 query = fieldsQuery;
             }
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_BASE_QUERY_1, query));
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FIELDS_QUERY_1, fieldsQuery));
             }
 
             if (query == null) {
@@ -1572,39 +1545,176 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Appends the a category filter to the given filter clause that matches all given categories.<p>
+     * 
+     * In case the provided List is null or empty, the original filter is left unchanged.<p>
+     * 
+     * The original filter parameter is extended and also provided as return value.<p> 
+     * 
+     * @param cms the current OpenCms search context
+     * @param filter the filter to extend
+     * @param categories the categories that will compose the filter
+     * 
+     * @return the extended filter clause
+     */
+    protected BooleanFilter appendCategoryFilter(CmsObject cms, BooleanFilter filter, List<String> categories) {
+
+        if ((categories != null) && (categories.size() > 0)) {
+            // add query categories (if required)
+            filter.add(new FilterClause(
+                getMultiTermQueryFilter(CmsSearchField.FIELD_CATEGORY, categories),
+                BooleanClause.Occur.MUST));
+        }
+
+        return filter;
+    }
+
+    /**
+     * Appends a date of creation filter to the given filter clause that matches the
+     * given time range.<p>
+     * 
+     * If the start time is equal to {@link Long#MIN_VALUE} and the end time is equal to {@link Long#MAX_VALUE}  
+     * than the original filter is left unchanged.<p>
+     * 
+     * The original filter parameter is extended and also provided as return value.<p> 
+     * 
+     * @param filter the filter to extend
+     * @param startTime start time of the range to search in
+     * @param endTime end time of the range to search in
+     * 
+     * @return the extended filter clause
+     */
+    protected BooleanFilter appendDateCreatedFilter(BooleanFilter filter, long startTime, long endTime) {
+
+        // create special optimized sub-filter for the date last modified search
+        Filter dateFilter = createDateRangeFilter(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, startTime, endTime);
+        if (dateFilter != null) {
+            // extend main filter with the created date filter
+            filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
+        }
+
+        return filter;
+    }
+
+    /**
+     * Appends a date of last modification filter to the given filter clause that matches the
+     * given time range.<p>
+     * 
+     * If the start time is equal to {@link Long#MIN_VALUE} and the end time is equal to {@link Long#MAX_VALUE}  
+     * than the original filter is left unchanged.<p>
+     * 
+     * The original filter parameter is extended and also provided as return value.<p> 
+     * 
+     * @param filter the filter to extend
+     * @param startTime start time of the range to search in
+     * @param endTime end time of the range to search in
+     * 
+     * @return the extended filter clause
+     */
+    protected BooleanFilter appendDateLastModifiedFilter(BooleanFilter filter, long startTime, long endTime) {
+
+        // create special optimized sub-filter for the date last modified search
+        Filter dateFilter = createDateRangeFilter(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, startTime, endTime);
+        if (dateFilter != null) {
+            // extend main filter with the created date filter
+            filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
+        }
+
+        return filter;
+    }
+
+    /**
+     * Appends the a VFS path filter to the given filter clause that matches all given root paths.<p>
+     * 
+     * In case the provided List is null or empty, the current request context site root is appended.<p>
+     * 
+     * The original filter parameter is extended and also provided as return value.<p> 
+     * 
+     * @param cms the current OpenCms search context
+     * @param filter the filter to extend
+     * @param roots the VFS root paths that will compose the filter
+     * 
+     * @return the extended filter clause
+     */
+    protected BooleanFilter appendPathFilter(CmsObject cms, BooleanFilter filter, List<String> roots) {
+
+        // complete the search root
+        TermsFilter pathFilter = new TermsFilter();
+        if ((roots != null) && (roots.size() > 0)) {
+            // add the all configured search roots with will request context
+            for (int i = 0; i < roots.size(); i++) {
+                String searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
+                extendPathFilter(pathFilter, searchRoot);
+            }
+        } else {
+            // just use the current site root as the search root
+            extendPathFilter(pathFilter, cms.getRequestContext().getSiteRoot());
+        }
+
+        // add the calculated path filter for the root path
+        filter.add(new FilterClause(pathFilter, BooleanClause.Occur.MUST));
+        return filter;
+    }
+
+    /**
+     * Appends the a resource type filter to the given filter clause that matches all given resource types.<p>
+     * 
+     * In case the provided List is null or empty, the original filter is left unchanged.<p>
+     * 
+     * The original filter parameter is extended and also provided as return value.<p> 
+     * 
+     * @param cms the current OpenCms search context
+     * @param filter the filter to extend
+     * @param resourceTypes the resource types that will compose the filter
+     * 
+     * @return the extended filter clause
+     */
+    protected BooleanFilter appendResourceTypeFilter(CmsObject cms, BooleanFilter filter, List<String> resourceTypes) {
+
+        if ((resourceTypes != null) && (resourceTypes.size() > 0)) {
+            // add query resource types (if required)
+            filter.add(new FilterClause(
+                getMultiTermQueryFilter(CmsSearchField.FIELD_TYPE, resourceTypes),
+                BooleanClause.Occur.MUST));
+        }
+
+        return filter;
+    }
+
+    /**
      * Creates an optimized date range filter for the date of last modification or creation.<p>
      * 
      * If the start date is equal to {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}  
      * than <code>null</code> is returned.<p>
      * 
      * @param fieldName the name of the field to search
-     * @param startDate start date of the range to search in
-     * @param endDate end date of the range to search in
+     * @param startTime start time of the range to search in
+     * @param endTime end time of the range to search in
      * 
      * @return an optimized date range filter for the date of last modification or creation
      */
-    protected Filter createDateRangeFilter(String fieldName, long startDate, long endDate) {
+    protected Filter createDateRangeFilter(String fieldName, long startTime, long endTime) {
 
         TermsFilter filter = null;
-        if ((startDate != Long.MIN_VALUE) || (endDate != Long.MAX_VALUE)) {
+        if ((startTime != Long.MIN_VALUE) || (endTime != Long.MAX_VALUE)) {
             // a date range has been set for this LGT document search
-            if (startDate == Long.MIN_VALUE) {
+            if (startTime == Long.MIN_VALUE) {
                 // default start will always be "yyyy1231" in order to reduce term size                    
                 Calendar cal = Calendar.getInstance(OpenCms.getLocaleManager().getTimeZone());
-                cal.setTimeInMillis(endDate);
+                cal.setTimeInMillis(endTime);
                 cal.set(cal.get(Calendar.YEAR) - MAX_YEAR_RANGE, 11, 31, 0, 0, 0);
-                startDate = cal.getTimeInMillis();
-            } else if (endDate == Long.MAX_VALUE) {
+                startTime = cal.getTimeInMillis();
+            } else if (endTime == Long.MAX_VALUE) {
                 // default end will always be "yyyy0101" in order to reduce term size                    
                 Calendar cal = Calendar.getInstance(OpenCms.getLocaleManager().getTimeZone());
-                cal.setTimeInMillis(startDate);
+                cal.setTimeInMillis(startTime);
                 cal.set(cal.get(Calendar.YEAR) + MAX_YEAR_RANGE, 0, 1, 0, 0, 0);
-                endDate = cal.getTimeInMillis();
+                endTime = cal.getTimeInMillis();
             }
             // create the filter for the date
             filter = new TermsFilter();
             // get the list of all possible date range options
-            List<String> dateRage = getDateRangeSpan(startDate, endDate);
+            List<String> dateRage = getDateRangeSpan(startTime, endTime);
             Iterator<String> i = dateRage.iterator();
             while (i.hasNext()) {
                 // generate one term query per date range option
@@ -1635,8 +1745,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         String backupPath = m_path + "_backup";
         try {
             // open file directory for Lucene
-            FSDirectory oldDir = FSDirectory.getDirectory(file);
-            FSDirectory newDir = FSDirectory.getDirectory(backupPath);
+            FSDirectory oldDir = FSDirectory.open(file);
+            FSDirectory newDir = FSDirectory.open(new File(backupPath));
             Directory.copy(oldDir, newDir, true);
         } catch (Exception e) {
             // TODO: logging etc. 
@@ -1806,8 +1916,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         // create the index searcher
         try {
-            if (IndexReader.indexExists(path)) {
-                IndexReader reader = new LazyContentReader(IndexReader.open(path));
+            Directory indexDirectory = FSDirectory.open(new File(path));
+            if (IndexReader.indexExists(indexDirectory)) {
+                IndexReader reader = new LazyContentReader(IndexReader.open(indexDirectory));
                 m_searcher = new IndexSearcher(reader);
                 m_displayFilters = new HashMap<String, Filter>();
             }
@@ -1880,7 +1991,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             return;
         }
         try {
-            FSDirectory dir = FSDirectory.getDirectory(file);
+            FSDirectory dir = FSDirectory.open(file);
             dir.close();
             CmsFileUtil.purgeDirectory(file);
         } catch (Exception e) {

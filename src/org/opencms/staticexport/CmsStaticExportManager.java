@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/01/07 14:22:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/14 15:30:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -2535,52 +2535,52 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     protected void setExportnames() {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
-        }
-
-        List<CmsResource> resources;
-        CmsObject cms = null;
-        try {
-            // this will always be in the root site
-            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            resources = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
-
-            synchronized (m_lockSetExportnames) {
-                m_exportnameResources = new HashMap<String, String>(resources.size());
-                for (int i = 0, n = resources.size(); i < n; i++) {
-                    CmsResource res = resources.get(i);
-                    try {
-                        String foldername = res.getRootPath();
-                        String exportname = cms.readPropertyObject(
-                            foldername,
-                            CmsPropertyDefinition.PROPERTY_EXPORTNAME,
-                            false).getValue();
-                        if (exportname != null) {
-                            if (exportname.charAt(exportname.length() - 1) != '/') {
-                                exportname = exportname + "/";
-                            }
-                            if (exportname.charAt(0) != '/') {
-                                exportname = "/" + exportname;
-                            }
-                            // export name has to be system-wide unique 
-                            // the folder name is a root path
-                            m_exportnameResources.put(exportname, foldername);
-                        }
-                    } catch (CmsException e) {
-                        // should never happen, folder will not be added
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
-                m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
-            }
-        } catch (CmsException e) {
-            // should never happen, no resources will be added at all
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
-        }
+        //        if (LOG.isDebugEnabled()) {
+        //            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
+        //        }
+        //
+        //        List<CmsResource> resources;
+        //        CmsObject cms = null;
+        //        try {
+        //            // this will always be in the root site
+        //            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+        //            resources = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
+        //
+        //            synchronized (m_lockSetExportnames) {
+        //                m_exportnameResources = new HashMap<String, String>(resources.size());
+        //                for (int i = 0, n = resources.size(); i < n; i++) {
+        //                    CmsResource res = resources.get(i);
+        //                    try {
+        //                        String foldername = res.getRootPath();
+        //                        String exportname = cms.readPropertyObject(
+        //                            foldername,
+        //                            CmsPropertyDefinition.PROPERTY_EXPORTNAME,
+        //                            false).getValue();
+        //                        if (exportname != null) {
+        //                            if (exportname.charAt(exportname.length() - 1) != '/') {
+        //                                exportname = exportname + "/";
+        //                            }
+        //                            if (exportname.charAt(0) != '/') {
+        //                                exportname = "/" + exportname;
+        //                            }
+        //                            // export name has to be system-wide unique 
+        //                            // the folder name is a root path
+        //                            m_exportnameResources.put(exportname, foldername);
+        //                        }
+        //                    } catch (CmsException e) {
+        //                        // should never happen, folder will not be added
+        //                        LOG.error(e.getLocalizedMessage(), e);
+        //                    }
+        //                }
+        //                m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
+        //            }
+        //        } catch (CmsException e) {
+        //            // should never happen, no resources will be added at all
+        //            LOG.error(e.getLocalizedMessage(), e);
+        //        }
+        //        if (LOG.isDebugEnabled()) {
+        //            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
+        //        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchResultList.java,v $
- * Date   : $Date: 2010/01/11 13:26:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,14 +32,13 @@
 package org.opencms.search.galleries;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The search result list for the ADE gallery search.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -48,17 +47,14 @@ public class CmsGallerySearchResultList extends ArrayList<CmsGallerySearchResult
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 115646669707330088L;
 
+    /** The total number of search results matching the query. */
+    private int m_hitCount;
+
     /** The number of pages for the result list. */
     private int m_pageCount;
 
     /** The current result-page-index. */
     private int m_pageIndex;
-
-    /** The individual result objects of the search. */
-    private List<CmsGallerySearchResult> m_results;
-
-    /** The total number of search results matching the query. */
-    private int m_searchResultCount;
 
     /**
      * Creates a new result list with a default initial capacity of 100.<p>
@@ -79,11 +75,24 @@ public class CmsGallerySearchResultList extends ArrayList<CmsGallerySearchResult
     }
 
     /**
+     * Returns the hit count of all results found in the last search.<p>
+     * 
+     * Since this list will only contain the result objects for the current display page,
+     * the size of the list is usually much less then the hit count of all results found.<p>
+     * 
+     * @return the hit count of all results found in the last search
+     */
+    public int getHitCount() {
+
+        return m_hitCount;
+    }
+
+    /**
      * Returns the total number of search result pages.<p>
      *
      * @return the total number of search result pages
      * 
-     * @see #getSearchResultCount()
+     * @see #getHitCount()
      * @see #getResultPage()
      */
     public int getPageCount() {
@@ -96,7 +105,7 @@ public class CmsGallerySearchResultList extends ArrayList<CmsGallerySearchResult
      *
      * @return the index of the current result page
      * 
-     * @see #getSearchResultCount()
+     * @see #getHitCount()
      * @see #getPageCount()
      */
     public int getResultPage() {
@@ -105,28 +114,31 @@ public class CmsGallerySearchResultList extends ArrayList<CmsGallerySearchResult
     }
 
     /**
-     * Returns the individual result objects of the search.<p>
-     * 
-     * @return the individual result objects of the search
+     * Sets the hit count of all results found in the last search.<p>
+     *
+     * Since this list will only contain the result objects for the current display page,
+     * the size of the list is usually much less then the hit count of all results found.<p>
+     *
+     *  @param hitCount the hit count to set
      */
-    public List<CmsGallerySearchResult> getResults() {
+    public void setHitCount(int hitCount) {
 
-        return m_results;
+        m_hitCount = hitCount;
     }
 
     /**
-     * Returns the number of search results found.<p>
-     *
-     * Since this list will only contain the result objects for the current display page,
-     * the size of the list is usually much less then the total number of all results found.<p>
-     *
-     * @return the number of search results found
+     * Calculates the result pages.<p>
      * 
-     * @see #getResultPage()
-     * @see #getPageCount()
+     * @param pageIndex the index of the current page
+     * @param matchesPerPage the matches per page
      */
-    public int getSearchResultCount() {
+    protected void calculatePages(int pageIndex, int matchesPerPage) {
 
-        return m_searchResultCount;
+        m_pageIndex = pageIndex;
+        // calculate the number of pages for this search result
+        m_pageCount = m_hitCount / matchesPerPage;
+        if ((m_hitCount % matchesPerPage) != 0) {
+            m_pageCount++;
+        }
     }
 }

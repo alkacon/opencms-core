@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2009/09/30 08:43:35 $
- * Version: $Revision: 1.32.2.2 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,32 +31,24 @@
 
 package org.opencms.search;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.documents.I_CmsDocumentFactory;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.logging.Log;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
 /**
  * Implements the management of indexing threads.<p>
  * 
- * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.32.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +66,9 @@ public class CmsIndexingThreadManager {
     /** The time the last warning was written to the log. */
     private long m_lastLogWarnTime;
 
+    /** The maximum number of modifications before a commit in the search index is triggered. */
+    private int m_maxModificationsBeforeCommit;
+
     /** Number of thread returned. */
     private int m_returnedCounter;
 
@@ -82,9 +77,6 @@ public class CmsIndexingThreadManager {
 
     /** Timeout for abandoning threads. */
     private long m_timeout;
-
-    /** The maximum number of modifications before a commit in the search index is triggered. */
-    private int m_maxModificationsBeforeCommit;
 
     /**
      * Creates and starts a thread manager for indexing threads.<p>
@@ -106,65 +98,20 @@ public class CmsIndexingThreadManager {
      * value. If the timeout value is reached, the indexing thread is
      * aborted by an interrupt signal.<p>
      * 
-     * @param cms the cms object
-     * @param writer the write to write the index
+     * @param indexer the VFS indexer to create the index thread for 
+     * @param writer the index writer that can update the index
      * @param res the resource
-     * @param index the index
-     * @param report the report to write the indexing progress to
      */
-    public void createIndexingThread(
-        CmsObject cms,
-        IndexWriter writer,
-        CmsResource res,
-        CmsSearchIndex index,
-        I_CmsReport report) {
+    public void createIndexingThread(CmsVfsIndexer indexer, IndexWriter writer, CmsResource res) {
 
-        // check if this resource should be excluded from the index, if so skip it
-        boolean excludeFromIndex = false;
-        try {
-            // do property lookup with folder search
-            excludeFromIndex = Boolean.valueOf(
-                cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue()).booleanValue();
-        } catch (CmsException e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, res.getRootPath()));
-            }
-        }
-
-        if (!excludeFromIndex) {
-            // check if any resource default locale has a match with the index locale, if not skip resource
-            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, res);
-            Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(
-                Collections.singletonList(index.getLocale()),
-                locales);
-            excludeFromIndex = (match == null);
-        }
-
-        I_CmsDocumentFactory documentType = null;
-        if (!excludeFromIndex) {
-            // don't get document type if excluded from index, this will lead to exclusion of resource
-            documentType = index.getDocumentFactory(res);
-        }
-        if (documentType == null) {
-            // this resource is not contained in the given search index
-            m_startedCounter++;
-            m_returnedCounter++;
-            if (report != null) {
-                report.println(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
-                    I_CmsReport.FORMAT_NOTE);
-            }
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_SKIPPED_1, res.getRootPath()));
-            }
-
-            // no need to continue
-            return;
-        }
-
-        // extract the content from the resource in a separate Thread
-        CmsIndexingThread thread = new CmsIndexingThread(cms, writer, res, documentType, index, report);
+        I_CmsReport report = indexer.getReport();
         m_startedCounter++;
+        CmsIndexingThread thread = new CmsIndexingThread(
+            indexer.getCms(),
+            res,
+            indexer.getIndex(),
+            m_startedCounter,
+            report);
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
         try {
@@ -173,6 +120,9 @@ public class CmsIndexingThreadManager {
             // ignore
         }
         if (thread.isAlive()) {
+            // the thread has not finished - so it must be marked as an abandoned thread 
+            m_abandonedCounter++;
+            thread.interrupt();
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(Messages.LOG_INDEXING_TIMEOUT_1, res.getRootPath()));
             }
@@ -185,10 +135,14 @@ public class CmsIndexingThreadManager {
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_TIMEOUT_1, res.getRootPath()),
                     I_CmsReport.FORMAT_WARNING);
             }
-            m_abandonedCounter++;
-            thread.interrupt();
         } else {
+            // the thread finished normally
             m_returnedCounter++;
+        }
+        Document doc = thread.getResult();
+        if (doc != null) {
+            // write the document to the index
+            indexer.updateResource(writer, res.getRootPath(), doc);
         }
         if ((m_startedCounter % m_maxModificationsBeforeCommit) == 0) {
             try {
@@ -197,21 +151,11 @@ public class CmsIndexingThreadManager {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
-                        index.getName(),
-                        index.getPath()), e);
+                        indexer.getIndex().getName(),
+                        indexer.getIndex().getPath()), e);
                 }
             }
         }
-    }
-
-    /**
-     * Gets the current thread (file) count.<p>
-     * 
-     * @return the current thread count
-     */
-    public int getCounter() {
-
-        return m_startedCounter;
     }
 
     /**
@@ -246,7 +190,7 @@ public class CmsIndexingThreadManager {
             }
         }
 
-        boolean result = (m_returnedCounter + m_abandonedCounter < m_startedCounter);
+        boolean result = (m_returnedCounter + m_abandonedCounter) < m_startedCounter;
         if (result && LOG.isInfoEnabled()) {
             // write a note to the log that all threads have finished
             LOG.info(Messages.get().getBundle().key(Messages.LOG_THREADS_FINISHED_0));
@@ -280,45 +224,6 @@ public class CmsIndexingThreadManager {
                 // only write to the log if report is not already a log report
                 LOG.info(message.key());
             }
-        }
-    }
-
-    /**
-     * Starts the thread manager to look for non-terminated threads<p>
-     * The thread manager looks all 10 minutes if threads are not returned
-     * and reports the number to the log file.
-     * 
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
-
-        int max = 20;
-
-        try {
-            // wait 30 seconds for the initial indexing
-            Thread.sleep(30000);
-            while ((m_startedCounter > m_returnedCounter) && (max-- > 0)) {
-                Thread.sleep(30000);
-                // wait 30 seconds before we start checking for "dead" index threads
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_WAITING_ABANDONED_THREADS_2,
-                        new Integer(m_abandonedCounter),
-                        new Integer((m_startedCounter - m_returnedCounter))));
-                }
-            }
-        } catch (Exception exc) {
-            // ignore
-        }
-
-        if (max > 0) {
-            if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(Messages.LOG_THREADS_FINISHED_0));
-            }
-        } else {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_THREADS_FINISHED_0,
-                new Integer(m_startedCounter - m_returnedCounter)));
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchResult.java,v $
- * Date   : $Date: 2010/01/11 13:26:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,16 +32,25 @@
 package org.opencms.search.galleries;
 
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Fieldable;
 
 /**
  * Contains a single search result from the ADE gallery search.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -51,13 +60,16 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     protected String m_additionalInfos;
 
     /** The creation date of this search result. */
-    protected long m_dateCreated;
+    protected Date m_dateCreated;
 
     /** The last modification date of this search result. */
-    protected long m_dateLastModified;
+    protected Date m_dateLastModified;
 
     /** The excerpt of this search result. */
     protected String m_excerpt;
+
+    /** Holds the values of the search result fields. */
+    protected Map<String, String> m_fields;
 
     /** The VFS structure id of this search result. */
     protected CmsUUID m_id;
@@ -80,7 +92,62 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
      */
     public CmsGallerySearchResult(int score, Document doc, String excerpt) {
 
-        /** TODO: implement this. */
+        m_score = score;
+        m_excerpt = excerpt;
+        m_fields = new HashMap<String, String>();
+
+        Iterator<Fieldable> i = doc.getFields().iterator();
+        while (i.hasNext()) {
+            Fieldable field = i.next();
+            if ((field != null) && field.isStored()) {
+                // content can be displayed only if it has been stored in the field
+                String name = field.name();
+                String value = field.stringValue();
+                if (CmsStringUtil.isNotEmpty(value)
+                    && !CmsSearchField.FIELD_PATH.equals(name)
+                    && !CmsSearchField.FIELD_DATE_CREATED.equals(name)
+                    && !CmsSearchField.FIELD_DATE_LASTMODIFIED.equals(name)) {
+                    // these "hard coded" fields are treated differently
+                    m_fields.put(name, value);
+                }
+            }
+        }
+
+        Fieldable f = doc.getFieldable(CmsSearchField.FIELD_PATH);
+        if (f != null) {
+            m_path = f.stringValue();
+        } else {
+            m_path = null;
+        }
+
+        f = doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED);
+        if (f != null) {
+            try {
+                m_dateCreated = DateTools.stringToDate(f.stringValue());
+            } catch (ParseException exc) {
+                m_dateCreated = null;
+            }
+        } else {
+            m_dateCreated = null;
+        }
+
+        f = doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED);
+        if (f != null) {
+            try {
+                m_dateLastModified = DateTools.stringToDate(f.stringValue());
+            } catch (ParseException exc) {
+                m_dateLastModified = null;
+            }
+        } else {
+            m_dateLastModified = null;
+        }
+
+        f = doc.getFieldable(CmsSearchField.FIELD_TYPE);
+        if (f != null) {
+            m_resourceType = f.stringValue();
+        } else {
+            m_resourceType = null;
+        }
     }
 
     /**
@@ -130,7 +197,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
      *
      * @return the date created
      */
-    public long getDateCreated() {
+    public Date getDateCreated() {
 
         return m_dateCreated;
     }
@@ -140,7 +207,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
      *
      * @return the date last modified
      */
-    public long getDateLastModified() {
+    public Date getDateLastModified() {
 
         return m_dateLastModified;
     }
@@ -174,8 +241,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
      */
     public String getField(String fieldName) {
 
-        /** TODO: implement this */
-        return null;
+        return m_fields.get(fieldName);
     }
 
     /**

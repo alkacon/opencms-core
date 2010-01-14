@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2009/12/03 13:37:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 
@@ -57,7 +58,7 @@ import org.apache.lucene.index.Term;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,13 +68,13 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     private static final Log LOG = CmsLog.getLog(CmsVfsIndexer.class);
 
     /** The OpenCms user context to use when reading resources from the VFS during indexing. */
-    protected CmsObject m_cms;
+    private CmsObject m_cms;
 
     /** The index. */
-    protected CmsSearchIndex m_index;
+    private CmsSearchIndex m_index;
 
     /** The report. */
-    protected I_CmsReport m_report;
+    private I_CmsReport m_report;
 
     /**
      * @see org.opencms.search.I_CmsIndexer#deleteResources(org.apache.lucene.index.IndexWriter, java.util.List)
@@ -102,6 +103,36 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 }
             }
         }
+    }
+
+    /**
+     * Returns the OpenCms user context used by this indexer.<p>
+     *     
+     * @return the OpenCms user context used by this indexer
+     */
+    public CmsObject getCms() {
+
+        return m_cms;
+    }
+
+    /**
+     * Returns the OpenCms search index updated by this indexer.<p>
+     *     
+     * @return the OpenCms search index updated by this indexer 
+     */
+    public CmsSearchIndex getIndex() {
+
+        return m_index;
+    }
+
+    /**
+     * Returns the report used by this indexer.<p>
+     *     
+     * @return the report used by this indexer
+     */
+    public I_CmsReport getReport() {
+
+        return m_report;
     }
 
     /**
@@ -201,7 +232,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         // contains all resources already updated to avoid multiple updates in case of siblings
         List<String> resourcesAlreadyUpdated = new ArrayList<String>(resourcesToUpdate.size());
 
-        // index all resources that in the given list
+        // index all resources that are in the given list
         Iterator<CmsPublishedResource> i = resourcesToUpdate.iterator();
         while (i.hasNext()) {
             CmsPublishedResource res = i.next();
@@ -276,9 +307,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
-     * Deletes a single resource from the given index.<p>
+     * Deletes a resource with the given index writer.<p>
      * 
-     * @param indexWriter the index to delete the resource from
+     * @param indexWriter the index writer to resource the resource with
      * @param rootPath the root path of the resource to delete
      */
     protected void deleteResource(IndexWriter indexWriter, String rootPath) {
@@ -333,26 +364,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             // don't index internal resources, folders or temporary files or resources with expire date in the past
             return;
         }
-        // no check for folder resources, this must be taken care of before calling this method
         try {
-
-            if (m_report != null) {
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_1,
-                    String.valueOf(threadManager.getCounter() + 1)), I_CmsReport.FORMAT_NOTE);
-                m_report.print(
-                    Messages.get().container(Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0),
-                    I_CmsReport.FORMAT_NOTE);
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    m_report.removeSiteRoot(resource.getRootPath())));
-                m_report.print(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
-                    I_CmsReport.FORMAT_DEFAULT);
-            }
-
-            threadManager.createIndexingThread(m_cms, writer, resource, m_index, m_report);
-
+            // create the index thread for the resource
+            threadManager.createIndexingThread(this, writer, resource);
         } catch (Exception e) {
 
             if (m_report != null) {
@@ -370,6 +384,28 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 Messages.ERR_INDEX_RESOURCE_FAILED_2,
                 resource.getRootPath(),
                 m_index.getName()));
+        }
+    }
+
+    /**
+     * Updates a resource with the given index writer and the new document provided.<p>
+     * 
+     * @param indexWriter the index writer to update the resource with
+     * @param rootPath the root path of the resource to update
+     * @param doc the new document for the resource
+     */
+    protected void updateResource(IndexWriter indexWriter, String rootPath, Document doc) {
+
+        Term pathTerm = new Term(CmsSearchField.FIELD_PATH, rootPath);
+        try {
+            indexWriter.updateDocument(pathTerm, doc);
+        } catch (Exception e) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_IO_INDEX_DOCUMENT_UPDATE_2,
+                    rootPath,
+                    m_index.getName()), e);
+            }
         }
     }
 }

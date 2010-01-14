@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2009/09/08 14:18:27 $
- * Version: $Revision: 1.13.2.2 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -174,7 +174,7 @@ public class CmsSearchParameters {
 
     /** Sort result documents by title, then score. */
     public static final Sort SORT_TITLE = new Sort(new SortField[] {
-        new SortField(CmsSearchField.FIELD_TITLE),
+        new SortField(CmsSearchField.FIELD_TITLE, SortField.STRING),
         SortField.FIELD_SCORE});
 
     /** The log object for this class. */
@@ -776,13 +776,13 @@ public class CmsSearchParameters {
     /**
      * Controls if the excerpt from a field is generated only for searched fields, or for all fields (the default).<p>
      *
-     * @param excerptAllFields if <code>true</code>, the excerpt is generated only from the fields actually searched in
+     * @param excerptOnlySearchedFields if <code>true</code>, the excerpt is generated only from the fields actually searched in
      * 
      * @see #isExcerptOnlySearchedFields()
      */
-    public void setExcerptOnlySearchedFields(boolean excerptAllFields) {
+    public void setExcerptOnlySearchedFields(boolean excerptOnlySearchedFields) {
 
-        m_excerptOnlySearchedFields = excerptAllFields;
+        m_excerptOnlySearchedFields = excerptOnlySearchedFields;
     }
 
     /**

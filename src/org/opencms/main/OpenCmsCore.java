@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/12/22 10:03:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/14 15:30:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -143,7 +143,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -1566,7 +1566,6 @@ public final class OpenCmsCore {
                     // log exception to see which method did call the shutdown
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
-
                 try {
                     // the first thing we have to do is to wait until the current publish process finishes
                     m_publishEngine.shutDown();
@@ -1575,7 +1574,16 @@ public final class OpenCmsCore {
                         Messages.LOG_ERROR_PUBLISH_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
-
+                try {
+                    // search manager must be shut down early since there may be background indexing still ongoing
+                    if (m_searchManager != null) {
+                        m_searchManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
                 try {
                     if (m_staticExportManager != null) {
                         m_staticExportManager.shutDown();
@@ -1638,15 +1646,6 @@ public final class OpenCmsCore {
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(
                         Messages.LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1,
-                        e.getMessage()), e);
-                }
-                try {
-                    if (m_searchManager != null) {
-                        m_searchManager.shutDown();
-                    }
-                } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
                 try {

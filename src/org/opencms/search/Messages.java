@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2009/09/30 08:43:35 $
- * Version: $Revision: 1.27.2.1 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.27.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,6 +114,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_SOURCE_DELETE_2 = "ERR_INDEX_SOURCE_DELETE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_WRONG_CLASS_2 = "ERR_INDEX_WRONG_CLASS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEXSOURCE_CREATE_INVALID_NAME_1 = "ERR_INDEXSOURCE_CREATE_INVALID_NAME_1";
@@ -249,6 +252,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IO_INDEX_DOCUMENT_DELETE_2 = "LOG_IO_INDEX_DOCUMENT_DELETE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IO_INDEX_DOCUMENT_UPDATE_2 = "LOG_IO_INDEX_DOCUMENT_UPDATE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IO_INDEX_READER_CLOSE_2 = "LOG_IO_INDEX_READER_CLOSE_2";

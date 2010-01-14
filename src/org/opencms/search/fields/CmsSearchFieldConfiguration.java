@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2009/09/23 14:03:21 $
- * Version: $Revision: 1.10.2.3 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10.2.3 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -314,7 +314,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         if (content != null) {
             byte[] data = content.getBytes();
             if (data != null) {
-                Fieldable field = new Field(CmsSearchField.FIELD_CONTENT_BLOB, data, Field.Store.COMPRESS);
+                Fieldable field = new Field(CmsSearchField.FIELD_CONTENT_BLOB, data, Field.Store.YES);
                 document.add(field);
             }
         }

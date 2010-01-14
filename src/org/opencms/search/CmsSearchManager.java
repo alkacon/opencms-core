@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/09/30 08:43:35 $
- * Version: $Revision: 1.76.2.6 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.galleries.CmsGallerySearchAnalyzer;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.A_CmsModeStringEnumeration;
@@ -62,6 +63,7 @@ import org.opencms.util.CmsUUID;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -73,9 +75,13 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.Similarity;
+import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 
 /**
  * Implements the general management and configuration of the search and 
@@ -84,7 +90,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.76.2.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -242,10 +248,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     I_CmsEventListener.EVENT_RESOURCE_COPIED,
                     I_CmsEventListener.EVENT_RESOURCES_MODIFIED});
             }
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("initialize --- end");
-            }
         }
 
         /**
@@ -299,18 +301,26 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             // create a log report for the output
             I_CmsReport report = new CmsLogReport(m_adminCms.getRequestContext().getLocale(), CmsSearchManager.class);
+            long offlineUpdateFrequency = OpenCms.getSearchManager().getOfflineUpdateFrequency();
+            boolean frequencyChange = false;
             try {
                 while (m_isAlive) {
-                    List<CmsPublishedResource> resourcesToIndex = getResourcesToIndex();
-                    if (resourcesToIndex.size() > 0) {
-                        // only start indexing if there is at least one resource
-                        updateIndexOffline(report, resourcesToIndex);
-                    }
-
                     try {
-                        sleep(OpenCms.getSearchManager().getOfflineUpdateFrequency());
+                        frequencyChange = false;
+                        sleep(offlineUpdateFrequency);
                     } catch (InterruptedException e) {
                         // continue the thread after interruption
+                        if (offlineUpdateFrequency != OpenCms.getSearchManager().getOfflineUpdateFrequency()) {
+                            // offline update frequency change - clear interrupt status
+                            frequencyChange = interrupted();
+                        }
+                    }
+                    if (m_isAlive && !frequencyChange) {
+                        List<CmsPublishedResource> resourcesToIndex = getResourcesToIndex();
+                        if (resourcesToIndex.size() > 0) {
+                            // only start indexing if there is at least one resource
+                            updateIndexOffline(report, resourcesToIndex);
+                        }
                     }
                 }
             } finally {
@@ -665,18 +675,46 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         try {
+
             className = analyzerConf.getClassName();
             Class<?> analyzerClass = Class.forName(className);
 
-            // added parameter for snowball analyzer
-            String stemmerAlgorithm = analyzerConf.getStemmerAlgorithm();
-            if (stemmerAlgorithm != null) {
-                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {String.class}).newInstance(
-                    new Object[] {stemmerAlgorithm});
+            // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
+            if (StandardAnalyzer.class.equals(analyzerClass)) {
+                // the Lucene standard analyzer is used
+                analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
+            } else if (CmsGallerySearchAnalyzer.class.equals(analyzerClass)) {
+                // OpenCms gallery multiple language analyzer
+                analyzer = new CmsGallerySearchAnalyzer(Version.LUCENE_CURRENT);
+            } else if (SnowballAnalyzer.class.equals(analyzerClass)) {
+                // the Snowball analyzer is used
+                analyzer = new SnowballAnalyzer(Version.LUCENE_CURRENT, analyzerConf.getStemmerAlgorithm());
             } else {
-                analyzer = (Analyzer)analyzerClass.newInstance();
+                boolean hasEmpty = false;
+                boolean hasVersion = false;
+                // another analyzer is used, check if we find a suitable constructor 
+                Constructor<?>[] constructors = analyzerClass.getConstructors();
+                for (int i = 0; i < constructors.length; i++) {
+                    Constructor<?> c = constructors[i];
+                    Class<?>[] parameters = c.getParameterTypes();
+                    if (parameters.length == 0) {
+                        // an empty constructor has been found
+                        hasEmpty = true;
+                    }
+                    if ((parameters.length == 1) && parameters[0].equals(Version.class)) {
+                        // a constructor with a Lucene version parameter has been found
+                        hasVersion = true;
+                    }
+                    if (hasVersion) {
+                        // a constructor with a Lucene version parameter has been found
+                        analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class}).newInstance(
+                            Version.LUCENE_CURRENT);
+                    } else if (hasEmpty) {
+                        // an empty constructor has been found
+                        analyzer = (Analyzer)analyzerClass.newInstance();
+                    }
+                }
             }
-
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(Messages.ERR_LOAD_ANALYZER_1, className), e);
         }
@@ -1460,6 +1498,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void setOfflineUpdateFrequency(long offlineUpdateFrequency) {
 
         m_offlineUpdateFrequency = offlineUpdateFrequency;
+        if ((m_offlineIndexThread != null) && m_offlineIndexThread.isAlive()) {
+            // notify existing thread of update frequency change
+            m_offlineIndexThread.interrupt();
+        }
     }
 
     /**
@@ -1518,6 +1560,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (m_offlineIndexThread != null) {
             m_offlineIndexThread.shutDown();
         }
+
+        if (m_offlineHandler != null) {
+            OpenCms.removeCmsEventListener(m_offlineHandler);
+        }
+
         Iterator<CmsSearchIndex> i = m_indexes.iterator();
         while (i.hasNext()) {
             CmsSearchIndex index = i.next();
@@ -1556,9 +1603,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         boolean indexLocked = true;
         // check if the target index path already exists
         if (indexPath.exists()) {
-            // get the lock state of the given index
+            Directory indexDirectory = null;
+            // get the lock state of the given index            
             try {
-                indexLocked = IndexWriter.isLocked(index.getPath());
+                indexDirectory = FSDirectory.open(new File(index.getPath()));
+                indexLocked = IndexWriter.isLocked(indexDirectory);
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_IO_INDEX_READER_OPEN_2,
@@ -1571,7 +1620,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if ((m_forceUnlockMode != null) && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.ALWAYS)) {
                     try {
                         // try to force unlock on the index
-                        IndexWriter.unlock(FSDirectory.getDirectory(index.getPath()));
+                        IndexWriter.unlock(indexDirectory);
                     } catch (Exception e) {
                         // unable to force unlock of Lucene index, we can't continue this way
                         CmsMessageContainer msg = Messages.get().container(
@@ -1582,7 +1631,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     }
                 } else if ((m_forceUnlockMode != null) && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.NEVER)) {
                     // wait if index will be unlocked during waiting
-                    indexLocked = waitIndexLock(index, report, indexLocked);
+                    indexLocked = waitIndexLock(index, indexDirectory, report, indexLocked);
                     // if index is still locked throw an exception
                     if (indexLocked) {
                         CmsMessageContainer msg = Messages.get().container(
@@ -1594,7 +1643,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 } else {
                     if (mode) {
                         // if index has to be updated wait if index will be unlocked during waiting
-                        indexLocked = waitIndexLock(index, report, indexLocked);
+                        indexLocked = waitIndexLock(index, indexDirectory, report, indexLocked);
                     }
                     // check if the index is locked
                     if (indexLocked) {
@@ -1609,7 +1658,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         } else {
                             try {
                                 // try to force unlock on the index
-                                IndexWriter.unlock(FSDirectory.getDirectory(index.getPath()));
+                                IndexWriter.unlock(indexDirectory);
                             } catch (Exception e) {
                                 // unable to force unlock of Lucene index, we can't continue this way
                                 CmsMessageContainer msg = Messages.get().container(
@@ -1673,6 +1722,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         return names;
+    }
+
+    /** 
+     * Returns a new thread manager for the indexing threads.<p>
+     * 
+     * @return a new thread manager for the indexing threads
+     */
+    protected CmsIndexingThreadManager getThreadManager() {
+
+        return new CmsIndexingThreadManager(m_timeout, m_maxModificationsBeforeCommit);
     }
 
     /**
@@ -1937,9 +1996,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             forceIndexUnlock(index, report, false);
             // create a new thread manager for the indexing threads
-            CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(
-                m_timeout,
-                m_maxModificationsBeforeCommit);
+            CmsIndexingThreadManager threadManager = getThreadManager();
 
             boolean isOfflineIndex = false;
             if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
@@ -2118,9 +2175,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
                 if (hasResourcesToUpdate) {
                     // create a new thread manager
-                    CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(
-                        m_timeout,
-                        m_maxModificationsBeforeCommit);
+                    CmsIndexingThreadManager threadManager = getThreadManager();
 
                     Iterator<CmsSearchIndexUpdateData> i = updateCollections.iterator();
                     while (i.hasNext()) {
@@ -2225,17 +2280,22 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * is reached and returns the lock state of the index.<p>
      * 
      * @param index the index to check the lock for
+     * @param indexDirectory the directory of the index
      * @param report the report to write error messages on
      * @param indexLocked the boolean value if the index is locked
      * 
      * @return the lock state of the index
      */
-    private boolean waitIndexLock(CmsSearchIndex index, I_CmsReport report, boolean indexLocked) {
+    private boolean waitIndexLock(
+        CmsSearchIndex index,
+        Directory indexDirectory,
+        I_CmsReport report,
+        boolean indexLocked) {
 
         try {
             int lockSecs = 0;
             while (indexLocked && (lockSecs < m_indexLockMaxWaitSeconds)) {
-                indexLocked = IndexWriter.isLocked(index.getPath());
+                indexLocked = IndexWriter.isLocked(indexDirectory);
                 if (indexLocked) {
                     // index is still locked, wait one second
                     report.println(Messages.get().container(

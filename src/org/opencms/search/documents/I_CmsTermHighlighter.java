@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsTermHighlighter.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,13 +39,14 @@ import java.io.IOException;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
 /**
  * Highlights arbitrary terms, used for generation of search excerpts.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,7 +64,8 @@ public interface I_CmsTermHighlighter {
      * @return an excerpt of the content
      * 
      * @throws IOException if something goes wrong
+     * @throws InvalidTokenOffsetsException in case of problems with the Lucene tokenizer
      */
     String getExcerpt(Document doc, CmsSearchIndex index, CmsSearchParameters params, Query query, Analyzer analyzer)
-    throws IOException;
+    throws IOException, InvalidTokenOffsetsException;
 }

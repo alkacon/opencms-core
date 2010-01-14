@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2009/09/11 15:29:16 $
- * Version: $Revision: 1.23.2.2 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -64,7 +63,7 @@ import org.apache.lucene.document.Fieldable;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,7 +161,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                             Fieldable fieldContentBlob = oldDoc.getFieldable(CmsSearchField.FIELD_CONTENT_BLOB);
                             if (fieldContentBlob != null) {
                                 // extract stored content blob from Lucene index
-                                byte[] oldContent = fieldContentBlob.binaryValue();
+                                byte[] oldContent = fieldContentBlob.getBinaryValue();
                                 content = CmsExtractionResult.fromBytes(oldContent);
                             }
                         }
@@ -256,13 +255,15 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
      * @return the given resource upgraded to a {@link CmsFile} with content
      * 
      * @throws CmsException if the resource could not be read 
-     * @throws CmsIndexException if the resource has no content
+     * @throws CmsIndexNoContentException if the resource has no content
      */
-    protected CmsFile readFile(CmsObject cms, CmsResource resource) throws CmsException, CmsIndexException {
+    protected CmsFile readFile(CmsObject cms, CmsResource resource) throws CmsException, CmsIndexNoContentException {
 
         CmsFile file = cms.readFile(resource);
         if (file.getLength() <= 0) {
-            throw new CmsIndexException(Messages.get().container(Messages.ERR_NO_CONTENT_1, resource.getRootPath()));
+            throw new CmsIndexNoContentException(Messages.get().container(
+                Messages.ERR_NO_CONTENT_1,
+                resource.getRootPath()));
         }
         return file;
     }

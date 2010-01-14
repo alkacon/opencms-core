@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchCategoryCollector.java,v $
- * Date   : $Date: 2009/09/01 09:24:18 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,8 +43,10 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Scorer;
 
 /**
  * Collects category information during a search process.<p>
@@ -56,11 +58,11 @@ import org.apache.lucene.search.IndexSearcher;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearchCategoryCollector extends HitCollector {
+public class CmsSearchCategoryCollector extends Collector {
 
     /**
      * Class with an increasing counter to avoid multiple look ups and 
@@ -146,10 +148,20 @@ public class CmsSearchCategoryCollector extends HitCollector {
     }
 
     /**
-     * @see org.apache.lucene.search.HitCollector#collect(int, float)
+     * @see org.apache.lucene.search.Collector#acceptsDocsOutOfOrder()
      */
     @Override
-    public void collect(int id, float score) {
+    public boolean acceptsDocsOutOfOrder() {
+
+        // we just count hits and these don't need to be ordered
+        return true;
+    }
+
+    /**
+     * @see org.apache.lucene.search.Collector#collect(int)
+     */
+    @Override
+    public void collect(int id) {
 
         String category = null;
         try {
@@ -189,6 +201,24 @@ public class CmsSearchCategoryCollector extends HitCollector {
             result.put(entry.getKey(), entry.getValue().toInteger());
         }
         return result;
+    }
+
+    /**
+     * @see org.apache.lucene.search.Collector#setNextReader(org.apache.lucene.index.IndexReader, int)
+     */
+    @Override
+    public void setNextReader(IndexReader reader, int docBase) {
+
+        // ignored, we just count hits 
+    }
+
+    /**
+     * @see org.apache.lucene.search.Collector#setScorer(org.apache.lucene.search.Scorer)
+     */
+    @Override
+    public void setScorer(Scorer arg0) {
+
+        // ignored, we don't need a scorer
     }
 
     /**

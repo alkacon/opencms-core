@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsTermHighlighterHtml.java,v $
- * Date   : $Date: 2009/09/07 12:41:55 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2010/01/14 15:30:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
 
 /**
@@ -52,7 +53,7 @@ import org.apache.lucene.search.highlight.QueryScorer;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,7 +73,7 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
         CmsSearchIndex index,
         CmsSearchParameters params,
         Query query,
-        Analyzer analyzer) throws IOException {
+        Analyzer analyzer) throws IOException, InvalidTokenOffsetsException {
 
         if ((doc == null) || (index == null) || (params == null) || (analyzer == null) || (query == null)) {
             return null;
