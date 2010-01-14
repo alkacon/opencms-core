@@ -174,7 +174,7 @@
     * @param {String} action a string to tell the server what to do with the data
     * @param {Object} data the JSON data
     * @param {Function} afterPost the callback that should be called after the server replied
-    * @param {boolean} async optional flag to indicate is the request should synchronized or not, by default it is not
+    * @param {boolean} sync optional flag to indicate if the request should synchronized or not, by default it is not
     * @param {int} timeout optional timeout in millisecs, default is #AJAX_TIMEOUT
     *
     * @return the XMLHttpRequest
@@ -430,7 +430,7 @@
          });
       });
       // send the data
-      postJSON(ACTION_CNT, data, afterSave);
+      postJSON(ACTION_CNT, data, afterSave, true);
    }
    
    
@@ -506,7 +506,7 @@
             }
          }
       }
-      cms.move.resetNewElementBorders();
+      cms.move.refreshNewElementHighlighting();
       
    }
    

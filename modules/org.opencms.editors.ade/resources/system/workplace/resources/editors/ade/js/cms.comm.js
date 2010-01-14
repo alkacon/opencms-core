@@ -43,7 +43,7 @@
     * @param {String} url the URL to send the data to
     * @param {Object} data the JSON data
     * @param {Function} afterPost the callback that should be called after the server replied
-    * @param {boolean} async optional flag to indicate is the request should synchronized or not, by default it is not
+    * @param {boolean} sync optional flag to indicate if the request should synchronized or not, by default it is not
     * @param {int} timeout optional timeout in millisecs, default is #AJAX_TIMEOUT
     * @param {Function} revive optional function to convert JSON to objects when parsing the JSON response
     * 

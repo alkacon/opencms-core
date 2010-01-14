@@ -56,10 +56,11 @@
          top: 0
       };
       var offset = elem.offset();
-      if ($(document.body).css('position') == 'relative' ||
-      $(document.body).css('position') == 'absolute') {
-         position.left = offset.left - $(document.body).offset().left;
-         position.top = offset.top - $(document.body).offset().top;
+      var cssPosition = $(document.body).css('position');
+      if (cssPosition == 'relative' || cssPosition == 'absolute') {
+         var bodyOffset=$(document.body).offset();
+         position.left = offset.left - bodyOffset.left;
+         position.top = offset.top - bodyOffset.top;
       } else {
          position.left = offset.left;
          position.top = offset.top;
@@ -86,8 +87,8 @@
       };
       //      var bottom = 'x';
       //      var right = 'x';
-      var contentElements = elem.children('*:visible:not(.ui-sortable-helper)');
-      contentElements = contentElements.add(contentElements.filter('.cms-subcontainer').children('*:visible')).not('.cms-subcontainer');
+      var contentElements = elem.children('*:visible:not(.ui-sortable-helper, div.cms-handle)');
+      contentElements = contentElements.add(contentElements.filter('.cms-subcontainer').children('*:visible')).not('.cms-subcontainer:not(.cms-placeholder)');
       if (contentElements.length) {
          contentElements.each(function() {
             var el = $(this);

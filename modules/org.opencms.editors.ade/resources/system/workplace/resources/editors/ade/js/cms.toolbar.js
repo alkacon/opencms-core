@@ -88,6 +88,7 @@
       }
       container.attr('id', cms.toolbar.editingSubcontainerId).addClass('cms-editing-subcontainer');
       container.css('z-index', 1000);
+//      cms.move.addSubcontainerBackground(container, true);
       cms.data.containers[cms.toolbar.editingSubcontainerId] = new cms.data.Container({
          'elements': containerElement.subItems,
          'name': cms.toolbar.editingSubcontainerId,
@@ -128,7 +129,7 @@
                container.attr('rel', newId);
                container.removeClass('cms-new-element');
                cms.util.replaceNewElement(oldId, newId);
-            });
+            }, true);
          } else {
             cms.data.postJSON('subcnt', {
                'elem': postElement
@@ -138,10 +139,11 @@
          }
          delete cms.data.containers[cms.toolbar.editingSubcontainerId];
          container.removeAttr('id').removeClass('cms-editing-subcontainer').css('z-index', '');
+//         cms.move.removeSubcontainerBackground(container);
          overlay.remove();
          overlayEditing.remove();
          cms.toolbar.editingSubcontainerId = null;
-         cms.move.resetNewElementBorders();
+         cms.move.refreshNewElementHighlighting();
       });
       overlayEditing.find('button[name="subcontainerCancel"]').click(function() {
          toggleMode(getCurrentMode());
@@ -153,7 +155,7 @@
 //             container.addClass('cms-new-element');
 //         }
          cms.toolbar.editingSubcontainerId = null;
-         cms.move.resetNewElementBorders();
+         cms.move.refreshNewElementHighlighting();
       });
    }
    
@@ -225,7 +227,11 @@
          $item = $(this).closest('.' + cms.html.subcontainerClass);
       }
       var $container = $item.parent();
-      cms.move.hoverOut();
+      
+      cms.move.removeElementHighlighting();
+      if ($item.hasClass('cms-new-element')){
+          cms.move.removeNewElementHighlighting($item);
+      }
       var elemId = $item.attr('rel');
       if (elemId && cms.data.elements[elemId]) {
       
@@ -380,21 +386,12 @@
    var showAddButtons = cms.toolbar.showAddButtons = /** void */ function() {
       timer.id = null;
       var numButtons = $(timer.handleDiv).children().size();
-      
-     // var right = (1 - numButtons) * 24 + 'px';
       var width = numButtons * 24 + 'px';
       
       timer.handleDiv.addClass('ui-widget-header').css({
          'width': width
-    //     'right': right
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
       
-//      if ($.browser.msie || (timer.handleDiv.offset().left + timer.handleDiv.width() > $(window).width())) {
-//         // always show the additional handles within the element for IE to avoid z-index problems.
-//         timer.handleDiv.addClass('cms-handle-reverse').css('right', '0px');
-//      } else {
-//         timer.handleDiv.removeClass('cms-handle-reverse');
-//      }
    }
    
    /**
@@ -413,7 +410,6 @@
       }
       timer.handleDiv.removeClass('ui-widget-header').css({
          'width': '24px',
-         'right': '0px'
       }).children().removeClass('ui-corner-all ui-state-default').not('a.cms-' + timer.adeMode).css('display', 'none');
    }
    
@@ -426,20 +422,18 @@
     * @param {String} adeMode the current mode
     */
    var initHandleDiv = cms.toolbar.initHandleDiv = /** void */ function(/** jquery-object */handleDiv, /** jquery-object */ elem, /** String */ adeMode) {
+      handleDiv.unbind('mouseenter').unbind('mouseleave');
       handleDiv.hover(function() {
-         cms.move.removeBorder(elem, '.' + cms.move.HOVER_NEW);
-         cms.move.hoverIn(elem, 2);
+         cms.move.removeNewElementHighlighting(elem);
+         cms.move.hightlightElement(elem, 2);
          startHoverTimeout(handleDiv, cms.toolbar.mode);
-         $('body').children('.' + cms.move.HOVER_NEW).remove();
       }, function() {
-         cms.move.hoverOut();
+         cms.move.removeElementHighlighting();
          stopHover();
-         if ($(elem).find('.' + cms.move.HOVER_NEW).size() == 0 && $(elem).hasClass('cms-new-element')) {
-            cms.move.drawBorder(elem, 2, cms.move.HOVER_NEW);
+         if (elem.hasClass('cms-new-element')) {
+            cms.move.highlightNewElement(elem);
          }
-         $('body').children('.' + cms.move.HOVER_NEW).remove();
       });
-      $('body').children('.' + cms.move.HOVER_NEW).remove();
    }
    
    /**
@@ -792,9 +786,9 @@
          out: cms.move.onDragOutOfContainer,
          change: function(event, ui) {
             var helperParent = ui.helper.parent();
-            if (helperParent.attr('id') != cms.html.favoriteDropListId) {
-               cms.move.hoverOut(helperParent);
-               cms.move.hoverInner(helperParent, 2, true);
+            var parentId = helperParent.attr('id');
+            if (parentId != cms.html.favoriteDropListId) {
+               cms.move.refreshCotnainerHighlighting('#'+parentId, 2);
             }
          },
          tolerance: 'pointer',
@@ -1267,6 +1261,11 @@
             var elemId = elem.attr('rel');
             if (elemId && cms.data.elements[elemId]) {
                addHandles(elem, elemId, buttonMode);
+               if (elem.hasClass(cms.html.subcontainerClass)){
+                   var backgroundData = cms.move.addSubcontainerBackground(elem);
+                   var rightPos = backgroundData['parentDimension']['width'] - backgroundData['dimension']['left'] - backgroundData['dimension']['width'];
+                   elem.children('.cms-handle').css('right', rightPos+'px');
+               }
             }
          });
          initMove(containerSelector);
@@ -1356,7 +1355,7 @@
       if (mode == '') {
          return;
       }
-      cms.move.hoverOut();
+      cms.move.removeAllHighlighting();
       
       // disabling edit/move/delete
       var containerSelector = cms.util.getContainerSelector();
@@ -1367,6 +1366,7 @@
       resetFavList();
       $('.cms-element div.cms-handle, .' + cms.html.subcontainerClass + ' div.cms-handle').remove();
       $(containerSelector).find('div.cms-editable div.cms-directedit-buttons').removeClass('cms-' + mode + 'mode');
+      $('.cms-subcontainer-background').remove();
       //cms.toolbar.dom.buttons[mode].removeClass('ui-state-active');
    }
    
