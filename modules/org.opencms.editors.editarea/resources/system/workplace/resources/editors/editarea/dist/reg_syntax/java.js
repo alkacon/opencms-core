@@ -1,5 +1,6 @@
 editAreaLoader.load_syntax["java"] = {
-'COMMENT_SINGLE': { 1: '//', 2: '@' }
+	'DISPLAY_NAME' : 'Java'
+	,'COMMENT_SINGLE': { 1: '//', 2: '@' }
 	, 'COMMENT_MULTI': { '/*': '*/' }
 	, 'QUOTEMARKS': { 1: "'", 2: '"' }
 	, 'KEYWORD_CASE_SENSITIVE': true

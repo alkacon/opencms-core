@@ -1,5 +1,6 @@
 editAreaLoader.load_syntax["tsql"] = {
-	'COMMENT_SINGLE' : {1 : '--'}
+	'DISPLAY_NAME' : 'T-SQL'
+	,'COMMENT_SINGLE' : {1 : '--'}
 	,'COMMENT_MULTI' : {'/*' : '*/'}
 	,'QUOTEMARKS' : {1: "'" }
 	,'KEYWORD_CASE_SENSITIVE' : false

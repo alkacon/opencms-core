@@ -1,5 +1,6 @@
 editAreaLoader.load_syntax["pas"] = {
-	'COMMENT_SINGLE' : {}
+	'DISPLAY_NAME' : 'Pascal'
+	,'COMMENT_SINGLE' : {}
 	,'COMMENT_MULTI' : {'{' : '}', '(*':'*)'}
 	,'QUOTEMARKS' : {1: '"', 2: "'"}
 	,'KEYWORD_CASE_SENSITIVE' : false

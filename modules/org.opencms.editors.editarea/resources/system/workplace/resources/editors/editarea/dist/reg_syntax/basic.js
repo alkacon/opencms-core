@@ -1,5 +1,6 @@
 editAreaLoader.load_syntax["basic"] = {
-	'COMMENT_SINGLE' : {1 : "'", 2 : 'rem'}
+	'DISPLAY_NAME' : 'Basic'
+	,'COMMENT_SINGLE' : {1 : "'", 2 : 'rem'}
 	,'COMMENT_MULTI' : { }
 	,'QUOTEMARKS' : {1: '"'}
 	,'KEYWORD_CASE_SENSITIVE' : false
