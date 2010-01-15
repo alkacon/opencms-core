@@ -1503,7 +1503,7 @@ span.cms-select-opener{
 	z-index: 0;
 }
 
-.cms-checkbox  {
+.cms-checkbox, .cms-checkbox-gallery  {
 	cursor: pointer;
     height: 20px;
     width: 24px;
@@ -1511,7 +1511,7 @@ span.cms-select-opener{
 
 	
 /* checkbox states */
-.cms-checkbox { background: url(images/checkbox.gif) no-repeat; }
+.cms-checkbox, .cms-checkbox-gallery { background: url(images/checkbox.gif) no-repeat; }
 
 
 

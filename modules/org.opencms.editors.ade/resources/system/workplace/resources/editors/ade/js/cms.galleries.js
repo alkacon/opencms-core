@@ -1161,6 +1161,20 @@
     var resetActiveItem = cms.galleries.resetActiveItem = function() {        
         cms.galleries.activeItem['isCropped'] = null;
     }
+    
+    /**
+     * Checkes or uncheckes the checkbox element.
+     * 
+     * @param {Object} elem the checkbox element to be checked
+     * @param {Object} flag true or false
+     */
+    var checkGalleryCheckbox = cms.galleries.checkGalleryCheckbox = function (elem, flag){
+        if (flag) {
+            $(elem).addClass('cms-checkbox-checked').removeClass('cms-checkbox-uncheched');    
+        } else {
+            $(elem).addClass('cms-checkbox-unchecked').removeClass('cms-checkbox-cheched');
+        }    
+    }
  
         
     /**

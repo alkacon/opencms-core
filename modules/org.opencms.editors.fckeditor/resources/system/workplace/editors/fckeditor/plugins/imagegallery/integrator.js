@@ -10,8 +10,8 @@ var FCKConfig		= oEditor.FCKConfig;
 var FCKBrowserInfo	= oEditor.FCKBrowserInfo;
 
 /* Enables or disables the enhanced image dialog options. */
-var showEnhancedOptions = false;
-var useTbForLinkOriginal = false;
+var showEnhancedOptions = true;
+var useTbForLinkOriginal = true;
 
 /* The selected image (if available). */
 var oImage = null;
@@ -27,15 +27,23 @@ var vfsPopupUri = "<%= cms.link("/system/workplace/editors/fckeditor/plugins/ocm
 
 /* Do additional stuff when active image is loaded. */
 function activeImageAdditionalActions(isInitial) {
-
-//	if (!isInitial == true) {
-//		resetCopyrightText();
-//		var imgTitle = activeItem.title;
-//		if (activeItem.description != "") {
-//			imgTitle = activeItem.description;
-//		}
-//		GetE("txtAlt").value = imgTitle;
-//	}
+    if (isInitial) {
+        loadSelection();
+    } else {
+        resetCopyrightText();
+        var imgTitle = cms.galleries.activeItem.title;
+        if (cms.galleries.activeItem.description != "") {
+            imgTitle = cms.galleries.activeItem.description;
+        }
+        GetE("txtAlt").value = imgTitle;
+        //set default values for the image opened from the list
+        $('#' + cms.imagepreviewhandler.keys['editorFormatTabId'])
+            .find('#' + cms.imagepreviewhandler.editorKeys['imgAlign'])
+            .find('.cms-selectbox').selectBox('setValue','left');        
+		GetE("txtHSpace").value = "5";
+		GetE("txtVSpace").value = "5";
+        cms.galleries.checkGalleryCheckbox($('#' + cms.imagepreviewhandler.editorKeys['imgSpacing']),true);        
+    }
 	// activate the "OK" button of the dialog
 	window.parent.SetOkButton(true);
 }
@@ -50,9 +58,8 @@ function SetUrl( url, width, height, alt ) {
         GetE("txtLnkUrl").value = url;
 }
 
-/* Loads the selected image from the editor, if available. */
-function loadSelection() {
-	// get the selected image
+function prepareEditor() {
+    // get the selected image
 	oImage = dialog.Selection.GetSelectedElement();
 	if (oImage && oImage.tagName != "IMG" && oImage.tagName != "SPAN" && !(oImage.tagName == "INPUT" && oImage.type == "image")) {
 		oImage = null;
@@ -60,21 +67,58 @@ function loadSelection() {
 	// get the active link
 	oLink = dialog.Selection.GetSelection().MoveToAncestorNode("A");
 
-	if (!oImage) {
-		// no image selected, nothing to do...
-		//GetE('cmbAlign').value = "left";
-		//GetE("txtHSpace").value = "5";
-		//GetE("txtVSpace").value = "5";
-		//GetE("imageBorder").checked = true;
+	if (!oImage) {       
 		return;
 	}
+    
+    var sUrl = oImage.getAttribute("_fcksavedurl");
+	if (sUrl == null) {
+		sUrl = GetAttribute(oImage, "src", "");
+	}
+	var paramIndex = sUrl.indexOf("?__scale");
+	if (paramIndex != -1) {
+		cms.galleries.initValues.scale = sUrl.substring(paramIndex + 9);
+		sUrl = sUrl.substring(0, paramIndex);
+	}
 
+	cms.galleries.initValues.linkpath = sUrl;
+    
+    var iWidth, iHeight;
+
+	var regexSize = /^\s*(\d+)px\s*$/i ;
+
+	if (oImage.style.width)	{
+		var aMatch = oImage.style.width.match(regexSize);
+		if (aMatch) {
+			iWidth = aMatch[1];
+			oImage.style.width = "";
+		}
+	}
+
+	if (oImage.style.height) {
+		var aMatch = oImage.style.height.match(regexSize);
+		if (aMatch) {
+			iHeight = aMatch[1];
+			oImage.style.height = "";
+		}
+	}
+
+	iWidth = iWidth ? iWidth : GetAttribute(oImage, "width", "");
+	iHeight = iHeight ? iHeight : GetAttribute(oImage, "height", "");
+
+	cms.galleries.initValues.imgwidth = "" + iWidth;
+	cms.galleries.initValues.imgheight = "" + iHeight;
+
+}
+
+/* Loads the selected image from the editor, if available. */
+function loadSelection() {
 	var altText = "";
 	var copyText = "";
 	var imgBorder =	false;
 	var imgHSp = "";
 	var imgVSp = "";
-	var imgAlign = GetAttribute(oImage, "align", "");;
+	var imgAlign = GetAttribute(oImage, "align", "");
 	if (dialog.Selection.GetSelection().HasAncestorNode("SPAN") || dialog.Selection.GetSelection().HasAncestorNode("TABLE")) {
 		if (FCK.Selection.HasAncestorNode("SPAN")) {
 			oSpan =	dialog.Selection.GetSelection().MoveToAncestorNode("SPAN");
@@ -88,13 +132,13 @@ function loadSelection() {
 				var altElem = oEditor.FCK.EditorDocument.getElementById("s" + idPart);
 				if (altElem) {
 					altText	= altElem.firstChild.data;
-					GetE("insertAlt").checked = true;
+                    cms.galleries.checkGalleryCheckbox($('#' + cms.imagepreviewhandler.editorKeys['fckInsertAlt']), true);                   
 				}
 
 				var cpElem = oEditor.FCK.EditorDocument.getElementById("c" + idPart);
 				if (cpElem) {
 					copyText = cpElem.firstChild.data;
-					GetE("insertCopyright").checked = true;
+                    cms.galleries.checkGalleryCheckbox($('#' + cms.imagepreviewhandler.editorKeys['fckInsertCr']), true);					
 				}
 				var divElem = oEditor.FCK.EditorDocument.getElementById("a" + idPart);
 				imgHSp = divElem.style.marginLeft;
@@ -144,23 +188,16 @@ function loadSelection() {
 	if (altText == "") {
 		altText	= GetAttribute(oImage,	"alt", "");
 	}
+    
+    // at this point the url is already given
+    var sUrl = cms.galleries.initValues.linkpath;
+    
+    
 
-	var sUrl = oImage.getAttribute("_fcksavedurl");
-	if (sUrl == null) {
-		sUrl = GetAttribute(oImage, "src", "");
-	}
-	var paramIndex = sUrl.indexOf("?__scale");
-	if (paramIndex != -1) {
-		cms.galleries.initValues.scale = sUrl.substring(paramIndex + 9);
-		sUrl = sUrl.substring(0, paramIndex);
-	}
-
-	cms.galleries.initValues.linkpath = sUrl;
-
-	/*GetE("txtAlt").value = altText;
+	GetE("txtAlt").value = altText;
 	if (copyText !=	"")	{
 		GetE("txtCopyright").value = copyText;
-	}*/
+	}
 	
 	if (isNaN(imgHSp) && imgHSp.indexOf("px") != -1)	{	
 		imgHSp = imgHSp.substring(0, imgHSp.length - 2);
@@ -177,45 +214,28 @@ function loadSelection() {
 	if (imgBorder) {
 		GetE("txtVSpace").value	= imgVSp;
 		GetE("txtHSpace").value	= imgHSp;
-		GetE("imageBorder").checked = true;
+        cms.galleries.checkGalleryCheckbox($('#' + cms.imagepreviewhandler.editorKeys['imgSpacing']), true);		
 	}
 
-	//GetE("cmbAlign").value = imgAlign;
-
-	var iWidth, iHeight;
-
-	var regexSize = /^\s*(\d+)px\s*$/i ;
-
-	if (oImage.style.width)	{
-		var aMatch = oImage.style.width.match(regexSize);
-		if (aMatch) {
-			iWidth = aMatch[1];
-			oImage.style.width = "";
-		}
-	}
-
-	if (oImage.style.height) {
-		var aMatch = oImage.style.height.match(regexSize);
-		if (aMatch) {
-			iHeight = aMatch[1];
-			oImage.style.height = "";
-		}
-	}
-
-	iWidth = iWidth ? iWidth : GetAttribute(oImage, "width", "");
-	iHeight = iHeight ? iHeight : GetAttribute(oImage, "height", "");
-
-	cms.galleries.initValues.imgwidth = "" + iWidth;
-	cms.galleries.initValues.imgheight = "" + iHeight;
+    $('#' + cms.imagepreviewhandler.keys['editorFormatTabId'])
+            .find('#' + cms.imagepreviewhandler.editorKeys['imgAlign'])
+            .find('.cms-selectbox').selectBox('setValue',imgAlign);
 
 	// get Advanced	Attributes
-	/*GetE("txtAttId").value = oImage.id;
-	GetE("cmbAttLangDir").value = oImage.dir;
+    GetE("txtAttId").value = oImage.id;
+    var langDir = oImage.dir;
+    if (langDir == "") {
+        langDir = 'none';
+    }	
+    $('#' + cms.imagepreviewhandler.keys['editorAdvancedTabId'])
+            .find('#' + cms.imagepreviewhandler.editorKeys['advLangDir'])
+            .find('.cms-selectbox').selectBox('setValue', langDir);
+    
 	GetE("txtAttLangCode").value = oImage.lang;
 	GetE("txtAttTitle").value = oImage.title;
 	GetE("txtAttClasses").value = oImage.getAttribute("class", 2) || "";
 	GetE("txtLongDesc").value = oImage.longDesc;
-	GetE("txtAttStyle").value = cssTxt;*/
+	GetE("txtAttStyle").value = cssTxt;
 
 	if (oLink) {
 		var lnkUrl = oLink.getAttribute("_fcksavedurl");
@@ -223,12 +243,12 @@ function loadSelection() {
 			lnkUrl = oLink.getAttribute("href", 2);
 		}
 		if (lnkUrl != sUrl) {
-			//GetE("txtLnkUrl").value = lnkUrl;
-			//GetE("cmbLnkTarget").value = oLink.target;
+			GetE("txtLnkUrl").value = lnkUrl;            
+            $('#' + cms.imagepreviewhandler.keys['editorAdvancedTabId']).find('#cmbLnkTarget').find('.cms-selectbox').selectBox('setValue',oLink.target);			
 		}
 		var idAttr = oLink.id;
 		if (idAttr != null && idAttr.indexOf("limg_") == 0) {
-			//GetE("linkOriginal").checked = true;
+            cms.galleries.checkGalleryCheckbox($('#' + cms.imagepreviewhandler.editorKeys['linkOriginal']), true);			
 		}
 	}
 }
@@ -237,7 +257,7 @@ function loadSelection() {
 function resetAltText() {
 	var imgTitle = cms.galleries.activeItem.title;
 	if (cms.galleries.activeItem.description != "") {
-		imgTitle = activeItem.description;
+		imgTitle = cms.galleries.activeItem.description;
 	}
 	GetE("txtAlt").value = imgTitle;
 }
@@ -272,25 +292,30 @@ function setImageBorder() {
 
 /* Returns if the image border checkbox is checked or not. */
 function insertImageBorder() {
-	return checkChecked("imageBorder");
+    var checked = $('#' + cms.imagepreviewhandler.editorKeys['imgSpacing']).hasClass('cms-checkbox-checked');    
+	return checked;	
 }
 
 /* Returns if the link to original image checkbox is checked or not. */
 function insertLinkToOriginal() {
-	return checkChecked("linkOriginal");
+    var checked = $('#' + cms.imagepreviewhandler.editorKeys['linkOriginal']).hasClass('cms-checkbox-checked');    
+	return checked;	
 }
 
 /* Returns if the sub title checkbox is checked or not. */
 function insertSubTitle() {
-	return checkChecked("insertAlt");
+	var checked = $('#' + cms.imagepreviewhandler.editorKeys['fckInsertAlt']).hasClass('cms-checkbox-checked');    
+	return checked;    
 }
 
 /* Returns if the copyright checkbox is checked or not. */
 function insertCopyright() {
-	return checkChecked("insertCopyright");
+	var checked = $('#' + cms.imagepreviewhandler.editorKeys['fckInsertCr']).hasClass('cms-checkbox-checked');    
+	return checked;    
 }
 
 /* Helper method to determine if a checkbox is checked or not. */
+//TODO: check if the method can be removed!! It seems to be used only in the above functions
 function checkChecked(elemName) {
 	var elem = GetE(elemName);
 	if (elem) {
@@ -407,13 +432,15 @@ function Ok() {
 					} else {
 						oLink.setAttribute("onclick", linkOri);
 					}
-					oLink.setAttribute("id", "limg_" + activeItem.hash);
+					oLink.setAttribute("id", "limg_" + cms.galleries.activeItem.hash);
 					oImage.setAttribute("border", "0");
 				} catch (e) {}
 			}
 			try {
 				SetAttribute(oLink, "_fcksavedurl", sLnkUrl);
-				SetAttribute(oLink, "target", GetE("cmbLnkTarget").value);
+                var target = $('#' + cms.imagepreviewhandler.keys['editorAdvancedTabId'])
+                    .find('#cmbLnkTarget').find('.cms-selectbox').selectBox('getValue');
+				SetAttribute(oLink, "target", target);
 			} catch (e) {}
 		}
 	} // end simple image tag
@@ -425,9 +452,11 @@ function createEnhancedImage() {
 	if (isEnhancedPreview()) {
 		// sub title and/or copyright information has to be inserted 
 		var oNewElement = oEditor.FCK.EditorDocument.createElement("SPAN");
-		// now set the span attributes      
-		var st = "width: " + GetE("txtWidth").value + "px;";
-		var al = GetE("cmbAlign").value;
+		// now set the span attributes      		
+        var txtWidth = $('#' + cms.imagepreviewhandler.keys['formatTabId']).find('.cms-format-line[alt="width"]').find('input').val();
+        var st = "width: " + txtWidth + "px;";		
+        var al = $('#' + cms.imagepreviewhandler.keys['editorFormatTabId'])
+            .find('#cmbAlign').find('.cms-selectbox').selectBox('getValue');
 		if (al == "left" || al == "right") {
 			st += " float: " + al + ";";
 		}
@@ -458,13 +487,13 @@ function createEnhancedImage() {
 			var oLinkOrig = oEditor.FCK.EditorDocument.createElement("A");
 			if (useTbForLinkOriginal == true) {
 				oLinkOrig.href = getLinkToOriginal();
-				oLinkOrig.setAttribute("title", activeItem.title);
+				oLinkOrig.setAttribute("title", cms.galleries.activeItem.title);
 				oLinkOrig.setAttribute("class", "thickbox");
 			} else {
 				oLinkOrig.href = "#";
 				oLinkOrig.setAttribute("onclick", getLinkToOriginal());
 			}
-			oLinkOrig.setAttribute("id", "limg_" + activeItem.hash);
+			oLinkOrig.setAttribute("id", "limg_" + cms.galleries.activeItem.hash);
 			oImage.setAttribute("border", "0");
 			oLinkOrig.appendChild(oImage);
 			oNewElement.appendChild(oLinkOrig);
@@ -477,7 +506,7 @@ function createEnhancedImage() {
 			// insert the 2nd span with the copyright information
 			var copyText = GetE("txtCopyright").value;
 			if (copyText == "") {
-				copyText = "&copy; " + activeItem.copyright;
+				copyText = "&copy; " + cms.galleries.activeItem.copyright;
 			}
 			var oSpan2 = oEditor.FCK.EditorDocument.createElement("SPAN");
 			oSpan2.style.cssText = "display: block; clear: both;";
@@ -509,11 +538,12 @@ function createEnhancedImage() {
 	}
 }
 
+
 /* Creates the link to the original image. */
 function getLinkToOriginal() {
 	var linkUri = "";
 	if (useTbForLinkOriginal == true) {
-		linkUri += activeItem.linkpath;
+		linkUri += cms.galleries.activeItem.linkpath;
 	} else {
 		linkUri += "javascript:window.open('";
 		linkUri += vfsPopupUri;
@@ -537,7 +567,7 @@ function updateImage(e) {
 		cms.galleries.initValues.scale = "c:transparent,t:4,r=0,q=70";
 	} else {
 		if (cms.galleries.initValues.scale.lastIndexOf(",") == cms.galleries.initValues.scale.length - 1) {
-			cms.galleries.initValues.scale =cms.galleries. initValues.scale.substring(0, cms.galleries.initValues.scale.length - 1);
+			cms.galleries.initValues.scale =cms.galleries.initValues.scale.substring(0, cms.galleries.initValues.scale.length - 1);
 		}
 	}
 
@@ -585,26 +615,28 @@ function updateImage(e) {
 
 	e.src = txtUrl;
 	SetAttribute(e, "_fcksavedurl", txtUrl);
-	//SetAttribute(e, "alt"   , GetE("txtAlt").value);
+	SetAttribute(e, "alt"   , GetE("txtAlt").value);
 	SetAttribute(e, "width" , newWidth);
 	SetAttribute(e, "height", newHeight);
 	SetAttribute(e, "border", "");
 
-	//SetAttribute(e, "align" , GetE("cmbAlign").value);
+    var align = $('#' + cms.imagepreviewhandler.keys['editorFormatTabId'])
+        .find('#' + cms.imagepreviewhandler.editorKeys['imgAlign']).find('.cms-selectbox').selectBox('getValue');	
+    SetAttribute(e, "align" , align);
 
 	var styleAttr = "";
 	SetAttribute(e, "vspace", "");
 	SetAttribute(e, "hspace", "");
-	if (!isEnhancedPreview()) {
-    		var imgAlign = GetE("cmbAlign").value;
-    		//var vSp = GetE("txtVSpace").value;
-    		//var hSp = GetE("txtHSpace").value;
-    		//if (vSp == "") {
-		//	vSp = "0";
-		//}
-		//if (hSp == "") {
-		//	hSp = "0";
-		//}
+	if (!isEnhancedPreview()) {    		
+            var imgAlign = align;
+    		var vSp = GetE("txtVSpace").value;
+    		var hSp = GetE("txtHSpace").value;
+    		if (vSp == "") {
+			vSp = "0";
+		}
+		if (hSp == "") {
+			hSp = "0";
+		}
     		if (showEnhancedOptions && imgAlign == "left") {
     			styleAttr = "margin-bottom: " + vSp + "px; margin-right: " + hSp + "px;";
     		} else if (showEnhancedOptions && imgAlign == "right") {
@@ -620,13 +652,15 @@ function updateImage(e) {
 
 	// advanced attributes
 
-	/*var idVal = GetE("txtAttId").value;
+	var idVal = GetE("txtAttId").value;
 	if (idVal == "" || idVal.substring(0, 5) == "iimg_") {
 		idVal = "iimg_" + cms.galleries.activeItem.hash;
 	}
 	SetAttribute(e, "id", idVal);
 
-	SetAttribute(e, "dir", GetE("cmbAttLangDir").value);
+    var langDir = $('#' + cms.imagepreviewhandler.keys['editorAdvancedTabId'])
+        .find('#' + cms.imagepreviewhandler.editorKeys['advLangDir']).find('.cms-selectbox').selectBox('getValue');
+	SetAttribute(e, "dir", langDir);
 	SetAttribute(e, "lang", GetE("txtAttLangCode").value);
 	SetAttribute(e, "title", GetE("txtAttTitle").value);
 	SetAttribute(e, "class", GetE("txtAttClasses").value);
@@ -637,5 +671,5 @@ function updateImage(e) {
 		e.style.cssText = styleAttr;
 	} else {
 		SetAttribute(e, "style", styleAttr);
-	}*/
+	}
 }

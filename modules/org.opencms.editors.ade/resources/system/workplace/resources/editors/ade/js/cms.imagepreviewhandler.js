@@ -33,17 +33,17 @@
       'imgSpacing':'imageBorder',
       'imgAlign': 'cmbAlign',
       'hSpace':'txtHSpace',
-      'vSpace':'txtvSpace',
-      'linkOrginal':'linkOriginal',
+      'vSpace':'txtVSpace',
+      'linkOriginal':'linkOriginal',
       'advLinkUrl': 'txtLnkUrl',
-      'advBrowseServer':'btbrowerserver',
+      'advBrowseServer':'btbrowseserver',
       'advLinkTarget': 'cmbLnkTarget',
       'advId':'txtAttId',
       'advClasses':'txtAttClasses',
       'advStyle':'txtAttStyle',
       'advLongDesc':'txtLongDesc',
       'advAdvTitle':'txtAttTitle',
-      'advLangDir':'cmbAttLngDir',
+      'advLangDir':'cmbAttLangDir',
       'advLangCode':'txtAttLangCode'      
    };
       
@@ -77,7 +77,7 @@
    
    /** Array with format values for the drop down. */
    var editorTargetDropDown = [
-       {  'value':'',
+       {  'value':'none',
            'title':'<not set>' 
        },
        {   'value':'_blank',
@@ -96,7 +96,7 @@
    
    /** Array with format values for the drop down. */
    var editorLangDropDown = [
-       {  'value':'',
+       {  'value':'none',
            'title':'<not set>' 
        },
        {   'value':'ltr',
@@ -106,6 +106,8 @@
             'title':'Right to Left (LTR)'           
        }       
    ];
+   
+   cms.imagepreviewhandler.editorCheckboxes = {};
    
    /** An array with format values for image size calculation. */
    cms.imagepreviewhandler.formatSelections = [];
@@ -344,11 +346,11 @@
       // generate editable form fields
       var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');
      
-      form.append($('<div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
+      /*form.append($('<div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
           <span class="cms-item-title cms-width-95">Title&nbsp;/&nbsp;Alt-Text</span>\
           <input id="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
       </div>\
-      <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertAlt'] + '" class="cms-checkbox cms-checkbox-unchecked cms-left"></div>\
+      <span></span>\
       <div class="cms-checkbox-label cms-left">Insert subtitle</div>\
       <button id="' + cms.imagepreviewhandler.editorKeys['fckResetTitle'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" >\
           <span class="cms-galleries-button">Reset Title</span>\
@@ -357,20 +359,17 @@
           <span class="cms-item-title cms-width-95">Copyright</span>\
           <input id="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
       </div>\
-      <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertCr'] + '" class="cms-checkbox cms-checkbox-unchecked cms-left"></div>\
       <div class="cms-checkbox-label cms-left">Insert Copyright</div>\
       <button id="' + cms.imagepreviewhandler.editorKeys['fckReserCr'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" style="clear:right;">\
           <span class="cms-galleries-button">Reset Copyright</span>\
       </button>\
       <div class="cms-editable-field cms-left cms-width-305" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
           <span class="cms-item-title cms-editor-title cms-width-150 cms-left">Create image spacing</span>\
-          <div id="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '" class="cms-checkbox cms-checkbox-unchecked cms-left"></div>\
           <div class="cms-format-line cms-right" alt="width">\
               <span class="cms-item-title cms-editor-title cms-width-60">HSpace:</span>\
               <input id="' + cms.imagepreviewhandler.editorKeys['hSpace'] + '" class="ui-corner-all ui-widget-content" type="text"/>\
           </div>\
       </div>\
-      <div id="' + cms.imagepreviewhandler.editorKeys['linkOrginal'] + '" class="cms-checkbox cms-checkbox-unchecked cms-left checkbox-margin"></div>\
       <div class="cms-checkbox-title cms-left">Insert link to image in original format</div>\
       <div class="cms-drop-down cms-format-line cms-right" id="' + editorKeys['imgAlign'] + '">\
           <label class="cms-item-title cms-width-50">Align:</label>\
@@ -378,13 +377,96 @@
       <div class="cms-format-line cms-width-305" alt="width" style="clear:left;">\
           <input id="' + cms.imagepreviewhandler.editorKeys['vSpace'] + '" class="ui-corner-all ui-widget-content cms-right" type="text"/>\
           <span class="cms-item-title cms-editor-title cms-width-60 cms-right">VSpace:</span>\
-      </div>'));
-      target.append(form);      
-      /*form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
+      </div>'));*/
+      
+     
+         
+     // var fckInsertAlt = new cms.util.Checkbox();
+      //$('div[alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '"]').after(fckInsertAlt.$dom);
+      //cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['fckInsertAlt']] = fckInsertAlt;  
+      //var fckInsertAlt = new cms.util.Checkbox();
+      
+      //cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['fckInsertAlt']] = fckInsertAlt;
+      
+      //var fckInsertCr = new cms.util.Checkbox();
+      //$('div[alt="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '"]')
+      //    .after(fckInsertCr.$dom);
+      //cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['fckInsertCr']] = fckInsertCr;
+      //var imgSpacing = new cms.util.Checkbox();
+      //$('div[alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '"]').find('span:first')
+       //   .after(imgSpacing.$dom);
+      //cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['imgSpacing']] = imgSpacing;
+      //var linkOrginal = new cms.util.Checkbox();
+      //$('div[alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '"]')
+      //    .after(linkOrginal.$dom);
+      ///cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['linkOrginal']] = linkOrginal;
+      
+      //fckInsertAlt.$dom.addClass('cms-left');  
+      
+      
+      //fckInsertCr.$dom.addClass('cms-left');
+      
+      //imgSpacing.$dom.addClass('cms-left');
+      
+      //linkOrginal.$dom.addClass('cms-left');*/
+     // $('.cms-checkbox').addClass('cms-left');    
+      
+      form.append($('<div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
+          <span class="cms-item-title cms-width-95">Title&nbsp;/&nbsp;Alt-Text</span>\
+          <input id="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
+      </div>\
+      <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertAlt'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
+      <div class="cms-checkbox-label cms-left">Insert subtitle</div>\
+      <button id="' + cms.imagepreviewhandler.editorKeys['fckResetTitle'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" >\
+          <span class="cms-galleries-button">Reset Title</span>\
+      </button>\
+      <div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '">\
+          <span class="cms-item-title cms-width-95">Copyright</span>\
+          <input id="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
+      </div>\
+      <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertCr'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
+      <div class="cms-checkbox-label cms-left">Insert Copyright</div>\
+      <button id="' + cms.imagepreviewhandler.editorKeys['fckReserCr'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" style="clear:right;">\
+          <span class="cms-galleries-button">Reset Copyright</span>\
+      </button>\
+      <div class="cms-editable-field cms-left cms-width-305" alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '">\
+          <span class="cms-item-title cms-editor-title cms-width-150 cms-left">Create image spacing</span>\
+          <div id="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
+          <div class="cms-format-line cms-right" alt="width">\
+              <span class="cms-item-title cms-editor-title cms-width-60">HSpace:</span>\
+              <input id="' + cms.imagepreviewhandler.editorKeys['hSpace'] + '" class="ui-corner-all ui-widget-content" type="text"/>\
+          </div>\
+      </div>\
+      <div id="' + cms.imagepreviewhandler.editorKeys['linkOriginal'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left checkbox-margin"></div>\
+      <div class="cms-checkbox-title cms-left">Insert link to image in original format</div>\
+      <div class="cms-drop-down cms-format-line cms-right" id="' + editorKeys['imgAlign'] + '">\
+          <label class="cms-item-title cms-width-50">Align:</label>\
+      </div>\
+      <div class="cms-format-line cms-width-305" alt="width" style="clear:left;">\
+          <input id="' + cms.imagepreviewhandler.editorKeys['vSpace'] + '" class="ui-corner-all ui-widget-content cms-right" type="text"/>\
+          <span class="cms-item-title cms-editor-title cms-width-60 cms-right">VSpace:</span>\
+      </div>'));  
+      target.append(form);        
+      form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
             selectorPosition:'top',
             values: editorAlignDropDown,
             width: 100
-         })); */              
+         }));
+      form.find('.cms-checkbox-gallery').click(function () {
+          if ($(this).hasClass('cms-checkbox-unchecked')){
+              $(this).addClass('cms-checkbox-checked').removeClass('cms-checkbox-unchecked');
+          } else if ($(this).hasClass('cms-checkbox-checked')){
+               $(this).addClass('cms-checkbox-unchecked').removeClass('cms-checkbox-checked');   
+          }
+          // set image spacing fields if img spacing checkbox is checked
+          if ($(this).attr('id') == cms.imagepreviewhandler.editorKeys['imgSpacing']) {
+              setImageBorder();
+          }
+      }).mouseover(function() {
+          $(this).addClass('cms-checkbox-hover');
+      }).mouseout(function() {
+          $(this).removeClass('cms-checkbox-hover');
+      });            
    }
    
    /**
@@ -1281,7 +1363,7 @@
        $('#'+ cms.previewhandler.editableTabId).removeAttr('class').empty();
        $('#cms-preview div.close-icon').removeClass('cms-properties-changed cms-properties-saved'); 
        $('#cms-preview div.preview-area').empty();       
-   }
+   }   
    
    ///// Image Content Handler ////////////////              
    /**

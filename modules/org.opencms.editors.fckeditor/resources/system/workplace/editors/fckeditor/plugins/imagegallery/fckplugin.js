@@ -2,8 +2,6 @@
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 %>
 
-var fckEditorType
-
 // register the related commands
 FCKCommands.RegisterCommand(
 	"OcmsImageGallery",
@@ -83,9 +81,3 @@ FCK.ContextMenu.RegisterListener(
         }
     }
 );
-
-function getFCKEditor() {
-	//var dialog		= window.parent;
-	//var oEditor		= dialog.InnerDialogLoaded();
-	return oEditor;
-}

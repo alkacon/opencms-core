@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageFormatterHelper.java,v $
- * Date   : $Date: 2010/01/07 14:13:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/15 13:46:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.json.JSONObject;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 
  * 
@@ -65,11 +66,20 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
         /** The active image data. */
         ACTIVEIMAGE("activeimage"),
 
+        /** The copyright property of the image. */
+        COPYRIGHT("Copyright"),
+
+        /** The description property of the image. */
+        Description("Description"),
+
         /** The errors. */
         ERRORS("errors"),
 
         /** The info. */
         INFO("info"),
+
+        /** The info. */
+        HASH("hash"),
 
         /** The path. */
         PATH("path"),
@@ -154,6 +164,20 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
             }
             // 3: the link path to the image
             activeImageObj.put(JsonKeys.LINKPATH.getName(), getLinkPath());
+
+            // 4: image copyright            
+            String copyright = property(JsonKeys.COPYRIGHT.getName(), getCmsObject().getSitePath(getResource()), "");
+            activeImageObj.put(JsonKeys.COPYRIGHT.getName().toLowerCase(), CmsStringUtil.escapeJavaScript(copyright));
+            // 5: image title            
+            String title = property(JsonKeys.TITLE.getName(), getCmsObject().getSitePath(getResource()), "");
+            activeImageObj.put(JsonKeys.TITLE.getName().toLowerCase(), CmsStringUtil.escapeJavaScript(title));
+            // 6: image description            
+            String description = property(JsonKeys.TITLE.getName(), getCmsObject().getSitePath(getResource()), "");
+            activeImageObj.put(
+                JsonKeys.Description.getName().toLowerCase(),
+                CmsStringUtil.escapeJavaScript(description));
+            // 7: image structure id hash code
+            activeImageObj.put(JsonKeys.HASH.getName(), getResource().getStructureId().hashCode());
             jsonObj.put(JsonKeys.ACTIVEIMAGE.getName(), activeImageObj);
         } catch (JSONException e) {
             // TODO: handle exception

@@ -40,7 +40,7 @@ var cms = { data: { GALLERY_SERVER_URL: "${gallery.galleryUri}"}, html: {}, util
     cms.galleries.initValues['fieldId'] = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
     cms.galleries.initValues['path'] = "${(not empty param.path) ? param.path : 'null'}";
     if (cms.galleries.initValues['dialogMode'] == 'editor') {
-		loadSelection();
+    	prepareEditor();
 		//post resquest synchron
 		$.ajax({
 			'async': false,
