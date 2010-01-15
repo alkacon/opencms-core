@@ -4259,6 +4259,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/ade/lib/jquery-1.4.js</source>
+			<destination>system/workplace/resources/editors/ade/lib/jquery-1.4.js</destination>
+			<type>plain</type>
+			<uuidstructure>e6652ab1-01cc-11df-ab57-5fe83f0bec24</uuidstructure>
+			<uuidresource>e6652ab2-01cc-11df-ab57-5fe83f0bec24</uuidresource>
+			<datelastmodified>Fri, 15 Jan 2010 11:55:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Jan 2010 11:55:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[jquery-1.4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/ade/lib/jquery-ui-1.7.2.custom.js</source>
 			<destination>system/workplace/resources/editors/ade/lib/jquery-ui-1.7.2.custom.js</destination>
 			<type>plain</type>

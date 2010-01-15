@@ -159,7 +159,7 @@
          width: ''
       
       };
-      var current = elem.next('*:visible:not(.' + stopAtClass + ')');
+      var current = elem.next('*:visible:not(.' + stopAtClass + ', .cms-handle)');
       if (current.length) {
          while (current.length) {
             var pos = cms.util.getElementPosition(current);
@@ -176,7 +176,7 @@
             current.outerWidth())) ? pos.left +
             current.outerWidth() : dimension.right;
             
-            current = current.next('*:visible:not(.' + stopAtClass + ')');
+            current = current.next('*:visible:not(.' + stopAtClass + ', .cms-handle)');
          }
       } else {
          var elemPos = getElementPosition(elem);

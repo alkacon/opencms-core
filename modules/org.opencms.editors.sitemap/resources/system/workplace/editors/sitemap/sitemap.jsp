@@ -7,7 +7,7 @@
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/lib/jquery-1.3.2.js")%>"></script>
+    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/lib/jquery-1.4.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/lib/jquery-ui-1.8a1.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/lib/json2.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/lib/jquery.jHelperTip.1.0.js")%>" ></script>
