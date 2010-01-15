@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Messages.java,v $
- * Date   : $Date: 2009/11/24 14:33:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/15 14:55:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROCESS_HTML_CONTENT_1 = "ERR_PROCESS_HTML_CONTENT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_FORMATTER_CONFIGURATION_1 = "ERR_READING_FORMATTER_CONFIGURATION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REPLACE_RESOURCE_FOLDER_1 = "ERR_REPLACE_RESOURCE_FOLDER_1";
@@ -104,6 +107,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RELATION_CREATION_FAILED_1 = "LOG_RELATION_CREATION_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_NO_FORMATTERS_DEFINED_1 = "LOG_WARN_NO_FORMATTERS_DEFINED_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.file.types.messages";

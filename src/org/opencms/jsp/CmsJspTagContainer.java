@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/01/11 14:40:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/01/15 14:55:48 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.6 
  */
@@ -308,9 +308,10 @@ public class CmsJspTagContainer extends TagSupport {
                     }
                 }
 
-                String elementFormatter = OpenCms.getADEManager().getXmlContentFormatters(cms, resUri).get(
+                String elementFormatter = OpenCms.getResourceManager().getResourceType(resUri).getFormatterForContainerType(
+                    cms,
+                    resUri,
                     containerType);
-
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormatter)) {
                     throw new CmsIllegalStateException(Messages.get().container(
                         Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
@@ -365,7 +366,11 @@ public class CmsJspTagContainer extends TagSupport {
                     String subelementUri = cms.getSitePath(subelementRes);
 
                     //String subelementFormatter = cms.getSitePath(subelement.getFormatter());
-                    String subelementFormatter = OpenCms.getADEManager().getXmlContentFormatters(cms, subelementRes).get(
+                    //                    String subelementFormatter = OpenCms.getADEManager().getXmlContentFormatters(cms, subelementRes).get(
+                    //                        containerType);
+                    String subelementFormatter = OpenCms.getResourceManager().getResourceType(subelementRes).getFormatterForContainerType(
+                        cms,
+                        subelementRes,
                         containerType);
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter) && LOG.isErrorEnabled()) {
                         // skip this element, it has no formatter for this container type defined

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2009/12/11 08:27:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/15 14:55:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -432,6 +432,16 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         Formatter formatter,
         Map<String, Object> requestAttributes)
     throws UnsupportedEncodingException, ServletException, IOException, CmsException;
+
+    /**
+     * Returns the formatter uri for the given container type.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource
+     * @param containerType the container type
+     * @return the formatter uri
+     */
+    String getFormatterForContainerType(CmsObject cms, CmsResource resource, String containerType);
 
     /**
      * Returns the path to an optional, additional java-script file to be used in the advanced galleries.<p> 

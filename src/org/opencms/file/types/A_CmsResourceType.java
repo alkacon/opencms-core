@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/12/11 08:27:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/15 14:55:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -80,14 +81,11 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
-
-    /** Configuration key for the (optional) internal flag. */
-    public static final String CONFIGURATION_INTERNAL = "resource.flag.internal";
 
     /** Configuration key for optional javascript in galleries. */
     public static final String CONFIGURATION_GALLERY_JAVASCRIPT_PATH = "gallery.javascript.path";
@@ -95,14 +93,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** Configuration key for the optional folder class name. */
     public static final String CONFIGURATION_GALLERY_TYPE_NAMES = "gallery.type.names";
 
-    /** The path to an additional java-script file to be used in the advanced galleries. */
-    private String m_galleryJavascriptPath;
-
-    /** The gallery type name for this resource type. */
-    private String m_galleryTypeNames;
-
-    /** The gallery type for this resource type. */
-    private List<I_CmsResourceType> m_galleryTypes;
+    /** Configuration key for the (optional) internal flag. */
+    public static final String CONFIGURATION_INTERNAL = "resource.flag.internal";
 
     /** Macro for the folder path of the current resource. */
     public static final String MACRO_RESOURCE_FOLDER_PATH = "resource.folder.path";
@@ -140,11 +132,11 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** The list of configured default properties. */
     protected List<CmsProperty> m_defaultProperties;
 
-    /** Indicates that the configuration of the resource type has been frozen. */
-    protected boolean m_frozen;
-
     /** Content formatters. */
     protected Map<String, CmsResource> m_formatters;
+
+    /** Indicates that the configuration of the resource type has been frozen. */
+    protected boolean m_frozen;
 
     /**  Contains the file extensions mapped to this resource type. */
     protected List<String> m_mappings;
@@ -154,6 +146,15 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** The configured name of this resource type. */
     protected String m_typeName;
+
+    /** The path to an additional java-script file to be used in the advanced galleries. */
+    private String m_galleryJavascriptPath;
+
+    /** The gallery type name for this resource type. */
+    private String m_galleryTypeNames;
+
+    /** The gallery type for this resource type. */
+    private List<I_CmsResourceType> m_galleryTypes;
 
     /** The optional internal parameter value. */
     private Boolean m_internal;
@@ -185,16 +186,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 m_galleryTypeNames = paramValue.trim();
             }
         }
-    }
-
-    /**
-     * Returns the galleryTypeName.<p>
-     *
-     * @return the galleryTypeName
-     */
-    public String getGalleryType() {
-
-        return m_galleryTypeNames;
     }
 
     /**
@@ -496,48 +487,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getGalleryJavascriptPath()
-     */
-    public String getGalleryJavascriptPath() {
-
-        if (m_galleryJavascriptPath == null) {
-            m_galleryJavascriptPath = getConfiguration().get(CONFIGURATION_GALLERY_JAVASCRIPT_PATH);
-            if (m_galleryJavascriptPath == null) {
-                m_galleryJavascriptPath = "";
-            }
-        }
-        return m_galleryJavascriptPath;
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#getGalleryTypes()
-     */
-    public List<I_CmsResourceType> getGalleryTypes() {
-
-        if (m_galleryTypes == null) {
-            m_galleryTypes = new ArrayList<I_CmsResourceType>();
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_galleryTypeNames)) {
-                CmsResourceManager rm = OpenCms.getResourceManager();
-                Iterator<String> iTypeNames = CmsStringUtil.splitAsList(
-                    m_galleryTypeNames,
-                    CmsProperty.VALUE_LIST_DELIMITER).iterator();
-                while (iTypeNames.hasNext()) {
-                    String typeName = iTypeNames.next();
-                    try {
-                        m_galleryTypes.add(rm.getResourceType(typeName));
-                    } catch (CmsLoaderException e) {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().container(Messages.ERR_COULD_NOT_READ_RESOURCE_TYPE_1, typeName));
-                        }
-                    }
-                }
-            }
-
-        }
-        return m_galleryTypes;
-    }
-
-    /**
      * @see org.opencms.file.types.I_CmsResourceType#getFormattedContent(CmsObject, HttpServletRequest, HttpServletResponse, Formatter, java.util.Map)
      */
     public String getFormattedContent(
@@ -594,6 +543,69 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             }
         }
 
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainerType(CmsObject, CmsResource, String)
+     */
+    public String getFormatterForContainerType(CmsObject cms, CmsResource resource, String containerType) {
+
+        if (containerType.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
+            return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getGalleryJavascriptPath()
+     */
+    public String getGalleryJavascriptPath() {
+
+        if (m_galleryJavascriptPath == null) {
+            m_galleryJavascriptPath = getConfiguration().get(CONFIGURATION_GALLERY_JAVASCRIPT_PATH);
+            if (m_galleryJavascriptPath == null) {
+                m_galleryJavascriptPath = "";
+            }
+        }
+        return m_galleryJavascriptPath;
+    }
+
+    /**
+     * Returns the galleryTypeName.<p>
+     *
+     * @return the galleryTypeName
+     */
+    public String getGalleryType() {
+
+        return m_galleryTypeNames;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getGalleryTypes()
+     */
+    public List<I_CmsResourceType> getGalleryTypes() {
+
+        if (m_galleryTypes == null) {
+            m_galleryTypes = new ArrayList<I_CmsResourceType>();
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_galleryTypeNames)) {
+                CmsResourceManager rm = OpenCms.getResourceManager();
+                Iterator<String> iTypeNames = CmsStringUtil.splitAsList(
+                    m_galleryTypeNames,
+                    CmsProperty.VALUE_LIST_DELIMITER).iterator();
+                while (iTypeNames.hasNext()) {
+                    String typeName = iTypeNames.next();
+                    try {
+                        m_galleryTypes.add(rm.getResourceType(typeName));
+                    } catch (CmsLoaderException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().container(Messages.ERR_COULD_NOT_READ_RESOURCE_TYPE_1, typeName));
+                        }
+                    }
+                }
+            }
+
+        }
+        return m_galleryTypes;
     }
 
     /**

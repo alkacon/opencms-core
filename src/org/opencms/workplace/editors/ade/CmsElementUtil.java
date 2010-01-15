@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/12/21 09:05:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/15 14:55:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -47,6 +48,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
@@ -76,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.6
  */
@@ -334,7 +336,9 @@ public final class CmsElementUtil {
                     }
                 }
             }
-            String defaultFormatter = m_manager.getXmlContentFormatters(m_cms, resource).get(
+            String defaultFormatter = OpenCms.getResourceManager().getResourceType(resource).getFormatterForContainerType(
+                m_cms,
+                resource,
                 CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE);
             String jspResult;
             try {
@@ -359,15 +363,15 @@ public final class CmsElementUtil {
             }
 
         } else {
-            Iterator<Map.Entry<String, String>> it = m_manager.getXmlContentFormatters(m_cms, resource).entrySet().iterator();
+            Iterator<String> it = types.iterator();
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
             while (it.hasNext()) {
-                Map.Entry<String, String> entry = it.next();
-                String type = entry.getKey();
-                if (!types.contains(type) && !type.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
-                    // skip not supported types
+                String type = it.next();
+                String formatterUri = resType.getFormatterForContainerType(m_cms, resource, type);
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(formatterUri)) {
                     continue;
                 }
-                String formatterUri = entry.getValue();
+
                 formatters.put(type, formatterUri);
                 // execute the formatter jsp for the given element
                 try {
@@ -381,6 +385,23 @@ public final class CmsElementUtil {
                         formatterUri,
                         type), e);
                 }
+            }
+            String defaultFormatter = OpenCms.getResourceManager().getResourceType(resource).getFormatterForContainerType(
+                m_cms,
+                resource,
+                CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE);
+            String jspResult;
+            try {
+                jspResult = getElementContent(element, m_cms.readResource(defaultFormatter));
+                // set the results
+                formatters.put(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE, defaultFormatter);
+                resContents.put(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE, jspResult); // empty contents
+            } catch (Exception e) {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
+                    m_cms.getSitePath(resource),
+                    defaultFormatter,
+                    CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE), e);
             }
         }
 

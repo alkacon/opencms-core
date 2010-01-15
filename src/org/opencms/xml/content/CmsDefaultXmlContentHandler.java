@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/15 14:55:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -95,7 +95,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -263,7 +263,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public static final String MACRO_PREVIEW_TEMPFILE = "previewtempfile";
 
     /** Default formatter path. */
-    protected static final String DEFAULT_FORMATTER = "/system/workplace/editors/ade/default-list-formatter.jsp";
+    public static final String DEFAULT_FORMATTER = "/system/workplace/editors/ade/default-list-formatter.jsp";
 
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
