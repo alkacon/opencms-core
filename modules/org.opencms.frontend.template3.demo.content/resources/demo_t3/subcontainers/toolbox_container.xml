@@ -4,13 +4,15 @@
   <AlkaconSubContainer language="en">
     <SubContainers>
       <Title><![CDATA[Toolbox container]]></Title>
-      <Description><![CDATA[Use in toolbox column.]]></Description>
-      <Type><![CDATA[right]]></Type>
+      <Description><![CDATA[Insert into left toolbox]]></Description>
+      <Type><![CDATA[leftcnt]]></Type>
       <Element>
-        <link type="STRONG">
-          <target><![CDATA[/sites/default/demo_t3/news/news_0005.html]]></target>
-          <uuid>5c56fdf9-9c82-11de-adde-dd9f629b113b</uuid>
-        </link>
+        <Uri>
+          <link type="STRONG">
+            <target><![CDATA[/sites/default/demo_t3/events/event_0005.html]]></target>
+            <uuid>770481a2-9c89-11de-adde-dd9f629b113b</uuid>
+          </link>
+        </Uri>
       </Element>
     </SubContainers>
   </AlkaconSubContainer>

@@ -3,7 +3,7 @@
 <AlkaconSubContainers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/ade/schemas/sub_container.xsd">
   <AlkaconSubContainer language="en">
     <SubContainers>
-      <Title><![CDATA[Edit title!]]></Title>
+      <Title><![CDATA[New subcontainer]]></Title>
       <Description><![CDATA[Edit description!]]></Description>
     </SubContainers>
   </AlkaconSubContainer>
