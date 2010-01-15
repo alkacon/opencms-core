@@ -255,7 +255,7 @@ button.cms-deactivated span.cms-icon-save {
 
 
 /** Subcontainer handling **/
-.cms-subcontainer.cms-new-element, .cms-subcontainer.cms-editing-subcontainer{
+.cms-subcontainer.cms-new-element, .cms-subcontainer.cms-editing-subcontainer, .cms-subcontainer .cms-subcontainer-background{
 	background: #ffffff url(images/bg_striped.png) repeat;
     min-height: 40px;
 }
@@ -268,7 +268,7 @@ button.cms-deactivated span.cms-icon-save {
 }
 */
 .cms-subcontainer{
-    min-height: 25px;
+    min-height: 40px;
 }
 
 #cms-overlay-editing{

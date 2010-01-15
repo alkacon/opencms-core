@@ -58,6 +58,7 @@
       var xhr = $.ajax({
          'url': url,
          'data': data,
+         'dataType': 'text',
          'type': 'POST',
          'timeout': timeout,
          'async': async,

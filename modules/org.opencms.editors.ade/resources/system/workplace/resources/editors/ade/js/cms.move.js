@@ -441,6 +441,22 @@
    }
    
    
+   var addSubcontainerBackground = cms.move.addSubcontainerBackground = function(elem){
+       var dimension = cms.util.getInnerDimensions(elem);
+       var elemPos = cms.util.getElementPosition(elem);
+       var hWidth = 2;
+       var inner = {
+         top: dimension.top - (elemPos.top + hWidth),
+         left: dimension.left - (elemPos.left + hWidth),
+         height: dimension.height + 2 * hWidth,
+         width: dimension.width + 2 * hWidth
+      };
+      var backgroundDiv = addBackgroundDiv(elem, inner, 'cms-subcontainer-background');
+      var backData ={"dimension": inner, "parentDimension": {"width": elem.width(), "height": elem.height()}};
+      backgroundDiv.data('backgroundData', backData);
+      return backData;
+   }
+   
    var addBackgroundDiv = cms.move.addBackgroundDiv = function(elem, dimension, classAttr) {
       return $('<div class="' + classAttr + '" style="position: absolute; z-index:0; top: ' +
           dimension.top +
@@ -756,6 +772,10 @@
          $('<div class="cms-hovering cms-hovering-bottom"></div>').addClass(additionalClass).height(hWidth).width(btWidth).css('top', tHeight + hOff).css('left', tblLeft).appendTo(elem);
       } else {
          // if position not relative highlighting div's are appended to the body element
+         var cssPosition=appendToElem.css('position');
+         if (cssPosition!='relative' || cssPosition!='absolute' || cssPosition!='fixed'){
+             appendToElem.css('position', 'relative');
+         }
          var elemOffset = elem.offset();
          var appendOffset = appendToElem.offset();
          var tlrTop = elemOffset.top - appendOffset.top - (hOff + hWidth);
