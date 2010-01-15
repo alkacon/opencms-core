@@ -173,74 +173,115 @@
       });
    }
    
-   /**
-    * Asks the user whether he really wants to set the url name for a sitemap entry.
-    * If he clicks OK, the item will be renamed.
-    *
-    * @param {Object} elem a DOM element in the sitemap entry to be renamed
-    * @param {Object} newValue the new URL name
-    */
-   var _askSetURLName = function(elem, newValue) {
-      var currentLi = elem.closest('li');
-      var currentEntry = new SitemapEntry(currentLi);
-      var $ul = currentLi.closest('ul');
-      var otherUrlNames = _getOtherUrlNames($ul, currentLi.get(0));
-      if (otherUrlNames[newValue]) {
-         cms.util.dialogAlert(cms.util.format(M.SITEMAP_ERR_URL_NAME_ALREADY_EXISTS, newValue), M.SITEMAP_ERR_URL_NAME_ALREADY_EXISTS_TITLE);
-         return;
-      }
-      var _renameEntry = function() {
-         var previousUrl = currentEntry.getUrl();
-         var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
-         currentEntry.setUrlName(newValue);
-         currentEntry.setUrls(parentUrl);
-      }
-      var _destroy = function() {
-         $dialog.dialog('destroy');
-         $dialog.remove();
-      }
-      if (currentLi.children('ul').length) {
-         var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
-         $dialog.appendTo('body');
-         $dialog.append('<p style="margin-bottom: 4px;">' + M.SITEMAP_CHANGE_URLNAME_FOR_SUBPAGES + '<br />' + M.SITEMAP_CHANGE_URLNAME_ANYWAY + '</p>');
-         var buttons = {};
-         buttons[M.SITEMAP_BUTTON_CHANGE_URLNAME_OK] = function() {
-            _renameEntry();
-            _destroy();
-         }
-         buttons[M.SITEMAP_BUTTON_CHANGE_URLNAME_CANCEL] = function() {
-            _destroy();
-         }
-         $dialog.dialog({
-            zIndex: 9999,
-            title: cms.util.format(M.SITEMAP_CHANGE_URLNAME_DIALOG_TITLE_1, newValue),
-            modal: true,
-            close: function() {
-               _destroy();
-            },
-            buttons: buttons
-         });
-      } else {
-         _renameEntry();
-      }
-   }
+   
+   
    
    /**
-    * setValue handler for the directInput of url name fields
-    * @param {Object} elem
-    * @param {Object} input
+    * Adds event handlers for the 'blur' and 'keyup' events to a text input field such that
+    * the user can cancel his editing by pressing the Escape key and the 'handleChange' function passed as the second
+    * parameter will be called (with the input field element, the old value and the new value as parameters)
+    * if the input field loses focus or the user presses Enter.
+    *
+    * @param {Object} $elem the input field
+    * @param {Object} handleChange the callback function
     */
-   var directInputSetUrlName = function(elem, input) {
-      var previous = elem.attr('alt');
-      var current = input.val();
-      cms.data.convertUrlName(current, function(newValue) {
-         if (previous != newValue) {
-            _askSetURLName(elem, newValue);
+   var setChangeHandler = function($elem, handleChange) {
+      $elem.focus(function() {
+         $elem.data('oldValue', $elem.val());
+      });
+      var valueChanged = function() {
+         var newVal = $elem.val();
+         var oldVal = $elem.data('oldValue');
+         handleChange($elem, oldVal, newVal);
+      }
+      $elem.blur(function() {
+         valueChanged();
+      });
+      
+      $elem.keyup(function(e) {
+         var oldVal = $elem.data('oldValue');
+         var newVal = $elem.val();
+         if (e.keyCode == 13) {
+            $elem.blur();
+         } else if (e.keyCode == 27) {
+            $elem.val(oldVal);
+            $elem.unbind('blur');
+            $elem.blur();
+            $elem.blur(valueChanged);
          }
-         elem.css('display', '');
-         input.remove();
       });
    }
+   
+   var isHandlingUrlChange = false;
+   
+   /**
+    * Handler for directly editing an URL name input field in a sitemap entry.
+    * @param {Object} $elem the input field
+    * @param {Object} oldValue the old value of the input field
+    * @param {Object} newValue the new value of the input field
+    */
+   var handleUrlNameChange = function($elem, oldValue, newValue) {
+      if (isHandlingUrlChange) {
+         return;
+      }
+      isHandlingUrlChange = true;
+      cms.data.convertUrlName(newValue, function(newValue) {
+         if (oldValue != newValue) {
+            var currentLi = $elem.closest('li');
+            var currentEntry = new SitemapEntry(currentLi);
+            var $ul = currentLi.closest('ul');
+            var otherUrlNames = _getOtherUrlNames($ul, currentLi.get(0));
+            if (otherUrlNames[newValue]) {
+               cms.util.dialogAlert(cms.util.format(M.SITEMAP_ERR_URL_NAME_ALREADY_EXISTS_1, newValue), M.SITEMAP_ERR_URL_NAME_ALREADY_EXISTS_TITLE);
+               currentEntry.setUrlName(oldValue);
+               isHandlingUrlChange = false;
+               return;
+            }
+            var _renameEntry = function(value) {
+               var previousUrl = currentEntry.getUrl();
+               var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
+               currentEntry.setUrlName(value);
+               currentEntry.setUrls(parentUrl);
+               if (value != oldValue) {
+                  setSitemapChanged(true);
+               }
+               isHandlingUrlChange = false;
+            }
+            var _destroy = function() {
+               $dialog.dialog('destroy');
+               $dialog.remove();
+            }
+            if (currentLi.children('ul').length) {
+               var $dialog = $('<div id="cms-alert-dialog" style="display: none"></div>');
+               $dialog.appendTo('body');
+               $dialog.append('<p style="margin-bottom: 4px;">' + M.SITEMAP_CHANGE_URLNAME_FOR_SUBPAGES + '<br />' + M.SITEMAP_CHANGE_URLNAME_ANYWAY + '</p>');
+               var buttons = {};
+               buttons[M.SITEMAP_BUTTON_CHANGE_URLNAME_OK] = function() {
+                  _renameEntry(newValue);
+                  _destroy();
+               }
+               buttons[M.SITEMAP_BUTTON_CHANGE_URLNAME_CANCEL] = function() {
+                  _renameEntry(oldValue);
+                  _destroy();
+               }
+               $dialog.dialog({
+                  zIndex: 9999,
+                  title: cms.util.format(M.SITEMAP_CHANGE_URLNAME_DIALOG_TITLE_1, newValue),
+                  modal: true,
+                  close: function() {
+                     _renameEntry(oldValue);
+                     
+                     _destroy();
+                  },
+                  buttons: buttons
+               });
+            } else {
+               _renameEntry(newValue);
+            }
+         }
+      });
+   }
+   
    
    /**
     * Adds handles for the given modes to the given item.
@@ -419,7 +460,7 @@
    var dropzoneSelector = cms.util.format('#{0} .{1}:not(.cms-root-sitemap) > .{2}', sitemapId, classSitemapEntry, dropzoneClass);
    var dropItemSelector = cms.util.format('#{0} .{1}:not(.cms-sub-sitemap-ref)  > .{2}', sitemapId, classSitemapEntry, itemClass);
    var dropSelector = dropzoneSelector + ', ' + dropItemSelector;
-   var urlNameDirectInputSelector = cms.util.format('#{0} .{1}:not(.cms-root-sitemap) > .{2} span.{3}', sitemapId, classSitemapEntry, itemClass, classUrlName);
+   var urlNameDirectInputSelector = cms.util.format('#{0} .{1}:not(.cms-root-sitemap) > .{2} input.{3}', sitemapId, classSitemapEntry, itemClass, classUrlName);
    
    /**
     * Removes drag and drop from tree.
@@ -851,7 +892,7 @@
       }
       return result;
    }
-    
+   
    /**
     * Checks whether a given sitemap entry is the last remaining entry at the root level of the sitemap.
     * @param {Object} $entry the entry which should be checked
@@ -862,13 +903,13 @@
    }
    
    
+   
    /**
     * Initializes the sitemap editor.<p>
     */
    var initSitemap = cms.sitemap.initSitemap = function() {
       // setting options for draggable and sortable for dragging within tree
       cms.sitemap.dragOptions = {
- //        handle: ' > div.' + itemClass + '> div.cms-handle > a.cms-move',
          opacity: 0.8,
          addClasses: false,
          helper: 'clone',
@@ -876,6 +917,10 @@
          start: cms.sitemap.startDrag,
          stop: cms.sitemap.stopDrag
       };
+      if ($.browser.msie) {
+         // If no handle is set, dragging in IE triggers the startDrag function for all parents of the dragged element
+         cms.sitemap.dragOptions.handle = ' > div.' + itemClass + '> div.cms-handle > a.cms-move'
+      }
       cms.sitemap.dropOptions = {
          accept: 'li',
          tolerance: 'pointer',
@@ -897,7 +942,7 @@
       
       cms.sitemap.dragOptionsGallery = $.extend({}, cms.sitemap.dragOptionsMenu, {
          start: cms.sitemap.startDragGallery
-    //    handle: '.cms-move'
+         //    handle: '.cms-move'
       
       });
       cms.sitemap.dragOptionsType = $.extend({}, cms.sitemap.dragOptionsMenu, {
@@ -912,7 +957,7 @@
       });
       
       $('#' + sitemapId).children().each(function() {
-         // TODO: check if this is wrong for non-root sitemaps 
+         // TODO: check if this is wrong for non-root sitemaps
          (new SitemapEntry(this)).setUrls('');
       });
       var canEdit = !cms.data.NO_EDIT_REASON && cms.data.DISPLAY_TOOLBAR;
@@ -944,7 +989,7 @@
          //         $('a.cms-delete').live('click', deletePage);
          //         $('a.cms-new').live('click', newPage);
          //         $('a.cms-edit').live('click', editPage);
-         $('#' + sitemapId + ' div.' + itemClass + ' h3').directInput({
+         $('#' + sitemapId + ' .cms-sitemap-entry:not(.cms-sub-sitemap-ref) > div.' + itemClass + ' h3').directInput({
             marginHack: true,
             live: true,
             valueChanged: function() {
@@ -953,17 +998,26 @@
             testEnabled: testCanEditTitles
          });
          
-         $(urlNameDirectInputSelector).directInput({
-            marginHack: true,
-            live: true,
-            readValue: function(elem) {
-               return elem.attr('alt');
-            },
-            setValue: directInputSetUrlName,
-            valueChanged: function() {
-               setSitemapChanged(true);
-            }
+         $(urlNameDirectInputSelector).each(function() {
+            setChangeHandler($(this), handleUrlNameChange);
          });
+         
+         //         $(urlNameDirectInputSelector).directInput({
+         //            marginHack: true,
+         //            live: true,
+         //            readValue: function(elem) {
+         //               return elem.attr('alt');
+         //            },
+         //            setValue: directInputSetUrlName,
+         //            valueChanged: function() {
+         //               setSitemapChanged(true);
+         //            }
+         //         });
+         //         $('.cms-sitemap-item input.cms-url-name').change(function() {
+         //            var newValue = $(elem).val();
+         //            //**
+         //         });
+         
          $('#fav-edit').click(_editFavorites);
          $(window).unload(onUnload);
       }
@@ -1216,7 +1270,7 @@
       $reactivateButton = $('#toolbar_content > button.ui-state-active');
       $reactivateButton.trigger('click');
       
-      $('input', this).blur();
+      //$('input', this).blur();
       $('.cms-hovering').remove();
       $('div.' + itemClass, this).addClass(dragClass);
       
@@ -1448,23 +1502,23 @@
          $('a.cms-gotopage').live('click', function() {
             var $entry = $(this).closest('.' + classSitemapEntry);
             var path = (new SitemapEntry($entry.get(0))).getPath();
-            var target=cms.data.CONTEXT + path;
+            var target = cms.data.CONTEXT + path;
             if (sitemapChanged) {
-                cms.util.leavePageDialog(target, function(callback) {
-                    var sitemap = serializeSitemap($('#' + sitemapId));
-                    cms.data.saveSitemap(sitemap, callback);
-                }, function(){
-                    if (sitemapChanged) {
-                        sitemapChanged = false;
-                        cms.data.sitemapPostJSON('stopedit', {}, function() {
-                            window.location.href = target;
-                        });
-                    } else {
+               cms.util.leavePageDialog(target, function(callback) {
+                  var sitemap = serializeSitemap($('#' + sitemapId));
+                  cms.data.saveSitemap(sitemap, callback);
+               }, function() {
+                  if (sitemapChanged) {
+                     sitemapChanged = false;
+                     cms.data.sitemapPostJSON('stopedit', {}, function() {
                         window.location.href = target;
-                    }
-                });
+                     });
+                  } else {
+                     window.location.href = target;
+                  }
+               });
             } else {
-                window.location.href = target;
+               window.location.href = target;
             }
          });
       }
@@ -1476,14 +1530,14 @@
       self.closeHandler = null;
       self.selectionClass = selectionClass;
       var html = ['<div class="cms-esa-box ui-dialog ui-widget ui-widget-content ui-corner-all">\
-              <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" unselectable="on" style="-moz-user-select: none;">',M.SITEMAP_DIALOG_TITLE_SUBSITEMAP,'<span class="ui-dialog-title" id="ui-dialog-title-cms-leave-dialog" unselectable="on" style="-moz-user-select: none;"></span></div>\
+              <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" unselectable="on" style="-moz-user-select: none;">', M.SITEMAP_DIALOG_TITLE_SUBSITEMAP, '<span class="ui-dialog-title" id="ui-dialog-title-cms-leave-dialog" unselectable="on" style="-moz-user-select: none;"></span></div>\
               <div style="padding: 10px;">\
-                  <span class="cms-esa-info">',M.SITEMAP_SELECT_SUBSITEMAP,'</span>\
+                  <span class="cms-esa-info">', M.SITEMAP_SELECT_SUBSITEMAP, '</span>\
                   <table class="cms-esa-title-and-path">\
-                       <tr><td class="cms-esa-title-label">',M.SITEMAP_LABEL_SUBSITEMAP_TITLE,'</td><td class="cms-esa-title-value"></td></tr>\
-                       <tr><td class="cms-esa-path-label">',M.SITEMAP_LABEL_SUBSITEMAP_PATH,'</td><td class="cms-esa-path-value"></td></tr>\
+                       <tr><td class="cms-esa-title-label">', M.SITEMAP_LABEL_SUBSITEMAP_TITLE, '</td><td class="cms-esa-title-value"></td></tr>\
+                       <tr><td class="cms-esa-path-label">', M.SITEMAP_LABEL_SUBSITEMAP_PATH, '</td><td class="cms-esa-path-value"></td></tr>\
                    </table>\
-                   <button class="cms-esa-ok ui-state-default ui-corner-all">',M.SITEMAP_BUTTON_CONVERT_TO_SUBSITEMAP_OK,'</button><button class="cms-esa-cancel ui-state-default ui-corner-all">',M.SITEMAP_BUTTON_CONVERT_TO_SUBSITEMAP_CANCEL,'</button>\
+                   <button class="cms-esa-ok ui-state-default ui-corner-all">', M.SITEMAP_BUTTON_CONVERT_TO_SUBSITEMAP_OK, '</button><button class="cms-esa-cancel ui-state-default ui-corner-all">', M.SITEMAP_BUTTON_CONVERT_TO_SUBSITEMAP_CANCEL, '</button>\
                </div>\
            </div>'];
       
@@ -1605,8 +1659,13 @@
             },
       disable: function() {
             },
-      createHandle: function() {
-         return $('<a class="cms-edit cms-edit-enabled"></a>').attr('title', this.title);
+      createHandle: function(elem) {
+         var $entry = $(elem).closest('.' + classSitemapEntry);
+         if ($entry.hasClass('cms-sub-sitemap-ref')) {
+            return $([]);
+         } else {
+            return $('<a class="cms-edit cms-edit-enabled"></a>').attr('title', this.title);
+         }
       },
       init: function() {
          $('a.cms-edit').live('click', editPage);
@@ -1637,98 +1696,7 @@
             $('a.cms-delete').live('click', deletePage);
          }
       }
-   },   /*{
-    name: 'xopen',
-    title: M.SITEMAP_MODE_OPEN_CLOSE_TREE,
-    wide: false,
-    create: createWithoutButton,
-    enable: function() {
-    this.button.addClass('ui-state-active');
-    $('#' + sitemapId + ' li div.' + itemClass).each(function() {
-    addHandles(this, sitemapModes);
-    });
-    
-    },
-    disable: function() {
-    this.button.removeClass('ui-state-active');
-    $('div.cms-handle').remove();
-    },
-    
-    createHandle: function(elem) {
-    if ($(elem).closest('.' + classSitemapEntry).find('ul:first').size() > 0) {
-    return $('<a class="cms-xopen"></a>').attr('title', this.title);
-    } else {
-    return $([]);
-    }
-    },
-    
-    init: function() {
-    $('a.cms-xopen').live('click', function() {
-    var $entry = $(this).closest('.' + classSitemapEntry);
-    var sitemapEntry = new SitemapEntry($entry.get(0));
-    sitemapEntry.openRecursively(!sitemapEntry.isOpen(), -1);
-    });
-    }
-    },*/
-   /*   {
-    name: 'subsitemap-old',
-    title: M.SITEMAP_MODE_SUBSITEMAP,
-    wide: false,
-    create: createWithoutButton,
-    enable: function() {
-    this.button.addClass('ui-state-active');
-    $('#' + sitemapId + ' li div.' + itemClass).each(function() {
-    addHandles(this, sitemapModes);
-    });
-    
-    },
-    
-    disable: function() {
-    this.button.removeClass('ui-state-active');
-    $('div.cms-handle').remove();
-    },
-    
-    createHandle: function(elem) {
-    var $entry = $(elem).closest('.' + classSitemapEntry);
-    
-    if ($entry.is('.cms-sub-sitemap-ref, .cms-root-sitemap, :not(:has(ul))')) {
-    // don't allow sub-sitemap conversion for leaf nodes, sub-sitemap nodes, or the root node
-    return $([]);
-    } else {
-    return $('<a class="cms-subsitemap"></a>').attr('title', this.title);
-    }
-    },
-    init: function(canEdit) {
-    if (canEdit) {
-    $('a.cms-subsitemap').live('click', function() {
-    var $button = $(this);
-    cms.util.dialogConfirm(M.SITEMAP_CONFIRM_CONVERT_TO_SUBSITEMAP, M.SITEMAP_CONFIRM_CONVERT_TO_SUBSITEMAP_TITLE, M.SITEMAP_BUTTON_CONFIRM_CONVERT_TO_SUBSITEMAP_YES, M.SITEMAP_BUTTON_CONFIRM_CONVERT_TO_SUBSITEMAP_NO, function(ok) {
-    if (ok) {
-    
-    var $element = $button.closest('.' + classSitemapEntry);
-    var entryObj = new SitemapEntry($element);
-    var sitemap = serializeSitemap($element.children('ul'));
-    cms.data.createSitemap(sitemap, entryObj.getTitle(), function(ok, data) {
-    if (!ok) {
-    return;
-    }
-    
-    var id = data.id;
-    $element.children('ul').remove();
-    $element.addClass(classClosed);
-    $element.addClass('cms-sub-sitemap-ref');
-    $element.children('.' + classOpener).remove();
-    var entryObj = new SitemapEntry($element);
-    entryObj.setSitemap(id);
-    setSitemapChanged(true);
-    });
-    }
-    });
-    });
-    }
-    }
-    }, */
-   {
+   }, {
       name: 'subsitemap',
       title: M.SITEMAP_MODE_SUBSITEMAP,
       wide: false,
@@ -1741,12 +1709,17 @@
                cms.util.dialogAlert(M.SITEMAP_ERROR_SUBSITEMAP_SELECTION_EMPTY, M.SITEMAP_ERROR_SUBSITEMAP_SELECTION_ERROR_TITLE);
                return;
             }
-            var entryObj = new SitemapEntry($element);
+            
+            var entryObj = new SitemapEntry($element.clone());
             if (entryObj.isRootOfRootSitemap() || entryObj.getChildren().length == 0) {
                cms.util.dialogAlert(M.SITEMAP_ERROR_SUBSITEMAP_SELECTION_INVALID, M.SITEMAP_ERROR_SUBSITEMAP_SELECTION_ERROR_TITLE);
                return;
             }
-            var sitemap = serializeSitemap($element.children('ul'));
+            
+            var sitemap = [entryObj.serialize(false)];
+            // No url name for root of new sub-sitemap
+            sitemap[0].name = '';
+            
             cms.data.createSitemap(sitemap, entryObj.getTitle(), function(ok, data) {
                if (!ok) {
                   return;
@@ -1759,8 +1732,8 @@
                $element.children('.' + classOpener).remove();
                var entryObj = new SitemapEntry($element);
                entryObj.setSitemap(id);
+               entryObj.setProperties({});
                setSitemapChanged(true);
-               
             });
          }
          this.esa = new EntrySelectionArea('#' + sitemapId + ' .' + itemClass, 'cms-subsitemap-entry-selected', convertToSubsitemap);
@@ -1768,10 +1741,13 @@
             $('button[name=' + self.name + '].ui-state-active').trigger('click');
          });
          
-         var boxOffset=$('#cms-main > .cms-box').offset();
+         var boxOffset = $('#cms-main > .cms-box').offset();
          
          this.esa.$frame.appendTo('body');
-         this.esa.$frame.css({top: boxOffset.top+10, left: boxOffset.left + 603 });
+         this.esa.$frame.css({
+            top: boxOffset.top + 10,
+            left: boxOffset.left + 603
+         });
          this.esa.$frame.draggable();
          this.button.addClass('ui-state-active');
       },
@@ -1834,7 +1810,6 @@
          if (canEdit) {
             $('a.cms-new').live('click', newPage);
          }
-         
          
          cms.sitemap.dom.newMenu = $(cms.html.createMenu(cms.html.newMenuId)).appendTo(cms.sitemap.dom.toolbarContent);
          for (var i = 0; i < cms.sitemap.models.length; i++) {
@@ -2103,8 +2078,8 @@
     */
    var _buildSitemapElement = function(data) {
       var $li = $('<li></li>').addClass(classSitemapEntry);
-//      $('.' + dropzoneClass, $li).remove();
-//      $('.' + classOpener, $li).remove();
+      //      $('.' + dropzoneClass, $li).remove();
+      //      $('.' + classOpener, $li).remove();
       var isSitemap = data.properties.sitemap;
       $('<div></div>').addClass(dropzoneClass).appendTo($li);
       if (data.subentries && data.subentries.length > 0) {
@@ -2156,7 +2131,8 @@
       var sitemap = data.sitemap;
       cms.sitemap.propertyDefinitions = data.properties;
       cms.sitemap.buildSitemap(sitemap).appendTo('#' + sitemapId);
-      if (!data.subSitemap) {
+      // Ignore data.subSitemap for now
+      if (/*!data.subSitemap*/true) {
          $('#' + sitemapId).children('.' + classSitemapEntry).addClass('cms-root-sitemap');
       }
       var $sitemapLinks = _buildSitemapLinks(data.superSitemaps);
@@ -2374,9 +2350,9 @@
     * Helper function that converts a constructor function to a factory function which returns the newly created object and can be used without "new".
     * @param {Object} constructor the constructor function
     */
-   var wrapConstructor = function(constructor) {
-      return function() {
-         return new constructor(arguments);
+   var wrapConstructor1 = function(constructor) {
+      return function(arg) {
+         return new constructor(arg);
       }
    }
    
@@ -2413,7 +2389,9 @@
          var $ul = this.$li.children('ul');
          if ($ul.size() > 0) {
             var $childrenLi = $ul.children('li');
-            return $.map($childrenLi.get(), wrapConstructor(SitemapEntry));
+            return $.map($childrenLi.get(), function(elem) {
+               return new SitemapEntry(elem);
+            });
          } else {
             return [];
          }
@@ -2462,7 +2440,7 @@
        * Returns the URL name of this entry.
        */
       getUrlName: function() {
-         return this.$li.find('.cms-url-name:first').attr('alt');
+         return this.$item.find('.cms-url-name').val();
       },
       
       /**
@@ -2473,7 +2451,7 @@
       setUrlName: function(newValue) {
          // the root of the root sitemap must always have an empty url name
          if (!this.isRootOfRootSitemap()) {
-            setInfoValue(this.$item.find('.cms-url-name'), newValue, 37, true);
+            this.$item.find('.cms-url-name').val(newValue);
          }
       },
       
@@ -2865,7 +2843,7 @@
          title: M.SITEMAP_EDIT_DIALOG_TITLE,
          modal: true,
          autoOpen: true,
-         width: 440,
+         width: 470,
          zIndex: 9999,
          close: _destroy,
          buttons: buttons
@@ -2874,13 +2852,13 @@
       $dlg.dialog(options);
       
       // align middle columns of both tables
-//      var colOffset1 = $table.find('td:eq(1)').position().left;
-//      var colOffset2 = titleAndName.$dom.find('td:eq(1)').position().left;
-//      if (colOffset1 > colOffset2) {
-//         titleAndName.$dom.css('margin-left', (colOffset1 - colOffset2) + 'px');
-//      } else {
-//         $table.css('margin-left', (colOffset2 - colOffset1) + 'px');
-//      }
+      //      var colOffset1 = $table.find('td:eq(1)').position().left;
+      //      var colOffset2 = titleAndName.$dom.find('td:eq(1)').position().left;
+      //      if (colOffset1 > colOffset2) {
+      //         titleAndName.$dom.css('margin-left', (colOffset1 - colOffset2) + 'px');
+      //      } else {
+      //         $table.css('margin-left', (colOffset2 - colOffset1) + 'px');
+      //      }
       
       
       var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text(M.SITEMAP_BUTTON_EDIT_DIALOG_OK);
