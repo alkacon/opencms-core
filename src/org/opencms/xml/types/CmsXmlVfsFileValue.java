@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2010/01/18 14:04:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/18 15:17:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
@@ -55,7 +56,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.0 
  */
@@ -107,6 +108,25 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     public CmsXmlVfsFileValue(String name, String minOccurs, String maxOccurs) {
 
         super(name, minOccurs, maxOccurs);
+    }
+
+    /**
+     * Fills the given element with a {@link CmsXmlVfsFileValue} for the given resource.<p>
+     * 
+     * @param element the element to fill
+     * @param resource the resource to use
+     * @param type the relation type to use
+     */
+    public static void fillResource(Element element, CmsResource resource, CmsRelationType type) {
+
+        CmsLink link = new CmsLink(
+            CmsXmlVfsFileValue.TYPE_VFS_LINK,
+            type,
+            resource.getStructureId(),
+            resource.getRootPath(),
+            true);
+        // update xml node
+        CmsLinkUpdateUtil.updateXmlForVfsFile(link, element.addElement(CmsXmlPage.NODE_LINK));
     }
 
     /**

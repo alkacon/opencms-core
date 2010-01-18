@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/01/18 14:05:22 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/18 15:17:17 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
-import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -84,7 +83,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.5.2
  * 
@@ -512,14 +511,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         }
         CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
         CmsResource res = cms.readResource(resourceId);
-        CmsLink link = new CmsLink(
-            CmsXmlVfsFileValue.TYPE_VFS_LINK,
-            type,
-            res.getStructureId(),
-            res.getRootPath(),
-            true);
-        // update xml node
-        CmsLinkUpdateUtil.updateXmlForVfsFile(link, element.addElement(CmsXmlPage.NODE_LINK));
+        CmsXmlVfsFileValue.fillResource(element, res, type);
     }
 
     /**
@@ -750,17 +742,18 @@ public class CmsXmlSitemap extends CmsXmlContent {
         CmsSiteEntryBean entry,
         Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
 
+        // the entry
         Element entryElement = parent.addElement(XmlNode.SITEENTRY.getName());
         entryElement.addElement(XmlNode.ID.getName()).addCDATA(entry.getId().toString());
         entryElement.addElement(XmlNode.NAME.getName()).addCDATA(entry.getName());
         entryElement.addElement(XmlNode.TITLE.getName()).addCDATA(entry.getTitle());
 
+        // the vfs reference
         Element vfsFile = entryElement.addElement(XmlNode.VFSFILE.getName());
         fillResource(cms, vfsFile, entry.getResourceId());
 
         // the properties
         Element propElement = null;
-
         for (Map.Entry<String, String> property : entry.getProperties().entrySet()) {
             boolean isSitemapProperty = CmsSitemapManager.PROPERTY_SITEMAP.equals(property.getKey());
             if (!propertiesConf.containsKey(property.getKey()) && !isSitemapProperty) {
@@ -770,24 +763,27 @@ public class CmsXmlSitemap extends CmsXmlContent {
             if (propElement == null) {
                 propElement = entryElement.addElement(XmlNode.PROPERTIES.getName());
             }
+
+            // the property name
             propElement.addElement(XmlNode.NAME.getName()).addCDATA(property.getKey());
             Element valueElement = propElement.addElement(XmlNode.VALUE.getName());
 
+            // the property value
             if (isSitemapProperty
                 || propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-
+                // resource list value
                 Element filelistElem = valueElement.addElement(XmlNode.FILELIST.getName());
-
                 for (String strId : CmsStringUtil.splitAsList(property.getValue(), CmsXmlSitemap.IDS_SEPARATOR)) {
                     try {
                         Element fileValueElem = filelistElem.addElement(XmlNode.URI.getName());
                         fillResource(cms, fileValueElem, new CmsUUID(strId));
                     } catch (CmsException e) {
-                        // could happen when the resource are meanwhile deleted
+                        // should never happen
                         LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
             } else {
+                // string value
                 valueElement.addElement(XmlNode.STRING.getName()).addCDATA(property.getValue());
             }
         }
