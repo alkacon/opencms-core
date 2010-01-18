@@ -453,7 +453,7 @@
       };
       var backgroundDiv = addBackgroundDiv(elem, inner, 'cms-subcontainer-background');
       var backData ={"dimension": inner, "parentDimension": {"width": elem.width(), "height": elem.height()}};
-      backgroundDiv.data('backgroundData', backData);
+      elem.data('backgroundData', backData);
       return backData;
    }
    
