@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/notification/TestContentNotification.java,v $
- * Date   : $Date: 2009/08/20 11:31:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/18 10:04:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * Unit test for the OpenCms content notification.<p>
  * 
  * @author Jan Baudisch 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestContentNotification extends OpenCmsTestCase {
   

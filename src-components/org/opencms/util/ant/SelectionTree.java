@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/SelectionTree.java,v $
- * Date   : $Date: 2009/08/20 11:30:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/18 10:04:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -66,7 +66,7 @@ import javax.swing.tree.TreeSelectionModel;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  */
 public class SelectionTree extends JTree {
@@ -78,7 +78,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @since 6.1.6
      * 
@@ -119,7 +119,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @since 6.1.6
      * 
@@ -146,7 +146,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @since 6.1.6
      * 
