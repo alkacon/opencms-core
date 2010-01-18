@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestExportFile.java,v $
- * Date   : $Date: 2009/09/07 12:41:38 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2010/01/18 11:13:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +48,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.18.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -123,7 +124,10 @@ public class TestExportFile extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         // now read the exported file in the file system and check its content
-        File f = new File(getTestDataPath("export/sites/default" + resourcename));
+        String rootPath = cms.getRequestContext().addSiteRoot(resourcename);
+        String exportPath = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(rootPath)
+            + rootPath);
+        File f = new File(exportPath);
         assertTrue(f.exists());
 
         // check the exported content
