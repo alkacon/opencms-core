@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/01/18 10:01:21 $
- * Version: $Revision: 1.646 $
+ * Date   : $Date: 2010/01/18 11:19:47 $
+ * Version: $Revision: 1.647 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -659,10 +659,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS);
 
-        if (!dbc.getProjectId().isNullUUID()) {
-            // user modified event is not needed
-            return;
-        }
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
@@ -1241,10 +1237,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // put it into the cache
         m_monitor.cacheGroup(group);
 
-        if (!dbc.getProjectId().isNullUUID()) {
-            // group modified event is not needed
-            return group;
-        }
         // fire group modified event
         Map eventData = new HashMap();
         eventData.put(I_CmsEventListener.KEY_GROUP_NAME, group.getName());
@@ -2030,10 +2022,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             0,
             info);
 
-        if (!dbc.getProjectId().isNullUUID()) {
-            // user modified event is not needed
-            return user;
-        }
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
@@ -2191,10 +2179,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS);
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.ACL);
 
-        if (!dbc.getProjectId().isNullUUID()) {
-            // group modified event is not needed
-            return;
-        }
         // fire group modified event
         Map eventData = new HashMap();
         eventData.put(I_CmsEventListener.KEY_GROUP_ID, group.getId().toString());
@@ -2961,10 +2945,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // delete user from cache
         m_monitor.clearUserCache(user);
 
-        if (!dbc.getProjectId().isNullUUID()) {
-            // user modified event is not needed
-            return;
-        }
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
@@ -7052,10 +7032,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS);
 
-        if (!dbc.getProjectId().isNullUUID()) {
-            // user modified event is not needed
-            return;
-        }
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
@@ -7580,10 +7556,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // remove the principal from cache
         m_monitor.clearUserCache(user);
 
-        if (!dbc.getProjectId().isNullUUID()) {
-            // user modified event is not needed
-            return;
-        }
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
@@ -8496,10 +8468,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.writeUser(dbc, user);
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS);
 
-        if (!dbc.getProjectId().isNullUUID()) {
-            // user modified event is not needed
-            return;
-        }
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
