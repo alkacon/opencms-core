@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/01/15 14:55:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/18 14:05:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -95,7 +95,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -256,14 +256,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
 
+    /** Default formatter path. */
+    public static final String DEFAULT_FORMATTER = "/system/workplace/editors/ade/default-list-formatter.jsp";
+
     /** Default formatter type constant. */
     public static final String DEFAULT_FORMATTER_TYPE = "_DEFAULT_";
 
     /** Macro for resolving the preview URI. */
     public static final String MACRO_PREVIEW_TEMPFILE = "previewtempfile";
-
-    /** Default formatter path. */
-    public static final String DEFAULT_FORMATTER = "/system/workplace/editors/ade/default-list-formatter.jsp";
 
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
@@ -295,9 +295,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The configured formatters. */
     protected Map<String, String> m_formatters;
 
-    /** The configured properties. */
-    protected Map<String, CmsXmlContentProperty> m_properties;
-
     /** The resource bundle name to be used for localization of this content handler. */
     protected String m_messageBundleName;
 
@@ -306,6 +303,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The preview location (as defined in the annotations). */
     protected String m_previewLocation;
+
+    /** The configured properties. */
+    protected Map<String, CmsXmlContentProperty> m_properties;
 
     /** The relation check rules. */
     protected Map<String, Boolean> m_relationChecks;
@@ -431,14 +431,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getProperties()
-     */
-    public Map<String, CmsXmlContentProperty> getProperties() {
-
-        return Collections.unmodifiableMap(m_properties);
-    }
-
-    /**
      * Returns the all mappings defined for the given element xpath.<p>
      * 
      * @since 7.0.2
@@ -498,14 +490,33 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getProperties()
+     */
+    public Map<String, CmsXmlContentProperty> getProperties() {
+
+        return Collections.unmodifiableMap(m_properties);
+    }
+
+    /**
      * @see I_CmsXmlContentHandler#getRelationType(I_CmsXmlContentValue)
      */
+    @Deprecated
     public CmsRelationType getRelationType(I_CmsXmlContentValue value) {
 
         if (value == null) {
-            return null;
+            return CmsRelationType.XML_WEAK;
         }
-        String xpath = value.getPath();
+        return getRelationType(value.getPath());
+    }
+
+    /**
+     * @see I_CmsXmlContentHandler#getRelationType(String)
+     */
+    public CmsRelationType getRelationType(String xpath) {
+
+        if (xpath == null) {
+            return CmsRelationType.XML_WEAK;
+        }
         CmsRelationType relationType = null;
         // look up the default from the configured mappings
         relationType = m_relations.get(xpath);
@@ -1476,34 +1487,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * Initializes the properties for this content handler.<p>
-     * 
-     * @param root the "formatters" element from the appinfo node of the XML content definition
-     * @param contentDefinition the content definition the tabs belong to
-     */
-    protected void initProperties(Element root, CmsXmlContentDefinition contentDefinition) {
-
-        Iterator<Element> itProperties = CmsXmlGenericWrapper.elementIterator(root, APPINFO_PROPERTY);
-        while (itProperties.hasNext()) {
-            Element element = itProperties.next();
-            CmsXmlContentProperty property = new CmsXmlContentProperty(
-                element.attributeValue(APPINFO_ATTR_NAME),
-                element.attributeValue(APPINFO_ATTR_TYPE),
-                element.attributeValue(APPINFO_ATTR_WIDGET),
-                element.attributeValue(APPINFO_ATTR_WIDGET_CONFIG),
-                element.attributeValue(APPINFO_ATTR_RULE_REGEX),
-                element.attributeValue(APPINFO_ATTR_RULE_TYPE),
-                element.attributeValue(APPINFO_ATTR_DEFAULT),
-                element.attributeValue(APPINFO_ATTR_NICE_NAME),
-                element.attributeValue(APPINFO_ATTR_DESCRIPTION),
-                element.attributeValue(APPINFO_ATTR_ERROR));
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(property.getPropertyName())) {
-                m_properties.put(property.getPropertyName(), property);
-            }
-        }
-    }
-
-    /**
      * Initializes the layout for this content handler.<p>
      * 
      * Unless otherwise instructed, the editor uses one specific GUI widget for each 
@@ -1610,6 +1593,34 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 contentDefinition.getSchemaLocation()));
         }
         m_previewLocation = preview;
+    }
+
+    /**
+     * Initializes the properties for this content handler.<p>
+     * 
+     * @param root the "formatters" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the tabs belong to
+     */
+    protected void initProperties(Element root, CmsXmlContentDefinition contentDefinition) {
+
+        Iterator<Element> itProperties = CmsXmlGenericWrapper.elementIterator(root, APPINFO_PROPERTY);
+        while (itProperties.hasNext()) {
+            Element element = itProperties.next();
+            CmsXmlContentProperty property = new CmsXmlContentProperty(
+                element.attributeValue(APPINFO_ATTR_NAME),
+                element.attributeValue(APPINFO_ATTR_TYPE),
+                element.attributeValue(APPINFO_ATTR_WIDGET),
+                element.attributeValue(APPINFO_ATTR_WIDGET_CONFIG),
+                element.attributeValue(APPINFO_ATTR_RULE_REGEX),
+                element.attributeValue(APPINFO_ATTR_RULE_TYPE),
+                element.attributeValue(APPINFO_ATTR_DEFAULT),
+                element.attributeValue(APPINFO_ATTR_NICE_NAME),
+                element.attributeValue(APPINFO_ATTR_DESCRIPTION),
+                element.attributeValue(APPINFO_ATTR_ERROR));
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(property.getPropertyName())) {
+                m_properties.put(property.getPropertyName(), property);
+            }
+        }
     }
 
     /**

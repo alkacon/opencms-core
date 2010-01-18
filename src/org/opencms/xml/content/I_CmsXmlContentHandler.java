@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2009/10/12 10:14:50 $
- * Version: $Revision: 1.31.2.4 $
+ * Date   : $Date: 2010/01/18 14:05:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31.2.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,13 +120,6 @@ public interface I_CmsXmlContentHandler {
     Map<String, String> getFormatters();
 
     /**
-     * Returns the element properties.<p>
-     * 
-     * @return the element properties, as &lt;name,CmsXmlContentProperty&gt;
-     */
-    Map<String, CmsXmlContentProperty> getProperties();
-
-    /**
      * Returns the {@link CmsMessages} that are used to resolve localized keys 
      * for the given locale in this content handler.<p>
      * 
@@ -164,13 +157,32 @@ public interface I_CmsXmlContentHandler {
     String getPreview(CmsObject cms, CmsXmlContent content, String resourcename);
 
     /**
+     * Returns the element properties.<p>
+     * 
+     * @return the element properties, as &lt;name,CmsXmlContentProperty&gt;
+     */
+    Map<String, CmsXmlContentProperty> getProperties();
+
+    /**
      * Returns the relation type for the given value.<p>
      * 
      * @param value the value to get the relation type for
      * 
      * @return the relation type for the given value
+     * 
+     * @deprecated use {@link #getRelationType(String)} with {@link I_CmsXmlContentValue#getPath()} instead
      */
+    @Deprecated
     CmsRelationType getRelationType(I_CmsXmlContentValue value);
+
+    /**
+     * Returns the relation type for the given path.<p>
+     * 
+     * @param path the path to get the relation type for
+     * 
+     * @return the relation type for the given path
+     */
+    CmsRelationType getRelationType(String path);
 
     /**
      * Returns the tabs to be displayed in the editor.<p>
