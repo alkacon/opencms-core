@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/01/15 15:50:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/18 11:15:12 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -918,6 +918,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public Map<String, String> getExportnames() {
 
+        if (m_exportnameResources == null) {
+            setExportnames();
+        }
         return m_exportnameResources;
     }
 
@@ -1243,7 +1246,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     // resource has been deleted, so we are not able to get the right extension from the properties
                     // try to figure out the right extension from file system
                     File rfsFile = new File(CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
-                        vfsName)
+                        cms.getRequestContext().addSiteRoot(vfsName))
                         + rfsName));
                     File parent = rfsFile.getParentFile();
                     if (parent != null) {
@@ -1381,17 +1384,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public CmsStaticExportData getVfsExportData(CmsObject cms, String vfsName) {
 
-        try {
-            CmsResource resource = cms.readResource(vfsName);
-            // valid cache entry, return export data object
-            return new CmsStaticExportData(vfsName, getRfsName(cms, vfsName), resource, null);
-        } catch (CmsException e) {
-            // static export fails, because the export user has no permission: 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.ERR_EXPORT_FILE_FAILED_1, new String[] {vfsName}), e);
-            }
-        }
-        return null;
+        return getRfsExportData(cms, getRfsName(cms, vfsName));
     }
 
     /**
@@ -1527,9 +1520,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             I_CmsEventListener.EVENT_UPDATE_EXPORTS});
 
         m_exportFolderMatcher = new CmsExportFolderMatcher(m_exportFolders, m_testResource);
-
-        // initialize "exportname" folders
-        setExportnames();
 
         // get the default accept-language header value
         m_defaultAcceptLanguageHeader = CmsAcceptLanguageHeaderParser.createLanguageHeader();
@@ -2070,7 +2060,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_cacheExportUris.clear();
         m_cacheSecureLinks.clear();
         m_cacheExportLinks.clear();
-        setExportnames();
+        m_exportnameResources = null;
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLUSHED_CACHES_1, new Integer(event.getType())));
         }
@@ -2257,9 +2247,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // in case of folders, remove the trailing slash
         // in case of files, remove the filename and trailing slash
         path = path.substring(0, path.lastIndexOf('/'));
+        // cache the export names
+        Map<String, String> exportnameResources = getExportnames();
         while (true) {
             // exportnameResources are only folders!
-            String expName = m_exportnameResources.get(path + '/');
+            String expName = exportnameResources.get(path + '/');
             if (expName == null) {
                 if (path.length() == 0) {
                     break;
@@ -2577,6 +2569,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         } catch (CmsException e) {
             // should never happen, no resources will be added at all
             LOG.error(e.getLocalizedMessage(), e);
+            m_exportnameResources = Collections.emptyMap();
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
