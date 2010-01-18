@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2009/09/04 15:01:14 $
- * Version: $Revision: 1.27.2.1 $
+ * Date   : $Date: 2010/01/18 14:04:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.27.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -66,6 +66,9 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsVfsFile";
+
+    /** The vfs link type constant. */
+    public static final String TYPE_VFS_LINK = "vfsLink";
 
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
@@ -151,7 +154,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
                 return null;
             }
         }
-        CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(this));
+        CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(getPath()));
         CmsLink link = new CmsLink(linkElement);
         // link management check
         link.checkConsistency(cms);
@@ -270,8 +273,8 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
             return;
         }
-        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(this);
-        CmsLink link = new CmsLink("vfsLink", type, path, true);
+        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(getPath());
+        CmsLink link = new CmsLink(TYPE_VFS_LINK, type, path, true);
         // link management check
         link.checkConsistency(cms);
         // update xml node

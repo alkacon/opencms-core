@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVarLinkValue.java,v $
- * Date   : $Date: 2009/09/04 15:01:15 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2010/01/18 14:04:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -66,6 +66,9 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsVarLink";
+
+    /** The var link type constant. */
+    public static final String TYPE_VAR_LINK = "varLink";
 
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
@@ -151,7 +154,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
                 setStringValue(cms, m_element.getText());
             } else {
                 CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(
-                    this));
+                    getPath()));
                 CmsLink link = new CmsLink(linkElement);
                 if (link.isInternal()) {
                     // link management check
@@ -281,14 +284,14 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
         boolean internal = (path != null);
         CmsRelationType type;
         if (internal) {
-            type = getContentDefinition().getContentHandler().getRelationType(this);
+            type = getContentDefinition().getContentHandler().getRelationType(getPath());
         } else {
             // use original value for external links
             path = value;
             // external links are always "weak"
             type = CmsRelationType.XML_WEAK;
         }
-        CmsLink link = new CmsLink("varLink", type, path, internal);
+        CmsLink link = new CmsLink(TYPE_VAR_LINK, type, path, internal);
         if (internal) {
             // link management check for internal links
             link.checkConsistency(cms);
