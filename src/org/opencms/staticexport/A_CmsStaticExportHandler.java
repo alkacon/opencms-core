@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2010/01/07 14:19:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/18 11:13:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.7 
  * 
@@ -270,6 +270,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * 
      * @param cms the export user context
      * @param resPath the path of the resource to get the siblings for
+     * 
      * @return a list containing the root paths of all siblings of a resource
      */
     protected List getSiblingsList(CmsObject cms, String resPath) {
@@ -444,14 +445,15 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * Returns the export file name starting from the OpenCms webapp folder.<p>
      * 
      * @param file the file to delete
-     * @param vfsName the VFS name of the file (required for logging)
+     * @param vfsName the VFS name of the file, the root path!
      * 
      * @return the export file name starting from the OpenCms webapp folder
      */
     private String getRfsName(File file, String vfsName) {
 
+        CmsStaticExportManager manager = OpenCms.getStaticExportManager();
         String filePath = file.getAbsolutePath();
-        String result = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
+        String result = CmsFileUtil.normalizePath(manager.getRfsPrefix(vfsName)
             + filePath.substring(OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
         return CmsStringUtil.substitute(result, new String(new char[] {File.separatorChar}), "/");
     }

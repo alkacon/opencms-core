@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2010/01/07 14:22:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/18 11:14:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -244,7 +244,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * @param report an <code>{@link I_CmsReport}</code> instance to print output message, or <code>null</code> to write messages to the log file   
      *  
      * @throws CmsException in case of errors accessing the VFS
-     * @throws IOException in case of erros writing to the export output stream
+     * @throws IOException in case of errors writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
     protected void exportAfterPublish(CmsUUID publishHistoryId, I_CmsReport report)
@@ -410,7 +410,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             try {
                 CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
                 CmsResource file = OpenCms.initResource(exportCms, vfsName, null, null);
-                vfsName = exportCms.getSitePath(file);
+                vfsName = file.getRootPath();
                 rfsName += CmsStaticExportManager.EXPORT_DEFAULT_FILE;
             } catch (CmsException e) {
                 // should never happen
