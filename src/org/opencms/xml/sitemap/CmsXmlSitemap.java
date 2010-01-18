@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/01/12 11:14:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/18 14:05:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.xml.sitemap;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -42,6 +43,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsLinkUpdateUtil;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -51,8 +54,10 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -79,7 +84,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.5.2
  * 
@@ -414,6 +419,47 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
+     * Saves given sitemap in the current locale, and not only in memory but also to VFS.<p>
+     * 
+     * @param cms the current cms context
+     * @param entries the sitemap to save
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void save(CmsObject cms, List<CmsSiteEntryBean> entries) throws CmsException {
+
+        CmsFile file = getFile();
+
+        // lock the file
+        cms.lockResourceTemporary(cms.getSitePath(file));
+
+        // wipe the locale
+        Locale locale = cms.getRequestContext().getLocale();
+        if (hasLocale(locale)) {
+            removeLocale(locale);
+        }
+        addLocale(cms, locale);
+
+        // get the properties
+        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+            cms,
+            getFile());
+
+        // recursively add the nodes to the raw XML structure
+        Element parent = getLocaleNode(locale);
+        for (CmsSiteEntryBean entry : entries) {
+            saveEntry(cms, parent, entry, propertiesConf);
+        }
+
+        // generate bookmarks
+        initDocument(m_document, m_encoding, m_contentDefinition);
+
+        // write to VFS
+        file.setContents(marshal());
+        cms.writeFile(file);
+    }
+
+    /**
      * @see org.opencms.xml.A_CmsXmlDocument#validateXmlStructure(org.xml.sax.EntityResolver)
      */
     @Override
@@ -446,6 +492,53 @@ public class CmsXmlSitemap extends CmsXmlContent {
         I_CmsXmlSchemaType elemSchemaType = parentDef.getSchemaType(element.getName());
         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
         addBookmark(elemPath, locale, true, elemValue);
+    }
+
+    /**
+     * Fills a {@link CmsXmlVfsFileValue} with the resource identified by the given id.<p>
+     * 
+     * @param cms the current CMS context
+     * @param element the XML element to fill
+     * @param resourceId the ID identifying the resource to use
+     * 
+     * @throws CmsException if the resource can not be read
+     */
+    protected void fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
+
+        String xpath = element.getPath();
+        int pos = xpath.lastIndexOf("/" + XmlNode.SITEENTRY.getName() + "/");
+        if (pos > 0) {
+            xpath = xpath.substring(pos + 1);
+        }
+        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
+        CmsResource res = cms.readResource(resourceId);
+        CmsLink link = new CmsLink(
+            CmsXmlVfsFileValue.TYPE_VFS_LINK,
+            type,
+            res.getStructureId(),
+            res.getRootPath(),
+            true);
+        // update xml node
+        CmsLinkUpdateUtil.updateXmlForVfsFile(link, element.addElement(CmsXmlPage.NODE_LINK));
+    }
+
+    /**
+     * Returns the request content value if available, if not a new one will be created.<p>
+     * 
+     * @param cms the current cms context
+     * @param path the value's path
+     * @param locale the value's locale
+     * @param index the value's index
+     * 
+     * @return the request content value
+     */
+    protected I_CmsXmlContentValue getContentValue(CmsObject cms, String path, Locale locale, int index) {
+
+        I_CmsXmlContentValue idValue = getValue(path, locale, index);
+        if (idValue == null) {
+            idValue = addValue(cms, path, locale, index);
+        }
+        return idValue;
     }
 
     /**
@@ -639,6 +732,72 @@ public class CmsXmlSitemap extends CmsXmlContent {
             entries.add(new CmsSiteEntryBean(entryId, linkId, entryName, titleValue, propertiesMap, subEntries));
         }
         return entries;
+    }
+
+    /**
+     * Saves the given entry in the XML content.<p>
+     * 
+     * @param cms the CMS context
+     * @param parent the parent element for this entry
+     * @param entry the entry to save
+     * @param propertiesConf the properties configuration
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void saveEntry(
+        CmsObject cms,
+        Element parent,
+        CmsSiteEntryBean entry,
+        Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
+
+        Element entryElement = parent.addElement(XmlNode.SITEENTRY.getName());
+        entryElement.addElement(XmlNode.ID.getName()).addCDATA(entry.getId().toString());
+        entryElement.addElement(XmlNode.NAME.getName()).addCDATA(entry.getName());
+        entryElement.addElement(XmlNode.TITLE.getName()).addCDATA(entry.getTitle());
+
+        Element vfsFile = entryElement.addElement(XmlNode.VFSFILE.getName());
+        fillResource(cms, vfsFile, entry.getResourceId());
+
+        // the properties
+        Element propElement = null;
+
+        for (Map.Entry<String, String> property : entry.getProperties().entrySet()) {
+            boolean isSitemapProperty = CmsSitemapManager.PROPERTY_SITEMAP.equals(property.getKey());
+            if (!propertiesConf.containsKey(property.getKey()) && !isSitemapProperty) {
+                continue;
+            }
+            // only if the property is configured in the schema we will save it to the sitemap
+            if (propElement == null) {
+                propElement = entryElement.addElement(XmlNode.PROPERTIES.getName());
+            }
+            propElement.addElement(XmlNode.NAME.getName()).addCDATA(property.getKey());
+            Element valueElement = propElement.addElement(XmlNode.VALUE.getName());
+
+            if (isSitemapProperty
+                || propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+
+                Element filelistElem = valueElement.addElement(XmlNode.FILELIST.getName());
+
+                for (String strId : CmsStringUtil.splitAsList(property.getValue(), CmsXmlSitemap.IDS_SEPARATOR)) {
+                    try {
+                        Element fileValueElem = filelistElem.addElement(XmlNode.URI.getName());
+                        fillResource(cms, fileValueElem, new CmsUUID(strId));
+                    } catch (CmsException e) {
+                        // could happen when the resource are meanwhile deleted
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+            } else {
+                valueElement.addElement(XmlNode.STRING.getName()).addCDATA(property.getValue());
+            }
+        }
+
+        // the subentries
+        int subentryCount = 0;
+        for (CmsSiteEntryBean subentry : entry.getSubEntries()) {
+            saveEntry(cms, entryElement, subentry, propertiesConf);
+            subentryCount++;
+        }
     }
 
     /**

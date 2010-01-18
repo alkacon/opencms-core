@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/12 11:14:31 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/01/18 14:05:22 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.editors.sitemap;
 
 import org.opencms.db.CmsUserSettings;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -57,18 +56,15 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
 import org.opencms.xml.sitemap.CmsSitemapBean;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,7 +72,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -93,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 7.6
  */
@@ -714,29 +709,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         CmsObject cms = getCmsObject();
 
-        cms.lockResourceTemporary(cms.getSitePath(sitemapRes));
-        CmsFile file = cms.readFile(sitemapRes);
-        CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, file, getRequest());
-        Locale locale = cms.getRequestContext().getLocale();
-        if (xmlSitemap.hasLocale(locale)) {
-            // remove the locale 
-            xmlSitemap.removeLocale(locale);
-        }
-        xmlSitemap.addLocale(cms, locale);
-
-        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
-            cms,
-            sitemapRes);
-
-        int entryCount = 0;
-        List<CmsSiteEntryBean> entries = jsonToEntryList(sitemap.getJSONArray(JsonResponse.SITEMAP.getName()), true);
-        for (CmsSiteEntryBean entry : entries) {
-            saveEntry(cms, locale, null, xmlSitemap, entry, entryCount, propertiesConf);
-            entryCount++;
-        }
-
-        file.setContents(xmlSitemap.marshal());
-        cms.writeFile(file);
+        CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, cms.readFile(sitemapRes), getRequest());
+        xmlSitemap.save(cms, jsonToEntryList(sitemap.getJSONArray(JsonResponse.SITEMAP.getName()), true));
     }
 
     /**
@@ -763,31 +737,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             }
         }
         return jsonEntriesList;
-    }
-
-    /**
-     * Returns the request content value if available, if not a new one will be created.<p>
-     * 
-     * @param cms the current cms context
-     * @param xmlSitemap the sitemap xml
-     * @param path the value's path
-     * @param locale the value's locale
-     * @param index the value's index
-     * 
-     * @return the request content value
-     */
-    protected I_CmsXmlContentValue getContentValue(
-        CmsObject cms,
-        CmsXmlSitemap xmlSitemap,
-        String path,
-        Locale locale,
-        int index) {
-
-        I_CmsXmlContentValue idValue = xmlSitemap.getValue(path, locale, index);
-        if (idValue == null) {
-            idValue = xmlSitemap.addValue(cms, path, locale, index);
-        }
-        return idValue;
     }
 
     /**
@@ -925,124 +874,5 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             new ArrayList<CmsSiteEntryBean>());
 
         return entryBean;
-    }
-
-    /**
-     * Saves the given entry in the XML content.<p>
-     * 
-     * @param cms the CMS context
-     * @param locale the current locale
-     * @param rootPath the root path for this entry
-     * @param xmlSitemap the XML content to save to
-     * @param entry the entry to save
-     * @param entryCount the entry count
-     * @param propertiesConf the properties configuration
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected void saveEntry(
-        CmsObject cms,
-        Locale locale,
-        String rootPath,
-        CmsXmlSitemap xmlSitemap,
-        CmsSiteEntryBean entry,
-        int entryCount,
-        Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
-
-        // create the entry node itself
-        String entryPath = (rootPath == null ? CmsXmlSitemap.XmlNode.SITEENTRY.getName() : CmsXmlUtils.concatXpath(
-            rootPath,
-            CmsXmlSitemap.XmlNode.SITEENTRY.getName()));
-        I_CmsXmlContentValue entryValue = getContentValue(cms, xmlSitemap, entryPath, locale, entryCount);
-
-        // entry info
-        getContentValue(
-            cms,
-            xmlSitemap,
-            CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.ID.getName()),
-            locale,
-            0).setStringValue(cms, entry.getId().toString());
-        getContentValue(
-            cms,
-            xmlSitemap,
-            CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.NAME.getName()),
-            locale,
-            0).setStringValue(cms, entry.getName());
-        getContentValue(
-            cms,
-            xmlSitemap,
-            CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.TITLE.getName()),
-            locale,
-            0).setStringValue(cms, entry.getTitle());
-        CmsResource res = cms.readResource(entry.getResourceId());
-        getContentValue(
-            cms,
-            xmlSitemap,
-            CmsXmlUtils.concatXpath(entryValue.getPath(), CmsXmlSitemap.XmlNode.VFSFILE.getName()),
-            locale,
-            0).setStringValue(cms, cms.getSitePath(res));
-
-        // the properties
-        int j = 0;
-        for (Map.Entry<String, String> property : entry.getProperties().entrySet()) {
-            boolean isSitemapProperty = CmsSitemapManager.PROPERTY_SITEMAP.equals(property.getKey());
-            if (!propertiesConf.containsKey(property.getKey()) && !isSitemapProperty) {
-                continue;
-            }
-            // only if the property is configured in the schema we will save it to the sitemap
-            I_CmsXmlContentValue propValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
-                entryValue.getPath(),
-                CmsXmlSitemap.XmlNode.PROPERTIES.getName()), locale, j);
-            getContentValue(
-                cms,
-                xmlSitemap,
-                CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlSitemap.XmlNode.NAME.getName()),
-                locale,
-                0).setStringValue(cms, property.getKey());
-            I_CmsXmlContentValue valValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
-                propValue.getPath(),
-                CmsXmlSitemap.XmlNode.VALUE.getName()), locale, 0);
-
-            if (isSitemapProperty
-                || propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                I_CmsXmlContentValue filelistValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
-                    valValue.getPath(),
-                    CmsXmlSitemap.XmlNode.FILELIST.getName()), locale, 0);
-                int index = 0;
-                for (String strId : CmsStringUtil.splitAsList(property.getValue(), CmsXmlSitemap.IDS_SEPARATOR)) {
-                    try {
-                        CmsResource fileRes = cms.readResource(new CmsUUID(strId));
-                        I_CmsXmlContentValue fileValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
-                            filelistValue.getPath(),
-                            CmsXmlSitemap.XmlNode.URI.getName()), locale, index);
-                        if (fileValue == null) {
-                            fileValue = getContentValue(cms, xmlSitemap, CmsXmlUtils.concatXpath(
-                                filelistValue.getPath(),
-                                CmsXmlSitemap.XmlNode.URI.getName()), locale, index);
-                        }
-                        fileValue.setStringValue(cms, cms.getSitePath(fileRes));
-                        index++;
-                    } catch (CmsException e) {
-                        // could happen when the resource are meanwhile deleted
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
-            } else {
-                getContentValue(
-                    cms,
-                    xmlSitemap,
-                    CmsXmlUtils.concatXpath(valValue.getPath(), CmsXmlSitemap.XmlNode.STRING.getName()),
-                    locale,
-                    0).setStringValue(cms, property.getValue());
-            }
-            j++;
-        }
-
-        // the subentries
-        int subentryCount = 0;
-        for (CmsSiteEntryBean subentry : entry.getSubEntries()) {
-            saveEntry(cms, locale, entryValue.getPath(), xmlSitemap, subentry, subentryCount, propertiesConf);
-            subentryCount++;
-        }
     }
 }
