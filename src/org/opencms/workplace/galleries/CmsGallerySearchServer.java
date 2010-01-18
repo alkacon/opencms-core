@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/14 15:30:15 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2010/01/18 16:32:10 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 7.6
  */
@@ -1658,12 +1658,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         StringBuffer result = new StringBuffer();
         String modeName = getModeName();
         String integratorPath = link(CmsWorkplace.VFS_PATH_EDITORS + getIntegratorPath());
-        String fckCommenDialogPath = CmsWorkplace.getSkinUri()
-            + "editors/fckeditor/editor/dialog/common/fck_dialog_common.js";
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modeName) && modeName.equals(GalleryMode.EDITOR.getName())) {
-            result.append("<script type=\"text/javascript\" src=\"");
-            result.append(fckCommenDialogPath);
-            result.append("\"></script>\n");
             result.append("<script type=\"text/javascript\" src=\"");
             result.append(integratorPath);
             result.append("\"></script>\n");

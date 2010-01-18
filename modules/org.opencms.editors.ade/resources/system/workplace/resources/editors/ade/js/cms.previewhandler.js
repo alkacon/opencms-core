@@ -93,8 +93,8 @@
       target.append(form);
       
       // bind direct input to the editable fields
-      $('.cms-item-edit').change(function() {
-           $('#' + cms.previewhandler.keys['propertiesTabId']).find('button[name="previewSave"]').removeAttr('disabled');
+      $('#' + keys['propertiesTabId']).find('.cms-item-edit').change(function() {
+           $('#' + cms.previewhandler.keys['propertiesTabId']).find('button[name="previewSave"]').removeAttr('disabled').addClass('cms-properties-changed');
            $(this).addClass('cms-item-changed');
            $('#cms-preview div.close-icon').addClass('cms-properties-changed').removeClass('cms-properties-saved');
            $('#cms-preview').find('button[name="previewSelect"]').addClass('cms-properties-changed');
@@ -124,7 +124,7 @@
     * @param {Object} itemData the data to update the preview
     */
    var refreshDefaultPreview = function(itemData) {       
-      $('#cms-preview div.close-icon').removeClass('cms-properties-changed').addClass('cms-properties-saved');
+      $('#cms-preview div.close-icon').removeClass('cms-properties-changed').addClass('cms-properties-saved');      
       $('#cms-preview div.preview-area, #' + cms.previewhandler.keys['propertiesTabId']).empty();
       //display the html preview 
       $('.preview-area').append(itemData['previewdata']['itemhtml']);
@@ -316,7 +316,7 @@
             cms.galleries.getContentHandler()['closePreview']();
          } else if ($(this).hasClass('cms-properties-changed')) {            
             //text, title, yesLabel, noLabel, callback
-            cms.util.dialogConfirmCancel('Do you want to save the changes?', 'Save', 'Yes', 'No', 'Cancel', saveAndClosePreview);
+            cms.util.dialogConfirmCancel('Do you want to save changed properties?', 'Save', 'Yes', 'No', 'Cancel', saveAndClosePreview);
          } else {
              cms.galleries.getContentHandler()['closePreview']();     
          }                   
@@ -329,7 +329,7 @@
          var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');       
          if ($(this).hasClass('cms-properties-changed')) {            
             //text, title, yesLabel, noLabel, callback
-            cms.util.dialogConfirmCancel('Do you want to save changes?', 'Save', 'Yes', 'No', 'Cancel', cms.galleries.getContentHandler()['saveAndSelectItem']);
+            cms.util.dialogConfirmCancel('Do you want to save changed properties?', 'Save', 'Yes', 'No', 'Cancel', cms.galleries.getContentHandler()['saveAndSelectItem']);
          } else {
             cms.galleries.getContentHandler(resType)['setValues'][cms.galleries.initValues['dialogMode']]();  
          }                   
@@ -344,6 +344,7 @@
        $('#'+ cms.previewhandler.editableTabId).tabs('destroy');
        $('#'+ cms.previewhandler.editableTabId).removeAttr('class').empty();
        $('#cms-preview div.close-icon').removeClass('cms-properties-changed cms-properties-saved'); 
+       
        //$('#' + cms.previewhandler.keys['propertiesTabId']).find('button[name="previewSelect"]').removeClass('cms-properties-changed');      
        $('#cms-preview div.preview-area').empty();       
    }

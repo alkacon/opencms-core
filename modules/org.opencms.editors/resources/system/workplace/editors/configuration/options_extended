@@ -51,6 +51,13 @@ gallery.image=true
 gallery.html=true
 gallery.table=true
 
+# advanced gallery flag
+gallery.advanced=true
+
+# enhanced gallery flags
+gallery.enhancedoptions=true
+gallery.usethickbox=true
+
 # link & anchor options
 option.links=true
 option.linkstyleinputs=false

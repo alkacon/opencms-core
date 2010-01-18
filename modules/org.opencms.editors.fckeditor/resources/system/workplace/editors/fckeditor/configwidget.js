@@ -1,4 +1,5 @@
 <%@ page import="
+    java.util.*,
 	org.opencms.editors.fckeditor.*,
 	org.opencms.jsp.*,
 	org.opencms.main.*,
@@ -16,6 +17,10 @@ String site = OpenCms.getSiteManager().getWorkplaceServer();
 String configuration = request.getParameter(CmsFCKEditorWidget.PARAM_CONFIGURATION);
 CmsHtmlWidgetOption option = new CmsHtmlWidgetOption(configuration);
 
+//the editor options
+CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
+Properties displayOptions = options.getDisplayOptions(cms);
+
 String galleryPath = cms.link("/system/workplace/galleries/");
 
 %>
@@ -29,6 +34,10 @@ FCKConfig.ProcessNumericEntities = false;
 FCKConfig.IncludeLatinEntities = false;
 FCKConfig.IncludeGreekEntities = false;
 
+//set flags to set enhanced options and thickbox class for imagegallery
+FCKConfig.ShowEnhancedOptions = <%=options.showElement("gallery.enhancedoptions", displayOptions) %>;
+FCKConfig.UseTbForLinkOriginal = <%=options.showElement("gallery.usethickbox", displayOptions) %>;
+
 <%= CmsFCKEditorWidget.getFormatSelectOptionsConfiguration(option) %>
 
 FCKConfig.BaseHref = "<%= site %>";
@@ -38,17 +47,32 @@ FCKConfig.ToolbarStartExpanded	= false;
 
 FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
 
-FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");<%
-if (option.isButtonAdditional("imagegallery") || option.isButtonAdditional("image")) { %>
-FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("plugins/") %>");<% }
-if (option.isButtonAdditional("downloadgallery")) { %>
-FCKConfig.Plugins.Add("downloadgallery", null, "<%= galleryPath %>");<% }
-if (option.isButtonAdditional("linkgallery")) { %>
-FCKConfig.Plugins.Add("linkgallery", null, "<%= galleryPath %>");<% }
-if (option.isButtonAdditional("htmlgallery")) { %>
-FCKConfig.Plugins.Add("htmlgallery", null, "<%= galleryPath %>");<% }
-if (option.isButtonAdditional("tablegallery")) { %>
-FCKConfig.Plugins.Add("tablegallery", null, "<%= galleryPath %>");<% } %>
+<% if (options.showElement("gallery.advanced", displayOptions)){ %>
+
+    FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");<%
+    if (option.isButtonAdditional("imagegallery") || option.isButtonAdditional("image")) { %>
+    FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("plugins/") %>");<% }
+    if (option.isButtonAdditional("downloadgallery")) { %>
+    FCKConfig.Plugins.Add("downloadgallery", null, "<%= galleryPath %>");<% }
+    if (option.isButtonAdditional("linkgallery")) { %>
+    FCKConfig.Plugins.Add("linkgallery", null, "<%= galleryPath %>");<% }
+    if (option.isButtonAdditional("htmlgallery")) { %>
+    FCKConfig.Plugins.Add("htmlgallery", null, "<%= galleryPath %>");<% }
+    if (option.isButtonAdditional("tablegallery")) { %>
+    FCKConfig.Plugins.Add("tablegallery", null, "<%= galleryPath %>");<% } 
+} else {%>
+    FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");<%
+    if (option.isButtonAdditional("imagegallery") || option.isButtonAdditional("image")) { %>
+    FCKConfig.Plugins.Add("imagegallery", null, "<%= galleryPath %>");<% }
+    if (option.isButtonAdditional("downloadgallery")) { %>
+    FCKConfig.Plugins.Add("downloadgallery", null, "<%= galleryPath %>");<% }
+    if (option.isButtonAdditional("linkgallery")) { %>
+    FCKConfig.Plugins.Add("linkgallery", null, "<%= galleryPath %>");<% }
+    if (option.isButtonAdditional("htmlgallery")) { %>
+    FCKConfig.Plugins.Add("htmlgallery", null, "<%= galleryPath %>");<% }
+    if (option.isButtonAdditional("tablegallery")) { %>
+    FCKConfig.Plugins.Add("tablegallery", null, "<%= galleryPath %>");<% } 
+ } %> 
 
 FCKConfig.ToolbarSets["OpenCmsWidget"] = [
         <%= option.getButtonBar(CmsFCKEditorWidget.BUTTON_TRANSLATION_MAP, ",") %>

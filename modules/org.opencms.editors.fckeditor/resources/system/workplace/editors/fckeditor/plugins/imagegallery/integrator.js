@@ -1,6 +1,6 @@
 <%@ page import="org.opencms.jsp.*" %><%
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-%>
+%><%= cms.getContent("/system/workplace/resources/editors/fckeditor/editor/dialog/common/fck_dialog_common.js") %>
 
 /* Initialize important FCKeditor variables from editor. */
 var dialog		= window.parent;
@@ -10,8 +10,8 @@ var FCKConfig		= oEditor.FCKConfig;
 var FCKBrowserInfo	= oEditor.FCKBrowserInfo;
 
 /* Enables or disables the enhanced image dialog options. */
-var showEnhancedOptions = true;
-var useTbForLinkOriginal = true;
+var showEnhancedOptions = FCKConfig.ShowEnhancedOptions;
+var useTbForLinkOriginal = FCKConfig.UseTbForLinkOriginal;
 
 /* The selected image (if available). */
 var oImage = null;
@@ -30,7 +30,9 @@ function activeImageAdditionalActions(isInitial) {
     if (isInitial) {
         loadSelection();
     } else {
-        resetCopyrightText();
+        if (isEnhanced()) {
+            resetCopyrightText();
+        }        
         var imgTitle = cms.galleries.activeItem.title;
         if (cms.galleries.activeItem.description != "") {
             imgTitle = cms.galleries.activeItem.description;
@@ -329,9 +331,76 @@ function isEnhancedPreview() {
 	return showEnhancedOptions && (insertSubTitle() || insertCopyright());
 }
 
+/* Returns if enhanced options should be shown */
+function isEnhanced() {
+    return showEnhancedOptions;
+}
+
 /* The OK button was hit, called by editor button click event. */
 function Ok() {
-	var bHasImage = oImage != null;
+    
+    var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');       
+    // if changed properties are not saved yet         
+    if ($('button[name="previewSave"]').hasClass('cms-properties-changed')) {
+        //text, title, yesLabel, noLabel, callback
+        cms.util.dialogConfirmCancel('Do you want to save changed properties?', 'Save', 'Yes', 'No', 'Cancel', saveProperties);       
+    } else { // not properties changed, call editor close function        
+        closeEditor();  
+        return true;
+    }               
+}
+
+function saveProperties(isConfirmed) {
+    if (isConfirmed) {
+          var changedProperties = $('.cms-item-edit.cms-item-changed');      
+          // build json object with changed properties
+          var changes = {
+             'properties': []
+          };
+          $.each(changedProperties, function() {
+             var property = {};
+             property['name'] = $(this).closest('div').attr('alt');
+             property['value'] = $(this).val();
+             changes['properties'].push(property);
+          });
+          
+          var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');
+          // save changes via ajax if there are any
+          if (changes['properties'].length != 0) {
+             $.ajax({
+                'async': true,
+                'url': cms.data.GALLERY_SERVER_URL,
+                'data': {
+                   'action': 'setproperties',
+                   'data': JSON.stringify({
+                      'path': $('#cms-preview').attr('alt'),
+                      'properties': changes['properties']
+                   })
+                },
+                'type': 'POST',
+                'dataType': 'json',
+                // TODO: error handling
+                'success': triggerOkEvent
+             });      
+                
+          } else {
+              triggerOkEvent();
+          }
+      } else {
+          triggerOkEvent();
+      }        
+   
+}
+
+/* Trigger the ok- button of the editor. */
+function triggerOkEvent() {
+    $('button[name="previewSave"]').removeClass('cms-properties-changed');
+    window.parent.Ok();
+}
+
+/* Saves all image specific changes. */
+function closeEditor() {
+    var bHasImage = oImage != null;
 	var imgCreated = false;
 
 	if (!bHasImage) {
@@ -444,7 +513,6 @@ function Ok() {
 			} catch (e) {}
 		}
 	} // end simple image tag
-	return true;
 }
 
 /* Creates the enhanced image HTML if configured. */

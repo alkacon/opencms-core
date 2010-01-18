@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageFormatterHelper.java,v $
- * Date   : $Date: 2010/01/15 13:46:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/18 16:32:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 
  * 
@@ -172,7 +172,7 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
             String title = property(JsonKeys.TITLE.getName(), getCmsObject().getSitePath(getResource()), "");
             activeImageObj.put(JsonKeys.TITLE.getName().toLowerCase(), CmsStringUtil.escapeJavaScript(title));
             // 6: image description            
-            String description = property(JsonKeys.TITLE.getName(), getCmsObject().getSitePath(getResource()), "");
+            String description = property(JsonKeys.Description.getName(), getCmsObject().getSitePath(getResource()), "");
             activeImageObj.put(
                 JsonKeys.Description.getName().toLowerCase(),
                 CmsStringUtil.escapeJavaScript(description));

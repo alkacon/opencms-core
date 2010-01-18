@@ -174,6 +174,87 @@
                                </button>\
                            </div>';                                                          
 
+   /** */
+   var editorFormatTabHtml = '<div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
+                                  <span class="cms-item-title cms-width-95">Title&nbsp;/&nbsp;Alt-Text</span>\
+                                  <input id="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
+                              </div>\
+                              <div class="cms-editable-field cms-left cms-width-305" alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '">\
+                                  <span class="cms-item-title cms-editor-title cms-width-150 cms-left">Create image spacing</span>\
+                                  <div id="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
+                                  <div class="cms-format-line cms-right" alt="width">\
+                                      <span class="cms-item-title cms-editor-title cms-width-60">HSpace:</span>\
+                                      <input id="' + cms.imagepreviewhandler.editorKeys['hSpace'] + '" class="ui-corner-all ui-widget-content" type="text"/>\
+                                  </div>\
+                              </div>\
+                              <div class="cms-drop-down cms-format-line cms-right" id="' + editorKeys['imgAlign'] + '">\
+                                  <label class="cms-item-title cms-width-50">Align:</label>\
+                              </div>\
+                              <div class="cms-format-line cms-width-305" alt="width" style="clear:left;">\
+                                  <input id="' + cms.imagepreviewhandler.editorKeys['vSpace'] + '" class="ui-corner-all ui-widget-content cms-right" type="text"/>\
+                                  <span class="cms-item-title cms-editor-title cms-width-60 cms-right">VSpace:</span>\
+                              </div>'
+   /** Html fragment for the enhanced mode in editor mode. */
+   var enhancedInsetAltCopyright = '<div id="' + cms.imagepreviewhandler.editorKeys['fckInsertAlt'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
+                              <div class="cms-checkbox-label cms-left">Insert subtitle</div>\
+                              <button id="' + cms.imagepreviewhandler.editorKeys['fckResetTitle'] + '" class="cms-right ui-state-default ui-corner-all" >\
+                                  <span class="cms-galleries-button">Reset Title</span>\
+                              </button>\
+                              <div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '">\
+                                  <span class="cms-item-title cms-width-95">Copyright</span>\
+                                  <input id="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
+                              </div>\
+                              <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertCr'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
+                              <div class="cms-checkbox-label cms-left">Insert Copyright</div>\
+                              <button id="' + cms.imagepreviewhandler.editorKeys['fckReserCr'] + '" class="cms-right ui-state-default ui-corner-all" style="clear:right;">\
+                                  <span class="cms-galleries-button">Reset Copyright</span>\
+                              </button>';
+   
+   /** Html fragment for the enhanced mode in editor mode. */
+   var enhancedInsertLink = '<div id="' + cms.imagepreviewhandler.editorKeys['linkOriginal'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left checkbox-margin"></div>\
+                              <div class="cms-checkbox-title cms-left">Insert link to image in original format</div>';
+                              
+   /** Html for the advenced tab in editor mode. */                              
+   var advancedTabHtml = '<div class="cms-header-small cms-clear-right">Link</div>\
+                     <div class="cms-editable-field cms-left cms-width-500" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
+                          <span class="cms-item-title cms-width-95">Url:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLinkUrl'] + '" class="cms-item-edit cms-width-390 ui-corner-all" name="TODO" title="Edit ' + '' + '" value="" />\
+                     </div>\
+                     <button id="' + cms.imagepreviewhandler.editorKeys['advBrowseServer'] + '" class="cms-right ui-state-default ui-corner-all">\
+                          <span class="cms-galleries-button">Browse Server</span>\
+                     </button>\
+                     <div class="cms-drop-down cms-format-line cms-left" id="' + editorKeys['advLinkTarget'] + '">\
+                         <label class="cms-item-title cms-width-95">Target:</label>\
+                     </div>\
+                     <div class="cms-header-small cms-clear-left">Other Attributes</div>\
+                     <div class="cms-editable-field cms-left cms-width-620 cms-clear-right" alt="' + cms.imagepreviewhandler.editorKeys['advId'] + '">\
+                          <span class="cms-item-title cms-width-150">Id:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advId'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '">\
+                          <span class="cms-item-title cms-width-150">Stylesheet Classes:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '">\
+                          <span class="cms-item-title cms-width-150">Style:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '">\
+                          <span class="cms-item-title cms-width-150">Long Description URL:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '">\
+                          <span class="cms-item-title cms-width-150">Advisory Title:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>\
+                     <div class="cms-drop-down cms-format-line cms-left cms-width-620" id="' + editorKeys['advLangDir'] + '">\
+                         <label class="cms-item-title cms-width-150">Language Direction:</label>\
+                     </div>\
+                     <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '">\
+                          <span class="cms-item-title cms-width-150">Language Code:</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                     </div>';                              
+                                                                
    /**
     * Displays the content of the preview item.
     *
@@ -343,115 +424,23 @@
    var fillEditorFormatInfos = function () {
        
       var target = $('#' + keys['editorFormatTabId']);
-      // generate editable form fields
-      var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');
-     
-      /*form.append($('<div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
-          <span class="cms-item-title cms-width-95">Title&nbsp;/&nbsp;Alt-Text</span>\
-          <input id="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
-      </div>\
-      <span></span>\
-      <div class="cms-checkbox-label cms-left">Insert subtitle</div>\
-      <button id="' + cms.imagepreviewhandler.editorKeys['fckResetTitle'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" >\
-          <span class="cms-galleries-button">Reset Title</span>\
-      </button>\
-      <div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '">\
-          <span class="cms-item-title cms-width-95">Copyright</span>\
-          <input id="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
-      </div>\
-      <div class="cms-checkbox-label cms-left">Insert Copyright</div>\
-      <button id="' + cms.imagepreviewhandler.editorKeys['fckReserCr'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" style="clear:right;">\
-          <span class="cms-galleries-button">Reset Copyright</span>\
-      </button>\
-      <div class="cms-editable-field cms-left cms-width-305" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
-          <span class="cms-item-title cms-editor-title cms-width-150 cms-left">Create image spacing</span>\
-          <div class="cms-format-line cms-right" alt="width">\
-              <span class="cms-item-title cms-editor-title cms-width-60">HSpace:</span>\
-              <input id="' + cms.imagepreviewhandler.editorKeys['hSpace'] + '" class="ui-corner-all ui-widget-content" type="text"/>\
-          </div>\
-      </div>\
-      <div class="cms-checkbox-title cms-left">Insert link to image in original format</div>\
-      <div class="cms-drop-down cms-format-line cms-right" id="' + editorKeys['imgAlign'] + '">\
-          <label class="cms-item-title cms-width-50">Align:</label>\
-      </div>\
-      <div class="cms-format-line cms-width-305" alt="width" style="clear:left;">\
-          <input id="' + cms.imagepreviewhandler.editorKeys['vSpace'] + '" class="ui-corner-all ui-widget-content cms-right" type="text"/>\
-          <span class="cms-item-title cms-editor-title cms-width-60 cms-right">VSpace:</span>\
-      </div>'));*/
+      // generate editable form fields for editor
+      var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');      
+      form.append($(editorFormatTabHtml));
+      target.append(form);
       
-     
-         
-     // var fckInsertAlt = new cms.util.Checkbox();
-      //$('div[alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '"]').after(fckInsertAlt.$dom);
-      //cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['fckInsertAlt']] = fckInsertAlt;  
-      //var fckInsertAlt = new cms.util.Checkbox();
-      
-      //cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['fckInsertAlt']] = fckInsertAlt;
-      
-      //var fckInsertCr = new cms.util.Checkbox();
-      //$('div[alt="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '"]')
-      //    .after(fckInsertCr.$dom);
-      //cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['fckInsertCr']] = fckInsertCr;
-      //var imgSpacing = new cms.util.Checkbox();
-      //$('div[alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '"]').find('span:first')
-       //   .after(imgSpacing.$dom);
-      //cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['imgSpacing']] = imgSpacing;
-      //var linkOrginal = new cms.util.Checkbox();
-      //$('div[alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '"]')
-      //    .after(linkOrginal.$dom);
-      ///cms.imagepreviewhandler.editorCheckboxes[cms.imagepreviewhandler.editorKeys['linkOrginal']] = linkOrginal;
-      
-      //fckInsertAlt.$dom.addClass('cms-left');  
-      
-      
-      //fckInsertCr.$dom.addClass('cms-left');
-      
-      //imgSpacing.$dom.addClass('cms-left');
-      
-      //linkOrginal.$dom.addClass('cms-left');*/
-     // $('.cms-checkbox').addClass('cms-left');    
-      
-      form.append($('<div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
-          <span class="cms-item-title cms-width-95">Title&nbsp;/&nbsp;Alt-Text</span>\
-          <input id="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
-      </div>\
-      <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertAlt'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
-      <div class="cms-checkbox-label cms-left">Insert subtitle</div>\
-      <button id="' + cms.imagepreviewhandler.editorKeys['fckResetTitle'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" >\
-          <span class="cms-galleries-button">Reset Title</span>\
-      </button>\
-      <div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '">\
-          <span class="cms-item-title cms-width-95">Copyright</span>\
-          <input id="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
-      </div>\
-      <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertCr'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
-      <div class="cms-checkbox-label cms-left">Insert Copyright</div>\
-      <button id="' + cms.imagepreviewhandler.editorKeys['fckReserCr'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all" style="clear:right;">\
-          <span class="cms-galleries-button">Reset Copyright</span>\
-      </button>\
-      <div class="cms-editable-field cms-left cms-width-305" alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '">\
-          <span class="cms-item-title cms-editor-title cms-width-150 cms-left">Create image spacing</span>\
-          <div id="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
-          <div class="cms-format-line cms-right" alt="width">\
-              <span class="cms-item-title cms-editor-title cms-width-60">HSpace:</span>\
-              <input id="' + cms.imagepreviewhandler.editorKeys['hSpace'] + '" class="ui-corner-all ui-widget-content" type="text"/>\
-          </div>\
-      </div>\
-      <div id="' + cms.imagepreviewhandler.editorKeys['linkOriginal'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left checkbox-margin"></div>\
-      <div class="cms-checkbox-title cms-left">Insert link to image in original format</div>\
-      <div class="cms-drop-down cms-format-line cms-right" id="' + editorKeys['imgAlign'] + '">\
-          <label class="cms-item-title cms-width-50">Align:</label>\
-      </div>\
-      <div class="cms-format-line cms-width-305" alt="width" style="clear:left;">\
-          <input id="' + cms.imagepreviewhandler.editorKeys['vSpace'] + '" class="ui-corner-all ui-widget-content cms-right" type="text"/>\
-          <span class="cms-item-title cms-editor-title cms-width-60 cms-right">VSpace:</span>\
-      </div>'));  
-      target.append(form);        
-      form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
-            selectorPosition:'top',
+      if (isEnhanced()) {
+           $('div[alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '"]').addClass('cms-width-320').removeClass('cms-width-620').after($(enhancedInsetAltCopyright));
+           $('div[alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '"]').after($(enhancedInsertLink)); 
+           $('#' + cms.imagepreviewhandler.editorKeys['fckResetTitle']).click(resetAltText);
+           $('#' + cms.imagepreviewhandler.editorKeys['fckReserCr']).click(resetCopyrightText);
+      }
+            
+      // initialize select box and checkboxes        
+     form.find('.cms-drop-down label').after($.fn.selectBox('generate', {            
             values: editorAlignDropDown,
             width: 100
-         }));
+         })); //selectorPosition:'top',
       form.find('.cms-checkbox-gallery').click(function () {
           if ($(this).hasClass('cms-checkbox-unchecked')){
               $(this).addClass('cms-checkbox-checked').removeClass('cms-checkbox-unchecked');
@@ -476,46 +465,9 @@
        var target = $('#' + keys['editorAdvancedTabId']);
       // generate editable form fields
       var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');
-      form.append($('<div class="cms-header-small cms-clear-right">Link</div>\
-                     <div class="cms-editable-field cms-left cms-width-500" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
-                          <span class="cms-item-title cms-width-95">Url:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advLinkUrl'] + '" class="cms-item-edit cms-width-390 ui-corner-all" name="TODO" title="Edit ' + '' + '" value="" />\
-                     </div>\
-                     <button id="' + cms.imagepreviewhandler.editorKeys['advBrowseServer'] + '" disabled="false" class="cms-right ui-state-default ui-corner-all">\
-                          <span class="cms-galleries-button">Browse Server</span>\
-                     </button>\
-                     <div class="cms-drop-down cms-format-line cms-left" id="' + editorKeys['advLinkTarget'] + '">\
-                         <label class="cms-item-title cms-width-95">Target:</label>\
-                     </div>\
-                     <div class="cms-header-small cms-clear-left">Other Attributes</div>\
-                     <div class="cms-editable-field cms-left cms-width-620 cms-clear-right" alt="' + cms.imagepreviewhandler.editorKeys['advId'] + '">\
-                          <span class="cms-item-title cms-width-150">Id:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advId'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
-                     </div>\
-                     <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '">\
-                          <span class="cms-item-title cms-width-150">Stylesheet Classes:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
-                     </div>\
-                     <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '">\
-                          <span class="cms-item-title cms-width-150">Style:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
-                     </div>\
-                     <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '">\
-                          <span class="cms-item-title cms-width-150">Long Description URL:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
-                     </div>\
-                     <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '">\
-                          <span class="cms-item-title cms-width-150">Advisory Title:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
-                     </div>\
-                     <div class="cms-drop-down cms-format-line cms-left cms-width-620" id="' + editorKeys['advLangDir'] + '">\
-                         <label class="cms-item-title cms-width-150">Language Direction:</label>\
-                     </div>\
-                     <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '">\
-                          <span class="cms-item-title cms-width-150">Language Code:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
-                     </div>'));
+      form.append($(advancedTabHtml));
       target.append(form);
+      $('#' + cms.imagepreviewhandler.editorKeys['advBrowseServer']).click(LnkBrowseServer); 
       form.find('#' + editorKeys['advLinkTarget'] + ' label').after($.fn.selectBox('generate', {
             selectorPosition:'top',
             values: editorTargetDropDown,
@@ -538,10 +490,15 @@
       $('#' + cms.previewhandler.keys['propertiesTabId'] + ', #' + cms.imagepreviewhandler.keys['imageInfosTabId']).empty();
       // refresh the editable properties
       cms.galleries.getContentHandler()['fillProperties'](itemData['previewdata']['properties']);      
+      // refresh active image title to be used as alt attribute
+      if (cms.galleries.isEditorMode()) {          
+          var jsonForActiveImage = JSON.parse($(itemData['previewdata']['itemhtml']).find("input[type='hidden']").remove().val());
+          cms.galleries.activeItem['title'] = jsonForActiveImage['activeimage']['title'];
+          cms.galleries.activeItem['description'] = jsonForActiveImage['activeimage']['description'];              
+      }
       // refresh additional image infos          
       var imageInfos =  $(itemData['previewdata']['itemhtml']).find('.cms-image-info').remove();
       fillImageInfos(imageInfos);            
-      /////TODO: switch to the properties tab if necessary
    }
    
    /**

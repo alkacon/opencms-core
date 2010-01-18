@@ -55,6 +55,11 @@ FCKConfig.ProcessHTMLEntities = true;
 FCKConfig.ProcessNumericEntities = false;
 FCKConfig.IncludeLatinEntities = false;
 FCKConfig.IncludeGreekEntities = false;
+
+//set flags to set enhanced options and thickbox class for imagegallery
+FCKConfig.ShowEnhancedOptions = <%=options.showElement("gallery.enhancedoptions", displayOptions) %>;
+FCKConfig.UseTbForLinkOriginal = <%=options.showElement("gallery.usethickbox", displayOptions) %>;
+
 <%
 String formatOptions = options.getOptionValue("formatselect.options", "", displayOptions);
 if (CmsStringUtil.isNotEmpty(formatOptions)) { %>
@@ -66,14 +71,26 @@ FCKConfig.ToolbarCanCollapse = false;
 
 FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
 
-FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
-FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-FCKConfig.Plugins.Add("linkgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-FCKConfig.Plugins.Add("htmlgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-FCKConfig.Plugins.Add("tablegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
-//replaced by image gallery: FCKConfig.Plugins.Add("ocmsimage", null, "<%= cms.link("plugins/") %>");
-<%
+<% if (options.showElement("gallery.advanced", displayOptions)){ %>
+
+    FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
+    FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("plugins/") %>");
+    FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+    FCKConfig.Plugins.Add("linkgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+    FCKConfig.Plugins.Add("htmlgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+    FCKConfig.Plugins.Add("tablegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+
+<% } else {%>
+
+    FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
+    FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+    FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+    FCKConfig.Plugins.Add("linkgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+    FCKConfig.Plugins.Add("htmlgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+    FCKConfig.Plugins.Add("tablegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+    //replaced by image gallery: FCKConfig.Plugins.Add("ocmsimage", null, "<%= cms.link("plugins/") %>");
+
+<% }
 
 boolean showTableOptions = options.showElement("option.table", displayOptions);
 

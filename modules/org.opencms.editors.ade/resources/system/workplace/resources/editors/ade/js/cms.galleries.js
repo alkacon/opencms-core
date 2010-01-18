@@ -600,6 +600,9 @@
       return false;
    }
    
+   /**
+    * Display all possible options for the gallery in the given mode.
+    */
    var isFullMode = cms.galleries.isFullDisplayMode = function () {
        if (cms.galleries.initValues['dialogMode'] == 'editor' || cms.galleries.initValues['dialogMode'] == 'widget') {
            return true;
