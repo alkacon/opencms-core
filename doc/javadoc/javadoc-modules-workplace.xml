@@ -58,6 +58,7 @@
        	      </fileset>
        	    </classpath>
 			<sourcepath>
+				<!-- comment the two pathelement definitions if generating JavaDoc creates wrong result -->
 				<pathelement location="${srcdir}" />
 				<!-- This avoids complaints about non-existant sources, at buildtime no opencms.jar for the classpath at hand. -->
 				<pathelement location="${opencms.input}/src" />

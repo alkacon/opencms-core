@@ -59,6 +59,7 @@
        	      </fileset>
        	    </classpath>
 			<sourcepath>
+				<!-- comment the two pathelement definitions if generating JavaDoc creates wrong result -->
 				<pathelement location="${srcdir}" />
 				<!-- This avoids complaints about non-existant sources, at buildtime no opencms.jar for the classpath at hand. -->
 				<pathelement location="${opencms.input}/src" />
@@ -68,6 +69,9 @@
 			<fileset dir="${srcdir}">
 				<exclude name="**/*Messages.java" />
 				<include name="org/opencms/frontend/**/*.java" />
+				<exclude name="**/org/opencms/editors/**" />
+				<exclude name="**/org/opencms/workplace/**" />
+				<exclude name="**/org/opencms/frontend/templatetwo/**" />
 			</fileset>
 		</javadoc>
 		<antcall target="copy.images" />
