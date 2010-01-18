@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPageFactory.java,v $
- * Date   : $Date: 2009/11/10 16:42:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/18 14:14:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,14 +61,14 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.5.2
  */
 public final class CmsXmlContainerPageFactory {
 
     /** The ADE cache. */
-    private static CmsADECache m_cache = OpenCms.getADEManager().m_cache;
+    private static CmsADECache m_cache = OpenCms.getADEManager().getCache();
 
     /**
      * No instances of this class should be created.<p> 

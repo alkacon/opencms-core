@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/14 13:31:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/18 14:14:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.9.2
  */
@@ -150,7 +150,7 @@ public class CmsSitemapManager {
     private static final Log LOG = CmsLog.getLog(CmsSitemapManager.class);
 
     /** The cache instance. */
-    protected CmsSitemapCache m_cache;
+    private CmsSitemapCache m_cache;
 
     /**
      * Creates a new sitemap manager.<p>
@@ -406,6 +406,16 @@ public class CmsSitemapManager {
     public void shutdown() {
 
         m_cache.shutdown();
+    }
+
+    /**
+     * Returns the cache.<p>
+     *
+     * @return the cache
+     */
+    protected CmsSitemapCache getCache() {
+
+        return m_cache;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/18 14:14:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.6
  */
@@ -104,10 +104,10 @@ public class CmsADEManager {
     private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
 
     /** The cache instance. */
-    protected CmsADECache m_cache;
+    private CmsADECache m_cache;
 
     /** The configuration instance. */
-    protected I_CmsADEConfiguration m_configuration;
+    private I_CmsADEConfiguration m_configuration;
 
     /**
      * Creates a new ADE manager.<p>
@@ -557,5 +557,15 @@ public class CmsADEManager {
             return null;
         }
         return data;
+    }
+
+    /**
+     * Returns the cache.<p>
+     *
+     * @return the cache
+     */
+    protected CmsADECache getCache() {
+
+        return m_cache;
     }
 }
