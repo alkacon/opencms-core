@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/gallery/TestCmsGallerySearchBasic.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/19 15:35:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,15 +41,12 @@ import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
-import org.opencms.search.galleries.CmsGallerySearch.CmsGallerySortParam;
+import org.opencms.search.galleries.CmsGallerySearchParameters.CmsGallerySortParam;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Iterator;
 import java.util.Locale;
@@ -63,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
@@ -177,27 +174,6 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         };
 
         return wrapper;
-    }
-
-    /**
-     * Copies the special search configuration for this test case to the configuration folder.<p>
-     * 
-     * @param  newConfig the base folder with the configuration files to copy
-     * 
-     * @see OpenCmsTestCase#copyConfiguration(String)
-     */
-    protected static void copyConfiguration(String newConfig) {
-
-        OpenCmsTestCase.copyConfiguration(newConfig);
-        File source = new File(getTestDataPath("org/opencms/search/gallery/opencms-search-adeconfig.xml"));
-        File target = new File(newConfig, "opencms-search.xml");
-        try {
-            long lastModified = target.lastModified();
-            CmsFileUtil.copy(source.getAbsolutePath(), target.getAbsolutePath());
-            target.setLastModified(lastModified);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

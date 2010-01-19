@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/19 15:35:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.search.Messages;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
@@ -61,7 +62,7 @@ import org.apache.lucene.util.Version;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -95,6 +96,31 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
         super();
         setName(name);
+    }
+
+    /**
+     * Returns the language locale for the given resource in this index.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param resource the resource to check
+     * @param availableLocales a list of locales supported by the resource
+     * 
+     * @return the language locale for the given resource in this index
+     */
+    @Override
+    public Locale getLocaleForResource(CmsObject cms, CmsResource resource, List<Locale> availableLocales) {
+
+        Locale result;
+        List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+        if ((availableLocales != null) && (availableLocales.size() > 0)) {
+            result = OpenCms.getLocaleManager().getBestMatchingLocale(
+                defaultLocales.get(0),
+                defaultLocales,
+                availableLocales);
+        } else {
+            result = defaultLocales.get(0);
+        }
+        return result;
     }
 
     /**

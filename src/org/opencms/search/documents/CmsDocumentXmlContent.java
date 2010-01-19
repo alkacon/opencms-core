@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlContent.java,v $
- * Date   : $Date: 2009/09/07 12:41:56 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2010/01/19 15:35:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import java.util.Map;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,17 +97,8 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
 
         try {
             CmsFile file = readFile(cms, resource);
-            String absolutePath = cms.getSitePath(file);
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
-
-            List<Locale> locales = xmlContent.getLocales();
-            if (locales.size() == 0) {
-                locales = OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath);
-            }
-            Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(
-                index.getLocale(),
-                OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath),
-                locales);
+            Locale locale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
 
             List<String> elements = xmlContent.getNames(locale);
             StringBuffer content = new StringBuffer();

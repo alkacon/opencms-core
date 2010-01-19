@@ -317,7 +317,7 @@
 					<field name="res_locale" store="true" index="untokenized">
 						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">res_locale</mapping>
 					</field>
-					<field name="additional_info" store="true" index="untokenized">
+					<field name="additional_info" store="true" index="false">
 						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
 					</field>						
 					<field name="container_types" store="true" index="true" analyzer="WhitespaceAnalyzer">

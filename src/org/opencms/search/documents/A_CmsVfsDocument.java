@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2010/01/14 15:30:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/19 15:35:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.lucene.document.Fieldable;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +134,10 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             if ((cache != null) && (resource.getSiblingCount() > 1)) {
                 // hard drive based caching only makes sense for resources that have siblings, 
                 // because the index will also store the content as a blob
-                cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocale() : null);
+                cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocaleForResource(
+                    cms,
+                    resource,
+                    null) : null);
                 content = cache.getCacheObject(cacheName);
             }
 

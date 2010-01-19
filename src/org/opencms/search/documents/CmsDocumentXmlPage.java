@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlPage.java,v $
- * Date   : $Date: 2009/09/07 12:41:56 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2010/01/19 15:35:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
@@ -57,7 +56,7 @@ import java.util.Map;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,17 +82,8 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
 
         try {
             CmsFile file = readFile(cms, resource);
-            String absolutePath = cms.getSitePath(file);
             CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
-
-            List<Locale> pageLocales = page.getLocales();
-            if (pageLocales.size() == 0) {
-                pageLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath);
-            }
-            Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(
-                index.getLocale(),
-                OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath),
-                pageLocales);
+            Locale locale = index.getLocaleForResource(cms, resource, page.getLocales());
 
             List<String> elements = page.getNames(locale);
             StringBuffer content = new StringBuffer();

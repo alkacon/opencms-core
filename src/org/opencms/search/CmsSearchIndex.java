@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/19 15:35:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -837,12 +837,33 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns the language locale of the index as a String.<p>
+     * Returns the language locale for the given resource in this index.<p>
      * 
-     * @return the language locale of the index as a String
+     * @param cms the current OpenCms user context
+     * @param resource the resource to check
+     * @param availableLocales a list of locales supported by the resource
      * 
-     * @see #getLocale()
+     * @return the language locale for the given resource in this index
      */
+    public Locale getLocaleForResource(CmsObject cms, CmsResource resource, List<Locale> availableLocales) {
+
+        Locale result;
+        List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+        List<Locale> locales = availableLocales;
+        if ((locales == null) || (locales.size() == 0)) {
+            locales = defaultLocales;
+        }
+        result = OpenCms.getLocaleManager().getBestMatchingLocale(getLocale(), defaultLocales, locales);
+        return result;
+    }
+
+    /**
+    * Returns the language locale of the index as a String.<p>
+    * 
+    * @return the language locale of the index as a String
+    * 
+    * @see #getLocale()
+    */
     public String getLocaleString() {
 
         return getLocale().toString();
