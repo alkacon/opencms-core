@@ -1467,16 +1467,22 @@ div.cms-selectbox{
 
 }
 	
-div.cms-selectbox span.cms-select-option{
+div.cms-selectbox span.cms-select-option, div.cms-selector span.cms-select-option{
 	display:block;
 	padding: 2px 5px 3px;
 	border:none;
+    font-size: 13px;
+    font-family: Verdana,Helvetica,Arial,sans-serif
+}
+
+span.cms-select-option:hover{
+    background: #aaaaaa;
 }
 	
 div.cms-selector{
 	width: 150px;
 	position:absolute !important;
-    z-index: 10;
+    z-index: 100;
 	top:20px;
 	left:-1px;
 	display:none;
