@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerPageBean.java,v $
- * Date   : $Date: 2009/10/28 11:18:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/19 09:04:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.containerpage;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,7 +45,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6
  */
@@ -62,6 +63,9 @@ public class CmsContainerPageBean {
     /** The locale. */
     private final Locale m_locale;
 
+    /** The container names in the right order. */
+    private final List<String> m_names;
+
     /** The supported types. */
     private final Set<String> m_types;
 
@@ -76,12 +80,15 @@ public class CmsContainerPageBean {
         m_locale = locale;
         Map<String, CmsContainerBean> cnts = new HashMap<String, CmsContainerBean>();
         Set<String> types = new HashSet<String>();
+        List<String> names = new ArrayList<String>();
         for (CmsContainerBean container : containers) {
             cnts.put(container.getName(), container);
             types.add(container.getType());
+            names.add(container.getName());
         }
         m_containers = Collections.unmodifiableMap(cnts);
         m_types = Collections.unmodifiableSet(types);
+        m_names = Collections.unmodifiableList(names);
     }
 
     /**
@@ -112,5 +119,15 @@ public class CmsContainerPageBean {
     public Set<String> getTypes() {
 
         return m_types;
+    }
+
+    /**
+     * Returns the list of container names.<p>
+     *
+     * @return the list of container names
+     */
+    protected List<String> getNames() {
+
+        return m_names;
     }
 }
