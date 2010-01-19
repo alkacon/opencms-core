@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2009/11/03 14:03:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/19 16:06:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.9.2
  * 
@@ -608,6 +608,21 @@ public class CmsCategoryService {
         List result = new ArrayList(resources);
         Collections.sort(result);
         return result;
+    }
+
+    /**
+     * Reads the categories for a resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource to get the categories for
+     * 
+     * @return the categories list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsCategory> readResourceCategories(CmsObject cms, CmsResource resource) throws CmsException {
+
+        return internalReadResourceCategories(cms, resource, false);
     }
 
     /**

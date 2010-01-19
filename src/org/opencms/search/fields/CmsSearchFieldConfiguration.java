@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2010/01/14 15:30:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/19 16:06:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.CmsSearchCategoryCollector;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -64,7 +66,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.0 
  */
@@ -354,13 +356,32 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         // now add the special OpenCms default search fields
         String value;
         Fieldable field;
-        // add the category of the file (this is searched so the value can also be attached on a folder)
-        value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, propertiesSearched).getValue();
-        if (CmsStringUtil.isNotEmpty(value)) {
-            // all categories are internally stored lower case
-            value = value.trim().toLowerCase();
-            if (value.length() > 0) {
-                field = new Field(CmsSearchField.FIELD_CATEGORY, value, Field.Store.YES, Field.Index.NOT_ANALYZED);
+
+        //        // add the category of the file (this is searched so the value can also be attached on a folder)
+        //        value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, propertiesSearched).getValue();
+        //        if (CmsStringUtil.isNotEmpty(value)) {
+        //            // all categories are internally stored lower case
+        //            value = value.trim().toLowerCase();
+        //            if (value.length() > 0) {
+        //                field = new Field(CmsSearchField.FIELD_CATEGORY, value, Field.Store.YES, Field.Index.NOT_ANALYZED);
+        //                field.setBoost(0);
+        //                document.add(field);
+        //            }
+        CmsCategoryService categoryService = CmsCategoryService.getInstance();
+        List<CmsCategory> categories = categoryService.readResourceCategories(cms, resource);
+        if ((categories != null) && (categories.size() > 0)) {
+
+            StringBuffer categoryBuffer = new StringBuffer(128);
+            for (CmsCategory category : categories) {
+                categoryBuffer.append(category.getRootPath());
+                categoryBuffer.append(' ');
+            }
+            if (categoryBuffer.length() > 0) {
+                field = new Field(
+                    CmsSearchField.FIELD_CATEGORY,
+                    categoryBuffer.toString(),
+                    Field.Store.YES,
+                    Field.Index.ANALYZED);
                 field.setBoost(0);
                 document.add(field);
             }
@@ -370,7 +391,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
                 CmsSearchField.FIELD_CATEGORY,
                 CmsSearchCategoryCollector.UNKNOWN_CATEGORY,
                 Field.Store.YES,
-                Field.Index.NOT_ANALYZED);
+                Field.Index.ANALYZED);
             document.add(field);
         }
 
@@ -648,9 +669,11 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         : new PerFieldAnalyzerWrapper(analyzer);
 
         // parent folder and last modified lookup fields must use whitespace analyzer
-        result.addAnalyzer(CmsSearchField.FIELD_PARENT_FOLDERS, new WhitespaceAnalyzer());
-        result.addAnalyzer(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, new WhitespaceAnalyzer());
-        result.addAnalyzer(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, new WhitespaceAnalyzer());
+        WhitespaceAnalyzer ws = new WhitespaceAnalyzer();
+        result.addAnalyzer(CmsSearchField.FIELD_PARENT_FOLDERS, ws);
+        result.addAnalyzer(CmsSearchField.FIELD_CATEGORY, ws);
+        result.addAnalyzer(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, ws);
+        result.addAnalyzer(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, ws);
 
         return result;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2010/01/19 13:54:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/19 16:06:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -91,12 +91,12 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         suite.setName(TestCmsSearchAdvancedFeatures.class.getName());
 
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSortSearchResults"));
-        //        suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchCategories"));
-        //        suite.addTest(new TestCmsSearchAdvancedFeatures("testMultipleSearchRoots"));
-        //        suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchRestriction"));
-        //        suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRanges"));
-        //        suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRangesOptimized"));
-        //        suite.addTest(new TestCmsSearchAdvancedFeatures("testOnlyFilterSearch"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchCategories"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testMultipleSearchRoots"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchRestriction"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRanges"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRangesOptimized"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testOnlyFilterSearch"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
