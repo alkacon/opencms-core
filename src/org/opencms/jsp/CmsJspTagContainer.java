@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/01/15 14:55:48 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/01/19 09:04:37 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,9 @@ import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletRequest;
@@ -73,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.6 
  */
@@ -262,16 +264,6 @@ public class CmsJspTagContainer extends TagSupport {
         // actualize the cache
         container.setMaxElements(maxElements);
 
-        if (!isOnline) {
-            // add container data for the editor
-            try {
-                pageContext.getOut().print(getCntDataTag(container));
-            } catch (JSONException e) {
-                // should never happen
-                throw new JspException(e);
-            }
-        }
-
         // validate the type
         if (!containerType.equals(container.getType())) {
             throw new CmsIllegalStateException(Messages.get().container(
@@ -279,11 +271,8 @@ public class CmsJspTagContainer extends TagSupport {
                 new Object[] {cms.getSitePath(containerPage), locale, containerName, containerType}));
         }
 
-        // get the actual number of elements to render
-        int renderElems = container.getElements().size();
-        if ((maxElements > 0) && (renderElems > maxElements)) {
-            renderElems = maxElements;
-        }
+        List<CmsContainerElementBean> allElems = new ArrayList<CmsContainerElementBean>();
+        allElems.addAll(container.getElements());
 
         if (actAsTemplate) {
             if (!cntPage.getTypes().contains(CmsContainerPageBean.TYPE_TEMPLATE)) {
@@ -293,9 +282,9 @@ public class CmsJspTagContainer extends TagSupport {
                     cms.getSitePath(containerPage),
                     CmsContainerPageBean.TYPE_TEMPLATE));
             }
+
             if (containerType.equals(CmsContainerPageBean.TYPE_TEMPLATE)) {
-                // render template element
-                renderElems--;
+                // add template element
                 CmsResource resUri;
                 if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
                     CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
@@ -324,23 +313,29 @@ public class CmsJspTagContainer extends TagSupport {
                     resUri.getStructureId(),
                     cms.readResource(elementFormatter).getStructureId(),
                     null); // when used as template element there are no properties
-
-                // do not write element data for the editor
-
-                CmsJspTagInclude.includeTagAction(
-                    pageContext,
-                    elementFormatter,
-                    null,
-                    false,
-                    null,
-                    Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)element),
-                    req,
-                    res);
+                allElems.add(0, element);
             }
         }
 
+        if (!isOnline) {
+            // add container data for the editor
+            try {
+                pageContext.getOut().print(
+                    getCntDataTag(new CmsContainerBean(containerName, containerType, maxElements, allElems)));
+            } catch (JSONException e) {
+                // should never happen
+                throw new JspException(e);
+            }
+        }
+
+        // get the actual number of elements to render
+        int renderElems = allElems.size();
+        if ((maxElements > 0) && (renderElems > maxElements)) {
+            renderElems = maxElements;
+        }
+
         // iterate the elements
-        for (CmsContainerElementBean element : container.getElements()) {
+        for (CmsContainerElementBean element : allElems) {
             if (renderElems < 1) {
                 break;
             }
@@ -365,9 +360,6 @@ public class CmsJspTagContainer extends TagSupport {
                     CmsResource subelementRes = cms.readResource(subelement.getElementId());
                     String subelementUri = cms.getSitePath(subelementRes);
 
-                    //String subelementFormatter = cms.getSitePath(subelement.getFormatter());
-                    //                    String subelementFormatter = OpenCms.getADEManager().getXmlContentFormatters(cms, subelementRes).get(
-                    //                        containerType);
                     String subelementFormatter = OpenCms.getResourceManager().getResourceType(subelementRes).getFormatterForContainerType(
                         cms,
                         subelementRes,
