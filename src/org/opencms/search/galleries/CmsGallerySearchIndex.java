@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2010/01/14 15:30:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.search.galleries;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -41,12 +42,15 @@ import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.Messages;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
@@ -57,7 +61,7 @@ import org.apache.lucene.util.Version;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -125,9 +129,13 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             filter = appendPathFilter(searchCms, filter, params.getGalleries());
             // append category filter
             filter = appendCategoryFilter(searchCms, filter, params.getCategories());
+            // append container type filter
+            filter = appendContainerTypeFilter(searchCms, filter, params.getContainerTypes());
             // append resource type filter
             filter = appendResourceTypeFilter(searchCms, filter, params.getResourceTypes());
-            // append date last modified filter
+            // append locale filter
+            filter = appendLocaleFilter(searchCms, filter, params.getLocale());
+            // append date last modified filter            
             filter = appendDateLastModifiedFilter(
                 filter,
                 params.getDateLastModifiedRange().getStartTime(),
@@ -164,6 +172,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             }
 
             // perform the search operation          
+            getSearcher().setDefaultFieldSortScoring(true, true);
             hits = getSearcher().search(query, filter, getMaxHits(), params.getSort());
 
             if (hits != null) {
@@ -236,5 +245,73 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         }
 
         return searchResults;
+    }
+
+    /**
+     * Appends a container type filter to the given filter clause that matches all given container types.<p>
+     * 
+     * In case the provided List is null or empty, the original filter is left unchanged.<p>
+     * 
+     * The original filter parameter is extended and also provided as return value.<p> 
+     * 
+     * @param cms the current OpenCms search context
+     * @param filter the filter to extend
+     * @param containers the containers that will compose the filter
+     * 
+     * @return the extended filter clause
+     */
+    protected BooleanFilter appendContainerTypeFilter(CmsObject cms, BooleanFilter filter, List<String> containers) {
+
+        if ((containers != null) && (containers.size() > 0)) {
+            // add query categories (if required)
+            filter.add(new FilterClause(getMultiTermQueryFilter(
+                CmsGallerySearchFieldMapping.FIELD_CONTAINER_TYPES,
+                containers), BooleanClause.Occur.MUST));
+        }
+
+        return filter;
+    }
+
+    /**
+     * Appends the locale filter to the given filter clause that matches the given locale.<p>
+     * 
+     * In case the provided List is null or empty, the original filter is left unchanged.<p>
+     * 
+     * The original filter parameter is extended and also provided as return value.<p> 
+     * 
+     * @param cms the current OpenCms search context
+     * @param filter the filter to extend
+     * @param locale the locale that will compose the filter
+     * 
+     * @return the extended filter clause
+     */
+    protected BooleanFilter appendLocaleFilter(CmsObject cms, BooleanFilter filter, String locale) {
+
+        if (locale != null) {
+            // add query categories (if required)
+            filter.add(new FilterClause(
+                getTermQueryFilter(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALE, locale),
+                BooleanClause.Occur.MUST));
+        }
+
+        return filter;
+    }
+
+    /**
+     * Checks if the provided resource should be excluded from this search index.<p> 
+     * 
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource to index
+     * 
+     * @return true if the resource should be excluded, false if it should be included in this index
+     */
+    @Override
+    protected boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
+
+        if (resource.isFolder() || resource.isTemporaryFile()) {
+            // don't index  folders or temporary files for galleries, but pretty much everything else
+            return true;
+        }
+        return false;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/18 16:32:10 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 7.6
  */
@@ -852,7 +852,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         queryData.put(JsonKeys.CATEGORIES.getName(), new JSONArray());
         queryData.put(JsonKeys.MATCHESPERPAGE.getName(), MATCHES_PER_PAGE);
         queryData.put(JsonKeys.QUERY.getName(), "");
-        queryData.put(JsonKeys.SORTORDER.getName(), CmsGallerySearch.CmsGallerySortParam.DEFAULT.getName());
+        queryData.put(JsonKeys.SORTORDER.getName(), CmsGallerySearch.CmsGallerySortParam.DEFAULT.toString());
         int currentPage = 1;
         boolean found = false;
         queryData.put(JsonKeys.PAGE.getName(), currentPage);

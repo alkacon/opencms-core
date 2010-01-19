@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMappingType.java,v $
- * Date   : $Date: 2009/09/07 12:41:54 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,14 +42,20 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0 
  */
 public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
 
+    /** The "dynamic" mapping type, this is required if a special class is used to process the field mapping value. */
+    public static final CmsSearchFieldMappingType ATTRIBUTE = new CmsSearchFieldMappingType(5);
+
     /** The "content" mapping type, maps the content of the resource (no parameters required). */
     public static final CmsSearchFieldMappingType CONTENT = new CmsSearchFieldMappingType(0);
+
+    /** The "dynamic" mapping type, this is required if a special class is used to process the field mapping value. */
+    public static final CmsSearchFieldMappingType DYNAMIC = new CmsSearchFieldMappingType(4);
 
     /** The "item" mapping type, maps the selected content item of the content. */
     public static final CmsSearchFieldMappingType ITEM = new CmsSearchFieldMappingType(3);
@@ -60,23 +66,23 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
     /** The "property-search" mapping type, maps the selected property value of the resource with search upwards. */
     public static final CmsSearchFieldMappingType PROPERTY_SEARCH = new CmsSearchFieldMappingType(2);
 
-    /** The "dynamic" mapping type, this is required if a special class is used to process the field mapping value. */
-    public static final CmsSearchFieldMappingType DYNAMIC = new CmsSearchFieldMappingType(4);
-
     /** ID required for safe serialization. */
-    private static final long serialVersionUID = 7452814764681519516L;
+    private static final long serialVersionUID = 1959271063305411797L;
+
+    /** String constant for the "attribute" type. */
+    private static final String STR_ATTRIBUTE = "attribute";
 
     /** String constant for the "content" type. */
     private static final String STR_CONTENT = "content";
+
+    /** String constant for the "dynamic" type. */
+    private static final String STR_DYNAMIC = "dynamic";
 
     /** String constant for the "item" type. */
     private static final String STR_ITEM = "item";
 
     /** String constant for the "property" type. */
     private static final String STR_PROPERTY = "property";
-
-    /** String constant for the "dynamic" type. */
-    private static final String STR_DYNAMIC = "dynamic";
 
     /** String constant for the "property-search" type. */
     private static final String STR_PROPERTY_SEARCH = "property-search";
@@ -115,6 +121,8 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
             return ITEM;
         } else if (STR_DYNAMIC.equals(value)) {
             return DYNAMIC;
+        } else if (STR_ATTRIBUTE.equals(value)) {
+            return ATTRIBUTE;
         }
         return null;
     }
@@ -134,6 +142,8 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
                 return STR_ITEM;
             case 4:
                 return STR_DYNAMIC;
+            case 5:
+                return STR_ATTRIBUTE;
             case 0:
             default:
                 return STR_CONTENT;

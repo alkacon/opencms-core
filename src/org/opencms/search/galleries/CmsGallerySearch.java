@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearch.java,v $
- * Date   : $Date: 2010/01/14 15:30:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,109 +46,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsGallerySearch {
-
-    /** Sort parameter constants. */
-    public enum CmsGallerySortParam {
-
-        /** Sort by date created ascending. */
-        DATE_CREATED_ASC("dateCreated.asc"),
-
-        /** Sort by date created descending. */
-        DATE_CREATED_DESC("dateCreated.desc"),
-
-        /** Sort by date modified ascending. */
-        DATE_LASTMODIFIED_ASC("dateLastModified.asc"),
-
-        /** Sort by date modified descending. */
-        DATE_LASTMODIFIED_DESC("dateLastModified.desc"),
-
-        /** Sort by VFS root path ascending. */
-        PATH_ASC("path.asc"),
-
-        /** Sort by VFS root path descending. */
-        PATH_DESC("path.desc"),
-
-        /** Sort by score ascending. */
-        SCORE_ASC("score.asc"),
-
-        /** Sort by score descending. */
-        SCORE_DESC("score.desc"),
-
-        /** Sort size ascending. */
-        SIZE_ASC("size.asc"),
-
-        /** Sort size descending. */
-        SIZE_DESC("size.desc"),
-
-        /** Sort by title ascending. */
-        TITLE_ASC("title.asc"),
-
-        /** Sort by title ascending. */
-        TITLE_DESC("title.desc"),
-
-        /** Sort by type ascending. */
-        TYPE_ASC("type.asc"),
-
-        /** Sort by type descending. */
-        TYPE_DESC("type.desc"),
-
-        /** Sort created by ascending. */
-        X_CREATEDBY_ASC("createdby.asc"),
-
-        /** Sort created by descending. */
-        X_CREATEDBY_DESC("createdby.desc"),
-
-        /** Sort date expired ascending. */
-        X_DATE_EXPIRED_ASC("dateExpired.asc"),
-
-        /** Sort date expired descending. */
-        X_DATE_EXPIRED_DESC("dateExpired.desc"),
-
-        /** Sort date released ascending. */
-        X_DATE_RELEASED_ASC("dateReleased.asc"),
-
-        /** Sort date released descending. */
-        X_DATE_RELEASED_DESC("dateReleased.desc"),
-
-        /** Sort modified by ascending. */
-        X_MODIFIEDBY_ASC("modifiedby.asc"),
-
-        /** Sort modified by descending. */
-        X_MODIFIEDBY_DESC("modifiedby.desc"),
-
-        /** Sort state ascending. */
-        X_STATE_ASC("state.asc"),
-
-        /** Sort state descending. */
-        X_STATE_DESC("state.desc");
-
-        /** The default sort parameter. */
-        public static final CmsGallerySortParam DEFAULT = TITLE_DESC;
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private CmsGallerySortParam(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearch.class);

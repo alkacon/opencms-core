@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2009/09/09 14:26:35 $
- * Version: $Revision: 1.50.2.2 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.50.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -809,12 +809,12 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the length of the resource.<p>
+     * Returns the content length of this resource.<p>
      *
      * If the resource is a file, then this is the byte size of the file content.
      * If the resource is a folder, then the size is always -1.<p>
      *
-     * @return the length of the content
+     * @return the content length of the content
      */
     public int getLength() {
 
@@ -823,9 +823,9 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the name of this resource without parent folders, for example <code>index.html</code>.<p>
+     * Returns the file name of this resource without parent folders, for example <code>index.html</code>.<p>
      *
-     * @return the name of this resource without parent folders
+     * @return the file name of this resource without parent folders
      */
     public String getName() {
 
@@ -838,9 +838,9 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the id of the project where the resource has been last modified.<p>
+     * Returns the id of the {@link CmsProject} where this resource has been last modified
      *
-     * @return the id of the project where the resource has been last modified, or <code>null</code>
+     * @return the id of the {@link CmsProject} where this resource has been last modified, or <code>null</code>
      */
     public CmsUUID getProjectLastModified() {
 
@@ -848,9 +848,9 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the id of the resource database entry of this resource.<p>
+     * Returns the id of the database content record of this resource.<p>
      *
-     * @return the id of the resource database entry
+     * @return the id of the database content record of this resource
      */
     public CmsUUID getResourceId() {
 
@@ -858,16 +858,14 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the name of a resource with it's full path from the root folder 
-     * including the current site root, 
+     * Returns the name of this resource with it's full path from the top level root folder, 
      * for example <code>/sites/default/myfolder/index.html</code>.<p>
      *
      * In a presentation level application usually the current site root must be
      * cut of from the root path. Use {@link CmsObject#getSitePath(CmsResource)} 
      * to get the "absolute" path of a resource in the current site.<p>
      *
-     * @return the name of a resource with it's full path from the root folder 
-     *      including the current site root
+     * @return the name of this resource with it's full path from the top level root folder
      * 
      * @see CmsObject#getSitePath(CmsResource)
      * @see CmsRequestContext#getSitePath(CmsResource)
@@ -892,7 +890,7 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the change state of this resource.<p>
+     * Returns the state of this resource.<p>
      *
      * This may be {@link CmsResource#STATE_UNCHANGED}, 
      * {@link CmsResource#STATE_CHANGED}, {@link CmsResource#STATE_NEW} 
@@ -906,9 +904,9 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the id of the structure record of this resource.<p>
+     * Returns the id of the database structure record of this resource.<p>
      * 
-     * @return the id of the structure record of this resource
+     * @return the id of the database structure record of this resource
      */
     public CmsUUID getStructureId() {
 
@@ -936,9 +934,9 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the user id of the {@link CmsUser} who made the last change on this resource.<p>
+     * Returns the id of the {@link CmsUser} who made the last modification on this resource.<p>
      *
-     * @return the user id of the {@link CmsUser} who made the last change<p>
+     * @return the id of the {@link CmsUser} who made the last modification on this resource
      */
     public CmsUUID getUserLastModified() {
 
@@ -946,9 +944,9 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the version number of this resource.<p>
+     * Returns the current version number of this resource.<p>
      *
-     * @return the version number of this resource
+     * @return the current version number of this resource
      */
     public int getVersion() {
 

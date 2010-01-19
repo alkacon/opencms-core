@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2010/01/14 15:30:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.search;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -96,7 +97,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1753,6 +1754,48 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             backupPath = null;
         }
         return backupPath;
+    }
+
+    /**
+     * Checks if the provided resource should be excluded from this search index.<p> 
+     * 
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource to index
+     * 
+     * @return true if the resource should be excluded, false if it should be included in this index
+     */
+    protected boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
+
+        // check if this resource should be excluded from the index, if so skip it
+        boolean excludeFromIndex = false;
+
+        if (resource.isInternal()
+            || resource.isFolder()
+            || resource.isTemporaryFile()
+            || (resource.getDateExpired() <= System.currentTimeMillis())) {
+            // don't index internal resources, folders or temporary files or resources with expire date in the past
+            return true;
+        }
+
+        try {
+            // do property lookup with folder search
+            excludeFromIndex = Boolean.valueOf(
+                cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue()).booleanValue();
+        } catch (CmsException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, resource.getRootPath()));
+            }
+        }
+        if (!excludeFromIndex) {
+            // check if any resource default locale has a match with the index locale, if not skip resource
+            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+            Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(
+                Collections.singletonList(getLocale()),
+                locales);
+            excludeFromIndex = (match == null);
+        }
+
+        return excludeFromIndex;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2009/09/30 08:43:36 $
- * Version: $Revision: 1.27.2.1 $
+ * Date   : $Date: 2010/01/19 13:54:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.27.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -583,8 +583,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
                 }
                 if (field.getAnalyzer() != null) {
                     String className = field.getAnalyzer().getClass().getName();
-                    if (className.startsWith(CmsSearchField.LUCENE_ANALYZER)) {
-                        className = className.substring(CmsSearchField.LUCENE_ANALYZER.length());
+                    if (className.startsWith(CmsSearchManager.LUCENE_ANALYZER)) {
+                        className = className.substring(CmsSearchManager.LUCENE_ANALYZER.length());
                     }
                     fieldElement.addAttribute(A_ANALYZER, className);
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2010/01/14 15:30:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,18 +32,12 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.CmsIndexNoContentException;
 import org.opencms.search.documents.I_CmsDocumentFactory;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
@@ -56,7 +50,7 @@ import org.apache.lucene.document.Document;
  *  
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,37 +210,21 @@ public class CmsIndexingThread extends Thread {
         }
 
         // check if this resource should be excluded from the index, if so skip it
-        boolean excludeFromIndex = false;
-        try {
-            // do property lookup with folder search
-            excludeFromIndex = Boolean.valueOf(
-                cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue()).booleanValue();
-        } catch (CmsException e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, res.getRootPath()));
-            }
-        }
+        boolean excludeFromIndex = index.excludeFromIndex(cms, res);
 
         if (!excludeFromIndex) {
-            // check if any resource default locale has a match with the index locale, if not skip resource
-            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, res);
-            Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(
-                Collections.singletonList(index.getLocale()),
-                locales);
-            if (match != null) {
-                // a locale match was found
-                I_CmsDocumentFactory documentFactory = index.getDocumentFactory(res);
-                if (documentFactory != null) {
-                    // some resources e.g. JSP do not have a default document factory
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_INDEXING_WITH_FACTORY_2,
-                            res.getRootPath(),
-                            documentFactory.getName()));
-                    }
-                    // create the document
-                    result = documentFactory.createDocument(cms, res, index);
+            // resource is to be included in the index
+            I_CmsDocumentFactory documentFactory = index.getDocumentFactory(res);
+            if (documentFactory != null) {
+                // some resources e.g. JSP do not have a default document factory
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_INDEXING_WITH_FACTORY_2,
+                        res.getRootPath(),
+                        documentFactory.getName()));
                 }
+                // create the document
+                result = documentFactory.createDocument(cms, res, index);
             }
         }
         if (result == null) {

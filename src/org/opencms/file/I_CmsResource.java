@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/I_CmsResource.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,71 @@ import java.util.Comparator;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0 
  */
 public interface I_CmsResource {
+
+    /**
+     * Enumeration for all attributes of a resource.<p>
+     */
+    public enum CmsResourceAttribute {
+
+        /** The date of the last modification of the content of a resource. */
+        dateContent,
+
+        /** The date of the creation of a resource. */
+        dateCreated,
+
+        /** The expiration date a resource. */
+        dateExpired,
+
+        /** The date of the last modification of a resource. */
+        dateLastModified,
+
+        /** The release date of a resource. */
+        dateReleased,
+
+        /** The flags of a resource. */
+        flags,
+
+        /** The content length of a resource. */
+        length,
+
+        /** The file name of a resource without parent folders. */
+        name,
+
+        /** The id of the {@link CmsProject} where a resource has been last modified. */
+        projectLastModified,
+
+        /** The id of the database content record of a resource. */
+        resourceId,
+
+        /** The name of a resource with it's full path from the top level root folder. */
+        rootPath,
+
+        /** The number of siblings of a resource, also counting the resource. */
+        siblingCount,
+
+        /** The state of a resource. */
+        state,
+
+        /** The id of the database structure record of a resource. */
+        structureId,
+
+        /** The resource type id for a resource. */
+        typeId,
+
+        /** The id of the {@link CmsUser} who created a resource. */
+        userCreated,
+
+        /** The id of the user who made the last modification on a resource. */
+        userLastModified,
+
+        /** The current version number of a resource. */
+        version
+    }
 
     /**
      * A comparator for the date last modified of two resources.<p>
@@ -203,53 +263,51 @@ public interface I_CmsResource {
     int getFlags();
 
     /**
-     * Returns the length of the resource.<p>
+     * Returns the content length of this resource.<p>
      *
      * If the resource is a file, then this is the byte size of the file content.
      * If the resource is a folder, then the size is always -1.<p>
      *
-     * @return the length of the content
+     * @return the content length of this resource
      */
     int getLength();
 
     /**
-     * Returns the name of this resource, e.g. <code>index.html</code>.<p>
+     * Returns the file name of this resource without parent folders, for example <code>index.html</code>.<p>
      *
-     * @return the name of this resource
+     * @return the file name of this resource without parent folders
      */
     String getName();
 
     /**
-     * Returns the id of the project where the resource has been last modified.<p>
+     * Returns the id of the {@link CmsProject} where this resource has been last modified.<p>
      *
-     * @return the id of the project where the resource has been last modified, or <code>null</code>
+     * @return the id of the {@link CmsProject} where this resource has been last modified, or <code>null</code>
      */
     CmsUUID getProjectLastModified();
 
     /**
-     * Returns the id of the resource database entry of this resource.<p>
+     * Returns the id of the database content record of this resource.<p>
      *
-     * @return the id of the resource database entry
+     * @return the id of the database content record of this resource
      */
     CmsUUID getResourceId();
 
     /**
-     * Returns the name of a resource with it's full path from the root folder 
-     * including the current site root, 
+     * Returns the name of this resource with it's full path from the top level root folder, 
      * for example <code>/sites/default/myfolder/index.html</code>.<p>
      *
-     * @return the name of a resource with it's full path from the root folder 
-     *      including the current site root
+     * @return name of this resource with it's full path from the top level root folder
      */
     String getRootPath();
 
     /**
-     * Returns the number of siblings of the resource, also counting this resource.<p>
+     * Returns the number of siblings of this resource, also counting this resource.<p>
      * 
      * If a resource has no sibling, the total sibling count for this resource is <code>1</code>, 
      * if a resource has <code>n</code> siblings, the sibling count is <code>n + 1</code>.<p> 
      * 
-     * @return the number of siblings
+     * @return the number of siblings of this resource, also counting this resource
      */
     int getSiblingCount();
 
@@ -261,9 +319,9 @@ public interface I_CmsResource {
     CmsResourceState getState();
 
     /**
-     * Returns the id of the structure record of this resource.<p>
+     * Returns the id of the database structure record of this resource.<p>
      * 
-     * @return the id of the structure record of this resource
+     * @return the id of the database structure record of this resource
      */
     CmsUUID getStructureId();
 
@@ -275,18 +333,25 @@ public interface I_CmsResource {
     int getTypeId();
 
     /**
-     * Returns the user id of the user who created this resource.<p>
+     * Returns the id of the {@link CmsUser} who created this resource.<p>
      * 
-     * @return the user id
+     * @return the id of the {@link CmsUser} who created this resource
      */
     CmsUUID getUserCreated();
 
     /**
-     * Returns the user id of the user who made the last change on this resource.<p>
+     * Returns the id of the {@link CmsUser} who made the last modification on this resource.<p>
      *
-     * @return the user id of the user who made the last change<p>
+     * @return the id of the {@link CmsUser} who made the last modification on this resource<p>
      */
     CmsUUID getUserLastModified();
+
+    /**
+     * Returns the current version number of this resource.<p>
+     *
+     * @return the current version number of this resource
+     */
+    int getVersion();
 
     /** 
      * Returns <code>true</code> if this resource is expired at the given time according to the 

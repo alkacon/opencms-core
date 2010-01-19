@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMapping.java,v $
- * Date   : $Date: 2009/09/07 12:41:55 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,11 @@
 package org.opencms.search.fields;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
+import org.opencms.file.I_CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.search.Messages;
@@ -42,16 +45,21 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
+import org.apache.lucene.document.DateTools;
+
 /**
  * Describes a mapping of a piece of content from an OpenCms VFS resource to a field of a search index.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0 
  */
 public class CmsSearchFieldMapping {
+
+    /** Default for expiration date since Long.MAX_VALUE is to big. */
+    protected static final String DATE_EXPIRED_DEFAULT_STR = "21000101";
 
     /** The configured default value. */
     private String m_defaultValue;
@@ -168,8 +176,104 @@ public class CmsSearchFieldMapping {
                     content = extractionResult.getContentItems().get(getParam());
                 }
                 break;
+            case 5: // attribute
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
+                    I_CmsResource.CmsResourceAttribute attribute = null;
+                    try {
+                        attribute = I_CmsResource.CmsResourceAttribute.valueOf(getParam());
+                    } catch (Exception e) {
+                        // invalid attribute name specified, attribute will be null
+                    }
+                    if (attribute != null) {
+                        // map all attributes for a resource
+                        switch (attribute) {
+                            case dateContent:
+                                content = DateTools.timeToString(res.getDateContent(), DateTools.Resolution.MILLISECOND);
+                                break;
+                            case dateCreated:
+                                content = DateTools.timeToString(res.getDateCreated(), DateTools.Resolution.MILLISECOND);
+                                break;
+                            case dateExpired:
+                                long expirationDate = res.getDateExpired();
+                                if (expirationDate == CmsResource.DATE_EXPIRED_DEFAULT) {
+                                    // default of Long.MAX_VALUE is to big, use January 1, 2100 instead
+                                    content = DATE_EXPIRED_DEFAULT_STR;
+                                } else {
+                                    content = DateTools.timeToString(expirationDate, DateTools.Resolution.MILLISECOND);
+                                }
+                                break;
+                            case dateLastModified:
+                                content = DateTools.timeToString(
+                                    res.getDateLastModified(),
+                                    DateTools.Resolution.MILLISECOND);
+                                break;
+                            case dateReleased:
+                                content = DateTools.timeToString(
+                                    res.getDateReleased(),
+                                    DateTools.Resolution.MILLISECOND);
+                                break;
+                            case flags:
+                                content = String.valueOf(res.getFlags());
+                                break;
+                            case length:
+                                content = String.valueOf(res.getLength());
+                                break;
+                            case name:
+                                content = res.getName();
+                                break;
+                            case projectLastModified:
+                                try {
+                                    CmsProject project = cms.readProject(res.getProjectLastModified());
+                                    content = project.getName();
+                                } catch (Exception e) {
+                                    // NOOP, content is already null
+                                }
+                                break;
+                            case resourceId:
+                                content = res.getResourceId().toString();
+                                break;
+                            case rootPath:
+                                content = res.getRootPath();
+                                break;
+                            case siblingCount:
+                                content = String.valueOf(res.getSiblingCount());
+                                break;
+                            case state:
+                                content = res.getState().toString();
+                                break;
+                            case structureId:
+                                content = res.getStructureId().toString();
+                                break;
+                            case typeId:
+                                content = String.valueOf(res.getTypeId());
+                                break;
+                            case userCreated:
+                                try {
+                                    CmsUser user = cms.readUser(res.getUserCreated());
+                                    content = user.getName();
+                                } catch (Exception e) {
+                                    // NOOP, content is already null
+                                }
+                                break;
+                            case userLastModified:
+                                try {
+                                    CmsUser user = cms.readUser(res.getUserLastModified());
+                                    content = user.getName();
+                                } catch (Exception e) {
+                                    // NOOP, content is already null
+                                }
+                                break;
+                            case version:
+                                content = String.valueOf(res.getVersion());
+                                break;
+                            default:
+                                // NOOP, content is already null
+                        }
+                    }
+                }
+                break;
             default:
-                // noop, content is already null
+                // NOOP, content is already null
         }
         if (content == null) {
             // in case the content is not available, use the default value for this mapping

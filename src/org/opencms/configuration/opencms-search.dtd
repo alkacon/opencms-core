@@ -242,7 +242,7 @@
 -->
 <!ELEMENT mapping (#PCDATA) >
 <!ATTLIST mapping 
-	type (content|property|property-search|item|dynamic) #REQUIRED
+	type (content|property|property-search|item|dynamic|attribute) #REQUIRED
 	default CDATA #IMPLIED
 	class CDATA #IMPLIED
 >

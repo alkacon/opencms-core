@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2010/01/14 15:30:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -404,6 +404,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** Scheduler parameter: Write the output of the update to the logfile. */
     public static final String JOB_PARAM_WRITELOG = "writeLog";
 
+    /** Prefix for Lucene default analyzers package (<code>org.apache.lucene.analysis.</code>). */
+    public static final String LUCENE_ANALYZER = "org.apache.lucene.analysis.";
+
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsSearchManager.class);
 
@@ -490,6 +493,70 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SEARCH_CONFIG_0));
         }
+    }
+
+    /**
+     * Returns an analyzer for the given class name.<p>
+     * 
+     * Since Lucene 3.0, many analyzers require a "version" parameter in the constructor and 
+     * can not be created by a simple <code>newInstance()</code> call.
+     * This method will create analyzers by name for the {@link Version#LUCENE_CURRENT} version.<p>
+     * 
+     * @param className the class name of the analyzer
+     * @param snowballStemmer the optional snowball stemmer parameter required for the snowball analyzer
+     * 
+     * @return the appropriate lucene analyzer
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public static Analyzer getAnalyzer(String className, String snowballStemmer) throws Exception {
+
+        Analyzer analyzer = null;
+        Class<?> analyzerClass;
+        try {
+            analyzerClass = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            // allow Lucene standard classes to be written in a short form
+            analyzerClass = Class.forName(LUCENE_ANALYZER + className);
+        }
+
+        // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
+        if (StandardAnalyzer.class.equals(analyzerClass)) {
+            // the Lucene standard analyzer is used
+            analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
+        } else if (CmsGallerySearchAnalyzer.class.equals(analyzerClass)) {
+            // OpenCms gallery multiple language analyzer
+            analyzer = new CmsGallerySearchAnalyzer(Version.LUCENE_CURRENT);
+        } else if ((snowballStemmer != null) && SnowballAnalyzer.class.equals(analyzerClass)) {
+            // the Snowball analyzer is used
+            analyzer = new SnowballAnalyzer(Version.LUCENE_CURRENT, snowballStemmer);
+        } else {
+            boolean hasEmpty = false;
+            boolean hasVersion = false;
+            // another analyzer is used, check if we find a suitable constructor 
+            Constructor<?>[] constructors = analyzerClass.getConstructors();
+            for (int i = 0; i < constructors.length; i++) {
+                Constructor<?> c = constructors[i];
+                Class<?>[] parameters = c.getParameterTypes();
+                if (parameters.length == 0) {
+                    // an empty constructor has been found
+                    hasEmpty = true;
+                }
+                if ((parameters.length == 1) && parameters[0].equals(Version.class)) {
+                    // a constructor with a Lucene version parameter has been found
+                    hasVersion = true;
+                }
+                if (hasVersion) {
+                    // a constructor with a Lucene version parameter has been found
+                    analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class}).newInstance(
+                        Version.LUCENE_CURRENT);
+                } else if (hasEmpty) {
+                    // an empty constructor has been found
+                    analyzer = (Analyzer)analyzerClass.newInstance();
+                }
+            }
+        }
+        return analyzer;
     }
 
     /**
@@ -662,6 +729,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @param locale the locale to get the analyzer for
      * @return the appropriate lucene analyzer
+     * 
      * @throws CmsSearchException if something goes wrong
      */
     public Analyzer getAnalyzer(Locale locale) throws CmsSearchException {
@@ -675,46 +743,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         try {
-
-            className = analyzerConf.getClassName();
-            Class<?> analyzerClass = Class.forName(className);
-
-            // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
-            if (StandardAnalyzer.class.equals(analyzerClass)) {
-                // the Lucene standard analyzer is used
-                analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
-            } else if (CmsGallerySearchAnalyzer.class.equals(analyzerClass)) {
-                // OpenCms gallery multiple language analyzer
-                analyzer = new CmsGallerySearchAnalyzer(Version.LUCENE_CURRENT);
-            } else if (SnowballAnalyzer.class.equals(analyzerClass)) {
-                // the Snowball analyzer is used
-                analyzer = new SnowballAnalyzer(Version.LUCENE_CURRENT, analyzerConf.getStemmerAlgorithm());
-            } else {
-                boolean hasEmpty = false;
-                boolean hasVersion = false;
-                // another analyzer is used, check if we find a suitable constructor 
-                Constructor<?>[] constructors = analyzerClass.getConstructors();
-                for (int i = 0; i < constructors.length; i++) {
-                    Constructor<?> c = constructors[i];
-                    Class<?>[] parameters = c.getParameterTypes();
-                    if (parameters.length == 0) {
-                        // an empty constructor has been found
-                        hasEmpty = true;
-                    }
-                    if ((parameters.length == 1) && parameters[0].equals(Version.class)) {
-                        // a constructor with a Lucene version parameter has been found
-                        hasVersion = true;
-                    }
-                    if (hasVersion) {
-                        // a constructor with a Lucene version parameter has been found
-                        analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class}).newInstance(
-                            Version.LUCENE_CURRENT);
-                    } else if (hasEmpty) {
-                        // an empty constructor has been found
-                        analyzer = (Analyzer)analyzerClass.newInstance();
-                    }
-                }
-            }
+            analyzer = getAnalyzer(analyzerConf.getClassName(), analyzerConf.getStemmerAlgorithm());
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(Messages.ERR_LOAD_ANALYZER_1, className), e);
         }

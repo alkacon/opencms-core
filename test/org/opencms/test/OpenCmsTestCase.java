@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2010/01/14 15:30:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/19 13:54:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,6 +68,7 @@ import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -82,6 +83,7 @@ import java.util.Vector;
 import junit.framework.TestCase;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -99,7 +101,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -614,12 +616,14 @@ public class OpenCmsTestCase extends TestCase {
         // remove the database
         removeDatabase();
 
-        // copy the configuration files to re-create the original configuration
-        String configFolder = getTestDataPath("WEB-INF" + File.separator + "config." + m_dbProduct + File.separator);
-        copyConfiguration(configFolder);
-
-        // remove potentially created "classes, "lib", "backup" etc. folder
         String path;
+
+        // remove the copied configuration files
+        path = getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG);
+        if (path != null) {
+            CmsFileUtil.purgeDirectory(new File(path));
+        }
+        // remove potentially created "classes, "lib", "backup" etc. folder
         path = getTestDataPath("WEB-INF/classes/");
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
@@ -692,6 +696,25 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
+     * @param specialConfigFolder the folder that contains the special configuration files for this setup
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     */
+    public static CmsObject setupOpenCms(String importFolder, String targetFolder, String specialConfigFolder) {
+
+        return setupOpenCms(
+            importFolder,
+            targetFolder,
+            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
+            getTestDataPath(specialConfigFolder),
+            true);
+    }
+
+    /**
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * creating the usual projects, and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
      * @param publish flag to signalize if the publish script should be called
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
@@ -713,6 +736,29 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder, boolean publish) {
 
+        return setupOpenCms(importFolder, targetFolder, configFolder, null, publish);
+    }
+
+    /**
+     * Sets up a complete OpenCms instance, creating the usual projects,
+     * and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @param configFolder the folder to copy the standard configuration files from
+     * @param specialConfigFolder the folder that contains the special configuration fiiles for this setup
+
+     * @param publish publish only if set
+     * 
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     */
+    public static CmsObject setupOpenCms(
+        String importFolder,
+        String targetFolder,
+        String configFolder,
+        String specialConfigFolder,
+        boolean publish) {
+
         // intialize a new resource storage
         m_resourceStorages = new HashMap();
 
@@ -731,8 +777,22 @@ public class OpenCmsTestCase extends TestCase {
             }
         }
 
-        // copy the configuration files
+        // create the OpenCms "config" folder
+        File configFile = new File(m_testDataPath.get(0) + "WEB-INF" + File.separator + CmsSystemInfo.FOLDER_CONFIG);
+        if (!configFile.exists()) {
+            configFile.mkdir();
+        }
+
+        // copy the configuration files from the base folder
+        copyConfiguration(getTestDataPath("WEB-INF/base/"));
+
+        // copy the special configuration files from the database folder
         copyConfiguration(configFolder);
+
+        // copy the configuration files from the special individual folder if required
+        if (specialConfigFolder != null) {
+            copyConfiguration(specialConfigFolder);
+        }
 
         // create a new database first
         setupDatabase();
@@ -920,9 +980,9 @@ public class OpenCmsTestCase extends TestCase {
             File file = new File(path + filename);
             if (file.exists()) {
                 if (file.isDirectory()) {
-                    return file.getAbsolutePath() + File.separator;
+                    return CmsFileUtil.normalizePath(file.getAbsolutePath() + File.separator);
                 } else {
-                    return file.getAbsolutePath();
+                    return CmsFileUtil.normalizePath(file.getAbsolutePath());
                 }
             }
         }
@@ -1144,8 +1204,11 @@ public class OpenCmsTestCase extends TestCase {
         File configDir = new File(getTestDataPath("WEB-INF" + File.separatorChar + CmsSystemInfo.FOLDER_CONFIG));
         File configOriDir = new File(newConfig);
 
+        FileFilter filter = FileFilterUtils.orFileFilter(
+            FileFilterUtils.suffixFileFilter(".xml"),
+            FileFilterUtils.suffixFileFilter(".properties"));
         if (configOriDir.exists()) {
-            File[] oriFiles = configOriDir.listFiles();
+            File[] oriFiles = configOriDir.listFiles(filter);
             boolean initConfigDates = false;
             if (m_dateConfigFiles == null) {
                 m_dateConfigFiles = new long[oriFiles.length];
