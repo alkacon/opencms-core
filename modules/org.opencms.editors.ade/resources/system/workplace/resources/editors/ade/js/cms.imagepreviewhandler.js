@@ -645,6 +645,7 @@
          $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
                   
          //$('#formatselect').get(0).disabled = true;
+         $('div[alt="' + keys['imageFormat'] + '"]').find('.cms-selectbox').selectBox('setEnabled', false);
          $('button[name="' + keys['locksizes'] + '"]').hide();
          $('button[name="' + keys['resetsize'] + '"]').hide();
          $('button[name="' + keys['cropRemove'] + '"]').hide();
@@ -654,7 +655,8 @@
             $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
             $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
                         
-            //$('#formatselect').get(0).disabled = true;                
+            //$('#formatselect').get(0).disabled = true;
+            $('div[alt="' + keys['imageFormat'] + '"]').find('.cms-selectbox').selectBox('setEnabled', false);                            
             $('button[name="' + keys['locksizes'] + '"]').hide();
             $('button[name="' + keys['resetsize'] + '"]').hide();
             $('button[name="' + keys['cropRemove'] + '"]').show();
@@ -670,6 +672,7 @@
                $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');               
             }
             //$('#formatselect').get(0).disabled = false;
+            $('div[alt="' + keys['imageFormat'] + '"]').find('.cms-selectbox').selectBox('setEnabled', true);
             $('button[name="' + keys['locksizes'] + '"]').show();
             $('button[name="' + keys['resetsize'] + '"]').show();
             $('button[name="' + keys['cropRemove'] + '"]').hide();

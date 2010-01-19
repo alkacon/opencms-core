@@ -14,7 +14,7 @@ String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "edit
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-1.3.2.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-1.4.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-ui-1.8a1.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>lib/json2.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>lib/jquery.pagination.js"></script>
@@ -76,7 +76,7 @@ div.cms-selectbox{
 </style>
 <![endif]-->
 	</head>
-	<body style="margin:1px; padding:0px;">
+	<body style="margin:1px; padding:0px;font-size: 12px;">
 	    <div id="cms-gallery-main"> 
 		    <div id="cms-gallery-tabs">
                 <ul>

@@ -29,7 +29,8 @@
 	}
     
     #cms-gallery-tabs {
-		height:487px;
+		/*height:487px;*/
+        height:486px;
     }
     
     #cms-gallery-tabs .ui-tabs-nav, #menuTabs .ui-tabs-nav{
@@ -295,7 +296,7 @@
     }
     
     div.cms-format-line {
-        margin: 0px 0px 6px 0px;
+        margin: 0px 0px 3px 0px;
     }        
     
     /*div.cms-editable-field input,*/
