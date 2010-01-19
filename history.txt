@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/01/19 10:39:35 $
- * Version: $Revision: 1.1174 $
+ * Date   : $Date: 2010/01/19 13:54:59 $
+ * Version: $Revision: 1.1175 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,15 +19,13 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.5.2 - January xx, 2010
-- Assign roles also to indirect group users when updating OpenCms from version 6 to version 7
-- JSP repository is purged automatically after module import
+OpenCms 7.5.2 - January 20, 2010
 - Added additional MIME types
 - Updated EditArea syntax highlighting editor to version 0.8.2
 - Updated Apache Commons Pool to version 1.5.4
 * Fixed issue with cached CmsResource lists are not cleared after publishing a project
 * Fixed issue that if an error occured while changing the user password in the preferences, it was not possible to close the error message
-* Corrected Lucene search result score
+* Fixed incorrect Lucene search result score
 * Fixed list search filter caching problem in OpenCms Administration view
 * Fixed 'go up' button in Account management view
 * Fixed access to indirect group users
@@ -35,16 +33,18 @@ OpenCms 7.5.2 - January xx, 2010
 * Fixed not working resource type "xmlpage" in extended mode in WebDAV
 * Fixed issue with selected versions in the resource history
 * Fixed issue that error occured when changing field structure in XSD from simple data type to optional nested content
+* Fixed issue with wrong roles for indirect group users when updating OpenCms from version 6 to version 7
+* Fixed issue with JSP repository not being purged automatically after module import
 * Fixed issue #1542: Links to exported files containing anchors are not resolved correctly
 * Fixed issue #1782: Publish dialog in Project overview list hangs
 * Fixed issue #1787: Error when browsing the next result pages in the OpenCms backend search
-* Fixed issue #1791: Template Two Content external link check fails for two resources
+* Fixed issue #1791: Template Two content external link check fails for two resources
 * Fixed issue #1800: Still not released resources are indexed
 * Fixed issue #1803: Template Two Demo Article links with target="_blank"
-* Fixed issue #1802: CmsShell does not work in Linux with TomCat6
-* Fixed issue #1809: Left site tree view is shown duplicated when creating a new folder in any site
+* Fixed issue #1802: CmsShell does not work in Linux with Tomcat 6
 * Fixed issue #1807: CmsImportVersion7 contains a counter error in INFO log level
 * Fixed issue #1808: OpenCms.getLinkManager().getOnlineLink(CmsObject, link) does not work
+* Fixed issue #1809: Left site tree view is shown duplicated when creating a new folder in any site
 * Fixed issue #1815: Aborted publish job goes on before resources are finally initialized when OpenCms restarts
 * Fixed issue #1817: Fail to load Download/HTML/Link/Table Gallery from HTMLWidget on Websphere 6.1
 * Fixed issue #1819: FCKeditor does not work with newer Firefox versions

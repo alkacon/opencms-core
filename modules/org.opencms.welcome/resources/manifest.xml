@@ -17,8 +17,8 @@
 <p>Install this module as a simple demonstration for the template capabilities of OpenCms 7.5.</p>
 <p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there. 
 It will also remove the "default" template.</p>
-<p><i>(c) 2009 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.5.1</version>
+<p><i>(c) 2010 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>7.5.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -58,7 +58,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[notes_7.5.1.html]]></value>
+					<value><![CDATA[notes_7.5.2.html]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -158,7 +158,7 @@ It will also remove the "default" template.</p>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[21]]></value>
+					<value><![CDATA[30]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -186,7 +186,7 @@ It will also remove the "default" template.</p>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[20]]></value>
+					<value><![CDATA[29]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -214,7 +214,7 @@ It will also remove the "default" template.</p>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[19]]></value>
+					<value><![CDATA[28]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -242,7 +242,7 @@ It will also remove the "default" template.</p>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[18]]></value>
+					<value><![CDATA[27]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -270,7 +270,7 @@ It will also remove the "default" template.</p>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[9.0]]></value>
+					<value><![CDATA[26]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -298,7 +298,7 @@ It will also remove the "default" template.</p>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[8.0]]></value>
+					<value><![CDATA[25]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -326,7 +326,7 @@ It will also remove the "default" template.</p>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[7.0]]></value>
+					<value><![CDATA[24]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -354,7 +354,7 @@ It will also remove the "default" template.</p>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[6.0]]></value>
+					<value><![CDATA[23]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -363,6 +363,34 @@ It will also remove the "default" template.</p>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 7.5.1 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_7.5.2.html</source>
+			<destination>release/notes_7.5.2.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>0c35f2b8-01b3-11df-b2f2-0db05d68d8d5</uuidstructure>
+			<uuidresource>0c35f2b9-01b3-11df-b2f2-0db05d68d8d5</uuidresource>
+			<datelastmodified>Fri, 15 Jan 2010 09:22:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Jan 2010 08:50:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[22]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.5.2 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms 7.5.2 Release Notes]]></value>
 				</property>
 			</properties>
 			<relations/>
