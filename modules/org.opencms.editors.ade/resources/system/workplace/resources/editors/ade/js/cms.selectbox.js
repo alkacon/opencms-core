@@ -55,7 +55,6 @@
      * @param {Object} additional the additional value object
      */
 $.fn.selectBox=function(options, additional){
-		
 		var self=this;
         var opts;
         if (typeof options == 'string' && options.indexOf('_')!=0){
@@ -71,8 +70,7 @@ $.fn.selectBox=function(options, additional){
                 
 				var replacer=_generateReplacer(_getValues($(this)));
                 replacer.insertBefore(this);
-                $(this).data('replacer',replacer);
-			}).hide();
+            }).hide();
 			$(document.body).click(_close);
 		}
 		
@@ -80,30 +78,41 @@ $.fn.selectBox=function(options, additional){
             var $this=$(this);
             $this.toggleClass('cms-open');
             if ($this.hasClass('cms-open')) {
-                if (($.isFunction(opts.selectorPosition) && opts.selectorPosition() == 'top') || opts.selectorPosition == 'top'){
-                    var top = 21 * $this.data('valueCount');
-                    $this.find('div.cms-selector').removeClass('ui-corner-bottom').addClass('ui-corner-top').css('top', '-'+top+'px')
+                if (opts.appendTo){
+                    var selectbox=$this.data('selectbox');
+                    var offset=$this.offset();
+                    if (($.isFunction(opts.selectorPosition) && opts.selectorPosition() == 'top') || opts.selectorPosition == 'top'){
+                        offset.top-=21 * selectbox.valueCount;
+                        selectbox.selector.removeClass('ui-corner-bottom').addClass('ui-corner-top')
+                    }else{
+                        offset.top+=20;
+                    }
+                    selectbox.selector.offset(offset).css('display', 'block');
                 }
                 if ($.isFunction(opts.open)) {
                     opts.open(this);
                 }
+            }else{
+                _close();
             }
             return false;
         }
         
 		function _close(){
            $('div.cms-selectbox').removeClass('cms-open');
+           if (opts.appendTo) {
+               $('div.cms-selector').css('display', 'none');
+           }
         }
         
-		function _select(){
-            var valueOptions=$(this).closest('.cms-selector').find('.cms-select-option');
-            var index = valueOptions.index(this);
-            var replacer=$(this).closest('.cms-selectbox');
-            var value=$(this).attr('rel');
-            replacer.find('span.cms-current-value').text($(this).text()).attr('rel',value);
+		function _select($this, selectbox){
+            var valueOptions=selectbox.selector.find('.cms-select-option');
+            var index = valueOptions.index($this);
+            var value=$this.attr('rel');
+            selectbox.replacer.find('span.cms-current-value').html($this.html()).attr('rel',value);
             _close();
             if ($.isFunction(opts.select)){
-                opts.select(this, replacer, value, index);
+                opts.select($this.get(0), selectbox.replacer, value, index);
             }
             return false;
         }
@@ -116,42 +125,62 @@ $.fn.selectBox=function(options, additional){
             return result;
         }
         
-        function _getValue(replacer){
-            return replacer.find('span.cms-current-value').attr('rel');
+        function _getValue(selectbox){
+            return selectbox.replacer.find('span.cms-current-value').attr('rel');
         }
         
-        function _getIndex(replacer){
-            if (replacer && replacer.length) {
-                var valueOptions=$('.cms_selector .cms-select-option', replacer);
-                var currentValue=valueOptions.filter('.cms-select-option[rel="'+_getValue(replacer)+'"]');
+        function _getIndex(selectbox){
+            if (selectbox!=null) {
+                var valueOptions=$('.cms-select-option', selectbox.selector);
+                var currentValue=valueOptions.filter('.cms-select-option[rel="'+_getValue(selectbox)+'"]');
                 return valueOptions.index(currentValue);
             }
             return -1;
         }
         
         function _generateReplacer(values){
-            var replacer=$('<div class="cms-selectbox ui-state-default ui-corner-all"><span class="cms-select-opener ui-icon ui-icon-triangle-1-s"></span></div>')
-			$('<span class="cms-current-value cms-select-option"></span>').appendTo(replacer).text(values[0].title).attr('rel', values[0].value);
-			var selector=_generateSelector(values).appendTo(replacer);
-			replacer.click(_start);
-            $('span.cms-select-option', replacer).andSelf().hover(function(){$(this).addClass('ui-state-hover');}, function(){$(this).removeClass('ui-state-hover')});
-            replacer.data('replacer', replacer);
-            replacer.data('valueCount', values.length);
-            if (opts.width){
-                replacer.width(opts.width);
-                selector.width(opts.width);
+            var selectbox={};
+            selectbox.replacer=$('<div class="cms-selectbox ui-state-default ui-corner-all"><span class="cms-select-opener ui-icon ui-icon-triangle-1-s"></span></div>')
+			$('<span class="cms-current-value cms-select-option"></span>').appendTo(selectbox.replacer).text(values[0].title).attr('rel', values[0].value);
+			selectbox.selector=_generateSelector(selectbox, values);
+            if (!opts.appendTo) {
+                selectbox.selector.appendTo(selectbox.replacer);
+                if (($.isFunction(opts.selectorPosition) && opts.selectorPosition() == 'top') || opts.selectorPosition == 'top') {
+                    var top = 21 * values.length;
+                    selectbox.selector.removeClass('ui-corner-bottom').addClass('ui-corner-top').css('top', '-' + top + 'px')
+                }
+            }else{
+                var selectorParent= $(opts.appendTo);
+                if (!selectorParent.length){
+                    selectorParent=$(document.body);
+                }
+                selectbox.selector.appendTo(selectorParent)
             }
-            return replacer;    
+			selectbox.replacer.click(_start);
+            $('span.cms-select-option', selectbox.replacer).andSelf().hover(function(){$(this).addClass('ui-state-hover');}, function(){$(this).removeClass('ui-state-hover')});
+            
+            selectbox.valueCount= values.length;
+            selectbox.values=values;
+            selectbox.replacer.data('selectbox', selectbox);
+            if (opts.width){
+                selectbox.replacer.width(opts.width);
+                selectbox.selector.width(opts.width);
+            }
+            return selectbox.replacer;    
         }
         
-        function _generateSelector(values){
+        function _generateSelector(selectbox, values){
             var selector=$('<div class="cms-selector ui-widget-content ui-corner-bottom"></div>');
 			for (i=0; i<values.length; i++){
-				$('<span class="cms-select-option"></span>')
-                    .attr('rel', values[i].value).text(values[i].title)
-                    .appendTo(selector)
-                    .click(_select);
-			}
+				$('<span/>', {
+                    'class': "cms-select-option", 
+                    'rel': values[i].value, 
+                    'html': values[i].title, 
+                    'click': function(){
+                        _select($(this), selectbox);
+                    }
+                }).appendTo(selector);
+            }
             return selector;
         }
         
@@ -163,18 +192,18 @@ $.fn.selectBox=function(options, additional){
         }
         
         function getValue(){
-            return _getValue(self.data('replacer'));
+            return _getValue(self.data('selectbox'));
         }
         
         function getIndex(){
-            return _getIndex(self.data('replacer'));
+            return _getIndex(self.data('selectbox'));
         }
         
         function setValue(value){
-            var replacer=self.data('replacer');
-            selectSpan=replacer.find('span[rel="'+value+'"]:first');
+            var selectbox=self.data('selectbox');
+            selectSpan=selectbox.selector.find('span[rel="'+value+'"]:first');
             if (selectSpan.length) {
-                replacer.find('span.cms-current-value').text(selectSpan.text()).attr('rel', value);
+                selectbox.replacer.find('span.cms-current-value').html(selectSpan.html()).attr('rel', value);
             };
         }
 	};
@@ -182,7 +211,8 @@ $.fn.selectBox=function(options, additional){
 	$.fn.selectBox.defaults={
         width: null,
 		open: null,
-        select: null
+        select: null,
+        appendTo: null
 		
 	}
 })(jQuery);

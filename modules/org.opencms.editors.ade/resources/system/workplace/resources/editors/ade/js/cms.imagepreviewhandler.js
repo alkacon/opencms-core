@@ -410,6 +410,8 @@
          form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
             values: formatDropDown,
             width: 150,
+            selectorPosition: 'top',
+            appendTo: '#' + cms.imagepreviewhandler.keys['formatTabId'],
             // Binds format select options 
             select: function($this, self, value, index) {
                changeFormat(index);
@@ -425,22 +427,24 @@
        
       var target = $('#' + keys['editorFormatTabId']);
       // generate editable form fields for editor
-      var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');      
+      var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');
       form.append($(editorFormatTabHtml));
       target.append(form);
-      
+     
       if (isEnhanced()) {
            $('div[alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '"]').addClass('cms-width-320').removeClass('cms-width-620').after($(enhancedInsetAltCopyright));
            $('div[alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '"]').after($(enhancedInsertLink)); 
            $('#' + cms.imagepreviewhandler.editorKeys['fckResetTitle']).click(resetAltText);
            $('#' + cms.imagepreviewhandler.editorKeys['fckReserCr']).click(resetCopyrightText);
       }
-            
+      
       // initialize select box and checkboxes        
-     form.find('.cms-drop-down label').after($.fn.selectBox('generate', {            
+      form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
+            selectorPosition:'top',
             values: editorAlignDropDown,
-            width: 100
-         })); //selectorPosition:'top',
+            width: 100,
+            appendTo: '#' + keys['editorFormatTabId']
+         }));
       form.find('.cms-checkbox-gallery').click(function () {
           if ($(this).hasClass('cms-checkbox-unchecked')){
               $(this).addClass('cms-checkbox-checked').removeClass('cms-checkbox-unchecked');
@@ -471,12 +475,14 @@
       form.find('#' + editorKeys['advLinkTarget'] + ' label').after($.fn.selectBox('generate', {
             selectorPosition:'top',
             values: editorTargetDropDown,
-            width: 200
+            width: 200,
+            appendTo:'#' + keys['editorAdvancedTabId']
          }));
       form.find('#' + editorKeys['advLangDir'] + ' label').after($.fn.selectBox('generate', {
             selectorPosition:'top',
             values: editorLangDropDown,
-            width: 200
+            width: 200,
+            appendTo:'#' + keys['editorAdvancedTabId']
          }));
    }
    
