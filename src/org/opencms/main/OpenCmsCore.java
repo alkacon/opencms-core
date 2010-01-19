@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/01/18 10:02:19 $
- * Version: $Revision: 1.250 $
+ * Date   : $Date: 2010/01/19 10:36:22 $
+ * Version: $Revision: 1.251 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.250 $ 
+ * @version $Revision: 1.251 $ 
  * 
  * @since 6.0.0 
  */
@@ -1172,16 +1172,16 @@ public final class OpenCmsCore {
             // initialize the XML content type manager
             m_xmlContentTypeManager.initialize(initCmsObject(adminCms));
 
-            // initialize the publish manager
-            m_publishManager.setPublishEngine(m_publishEngine);
-            m_publishManager.setSecurityManager(m_securityManager);
-            m_publishManager.initialize(initCmsObject(adminCms));
-
             // initialize the module manager
             m_moduleManager.initialize(initCmsObject(adminCms), m_configurationManager);
 
             // initialize the resource manager
             m_resourceManager.initialize(initCmsObject(adminCms));
+
+            // initialize the publish manager
+            m_publishManager.setPublishEngine(m_publishEngine);
+            m_publishManager.setSecurityManager(m_securityManager);
+            m_publishManager.initialize(initCmsObject(adminCms));
 
             // initialize the search manager
             m_searchManager.initialize(initCmsObject(adminCms));
