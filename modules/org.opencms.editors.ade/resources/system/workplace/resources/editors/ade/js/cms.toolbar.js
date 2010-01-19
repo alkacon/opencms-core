@@ -409,7 +409,7 @@
          return;
       }
       timer.handleDiv.removeClass('ui-widget-header').css({
-         'width': '24px',
+         'width': '24px'
       }).children().removeClass('ui-corner-all ui-state-default').not('a.cms-' + timer.adeMode).css('display', 'none');
    }
    
