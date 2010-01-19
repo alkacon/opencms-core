@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2010/01/18 10:01:38 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/01/19 15:11:43 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.2 
  */
@@ -452,8 +452,11 @@ public class CmsHistoryList extends A_CmsListDialog {
     protected List getListItems() throws CmsException {
 
         List result = new ArrayList();
+        List historicalVersions = new ArrayList();
 
-        List historicalVersions = getCms().readAllAvailableVersions(getParamResource());
+        if (CmsStringUtil.isNotEmpty(getParamResource())) {
+            historicalVersions = getCms().readAllAvailableVersions(getParamResource());
+        }
         Iterator itVersions = historicalVersions.iterator();
         while (itVersions.hasNext()) {
             I_CmsHistoryResource histRes = (I_CmsHistoryResource)itVersions.next();
