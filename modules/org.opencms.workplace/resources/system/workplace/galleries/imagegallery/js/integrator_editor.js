@@ -16,8 +16,8 @@ var FCKConfig		= oEditor.FCKConfig;
 var FCKBrowserInfo	= oEditor.FCKBrowserInfo;
 
 /* Enables or disables the enhanced image dialog options. */
-var showEnhancedOptions = false;
-var useTbForLinkOriginal = false;
+var showEnhancedOptions = FCKConfig.ShowEnhancedOptions;
+var useTbForLinkOriginal = FCKConfig.UseTbForLinkOriginal;
 
 /* The selected image (if available). */
 var oImage = null;
