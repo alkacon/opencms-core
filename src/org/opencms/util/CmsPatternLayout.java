@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPatternLayout.java,v $
- * Date   : $Date: 2009/08/20 11:31:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/19 14:06:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2010 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -120,7 +120,7 @@ public class CmsPatternLayout extends PatternLayout {
 
                 // if cause trace starts reset counter (subtrace)
                 if (elem.trim().startsWith("Caused")) {
-                    if (!exclFound && (truncated > 0 || filtered > 0)) {
+                    if (!exclFound && ((truncated > 0) || (filtered > 0))) {
                         trace.append(createSummary(truncated, filtered));
                     }
                     count = 0;
@@ -150,7 +150,7 @@ public class CmsPatternLayout extends PatternLayout {
             if (exclFound) {
                 result += minTrace.toString();
             } else {
-                if (truncated > 0 || filtered > 0) {
+                if ((truncated > 0) || (filtered > 0)) {
                     trace.append(createSummary(truncated, filtered));
                 }
                 result += trace.toString();
