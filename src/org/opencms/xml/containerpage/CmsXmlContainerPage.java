@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2010/01/20 13:24:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/20 14:27:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.5.2
  * 
@@ -593,7 +593,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     }
                     // only if the property is configured in the schema we will save it
                     if (propElement == null) {
-                        propElement = cntElement.addElement(XmlNode.PROPERTIES.getName());
+                        propElement = elemElement.addElement(XmlNode.PROPERTIES.getName());
                     }
 
                     // the property name
