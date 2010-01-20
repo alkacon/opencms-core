@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/20 09:22:07 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2010/01/20 13:10:37 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -86,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 7.6
  */
@@ -736,7 +737,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 resultEntry.put(JsonKeys.PATH.getName(), path);
                 resultEntry.put(JsonKeys.ICON.getName(), iconPath);
                 resultEntry.put(JsonKeys.CLIENTID.getName(), OpenCms.getADEManager().convertToClientId(
-                    sResult.getStructureId()));
+                    new CmsUUID(sResult.getStructureId())));
 
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getResourceType());
                 CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(type, false);

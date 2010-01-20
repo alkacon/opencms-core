@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/01/20 12:40:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/20 13:10:37 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.6
  */
@@ -156,18 +156,6 @@ public class CmsADEManager {
     public String convertToClientId(CmsUUID id) {
 
         return ADE_ID_PREFIX + id.toString();
-    }
-
-    /**
-     * Creates a valid html id from an uuid.<p>
-     * 
-     * @param id the uuid
-     * 
-     * @return the generated html id
-     */
-    public String convertToClientId(String id) {
-
-        return ADE_ID_PREFIX + id;
     }
 
     /**
