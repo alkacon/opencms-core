@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2010/01/18 10:03:17 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2010/01/20 10:10:55 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.71 $ 
+ * @version $Revision: 1.72 $ 
  * 
  * @since 6.0.0 
  */
@@ -899,6 +899,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushCache(CacheType.PERMISSION);
         flushCache(CacheType.HAS_ROLE);
         flushCache(CacheType.ROLE_LIST);
+        flushCache(CacheType.USERGROUPS);
     }
 
     /**
