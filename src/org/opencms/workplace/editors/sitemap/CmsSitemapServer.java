@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/18 14:05:22 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/01/20 09:22:07 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 7.6
  */
@@ -201,6 +202,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     /** Json property name constants for responses. */
     protected enum JsonResponse {
 
+        /** The description property. */
+        DESCRIPTION("desciption"),
         /** List of sitemap entries */
         ENTRIES("entries"),
         /** Single sitemap entry */
@@ -209,6 +212,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         FAVORITES("favorites"),
         /** id of newly created sitemap */
         ID("id"),
+        /** The image property. */
+        IMAGE("image"),
         /** Models of creatable types */
         MODELS("models"),
         /** The validated/converted site entry name. */
@@ -219,10 +224,14 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         RECENT("recent"),
         /** The sitemap tree. */
         SITEMAP("sitemap"),
+        /** The sitepath. */
+        SITEPATH("sitepath"),
         /** Flag to indicate if this is a top-level sitemap or a sub-sitemap. */
         SUB_SITEMAP("subSitemap"),
         /** List of the URIs of sitemaps which reference the current sitemap */
         SUPER_SITEMAPS("superSitemaps"),
+        /** The title property. */
+        TITLE("title"),
         /** Creatable types */
         TYPES("types");
 
@@ -422,6 +431,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             addContents(models);
             result.put(JsonResponse.TYPES.getName(), creatableTypes);
             result.put(JsonResponse.MODELS.getName(), models);
+            result.put("templates", getTemplates());
         } else if (action.equals(Action.GET)) {
             if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // get the favorite list
@@ -737,6 +747,42 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             }
         }
         return jsonEntriesList;
+    }
+
+    /**
+     * Returns the templates available.<p>
+     * 
+     * @return a JSON object containing the templates available.
+     * 
+     * @throws JSONException if there is any problem with JSON
+     * @throws CmsException if there is a problem with the cms context
+     */
+    protected JSONObject getTemplates() throws CmsException, JSONException {
+
+        JSONObject result = new JSONObject();
+        CmsObject cms = getCmsObject();
+        List<CmsResource> templates = cms.readResources(
+            "/",
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(CmsResourceTypeJsp.getContainerPageTemplateTypeId()),
+            true);
+        templates.addAll(cms.readResources(
+            "/system/",
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(CmsResourceTypeJsp.getContainerPageTemplateTypeId()),
+            true));
+        Iterator<CmsResource> templateIt = templates.iterator();
+        while (templateIt.hasNext()) {
+            CmsResource template = templateIt.next();
+            CmsProperty titleProp = cms.readPropertyObject(template, "Title", false);
+            CmsProperty descProp = cms.readPropertyObject(template, "Description", false);
+            //            CmsProperty imageProp=cms.readPropertyObject(template, "Image", false);
+            JSONObject jTemp = new JSONObject();
+            jTemp.put("sitePath", cms.getSitePath(template));
+            jTemp.put("Title", titleProp.getValue());
+            jTemp.put("Description", descProp.getValue());
+            jTemp.put("Image", "rrr");
+            result.put(cms.getSitePath(template), jTemp);
+        }
+        return result;
     }
 
     /**

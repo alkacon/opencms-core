@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/19 15:35:43 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2010/01/20 09:22:07 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,11 @@
 
 package org.opencms.workplace.galleries;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsUser;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -51,11 +49,10 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.search.CmsSearch;
-import org.opencms.search.CmsSearchParameters;
-import org.opencms.search.CmsSearchResult;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
+import org.opencms.search.galleries.CmsGallerySearchResult;
+import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.workplace.CmsWorkplace;
@@ -89,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 7.6
  */
@@ -137,6 +134,13 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The resource type of this gallery. */
         private I_CmsResourceType m_resourceType;
 
+        /**
+         * Constructor.<p>
+         * 
+         * @param resourceType the resource type of the gallery
+         * @param contentType the resource type of the gallery content
+         * @param galleries the gallery resources
+         */
         protected CmsGalleryTypeInfo(
             I_CmsResourceType resourceType,
             I_CmsResourceType contentType,
@@ -294,6 +298,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The level. */
         LEVEL("level"),
 
+        /** The locale. */
+        LOCALE("locale"),
+
         /** The linkpath of the resource. */
         LINKPATH("linkpath"),
 
@@ -438,6 +445,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
     /** The advanced gallery path to the JSPs in the workplace. */
     public static final String ADVANCED_GALLERY_PATH = "/system/workplace/editors/ade/galleries.jsp";
+
+    /** The advanced gallery index name. */
+    public static final String ADVANCED_GALLERY_INDEX = "ADE Gallery Index";
 
     /** The excerpt field constant. */
     public static final String EXCERPT_FIELD_NAME = "excerpt";
@@ -698,44 +708,39 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * @param searchResult the search-result-list
      * @return the JSON representation of the search-result
      */
-    private JSONArray buildJSONForSearchResult(List<CmsSearchResult> searchResult) {
+    private JSONArray buildJSONForSearchResult(List<CmsGallerySearchResult> searchResult) {
 
         JSONArray result = new JSONArray();
         if ((searchResult == null) || (searchResult.size() == 0)) {
             return result;
         }
-        Iterator<CmsSearchResult> iSearchResult = searchResult.iterator();
+        Iterator<CmsGallerySearchResult> iSearchResult = searchResult.iterator();
         while (iSearchResult.hasNext()) {
             try {
-                CmsSearchResult sResult = iSearchResult.next();
+                CmsGallerySearchResult sResult = iSearchResult.next();
                 JSONObject resultEntry = new JSONObject();
                 String path = sResult.getPath();
                 path = getRequestContext().removeSiteRoot(path);
                 String fileIcon = getFileIconName(path);
                 String iconPath = CmsWorkplace.RES_PATH_FILETYPES;
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(fileIcon)) {
-                    iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(sResult.getDocumentType()).getIcon();
+                    iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(sResult.getResourceType()).getIcon();
                 } else {
                     iconPath += "mimetype/" + fileIcon;
                 }
                 iconPath = CmsWorkplace.getResourceUri(iconPath);
                 resultEntry.put(JsonKeys.DATEMODIFIED.getName(), sResult.getDateLastModified());
-                resultEntry.put(JsonKeys.TITLE.getName(), sResult.getField(CmsSearchField.FIELD_TITLE));
-                resultEntry.put(JsonKeys.INFO.getName(), sResult.getField(CmsSearchField.FIELD_DESCRIPTION));
-                resultEntry.put(JsonKeys.TYPE.getName(), sResult.getDocumentType());
+                resultEntry.put(JsonKeys.TITLE.getName(), sResult.getTitle());
+                resultEntry.put(JsonKeys.INFO.getName(), sResult.getDescription());
+                resultEntry.put(JsonKeys.TYPE.getName(), sResult.getResourceType());
                 resultEntry.put(JsonKeys.PATH.getName(), path);
                 resultEntry.put(JsonKeys.ICON.getName(), iconPath);
-
-                // TODO: the resource-id should be read from the search-result object once this info has been added to the index
                 resultEntry.put(JsonKeys.CLIENTID.getName(), OpenCms.getADEManager().convertToClientId(
-                    m_cms.readResource(path).getStructureId()));
+                    sResult.getStructureId()));
 
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getDocumentType());
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getResourceType());
                 CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(type, false);
-                formatterInfo.setTitleInfo(
-                    JsonKeys.TITLE.getName(),
-                    JsonKeys.TITLE.getName(),
-                    sResult.getField(CmsSearchField.FIELD_TITLE));
+                formatterInfo.setTitleInfo(JsonKeys.TITLE.getName(), JsonKeys.TITLE.getName(), sResult.getTitle());
                 formatterInfo.setSubTitleInfo(
                     JsonKeys.TYPE.getName(),
                     JsonKeys.TYPE.getName(),
@@ -856,34 +861,35 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         int currentPage = 1;
         boolean found = false;
         queryData.put(JsonKeys.PAGE.getName(), currentPage);
-        CmsSearchParameters params = prepareSearchParams(queryData);
-        CmsSearch searchBean = new CmsSearch();
+        CmsGallerySearchParameters params = prepareSearchParams(queryData);
+        CmsGallerySearch searchBean = new CmsGallerySearch();
         searchBean.init(m_cms);
-        searchBean.setParameters(params);
-        List<CmsSearchResult> searchResults = null;
+        searchBean.setIndex(ADVANCED_GALLERY_INDEX);
+
+        CmsGallerySearchResultList searchResults = null;
         while (!found) {
-            searchBean.setSearchPage(currentPage);
-            searchResults = searchBean.getSearchResult();
-            Iterator<CmsSearchResult> resultsIt = searchResults.iterator();
+            params.setResultPage(currentPage);
+            searchResults = searchBean.getResult(params);
+            Iterator<CmsGallerySearchResult> resultsIt = searchResults.listIterator();
             while (resultsIt.hasNext()) {
-                CmsSearchResult searchResult = resultsIt.next();
+                CmsGallerySearchResult searchResult = resultsIt.next();
                 if (searchResult.getPath().equals(rootPath)) {
                     found = true;
                     break;
                 }
             }
-            if (!found && (searchBean.getSearchResultCount() / (currentPage * searchBean.getMatchesPerPage()) >= 1)) {
+            if (!found && (searchResults.getHitCount() / (currentPage * params.getMatchesPerPage()) >= 1)) {
                 currentPage++;
             } else {
                 break;
             }
         }
         JSONObject result = new JSONObject();
-        if (found) {
+        if (found && (searchResults != null)) {
             JSONObject sResult = new JSONObject();
-            sResult.put(JsonKeys.SORTORDER.getName(), searchBean.getSortOrder());
-            sResult.put(JsonKeys.RESULTCOUNT.getName(), searchBean.getSearchResultCount());
-            sResult.put(JsonKeys.PAGE.getName(), searchBean.getSearchPage());
+            sResult.put(JsonKeys.SORTORDER.getName(), params.getSortOrder());
+            sResult.put(JsonKeys.RESULTCOUNT.getName(), searchResults.getHitCount());
+            sResult.put(JsonKeys.PAGE.getName(), params.getResultPage());
             sResult.put(JsonKeys.RESULTLIST.getName(), buildJSONForSearchResult(searchResults));
             queryData.put(JsonKeys.PAGE.getName(), currentPage);
             queryData.put(JsonKeys.TABID.getName(), RESULT_TAB_ID);
@@ -1141,7 +1147,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * @return the prepared search parameters
      * @throws JSONException if something goes wrong reading the JSON
      */
-    private CmsSearchParameters prepareSearchParams(JSONObject queryData) throws JSONException {
+    private CmsGallerySearchParameters prepareSearchParams(JSONObject queryData) throws JSONException {
 
         JSONArray types = queryData.getJSONArray(JsonKeys.TYPES.getName());
         JSONArray galleries = queryData.getJSONArray(JsonKeys.GALLERIES.getName());
@@ -1150,14 +1156,25 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         List<String> categoriesList = transformToStringList(categories);
         String queryStr = queryData.getString(JsonKeys.QUERY.getName());
         int matches = queryData.getInt(JsonKeys.MATCHESPERPAGE.getName());
-        //        CmsGallerySearch.SortParam sortOrder = CmsGallerySearch.SortParam.DEFAULT;
-        //        try {
-        //            sortOrder = CmsGallerySearch.SortParam.valueOf(query.getString(JsonKeys.SORTORDER.getName()).toUpperCase());
-        //        } catch (Exception e) {
-        //            //may happen
-        //        }
+        CmsGallerySearchParameters.CmsGallerySortParam sortOrder;
+        if (queryData.has(JsonKeys.SORTORDER.getName())) {
+            String temp = queryData.getString(JsonKeys.SORTORDER.getName());
+            try {
+                sortOrder = CmsGallerySearchParameters.CmsGallerySortParam.valueOf(temp);
+            } catch (Exception e) {
+                sortOrder = CmsGallerySearchParameters.CmsGallerySortParam.DEFAULT;
+            }
+        } else {
+            sortOrder = CmsGallerySearchParameters.CmsGallerySortParam.DEFAULT;
+        }
         int page = queryData.getInt(JsonKeys.PAGE.getName());
-
+        String locale;
+        if (queryData.has(JsonKeys.LOCALE.getName())
+            && !CmsStringUtil.isEmptyOrWhitespaceOnly(queryData.getString(JsonKeys.LOCALE.getName()))) {
+            locale = queryData.getString(JsonKeys.LOCALE.getName());
+        } else {
+            locale = getRequest().getParameter(ReqParam.LOCALE.getName());
+        }
         List<String> typeNames = new ArrayList<String>();
 
         try {
@@ -1169,20 +1186,14 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             }
         }
 
-        // TODO: searching the old index, replace with new search
-        CmsUser user = m_cms.getRequestContext().currentUser();
-        String indexName = new CmsUserSettings(user).getWorkplaceSearchIndexName();
-
-        CmsSearchParameters params = new CmsSearchParameters();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(queryStr)) {
-            params.setIgnoreQuery(true);
-        } else {
-            params.setQuery(queryStr);
+        CmsGallerySearchParameters params = new CmsGallerySearchParameters();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(queryStr)) {
+            params.setSearchWords(queryStr);
         }
-        params.setSort(CmsSearchParameters.SORT_TITLE);
-        params.setIndex(indexName);
+        params.setSearchLocale(locale);
+        params.setSortOrder(sortOrder);
         params.setMatchesPerPage(matches);
-        params.setSearchPage(page);
+        params.setResultPage(page);
         if (typeNames != null) {
             params.setResourceTypes(typeNames);
         }
@@ -1190,7 +1201,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             params.setCategories(categoriesList);
         }
         if (galleriesList != null) {
-            params.setRoots(galleriesList);
+            params.setGalleries(galleriesList);
         }
         return params;
     }
@@ -1317,29 +1328,14 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         }
 
         // search
-        CmsSearch searchBean = new CmsSearch();
+        CmsGallerySearchParameters params = prepareSearchParams(query);
+        CmsGallerySearch searchBean = new CmsGallerySearch();
         searchBean.init(m_cms);
-        searchBean.setParameters(prepareSearchParams(query));
-        List<CmsSearchResult> searchResults = searchBean.getSearchResult();
-        // TODO: use for new search
-        //        CmsGallerySearch gSearch = new CmsGallerySearch();
-        //        gSearch.setCategories(categoriesArr);
-        //        gSearch.setGalleries(galleriesArr);
-        //        gSearch.setResultPage(page);
-        //        gSearch.setQuery(queryStr);
-        //        gSearch.setTypes(typesArr);
-        //        gSearch.setSortBy(sortBy);
-        //        gSearch.setSortOrder(sortOrder);
-        //        result.put("sortorder", gSearch.getSortOrder().getName());
-        //        result.put("sortby", gSearch.getSortBy().getName());
-        //        result.put("resultcount", gSearch.getSearchResultCount());
-        //        result.put("resultpage", gSearch.getResultPage());
-        //        result.put("resultpagecount", gSearch.getPageCount());
-        //        result.put("resultlist", buildJSONForSearchResult(gSearch.getResult()));
-
-        result.put("sortorder", searchBean.getSortOrder());
-        result.put("resultcount", searchBean.getSearchResultCount());
-        result.put("resultpage", searchBean.getSearchPage());
+        searchBean.setIndex(ADVANCED_GALLERY_INDEX);
+        CmsGallerySearchResultList searchResults = searchBean.getResult(params);
+        result.put("sortorder", params.getSortOrder());
+        result.put("resultcount", searchResults.getHitCount());
+        result.put("resultpage", params.getResultPage());
         result.put("resultlist", buildJSONForSearchResult(searchResults));
 
         return result;

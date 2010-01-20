@@ -162,6 +162,10 @@
 				<stemmer>Italian</stemmer>
 				<locale>it</locale>
 			</analyzer>
+            <analyzer>
+				<class>org.opencms.search.galleries.CmsGallerySearchAnalyzer</class>
+				<locale>all</locale>
+			</analyzer>	
 		</analyzers>
 		<indexes>
 			<index>
@@ -200,6 +204,16 @@
 					<source>source2</source>
 				</sources>		
 			</index>	
+            <index class="org.opencms.search.galleries.CmsGallerySearchIndex">
+				<name>ADE Gallery Index</name>
+				<rebuild>offline</rebuild>
+				<project>Offline</project>
+				<locale>all</locale>			
+				<configuration>ADE_gallery_fields</configuration>	
+				<sources>
+					<source>ADE_gallery_source</source>
+				</sources>			
+			</index>
 		</indexes>
 		<indexsources>				
 			<indexsource>
@@ -232,6 +246,27 @@
 	                <name>xmlpage</name>
 				</documenttypes-indexed>
 			</indexsource>	
+            <indexsource>
+				<name>ADE_gallery_source</name>
+				<indexer class="org.opencms.search.CmsVfsIndexer" />
+				<resources>
+					<resource>/sites/</resource>
+				</resources>
+				<documenttypes-indexed>
+	                <name>xmlpage</name>
+					<name>xmlcontent</name>
+	                <name>page</name>
+	                <name>text</name>
+	                <name>pdf</name>
+	                <name>rtf</name>
+	                <name>html</name>
+	                <name>msword</name>
+	                <name>msexcel</name>
+	                <name>mspowerpoint</name>
+	                <name>image</name>
+	                <name>generic</name>
+				</documenttypes-indexed>				
+			</indexsource> 
 		</indexsources>		
 		<fieldconfigurations>		
 			<fieldconfiguration>
@@ -259,7 +294,56 @@
 						<mapping type="property">Description</mapping>
 					</field>			
 				</fields>
-			</fieldconfiguration>			
+			</fieldconfiguration>	
+            <fieldconfiguration>
+				<name>ADE_gallery_fields</name>
+				<description>The standard OpenCms search index field configuration.</description>
+				<fields>
+					<field name="content" store="compress" index="true" excerpt="true">
+						<mapping type="content" />
+					</field>	
+					<field name="title-key" store="true" index="untokenized" boost="0.0">
+						<mapping type="property">Title</mapping>
+					</field>	
+					<field name="title" store="false" index="true">
+						<mapping type="property">Title</mapping>
+					</field>
+					<field name="description" store="true" index="true">
+						<mapping type="property">Description</mapping>
+					</field>						
+					<field name="meta" store="false" index="true">
+						<mapping type="property">Title</mapping>
+						<mapping type="property">Description</mapping>
+					</field>	
+					<field name="res_dateExpired" store="true" index="untokenized">
+						<mapping type="attribute">dateExpired</mapping>
+					</field>		
+					<field name="res_dateReleased" store="true" index="untokenized">
+						<mapping type="attribute">dateReleased</mapping>
+					</field>	
+					<field name="res_length" store="true" index="untokenized">
+						<mapping type="attribute">length</mapping>
+					</field>										
+					<field name="res_state" store="true" index="untokenized">
+						<mapping type="attribute">state</mapping>
+					</field>										
+					<field name="res_userCreated" store="true" index="untokenized">
+						<mapping type="attribute">userCreated</mapping>
+					</field>			
+					<field name="res_userLastModified" store="true" index="untokenized">
+						<mapping type="attribute">userLastModified</mapping>
+					</field>	
+					<field name="res_locale" store="true" index="untokenized">
+						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">res_locale</mapping>
+					</field>
+					<field name="additional_info" store="true" index="false">
+						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
+					</field>						
+					<field name="container_types" store="true" index="true" analyzer="WhitespaceAnalyzer">
+						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
+					</field>
+				</fields>
+			</fieldconfiguration>		
 		</fieldconfigurations>				
 	</search>
 </opencms>
