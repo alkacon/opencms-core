@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/20 12:40:46 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/01/20 13:24:09 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 7.6
  */
@@ -832,11 +832,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsXmlContentProperty currentPropertyConf = propertyConf.get(prop.getKey());
             if (currentPropertyConf == null) {
                 if (prop.getKey().equals(CmsSitemapManager.PROPERTY_SITEMAP)) {
-                    props.put(prop.getKey(), CmsXmlContentProperty.convertIdsToPaths(
-                        getCmsObject(),
-                        prop.getValue(),
-                        CmsXmlSitemap.IDS_SEPARATOR,
-                        CmsXmlSitemap.IDS_SEPARATOR));
+                    props.put(prop.getKey(), CmsXmlContentProperty.convertIdsToPaths(getCmsObject(), prop.getValue()));
                 } else {
                     props.put(prop.getKey(), prop.getValue());
                 }
@@ -845,11 +841,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             String propType = currentPropertyConf.getPropertyType();
             if (propType.equals(CmsXmlContentProperty.T_VFSLIST)) {
                 CmsObject cms = getCmsObject();
-                props.put(prop.getKey(), CmsXmlContentProperty.convertIdsToPaths(
-                    cms,
-                    prop.getValue(),
-                    CmsXmlSitemap.IDS_SEPARATOR,
-                    CmsXmlSitemap.IDS_SEPARATOR));
+                props.put(prop.getKey(), CmsXmlContentProperty.convertIdsToPaths(cms, prop.getValue()));
             } else {
                 props.put(prop.getKey(), prop.getValue());
             }
@@ -938,11 +930,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                     || ((currentPropertyConf != null) && currentPropertyConf.getPropertyType().equals(
                         CmsXmlContentProperty.T_VFSLIST))) {
                     CmsObject cms = getCmsObject();
-                    properties.put(key, CmsXmlContentProperty.convertPathsToIds(
-                        cms,
-                        value,
-                        ",",
-                        CmsXmlSitemap.IDS_SEPARATOR));
+                    properties.put(key, CmsXmlContentProperty.convertPathsToIds(cms, value));
                 } else {
                     properties.put(key, value);
                 }

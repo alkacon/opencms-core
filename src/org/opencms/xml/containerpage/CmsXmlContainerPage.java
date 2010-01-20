@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2010/01/19 09:04:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/20 13:24:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,6 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.page.CmsXmlPage;
-import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -82,7 +81,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.5.2
  * 
@@ -133,9 +132,6 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             return m_name;
         }
     }
-
-    /** IDs separator constant. */
-    public static final String IDS_SEPARATOR = ",";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContainerPage.class);
@@ -528,7 +524,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                                     idList.add(fileId);
                                 }
                                 // comma separated list of UUIDs
-                                val = CmsStringUtil.listAsString(idList, IDS_SEPARATOR);
+                                val = CmsStringUtil.listAsString(idList, CmsXmlContentProperty.PROP_SEPARATOR);
                             }
 
                             propertiesMap.put(propName.getTextTrim(), val);
@@ -608,7 +604,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     if (propertiesConf.get(propName).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
                         // resource list value
                         Element filelistElem = valueElement.addElement(XmlNode.FILELIST.getName());
-                        for (String strId : CmsStringUtil.splitAsList(propValue, CmsXmlSitemap.IDS_SEPARATOR)) {
+                        for (String strId : CmsStringUtil.splitAsList(propValue, CmsXmlContentProperty.PROP_SEPARATOR)) {
                             try {
                                 Element fileValueElem = filelistElem.addElement(XmlNode.URI.getName());
                                 fillResource(cms, fileValueElem, new CmsUUID(strId));

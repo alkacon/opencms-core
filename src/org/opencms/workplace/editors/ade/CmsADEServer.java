@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/20 13:10:17 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/01/20 13:24:09 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 7.6
  */
@@ -457,9 +457,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 if (propertyType.equals(CmsXmlContentProperty.T_VFSLIST)) {
                     cnfProps.put(propertyName, CmsXmlContentProperty.convertPathsToIds(
                         cms,
-                        properties.getString(propertyName),
-                        CmsXmlContainerPage.IDS_SEPARATOR,
-                        CmsXmlContainerPage.IDS_SEPARATOR));
+                        properties.getString(propertyName)));
                 } else {
                     cnfProps.put(propertyName, properties.getString(propertyName));
                 }
@@ -1253,7 +1251,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                             int index = 0;
                             for (String strId : CmsStringUtil.splitAsList(
                                 properties.get(propertyName).getStructureValue(),
-                                CmsXmlContainerPage.IDS_SEPARATOR)) {
+                                CmsXmlContentProperty.PROP_SEPARATOR)) {
                                 try {
                                     CmsResource res = cms.readResource(new CmsUUID(strId));
                                     I_CmsXmlContentValue fileValue = xmlSubContainer.getValue(CmsXmlUtils.concatXpath(

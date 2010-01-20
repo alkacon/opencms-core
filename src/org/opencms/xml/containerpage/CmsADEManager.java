@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/01/20 13:10:37 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/01/20 13:24:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.6
  */
@@ -281,11 +281,7 @@ public class CmsADEManager {
                 } else {
                     String resourceValue = defaultValue;
                     if (entry.getValue().getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                        resourceValue = CmsXmlContentProperty.convertPathsToIds(
-                            cms,
-                            resourceValue,
-                            CmsXmlContainerPage.IDS_SEPARATOR,
-                            CmsXmlContainerPage.IDS_SEPARATOR);
+                        resourceValue = CmsXmlContentProperty.convertPathsToIds(cms, resourceValue);
                     }
                     properties.put(propertyName, new CmsProperty(propertyName, null, resourceValue));
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/20 12:40:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/01/20 13:24:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.9.2
  */
@@ -447,11 +447,7 @@ public class CmsSitemapManager {
             CmsXmlContentProperty conf = entry.getValue();
             CmsMacroResolver.resolveMacros(conf.getWidgetConfiguration(), cms, Messages.get().getBundle());
             if (entry.getValue().getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                String ids = CmsXmlContentProperty.convertPathsToIds(
-                    cms,
-                    conf.getDefault(),
-                    CmsXmlSitemap.IDS_SEPARATOR,
-                    CmsXmlSitemap.IDS_SEPARATOR);
+                String ids = CmsXmlContentProperty.convertPathsToIds(cms, conf.getDefault());
                 defProps.put(propertyName, ids);
             } else {
                 defProps.put(propertyName, conf.getDefault());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/01/18 15:17:17 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/01/20 13:24:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.5.2
  * 
@@ -134,9 +134,6 @@ public class CmsXmlSitemap extends CmsXmlContent {
             return m_name;
         }
     }
-
-    /** IDs separator constant. */
-    public static final String IDS_SEPARATOR = ",";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlSitemap.class);
@@ -713,7 +710,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                         idList.add(fileId);
                     }
                     // comma separated list of UUIDs
-                    val = CmsStringUtil.listAsString(idList, IDS_SEPARATOR);
+                    val = CmsStringUtil.listAsString(idList, CmsXmlContentProperty.PROP_SEPARATOR);
                 }
 
                 propertiesMap.put(propName.getTextTrim(), val);
@@ -773,7 +770,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 || propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
                 // resource list value
                 Element filelistElem = valueElement.addElement(XmlNode.FILELIST.getName());
-                for (String strId : CmsStringUtil.splitAsList(property.getValue(), CmsXmlSitemap.IDS_SEPARATOR)) {
+                for (String strId : CmsStringUtil.splitAsList(property.getValue(), CmsXmlContentProperty.PROP_SEPARATOR)) {
                     try {
                         Element fileValueElem = filelistElem.addElement(XmlNode.URI.getName());
                         fillResource(cms, fileValueElem, new CmsUUID(strId));

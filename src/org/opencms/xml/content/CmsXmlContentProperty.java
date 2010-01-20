@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2010/01/20 12:40:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/20 13:24:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,9 @@ import java.util.Map;
  * 
  */
 public class CmsXmlContentProperty implements Cloneable {
+
+    /** IDs separator constant. */
+    public static final String PROP_SEPARATOR = ",";
 
     /** Property type constant string. */
     public static final String T_STRING = "string";
@@ -130,31 +133,28 @@ public class CmsXmlContentProperty implements Cloneable {
      *   
      * @param cms the CmsObject to use for the VFS operations 
      * @param value a string representation of a list of ids
-     * @param inputSeparator the separator which occurs in the input parameter
-     * @param outputSeparator the separator that should be used in the return value
      * 
      * @return a string representation of a list of paths
      *  
      * @throws CmsException if something goes wrong
      */
-    public static String convertIdsToPaths(CmsObject cms, String value, String inputSeparator, String outputSeparator)
-    throws CmsException {
+    public static String convertIdsToPaths(CmsObject cms, String value) throws CmsException {
 
         if (value == null) {
             return null;
         }
         String result = "";
         // represent vfslists as lists of path in JSON
-        List<String> ids = CmsStringUtil.splitAsList(value, inputSeparator);
+        List<String> ids = CmsStringUtil.splitAsList(value, PROP_SEPARATOR);
         StringBuffer buffer = new StringBuffer();
         if (ids.size() > 0) {
             for (String id : ids) {
                 CmsResource propResource = cms.readResource(new CmsUUID(id));
                 buffer.append(cms.getSitePath(propResource));
-                buffer.append(outputSeparator);
+                buffer.append(PROP_SEPARATOR);
             }
             // don't include last comma (which exists since ids.size() isn't zero)  
-            result = buffer.substring(0, buffer.length() - outputSeparator.length());
+            result = buffer.substring(0, buffer.length() - PROP_SEPARATOR.length());
         }
         return result;
 
@@ -165,31 +165,28 @@ public class CmsXmlContentProperty implements Cloneable {
      *   
      * @param cms the CmsObject to use for the VFS operations 
      * @param value a string representation of a list of paths
-     * @param inputSeparator the separator which occurs in the input parameter
-     * @param outputSeparator the separator that should be used in the return value
      * 
      * @return a string representation of a list of ids
      *  
      * @throws CmsException if something goes wrong
      */
-    public static String convertPathsToIds(CmsObject cms, String value, String inputSeparator, String outputSeparator)
-    throws CmsException {
+    public static String convertPathsToIds(CmsObject cms, String value) throws CmsException {
 
         if (value == null) {
             return null;
         }
         String result = "";
         // represent vfslists as lists of path in JSON
-        List<String> paths = CmsStringUtil.splitAsList(value, inputSeparator);
+        List<String> paths = CmsStringUtil.splitAsList(value, PROP_SEPARATOR);
         StringBuffer buffer = new StringBuffer();
         if (paths.size() > 0) {
             for (String path : paths) {
                 CmsResource propResource = cms.readResource(path);
                 buffer.append(propResource.getStructureId().toString());
-                buffer.append(outputSeparator);
+                buffer.append(PROP_SEPARATOR);
             }
             // don't include last comma (which exists since ids.size() isn't zero)  
-            result = buffer.substring(0, buffer.length() - outputSeparator.length());
+            result = buffer.substring(0, buffer.length() - PROP_SEPARATOR.length());
         }
         return result;
 
@@ -201,7 +198,6 @@ public class CmsXmlContentProperty implements Cloneable {
      * @param cms the CmsObject to use for converting paths to ids 
      * @param properties the map of properties
      * @param propertyConfig the map of property configurations
-     * @param separator the separator to use for lists of paths/ids in properties 
      *  
      * @return a merged map of properties
      * 
@@ -210,13 +206,12 @@ public class CmsXmlContentProperty implements Cloneable {
     public static Map<String, String> mergeDefaults(
         CmsObject cms,
         Map<String, String> properties,
-        Map<String, CmsXmlContentProperty> propertyConfig,
-        String separator) throws CmsException {
+        Map<String, CmsXmlContentProperty> propertyConfig) throws CmsException {
 
         Map<String, String> result = new HashMap<String, String>();
         for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
             if (entry.getValue().getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                result.put(entry.getKey(), convertPathsToIds(cms, entry.getValue().getDefault(), separator, separator));
+                result.put(entry.getKey(), convertPathsToIds(cms, entry.getValue().getDefault()));
             } else {
                 result.put(entry.getKey(), entry.getValue().getDefault());
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2010/01/12 12:37:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/20 13:24:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -76,7 +77,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.1
  */
@@ -447,7 +448,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                                 idList.add(fileId);
                             }
                             // comma separated list of UUIDs
-                            val = CmsStringUtil.listAsString(idList, CmsXmlContainerPage.IDS_SEPARATOR);
+                            val = CmsStringUtil.listAsString(idList, CmsXmlContentProperty.PROP_SEPARATOR);
                         }
 
                         propertiesMap.put(propName.getTextTrim(), val);
@@ -455,20 +456,6 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                     if (elementId != null) {
                         elements.add(new CmsContainerElementBean(elementId, null, propertiesMap));
                     }
-
-                    //                    createBookmark(element, locale, subContainer, cntPath, cntDef);
-                    //                    Element uriLink = element.element(CmsXmlPage.NODE_LINK);
-                    //                    CmsUUID elementId = null;
-                    //                    if (uriLink == null) {
-                    //                        // this can happen when adding the elements node to the xml content
-                    //                        // it is not dangerous since the link has to be set before saving 
-                    //                    } else {
-                    //                        elementId = new CmsLink(uriLink).getStructureId();
-                    //                    }
-                    //
-                    //                    if (elementId != null) {
-                    //                        elements.add(new CmsContainerElementBean(elementId, null, null));
-                    //                    }
                 }
                 m_subContainers.put(locale, new CmsSubContainerBean(
                     title.getText(),

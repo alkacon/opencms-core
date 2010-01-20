@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/01/20 13:09:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/01/20 13:24:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,6 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsSubContainerBean;
-import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
@@ -79,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.6
  */
@@ -448,11 +447,7 @@ public final class CmsElementUtil {
 
             String propValue = properties.get(propertyName).getStructureValue();
             if (conf.getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                jSONProperty.put(JsonProperty.VALUE.getName(), CmsXmlContentProperty.convertIdsToPaths(
-                    cms,
-                    propValue,
-                    CmsXmlContainerPage.IDS_SEPARATOR,
-                    CmsXmlContainerPage.IDS_SEPARATOR));
+                jSONProperty.put(JsonProperty.VALUE.getName(), CmsXmlContentProperty.convertIdsToPaths(cms, propValue));
             } else {
                 jSONProperty.put(JsonProperty.VALUE.getName(), propValue);
             }
