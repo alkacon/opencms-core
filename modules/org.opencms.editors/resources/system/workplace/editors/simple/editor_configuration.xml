@@ -11,6 +11,11 @@
 			<ranking>0</ranking>
 			<mapto>plain</mapto>
 		</type>
+        <type>
+			<name>containerpage_template</name>
+			<ranking>0</ranking>
+			<mapto>plain</mapto>
+		</type>
 	</resourcetypes>
 	<useragents>
 		<agent>.*</agent>

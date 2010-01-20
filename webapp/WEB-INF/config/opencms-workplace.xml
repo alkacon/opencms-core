@@ -671,6 +671,9 @@
       <explorertype name="cntpagegallery" key="fileicon.cntpagegallery" icon="htmlgallery.gif" reference="downloadgallery">
           <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=cntpagegallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.cntpagegallery"/>
       </explorertype>
+      <explorertype name="containerpage_template" key="fileicon.containerpage_template" icon="containerpage.gif" reference="jsp">
+          <newresource page="ade" uri="newresource.jsp?newresourcetype=containerpage_template" order="21" autosetnavigation="false" autosettitle="false" info="desc.containerpage_template" />
+      </explorertype>
       <defaultaccesscontrol>
         <accesscontrol>
           <accessentry principal="DEFAULT" permissions="+r+v"/>
