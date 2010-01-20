@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestExportFile.java,v $
- * Date   : $Date: 2010/01/18 10:04:19 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/01/20 10:00:01 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0
  */
@@ -106,7 +106,7 @@ public class TestExportFile extends OpenCmsTestCase {
         echo("Testing file export");
 
         // set the export mode to export immediately after publishing resources
-        OpenCms.getStaticExportManager().setHandler("org.opencms.staticexport.CmsAfterPublishStaticExportHandler");
+        OpenCms.getStaticExportManager().setHandler(CmsAfterPublishStaticExportHandler.class.getName());
 
         String resourcename = "/file1.txt";
         String content = "this is a test content";
