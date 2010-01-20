@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/20 12:40:45 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/01/20 13:10:17 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 7.6
  */
@@ -709,7 +709,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 return result;
             }
             try {
-                setSubContainer(data.getJSONObject(JsonRequest.ELEM.getName()), localeParam);
+                setSubContainer(data.getJSONObject(JsonRequest.ELEM.getName()));
             } catch (Exception e) {
                 error(result, e.getLocalizedMessage());
             }
@@ -722,7 +722,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 CmsResource newSub = createNewSubContainer(cntPageParam, request);
                 JSONObject subcontainer = data.getJSONObject(JsonRequest.ELEM.getName());
                 subcontainer.put(CmsElementUtil.JsonElement.FILE.getName(), cms.getSitePath(newSub));
-                setSubContainer(subcontainer, localeParam);
+                setSubContainer(subcontainer);
                 result.put(JsonNewRes.ID.getName(), m_manager.convertToClientId(newSub.getStructureId()));
                 result.put(JsonNewRes.URI.getName(), cms.getSitePath(newSub));
             } catch (Exception e) {
@@ -1155,11 +1155,11 @@ public class CmsADEServer extends A_CmsAjaxServer {
      * Saves the new state of the sub container.<p>
      * 
      * @param subcontainer the sub container data
-     * @param localeParam the locale parameter
+     * 
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong parsing the JSON
      */
-    public void setSubContainer(JSONObject subcontainer, String localeParam) throws CmsException, JSONException {
+    public void setSubContainer(JSONObject subcontainer) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
         String resourceName = subcontainer.getString(CmsElementUtil.JsonElement.FILE.getName());
@@ -1170,7 +1170,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         cms.lockResourceTemporary(resourceName);
         CmsFile subcontainerFile = cms.readFile(resourceName);
         CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, subcontainerFile);
-        Locale locale = CmsLocaleManager.getLocale(localeParam);
+        Locale locale = cms.getRequestContext().getLocale();
         if (xmlSubContainer.hasLocale(locale)) {
             // remove the locale 
             xmlSubContainer.removeLocale(locale);
