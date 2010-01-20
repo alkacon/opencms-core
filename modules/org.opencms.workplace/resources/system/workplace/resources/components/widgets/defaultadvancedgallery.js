@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/01/04 16:12:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/01/20 12:40:45 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,11 @@
 var defaultAdvancedGalleryPath;
 var requestData;
 
+// closes the gallery window 
+function closeGallery(win, fieldId) {
+   win.$(win.document.getElementById(fieldId + '-gallery')).dialog('destroy').remove();
+}
+
 // opens the default advanced gallery popup window
 function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
    requestData = {};
@@ -58,6 +63,7 @@ function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
       }
    }
    
+   //alert(JSON.stringify([startupFolder, startupFolders, startupType, resourceTypes]));
    var searchKeys = {
       'category': 'categories',
       'gallery': 'galleries'
@@ -95,8 +101,8 @@ function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
    paramString += "&data=" + JSON.stringify(requestData);
    
    // additional parameter for the image resource type
-   var initialImageInfos = '';   
-   if ($.inArray(3, resourceTypes) != -1) {        
+   var initialImageInfos = '';
+   if ($.inArray(3, resourceTypes) != -1) {
       var scaleParam = extractScaleParam(scalePath);
       var imgWidth = "";
       var imgHeight = "";
@@ -111,17 +117,87 @@ function openDefaultAdvancedGallery(dialogMode, fieldId, idHash) {
          "showformats": true,
          "scale": scaleParam,
          "imgwidth": imgWidth,
-         "imgheight": imgHeight      
-      };      
+         "imgheight": imgHeight
+      };
       paramString += "&imagedata=" + JSON.stringify(initialImageInfos);
    }
-   if ($.browser.msie) {
-       //treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=no,resizable=yes,top=20,left=150,width=670,height=520');
-       treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=yes,location=yes,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=690,height=600');
-   } else {
-       treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=no,resizable=yes,top=20,left=150,width=670,height=510');
+   var galleryWidgetUri = contextPath + defaultAdvancedGalleryPath + paramString;
+   var galleryId = fieldId + '-gallery';
+   var galleryElem = document.getElementById(galleryId);
+   if (!galleryElem) { // make sure the gallery isn't opened twice
+      width = 660
+      height = 510;
+      if ($.browser.msie) {
+         width = 660
+         height = 550;
+      }
+      var $iframe = $('<iframe/>').attr('src', galleryWidgetUri).attr('name', 'gallery-iframe').css('width', width + 'px').css('height', '99.6%');
+      $iframe.css('border', 'none').css('overflow', 'hidden');
+      var $iframeBox = $('<div/>');
+      $iframeBox.css('width', width + 'px').css('height', height + 'px');
+      
+      var left = Math.max(0, ($(window).width() - width) / 2);
+      var top = Math.max(0, ($(window).height() - height) / 2);
+      //$iframeBox.css('position', 'absolute').css('top', top).css('left', left);
+      $iframeBox.css('background-color', 'white');
+      
+      // new code
+      $iframeBox.attr('id', galleryId)
+      $iframeBox.appendTo('body').dialog({
+         title: 'Gallery',
+         modal: true,
+         zIndex: 99999,
+         close: function() {
+            $iframeBox.dialog('destroy').remove();
+            
+         },
+         open: function() {
+            $iframeBox.append($iframe);
+         },
+         resizable: false,
+         autoOpen: true,
+         width: width + 30,
+         height: height + 30
+      });
+      
+      
+      //      window.setTimeout(function() {
+      //          $iframeBox.css('width', width+40).css('height', height+40);
+      //          $iframe.css('width', width+40).css('height', height+40);
+      //          $iframeBox.closest('.ui-dialog').css('width', width+40).css('height', height+40);
+      //          
+      //      }, 5000);
+   
+   
+   
+   
+   
+   
+   
+      // end new code
+   
+   
+   
+      //      $overlay.css('top','0');
+      //      $overlay.css('left', '0');
+      //      $overlay.css('z-index', '99999');
+      //      $overlay.appendTo('body');
+      //      var $closeButton = $('<div class="ui-icon ui-icon-closethick">X</div>');
+      //      $closeButton.attr('title', 'Close Gallery')
+      //      $closeButton.appendTo($iframeBox);
+      //      $closeButton.css('position', 'absolute').css('right','-1em').css('top', '0px');
+      //      $closeButton.css('background-color', 'white').css('border-right', '1px solid black').css('border-top', '1px solid black').css('border-bottom', '1px solid black');
+      //      $closeButton.click(function() {closeGallery(window, fieldId); });
+   
    }
    
+   //   if ($.browser.msie) {
+   //       //treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=no,resizable=yes,top=20,left=150,width=670,height=520');
+   //       treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=yes,location=yes,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=690,height=600');
+   //   } else {
+   //       treewin = window.open(contextPath + defaultAdvancedGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=no,resizable=yes,top=20,left=150,width=670,height=510');
+   //   }
+
    //edited resource has to be provided to use custom categories
    //var editedResource = "";
    //try {

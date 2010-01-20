@@ -1,4 +1,4 @@
-﻿(function(cms) {    
+﻿(function(cms) {  
 
    /** A map with all available content handlers. */
    var contentTypeHandlers = cms.galleries.contentTypeHandlers = {};
@@ -169,7 +169,7 @@
                     <div class="cms-search-options">\
                         <span id="searchQuery" class="cms-item-left"><label>Search for:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
-                    <!-- <div class="cms-search-options">\
+                 <!--   <div class="cms-search-options">\
                         <div class="cms-item-left">Search in:</div>\
                         <div id="searchInTitle" class="cms-list-checkbox"></div>\
                         <div class="cms-checkbox-label">Title</div>\
@@ -179,7 +179,7 @@
                     <div class="cms-search-options">\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed after:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
-                    </div>-->\
+                    </div> -->\
                     <div class="cms-search-options">\
                         <button class="ui-state-default ui-corner-all cms-item-left-bottom">Search</button>\
                     </div>\
@@ -594,7 +594,7 @@
     * TODO: to rename in displaySelectButton()!!!!
     */
    var isSelectableItem = cms.galleries.isSelectableItem = function () {      // displaySelectButton
-      if (cms.galleries.initValues['dialogMode'] == 'widget'){
+      if (cms.galleries.initValues['dialogMode'] == 'widget' || cms.galleries.initValues['dialogMode'] == 'property' ){
           return true;
       }
       return false;
@@ -619,6 +619,7 @@
       }
       return false;
    }
+   
      
    var fillResultPage = cms.galleries.fillResultPage = function(pageData) {           
       var target = $('#results > ul').empty().removeAttr('id').attr('id', cms.html.galleryResultListPrefix + pageData.searchresult.resultpage);
@@ -692,16 +693,16 @@
                         cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
                         cms.galleries.activeItem['isInitial'] = true;
                     }
-                    
+            
                 } else if (cms.galleries.initValues['dialogMode'] == 'widget') {
-                    // Set the path to currently selected item            
+            // Set the path to currently selected item            
                     if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null' &&
                     cms.galleries.initValues['path'] != null &&
                     cms.galleries.initValues['path'] != 'null') {
                         cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
-                        cms.galleries.activeItem['isInitial'] = true;
-                    }
-                }
+                        cms.galleries.activeItem['isInitial'] = true;      
+            	  }          
+            }
         }
             
         
@@ -1164,7 +1165,7 @@
     var resetActiveItem = cms.galleries.resetActiveItem = function() {        
         cms.galleries.activeItem['isCropped'] = null;
     }
-    
+ 
     /**
      * Checkes or uncheckes the checkbox element.
      * 

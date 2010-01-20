@@ -124,7 +124,7 @@
     * @param {Object} itemData the data to update the preview
     */
    var refreshDefaultPreview = function(itemData) {       
-      $('#cms-preview div.close-icon').removeClass('cms-properties-changed').addClass('cms-properties-saved');      
+      $('#cms-preview div.close-icon').removeClass('cms-properties-changed').addClass('cms-properties-saved');
       $('#cms-preview div.preview-area, #' + cms.previewhandler.keys['propertiesTabId']).empty();
       //display the html preview 
       $('.preview-area').append(itemData['previewdata']['itemhtml']);
@@ -296,15 +296,15 @@
       var fieldId = cms.galleries.initValues['fieldId'];
       
       if (fieldId != null && fieldId != "") {
-         var imgField = window.opener.document.getElementById(fieldId);
+         var imgField = window.parent.document.getElementById(fieldId);
          imgField.value = itemId;
          try {
             // toggle preview icon if possible
-            window.opener.checkPreview(fieldid);
+            window.parent.checkPreview(fieldid);
          } catch (e) {
                   }
       }
-      window.close();      
+      window.parent.closeGallery(window.parent, fieldId);
    }
    
    /**
@@ -344,7 +344,6 @@
        $('#'+ cms.previewhandler.editableTabId).tabs('destroy');
        $('#'+ cms.previewhandler.editableTabId).removeAttr('class').empty();
        $('#cms-preview div.close-icon').removeClass('cms-properties-changed cms-properties-saved'); 
-       
        //$('#' + cms.previewhandler.keys['propertiesTabId']).find('button[name="previewSelect"]').removeClass('cms-properties-changed');      
        $('#cms-preview div.preview-area').empty();       
    }
@@ -367,11 +366,13 @@
       'refreshPreview': refreshDefaultPreview,
       'setValues': {
          'widget': setValues,
-         'editor': 'test2'
+         'editor': 'test2',
+         'property': cms.property.setGalleryValues
       },
       'setValuesFromList': {
          'widget': setResourcePath,
-         'editor': 'test2'
+         'editor': 'test2',
+         'property': cms.property.setGalleryResourcePath
       },
       'closePreviewWithConfirmation': closePreviewWithConfirmation,
       'closePreview': closePreview

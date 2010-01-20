@@ -5,14 +5,14 @@
    cms.imagepreviewhandler.typeConst = 'image';
    
    /** Initial flag for generating of the values for the format select box. */
-   var isInitFormatSelectBox = true;     
+   var isInitFormatSelectBox = true;
    
    /** String constants to use in html. */
    var keys = cms.imagepreviewhandler.keys = {
-      'formatTabId':'tabs-edit-format-area', 
-      'imageInfosTabId':'tabs-image-infos-area',
-      'editorFormatTabId':'tabs-editor-formats-area',
-      'editorAdvancedTabId':'tabs-editor-advanced-area',
+      'formatTabId': 'tabs-edit-format-area',
+      'imageInfosTabId': 'tabs-image-infos-area',
+      'editorFormatTabId': 'tabs-editor-formats-area',
+      'editorAdvancedTabId': 'tabs-editor-advanced-area',
       'previewWidth': 'width',
       'previewHeight': 'height',
       'imageFormat': 'format',
@@ -25,28 +25,28 @@
    /** String constants to use in html. */
    var editorKeys = cms.imagepreviewhandler.editorKeys = {
       'fckAlt': 'txtAlt',
-      'fckInsertAlt':'insertAlt',
-      'fckResetTitle':'btnSetAlt',
-      'fckCopy':'txtCopyright',
-      'fckInsertCr':'insertCopyright',
-      'fckReserCr':'btnSetCopy',
-      'imgSpacing':'imageBorder',
+      'fckInsertAlt': 'insertAlt',
+      'fckResetTitle': 'btnSetAlt',
+      'fckCopy': 'txtCopyright',
+      'fckInsertCr': 'insertCopyright',
+      'fckReserCr': 'btnSetCopy',
+      'imgSpacing': 'imageBorder',
       'imgAlign': 'cmbAlign',
-      'hSpace':'txtHSpace',
-      'vSpace':'txtVSpace',
-      'linkOriginal':'linkOriginal',
+      'hSpace': 'txtHSpace',
+      'vSpace': 'txtVSpace',
+      'linkOriginal': 'linkOriginal',
       'advLinkUrl': 'txtLnkUrl',
-      'advBrowseServer':'btbrowseserver',
+      'advBrowseServer': 'btbrowseserver',
       'advLinkTarget': 'cmbLnkTarget',
-      'advId':'txtAttId',
-      'advClasses':'txtAttClasses',
-      'advStyle':'txtAttStyle',
-      'advLongDesc':'txtLongDesc',
-      'advAdvTitle':'txtAttTitle',
-      'advLangDir':'cmbAttLangDir',
-      'advLangCode':'txtAttLangCode'      
+      'advId': 'txtAttId',
+      'advClasses': 'txtAttClasses',
+      'advStyle': 'txtAttStyle',
+      'advLongDesc': 'txtLongDesc',
+      'advAdvTitle': 'txtAttTitle',
+      'advLangDir': 'cmbAttLangDir',
+      'advLangCode': 'txtAttLangCode'
    };
-      
+   
    ///// Additional infos for image format processing ////////
    /** Default format value for the drop down. */
    //TODO: change width of small foramt to '200'!!!
@@ -63,49 +63,46 @@
    var formatDropDown = [];
    
    /** Array with format values for the drop down. */
-   var editorAlignDropDown = [
-       {  'value':'',
-           'title':'' 
-       },
-       {   'value':'left',
-           'title':'left'                
-       },
-       {    'value':'right',
-            'title':'right'           
-       }       
-   ];
+   var editorAlignDropDown = [{
+      'value': '',
+      'title': ''
+   }, {
+      'value': 'left',
+      'title': 'left'
+   }, {
+      'value': 'right',
+      'title': 'right'
+   }];
    
    /** Array with format values for the drop down. */
-   var editorTargetDropDown = [
-       {  'value':'none',
-           'title':'<not set>' 
-       },
-       {   'value':'_blank',
-           'title':'New Window (_blank)'                
-       },
-       {    'value':'_top',
-            'title':'Topmost Window (_top)'           
-       },        
-       {    'value':'_self',
-            'title':'Same Window (_self)'           
-       },
-       {    'value':'_parent',
-            'title':'Parent Window (_parent)'           
-       }       
-   ];
+   var editorTargetDropDown = [{
+      'value': 'none',
+      'title': '<not set>'
+   }, {
+      'value': '_blank',
+      'title': 'New Window (_blank)'
+   }, {
+      'value': '_top',
+      'title': 'Topmost Window (_top)'
+   }, {
+      'value': '_self',
+      'title': 'Same Window (_self)'
+   }, {
+      'value': '_parent',
+      'title': 'Parent Window (_parent)'
+   }];
    
    /** Array with format values for the drop down. */
-   var editorLangDropDown = [
-       {  'value':'none',
-           'title':'<not set>' 
-       },
-       {   'value':'ltr',
-           'title':'Left to Right (LTR)'                
-       },
-       {    'value':'rtl',
-            'title':'Right to Left (LTR)'           
-       }       
-   ];
+   var editorLangDropDown = [{
+      'value': 'none',
+      'title': '<not set>'
+   }, {
+      'value': 'ltr',
+      'title': 'Left to Right (LTR)'
+   }, {
+      'value': 'rtl',
+      'title': 'Right to Left (LTR)'
+   }];
    
    cms.imagepreviewhandler.editorCheckboxes = {};
    
@@ -126,24 +123,24 @@
    
    /** html fragment for the tab navigation. */
    var tabsNav = {
-       'widget': '<ul>\
+      'widget': '<ul>\
                       <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">Properties</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">Image format</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">Image infos</a></li>\
                   </ul>',
-        'editor' : '<ul>\
+      'editor': '<ul>\
                       <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">Properties</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">Image format</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">Image infos</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['editorFormatTabId'] + '">Editor formats</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['editorAdvancedTabId'] + '">Advanced</a></li>\
-                  </ul>'     
-   } ;
+                  </ul>'
+   };
    
    ///////////////////////////////////////////////////////////////////
    
-    /** Html sceleton for width and height format fields. */                             
-    var  widthHeightFieldsHtml = '<div class="cms-format-line" alt="' + keys['previewWidth'] + '" >\
+   /** Html sceleton for width and height format fields. */
+   var widthHeightFieldsHtml = '<div class="cms-format-line" alt="' + keys['previewWidth'] + '" >\
                                 <span class="cms-item-title cms-width-50">Width:</span>\
                                 <input class="ui-corner-all ui-widget-content ui-state-disabled" disabled="true" type="text"/>\
                             </div>\
@@ -151,20 +148,20 @@
                                 <span class="cms-item-title cms-width-50">Height:</span>\
                                 <input class="ui-corner-all ui-widget-content ui-state-disabled" disabled="true" type="text"/>\
                             </div>';
-    // TODO: eventual comment on as cancel button    
-                            /*<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
-                                    <span class="cms-galleries-button">Close</span>\
-                                </button>\*/
-    /** Html sceleton for the additional buttons in the image format area. */                            
-    var lockRatioButtonsHtml = '<button name="' + keys['locksizes'] + '" class="ui-state-default ui-corner-all">\
+   // TODO: eventual comment on as cancel button    
+   /*<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
+    <span class="cms-galleries-button">Close</span>\
+    </button>\*/
+   /** Html sceleton for the additional buttons in the image format area. */
+   var lockRatioButtonsHtml = '<button name="' + keys['locksizes'] + '" class="ui-state-default ui-corner-all">\
                                     <span class="cms-galleries-button cms-galleries-icon-locked cms-icon">&nbsp;</span>\
-                               </button>';     
-    var resetButtonHtml = '<button name="' + keys['resetsize'] + '" class="ui-state-default ui-corner-all">\
+                               </button>';
+   var resetButtonHtml = '<button name="' + keys['resetsize'] + '" class="ui-state-default ui-corner-all">\
                                 <span class="cms-galleries-button cms-galleries-icon-reset cms-icon">&nbsp;</span>\
-                           </button>';                               
-                           
-    /** Html sceleton for the format select box in the image format area. */                              
-    var selectBoxHtml = '<div class="cms-drop-down cms-format-line" alt="' + keys['imageFormat'] + '">\
+                           </button>';
+   
+   /** Html sceleton for the format select box in the image format area. */
+   var selectBoxHtml = '<div class="cms-drop-down cms-format-line" alt="' + keys['imageFormat'] + '">\
                                <label class="cms-item-title cms-width-50">Format:</label>\
                                <button class="ui-state-default ui-corner-all" name="' + keys['cropShow'] + '">\
                                     <span class="cms-galleries-button cms-galleries-icon-crop cms-icon-text">Cropping</span>\
@@ -172,8 +169,8 @@
                                <button class="ui-state-default ui-corner-all" name="' + keys['cropRemove'] + '">\
                                     <span class="cms-galleries-button cms-galleries-icon-cropremove cms-icon-text">Remove&nbsp;cropping</span>\
                                </button>\
-                           </div>';                                                          
-
+                           </div>';
+   
    /** */
    var editorFormatTabHtml = '<div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
                                   <span class="cms-item-title cms-width-95">Title&nbsp;/&nbsp;Alt-Text</span>\
@@ -265,24 +262,24 @@
          cms.galleries.getContentHandler(cms.imagepreviewhandler.imageContentTypeHandler['type'])['init']();
          $('#' + cms.galleries.idGalleriesMain).append(htmlCropSceleton);
          isInitFormatSelectBox = false;
-      }           
+      }
       
       // displays the html preview
-      var itemHtml  = $(itemData['previewdata']['itemhtml']);            
-      var imageInfo =  itemHtml.find('.cms-image-info').remove();
+      var itemHtml = $(itemData['previewdata']['itemhtml']);
+      var imageInfo = itemHtml.find('.cms-image-info').remove();
       var jsonForActiveImage = itemHtml.find("input[type='hidden']").remove().val();
       $('.preview-area').append(itemHtml);
-    
+      
       // display editable properties
       showFormatEditArea(itemData['previewdata']['properties'], imageInfo);
-     
+      
       // display the image in the preview area
       showActiveItemPreviewArea(JSON.parse(jsonForActiveImage), cms.galleries.activeItem['isInitial']);
       
       // bind the select tab event, fill the content of the result tab on selection
-      $('#' + cms.previewhandler.editableTabId).prepend(tabsNav[cms.galleries.initValues['dialogMode']]);      
-      $('#' + cms.previewhandler.editableTabId).tabs({}); 
-
+      $('#' + cms.previewhandler.editableTabId).prepend(tabsNav[cms.galleries.initValues['dialogMode']]);
+      $('#' + cms.previewhandler.editableTabId).tabs({});
+      
       //bind click event to preview close button 
       $('#cms-preview div.close-icon').click(cms.galleries.getContentHandler()['closePreviewWithConfirmation']);
       
@@ -297,7 +294,7 @@
       
       // change the initial flag 
       if (cms.galleries.activeItem['isInitial'] == true) {
-         cms.galleries.activeItem['isInitial'] = false;         
+         cms.galleries.activeItem['isInitial'] = false;
       }
    }
    
@@ -308,85 +305,85 @@
     */
    var showFormatEditArea = function(itemProperties, imageInfos) {
       // display editable properties
-      cms.galleries.getContentHandler()['showEditArea'](itemProperties); 
-                                                                 
+      cms.galleries.getContentHandler()['showEditArea'](itemProperties);
+      
       /////// TODO: switch to the format tab on open      
       
       ///////////// Display format select parameters for image ///////////////////////  
       
       // add format edit area to preview
-      $('<div id="' + cms.imagepreviewhandler.keys['formatTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);      
+      $('<div id="' + cms.imagepreviewhandler.keys['formatTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
       fillImageFormatInfos();
-            
+      
       ////////////// Display image infos ////////////////////////////////////////////
       
       // add image infos edit area to preview
       $('<div id="' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
-      fillImageInfos(imageInfos);   
+      fillImageInfos(imageInfos);
       
       // add additional tabs for editor
       if (cms.galleries.isEditorMode()) {
-          $('<div id="' + cms.imagepreviewhandler.keys['editorFormatTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
-          fillEditorFormatInfos();                                            
-          
-          $('<div id="' + cms.imagepreviewhandler.keys['editorAdvancedTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
-          fillEditorAdvancedInfos();    
+         $('<div id="' + cms.imagepreviewhandler.keys['editorFormatTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
+         fillEditorFormatInfos();
+         
+         $('<div id="' + cms.imagepreviewhandler.keys['editorAdvancedTabId'] + '"></div>').appendTo('#' + cms.previewhandler.editableTabId);
+         fillEditorAdvancedInfos();
       }
    }
    
    /**
     * Fills the image infos area with content.
-    * 
+    *
     * @param {Object} imageInfos the html content
     */
    var fillImageInfos = function(imageInfos) {
       // add image infos edit area to preview
-      var targetInfos = $('#' + cms.imagepreviewhandler.keys['imageInfosTabId']); 
-      targetInfos.append($(imageInfos));   
+      var targetInfos = $('#' + cms.imagepreviewhandler.keys['imageInfosTabId']);
+      targetInfos.append($(imageInfos));
       // TODO: eventual comment on as cancel button    
       /*$('#' + cms.imagepreviewhandler.keys['imageInfosTabId']).find('div.cms-field:last')
-          .prepend('<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
-                          <span class="cms-galleries-button">Close</span>\
-                    </button>');*/          
+       .prepend('<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
+       <span class="cms-galleries-button">Close</span>\
+       </button>');*/
       /*targetInfos.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);*/
       if (cms.galleries.isSelectableItem()) {
-          // add select button
-          /*targetInfos.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
-                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
-                             </button>');*/
+         // add select button
+         /*targetInfos.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+          <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+          </button>');*/
           $('#' + cms.imagepreviewhandler.keys['imageInfosTabId']).find('div.cms-field:last')
               .prepend('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
                                    <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
-                             </button>');                              
-          targetInfos.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);
-       }          
+                             </button>');
+         targetInfos.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);
+      }
    }
    
    /**
     * Fills image format area with content.
     */
-   var fillImageFormatInfos = function() {   
+   var fillImageFormatInfos = function() {
       // generate format fields for width and height
       var targetFormat = $('#' + cms.imagepreviewhandler.keys['formatTabId']);
       var form = $('<div class="edit-form"></div>');
-      form.append($(widthHeightFieldsHtml)).appendTo(targetFormat); 
+      form.append($(widthHeightFieldsHtml)).appendTo(targetFormat);
       
       if (cms.galleries.isSelectableItem()) {
-            //targetFormat.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);
-            // add select button
-            targetFormat.find('div[alt="' + keys['previewHeight'] + '"]').prepend('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+         //targetFormat.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);
+         // add select button
+         targetFormat.find('div[alt="' + keys['previewHeight'] + '"]').prepend('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
                                        <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
                                  </button>');
-            /*targetFormat.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
-             <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
-             </button>');*/
-            targetFormat.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);
-      }         
-            
-      if (cms.galleries.isFullDisplayMode()) {                 
+         /*targetFormat.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
+          <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+          </button>');*/
+         targetFormat.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);
+      }
+      
+      if (cms.galleries.isFullDisplayMode()) {
          // enable width and height fields and bind events 
          targetFormat.find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
-         targetFormat.find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');          
+         targetFormat.find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
          $('.cms-format-line[alt="' + keys['previewWidth'] + '"]').find('input').blur(function() {
             onSizeChanged('Width', $(this).val())
          });
@@ -406,7 +403,7 @@
          $('button[name="' + keys['cropRemove'] + '"]').click(function() {
             setCropActive(false);
             checkResetSizes();
-         });        
+         });
          form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
             values: formatDropDown,
             width: 150,
@@ -427,19 +424,19 @@
        
       var target = $('#' + keys['editorFormatTabId']);
       // generate editable form fields for editor
-      var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');
+      var form = $('<div class="edit-advanced-form cms-scrolling-editor-advanced"></div>');      
       form.append($(editorFormatTabHtml));
       target.append(form);
-     
+      
       if (isEnhanced()) {
            $('div[alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '"]').addClass('cms-width-320').removeClass('cms-width-620').after($(enhancedInsetAltCopyright));
            $('div[alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '"]').after($(enhancedInsertLink)); 
            $('#' + cms.imagepreviewhandler.editorKeys['fckResetTitle']).click(resetAltText);
            $('#' + cms.imagepreviewhandler.editorKeys['fckReserCr']).click(resetCopyrightText);
       }
-      
+            
       // initialize select box and checkboxes        
-      form.find('.cms-drop-down label').after($.fn.selectBox('generate', {
+     form.find('.cms-drop-down label').after($.fn.selectBox('generate', {            
             selectorPosition:'top',
             values: editorAlignDropDown,
             width: 100,
@@ -486,6 +483,8 @@
          }));
    }
    
+   
+   
    /**
     * Refresh the preview for image after changes.
     *
@@ -495,7 +494,7 @@
       $('#cms-preview div.close-icon').removeClass('cms-properties-changed').addClass('cms-properties-saved');
       $('#' + cms.previewhandler.keys['propertiesTabId'] + ', #' + cms.imagepreviewhandler.keys['imageInfosTabId']).empty();
       // refresh the editable properties
-      cms.galleries.getContentHandler()['fillProperties'](itemData['previewdata']['properties']);      
+      cms.galleries.getContentHandler()['fillProperties'](itemData['previewdata']['properties']);
       // refresh active image title to be used as alt attribute
       if (cms.galleries.isEditorMode()) {          
           var jsonForActiveImage = JSON.parse($(itemData['previewdata']['itemhtml']).find("input[type='hidden']").remove().val());
@@ -503,8 +502,8 @@
           cms.galleries.activeItem['description'] = jsonForActiveImage['activeimage']['description'];              
       }
       // refresh additional image infos          
-      var imageInfos =  $(itemData['previewdata']['itemhtml']).find('.cms-image-info').remove();
-      fillImageInfos(imageInfos);            
+      var imageInfos = $(itemData['previewdata']['itemhtml']).find('.cms-image-info').remove();
+      fillImageInfos(imageInfos);
    }
    
    /**
@@ -514,11 +513,11 @@
     * @param {Object} activeImageData the JSONobject with additional information for the image resource type
     * @param {Object} isInitial true, if true
     */
-   var showActiveItemPreviewArea = function(/**JSONobject*/activeImageData, /**Boolean*/ isInitial) {       
+   var showActiveItemPreviewArea = function(/**JSONobject*/activeImageData, /**Boolean*/ isInitial) {
       if (activeImageData == "none") {
          return;
-      }            
-      $.extend(cms.galleries.activeItem, activeImageData["activeimage"]);                 
+      }
+      $.extend(cms.galleries.activeItem, activeImageData["activeimage"]);
       
       var widthField = $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input');
       var heightField = $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input');
@@ -626,10 +625,10 @@
          }
       }
       try {
-          // do additional stuff with the active image if necessary
-          activeImageAdditionalActions(isInitial);
+         // do additional stuff with the active image if necessary
+         activeImageAdditionalActions(isInitial);
       } catch (e) {
-      }
+            }
    }
    
    /**
@@ -643,7 +642,7 @@
          // disable input fields and buttons for simple widget mode                        
          $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
          $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
-                  
+         
          //$('#formatselect').get(0).disabled = true;
          $('div[alt="' + keys['imageFormat'] + '"]').find('.cms-selectbox').selectBox('setEnabled', false);
          $('button[name="' + keys['locksizes'] + '"]').hide();
@@ -654,8 +653,8 @@
             // cropping has been set, disable input fields and refresh view            
             $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
             $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
-                        
-            //$('#formatselect').get(0).disabled = true;
+            
+            //$('#formatselect').get(0).disabled = true;                
             $('div[alt="' + keys['imageFormat'] + '"]').find('.cms-selectbox').selectBox('setEnabled', false);                            
             $('button[name="' + keys['locksizes'] + '"]').hide();
             $('button[name="' + keys['resetsize'] + '"]').hide();
@@ -669,7 +668,7 @@
             } else if (cms.galleries.initValues.useformats == false) {
                // only enable if not using formats
                $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
-               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');               
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
             }
             //$('#formatselect').get(0).disabled = false;
             $('div[alt="' + keys['imageFormat'] + '"]').find('.cms-selectbox').selectBox('setEnabled', true);
@@ -829,8 +828,8 @@
    }
    
    /**
-    * Initializes the options and values shown in the format select box. 
-    */ 
+    * Initializes the options and values shown in the format select box.
+    */
    var initFormatSelectBox = function() {
       var formatOptions, formatValues;
       if (cms.galleries.initValues.useformats == true) {
@@ -899,7 +898,7 @@
    /**
     * Called if a format is selected in the format select box.
     * @param {Object} selectedIndex the index of the selected value
-    */ 
+    */
    var changeFormat = function(/**int*/selectedIndex) {
       cms.imagepreviewhandler.formatSelected = cms.imagepreviewhandler.formatSelections[selectedIndex];
       
@@ -949,12 +948,12 @@
    
    /**
     * Fired when the width or height input texts change.
-    * 
+    *
     * @param {Object} dimension
     * @param {Object} value
     * @param {Object} refreshImage flag for image refresh
     * @param {Object} refreshSelect flag for select box refresh
-    */ 
+    */
    var onSizeChanged = function(dimension, value, refreshImage, refreshSelect) {
       // verifies if the aspect ratio has to be mantained
       if (lockRatio == true) {
@@ -1022,9 +1021,9 @@
    
    /**
     * Refreshes the selected option of the format select box.
-    * 
+    *
     * @param {Object} forceCalculateSelection the flag to force the image refreshing
-    */ 
+    */
    var refreshSelectBox = function(forceCalculateSelection) {
       var selectedIndex = -1;
       if (cms.galleries.initValues.useformats != true || forceCalculateSelection == true) {
@@ -1043,7 +1042,7 @@
             (cms.galleries.activeItem.newwidth == 0 || cms.galleries.activeItem.newwidth == cms.galleries.activeItem.width) &&
             (cms.galleries.activeItem.newheight == 0 || cms.galleries.activeItem.newheight == cms.galleries.activeItem.height)) {
                selectedIndex = i;
-               $('button[name="' + keys['cropShow'] + '"]').hide();                
+               $('button[name="' + keys['cropShow'] + '"]').hide();
                break;
             } else if (currSelect.width == cms.galleries.activeItem.newwidth &&
             (currSelect.height == -1 || currSelect.height == cms.galleries.activeItem.newheight)) {
@@ -1081,12 +1080,12 @@
    }
    
    /**
-    * OK Button was pressed, stores the image information back in the editor fields.    
+    * OK Button was pressed, stores the image information back in the editor fields.
     */
    var setValues = function() {
-        // the unique path to the resource
-        var itemId = $('#cms-preview').attr('alt');
-        setImagePath(itemId);        
+      // the unique path to the resource
+      var itemId = $('#cms-preview').attr('alt');
+      setImagePath(itemId);
    }
    
    /**
@@ -1095,14 +1094,14 @@
     */
    var setImagePath = function(itemId) {
       // the unique path to the resource
-     // var itemId = $('#cms-preview').attr('alt');
+      // var itemId = $('#cms-preview').attr('alt');
       //the id of the input field in the xml content
       var fieldId = cms.galleries.initValues['fieldId'];
-       
+      
       if (cms.galleries.initValues.widgetmode == "simple") {
          // simple image gallery widget
          if (fieldId != null && fieldId != "") {
-            var imgField = window.opener.document.getElementById(fieldId);
+            var imgField = window.parent.document.getElementById(fieldId);
             var imagePath = itemId;
             if (cms.galleries.activeItem.isCropped) {
                var newScale = "";
@@ -1154,7 +1153,7 @@
             }
             
             // write the path with request parameters to the input field
-            imgField.value = imagePath;            
+            imgField.value = imagePath;
          }
       } else {
             // widget mode: VFS image widget
@@ -1215,9 +1214,9 @@
       try {
          // toggle preview icon if possible
          if (cms.galleries.initValues.widgetmode == "simple") {
-            window.opener.checkPreview(cms.galleries.initValues.fieldid);
+            window.parent.checkPreview(cms.galleries.initValues.fieldid);
          } else {
-            window.opener.checkVfsImagePreview(cms.galleries.initValues.fieldid);
+            window.parent.checkVfsImagePreview(cms.galleries.initValues.fieldid);
          }
       } catch (e) {
             }
@@ -1227,7 +1226,7 @@
    /**
     * Displays the cropping dialog.
     */
-   var showCropDialog = function() {      
+   var showCropDialog = function() {
       $('#cms-image-crop').html('<iframe frameborder="0" style="width: 650px; height: 486px;" name="cropFrame" src="./crop.jsp?" hspace="0">\
            </iframe>');
       $('#cms-image-crop').show();
@@ -1320,16 +1319,16 @@
    };
    
    var closePreview = function() {
-       $('#cms-preview').fadeOut('slow');
-       cleanUpOnClose();       
+      $('#cms-preview').fadeOut('slow');
+      cleanUpOnClose();
    }
    
-   var cleanUpOnClose = function() {       
-       $('#'+ cms.previewhandler.editableTabId).tabs('destroy');
-       $('#'+ cms.previewhandler.editableTabId).removeAttr('class').empty();
-       $('#cms-preview div.close-icon').removeClass('cms-properties-changed cms-properties-saved'); 
-       $('#cms-preview div.preview-area').empty();       
-   }   
+   var cleanUpOnClose = function() {
+      $('#' + cms.previewhandler.editableTabId).tabs('destroy');
+      $('#' + cms.previewhandler.editableTabId).removeAttr('class').empty();
+      $('#cms-preview div.close-icon').removeClass('cms-properties-changed cms-properties-saved');
+      $('#cms-preview div.preview-area').empty();
+   }
    
    ///// Image Content Handler ////////////////              
    /**
@@ -1342,13 +1341,15 @@
       'refreshPreview': refreshImagePreview,
       'setValues': {
          'widget': setValues,
-         'editor': 'test2'
+         'editor': 'test2',
+         'property': cms.property.setGalleryValues
       },
       'setValuesFromList': {
          'widget': setImagePath,
-         'editor': 'test2'
+         'editor': 'test2',
+         'property': cms.property.setGalleryResourcePath
       },
-      'getScaleValue' : getScaleValue,
+      'getScaleValue': getScaleValue,
       'removeScaleValue': removeScaleValue
    };
    

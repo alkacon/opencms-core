@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/01/15 14:55:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/20 12:40:46 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsSubContainerBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
@@ -78,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.6
  */
@@ -87,8 +88,6 @@ public final class CmsElementUtil {
     /** Element json property constants. */
     public enum JsonElement {
 
-        /** If the current user is not allowed to edit the given resource, this is the reason of it. */
-        NO_EDIT_REASON("noEditReason"),
         /** Array of HTML code resulting from formatter execution. */
         CONTENTS("contents"),
         /** The last modification date. */
@@ -103,6 +102,8 @@ public final class CmsElementUtil {
         ID("id"),
         /** Element's navigation text. */
         NAVTEXT("navText"),
+        /** If the current user is not allowed to edit the given resource, this is the reason of it. */
+        NO_EDIT_REASON("noEditReason"),
         /** The object type, container or element. */
         OBJTYPE("objtype"),
         /** The element property information. */
@@ -182,6 +183,9 @@ public final class CmsElementUtil {
         }
     }
 
+    /** JSON response state value constant. */
+    public static final String TYPE_ELEMENT = "Element";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementUtil.class);
 
@@ -253,6 +257,10 @@ public final class CmsElementUtil {
 
             Object currentElement = m_req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
             m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
+            m_req.setAttribute(
+                CmsADEManager.ATTR_PROPERTY_CONFIG,
+                CmsXmlContentDefinition.getContentHandlerForResource(m_cms, m_cms.readResource(element.getElementId())));
+
             try {
                 return new String(loaderFacade.getLoader().dump(
                     m_cms,
@@ -408,9 +416,6 @@ public final class CmsElementUtil {
         return resElement;
     }
 
-    /** JSON response state value constant. */
-    public static final String TYPE_ELEMENT = "Element";
-
     /**
      * Returns the property information for the given element as a JSON object.<p>
      * 
@@ -420,7 +425,8 @@ public final class CmsElementUtil {
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong generating the JSON
      */
-    public JSONObject getElementPropertyInfo(CmsContainerElementBean element) throws CmsException, JSONException {
+    public JSONObject getElementPropertyInfo(CmsObject cms, CmsContainerElementBean element)
+    throws CmsException, JSONException {
 
         CmsResource elementRes = m_cms.readResource(element.getElementId());
         CmsUserSettings settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
@@ -437,8 +443,21 @@ public final class CmsElementUtil {
             CmsXmlContentProperty conf = entry.getValue();
             CmsMacroResolver.resolveMacros(conf.getWidgetConfiguration(), m_cms, Messages.get().getBundle());
             JSONObject jSONProperty = new JSONObject();
-            jSONProperty.put(JsonProperty.VALUE.getName(), properties.get(propertyName).getStructureValue());
-            jSONProperty.put(JsonProperty.DEFAULT_VALUE.getName(), conf.getDefault());
+
+            String propValue = properties.get(propertyName).getStructureValue();
+            if (conf.getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+                jSONProperty.put(JsonProperty.VALUE.getName(), CmsXmlContentProperty.convertIdsToPaths(
+                    cms,
+                    propValue,
+                    CmsXmlContainerPage.IDS_SEPARATOR,
+                    CmsXmlContainerPage.IDS_SEPARATOR));
+            } else {
+                jSONProperty.put(JsonProperty.VALUE.getName(), propValue);
+            }
+
+            String propDefault = conf.getDefault();
+            jSONProperty.put(JsonProperty.DEFAULT_VALUE.getName(), propDefault);
+
             jSONProperty.put(JsonProperty.TYPE.getName(), conf.getPropertyType());
             jSONProperty.put(JsonProperty.WIDGET.getName(), conf.getWidget());
             jSONProperty.put(JsonProperty.WIDGET_CONF.getName(), CmsMacroResolver.resolveMacros(

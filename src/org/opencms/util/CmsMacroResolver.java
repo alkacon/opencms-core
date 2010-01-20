@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2009/12/21 10:50:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/20 12:40:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** The prefix indicating that the key represents an OpenCms runtime attribute. */
     public static final String KEY_ATTRIBUTE = "attribute.";
+
+    /** Key used to specify the context path as macro value. */
+    public static final String KEY_CONTEXT_PATH = "contextPath";
 
     /** Key used to specify the description of the current organizational unit as macro value. */
     public static final String KEY_CURRENT_ORGUNIT_DESCRIPTION = "currentou.description";
@@ -744,6 +747,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (CmsMacroResolver.KEY_REQUEST_LOCALE.equals(macro)) {
                 // the key is the current locale of the request
                 return m_cms.getRequestContext().getLocale().toString();
+            }
+
+            if (CmsMacroResolver.KEY_CONTEXT_PATH.equals(macro)) {
+                // the key is the OpenCms context path
+                return OpenCms.getSystemInfo().getContextPath();
             }
 
         }

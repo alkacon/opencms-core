@@ -1,5 +1,6 @@
 <%@ page session="false" import="org.opencms.workplace.editors.sitemap.CmsSitemapActionElement, org.opencms.workplace.CmsWorkplace" %>
 <%@ page import="org.opencms.main.*" %>
+<%@ page import="org.opencms.workplace.galleries.*" %>
 
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
   CmsSitemapActionElement jsp = new CmsSitemapActionElement(pageContext, request, response);
@@ -24,7 +25,8 @@
             "SKIN_URI"	     : "<%=CmsWorkplace.getSkinUri()%>",
             "NO_EDIT_REASON" : "${cms.noEditReason}",
             "DISPLAY_TOOLBAR": "${cms.displayToolbar}",
-            "GALLERY_SERVER_URL" : "${cms.galleryServerUri}"
+            "GALLERY_SERVER_URL" : "${cms.galleryServerUri}",
+            "GALLERY_PATH": "<%=CmsGallerySearchServer.ADVANCED_GALLERY_PATH%>"
          },
          publish: {
             "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/ade/publish-server.jsp:dd962f3e-abcd-11de-97fc-dd9f629b113b)</cms:link>"
@@ -46,13 +48,15 @@
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.data.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.data.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.galleries.js")%>"></script>
+        <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.property.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.previewhandler.js")%>"></script>
     <%=jsp.getAdditionalGalleryJavascript() %>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.publish.js")%>"></script>
-    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.property.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.util.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/sitemap/js/cms.sitemap.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.selectbox.js")%>"></script>
+    
+    <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("components/widgets/defaultadvancedgallery.js")%>"></script>
     <script type="text/javascript">
 
 	  cms.galleries.configContentTypes=<%=jsp.getSearchableResourceTypeIds() %>;

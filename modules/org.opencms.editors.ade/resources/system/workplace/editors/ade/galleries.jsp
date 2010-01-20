@@ -19,11 +19,12 @@ String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "edit
 <script type="text/javascript" src="<%= adeResourcePath %>lib/json2.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>lib/jquery.pagination.js"></script>
 <script type="text/javascript">
-var cms = { data: { GALLERY_SERVER_URL: "${gallery.galleryUri}"}, html: {}, util: {} , previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
+var cms = { data: { GALLERY_SERVER_URL: "${gallery.galleryUri}"}, html: {}, util: {} , property: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
 </script>
 <script type="text/javascript" src="<cms:link>/system/workplace/editors/ade/cms.messages.jsp</cms:link>"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>js/cms.html.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>js/cms.util.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>js/cms.property.js"></script>
 <script type="text/javascript" src="<%=  adeResourcePath %>js/cms.selectbox.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>js/cms.galleries.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>js/cms.previewhandler.js"></script>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/12/21 11:00:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/01/20 12:40:45 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.6 
  */
@@ -97,6 +97,15 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
     public static final String MACRO_EDITOR_URI = "editorUri";
 
     /** Macro name constant. */
+    public static final String MACRO_GALLERY_ADDITIONAL_JAVASCRIPT = "galleryAdditionalJavascript";
+
+    /** Macro name constant. */
+    public static final String MACRO_GALLERY_SERVER_PATH = "galleryServerPath";
+
+    /** Macro name constant. */
+    public static final String MACRO_GALLERY_SERVER_URI = "galleryServerUri";
+
+    /** Macro name constant. */
     public static final String MACRO_MESSAGES_URI = "messagesUri";
 
     /** Macro name constant. */
@@ -110,12 +119,6 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
     /** Macro name constant. */
     public static final String MACRO_SITEMAP_URI = "sitemapUri";
-
-    /** Macro name constant. */
-    public static final String MACRO_GALLERY_SERVER_URI = "galleryServerUri";
-
-    /** Macro name constant. */
-    public static final String MACRO_GALLERY_ADDITIONAL_JAVASCRIPT = "galleryAdditionalJavascript";
 
     /** Macro name constant. */
     public static final String MACRO_SKIN_URI = "skinUri";
@@ -208,6 +211,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 resolver.addMacro(MACRO_PUBLISH_URI, publishUri);
                 String galleryServerUri = linkMan.substituteLink(cms, CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
                 resolver.addMacro(MACRO_GALLERY_SERVER_URI, galleryServerUri);
+                resolver.addMacro(MACRO_GALLERY_SERVER_PATH, CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
 
                 String skinUri = CmsWorkplace.getSkinUri();
                 resolver.addMacro(MACRO_SKIN_URI, skinUri);

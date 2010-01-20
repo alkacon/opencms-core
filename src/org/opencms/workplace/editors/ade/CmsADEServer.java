@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/19 09:04:56 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/01/20 12:40:45 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 7.6
  */
@@ -438,15 +438,31 @@ public class CmsADEServer extends A_CmsAjaxServer {
      * @return the element bean
      * 
      * @throws JSONException if something goes wrong parsing JSON
+     * @throws CmsException if the path-to-id conversion goes wrong
      */
-    public CmsContainerElementBean createElement(CmsUUID structureId, JSONObject properties) throws JSONException {
+    public CmsContainerElementBean createElement(CmsUUID structureId, JSONObject properties)
+    throws JSONException, CmsException {
+
+        CmsObject cms = getCmsObject();
+        Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(
+            cms,
+            cms.readResource(structureId));
 
         Map<String, String> cnfProps = new HashMap<String, String>();
         if (properties != null) {
             Iterator<String> itProperties = properties.keys();
             while (itProperties.hasNext()) {
                 String propertyName = itProperties.next();
-                cnfProps.put(propertyName, properties.getString(propertyName));
+                String propertyType = propertiesConf.get(propertyName).getPropertyType();
+                if (propertyType.equals(CmsXmlContentProperty.T_VFSLIST)) {
+                    cnfProps.put(propertyName, CmsXmlContentProperty.convertPathsToIds(
+                        cms,
+                        properties.getString(propertyName),
+                        CmsXmlContainerPage.IDS_SEPARATOR,
+                        CmsXmlContainerPage.IDS_SEPARATOR));
+                } else {
+                    cnfProps.put(propertyName, properties.getString(propertyName));
+                }
             }
         }
         return new CmsContainerElementBean(structureId, null, cnfProps);
@@ -650,7 +666,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
             String elemParam = data.optString(JsonRequest.ELEM.getName());
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
             CmsContainerElementBean element = getCachedElement(elemParam);
-            result = elemUtil.getElementPropertyInfo(element);
+            result = elemUtil.getElementPropertyInfo(cms, element);
         } else if (action.equals(Action.SET)) {
             if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // save the favorite list

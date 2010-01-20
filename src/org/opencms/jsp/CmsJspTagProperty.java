@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2009/12/14 13:12:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/20 12:40:45 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
@@ -39,6 +40,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -104,7 +107,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -242,9 +245,14 @@ public class CmsJspTagProperty extends TagSupport {
                     search = true;
                     break;
                 case CONTAINER:
+                    CmsObject cms = controller.getCmsObject();
                     // try to find property on the container element
                     try {
-                        return OpenCms.getADEManager().getCurrentElement(req).getProperties();
+                        return CmsXmlContentProperty.mergeDefaults(
+                            cms,
+                            OpenCms.getADEManager().getCurrentElement(req).getProperties(),
+                            OpenCms.getADEManager().getPropertyConfiguration(cms, req),
+                            CmsXmlContainerPage.IDS_SEPARATOR);
                     } catch (CmsException e) {
                         // most likely we are not in a container page
                         LOG.debug(e.getLocalizedMessage(), e);

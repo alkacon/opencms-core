@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/18 14:14:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/20 12:40:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.9.2
  */
@@ -446,7 +446,16 @@ public class CmsSitemapManager {
             String propertyName = entry.getKey();
             CmsXmlContentProperty conf = entry.getValue();
             CmsMacroResolver.resolveMacros(conf.getWidgetConfiguration(), cms, Messages.get().getBundle());
-            defProps.put(propertyName, conf.getDefault());
+            if (entry.getValue().getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+                String ids = CmsXmlContentProperty.convertPathsToIds(
+                    cms,
+                    conf.getDefault(),
+                    CmsXmlSitemap.IDS_SEPARATOR,
+                    CmsXmlSitemap.IDS_SEPARATOR);
+                defProps.put(propertyName, ids);
+            } else {
+                defProps.put(propertyName, conf.getDefault());
+            }
         }
         m_cache.setDefaultProps(defProps, online);
         return defProps;
@@ -474,7 +483,8 @@ public class CmsSitemapManager {
         }
         // find the sitemap
         CmsXmlSitemap sitemapXml = null;
-        String sitemapFolder = uri;
+        String sitemapFolder = cms.getRequestContext().removeSiteRoot(uri);
+        String originalSitemapFolder = sitemapFolder;
         while (sitemapFolder != null) {
             if (cms.existsResource(sitemapFolder)) {
                 String prop = cms.readPropertyObject(sitemapFolder, CmsPropertyDefinition.PROPERTY_SITEMAP, true).getValue();
@@ -503,7 +513,7 @@ public class CmsSitemapManager {
             return null;
         }
         LinkedList<String> entryPaths = new LinkedList<String>(CmsStringUtil.splitAsList(
-            normalizePath(uri.substring(sitemapFolder.length())),
+            normalizePath(originalSitemapFolder.substring(sitemapFolder.length())),
             "/"));
         // property collection
         Map<String, String> properties = new HashMap<String, String>();

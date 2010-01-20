@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2009/11/05 14:18:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/20 12:40:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,16 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Contains the property configuration for a container-page element.
  * 
@@ -38,13 +48,25 @@ package org.opencms.xml.content;
  * @version $Revision: 1.0
  * 
  */
-public class CmsXmlContentProperty {
+public class CmsXmlContentProperty implements Cloneable {
+
+    /** Property type constant string. */
+    public static final String T_STRING = "string";
 
     /** Property type constant vfs list. */
     public static final String T_VFSLIST = "vfslist";
 
-    /** Property type constant string. */
-    public static final String T_STRING = "string";
+    /** Default value. */
+    private String m_default;
+
+    /** The description. */
+    private String m_description;
+
+    /** The error message. */
+    private String m_error;
+
+    /** The nice name. */
+    private String m_niceName;
 
     /** The name of the property. */
     private String m_propertyName;
@@ -52,29 +74,17 @@ public class CmsXmlContentProperty {
     /** The property type. */
     private String m_propertyType;
 
-    /** The widget to use in the editor. */
-    private String m_widget;
-
-    /** The widget configuration. */
-    private String m_widgetConfiguration;
-
     /** The validation rule regex. */
     private String m_ruleRegex;
 
     /** The validation rule type. */
     private String m_ruleType;
 
-    /** Default value. */
-    private String m_default;
+    /** The widget to use in the editor. */
+    private String m_widget;
 
-    /** The nice name. */
-    private String m_niceName;
-
-    /** The description. */
-    private String m_description;
-
-    /** The error message. */
-    private String m_error;
+    /** The widget configuration. */
+    private String m_widgetConfiguration;
 
     /**
      * Public constructor.
@@ -116,123 +126,125 @@ public class CmsXmlContentProperty {
     }
 
     /**
-     * Returns the propertyName.<p>
-     *
-     * @return the propertyName
+     * Converts a string containing zero or more structure ids into a string containing the corresponding VFS paths.<p>
+     *   
+     * @param cms the CmsObject to use for the VFS operations 
+     * @param value a string representation of a list of ids
+     * @param inputSeparator the separator which occurs in the input parameter
+     * @param outputSeparator the separator that should be used in the return value
+     * 
+     * @return a string representation of a list of paths
+     *  
+     * @throws CmsException if something goes wrong
      */
-    public String getPropertyName() {
+    public static String convertIdsToPaths(CmsObject cms, String value, String inputSeparator, String outputSeparator)
+    throws CmsException {
 
-        return m_propertyName;
+        if (value == null) {
+            return null;
+        }
+        String result = "";
+        // represent vfslists as lists of path in JSON
+        List<String> ids = CmsStringUtil.splitAsList(value, inputSeparator);
+        StringBuffer buffer = new StringBuffer();
+        if (ids.size() > 0) {
+            for (String id : ids) {
+                CmsResource propResource = cms.readResource(new CmsUUID(id));
+                buffer.append(cms.getSitePath(propResource));
+                buffer.append(outputSeparator);
+            }
+            // don't include last comma (which exists since ids.size() isn't zero)  
+            result = buffer.substring(0, buffer.length() - outputSeparator.length());
+        }
+        return result;
+
     }
 
     /**
-     * Sets the propertyName.<p>
-     *
-     * @param propertyName the propertyName to set
+     * Converts a string containing zero or more VFS paths into a string containing the corresponding structure ids.<p>
+     *   
+     * @param cms the CmsObject to use for the VFS operations 
+     * @param value a string representation of a list of paths
+     * @param inputSeparator the separator which occurs in the input parameter
+     * @param outputSeparator the separator that should be used in the return value
+     * 
+     * @return a string representation of a list of ids
+     *  
+     * @throws CmsException if something goes wrong
      */
-    public void setPropertyName(String propertyName) {
+    public static String convertPathsToIds(CmsObject cms, String value, String inputSeparator, String outputSeparator)
+    throws CmsException {
 
-        m_propertyName = propertyName;
+        if (value == null) {
+            return null;
+        }
+        String result = "";
+        // represent vfslists as lists of path in JSON
+        List<String> paths = CmsStringUtil.splitAsList(value, inputSeparator);
+        StringBuffer buffer = new StringBuffer();
+        if (paths.size() > 0) {
+            for (String path : paths) {
+                CmsResource propResource = cms.readResource(path);
+                buffer.append(propResource.getStructureId().toString());
+                buffer.append(outputSeparator);
+            }
+            // don't include last comma (which exists since ids.size() isn't zero)  
+            result = buffer.substring(0, buffer.length() - outputSeparator.length());
+        }
+        return result;
+
     }
 
     /**
-     * Returns the propertyType.<p>
-     *
-     * @return the propertyType
+     * Merge a map of properties with the default values from a map of property configurations.<p>
+     * 
+     * @param cms the CmsObject to use for converting paths to ids 
+     * @param properties the map of properties
+     * @param propertyConfig the map of property configurations
+     * @param separator the separator to use for lists of paths/ids in properties 
+     *  
+     * @return a merged map of properties
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    public String getPropertyType() {
+    public static Map<String, String> mergeDefaults(
+        CmsObject cms,
+        Map<String, String> properties,
+        Map<String, CmsXmlContentProperty> propertyConfig,
+        String separator) throws CmsException {
 
-        return m_propertyType;
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
+            if (entry.getValue().getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+                result.put(entry.getKey(), convertPathsToIds(cms, entry.getValue().getDefault(), separator, separator));
+            } else {
+                result.put(entry.getKey(), entry.getValue().getDefault());
+            }
+        }
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
     }
 
     /**
-     * Sets the propertyType.<p>
-     *
-     * @param propertyType the propertyType to set
+     * 
+     * @see java.lang.Object#clone()
      */
-    public void setPropertyType(String propertyType) {
+    @Override
+    public CmsXmlContentProperty clone() {
 
-        m_propertyType = propertyType;
-    }
-
-    /**
-     * Returns the widget.<p>
-     *
-     * @return the widget
-     */
-    public String getWidget() {
-
-        return m_widget;
-    }
-
-    /**
-     * Sets the widget.<p>
-     *
-     * @param widget the widget to set
-     */
-    public void setWidget(String widget) {
-
-        m_widget = widget;
-    }
-
-    /**
-     * Returns the widgetConfiguration.<p>
-     *
-     * @return the widgetConfiguration
-     */
-    public String getWidgetConfiguration() {
-
-        return m_widgetConfiguration;
-    }
-
-    /**
-     * Sets the widgetConfiguration.<p>
-     *
-     * @param widgetConfiguration the widgetConfiguration to set
-     */
-    public void setWidgetConfiguration(String widgetConfiguration) {
-
-        m_widgetConfiguration = widgetConfiguration;
-    }
-
-    /**
-     * Returns the ruleRegex.<p>
-     *
-     * @return the ruleRegex
-     */
-    public String getRuleRegex() {
-
-        return m_ruleRegex;
-    }
-
-    /**
-     * Sets the ruleRegex.<p>
-     *
-     * @param ruleRegex the ruleRegex to set
-     */
-    public void setRuleRegex(String ruleRegex) {
-
-        m_ruleRegex = ruleRegex;
-    }
-
-    /**
-     * Returns the ruleType.<p>
-     *
-     * @return the ruleType
-     */
-    public String getRuleType() {
-
-        return m_ruleType;
-    }
-
-    /**
-     * Sets the ruleType.<p>
-     *
-     * @param ruleType the ruleType to set
-     */
-    public void setRuleType(String ruleType) {
-
-        m_ruleType = ruleType;
+        return new CmsXmlContentProperty(
+            m_propertyName,
+            m_propertyType,
+            m_widget,
+            m_widgetConfiguration,
+            m_ruleRegex,
+            m_ruleType,
+            m_default,
+            m_niceName,
+            m_description,
+            m_error);
     }
 
     /**
@@ -246,36 +258,6 @@ public class CmsXmlContentProperty {
     }
 
     /**
-     * Sets the default.<p>
-     *
-     * @param default1 the default to set
-     */
-    public void setDefault(String default1) {
-
-        m_default = default1;
-    }
-
-    /**
-     * Returns the niceName.<p>
-     *
-     * @return the niceName
-     */
-    public String getNiceName() {
-
-        return m_niceName;
-    }
-
-    /**
-     * Sets the niceName.<p>
-     *
-     * @param niceName the niceName to set
-     */
-    public void setNiceName(String niceName) {
-
-        m_niceName = niceName;
-    }
-
-    /**
      * Returns the description.<p>
      *
      * @return the description
@@ -283,16 +265,6 @@ public class CmsXmlContentProperty {
     public String getDescription() {
 
         return m_description;
-    }
-
-    /**
-     * Sets the description.<p>
-     *
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-
-        m_description = description;
     }
 
     /**
@@ -306,6 +278,96 @@ public class CmsXmlContentProperty {
     }
 
     /**
+     * Returns the niceName.<p>
+     *
+     * @return the niceName
+     */
+    public String getNiceName() {
+
+        return m_niceName;
+    }
+
+    /**
+     * Returns the propertyName.<p>
+     *
+     * @return the propertyName
+     */
+    public String getPropertyName() {
+
+        return m_propertyName;
+    }
+
+    /**
+     * Returns the propertyType.<p>
+     *
+     * @return the propertyType
+     */
+    public String getPropertyType() {
+
+        return m_propertyType;
+    }
+
+    /**
+     * Returns the ruleRegex.<p>
+     *
+     * @return the ruleRegex
+     */
+    public String getRuleRegex() {
+
+        return m_ruleRegex;
+    }
+
+    /**
+     * Returns the ruleType.<p>
+     *
+     * @return the ruleType
+     */
+    public String getRuleType() {
+
+        return m_ruleType;
+    }
+
+    /**
+     * Returns the widget.<p>
+     *
+     * @return the widget
+     */
+    public String getWidget() {
+
+        return m_widget;
+    }
+
+    /**
+     * Returns the widgetConfiguration.<p>
+     *
+     * @return the widgetConfiguration
+     */
+    public String getWidgetConfiguration() {
+
+        return m_widgetConfiguration;
+    }
+
+    /**
+     * Sets the default.<p>
+     *
+     * @param default1 the default to set
+     */
+    public void setDefault(String default1) {
+
+        m_default = default1;
+    }
+
+    /**
+     * Sets the description.<p>
+     *
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+
+        m_description = description;
+    }
+
+    /**
      * Sets the error.<p>
      *
      * @param error the error to set
@@ -313,6 +375,76 @@ public class CmsXmlContentProperty {
     public void setError(String error) {
 
         m_error = error;
+    }
+
+    /**
+     * Sets the niceName.<p>
+     *
+     * @param niceName the niceName to set
+     */
+    public void setNiceName(String niceName) {
+
+        m_niceName = niceName;
+    }
+
+    /**
+     * Sets the propertyName.<p>
+     *
+     * @param propertyName the propertyName to set
+     */
+    public void setPropertyName(String propertyName) {
+
+        m_propertyName = propertyName;
+    }
+
+    /**
+     * Sets the propertyType.<p>
+     *
+     * @param propertyType the propertyType to set
+     */
+    public void setPropertyType(String propertyType) {
+
+        m_propertyType = propertyType;
+    }
+
+    /**
+     * Sets the ruleRegex.<p>
+     *
+     * @param ruleRegex the ruleRegex to set
+     */
+    public void setRuleRegex(String ruleRegex) {
+
+        m_ruleRegex = ruleRegex;
+    }
+
+    /**
+     * Sets the ruleType.<p>
+     *
+     * @param ruleType the ruleType to set
+     */
+    public void setRuleType(String ruleType) {
+
+        m_ruleType = ruleType;
+    }
+
+    /**
+     * Sets the widget.<p>
+     *
+     * @param widget the widget to set
+     */
+    public void setWidget(String widget) {
+
+        m_widget = widget;
+    }
+
+    /**
+     * Sets the widgetConfiguration.<p>
+     *
+     * @param widgetConfiguration the widgetConfiguration to set
+     */
+    public void setWidgetConfiguration(String widgetConfiguration) {
+
+        m_widgetConfiguration = widgetConfiguration;
     }
 
 }

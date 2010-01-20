@@ -386,10 +386,14 @@ div.ui-widget-header a.cms-subsitemap {
 	background-color:  orange;
 }	
 
+.cms-sub-sitemap-ref > .cms-sitemap-item .cms-additional-item[rel=path], .cms-sub-sitemap-ref > .cms-sitemap-item .cms-additional-item[rel=url] {
+	display: none;
+}
 
 
-
-
+.cms-sub-sitemap-ref > .cms-sitemap-item h3 {
+	color: #888888;
+}
 
 
 

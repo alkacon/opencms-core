@@ -1682,10 +1682,9 @@
             },
       createHandle: function(elem) {
          var $entry = $(elem).closest('.' + classSitemapEntry);
-         var p1 = $entry.parent().closest('.' + classSitemapEntry).size() == 0;
-         var p2 = $entry.siblings('.' + classSitemapEntry).size() == 0;
          var e = new SitemapEntry($entry);
-         if (p1 && p2) {
+         if ($entry.parent().size() > 0 && $entry.parent().closest('.' + classSitemapEntry).size() == 0 && $entry.siblings('.' + classSitemapEntry).size() == 0) {
+            // last toplevel entry, so we can't delete it
             return $([]);
          } else {
             return $('<a class="cms-delete"></a>').attr('title', this.title);
@@ -1725,13 +1724,13 @@
                   return;
                }
                
-               var id = data.id;
+               var path = data.path;
                $element.children('ul').remove();
                $element.addClass(classClosed);
                $element.addClass('cms-sub-sitemap-ref');
                $element.children('.' + classOpener).remove();
                var entryObj = new SitemapEntry($element);
-               entryObj.setSitemap(id);
+               entryObj.setSitemap(path);
                entryObj.setProperties({});
                setSitemapChanged(true);
             });
@@ -2586,15 +2585,34 @@
          var entryData = getEntryData(this.$li);
          entryData.sitemap = newValue;
          setEntryData(this.$li, entryData);
-         if (newValue || true) {
-            var $link = $('<a/>').addClass(classSubSitemapLink);
-            $link.text(M.SITEMAP_LINK_GO_TO_SUBSITEMAP);
-            $link.attr('href', makePermalink(newValue));
-            $link.appendTo(this.$item.find('.' + classAdditionalInfo));
-            this.$li.droppable('destroy');
-         }
          
+         var $link = $('<a/>').addClass(classSubSitemapLink);
+         $link.text(M.SITEMAP_LINK_GO_TO_SUBSITEMAP);
+         $link.attr('href', cms.data.CONTEXT + newValue);
+         $link.appendTo(this.$item.find('.' + classAdditionalInfo));
+         this.$li.droppable('destroy');
       },
+      
+      //            /**
+      //       * Sets the sub-sitemap id
+      //       * @param {Object} newValue the new value of the sub-sitemap id
+      //       */
+      //      setSitemap: function(newValue) {
+      //         this.$li.find('.' + classSubSitemapLink).remove();
+      //         
+      //         var entryData = getEntryData(this.$li);
+      //         entryData.sitemap = newValue;
+      //         setEntryData(this.$li, entryData);
+      //         if (newValue || true) {
+      //            var $link = $('<a/>').addClass(classSubSitemapLink);
+      //            $link.text(M.SITEMAP_LINK_GO_TO_SUBSITEMAP);
+      //            $link.attr('href', makePermalink(newValue));
+      //            $link.appendTo(this.$item.find('.' + classAdditionalInfo));
+      //            this.$li.droppable('destroy');
+      //         }
+      //         
+      //      },
+      
       
       /**
        * Returns true if this entry is the root entry of a root sitemap.
