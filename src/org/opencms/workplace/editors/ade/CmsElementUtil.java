@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/01/20 12:40:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/20 13:09:42 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.6
  */
@@ -419,7 +419,9 @@ public final class CmsElementUtil {
     /**
      * Returns the property information for the given element as a JSON object.<p>
      * 
+     * @param cms the current CMS context
      * @param element the element
+     * 
      * @return the property information
      * 
      * @throws CmsException if something goes wrong
