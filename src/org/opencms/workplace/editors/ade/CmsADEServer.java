@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/20 13:24:09 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/01/20 14:27:47 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,7 @@
 package org.opencms.workplace.editors.ade;
 
 import org.opencms.db.CmsUserSettings;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -52,11 +50,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.workplace.CmsWorkplaceMessages;
-import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -67,7 +63,6 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,7 +70,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -92,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 7.6
  */
@@ -1160,131 +1154,10 @@ public class CmsADEServer extends A_CmsAjaxServer {
     public void setSubContainer(JSONObject subcontainer) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
+
         String resourceName = subcontainer.getString(CmsElementUtil.JsonElement.FILE.getName());
-        String title = subcontainer.getString(CmsElementUtil.JsonElement.TITLE.getName());
-        String description = subcontainer.getString(CmsElementUtil.JsonElement.DESCRIPTION.getName());
-        JSONArray types = subcontainer.getJSONArray(CmsElementUtil.JsonElement.TYPES.getName());
-        JSONArray subitems = subcontainer.getJSONArray(CmsElementUtil.JsonElement.SUBITEMS.getName());
-        cms.lockResourceTemporary(resourceName);
-        CmsFile subcontainerFile = cms.readFile(resourceName);
-        CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, subcontainerFile);
-        Locale locale = cms.getRequestContext().getLocale();
-        if (xmlSubContainer.hasLocale(locale)) {
-            // remove the locale 
-            xmlSubContainer.removeLocale(locale);
-        }
-        xmlSubContainer.addLocale(cms, locale);
-        I_CmsXmlContentValue cntValue = xmlSubContainer.getValue(
-            CmsXmlSubContainer.XmlNode.SUBCONTAINER.getName(),
-            locale,
-            0);
-        if (cntValue == null) {
-            cntValue = xmlSubContainer.addValue(cms, CmsXmlSubContainer.XmlNode.SUBCONTAINER.getName(), locale, 0);
-        }
-        xmlSubContainer.getValue(
-            CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlSubContainer.XmlNode.TITLE.getName()),
-            locale,
-            0).setStringValue(cms, title);
-        xmlSubContainer.getValue(
-            CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlSubContainer.XmlNode.DESCRIPTION.getName()),
-            locale,
-            0).setStringValue(cms, description);
-        if (types != null) {
-            for (int i = 0; i < types.length(); i++) {
-                xmlSubContainer.addValue(
-                    cms,
-                    CmsXmlUtils.concatXpath(cntValue.getPath(), CmsXmlSubContainer.XmlNode.TYPE.getName()),
-                    locale,
-                    i).setStringValue(cms, types.getString(i));
-            }
-        }
-        if (subitems != null) {
-            for (int i = 0; i < subitems.length(); i++) {
-                JSONObject subElement = subitems.getJSONObject(i);
-                I_CmsXmlContentValue elemValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
-                    cntValue.getPath(),
-                    CmsXmlSubContainer.XmlNode.ELEMENT.getName()), locale, i);
-
-                String elemUri = subElement.getString(JsonCntElem.URI.getName());
-
-                String clientId = subElement.getString(JsonCntElem.ID.getName());
-                xmlSubContainer.getValue(
-                    CmsXmlUtils.concatXpath(elemValue.getPath(), CmsXmlContainerPage.XmlNode.URI.getName()),
-                    locale,
-                    0).setStringValue(cms, elemUri);
-
-                // checking if there are any properties to set
-                if (clientId.contains("#")) {
-                    CmsContainerElementBean element = getCachedElement(clientId);
-                    Map<String, CmsProperty> properties = m_manager.getElementProperties(cms, element);
-                    Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(
-                        cms,
-                        cms.readResource(element.getElementId()));
-                    Iterator<String> itProps = properties.keySet().iterator();
-
-                    // index of the property
-                    int j = 0;
-
-                    // iterating all properties
-                    while (itProps.hasNext()) {
-                        String propertyName = itProps.next();
-
-                        if ((properties.get(propertyName).getStructureValue() == null)
-                            || !propertiesConf.containsKey(propertyName)) {
-                            continue;
-                        }
-                        // only if there is a value set and the property is configured in the schema we will save it to the container-page 
-                        I_CmsXmlContentValue propValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
-                            elemValue.getPath(),
-                            CmsXmlContainerPage.XmlNode.PROPERTIES.getName()), locale, j);
-                        xmlSubContainer.getValue(
-                            CmsXmlUtils.concatXpath(propValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName()),
-                            locale,
-                            0).setStringValue(cms, propertyName);
-                        I_CmsXmlContentValue valValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
-                            propValue.getPath(),
-                            CmsXmlContainerPage.XmlNode.VALUE.getName()), locale, 0);
-                        if (propertiesConf.get(propertyName).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                            I_CmsXmlContentValue filelistValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
-                                valValue.getPath(),
-                                CmsXmlContainerPage.XmlNode.FILELIST.getName()), locale, 0);
-                            int index = 0;
-                            for (String strId : CmsStringUtil.splitAsList(
-                                properties.get(propertyName).getStructureValue(),
-                                CmsXmlContentProperty.PROP_SEPARATOR)) {
-                                try {
-                                    CmsResource res = cms.readResource(new CmsUUID(strId));
-                                    I_CmsXmlContentValue fileValue = xmlSubContainer.getValue(CmsXmlUtils.concatXpath(
-                                        filelistValue.getPath(),
-                                        CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
-                                    if (fileValue == null) {
-                                        fileValue = xmlSubContainer.addValue(cms, CmsXmlUtils.concatXpath(
-                                            filelistValue.getPath(),
-                                            CmsXmlContainerPage.XmlNode.URI.getName()), locale, index);
-                                    }
-                                    fileValue.setStringValue(cms, cms.getSitePath(res));
-                                    index++;
-                                } catch (CmsException e) {
-                                    // could happen when the resource are meanwhile deleted
-                                    LOG.error(e.getLocalizedMessage(), e);
-                                }
-                            }
-                        } else {
-                            xmlSubContainer.addValue(
-                                cms,
-                                CmsXmlUtils.concatXpath(
-                                    valValue.getPath(),
-                                    CmsXmlContainerPage.XmlNode.STRING.getName()),
-                                locale,
-                                0).setStringValue(cms, properties.get(propertyName).getStructureValue());
-                        }
-                        j++;
-                    }
-                }
-            }
-        }
-        subcontainerFile.setContents(xmlSubContainer.marshal());
-        cms.writeFile(subcontainerFile);
+        CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, cms.readFile(resourceName));
+        xmlSubContainer.save(cms, jsonToSubCnt(subcontainer));
     }
 
     /**
@@ -1572,5 +1445,54 @@ public class CmsADEServer extends A_CmsAjaxServer {
             containers.add(new CmsContainerBean(name, type, -1, elements));
         }
         return new CmsContainerPageBean(cms.getRequestContext().getLocale(), containers);
+    }
+
+    /**
+     * Converts the given JSON object into a sub-container bean.<p>
+     * 
+     * @param json the JSON object to convert
+     * 
+     * @return the created sub-container bean
+     * 
+     * @throws JSONException if something goes wrong while parsing JSON
+     */
+    protected CmsSubContainerBean jsonToSubCnt(JSONObject json) throws JSONException {
+
+        CmsObject cms = getCmsObject();
+
+        String title = json.getString(CmsElementUtil.JsonElement.TITLE.getName());
+        String description = json.getString(CmsElementUtil.JsonElement.DESCRIPTION.getName());
+
+        JSONArray jsonTypes = json.getJSONArray(CmsElementUtil.JsonElement.TYPES.getName());
+        List<String> types = new ArrayList<String>();
+        for (int i = 0; i < jsonTypes.length(); i++) {
+            String type = jsonTypes.getString(i);
+            types.add(type);
+        }
+        List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
+
+        JSONArray elems = json.getJSONArray(CmsElementUtil.JsonElement.SUBITEMS.getName());
+        for (int i = 0; i < elems.length(); i++) {
+            JSONObject jsonElem = elems.getJSONObject(i);
+
+            String elemUri = jsonElem.getString(JsonCntElem.URI.getName());
+            CmsResource elem;
+            try {
+                elem = cms.readResource(elemUri);
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+                continue;
+            }
+            String clientId = jsonElem.getString(JsonCntElem.ID.getName());
+            Map<String, String> props = new HashMap<String, String>();
+            // checking if there are any properties to set
+            if (clientId.contains("#")) {
+                props = getCachedElement(clientId).getProperties();
+            }
+            elements.add(new CmsContainerElementBean(elem.getStructureId(), null, props));
+        }
+
+        return new CmsSubContainerBean(title, description, elements, types);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2010/01/20 13:24:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/20 14:27:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -40,6 +42,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -52,6 +55,7 @@ import org.opencms.xml.content.CmsXmlContentMacroVisitor;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -77,7 +81,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.9.1
  */
@@ -259,6 +263,45 @@ public class CmsXmlSubContainer extends CmsXmlContent {
     }
 
     /**
+     * Saves given container page in the current locale, and not only in memory but also to VFS.<p>
+     * 
+     * @param cms the current cms context
+     * @param subCnt the sub-container page to save
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void save(CmsObject cms, CmsSubContainerBean subCnt) throws CmsException {
+
+        CmsFile file = getFile();
+
+        // lock the file
+        cms.lockResourceTemporary(cms.getSitePath(file));
+
+        // wipe the locale
+        Locale locale = cms.getRequestContext().getLocale();
+        if (hasLocale(locale)) {
+            removeLocale(locale);
+        }
+        addLocale(cms, locale);
+
+        // get the properties
+        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+            cms,
+            getFile());
+
+        // add the nodes to the raw XML structure
+        Element parent = getLocaleNode(locale);
+        saveSubCnt(cms, parent, subCnt, propertiesConf);
+
+        // generate bookmarks
+        initDocument(m_document, m_encoding, m_contentDefinition);
+
+        // write to VFS
+        file.setContents(marshal());
+        cms.writeFile(file);
+    }
+
+    /**
      * Creates a new bookmark for the given element.<p>
      * 
      * @param element the element to create the bookmark for 
@@ -281,6 +324,27 @@ public class CmsXmlSubContainer extends CmsXmlContent {
         I_CmsXmlSchemaType elemSchemaType = parentDef.getSchemaType(element.getName());
         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
         addBookmark(elemPath, locale, true, elemValue);
+    }
+
+    /**
+     * Fills a {@link CmsXmlVfsFileValue} with the resource identified by the given id.<p>
+     * 
+     * @param cms the current CMS context
+     * @param element the XML element to fill
+     * @param resourceId the ID identifying the resource to use
+     * 
+     * @throws CmsException if the resource can not be read
+     */
+    protected void fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
+
+        String xpath = element.getPath();
+        int pos = xpath.lastIndexOf("/" + XmlNode.SUBCONTAINER.getName() + "/");
+        if (pos > 0) {
+            xpath = xpath.substring(pos + 1);
+        }
+        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
+        CmsResource res = cms.readResource(resourceId);
+        CmsXmlVfsFileValue.fillResource(element, res, type);
     }
 
     /**
@@ -465,6 +529,81 @@ public class CmsXmlSubContainer extends CmsXmlContent {
             } catch (NullPointerException e) {
                 LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
                     org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+            }
+        }
+    }
+
+    /**
+     * Adds the given container page to the given element.<p>
+     * 
+     * @param cms the current CMS object
+     * @param parent the element to add it
+     * @param subCnt the container page to add
+     * @param propertiesConf the properties configuration
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void saveSubCnt(
+        CmsObject cms,
+        Element parent,
+        CmsSubContainerBean subCnt,
+        Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
+
+        parent.clearContent();
+        Element subCntElem = parent.addElement(XmlNode.SUBCONTAINER.getName());
+
+        subCntElem.addElement(XmlNode.TITLE.getName()).addCDATA(subCnt.getTitle());
+        subCntElem.addElement(XmlNode.DESCRIPTION.getName()).addCDATA(subCnt.getDescription());
+
+        for (String type : subCnt.getTypes()) {
+            subCntElem.addElement(XmlNode.TYPE.getName()).addCDATA(type);
+        }
+
+        CmsADEManager manager = OpenCms.getADEManager();
+        // the elements
+        for (CmsContainerElementBean element : subCnt.getElements()) {
+            Element elemElement = subCntElem.addElement(XmlNode.ELEMENT.getName());
+
+            // the element
+            Element uriElem = elemElement.addElement(XmlNode.URI.getName());
+            fillResource(cms, uriElem, element.getElementId());
+
+            // the properties
+            Element propElement = null;
+
+            Map<String, CmsProperty> properties = manager.getElementProperties(cms, element);
+            for (Map.Entry<String, CmsProperty> property : properties.entrySet()) {
+                String propName = property.getKey();
+                String propValue = property.getValue().getStructureValue();
+                if (!propertiesConf.containsKey(propName) || (propValue == null)) {
+                    continue;
+                }
+                // only if the property is configured in the schema we will save it
+                if (propElement == null) {
+                    propElement = elemElement.addElement(CmsXmlContainerPage.XmlNode.PROPERTIES.getName());
+                }
+
+                // the property name
+                propElement.addElement(CmsXmlContainerPage.XmlNode.NAME.getName()).addCDATA(propName);
+                Element valueElement = propElement.addElement(CmsXmlContainerPage.XmlNode.VALUE.getName());
+
+                // the property value
+                if (propertiesConf.get(propName).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+                    // resource list value
+                    Element filelistElem = valueElement.addElement(CmsXmlContainerPage.XmlNode.FILELIST.getName());
+                    for (String strId : CmsStringUtil.splitAsList(propValue, CmsXmlContentProperty.PROP_SEPARATOR)) {
+                        try {
+                            Element fileValueElem = filelistElem.addElement(XmlNode.URI.getName());
+                            fillResource(cms, fileValueElem, new CmsUUID(strId));
+                        } catch (CmsException e) {
+                            // should never happen
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                } else {
+                    // string value
+                    valueElement.addElement(CmsXmlContainerPage.XmlNode.STRING.getName()).addCDATA(propValue);
+                }
             }
         }
     }
