@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2009/12/21 10:33:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/20 09:16:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -638,7 +638,7 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            if (type == CmsResourceTypeJsp.getStaticTypeId()) {
+            if (CmsResourceTypeJsp.isJspTypeId(type)) {
                 // security check preventing the creation of a jsp file without permissions
                 checkRoleForResource(dbc, CmsRole.DEVELOPER, resource);
             }
@@ -4656,7 +4656,7 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            if (type == CmsResourceTypeJsp.getStaticTypeId()) {
+            if (CmsResourceTypeJsp.isJspTypeId(type)) {
                 // security check preventing the creation of a jsp file without permissions
                 checkRoleForResource(dbc, CmsRole.DEVELOPER, resource);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestJspLinkMacros.java,v $
- * Date   : $Date: 2009/09/07 12:41:37 $
- * Version: $Revision: 1.2.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestJspLinkMacros extends OpenCmsTestCase {
 
@@ -116,10 +116,10 @@ public class TestJspLinkMacros extends OpenCmsTestCase {
 
         CmsResource res2 = cms.createResource(
             targetName,
-            CmsResourceTypeJsp.getStaticTypeId(),
+            CmsResourceTypeJsp.getJSPTypeId(),
             "Test".getBytes("UTF-8"),
             null);
-        CmsResource res = cms.createResource(sourceName, CmsResourceTypeJsp.getStaticTypeId(), ("%(link.strong:"
+        CmsResource res = cms.createResource(sourceName, CmsResourceTypeJsp.getJSPTypeId(), ("%(link.strong:"
             + targetName + ")").getBytes("UTF-8"), null);
 
         CmsFile file = cms.readFile(res);

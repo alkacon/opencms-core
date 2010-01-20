@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChtype.java,v $
- * Date   : $Date: 2009/09/07 12:41:43 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chtype" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.14.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestChtype extends OpenCmsTestCase {
 
@@ -155,7 +155,7 @@ public class TestChtype extends OpenCmsTestCase {
         CmsProject offlineProject = cms.getRequestContext().currentProject();
 
         // this should work since we are admin
-        cms.chtype("/chtype.txt", CmsResourceTypeJsp.getStaticTypeId());
+        cms.chtype("/chtype.txt", CmsResourceTypeJsp.getJSPTypeId());
 
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(offlineProject);
@@ -166,7 +166,7 @@ public class TestChtype extends OpenCmsTestCase {
                 cms,
                 "/chtype2.txt",
                 CmsResourceTypePlain.getStaticTypeId(),
-                CmsResourceTypeJsp.getStaticTypeId());
+                CmsResourceTypeJsp.getJSPTypeId());
             fail("chtype to jsp without permissions should fail");
         } catch (CmsSecurityException e) {
             // ok

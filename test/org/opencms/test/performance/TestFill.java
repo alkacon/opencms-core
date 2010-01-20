@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/performance/TestFill.java,v $
- * Date   : $Date: 2009/09/07 12:41:57 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestFill extends OpenCmsTestCase {
 
@@ -114,7 +114,7 @@ public class TestFill extends OpenCmsTestCase {
 
         // prepare the scenario
         String resourcename = "testPermissionsWithOu.jsp";
-        CmsResource res = cms.createResource(resourcename, CmsResourceTypeJsp.getStaticTypeId());
+        CmsResource res = cms.createResource(resourcename, CmsResourceTypeJsp.getJSPTypeId());
 
         // check the initial performance
         long t = System.currentTimeMillis();

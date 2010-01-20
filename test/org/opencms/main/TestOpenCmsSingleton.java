@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2009/09/07 12:41:50 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.20.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
@@ -120,7 +120,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
         // get content encoding default property from the JSP resource type
         CmsResourceTypeJsp jsp = (CmsResourceTypeJsp)OpenCms.getResourceManager().getResourceType(
-            CmsResourceTypeJsp.getStaticTypeId());
+            CmsResourceTypeJsp.getJSPTypeId());
         // note: default test configuration is done in opencms-vfs.xml and may be different from standard installation
         List defaultProperties = jsp.getConfiguredDefaultProperties();
         assertEquals("Test configuration has 2 default properties configured for JSP", 2, defaultProperties.size());

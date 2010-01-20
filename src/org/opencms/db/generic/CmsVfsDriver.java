@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2009/12/17 13:10:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/20 09:16:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -2220,6 +2220,107 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
+     * Reads all resources inside a given project matching the criteria specified by parameter values.<p>
+     * 
+     * Important: If {@link CmsDriverManager#READMODE_EXCLUDE_TREE} is true (or {@link CmsDriverManager#READMODE_INCLUDE_TREE} is false), 
+     * the provided parent String must be the UUID of the parent folder, NOT the parent folder path.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the project id for matching resources
+     * @param parent the path to the resource used as root of the searched subtree or {@link CmsDriverManager#READ_IGNORE_PARENT}, 
+     *               {@link CmsDriverManager#READMODE_EXCLUDE_TREE} means to read immediate children only 
+     * @param types the resource types of matching resources or <code>null</code> (meaning inverted by {@link CmsDriverManager#READMODE_EXCLUDE_TYPE}
+     * @param state the state of matching resources (meaning inverted by {@link CmsDriverManager#READMODE_EXCLUDE_STATE} or <code>null</code> to ignore
+     * @param startTime the start of the time range for the last modification date of matching resources or READ_IGNORE_TIME 
+     * @param endTime the end of the time range for the last modification date of matching resources or READ_IGNORE_TIME
+     * @param releasedAfter the start of the time range for the release date of matching resources
+     * @param releasedBefore the end of the time range for the release date of matching resources
+     * @param expiredAfter the start of the time range for the expire date of matching resources
+     * @param expiredBefore the end of the time range for the expire date of matching resources
+     * @param mode additional mode flags:
+     * <ul>
+     *  <li>{@link CmsDriverManager#READMODE_INCLUDE_TREE}
+     *  <li>{@link CmsDriverManager#READMODE_EXCLUDE_TREE}
+     *  <li>{@link CmsDriverManager#READMODE_INCLUDE_PROJECT}
+     *  <li>{@link CmsDriverManager#READMODE_EXCLUDE_TYPE}
+     *  <li>{@link CmsDriverManager#READMODE_EXCLUDE_STATE}
+     * </ul>
+     * 
+     * @return a list of CmsResource objects matching the given criteria
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected List readTypesInResourceTree(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        String parentPath,
+        List<Integer> types,
+        CmsResourceState state,
+        long lastModifiedAfter,
+        long lastModifiedBefore,
+        long releasedAfter,
+        long releasedBefore,
+        long expiredAfter,
+        long expiredBefore,
+        int mode) throws CmsDataAccessException {
+
+        List result = new ArrayList();
+
+        StringBuffer conditions = new StringBuffer();
+        List params = new ArrayList(5);
+
+        // prepare the selection criteria
+        prepareProjectCondition(projectId, mode, conditions, params);
+        prepareResourceCondition(projectId, mode, conditions);
+        prepareTypesCondition(projectId, types, mode, conditions, params);
+        prepareTimeRangeCondition(projectId, lastModifiedAfter, lastModifiedBefore, conditions, params);
+        prepareReleasedTimeRangeCondition(projectId, releasedAfter, releasedBefore, conditions, params);
+        prepareExpiredTimeRangeCondition(projectId, expiredAfter, expiredBefore, conditions, params);
+        preparePathCondition(projectId, parentPath, mode, conditions, params);
+        prepareStateCondition(projectId, state, mode, conditions, params);
+
+        // now read matching resources within the subtree 
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            StringBuffer queryBuf = new StringBuffer(256);
+            queryBuf.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_READ_TREE"));
+            queryBuf.append(conditions);
+            queryBuf.append(" ");
+            queryBuf.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_ORDER_BY_PATH"));
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
+
+            for (int i = 0; i < params.size(); i++) {
+                if (params.get(i) instanceof Integer) {
+                    stmt.setInt(i + 1, ((Integer)params.get(i)).intValue());
+                } else if (params.get(i) instanceof Long) {
+                    stmt.setLong(i + 1, ((Long)params.get(i)).longValue());
+                } else {
+                    stmt.setString(i + 1, (String)params.get(i));
+                }
+            }
+
+            res = stmt.executeQuery();
+            while (res.next()) {
+                CmsResource resource = createResource(res, projectId);
+                result.add(resource);
+            }
+
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        return result;
+    }
+
+    /**
      * @see org.opencms.db.I_CmsVfsDriver#readSiblings(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsResource, boolean)
      */
     public List readSiblings(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, boolean includeDeleted)
@@ -3064,12 +3165,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // then check for possible jsp pages without permissions
-        CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireType(CmsResourceTypeJsp.getStaticTypeId());
-        itResources = readResourceTree(
+        CmsResourceFilter filter = CmsResourceFilter.ALL;
+        itResources = readTypesInResourceTree(
             dbc,
             projectId,
             folder.getRootPath(),
-            filter.getType(),
+            CmsResourceTypeJsp.getJspResourceTypeIds(),
             filter.getState(),
             filter.getModifiedAfter(),
             filter.getModifiedBefore(),
@@ -3868,6 +3969,45 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
                 conditions.append(END_CONDITION);
                 params.add(new Integer(type));
+            }
+        }
+    }
+
+    /**
+     * Appends the appropriate selection criteria related with the resource type.<p>
+     * 
+     * @param projectId the id of the project of the resources
+     * @param types the resource type id's
+     * @param mode the selection mode
+     * @param conditions buffer to append the selection criteria
+     * @param params list to append the selection parameters
+     */
+    protected void prepareTypesCondition(
+        CmsUUID projectId,
+        List<Integer> types,
+        int mode,
+        StringBuffer conditions,
+        List params) {
+
+        if ((types == null) || types.isEmpty()) {
+            if ((mode & CmsDriverManager.READMODE_EXCLUDE_TYPE) > 0) {
+                // C_READ_FILE_TYPES: add condition to match against any type, but not given type
+                conditions.append(BEGIN_EXCLUDE_CONDITION);
+                conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
+                conditions.append(END_CONDITION);
+                params.add(new Integer(CmsDriverManager.READ_IGNORE_TYPE));
+            } else {
+                //otherwise add condition to match against given type if necessary
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+                Iterator<Integer> typeIt = types.iterator();
+                while (typeIt.hasNext()) {
+                    conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
+                    params.add(typeIt.next());
+                    if (typeIt.hasNext()) {
+                        conditions.append(OR_CONDITION);
+                    }
+                }
+                conditions.append(END_CONDITION);
             }
         }
     }

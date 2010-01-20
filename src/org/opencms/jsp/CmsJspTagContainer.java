@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/01/19 09:04:37 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/01/20 09:16:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.6 
  */
@@ -282,7 +282,6 @@ public class CmsJspTagContainer extends TagSupport {
                     cms.getSitePath(containerPage),
                     CmsContainerPageBean.TYPE_TEMPLATE));
             }
-
             if (containerType.equals(CmsContainerPageBean.TYPE_TEMPLATE)) {
                 // add template element
                 CmsResource resUri;
@@ -304,7 +303,7 @@ public class CmsJspTagContainer extends TagSupport {
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormatter)) {
                     throw new CmsIllegalStateException(Messages.get().container(
                         Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                        cms.getRequestContext().getUri(),
+                        cms.getSitePath(resUri),
                         OpenCms.getResourceManager().getResourceType(resUri).getTypeName(),
                         CmsContainerPageBean.TYPE_TEMPLATE));
                 }

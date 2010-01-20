@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2010/01/15 14:55:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/01/20 09:16:36 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -568,16 +568,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             }
         }
         return m_galleryJavascriptPath;
-    }
-
-    /**
-     * Returns the galleryTypeName.<p>
-     *
-     * @return the galleryTypeName
-     */
-    public String getGalleryType() {
-
-        return m_galleryTypeNames;
     }
 
     /**

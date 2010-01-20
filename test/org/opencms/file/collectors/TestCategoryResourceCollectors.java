@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/TestCategoryResourceCollectors.java,v $
- * Date   : $Date: 2009/09/07 12:41:47 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
  * 
  * @author Raphael Schnuck 
- * @version $Revision: 1.9.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
@@ -84,15 +84,15 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
         Thread.sleep(100); // this is needed for testing the date sorting collector
 
         // jsps
-        cms.createResource("/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        cms.createResource("/file1", CmsResourceTypeJsp.getJSPTypeId(), null, null);
         Thread.sleep(100);
-        cms.createResource("/folder1/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        cms.createResource("/folder1/file3", CmsResourceTypeJsp.getJSPTypeId(), null, null);
         Thread.sleep(100);
-        cms.createResource("/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        cms.createResource("/file3", CmsResourceTypeJsp.getJSPTypeId(), null, null);
         Thread.sleep(100);
-        cms.createResource("/folder1/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        cms.createResource("/folder1/file1", CmsResourceTypeJsp.getJSPTypeId(), null, null);
         Thread.sleep(100);
-        cms.createResource("/file5", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        cms.createResource("/file5", CmsResourceTypeJsp.getJSPTypeId(), null, null);
         Thread.sleep(100);
 
         // plains

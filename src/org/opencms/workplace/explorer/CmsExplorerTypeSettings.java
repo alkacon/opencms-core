@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/20 09:16:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public class CmsExplorerTypeSettings implements Comparable {
     private boolean m_autoSetNavigation;
     private boolean m_autoSetTitle;
     private CmsExplorerContextMenu m_contextMenu;
-    private List m_contextMenuEntries;
+    private List<CmsExplorerContextMenuItem> m_contextMenuEntries;
     private String m_descriptionImage;
     private boolean m_hasEditOptions;
     private String m_icon;
@@ -90,7 +90,7 @@ public class CmsExplorerTypeSettings implements Comparable {
     private Integer m_newResourceOrder;
     private String m_newResourcePage;
     private String m_newResourceUri;
-    private List m_properties;
+    private List<String> m_properties;
     private boolean m_propertiesEnabled;
     private String m_reference;
     private boolean m_showNavigation;
@@ -103,8 +103,8 @@ public class CmsExplorerTypeSettings implements Comparable {
     public CmsExplorerTypeSettings() {
 
         m_access = new CmsExplorerTypeAccess();
-        m_properties = new ArrayList();
-        m_contextMenuEntries = new ArrayList();
+        m_properties = new ArrayList<String>();
+        m_contextMenuEntries = new ArrayList<CmsExplorerContextMenuItem>();
         m_contextMenu = new CmsExplorerContextMenu();
         m_hasEditOptions = false;
         m_propertiesEnabled = false;
@@ -203,6 +203,7 @@ public class CmsExplorerTypeSettings implements Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
 
         if (!(o instanceof CmsExplorerTypeSettings)) {
@@ -245,7 +246,7 @@ public class CmsExplorerTypeSettings implements Comparable {
      * 
      * @return the list of context menu entries of the explorer type setting
      */
-    public List getContextMenuEntries() {
+    public List<CmsExplorerContextMenuItem> getContextMenuEntries() {
 
         return m_contextMenuEntries;
     }
@@ -372,7 +373,7 @@ public class CmsExplorerTypeSettings implements Comparable {
      * Returns the list of properties of the explorer type setting.<p>
      * @return the list of properties of the explorer type setting
      */
-    public List getProperties() {
+    public List<String> getProperties() {
 
         return m_properties;
     }
@@ -410,6 +411,7 @@ public class CmsExplorerTypeSettings implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getName().hashCode();
@@ -531,7 +533,7 @@ public class CmsExplorerTypeSettings implements Comparable {
      * 
      * @param entries the list of context menu entries of the explorer type setting
      */
-    public void setContextMenuEntries(List entries) {
+    public void setContextMenuEntries(List<CmsExplorerContextMenuItem> entries) {
 
         m_contextMenuEntries = entries;
     }
@@ -672,7 +674,7 @@ public class CmsExplorerTypeSettings implements Comparable {
      * 
      * @param properties the list of properties of the explorer type setting
      */
-    public void setProperties(List properties) {
+    public void setProperties(List<String> properties) {
 
         m_properties = properties;
     }

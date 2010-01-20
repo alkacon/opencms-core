@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2009/09/07 12:41:44 $
- * Version: $Revision: 1.26.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -395,14 +395,14 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         String contentStr = "this is a really bad jsp code";
 
         // this should work since we are admin
-        cms.createResource(path, CmsResourceTypeJsp.getStaticTypeId(), contentStr.getBytes(), null);
+        cms.createResource(path, CmsResourceTypeJsp.getJSPTypeId(), contentStr.getBytes(), null);
 
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(offlineProject);
 
         String path2 = "/testCreateResourceJsp2.jsp";
         try {
-            cms.createResource(path2, CmsResourceTypeJsp.getStaticTypeId(), contentStr.getBytes(), null);
+            cms.createResource(path2, CmsResourceTypeJsp.getJSPTypeId(), contentStr.getBytes(), null);
             fail("createResource for jsp without permissions should fail");
         } catch (CmsSecurityException e) {
             // ok

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/editarea/CmsEditArea.java,v $
- * Date   : $Date: 2009/11/03 13:30:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/20 09:17:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.5
  */
@@ -141,7 +141,7 @@ public class CmsEditArea extends CmsSimpleEditor {
         if (resource != null) {
             // determine resource type
             int type = resource.getTypeId();
-            if (type == CmsResourceTypeJsp.getStaticTypeId()) {
+            if (CmsResourceTypeJsp.isJspTypeId(type)) {
                 // JSP file
                 return HIGHLIGHT_TYPE_JSP;
             }

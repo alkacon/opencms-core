@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2009/09/07 12:41:56 $
- * Version: $Revision: 1.25.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  *  
- * @version $Revision: 1.25.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -208,7 +208,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
                 int type = resource.getTypeId();
                 if (((type == CmsResourceTypePlain.getStaticTypeId()))
-                    || (type == CmsResourceTypeJsp.getStaticTypeId())
+                    || (CmsResourceTypeJsp.isJspTypeId(type))
                     || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // modify date last modified on resource
                     touchResourceInRfs(cms, resource, syncSettings);
@@ -229,7 +229,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
                 System.out.println("( " + i + " / " + (n - 1) + " ) Checking " + vfsname);
                 if (((type == CmsResourceTypePlain.getStaticTypeId()))
-                    || (type == CmsResourceTypeJsp.getStaticTypeId())
+                    || (type == CmsResourceTypeJsp.getJSPTypeId())
                     || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // assert the resource state
                     assertState(cms, vfsname, CmsResource.STATE_CHANGED);
@@ -296,7 +296,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
                     int type = resource.getTypeId();
                     if (((type == CmsResourceTypePlain.getStaticTypeId()))
-                        || (type == CmsResourceTypeJsp.getStaticTypeId())
+                        || (CmsResourceTypeJsp.isJspTypeId(type))
                         || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                         // modify date last modified on resource
                         touchResourceInRfs(cms, resource, syncSettings);
@@ -318,7 +318,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
                 System.out.println("( " + i + " / " + (n - 1) + " ) Checking " + vfsname);
                 if (((type == CmsResourceTypePlain.getStaticTypeId()))
-                    || (type == CmsResourceTypeJsp.getStaticTypeId())
+                    || (type == CmsResourceTypeJsp.getJSPTypeId())
                     || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // assert the resource state
                     assertState(cms, vfsname, CmsResource.STATE_CHANGED);

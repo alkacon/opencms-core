@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2009/09/09 15:54:52 $
- * Version: $Revision: 1.34.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,12 +43,14 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.loader.CmsJspLoader;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,20 +66,23 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
 
+    /** The type id of the JSP resource type. */
+    private static final int JSP_RESOURCE_TYPE_ID = 4;
+
+    /** The type id of the containerpage_template resource type. */
+    private static final int CONTAINERPAGE_TEMPLATE_TYPE_ID = 21;
+
+    /** The registered JSP resource type id's.    */
+    private static List<Integer> m_jspResourceTypeIds = new ArrayList<Integer>();
+
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;
-
-    /** The static type id of this resource type. */
-    private static int m_staticTypeId;
-
-    /** The type id of this resource type. */
-    private static final int RESOURCE_TYPE_ID = 4;
 
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "jsp";
@@ -85,24 +90,44 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /** JSP Loader instance. */
     protected CmsJspLoader m_jspLoader;
 
-    /**
-     * Default constructor, used to initialize member variables.<p>
-     */
-    public CmsResourceTypeJsp() {
+    //    /**
+    //     * Default constructor, used to initialize member variables.<p>
+    //     */
+    //    public CmsResourceTypeJsp() {
+    //
+    //        super();
+    //        m_typeId = RESOURCE_TYPE_ID;
+    //        m_typeName = RESOURCE_TYPE_NAME;
+    //    }
 
-        super();
-        m_typeId = RESOURCE_TYPE_ID;
-        m_typeName = RESOURCE_TYPE_NAME;
+    /**
+     * Returns the registered JSP resource type id's.<p>
+     * 
+     * @return the resource type id's
+     */
+    public static List<Integer> getJspResourceTypeIds() {
+
+        return m_jspResourceTypeIds;
     }
 
     /**
-     * Returns the static type id of this (default) resource type.<p>
+     * Returns the type id of the containerpage_template resource type.<p>
      * 
-     * @return the static type id of this (default) resource type
+     * @return the type id of the containerpage_template resource type
      */
-    public static int getStaticTypeId() {
+    public static int getContainerPageTemplateTypeId() {
 
-        return m_staticTypeId;
+        return CONTAINERPAGE_TEMPLATE_TYPE_ID;
+    }
+
+    /**
+     * Returns the type id of the (default)JSP resource type.<p>
+     * 
+     * @return the type id of this (default)JSP resource type
+     */
+    public static int getJSPTypeId() {
+
+        return JSP_RESOURCE_TYPE_ID;
     }
 
     /**
@@ -113,6 +138,50 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     public static String getStaticTypeName() {
 
         return RESOURCE_TYPE_NAME;
+    }
+
+    /**
+     * Returns <code>true</code> in case the given resource is a JSP.<p>
+     * 
+     * Internally this checks if the content loader for the given resource is 
+     * identical to the JSP content loader.<p>
+     * 
+     * @param resource the resource to check
+     * 
+     * @return <code>true</code> in case the given resource is a JSP
+     * 
+     * @since 7.9.1
+     */
+    public static boolean isJSP(CmsResource resource) {
+
+        boolean result = false;
+        if (resource != null) {
+            // avoid array index out of bound exception:
+            if (!resource.isFolder()) {
+                try {
+                    result = OpenCms.getResourceManager().getLoader(resource) instanceof CmsJspLoader;
+                } catch (CmsLoaderException e) {
+                    // result will be false
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns <code>true</code> in case the given resource type id is a JSP type.<p>
+     * 
+     * Internally this checks if the given resource type id is registered as a JSP resource type.<p>
+     * 
+     * @param typeId the resource type id to check
+     * 
+     * @return <code>true</code> in case the given resource type id is a JSP type
+     * 
+     * @since 7.9.1
+     */
+    public static boolean isJspTypeId(int typeId) {
+
+        return m_jspResourceTypeIds.contains(Integer.valueOf(typeId));
     }
 
     /**
@@ -162,25 +231,16 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_CONFIG_FROZEN_3,
                 this.getClass().getName(),
-                getStaticTypeName(),
-                new Integer(getStaticTypeId())));
-        }
-
-        if (!RESOURCE_TYPE_NAME.equals(name)) {
-            // default resource type MUST have default name
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
-                this.getClass().getName(),
-                RESOURCE_TYPE_NAME,
-                name));
+                name,
+                id));
         }
 
         // freeze the configuration
         m_staticFrozen = true;
 
-        super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
-        // set static members with values from the configuration        
-        m_staticTypeId = m_typeId;
+        super.initConfiguration(name, id, className);
+        // set static members with values from the configuration      
+        addTypeId(m_typeId);
     }
 
     /**
@@ -367,5 +427,15 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         if (m_jspLoader != null) {
             m_jspLoader.removeFromCache(references, false);
         }
+    }
+
+    /**
+     * Adds another resource type id to the registered JSP resource type id's.<p>
+     * 
+     * @param typeId the resource type id to add
+     */
+    private void addTypeId(int typeId) {
+
+        m_jspResourceTypeIds.add(Integer.valueOf(typeId));
     }
 }

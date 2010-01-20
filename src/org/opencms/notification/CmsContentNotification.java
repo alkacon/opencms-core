@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsContentNotification.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/20 09:16:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -115,7 +115,7 @@ public class CmsContentNotification extends A_CmsNotification {
      */
     public static boolean existsEditor(CmsResource resource) {
 
-        if ((resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId())
+        if ((CmsResourceTypeJsp.isJSP(resource))
             || (resource.getTypeId() == CmsResourceTypePlain.getStaticTypeId())
             || (resource.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId())) {
             return true;

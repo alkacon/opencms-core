@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2009/09/23 14:03:22 $
- * Version: $Revision: 1.30.2.3 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -267,7 +267,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         String site = cms.getRequestContext().getSiteRoot();
         try {
             // create file
-            cms.createResource(filename, CmsResourceTypeJsp.getStaticTypeId(), "hello jsp".getBytes(), null);
+            cms.createResource(filename, CmsResourceTypeJsp.getJSPTypeId(), "hello jsp".getBytes(), null);
             cms.unlockResource(filename);
 
             // create sibling
@@ -1793,7 +1793,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         String site = cms.getRequestContext().getSiteRoot();
         try {
             // create file
-            cms.createResource(filename, CmsResourceTypeJsp.getStaticTypeId(), "hello jsp".getBytes(), null);
+            cms.createResource(filename, CmsResourceTypeJsp.getJSPTypeId(), "hello jsp".getBytes(), null);
             cms.unlockResource(filename);
 
             // create sibling

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/TestPriorityResourceCollectors.java,v $
- * Date   : $Date: 2009/09/07 12:41:47 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -131,7 +131,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         properties.add(propPrio);
         propDate.setStructureValue("" + (time + 50));
         properties.add(propDate);
-        cms.createResource("/folder1/fileJsp", CmsResourceTypeJsp.getStaticTypeId(), null, properties);
+        cms.createResource("/folder1/fileJsp", CmsResourceTypeJsp.getJSPTypeId(), null, properties);
 
         // create a subfolder in the folder1 directory
         cms.createResource("/folder1/sub1", CmsResourceTypeFolder.getStaticTypeId());

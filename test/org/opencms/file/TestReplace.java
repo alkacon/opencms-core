@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReplace.java,v $
- * Date   : $Date: 2009/09/07 12:41:42 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2010/01/20 09:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestReplace extends OpenCmsTestCase {
 
@@ -145,7 +145,7 @@ public class TestReplace extends OpenCmsTestCase {
         String contentStr = "Hello this is the new content";
 
         // this should work since we are admin
-        cms.replaceResource(path, CmsResourceTypeJsp.getStaticTypeId(), contentStr.getBytes(), null);
+        cms.replaceResource(path, CmsResourceTypeJsp.getJSPTypeId(), contentStr.getBytes(), null);
         cms.unlockResource(path);
 
         cms.loginUser("test1", "test1");
@@ -169,7 +169,7 @@ public class TestReplace extends OpenCmsTestCase {
 
         try {
             cms.lockResource(path);
-            cms.replaceResource(path, CmsResourceTypeJsp.getStaticTypeId(), contentStr.getBytes(), null);
+            cms.replaceResource(path, CmsResourceTypeJsp.getJSPTypeId(), contentStr.getBytes(), null);
             fail("replaceResource to jsp without permissions should fail");
         } catch (CmsSecurityException e) {
             // ok
