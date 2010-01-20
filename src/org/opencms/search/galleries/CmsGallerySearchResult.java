@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchResult.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/20 09:12:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -94,6 +94,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /** The state of the search result. */
     protected int m_state;
+
+    /** The structure UUID of the resource. */
+    protected String m_structureId;
 
     /** The title of this search result. */
     protected String m_title;
@@ -204,6 +207,12 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_CREATED);
         if (f != null) {
             m_userCreated = f.stringValue();
+        }
+
+        m_structureId = null;
+        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID);
+        if (f != null) {
+            m_structureId = f.stringValue();
         }
 
         m_userLastModified = null;
@@ -398,6 +407,16 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     public int getState() {
 
         return m_state;
+    }
+
+    /**
+     * Returns the structure id of the resource.<p>
+     * 
+     * @return the structure id of the resource
+     */
+    public String getStructureId() {
+
+        return m_structureId;
     }
 
     /**

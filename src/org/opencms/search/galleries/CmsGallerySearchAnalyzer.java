@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchAnalyzer.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/20 09:12:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,9 @@
 
 package org.opencms.search.galleries;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStreamReader;
 
 import org.apache.lucene.analysis.WordlistLoader;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -63,7 +63,7 @@ import org.apache.lucene.util.Version;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -73,15 +73,13 @@ public class CmsGallerySearchAnalyzer extends StandardAnalyzer {
      * Constructor with version parameter.<p>
      * 
      * @param matchVersion the Lucene standard analyzer version to match
-     * @throws URISyntaxException 
-     * @throws IOException 
+      * @throws IOException 
      */
     public CmsGallerySearchAnalyzer(Version matchVersion)
-    throws URISyntaxException, IOException {
+    throws IOException {
 
         // initialize superclass
-        super(matchVersion, WordlistLoader.getWordSet(new File(
-            CmsGallerySearchAnalyzer.class.getClassLoader().getResource(
-                "org/opencms/search/galleries/stopwords_multilanguage.txt").toURI()), "#"));
+        super(matchVersion, WordlistLoader.getWordSet(new BufferedReader(new InputStreamReader(
+            CmsGallerySearchAnalyzer.class.getResourceAsStream("stopwords_multilanguage.txt"))), "#"));
     }
 }

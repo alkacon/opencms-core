@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchFieldMapping.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/20 09:12:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -56,22 +56,33 @@ public class CmsGallerySearchFieldMapping extends CmsSearchFieldMapping {
 
     /** Name of the field that contains the ADE additional information. */
     public static final String FIELD_ADDITIONAL_INFO = "additional_info";
+
     /** Name of the field that contains the ADE container information. */
     public static final String FIELD_CONTAINER_TYPES = "container_types";
+
     /** Name of the field that contains the date the resource has expired. */
     public static final String FIELD_RESOURCE_DATE_EXPIRED = "res_dateExpired";
+
     /** Name of the field that contains the date the resource was released. */
     public static final String FIELD_RESOURCE_DATE_RELEASED = "res_dateReleased";
+
     /** Name of the field that contains the resource length. */
     public static final String FIELD_RESOURCE_LENGTH = "res_length";
+
     /** Name of the field that contains the resource locale. */
     public static final String FIELD_RESOURCE_LOCALE = "res_locale";
+
     /** Name of the field that contains the resource state. */
     public static final String FIELD_RESOURCE_STATE = "res_state";
+
     /** Name of the field that contains the name of the user who created the resource. */
     public static final String FIELD_RESOURCE_USER_CREATED = "res_userCreated";
+
     /** Name of the field that contains the name of the user who last modified the resource. */
     public static final String FIELD_RESOURCE_USER_LASTMODIFIED = "res_userLastModified";
+
+    /** Name of the field that contains the structure id the resource. */
+    public static final String FIELD_RESOURCE_STRUCTURE_ID = "res_structureId";
 
     /**
      * Public constructor for a new search field mapping.<p>
