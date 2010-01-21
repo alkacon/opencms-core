@@ -717,7 +717,7 @@
          var urlName = _removeExtension(name);
          
          var newEntry = {
-            linkId: elementData.clientid.substring(4),
+            linkId: elementData.clientid,
             title: elementData.title || '[no title]',
             properties: {},
             name: urlName,

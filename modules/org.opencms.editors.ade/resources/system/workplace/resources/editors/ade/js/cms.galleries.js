@@ -441,7 +441,7 @@
          markSelectedCriteria('types');
       }
       
-      if (initSearchResult) {
+      if (initSearchResult && initSearchResult.searchresult) {
           fillResultTab(initSearchResult);          
       } else {
           // open the preselected tab

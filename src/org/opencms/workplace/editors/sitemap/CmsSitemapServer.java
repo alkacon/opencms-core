@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/01/21 13:26:25 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -89,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 7.6
  */
@@ -433,7 +434,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             result.put(JsonResponse.MODELS.getName(), models);
             result.put("templates", getTemplates());
         } else if (action.equals(Action.GET)) {
-
             if (checkParameters(data, null, JsonRequest.FAV.getName())) {
                 // get the favorite list
                 result.put(JsonResponse.FAVORITES.getName(), getFavoriteList());
@@ -623,9 +623,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             String propertyName = entry.getKey();
             CmsXmlContentProperty conf = entry.getValue();
             JSONObject jsonProperty = new JSONObject();
-
             jsonProperty.put(JsonProperty.DEFAULT_VALUE.getName(), conf.getDefault());
-
             jsonProperty.put(JsonProperty.TYPE.getName(), conf.getPropertyType());
             jsonProperty.put(JsonProperty.WIDGET.getName(), conf.getWidget());
             jsonProperty.put(JsonProperty.WIDGET_CONF.getName(), CmsMacroResolver.resolveMacros(
@@ -806,12 +804,12 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsResource template = templateIt.next();
             CmsProperty titleProp = cms.readPropertyObject(template, "Title", false);
             CmsProperty descProp = cms.readPropertyObject(template, "Description", false);
-            //            CmsProperty imageProp=cms.readPropertyObject(template, "Image", false);
+            CmsProperty imageProp = cms.readPropertyObject(template, "ade.image", false);
             JSONObject jTemp = new JSONObject();
             jTemp.put("sitePath", cms.getSitePath(template));
             jTemp.put("Title", titleProp.getValue());
             jTemp.put("Description", descProp.getValue());
-            jTemp.put("Image", "rrr");
+            jTemp.put("Image", imageProp.getValue());
             result.put(cms.getSitePath(template), jTemp);
         }
         return result;
@@ -903,9 +901,10 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         for (int i = 0; i < array.length(); i++) {
             JSONObject json = array.optJSONObject(i);
             CmsUUID id;
-            if (json.has(JsonSiteEntry.ID.getName())) {
+            String entryId = json.optString(JsonSiteEntry.ID.getName());
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(entryId)) {
                 try {
-                    id = new CmsUUID(json.optString(JsonSiteEntry.ID.getName()));
+                    id = new CmsUUID(entryId);
                 } catch (NumberFormatException e) {
                     LOG.error(e.getLocalizedMessage());
                     continue;
