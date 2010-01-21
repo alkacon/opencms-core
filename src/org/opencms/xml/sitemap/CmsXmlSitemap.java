@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/01/20 13:24:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/01/21 08:56:59 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.5.2
  * 
@@ -437,9 +437,9 @@ public class CmsXmlSitemap extends CmsXmlContent {
         addLocale(cms, locale);
 
         // get the properties
-        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+        Map<String, CmsXmlContentProperty> propertiesConf = CmsXmlContentDefinition.getContentHandlerForResource(
             cms,
-            getFile());
+            getFile()).getProperties();
 
         // recursively add the nodes to the raw XML structure
         Element parent = getLocaleNode(locale);
@@ -752,8 +752,9 @@ public class CmsXmlSitemap extends CmsXmlContent {
         // the properties
         Element propElement = null;
         for (Map.Entry<String, String> property : entry.getProperties().entrySet()) {
-            boolean isSitemapProperty = CmsSitemapManager.PROPERTY_SITEMAP.equals(property.getKey());
-            if (!propertiesConf.containsKey(property.getKey()) && !isSitemapProperty) {
+            String propName = property.getKey();
+            boolean isSitemapProperty = CmsSitemapManager.PROPERTY_SITEMAP.equals(propName);
+            if (!propertiesConf.containsKey(propName) && !isSitemapProperty) {
                 continue;
             }
             // only if the property is configured in the schema we will save it to the sitemap
@@ -762,15 +763,16 @@ public class CmsXmlSitemap extends CmsXmlContent {
             }
 
             // the property name
-            propElement.addElement(XmlNode.NAME.getName()).addCDATA(property.getKey());
+            propElement.addElement(XmlNode.NAME.getName()).addCDATA(propName);
             Element valueElement = propElement.addElement(XmlNode.VALUE.getName());
 
             // the property value
+            String value = property.getValue();
             if (isSitemapProperty
-                || propertiesConf.get(property.getKey()).getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
+                || CmsXmlContentProperty.PropType.isVfsList(propertiesConf.get(propName).getPropertyType())) {
                 // resource list value
                 Element filelistElem = valueElement.addElement(XmlNode.FILELIST.getName());
-                for (String strId : CmsStringUtil.splitAsList(property.getValue(), CmsXmlContentProperty.PROP_SEPARATOR)) {
+                for (String strId : CmsStringUtil.splitAsList(value, CmsXmlContentProperty.PROP_SEPARATOR)) {
                     try {
                         Element fileValueElem = filelistElem.addElement(XmlNode.URI.getName());
                         fillResource(cms, fileValueElem, new CmsUUID(strId));
@@ -781,7 +783,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 }
             } else {
                 // string value
-                valueElement.addElement(XmlNode.STRING.getName()).addCDATA(property.getValue());
+                valueElement.addElement(XmlNode.STRING.getName()).addCDATA(value);
             }
         }
 

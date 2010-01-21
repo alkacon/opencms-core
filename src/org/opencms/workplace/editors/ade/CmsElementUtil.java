@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/01/20 13:24:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/01/21 08:56:59 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.6
  */
@@ -418,7 +418,6 @@ public final class CmsElementUtil {
     /**
      * Returns the property information for the given element as a JSON object.<p>
      * 
-     * @param cms the current CMS context
      * @param element the element
      * 
      * @return the property information
@@ -426,8 +425,7 @@ public final class CmsElementUtil {
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong generating the JSON
      */
-    public JSONObject getElementPropertyInfo(CmsObject cms, CmsContainerElementBean element)
-    throws CmsException, JSONException {
+    public JSONObject getElementPropertyInfo(CmsContainerElementBean element) throws CmsException, JSONException {
 
         CmsResource elementRes = m_cms.readResource(element.getElementId());
         CmsUserSettings settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
@@ -442,40 +440,36 @@ public final class CmsElementUtil {
             Map.Entry<String, CmsXmlContentProperty> entry = itProperties.next();
             String propertyName = entry.getKey();
             CmsXmlContentProperty conf = entry.getValue();
-            CmsMacroResolver.resolveMacros(conf.getWidgetConfiguration(), m_cms, Messages.get().getBundle());
-            JSONObject jSONProperty = new JSONObject();
-
-            String propValue = properties.get(propertyName).getStructureValue();
-            if (conf.getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                jSONProperty.put(JsonProperty.VALUE.getName(), CmsXmlContentProperty.convertIdsToPaths(cms, propValue));
-            } else {
-                jSONProperty.put(JsonProperty.VALUE.getName(), propValue);
-            }
+            JSONObject jsonProperty = new JSONObject();
+            jsonProperty.put(JsonProperty.VALUE.getName(), CmsXmlContentProperty.getPropValuePaths(
+                m_cms,
+                conf.getPropertyType(),
+                properties.get(propertyName).getStructureValue()));
 
             String propDefault = conf.getDefault();
-            jSONProperty.put(JsonProperty.DEFAULT_VALUE.getName(), propDefault);
+            jsonProperty.put(JsonProperty.DEFAULT_VALUE.getName(), propDefault);
 
-            jSONProperty.put(JsonProperty.TYPE.getName(), conf.getPropertyType());
-            jSONProperty.put(JsonProperty.WIDGET.getName(), conf.getWidget());
-            jSONProperty.put(JsonProperty.WIDGET_CONF.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.TYPE.getName(), conf.getPropertyType());
+            jsonProperty.put(JsonProperty.WIDGET.getName(), conf.getWidget());
+            jsonProperty.put(JsonProperty.WIDGET_CONF.getName(), CmsMacroResolver.resolveMacros(
                 conf.getWidgetConfiguration(),
                 m_cms,
                 messages));
-            jSONProperty.put(JsonProperty.RULE_TYPE.getName(), conf.getRuleType());
-            jSONProperty.put(JsonProperty.RULE_REGEX.getName(), conf.getRuleRegex());
-            jSONProperty.put(JsonProperty.NICE_NAME.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.RULE_TYPE.getName(), conf.getRuleType());
+            jsonProperty.put(JsonProperty.RULE_REGEX.getName(), conf.getRuleRegex());
+            jsonProperty.put(JsonProperty.NICE_NAME.getName(), CmsMacroResolver.resolveMacros(
                 conf.getNiceName(),
                 m_cms,
                 messages));
-            jSONProperty.put(JsonProperty.DESCRIPTION.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.DESCRIPTION.getName(), CmsMacroResolver.resolveMacros(
                 conf.getDescription(),
                 m_cms,
                 messages));
-            jSONProperty.put(JsonProperty.ERROR.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.ERROR.getName(), CmsMacroResolver.resolveMacros(
                 conf.getError(),
                 m_cms,
                 messages));
-            jSONProperties.put(propertyName, jSONProperty);
+            jSONProperties.put(propertyName, jsonProperty);
         }
         result.put(JsonElement.PROPERTIES.getName(), jSONProperties);
         return result;

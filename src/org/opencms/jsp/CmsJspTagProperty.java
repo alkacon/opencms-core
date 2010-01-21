@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2010/01/20 13:24:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/21 08:56:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.HashMap;
@@ -106,7 +107,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -247,10 +248,11 @@ public class CmsJspTagProperty extends TagSupport {
                     CmsObject cms = controller.getCmsObject();
                     // try to find property on the container element
                     try {
+                        CmsContainerElementBean currentElement = OpenCms.getADEManager().getCurrentElement(req);
                         return CmsXmlContentProperty.mergeDefaults(
                             cms,
-                            OpenCms.getADEManager().getCurrentElement(req).getProperties(),
-                            OpenCms.getADEManager().getPropertyConfiguration(cms, req));
+                            cms.readResource(currentElement.getElementId()),
+                            currentElement.getProperties());
                     } catch (CmsException e) {
                         // most likely we are not in a container page
                         LOG.debug(e.getLocalizedMessage(), e);

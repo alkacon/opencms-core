@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/01/20 13:24:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/01/21 08:56:59 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.6
  */
@@ -275,15 +275,14 @@ public class CmsADEManager {
             while (itPropertyDefs.hasNext()) {
                 Map.Entry<String, CmsXmlContentProperty> entry = itPropertyDefs.next();
                 String propertyName = entry.getKey();
-                String defaultValue = entry.getValue().getDefault();
+                CmsXmlContentProperty prop = entry.getValue();
                 if (properties.containsKey(propertyName)) {
-                    properties.get(propertyName).setResourceValue(defaultValue);
+                    properties.get(propertyName).setResourceValue(prop.getDefault());
                 } else {
-                    String resourceValue = defaultValue;
-                    if (entry.getValue().getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                        resourceValue = CmsXmlContentProperty.convertPathsToIds(cms, resourceValue);
-                    }
-                    properties.put(propertyName, new CmsProperty(propertyName, null, resourceValue));
+                    properties.put(propertyName, new CmsProperty(
+                        propertyName,
+                        null,
+                        CmsXmlContentProperty.getPropValueIds(cms, prop.getPropertyType(), prop.getDefault())));
                 }
             }
         } catch (Exception e) {
@@ -388,24 +387,6 @@ public class CmsADEManager {
     throws CmsException {
 
         return m_configuration.getNextNewFileName(cms, cntPageUri, request, type);
-    }
-
-    /**
-     * Returns the element property configuration for a request.<p>
-     * 
-     * @param cms the CmsObject to use 
-     * @param req the request which contains the current element
-     * 
-     * @return the property configuration for the element in the request
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public Map<String, CmsXmlContentProperty> getPropertyConfiguration(CmsObject cms, ServletRequest req)
-    throws CmsException {
-
-        CmsContainerElementBean element = getCurrentElement(req);
-        return getElementPropertyConfiguration(cms, cms.readResource(element.getElementId()));
-
     }
 
     /**

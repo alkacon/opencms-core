@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/20 13:24:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/01/21 08:56:59 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,15 +46,14 @@ import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.site.CmsSite;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.9.2
  */
@@ -436,23 +435,7 @@ public class CmsSitemapManager {
         if (defProps != null) {
             return defProps;
         }
-        defProps = new HashMap<String, String>();
-        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
-            cms,
-            resource);
-        Iterator<Map.Entry<String, CmsXmlContentProperty>> itProperties = propertiesConf.entrySet().iterator();
-        while (itProperties.hasNext()) {
-            Map.Entry<String, CmsXmlContentProperty> entry = itProperties.next();
-            String propertyName = entry.getKey();
-            CmsXmlContentProperty conf = entry.getValue();
-            CmsMacroResolver.resolveMacros(conf.getWidgetConfiguration(), cms, Messages.get().getBundle());
-            if (entry.getValue().getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                String ids = CmsXmlContentProperty.convertPathsToIds(cms, conf.getDefault());
-                defProps.put(propertyName, ids);
-            } else {
-                defProps.put(propertyName, conf.getDefault());
-            }
-        }
+        defProps = CmsXmlContentProperty.mergeDefaults(cms, resource, Collections.<String, String> emptyMap());
         m_cache.setDefaultProps(defProps, online);
         return defProps;
     }

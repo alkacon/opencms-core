@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2010/01/20 13:24:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/21 08:56:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,30 +34,73 @@ package org.opencms.xml.content;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlContentDefinition;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Contains the property configuration for a container-page element.
  * 
  * @author Tobias Herrmann
- * @version $Revision: 1.0
  * 
+ * @version $Revision: 1.6 $
+ * 
+ * @since 7.9.2
  */
 public class CmsXmlContentProperty implements Cloneable {
+
+    /** Property type constants. */
+    public enum PropType {
+        /** Property type constant string. */
+        string,
+        /** Property type constant VFS list. */
+        vfslist;
+
+        /**
+         * Checks if the given type is {@link #vfslist}.<p>
+         * 
+         * @param type the type to check
+         * 
+         * @return <code>true</code> if the given type is {@link #vfslist}
+         */
+        public static boolean isVfsList(String type) {
+
+            if (type == null) {
+                return false;
+            }
+            return valueOf(type.toLowerCase()) == vfslist;
+        }
+    }
+
+    /** XML node name constants. */
+    public enum XmlNode {
+
+        /** Value file list node name. */
+        FileList,
+        /** Container or property name node name. */
+        Name,
+        /** Element properties node name. */
+        Properties,
+        /** Value string node name. */
+        String,
+        /** File list URI node name. */
+        Uri,
+        /** Property value node name. */
+        Value;
+    }
 
     /** IDs separator constant. */
     public static final String PROP_SEPARATOR = ",";
 
-    /** Property type constant string. */
-    public static final String T_STRING = "string";
-
-    /** Property type constant vfs list. */
-    public static final String T_VFSLIST = "vfslist";
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlContentProperty.class);
 
     /** Default value. */
     private String m_default;
@@ -129,16 +172,83 @@ public class CmsXmlContentProperty implements Cloneable {
     }
 
     /**
+     * Returns a converted property value depending on the given type.<p>
+     * 
+     * If the type is {@link PropType#vfslist}, the value is parsed as a 
+     * list of paths and converted to a list of IDs.<p>
+     * 
+     * @param cms the current CMS context
+     * @param type the property type
+     * @param value the raw property value
+     * 
+     * @return a converted property value depending on the given type
+     */
+    public static String getPropValueIds(CmsObject cms, String type, String value) {
+
+        if (PropType.isVfsList(type)) {
+            return convertPathsToIds(cms, value);
+        }
+        return value;
+    }
+
+    /**
+     * Returns a converted property value depending on the given type.<p>
+     * 
+     * If the type is {@link PropType#vfslist}, the value is parsed as a 
+     * list of IDs and converted to a list of paths.<p>
+     * 
+     * @param cms the current CMS context
+     * @param type the property type
+     * @param value the raw property value
+     * 
+     * @return a converted property value depending on the given type
+     */
+    public static String getPropValuePaths(CmsObject cms, String type, String value) {
+
+        if (PropType.isVfsList(type)) {
+            return convertIdsToPaths(cms, value);
+        }
+        return value;
+    }
+
+    /**
+     * Extends the given properties with the default values 
+     * from the resource's property configuration.<p>
+     * 
+     * @param cms the current CMS context
+     * @param resource the resource to get the property configuration from 
+     * @param properties the properties to extend
+     *  
+     * @return a merged map of properties
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static Map<String, String> mergeDefaults(CmsObject cms, CmsResource resource, Map<String, String> properties)
+    throws CmsException {
+
+        Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(
+            cms,
+            resource).getProperties();
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
+            CmsXmlContentProperty prop = entry.getValue();
+            result.put(entry.getKey(), getPropValueIds(cms, prop.getPropertyType(), prop.getDefault()));
+        }
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+    /**
      * Converts a string containing zero or more structure ids into a string containing the corresponding VFS paths.<p>
      *   
      * @param cms the CmsObject to use for the VFS operations 
      * @param value a string representation of a list of ids
      * 
      * @return a string representation of a list of paths
-     *  
-     * @throws CmsException if something goes wrong
      */
-    public static String convertIdsToPaths(CmsObject cms, String value) throws CmsException {
+    private static String convertIdsToPaths(CmsObject cms, String value) {
 
         if (value == null) {
             return null;
@@ -149,8 +259,14 @@ public class CmsXmlContentProperty implements Cloneable {
         StringBuffer buffer = new StringBuffer();
         if (ids.size() > 0) {
             for (String id : ids) {
-                CmsResource propResource = cms.readResource(new CmsUUID(id));
-                buffer.append(cms.getSitePath(propResource));
+                try {
+                    CmsResource propResource = cms.readResource(new CmsUUID(id));
+                    buffer.append(cms.getSitePath(propResource));
+                } catch (Exception e) {
+                    // should never happen
+                    LOG.error(e.getLocalizedMessage(), e);
+                    continue;
+                }
                 buffer.append(PROP_SEPARATOR);
             }
             // don't include last comma (which exists since ids.size() isn't zero)  
@@ -167,10 +283,8 @@ public class CmsXmlContentProperty implements Cloneable {
      * @param value a string representation of a list of paths
      * 
      * @return a string representation of a list of ids
-     *  
-     * @throws CmsException if something goes wrong
      */
-    public static String convertPathsToIds(CmsObject cms, String value) throws CmsException {
+    private static String convertPathsToIds(CmsObject cms, String value) {
 
         if (value == null) {
             return null;
@@ -181,8 +295,14 @@ public class CmsXmlContentProperty implements Cloneable {
         StringBuffer buffer = new StringBuffer();
         if (paths.size() > 0) {
             for (String path : paths) {
-                CmsResource propResource = cms.readResource(path);
-                buffer.append(propResource.getStructureId().toString());
+                try {
+                    CmsResource propResource = cms.readResource(path);
+                    buffer.append(propResource.getStructureId().toString());
+                } catch (CmsException e) {
+                    // should never happen
+                    LOG.error(e.getLocalizedMessage(), e);
+                    continue;
+                }
                 buffer.append(PROP_SEPARATOR);
             }
             // don't include last comma (which exists since ids.size() isn't zero)  
@@ -190,36 +310,6 @@ public class CmsXmlContentProperty implements Cloneable {
         }
         return result;
 
-    }
-
-    /**
-     * Merge a map of properties with the default values from a map of property configurations.<p>
-     * 
-     * @param cms the CmsObject to use for converting paths to ids 
-     * @param properties the map of properties
-     * @param propertyConfig the map of property configurations
-     *  
-     * @return a merged map of properties
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public static Map<String, String> mergeDefaults(
-        CmsObject cms,
-        Map<String, String> properties,
-        Map<String, CmsXmlContentProperty> propertyConfig) throws CmsException {
-
-        Map<String, String> result = new HashMap<String, String>();
-        for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
-            if (entry.getValue().getPropertyType().equals(CmsXmlContentProperty.T_VFSLIST)) {
-                result.put(entry.getKey(), convertPathsToIds(cms, entry.getValue().getDefault()));
-            } else {
-                result.put(entry.getKey(), entry.getValue().getDefault());
-            }
-        }
-        for (Map.Entry<String, String> entry : properties.entrySet()) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
     }
 
     /**

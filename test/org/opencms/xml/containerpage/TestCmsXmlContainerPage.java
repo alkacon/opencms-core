@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/TestCmsXmlContainerPage.java,v $
- * Date   : $Date: 2009/11/02 16:35:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/21 08:56:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
@@ -146,17 +146,14 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
             List<String> expectedTypes = typesMap.get(locale);
             for (int i = 0; i < expectedTypes.size(); i++) {
                 String expectedType = expectedTypes.get(i);
-                I_CmsXmlContentValue cnt = xmlCntPage.getValue(
-                    CmsXmlContainerPage.XmlNode.CONTAINER.getName(),
-                    locale,
-                    i);
+                I_CmsXmlContentValue cnt = xmlCntPage.getValue(CmsXmlContainerPage.XmlNode.Containers.name(), locale, i);
                 String name = xmlCntPage.getStringValue(cms, CmsXmlUtils.concatXpath(
                     cnt.getPath(),
-                    CmsXmlContainerPage.XmlNode.NAME.getName()), locale);
+                    CmsXmlContainerPage.XmlNode.Name.name()), locale);
                 assertEquals(namesMap.get(locale.toString() + expectedType), name);
                 String type = xmlCntPage.getStringValue(cms, CmsXmlUtils.concatXpath(
                     cnt.getPath(),
-                    CmsXmlContainerPage.XmlNode.TYPE.getName()), locale);
+                    CmsXmlContainerPage.XmlNode.Type.name()), locale);
                 assertEquals(expectedType, type);
             }
         }

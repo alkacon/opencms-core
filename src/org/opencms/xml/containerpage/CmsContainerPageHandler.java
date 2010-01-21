@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerPageHandler.java,v $
- * Date   : $Date: 2009/10/22 07:26:34 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2010/01/21 08:56:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.6
  */
@@ -75,11 +75,11 @@ public class CmsContainerPageHandler extends CmsDefaultXmlContentHandler {
 
         // get the current name
         Locale locale = value.getLocale();
-        String namePath = CmsXmlUtils.concatXpath(value.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName());
+        String namePath = CmsXmlUtils.concatXpath(value.getPath(), CmsXmlContainerPage.XmlNode.Name.name());
         String name = content.getValue(namePath, locale).getStringValue(cms);
         // iterate over all containers
         Iterator<I_CmsXmlContentValue> itValues = content.getValues(
-            CmsXmlContainerPage.XmlNode.CONTAINER.getName(),
+            CmsXmlContainerPage.XmlNode.Containers.name(),
             locale).iterator();
         while (itValues.hasNext()) {
             I_CmsXmlContentValue itValue = itValues.next();
@@ -88,7 +88,7 @@ public class CmsContainerPageHandler extends CmsDefaultXmlContentHandler {
                 continue;
             }
             // get container name
-            namePath = CmsXmlUtils.concatXpath(itValue.getPath(), CmsXmlContainerPage.XmlNode.NAME.getName());
+            namePath = CmsXmlUtils.concatXpath(itValue.getPath(), CmsXmlContainerPage.XmlNode.Name.name());
             String itName = content.getValue(namePath, locale).getStringValue(cms);
             // validate
             if (name.equals(itName)) {
@@ -113,7 +113,7 @@ public class CmsContainerPageHandler extends CmsDefaultXmlContentHandler {
 
         // we only have to validate containers
         if ((value != null)
-            && CmsXmlUtils.removeXpath(value.getPath()).equals(CmsXmlContainerPage.XmlNode.CONTAINER.getName())) {
+            && CmsXmlUtils.removeXpath(value.getPath()).equals(CmsXmlContainerPage.XmlNode.Containers.name())) {
             CmsXmlContent content = (CmsXmlContent)value.getDocument();
             try {
                 validateNames(cms, value, content);
