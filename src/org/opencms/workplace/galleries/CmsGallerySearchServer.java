@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/21 10:12:58 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2010/01/21 16:01:07 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 7.6
  */
@@ -535,10 +535,11 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             String localeParam = request.getParameter(ReqParam.LOCALE.getName());
             String dataParam = request.getParameter(ReqParam.DATA.getName());
             Action action = Action.valueOf(actionParam.toUpperCase());
-            m_cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
+            Locale currentLocale = CmsLocaleManager.getLocale(localeParam);
+            m_cms.getRequestContext().setLocale(currentLocale);
             JSONObject data = new JSONObject(dataParam);
             if (action.equals(Action.ALL)) {
-                result.merge(getAllLists(null), true, true);
+                result.merge(getAllLists(null, currentLocale), true, true);
 
                 // TODO: Add containers.
             } else if (action.equals(Action.CATEGORIES)) {
@@ -703,9 +704,33 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /**
+     * Returns the JSON representation of all available locales.<p>
+     * 
+     * @param currentLocale the current locale
+     * 
+     * @return the JSON representation of all available locales
+     * 
+     * @throws JSONException if something goes wrong with the JSON manipulation
+     */
+    private JSONArray buildJSONForLocales(Locale currentLocale) throws JSONException {
+
+        JSONArray result = new JSONArray();
+        Iterator<Locale> it = OpenCms.getLocaleManager().getAvailableLocales().iterator();
+        while (it.hasNext()) {
+            Locale locale = it.next();
+            JSONObject jLocale = new JSONObject();
+            jLocale.put("title", locale.getDisplayName(currentLocale));
+            jLocale.put("value", locale.toString());
+            result.put(jLocale);
+        }
+        return result;
+    }
+
+    /**
      * Returns the JSON-Object for the given list of search-results.<p>
      * 
      * @param searchResult the search-result-list
+     * 
      * @return the JSON representation of the search-result
      */
     private JSONArray buildJSONForSearchResult(List<CmsGallerySearchResult> searchResult) {
@@ -903,12 +928,13 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * Returns the JSON for type, galleries and categories tab. Uses the given types or all available resource types.<p>
      * 
      * @param modeName the dialog mode name
+     * @param currentLocale the current locale
      * 
      * @return available types, galleries and categories as JSON 
      * 
      * @throws JSONException if something goes wrong generating the JSON
      */
-    public JSONObject getAllLists(String modeName) throws JSONException {
+    public JSONObject getAllLists(String modeName, Locale currentLocale) throws JSONException {
 
         JSONObject result = new JSONObject();
         result.put(JsonKeys.TYPES.getName(), buildJSONForTypes(getResourceTypes()));
@@ -922,6 +948,8 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             galleryFolders.addAll(iGalleryTypes.next().getValue().getGalleries());
         }
         result.put(JsonKeys.CATEGORIES.getName(), buildJSONForCategories(readCategories(galleryFolders)));
+        result.put("locale", currentLocale.toString());
+        result.put("locales", buildJSONForLocales(currentLocale));
         return result;
     }
 
@@ -1529,7 +1557,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      */
     public String getListConfig() throws JSONException {
 
-        JSONObject result = getAllLists(getModeName());
+        JSONObject result = getAllLists(getModeName(), getRequest().getLocale());
         return result.toString();
     }
 
