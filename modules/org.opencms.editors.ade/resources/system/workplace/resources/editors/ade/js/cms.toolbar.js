@@ -88,7 +88,7 @@
       }
       container.attr('id', cms.toolbar.editingSubcontainerId).addClass('cms-editing-subcontainer');
       container.css('z-index', 1000);
-//      cms.move.addSubcontainerBackground(container, true);
+      //      cms.move.addSubcontainerBackground(container, true);
       cms.data.containers[cms.toolbar.editingSubcontainerId] = new cms.data.Container({
          'elements': containerElement.subItems,
          'name': cms.toolbar.editingSubcontainerId,
@@ -103,7 +103,10 @@
          container.children('.cms-element').each(function() {
             var itemId = $(this).attr('rel')
             subItems.push(itemId);
-            subElements.push({ 'id': itemId, 'uri':cms.data.elements[itemId]['file']});
+            subElements.push({
+               'id': itemId,
+               'uri': cms.data.elements[itemId]['file']
+            });
          });
          containerElement.subItems = subItems;
          containerElement['title'] = $('input[name="title"]', overlayEditing).val();
@@ -120,7 +123,7 @@
                'elem': postElement
             }, function(ok, data) {
                var newId = data['id'];
-               var oldId=containerElement['id'];
+               var oldId = containerElement['id'];
                delete cms.data.elements[oldId];
                containerElement['id'] = newId;
                containerElement['status'] = cms.data.STATUS_CREATED;
@@ -139,7 +142,7 @@
          }
          delete cms.data.containers[cms.toolbar.editingSubcontainerId];
          container.removeAttr('id').removeClass('cms-editing-subcontainer').css('z-index', '');
-//         cms.move.removeSubcontainerBackground(container);
+         //         cms.move.removeSubcontainerBackground(container);
          overlay.remove();
          overlayEditing.remove();
          cms.toolbar.editingSubcontainerId = null;
@@ -151,9 +154,9 @@
          container.replaceWith(containerElement.getContent(parentContainer['type']));
          overlay.remove();
          overlayEditing.remove();
-//         if (isNew){
-//             container.addClass('cms-new-element');
-//         }
+         //         if (isNew){
+         //             container.addClass('cms-new-element');
+         //         }
          cms.toolbar.editingSubcontainerId = null;
          cms.move.refreshNewElementHighlighting();
       });
@@ -229,8 +232,8 @@
       var $container = $item.parent();
       
       cms.move.removeElementHighlighting();
-      if ($item.hasClass('cms-new-element')){
-          cms.move.removeNewElementHighlighting($item);
+      if ($item.hasClass('cms-new-element')) {
+         cms.move.removeNewElementHighlighting($item);
       }
       var elemId = $item.attr('rel');
       if (elemId && cms.data.elements[elemId]) {
@@ -788,7 +791,7 @@
             var helperParent = ui.helper.parent();
             var parentId = helperParent.attr('id');
             if (parentId != cms.html.favoriteDropListId) {
-               cms.move.refreshCotnainerHighlighting('#'+parentId, 2);
+               cms.move.refreshCotnainerHighlighting('#' + parentId, 2);
             }
          },
          tolerance: 'pointer',
@@ -975,7 +978,7 @@
     * Opens the save dialog.
     */
    var showSaveDialog = function() {
-      if ($(this).hasClass('cms-deactivated')) {
+      if (!cms.toolbar.toolbarReady || $(this).hasClass('cms-deactivated')) {
          return;
       }
       
@@ -1215,13 +1218,13 @@
       }
    };
    
-   var _reinitEditModeHandles=function(){
-       var buttonMode = this.name;
-       var containerSelector = (cms.toolbar.editingSubcontainerId != null) ? ('#' + cms.toolbar.editingSubcontainerId) : cms.util.getContainerSelector();
-       var containers = $(containerSelector);
-       if (this.isEdit()){
-           $('.cms-element div.cms-handle, .' + cms.html.subcontainerClass + ' div.cms-handle').remove();
-           containers.children('.cms-element, .' + cms.html.subcontainerClass).each(function() {
+   var _reinitEditModeHandles = function() {
+      var buttonMode = this.name;
+      var containerSelector = (cms.toolbar.editingSubcontainerId != null) ? ('#' + cms.toolbar.editingSubcontainerId) : cms.util.getContainerSelector();
+      var containers = $(containerSelector);
+      if (this.isEdit()) {
+         $('.cms-element div.cms-handle, .' + cms.html.subcontainerClass + ' div.cms-handle').remove();
+         containers.children('.cms-element, .' + cms.html.subcontainerClass).each(function() {
             var elem = $(this).css('position', 'relative');
             var elemId = elem.attr('rel');
             if (elemId && cms.data.elements[elemId]) {
@@ -1229,7 +1232,7 @@
             }
             containers.find('div.cms-editable div.cms-directedit-buttons').addClass('cms-' + buttonMode + 'mode');
          });
-       }
+      }
    }
    /**
     * Shared method that enables an edit mode (edit, move, delete, properties).
@@ -1238,7 +1241,7 @@
       var buttonMode = this.name;
       var containerSelector = (cms.toolbar.editingSubcontainerId != null) ? ('#' + cms.toolbar.editingSubcontainerId) : cms.util.getContainerSelector();
       var containers = $(containerSelector);
-      $('button.ui-state-active[name!="'+this.name+'"]', cms.toolbar.dom.toolbar).trigger('click');
+      $('button.ui-state-active[name!="' + this.name + '"]', cms.toolbar.dom.toolbar).trigger('click');
       if (modeMap[cms.toolbar.mode].isEdit) {
          // reorder handles
          $('.cms-element div.cms-handle, .' + cms.html.subcontainerClass + ' div.cms-handle').each(function() {
@@ -1246,8 +1249,8 @@
             $('a', handleDiv).css('display', 'none');
             $('a.cms-' + buttonMode, handleDiv).prependTo(handleDiv).css('display', 'block');
          });
-         if (buttonMode!=cms.toolbar.mode){
-             markAsInactive(cms.toolbar.dom.buttons[cms.toolbar.mode]);
+         if (buttonMode != cms.toolbar.mode) {
+            markAsInactive(cms.toolbar.dom.buttons[cms.toolbar.mode]);
          }
          containers.find('.cms-element .cms-editable:not(:has(div.cms-hovering)), .' + cms.html.subcontainerClass + ' .cms-editable:not(:has(div.cms-hovering))').each(function() {
             cms.move.drawSiblingBorder($(this), 2, 'cms-editable', false, 'cms-test');
@@ -1261,10 +1264,10 @@
             var elemId = elem.attr('rel');
             if (elemId && cms.data.elements[elemId]) {
                addHandles(elem, elemId, buttonMode);
-               if (elem.hasClass(cms.html.subcontainerClass)){
-                   var backgroundData = cms.move.addSubcontainerBackground(elem);
-                   var rightPos = backgroundData['parentDimension']['width'] - backgroundData['dimension']['left'] - backgroundData['dimension']['width'];
-                   elem.children('.cms-handle').css('right', rightPos+'px');
+               if (elem.hasClass(cms.html.subcontainerClass)) {
+                  var backgroundData = cms.move.addSubcontainerBackground(elem);
+                  var rightPos = backgroundData['parentDimension']['width'] - backgroundData['dimension']['left'] - backgroundData['dimension']['width'];
+                  elem.children('.cms-handle').css('right', rightPos + 'px');
                }
             }
          });
@@ -1431,7 +1434,7 @@
          var self = this;
          self.button = $('<button name="sitemap" title="Sitemap" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-sitemap"/>&nbsp;</button>');
          self.button.click(function() {
-            if ($(this).hasClass('cms-deactivated')) {
+            if (!cms.toolbar.toolbarReady || $(this).hasClass('cms-deactivated')) {
                return;
             }
             if (!cms.toolbar.pageChanged) {
@@ -1452,7 +1455,7 @@
          var self = this;
          self.button = $('<button name="publish" title="Publish" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button>');
          self.button.click(function() {
-            if ($(this).hasClass('cms-deactivated')) {
+            if (!cms.toolbar.toolbarReady || $(this).hasClass('cms-deactivated')) {
                return;
             }
             cms.publish.initProjects(function() {
@@ -1561,7 +1564,7 @@
       },
       
       isCompatibleWith: function(elemId) {
-         return elemId.match(/^ade_/);
+         return true;
       },
       
       createHandle: function(elemId, elem) {
@@ -1671,6 +1674,9 @@
       createButton: function() {
          var self = this;
          self.button = makeModeButton(this.name, M.RESET_BUTTON_TITLE, 'cms-icon-reset').click(function() {
+            if (!cms.toolbar.toolbarReady) {
+               return;
+            }
             if ($('#cms-reset-dialog').size() == 0) {
                $('<div id="cms-reset-dialog" style="display:none">' + M.RESET_CONFIRM + '</div>').appendTo('body');
             }
