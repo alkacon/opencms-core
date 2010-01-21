@@ -1075,9 +1075,7 @@
     * OK Button was pressed, stores the image information back in the editor fields.
     * @param {Object} itemId
     */
-   var setImagePath = function(itemId) {
-      // the unique path to the resource
-     // var itemId = $('#cms-preview').attr('alt');
+   var setImagePath = function(itemId) {      
       //the id of the input field in the xml content
       var fieldId = cms.galleries.initValues['fieldId'];
        
@@ -1197,13 +1195,12 @@
       try {
          // toggle preview icon if possible
          if (cms.galleries.initValues.widgetmode == "simple") {
-            window.parent.checkPreview(cms.galleries.initValues.fieldid);
+            window.parent.checkPreview(fieldId);
          } else {
-            window.parent.checkVfsImagePreview(cms.galleries.initValues.fieldid);
+            window.parent.checkVfsImagePreview(fieldId);
          }
-      } catch (e) {
-            }
-      window.close();
+      } catch (e) {}      
+      window.parent.closeGallery(window.parent, fieldId);      
    }
    
    /**

@@ -342,21 +342,7 @@
    var setValues = function() {
       // the unique path to the resource
       var itemId = $('#cms-preview').attr('alt');
-      setResourcePath(itemId);
-      
-      //the id of the input field in the xml content
-      /*var fieldId = cms.galleries.initValues['fieldId'];
-      
-      if (fieldId != null && fieldId != "") {
-         var imgField = window.opener.document.getElementById(fieldId);
-         imgField.value = itemId;
-         try {
-            // toggle preview icon if possible
-            window.opener.checkPreview(fieldid);
-         } catch (e) {
-                  }
-      }
-      window.close();*/      
+      setResourcePath(itemId);          
    }
    
    /**
@@ -371,9 +357,8 @@
          imgField.value = itemId;
          try {
             // toggle preview icon if possible
-            window.parent.checkPreview(fieldid);
-         } catch (e) {
-                  }
+            window.parent.checkPreview(fieldId);
+         } catch (e) {}
       }
       window.parent.closeGallery(window.parent, fieldId);
    }
@@ -414,9 +399,7 @@
    var cleanUpOnClose = function() {
        $('#'+ cms.previewhandler.editableTabId).tabs('destroy');
        $('#'+ cms.previewhandler.editableTabId).removeAttr('class').empty();
-       $('#cms-preview div.close-icon').removeClass('cms-properties-changed cms-properties-saved'); 
-       
-       //$('#' + cms.previewhandler.keys['propertiesTabId']).find('button[name="previewSelect"]').removeClass('cms-properties-changed');      
+       $('#cms-preview div.close-icon').removeClass('cms-properties-changed cms-properties-saved');              
        $('#cms-preview div.preview-area').empty();       
    }
    
