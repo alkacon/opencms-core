@@ -49,9 +49,8 @@
       
    ///// Additional infos for image format processing ////////
    /** Default format value for the drop down. */
-   //TODO: change width of small foramt to '200'!!!
    var defaultFormatOptions = 'original|user|free cropping|small|large';
-   var defaultFormatValues = ['original', 'user', 'free', '150x?', '500x?'];
+   var defaultFormatValues = ['original', 'user', 'free', '200x?', '500x?'];
    
    /** Default values for the max size of the image in the preview. */
    var defaultPreview = {

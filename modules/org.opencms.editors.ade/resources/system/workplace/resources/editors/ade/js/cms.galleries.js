@@ -94,6 +94,7 @@
       page: 1,
       searchfields: '',
       matchesperpage: 8,
+      sortorder: null,
       isChanged: {
          types: false,
          galleries: false,
@@ -196,10 +197,6 @@
              </div>\
           </div>';    
    
-   
-   
-  
-      
    /**
     * Init function for search/add dialog.
     * 
@@ -220,18 +217,24 @@
       var resultTab = $(cms.galleries.htmlTabResultSceleton);
       resultTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
           values:[
-              {value: 'title.desc',title: 'Title Ascending'}, 
-              {value: 'title.desc',title: 'Title Descending'}, 
-              {value: 'type.asc',title: 'Type Ascending'}, 
-              {value: 'type.desc',title: 'Type Descending'}, 
-              {value: 'datemodified.asc',title: 'Date Ascending'},
-              {value: 'datemodified.desc',title: 'Date Descending'},
-              {value: 'path.asc',title: 'Path Ascending'},
-              {value: 'path.desc',title: 'Path Descending'}
+              {value: 'title_asc',title: 'Title Ascending'}, 
+              {value: 'title_desc',title: 'Title Descending'}, 
+              {value: 'type_asc',title: 'Type Ascending'}, 
+              {value: 'type_desc',title: 'Type Descending'}, 
+              {value: 'dateLastModified_asc',title: 'Date Ascending'},
+              {value: 'dateLastModified_desc',title: 'Date Descending'},
+              {value: 'path_asc',title: 'Path Ascending'},
+              {value: 'path_desc',title: 'Path Descending'}
           ],
           width: 150,
           /* TODO: bind sort functionality */
-          select: function($this, self, value){$(self).closest('div.cms-list-options').attr('id')}}));
+          select: function($this, self, value){
+              var tab = $(self).closest('div.cms-list-options').attr('id');
+              cms.galleries.searchObject['sortorder'] = value;
+              // send new search for given sort oder and refresh the result list
+              // display the first pagination page for sorted results    
+              cms.galleries.loadSearchResults();          
+          }}));
           resultTab.find('.cms-result-criteria').css('display','none');
       // TODO blind out for the moment
       //resultTab.find('.cms-drop-down').css('display','none');
@@ -440,9 +443,9 @@
          cms.galleries.fillTypes(cms.galleries.searchCriteriaListsAsJSON.types);
          markSelectedCriteria('types');
       }
-      
+                          
       if (initSearchResult && initSearchResult.searchresult) {
-          fillResultTab(initSearchResult);          
+          cms.galleries.fillResultTab(initSearchResult);         
       } else {
           // open the preselected tab
           $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);    
@@ -482,7 +485,7 @@
                 var availableTypes = cms.galleries.searchCriteriaListsAsJSON['types'];
                 var availableGalleries = cms.galleries.searchCriteriaListsAsJSON['galleries'];
                 // get the resource types associated with the selected galleries
-              var contentTypes = [];
+                var contentTypes = [];
                 for (var i = 0; i < availableGalleries.length; i++) {                   
                     if ( $.inArray(availableGalleries[i]['path'], selectedGalleries) != -1){                                                                            
                             contentTypes = contentTypes.concat(availableGalleries[i]['contenttypes']);                                                    

@@ -12,12 +12,12 @@ pageContext.setAttribute("cms", cms);
 		text-align: center;
 	}
 	
-	h3 {
+	/*h3 {
 		font-size:14px;
 		margin:3px 3px 6px;
 		padding:0;
 		position:absolute;		
-	}
+	}*/
 	
 	.cms-image-info {
 		margin-top:1px;
@@ -61,7 +61,7 @@ pageContext.setAttribute("cms", cms);
 		 
 </style>
 <fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
-	<h3>${cms.title}</h3>
+	<%-- <h3>${cms.title}</h3> --%>
 	<div class="cms-image-preview"></div>
 	<div class="cms-image-info">
 			<div class="cms-field cms-left cms-width-600"><span class="cms-item-title cms-width-95">Path:</span><span class="cms-value cms-width-500">${cms.path}</span></div>			
