@@ -8,7 +8,7 @@
      * open: function(elem) called when select-box is opened
      * select: function(this, elem, value) called when a value is selected
      * 
-     * The following methods can be called by $(selector).selectbox('method name', additionalValue):
+     * The following methods can be called by $(selector).selectBox('method name', additionalValue):
      * 'getValue': returns the currently selected value 
      * 'getIndex': returns the currently selected index
      * 'setValue': sets the value to additionalValue

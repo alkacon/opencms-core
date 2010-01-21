@@ -339,7 +339,7 @@ function isEnhanced() {
 /* The OK button was hit, called by editor button click event. */
 function Ok() {
     
-    var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');       
+    // TODO: is not used: !!! var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');       
     // if changed properties are not saved yet         
     if ($('button[name="previewSave"]').hasClass('cms-properties-changed')) {
         //text, title, yesLabel, noLabel, callback
@@ -350,6 +350,7 @@ function Ok() {
     }               
 }
 
+/* Saves changed properties and triggers ok button.*/
 function saveProperties(isConfirmed) {
     if (isConfirmed) {
           var changedProperties = $('.cms-item-edit.cms-item-changed');      

@@ -1,4 +1,4 @@
-﻿(function(cms) {  
+﻿(function(cms) {    
 
    /** A map with all available content handlers. */
    var contentTypeHandlers = cms.galleries.contentTypeHandlers = {};
@@ -30,18 +30,28 @@
     */
    var initValues = cms.galleries.initValues = {
        'dialogMode': null,
-       'fieldId'   : null
+       'fieldId'   : null,
+       'target'   : null
    };
    
    /** 
-    * 'path': path to the image, also used as id for the preview
+    * 'path': vfs path to the image, also used as id for the preview
+    * 'linkpath': OpenCms link to the resource
     * 'isInitial': flag to indicate is the the resource is loaded from xmlContent
+    * 'newwidth': customizes width of an image
+    * 'newheight': customizes height of an image
+    * 'title': title property of the resouce
+    * 'description': description property of the resource
+    * 'target': the link tagert for the resouce
     */
    var activeItem = cms.galleries.activeItem = {
        'path': '',
+       'linkpath':'',
        'isInitial': false,
        'newwidth': 0,
-       'newheight': 0       
+       'newheight': 0,
+       'title': '',
+       'description': ''      
    };
    
    /** html-class for the inner of the scrolled list with items. */
@@ -169,7 +179,7 @@
                     <div class="cms-search-options">\
                         <span id="searchQuery" class="cms-item-left"><label>Search for:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
-                 <!--   <div class="cms-search-options">\
+                    <!-- <div class="cms-search-options">\
                         <div class="cms-item-left">Search in:</div>\
                         <div id="searchInTitle" class="cms-list-checkbox"></div>\
                         <div class="cms-checkbox-label">Title</div>\
@@ -179,7 +189,7 @@
                     <div class="cms-search-options">\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed after:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
-                    </div> -->\
+                    </div>-->\
                     <div class="cms-search-options">\
                         <button class="ui-state-default ui-corner-all cms-item-left-bottom">Search</button>\
                     </div>\
@@ -619,13 +629,12 @@
       }
       return false;
    }
-   
      
    var fillResultPage = cms.galleries.fillResultPage = function(pageData) {           
       var target = $('#results > ul').empty().removeAttr('id').attr('id', cms.html.galleryResultListPrefix + pageData.searchresult.resultpage);
       $.each(pageData.searchresult.resultlist, function() {
           var resultElement=$(this.itemhtml).appendTo(target);
-          resultElement.attr('alt', this.path);                              
+          resultElement.attr('alt', this.path);                                     
           resultElement.data('type', this.type);
           if(isSelectableItem()) {
               resultElement.find('.cms-list-itemcontent')
@@ -693,16 +702,16 @@
                         cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
                         cms.galleries.activeItem['isInitial'] = true;
                     }
-            
+                    
                 } else if (cms.galleries.initValues['dialogMode'] == 'widget') {
-            // Set the path to currently selected item            
+                    // Set the path to currently selected item            
                     if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null' &&
                     cms.galleries.initValues['path'] != null &&
                     cms.galleries.initValues['path'] != 'null') {
                         cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
-                        cms.galleries.activeItem['isInitial'] = true;      
-            	  }          
-            }
+                        cms.galleries.activeItem['isInitial'] = true;
+                    }
+                }
         }
             
         
@@ -1165,7 +1174,7 @@
     var resetActiveItem = cms.galleries.resetActiveItem = function() {        
         cms.galleries.activeItem['isCropped'] = null;
     }
- 
+    
     /**
      * Checkes or uncheckes the checkbox element.
      * 

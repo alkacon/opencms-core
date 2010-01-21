@@ -53,7 +53,7 @@ FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
     if (option.isButtonAdditional("imagegallery") || option.isButtonAdditional("image")) { %>
     FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("plugins/") %>");<% }
     if (option.isButtonAdditional("downloadgallery")) { %>
-    FCKConfig.Plugins.Add("downloadgallery", null, "<%= galleryPath %>");<% }
+    FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("plugins/") %>");<% }
     if (option.isButtonAdditional("linkgallery")) { %>
     FCKConfig.Plugins.Add("linkgallery", null, "<%= galleryPath %>");<% }
     if (option.isButtonAdditional("htmlgallery")) { %>

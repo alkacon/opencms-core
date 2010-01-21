@@ -469,6 +469,59 @@
 			<accesscontrol/>
 		</file>
         <file>
+			<destination>system/workplace/editors/fckeditor/plugins/downloadgallery</destination>
+			<type>folder</type>
+			<uuidstructure>fd610177-04ec-11df-a73b-5fcb07ee46a5</uuidstructure>
+			<datelastmodified>Tue, 19 Jan 2010 11:22:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Jan 2010 11:22:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/downloadgallery/fckplugin.js</source>
+			<destination>system/workplace/editors/fckeditor/plugins/downloadgallery/fckplugin.js</destination>
+			<type>jsp</type>
+			<uuidstructure>18278f19-04ed-11df-a73b-5fcb07ee46a5</uuidstructure>
+			<uuidresource>18278f1a-04ed-11df-a73b-5fcb07ee46a5</uuidresource>
+			<datelastmodified>Mon, 11 Jan 2010 14:42:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Jan 2010 11:23:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/downloadgallery/integrator.js</source>
+			<destination>system/workplace/editors/fckeditor/plugins/downloadgallery/integrator.js</destination>
+			<type>jsp</type>
+			<uuidstructure>183375fc-04ed-11df-a73b-5fcb07ee46a5</uuidstructure>
+			<uuidresource>183375fd-04ed-11df-a73b-5fcb07ee46a5</uuidresource>
+			<datelastmodified>Mon, 11 Jan 2010 15:10:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Jan 2010 11:23:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
 			<destination>system/workplace/editors/fckeditor/plugins/imagegallery</destination>
 			<type>folder</type>
 			<uuidstructure>d29b0ff9-fb70-11de-b5f5-c7b77b1e3efa</uuidstructure>

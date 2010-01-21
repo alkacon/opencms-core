@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageFormatterHelper.java,v $
- * Date   : $Date: 2010/01/18 16:32:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/21 09:54:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 
  * 
@@ -83,9 +83,6 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
 
         /** The path. */
         PATH("path"),
-
-        /** The root-path. */
-        LINKPATH("linkpath"),
 
         /** The root-path. */
         SCALEPATH("scalepath"),
@@ -135,7 +132,6 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
      * Returns a JSON object with the specific information used for image resource type.<p>
      * 
      * <ul>
-     * <li><code>linkpath</code>: link path to display the image without scaling parameter.</li>
      * <li><code>scalepath</code>: scaling parameters.</li>
      * <li><code>width</code>: image width.</li>
      * <li><code>height</code>: image height.</li>  
@@ -162,21 +158,21 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
             } else {
                 activeImageObj.put(JsonKeys.HEIGHT.getName(), -1);
             }
-            // 3: the link path to the image
-            activeImageObj.put(JsonKeys.LINKPATH.getName(), getLinkPath());
 
-            // 4: image copyright            
+            // 3: image copyright            
             String copyright = property(JsonKeys.COPYRIGHT.getName(), getCmsObject().getSitePath(getResource()), "");
             activeImageObj.put(JsonKeys.COPYRIGHT.getName().toLowerCase(), CmsStringUtil.escapeJavaScript(copyright));
-            // 5: image title            
-            String title = property(JsonKeys.TITLE.getName(), getCmsObject().getSitePath(getResource()), "");
-            activeImageObj.put(JsonKeys.TITLE.getName().toLowerCase(), CmsStringUtil.escapeJavaScript(title));
-            // 6: image description            
-            String description = property(JsonKeys.Description.getName(), getCmsObject().getSitePath(getResource()), "");
-            activeImageObj.put(
-                JsonKeys.Description.getName().toLowerCase(),
-                CmsStringUtil.escapeJavaScript(description));
-            // 7: image structure id hash code
+            //TODO: can be removed. this infos are available for all resources
+            // 4: image title            
+            //String title = property(JsonKeys.TITLE.getName(), getCmsObject().getSitePath(getResource()), "");
+            //activeImageObj.put(JsonKeys.TITLE.getName().toLowerCase(), CmsStringUtil.escapeJavaScript(title));
+            // 5: image description            
+            //String description = property(JsonKeys.Description.getName(), getCmsObject().getSitePath(getResource()), "");
+            //activeImageObj.put(
+            //    JsonKeys.Description.getName().toLowerCase(),
+            //    CmsStringUtil.escapeJavaScript(description));
+
+            // 6: image structure id hash code
             activeImageObj.put(JsonKeys.HASH.getName(), getResource().getStructureId().hashCode());
             jsonObj.put(JsonKeys.ACTIVEIMAGE.getName(), activeImageObj);
         } catch (JSONException e) {
@@ -206,18 +202,6 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
             return "";
         }
         return currentProperty.getValue("");
-    }
-
-    /**
-     * Returns the element's link path.<p>
-     * 
-     * @return the element's link path
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public String getLinkPath() throws CmsException {
-
-        return link(getResource().getRootPath());
     }
 
     /**

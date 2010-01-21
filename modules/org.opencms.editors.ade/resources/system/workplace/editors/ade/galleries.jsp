@@ -40,24 +40,27 @@ var cms = { data: { GALLERY_SERVER_URL: "${gallery.galleryUri}"}, html: {}, util
     cms.galleries.initValues['dialogMode'] = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
     cms.galleries.initValues['fieldId'] = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
     cms.galleries.initValues['path'] = "${(not empty param.path) ? param.path : 'null'}";
+	// check if any there is a selected resource in editor
     if (cms.galleries.initValues['dialogMode'] == 'editor') {
-    	prepareEditor();
-		//post resquest synchron
-		$.ajax({
-			'async': false,
-            'url': cms.data.GALLERY_SERVER_URL,
-            'data': {
-               'action': 'vfspath',
-               'data': JSON.stringify({
-                  'linkpath': cms.galleries.initValues.linkpath
-               })
-            },
-            'type': 'POST',
-            'dataType': 'json',
-            'success': function (data) {
-					cms.galleries.initValues.path = data.path;
-                }
-         }); 
+    	prepareEditor();    	
+    	if (cms.galleries.initValues['linkpath'] != null && cms.galleries.initValues['linkpath'] != 'null') {
+    		//send a synchron ajax request to get search data, if any resource is selected		
+    		$.ajax({
+    			'async': false,
+                'url': cms.data.GALLERY_SERVER_URL,
+                'data': {
+                   'action': 'vfspath',
+                   'data': JSON.stringify({
+                      'linkpath': cms.galleries.initValues.linkpath
+                   })
+                },
+                'type': 'POST',
+                'dataType': 'json',
+                'success': function (data) {
+    					cms.galleries.initValues.path = data.path;
+                    }
+             }); 
+    	}
     }
     $(function() {                
         cms.galleries.initAddDialog(tabs, requestData);                                              

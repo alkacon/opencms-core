@@ -75,7 +75,7 @@ FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
 
     FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
     FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("plugins/") %>");
-    FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+    FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("plugins/") %>");
     FCKConfig.Plugins.Add("linkgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
     FCKConfig.Plugins.Add("htmlgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
     FCKConfig.Plugins.Add("tablegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
