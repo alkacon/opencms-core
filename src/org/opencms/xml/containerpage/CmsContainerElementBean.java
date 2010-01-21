@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/10/28 11:18:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/21 10:12:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -43,7 +42,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -74,7 +73,7 @@ public class CmsContainerElementBean {
         m_formatterId = formatterId;
         Map<String, String> props = (properties == null ? new HashMap<String, String>() : properties);
         m_properties = Collections.unmodifiableMap(props);
-        String clientId = OpenCms.getADEManager().convertToClientId(m_elementId);
+        String clientId = m_elementId.toString();
         if (!m_properties.isEmpty()) {
             int hash = m_properties.toString().hashCode();
             clientId += "#" + hash;

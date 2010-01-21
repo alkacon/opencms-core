@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/01/21 10:12:58 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 7.6
  */
@@ -91,7 +91,7 @@ public class CmsADEManager {
     /** The request attribute name for the current element-bean. */
     public static final String ATTR_CURRENT_ELEMENT = "__currentElement";
 
-    /** The request attribute name for the property configuration */
+    /** The request attribute name for the property configuration. */
     public static final String ATTR_PROPERTY_CONFIG = "__propertyConfig";
 
     /** The request attribute name for the formatter-info-bean. */
@@ -99,9 +99,6 @@ public class CmsADEManager {
 
     /** User additional info key constant. */
     protected static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
-
-    /** HTML id prefix constant. */
-    protected static final String ADE_ID_PREFIX = "ade_";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
@@ -147,18 +144,6 @@ public class CmsADEManager {
     }
 
     /**
-     * Creates a valid html id from an uuid.<p>
-     * 
-     * @param id the uuid
-     * 
-     * @return the generated html id
-     */
-    public String convertToClientId(CmsUUID id) {
-
-        return ADE_ID_PREFIX + id.toString();
-    }
-
-    /**
      * Parses an element id.<p>
      * 
      * @param id the element id
@@ -169,17 +154,14 @@ public class CmsADEManager {
      */
     public CmsUUID convertToServerId(String id) throws CmsIllegalArgumentException {
 
-        if ((id == null) || (!id.startsWith(ADE_ID_PREFIX))) {
+        if (id == null) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_ID_1, id));
         }
         String serverId = id;
         try {
             if (serverId.contains("#")) {
-                serverId = serverId.substring(ADE_ID_PREFIX.length(), serverId.indexOf("#"));
-            } else {
-                serverId = serverId.substring(ADE_ID_PREFIX.length());
+                serverId = serverId.substring(0, serverId.indexOf("#"));
             }
-
             return new CmsUUID(serverId);
         } catch (NumberFormatException e) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_ID_1, id));

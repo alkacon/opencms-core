@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/01/21 10:12:58 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 7.6
  */
@@ -449,11 +449,11 @@ public class CmsADEServer extends A_CmsAjaxServer {
             while (itProperties.hasNext()) {
                 String propertyName = itProperties.next();
                 cnfProps.put(propertyName, CmsXmlContentProperty.getPropValueIds(
-                    cms,
+                        cms,
                     propertiesConf.get(propertyName).getPropertyType(),
-                    properties.getString(propertyName)));
+                        properties.getString(propertyName)));
+                }
             }
-        }
         return new CmsContainerElementBean(structureId, null, cnfProps);
     }
 
@@ -645,7 +645,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
             String type = data.optString(JsonRequest.TYPE.getName());
 
             CmsResource newResource = m_manager.createNewElement(cms, cntPageParam, request, type);
-            result.put(JsonNewRes.ID.getName(), m_manager.convertToClientId(newResource.getStructureId()));
+            result.put(JsonNewRes.ID.getName(), newResource.getStructureId().toString());
             result.put(JsonNewRes.URI.getName(), cms.getSitePath(newResource));
         } else if (action.equals(Action.PROPS)) {
             // get property dialog information
@@ -712,7 +712,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 JSONObject subcontainer = data.getJSONObject(JsonRequest.ELEM.getName());
                 subcontainer.put(CmsElementUtil.JsonElement.FILE.getName(), cms.getSitePath(newSub));
                 setSubContainer(subcontainer);
-                result.put(JsonNewRes.ID.getName(), m_manager.convertToClientId(newSub.getStructureId()));
+                result.put(JsonNewRes.ID.getName(), newSub.getStructureId().toString());
                 result.put(JsonNewRes.URI.getName(), cms.getSitePath(newSub));
             } catch (Exception e) {
                 error(result, e.getLocalizedMessage());
