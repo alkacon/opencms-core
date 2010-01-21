@@ -326,7 +326,10 @@
 					</field>										
 					<field name="res_state" store="true" index="untokenized">
 						<mapping type="attribute">state</mapping>
-					</field>										
+					</field>
+                    <field name="res_structureId" store="true" index="false">
+						<mapping type="attribute">structureId</mapping>
+					</field>									
 					<field name="res_userCreated" store="true" index="untokenized">
 						<mapping type="attribute">userCreated</mapping>
 					</field>			
