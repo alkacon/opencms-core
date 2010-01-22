@@ -173,8 +173,7 @@
       target.prepend(form);
       
       // bind direct input to the editable fields
-      target.find('.cms-item-edit').change(function() {
-          alert('changed');
+      target.find('.cms-item-edit').change(function() {          
            $(this).addClass('cms-item-changed');
            $('#' + cms.previewhandler.keys['propertiesTabId'])
                .find('button[name="previewSave"]')               
@@ -225,8 +224,7 @@
       $.each(changedProperties, function() {
          var property = {};
          property['name'] = $(this).closest('div').attr('alt');
-         property['value'] = $(this).val();
-         alert(property['value']);
+         property['value'] = $(this).val();         
          changes['properties'].push(property);
       });
       
