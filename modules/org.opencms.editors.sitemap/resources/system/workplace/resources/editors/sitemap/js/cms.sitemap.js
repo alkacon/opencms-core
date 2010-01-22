@@ -1427,6 +1427,8 @@
       $(dropSelector).droppable(cms.sitemap.dropOptions);
       setSitemapChanged(true);
       dragStatus = NO_DRAG;
+      cms.sitemap.currentMode.disable();
+      cms.sitemap.currentMode=null;
    }
    
    
