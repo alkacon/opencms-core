@@ -83,6 +83,8 @@
     * 'page': the page number of the requested result page
     * 'searchfields':
     * 'matchesperpage': the number of items pro result page
+    * 'sortorder': the sort oder parameter, if null title_desc is used on server
+    * 'locale': optinal parameter, is should not be null
     * 'isChanged': map of flags indicating if one of the search criteria is changed and should be taken into account. It is used internally.
     */
    var searchObject = cms.galleries.searchObject = {
@@ -95,6 +97,7 @@
       searchfields: '',
       matchesperpage: 8,
       sortorder: null,
+      //locale: null,
       isChanged: {
          types: false,
          galleries: false,
@@ -116,7 +119,7 @@
       categories: ['<b>Category:&nbsp;</b>', '<b>Categories:&nbsp;</b>'],
       query: ['<b>Search query:&nbsp;</b>', 'Seach queries:&nbsp;</b>']
    
-   };
+   };      
         
    /** html fragment for the tab with the results of the search. */
    var htmlTabResultSceleton = cms.galleries.htmlTabResultSceleton = '<div id="' + cms.galleries.idTabResult + '">\
@@ -132,7 +135,7 @@
                         <ul class="'+classScrollingInner+' cms-item-list"></ul>\
              </div>\
              <div class="result-pagination"></div>\
-         </div>';
+         </div>';    
    
    /** html fragment for the tab with the types' list. */
    var htmlTabTypesSceleton = cms.galleries.htmlTabTypesSceleton = '<div id="tabs-types">\
@@ -212,6 +215,12 @@
               initSearchResult = requestData;
           }
       }
+      // read the standard locale and the available locales
+      var localesArray = [];      
+      if (tabsContent) {
+          cms.galleries.searchObject['locale'] = tabsContent['locale'];
+          localesArray = tabsContent['locales'];
+      }
                  
       // init tabs for add dialog
       var resultTab = $(cms.galleries.htmlTabResultSceleton);
@@ -228,17 +237,34 @@
           ],
           width: 150,
           /* TODO: bind sort functionality */
-          select: function($this, self, value){
-              var tab = $(self).closest('div.cms-list-options').attr('id');
+          select: function($this, self, value){              
               cms.galleries.searchObject['sortorder'] = value;
               // send new search for given sort oder and refresh the result list
               // display the first pagination page for sorted results    
               cms.galleries.loadSearchResults();          
           }}));
           resultTab.find('.cms-result-criteria').css('display','none');
-      // TODO blind out for the moment
-      //resultTab.find('.cms-drop-down').css('display','none');
-      
+             
+      // display the locale select box, if more then one locale is available
+      if (localesArray.length > 1) {
+          resultTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
+                                                    <label>Sort by:&nbsp;</label>\
+                                              </span>');
+      resultTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
+          values:localesArray,
+          width: 150,
+          /* TODO: bind sort functionality */
+          select: function($this, self, value){
+              var tab = $(self).closest('div.cms-list-options').attr('id');
+              cms.galleries.searchObject['locale'] = value;
+              // send new search for given sort oder and refresh the result list
+              // display the first pagination page for sorted results    
+              cms.galleries.loadSearchResults();          
+          }}));
+       // TODO: set the preselected locales from search object
+     
+      }
+           
       var typesTab = $(cms.galleries.htmlTabTypesSceleton);
       typesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
           values:[
@@ -1191,8 +1217,7 @@
             $(elem).addClass('cms-checkbox-unchecked').removeClass('cms-checkbox-cheched');
         }    
     }
- 
-        
+       
     /**
      * Adds a new specific content handler for thr specified resource type.
      * 

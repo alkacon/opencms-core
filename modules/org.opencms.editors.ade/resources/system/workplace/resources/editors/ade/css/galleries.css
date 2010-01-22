@@ -141,9 +141,8 @@
         font-weight:bold;  
         line-height:24px;        
     }
-           
     
-    div.button-bar button:disabled {
+    div.button-bar button.cms-button-disabled{
         color:#999999;
     }
     
@@ -508,7 +507,8 @@
     }           
     
     .cms-list-options span.cms-drop-down {
-        float: left;    
+        float: left;
+        margin-right: 10px;    
     }
     
     .cms-list-options span.cms-ft-search,

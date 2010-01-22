@@ -269,7 +269,11 @@
       $('#cms-preview div.close-icon').click(cms.galleries.getContentHandler()['closePreviewWithConfirmation']);
       
       $('#cms-preview button').live('mouseover', function() {
-         $(this).toggleClass('ui-state-hover', true);
+         if (!$(this).hasClass('cms-button-disabled')) {
+             $(this).toggleClass('ui-state-hover', true);    
+         } else {
+             $(this).toggleClass('ui-state-hover', false);
+         }         
       }).live('mouseout', function() {
          $(this).toggleClass('ui-state-hover', false);
       });
@@ -477,9 +481,10 @@
       // refresh properties tab area
       $('#cms-preview div.close-icon').removeClass('cms-properties-changed').addClass('cms-properties-saved');
       $('#' + cms.previewhandler.keys['propertiesTabId'])
-          .find('button[name="previewSave"]').attr("disabled", true)
+          .find('button[name="previewSave"]')          
           .removeClass('cms-properties-changed')
-          .addClass('cms-properties-saved'); 
+          .addClass('cms-properties-saved')
+          .addClass('cms-button-disabled');
       $('#' + cms.previewhandler.keys['propertiesTabId'])
           .find('button[name="previewSave"]').click(cms.galleries.getContentHandler()['saveAndRefreshProperties']);
       $('#cms-preview').find('button[name="previewSelect"]').addClass('cms-properties-saved').removeClass('cms-properties-changed');   

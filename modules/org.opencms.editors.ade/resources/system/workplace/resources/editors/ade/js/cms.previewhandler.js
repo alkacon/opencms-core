@@ -22,7 +22,7 @@
                             </div>';
    /** Html sceleton for the lower button bar in the editable properties area. */                      
    var okCloseButtonBar = '<div class="button-bar cms-top">\
-                                 <button name="previewSave" disabled="" class="cms-right ui-state-default ui-corner-all">\
+                                 <button name="previewSave" class="cms-button-disabled cms-right ui-state-default ui-corner-all">\
                                      <span class="cms-galleries-button">Save</span>\
                                  </button>\
                            </div>';                             
@@ -83,7 +83,12 @@
       $('#cms-preview div.close-icon').click(cms.galleries.getContentHandler()['closePreviewWithConfirmation']);             
       
       $('.button-bar button').live('mouseover', function() {
-         $(this).toggleClass('ui-state-hover', true);
+         // set the hover class for enabled button
+         if (!$(this).hasClass('cms-button-disabled')) {
+             $(this).toggleClass('ui-state-hover', true);    
+         } else {
+             $(this).toggleClass('ui-state-hover', false);
+         }
       }).live('mouseout', function() {
          $(this).toggleClass('ui-state-hover', false);
       });
@@ -169,11 +174,13 @@
       
       // bind direct input to the editable fields
       target.find('.cms-item-edit').change(function() {
-           $('#' + cms.previewhandler.keys['propertiesTabId'])
-               .find('button[name="previewSave"]')
-               .removeAttr('disabled')
-               .addClass('cms-properties-changed').removeClass('cms-properties-saved');
+          alert('changed');
            $(this).addClass('cms-item-changed');
+           $('#' + cms.previewhandler.keys['propertiesTabId'])
+               .find('button[name="previewSave"]')               
+               .removeClass('cms-button-disabled')
+               .addClass('cms-properties-changed')
+               .removeClass('cms-properties-saved');           
            $('#cms-preview div.close-icon').addClass('cms-properties-changed').removeClass('cms-properties-saved');
            $('#cms-preview').find('button[name="previewSelect"]').addClass('cms-properties-changed').removeClass('cms-properties-saved');
       });           
@@ -188,8 +195,10 @@
       
       $('#cms-preview div.close-icon').removeClass('cms-properties-changed').addClass('cms-properties-saved');
       $('#' + cms.previewhandler.keys['propertiesTabId'])
-          .find('button[name="previewSave"]').attr("disabled", true)
+          .find('button[name="previewSave"]')
+          .addClass('cms-button-disabled')
           .removeClass('cms-properties-changed')
+          .addClass('ui-state-hover')
           .addClass('cms-properties-saved'); 
       $('#' + cms.previewhandler.keys['propertiesTabId'])
           .find('button[name="previewSave"]').click(cms.galleries.getContentHandler()['saveAndRefreshProperties']);
@@ -217,6 +226,7 @@
          var property = {};
          property['name'] = $(this).closest('div').attr('alt');
          property['value'] = $(this).val();
+         alert(property['value']);
          changes['properties'].push(property);
       });
       
