@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeJspRenderer.java,v $
- * Date   : $Date: 2010/01/15 14:55:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/22 08:49:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 
@@ -48,7 +49,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.9.0 
  */
@@ -58,10 +59,13 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeJspRenderer.class);
 
     /** Property name for formatter property. */
-    protected static final String FORMATTER_PROPERTY = "ade.formatter";
+    protected static final String PROPERTY_FORMATTER = "ade.formatter";
 
     /** Property name for container types property. */
-    protected static final String CONTAINERTYPES_PROPERTY = "ade.containertypes";
+    protected static final String PROPERTY_CONTAINERTYPES = "ade.containertypes";
+
+    /** Macro key to resolve container type. */
+    private static final String MACRO_CONTAINERTYPE = "ade.containertype";
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainerType(CmsObject, CmsResource, String)
@@ -73,10 +77,13 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
             return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
         }
         try {
-            CmsProperty formatterProp = cms.readPropertyObject(resource, FORMATTER_PROPERTY, true);
+            CmsProperty formatterProp = cms.readPropertyObject(resource, PROPERTY_FORMATTER, true);
             String formatter = formatterProp.getValue();
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(formatter)) {
-                CmsProperty typesProp = cms.readPropertyObject(resource, CONTAINERTYPES_PROPERTY, true);
+                CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+                resolver.addMacro(MACRO_CONTAINERTYPE, containerType);
+                formatter = resolver.resolveMacros(formatter);
+                CmsProperty typesProp = cms.readPropertyObject(resource, PROPERTY_CONTAINERTYPES, true);
                 List<String> types = typesProp.getValueList();
                 if (types.isEmpty() || types.contains(containerType)) {
                     return formatter;
