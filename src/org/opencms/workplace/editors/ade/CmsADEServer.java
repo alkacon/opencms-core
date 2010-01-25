@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/21 10:12:58 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/01/25 12:51:03 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 7.6
  */
@@ -130,264 +130,114 @@ public class CmsADEServer extends A_CmsAjaxServer {
     protected enum JsonCntElem {
 
         /** The formatter's uri. */
-        FORMATTER("formatter"),
+        formatter,
         /** The element id. */
-        ID("id"),
+        id,
         /** The element's uri. */
-        URI("uri");
+        uri;
 
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonCntElem(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
     }
 
     /** Json property name constants for container pages. */
     protected enum JsonCntPage {
 
         /** The list of containers. */
-        CONTAINERS("containers"),
+        containers,
         /** The list of elements. */
-        ELEMENTS("elements"),
+        elements,
         /** The favorites list. */
-        FAVORITES("favorites"),
+        favorites,
         /** The locale. */
-        LOCALE("locale"),
+        locale,
         /** The order of creatable elements. */
-        NEWORDER("newOrder"),
+        newOrder,
         /** The recent list. */
-        RECENT("recent"),
+        recent,
         /** The max size of the recent list. */
-        RECENT_LIST_SIZE("recentListSize"),
+        recentListSize,
         /** The order of searchable resource types. */
-        SEARCH_ORDER("searchOrder"),
+        searchOrder,
         /** The container page state. */
-        STATE("state");
+        state;
 
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonCntPage(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
     }
 
     /** Json property name constants for new created resources. */
     protected enum JsonNewRes {
 
         /** The resource's structure id. */
-        ID("id"),
+        id,
         /** The resource's uri. */
-        URI("uri");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonNewRes(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        uri;
     }
 
     /** Json property name constants for request parameters. */
     protected enum JsonRequest {
 
         /** Element id or list of element ids. */
-        ELEM("elem"),
+        elem,
         /** To get or save the favorites list. */
-        FAV("fav"),
+        fav,
         /** Elements properties. */
-        PROPERTIES("properties"),
+        properties,
         /** To retrieve or save the recent list. */
-        REC("rec"),
+        rec,
         /** Resource type. */
-        TYPE("type");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonRequest(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        type;
     }
 
     /** Json property name constants for responses. */
     protected enum JsonResponse {
 
         /** List of elements. */
-        ELEMENTS("elements"),
+        elements,
         /** The favorites list. */
-        FAVORITES("favorites"),
+        favorites,
         /** The recent list. */
-        RECENT("recent");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonResponse(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        recent;
     }
 
     /** Json property name constants for resource type information. */
     protected enum JsonResType {
 
         /** The element's resource type. */
-        TYPE("type"),
+        type,
         /** The element's resource type id. */
-        TYPEID("typeid"),
+        typeid,
         /** The element's resource type nice name. */
-        TYPENAME("typename");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonResType(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        typename;
     }
 
     /** Json property name constants for searching. */
     protected enum JsonSearch {
 
         /** The number of search results. */
-        COUNT("count"),
+        count,
         /** If the search has more results. */
-        HASMORE("hasmore"),
+        hasmore,
         /** The search location. */
-        LOCATION("location"),
+        location,
         /** The search page. */
-        PAGE("page"),
+        page,
         /** Search query. */
-        TEXT("text"),
+        text,
         /** The resource type(s). */
-        TYPE("type");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonSearch(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        type;
     }
 
     /** Request parameter name constants. */
     protected enum ReqParam {
 
         /** The action of execute. */
-        ACTION("action"),
+        action,
         /** The container uri. */
-        CNTPAGE("cntpage"),
+        cntpage,
         /** Generic data parameter. */
-        DATA("data"),
+        data,
         /** The current locale. */
-        LOCALE("locale"),
+        locale,
         /** Element uri. */
-        URI("uri");
-
-        /** Parameter name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private ReqParam(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        uri;
     }
 
     /** State Constant for client-side element type 'new element configuration'. */
@@ -449,11 +299,11 @@ public class CmsADEServer extends A_CmsAjaxServer {
             while (itProperties.hasNext()) {
                 String propertyName = itProperties.next();
                 cnfProps.put(propertyName, CmsXmlContentProperty.getPropValueIds(
-                        cms,
+                    cms,
                     propertiesConf.get(propertyName).getPropertyType(),
-                        properties.getString(propertyName)));
-                }
+                    properties.getString(propertyName)));
             }
+        }
         return new CmsContainerElementBean(structureId, null, cnfProps);
     }
 
@@ -528,33 +378,33 @@ public class CmsADEServer extends A_CmsAjaxServer {
         if (!checkParameters(
             request,
             result,
-            ReqParam.ACTION.getName(),
-            ReqParam.LOCALE.getName(),
-            ReqParam.CNTPAGE.getName(),
-            ReqParam.URI.getName())) {
+            ReqParam.action.toString(),
+            ReqParam.locale.toString(),
+            ReqParam.cntpage.toString(),
+            ReqParam.uri.toString())) {
             // every request needs to have at least these parameters 
             return result;
         }
-        String actionParam = request.getParameter(ReqParam.ACTION.getName());
+        String actionParam = request.getParameter(ReqParam.action.toString());
         Action action = Action.valueOf(actionParam.toUpperCase());
-        String localeParam = request.getParameter(ReqParam.LOCALE.getName());
+        String localeParam = request.getParameter(ReqParam.locale.toString());
         cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
-        String cntPageParam = request.getParameter(ReqParam.CNTPAGE.getName());
-        String uriParam = request.getParameter(ReqParam.URI.getName());
+        String cntPageParam = request.getParameter(ReqParam.cntpage.toString());
+        String uriParam = request.getParameter(ReqParam.uri.toString());
 
         JSONObject data = new JSONObject();
-        if (checkParameters(request, null, ReqParam.DATA.getName())) {
-            String dataParam = request.getParameter(ReqParam.DATA.getName());
+        if (checkParameters(request, null, ReqParam.data.toString())) {
+            String dataParam = request.getParameter(ReqParam.data.toString());
             data = new JSONObject(dataParam);
         }
 
         if (action.equals(Action.ALL)) {
             // get container types
-            if (!checkParameters(data, result, JsonCntPage.CONTAINERS.getName())) {
+            if (!checkParameters(data, result, JsonCntPage.containers.toString())) {
                 return result;
             }
             Set<String> cntTypes = new HashSet<String>();
-            JSONArray types = data.optJSONArray(JsonCntPage.CONTAINERS.getName());
+            JSONArray types = data.optJSONArray(JsonCntPage.containers.toString());
             for (int i = 0; i < types.length(); i++) {
                 cntTypes.add(types.getString(i));
             }
@@ -564,30 +414,30 @@ public class CmsADEServer extends A_CmsAjaxServer {
             CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
             result = getContainerPage(cntPageRes, cntPage, uriParam.equals(cntPageParam) ? null : uriParam, cntTypes);
         } else if (action.equals(Action.ELEM)) {
-            if (!checkParameters(data, result, JsonRequest.ELEM.getName(), JsonCntPage.CONTAINERS.getName())) {
+            if (!checkParameters(data, result, JsonRequest.elem.toString(), JsonCntPage.containers.toString())) {
                 return result;
             }
             // get container types
             Set<String> cntTypes = new HashSet<String>();
-            JSONArray types = data.optJSONArray(JsonCntPage.CONTAINERS.getName());
+            JSONArray types = data.optJSONArray(JsonCntPage.containers.toString());
             for (int i = 0; i < types.length(); i++) {
                 cntTypes.add(types.getString(i));
             }
             // get elements
-            JSONArray elems = data.optJSONArray(JsonRequest.ELEM.getName());
+            JSONArray elems = data.optJSONArray(JsonRequest.elem.toString());
             if (elems == null) {
                 // single element
                 elems = new JSONArray();
-                elems.put(data.optString(JsonRequest.ELEM.getName()));
+                elems.put(data.optString(JsonRequest.elem.toString()));
             }
-            result.put(JsonResponse.ELEMENTS.getName(), getElements(elems, uriParam, request, cntTypes));
+            result.put(JsonResponse.elements.toString(), getElements(elems, uriParam, request, cntTypes));
         } else if (action.equals(Action.ELEMPROPS)) {
             // element formatted with the given properties
-            if (!checkParameters(data, result, JsonRequest.ELEM.getName(), JsonRequest.PROPERTIES.getName())) {
+            if (!checkParameters(data, result, JsonRequest.elem.toString(), JsonRequest.properties.toString())) {
                 return result;
             }
-            String elemParam = data.optString(JsonRequest.ELEM.getName());
-            JSONObject properties = data.optJSONObject(JsonRequest.PROPERTIES.getName());
+            String elemParam = data.optString(JsonRequest.elem.toString());
+            JSONObject properties = data.optJSONObject(JsonRequest.properties.toString());
 
             CmsContainerElementBean element = createElement(m_manager.convertToServerId(elemParam), properties);
 
@@ -599,18 +449,18 @@ public class CmsADEServer extends A_CmsAjaxServer {
             CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
             resElements.put(element.getClientId(), elemUtil.getElementData(element, cntPage.getTypes()));
-            result.put(JsonResponse.ELEMENTS.getName(), resElements);
+            result.put(JsonResponse.elements.toString(), resElements);
         } else if (action.equals(Action.GET)) {
             CmsResource cntPageRes = cms.readResource(cntPageParam);
             CmsXmlContainerPage xmlCntPage = CmsXmlContainerPageFactory.unmarshal(cms, cntPageRes, request);
             CmsContainerPageBean cntPage = xmlCntPage.getCntPage(cms, cms.getRequestContext().getLocale());
-            if (checkParameters(data, null, JsonRequest.FAV.getName())) {
+            if (checkParameters(data, null, JsonRequest.fav.toString())) {
                 // get the favorite list
-                result.put(JsonResponse.FAVORITES.getName(), getFavoriteList(null, cntPage.getTypes()));
+                result.put(JsonResponse.favorites.toString(), getFavoriteList(null, cntPage.getTypes()));
             }
-            if (checkParameters(data, result, JsonRequest.REC.getName())) {
+            if (checkParameters(data, result, JsonRequest.rec.toString())) {
                 // get recent list
-                result.put(JsonResponse.RECENT.getName(), getRecentList(null, cntPage.getTypes()));
+                result.put(JsonResponse.recent.toString(), getRecentList(null, cntPage.getTypes()));
             }
             return result;
         } else if (action.equals(Action.SEARCH)) {
@@ -632,38 +482,38 @@ public class CmsADEServer extends A_CmsAjaxServer {
             // we need those on the client side to make scrolling work
             CmsSearchOptions oldOptions = m_sessionCache.getSearchOptions();
             if (oldOptions != null) {
-                result.put(JsonSearch.TYPE.getName(), oldOptions.getTypes());
-                result.put(JsonSearch.TEXT.getName(), oldOptions.getText());
-                result.put(JsonSearch.LOCATION.getName(), oldOptions.getLocation());
+                result.put(JsonSearch.type.toString(), oldOptions.getTypes());
+                result.put(JsonSearch.text.toString(), oldOptions.getText());
+                result.put(JsonSearch.location.toString(), oldOptions.getLocation());
             }
             result.merge(searchResult, true, false);
         } else if (action.equals(Action.NEW)) {
             // get a new element
-            if (!checkParameters(data, result, JsonRequest.TYPE.getName())) {
+            if (!checkParameters(data, result, JsonRequest.type.toString())) {
                 return result;
             }
-            String type = data.optString(JsonRequest.TYPE.getName());
+            String type = data.optString(JsonRequest.type.toString());
 
             CmsResource newResource = m_manager.createNewElement(cms, cntPageParam, request, type);
-            result.put(JsonNewRes.ID.getName(), newResource.getStructureId().toString());
-            result.put(JsonNewRes.URI.getName(), cms.getSitePath(newResource));
+            result.put(JsonNewRes.id.toString(), newResource.getStructureId().toString());
+            result.put(JsonNewRes.uri.toString(), cms.getSitePath(newResource));
         } else if (action.equals(Action.PROPS)) {
             // get property dialog information
-            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
+            if (!checkParameters(data, result, JsonRequest.elem.toString())) {
                 return result;
             }
-            String elemParam = data.optString(JsonRequest.ELEM.getName());
+            String elemParam = data.optString(JsonRequest.elem.toString());
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
             CmsContainerElementBean element = getCachedElement(elemParam);
             result = elemUtil.getElementPropertyInfo(element);
         } else if (action.equals(Action.SET)) {
-            if (checkParameters(data, null, JsonRequest.FAV.getName())) {
+            if (checkParameters(data, null, JsonRequest.fav.toString())) {
                 // save the favorite list
-                JSONArray list = data.optJSONArray(JsonRequest.FAV.getName());
+                JSONArray list = data.optJSONArray(JsonRequest.fav.toString());
                 m_manager.saveFavoriteList(cms, arrayToElementList(list));
-            } else if (checkParameters(data, result, JsonRequest.REC.getName())) {
+            } else if (checkParameters(data, result, JsonRequest.rec.toString())) {
                 // save the recent list
-                JSONArray list = data.optJSONArray(JsonRequest.REC.getName());
+                JSONArray list = data.optJSONArray(JsonRequest.rec.toString());
                 m_sessionCache.setCacheRecentList(arrayToElementList(list));
             } else {
                 return result;
@@ -687,40 +537,40 @@ public class CmsADEServer extends A_CmsAjaxServer {
             }
         } else if (action.equals(Action.DEL)) {
             // delete elements
-            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
+            if (!checkParameters(data, result, JsonRequest.elem.toString())) {
                 return result;
             }
-            JSONArray elems = data.optJSONArray(JsonRequest.ELEM.getName());
+            JSONArray elems = data.optJSONArray(JsonRequest.elem.toString());
             deleteElements(elems);
         } else if (action.equals(Action.SUBCNT)) {
             // save sub container
-            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
+            if (!checkParameters(data, result, JsonRequest.elem.toString())) {
                 return result;
             }
             try {
-                setSubContainer(data.getJSONObject(JsonRequest.ELEM.getName()));
+                setSubContainer(data.getJSONObject(JsonRequest.elem.toString()));
             } catch (Exception e) {
                 error(result, e.getLocalizedMessage());
             }
         } else if (action.equals(Action.NEWSUB)) {
             // save sub container
-            if (!checkParameters(data, result, JsonRequest.ELEM.getName())) {
+            if (!checkParameters(data, result, JsonRequest.elem.toString())) {
                 return result;
             }
             try {
                 CmsResource newSub = createNewSubContainer(cntPageParam, request);
-                JSONObject subcontainer = data.getJSONObject(JsonRequest.ELEM.getName());
+                JSONObject subcontainer = data.getJSONObject(JsonRequest.elem.toString());
                 subcontainer.put(CmsElementUtil.JsonElement.FILE.getName(), cms.getSitePath(newSub));
                 setSubContainer(subcontainer);
-                result.put(JsonNewRes.ID.getName(), newSub.getStructureId().toString());
-                result.put(JsonNewRes.URI.getName(), cms.getSitePath(newSub));
+                result.put(JsonNewRes.id.toString(), newSub.getStructureId().toString());
+                result.put(JsonNewRes.uri.toString(), cms.getSitePath(newSub));
             } catch (Exception e) {
                 error(result, e.getLocalizedMessage());
             }
         } else {
             error(result, Messages.get().getBundle(getWorkplaceLocale()).key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
-                ReqParam.ACTION.getName(),
+                ReqParam.action.toString(),
                 actionParam));
         }
         return result;
@@ -750,9 +600,9 @@ public class CmsADEServer extends A_CmsAjaxServer {
         // create empty result object
         JSONObject result = new JSONObject();
         JSONObject resElements = new JSONObject();
-        result.put(JsonCntPage.ELEMENTS.getName(), resElements);
-        result.put(JsonCntPage.LOCALE.getName(), cms.getRequestContext().getLocale().toString());
-        result.put(JsonCntPage.RECENT_LIST_SIZE.getName(), m_manager.getRecentListMaxSize(cms));
+        result.put(JsonCntPage.elements.toString(), resElements);
+        result.put(JsonCntPage.locale.toString(), cms.getRequestContext().getLocale().toString());
+        result.put(JsonCntPage.recentListSize.toString(), m_manager.getRecentListMaxSize(cms));
 
         // collect creatable type elements
         resElements.merge(getNewResourceTypes(cms.getSitePath(resource), types), true, false);
@@ -762,7 +612,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         // collect page elements
         CmsElementUtil elemUtil = new CmsElementUtil(
             cms,
-            getRequest().getParameter(ReqParam.URI.getName()),
+            getRequest().getParameter(ReqParam.uri.toString()),
             getRequest(),
             getResponse());
         Set<String> ids = new HashSet<String>();
@@ -845,10 +695,10 @@ public class CmsADEServer extends A_CmsAjaxServer {
         }
         // collect the favorites
         JSONArray resFavorites = getFavoriteList(resElements, types);
-        result.put(JsonCntPage.FAVORITES.getName(), resFavorites);
+        result.put(JsonCntPage.favorites.toString(), resFavorites);
         // collect the recent list
         JSONArray resRecent = getRecentList(resElements, types);
-        result.put(JsonCntPage.RECENT.getName(), resRecent);
+        result.put(JsonCntPage.recent.toString(), resRecent);
 
         return result;
     }
@@ -869,7 +719,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(
             cms,
-            getRequest().getParameter(ReqParam.URI.getName()),
+            getRequest().getParameter(ReqParam.uri.toString()),
             getRequest(),
             getResponse());
 
@@ -929,7 +779,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
      * @param options the search options
      * @param types the supported container types
      * 
-     * @return JSON object with 2 properties, {@link JsonResponse#ELEMENTS} and {@link JsonSearch#HASMORE}
+     * @return JSON object with 2 properties, {@link JsonResponse#elements} and {@link JsonSearch#hasmore}
      * 
      * @throws JSONException if something goes wrong
      * @throws CmsException if something goes wrong
@@ -960,7 +810,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(
             cms,
-            getRequest().getParameter(ReqParam.URI.getName()),
+            getRequest().getParameter(ReqParam.uri.toString()),
             getRequest(),
             getResponse());
 
@@ -1022,12 +872,12 @@ public class CmsADEServer extends A_CmsAjaxServer {
      */
     public CmsSearchOptions getSearchOptions(JSONObject data) {
 
-        String location = data.optString(JsonSearch.LOCATION.getName());
-        String text = data.optString(JsonSearch.TEXT.getName());
-        String type = data.optString(JsonSearch.TYPE.getName());
+        String location = data.optString(JsonSearch.location.toString());
+        String text = data.optString(JsonSearch.text.toString());
+        String type = data.optString(JsonSearch.type.toString());
         int page = 0;
-        if (data.has(JsonSearch.PAGE.getName())) {
-            page = data.optInt(JsonSearch.PAGE.getName());
+        if (data.has(JsonSearch.page.toString())) {
+            page = data.optInt(JsonSearch.page.toString());
         }
         CmsSearchOptions searchOptions = new CmsSearchOptions(location, text, type, page);
         return searchOptions;
@@ -1040,7 +890,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
      * @param options the search options
      * @param types the supported container types
      * 
-     * @return JSON object with 3 properties, {@link JsonResponse#ELEMENTS}, {@link JsonSearch#HASMORE} and {@link JsonSearch#COUNT}
+     * @return JSON object with 3 properties, {@link JsonResponse#elements}, {@link JsonSearch#hasmore} and {@link JsonSearch#count}
      * 
      * @throws JSONException if something goes wrong
      * @throws CmsException if something goes wrong
@@ -1052,7 +902,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
 
         JSONObject result = new JSONObject();
         JSONArray elements = new JSONArray();
-        result.put(JsonResponse.ELEMENTS.getName(), elements);
+        result.put(JsonResponse.elements.toString(), elements);
 
         CmsUser user = cms.getRequestContext().currentUser();
 
@@ -1081,7 +931,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 // helper
                 CmsElementUtil elemUtil = new CmsElementUtil(
                     cms,
-                    getRequest().getParameter(ReqParam.URI.getName()),
+                    getRequest().getParameter(ReqParam.uri.toString()),
                     getRequest(),
                     getResponse());
 
@@ -1110,12 +960,12 @@ public class CmsADEServer extends A_CmsAjaxServer {
             // check if there are more search pages
             int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
             boolean hasMore = (searchBean.getSearchResultCount() > results);
-            result.put(JsonSearch.HASMORE.getName(), hasMore);
-            result.put(JsonSearch.COUNT.getName(), searchBean.getSearchResultCount());
+            result.put(JsonSearch.hasmore.toString(), hasMore);
+            result.put(JsonSearch.count.toString(), searchBean.getSearchResultCount());
         } else {
             // no search
-            result.put(JsonSearch.HASMORE.getName(), false);
-            result.put(JsonSearch.COUNT.getName(), 0);
+            result.put(JsonSearch.hasmore.toString(), false);
+            result.put(JsonSearch.count.toString(), 0);
         }
 
         m_sessionCache.setCacheSearchOptions(options);
@@ -1312,7 +1162,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
     protected JSONObject getNewResourceTypes(String cntPageUri, Set<String> types) throws CmsException, JSONException {
 
         JSONObject resElements = new JSONObject();
-        resElements.put(JsonCntPage.NEWORDER.getName(), new JSONArray());
+        resElements.put(JsonCntPage.newOrder.toString(), new JSONArray());
         HttpServletRequest request = getRequest();
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
@@ -1327,13 +1177,13 @@ public class CmsADEServer extends A_CmsAjaxServer {
             // overwrite some special fields for new elements
             resElement.put(CmsElementUtil.JsonElement.ID.getName(), type);
             resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
-            resElement.put(JsonResType.TYPE.getName(), type);
-            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceTypeName(
+            resElement.put(JsonResType.type.toString(), type);
+            resElement.put(JsonResType.typename.toString(), CmsWorkplaceMessages.getResourceTypeName(
                 cms.getRequestContext().getLocale(),
                 type));
             resElements.put(type, resElement);
             // additional array to keep track of the order
-            resElements.accumulate(JsonCntPage.NEWORDER.getName(), type);
+            resElements.accumulate(JsonCntPage.newOrder.toString(), type);
         }
         return resElements;
     }
@@ -1353,7 +1203,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
     throws CmsException, JSONException {
 
         JSONObject resElements = new JSONObject();
-        resElements.put(JsonCntPage.SEARCH_ORDER.getName(), new JSONArray());
+        resElements.put(JsonCntPage.searchOrder.toString(), new JSONArray());
         HttpServletRequest request = getRequest();
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
@@ -1368,14 +1218,14 @@ public class CmsADEServer extends A_CmsAjaxServer {
             // overwrite some special fields for searchable elements
             resElement.put(CmsElementUtil.JsonElement.ID.getName(), typeName);
             resElement.put(CmsElementUtil.JsonElement.STATUS.getName(), ELEMENT_NEWCONFIG);
-            resElement.put(JsonResType.TYPE.getName(), typeName);
-            resElement.put(JsonResType.TYPEID.getName(), type.getTypeId());
-            resElement.put(JsonResType.TYPENAME.getName(), CmsWorkplaceMessages.getResourceTypeName(
+            resElement.put(JsonResType.type.toString(), typeName);
+            resElement.put(JsonResType.typeid.toString(), type.getTypeId());
+            resElement.put(JsonResType.typename.toString(), CmsWorkplaceMessages.getResourceTypeName(
                 cms.getRequestContext().getLocale(),
                 typeName));
             resElements.put(typeName, resElement);
             // additional array to keep track of the order
-            resElements.accumulate(JsonCntPage.SEARCH_ORDER.getName(), typeName);
+            resElements.accumulate(JsonCntPage.searchOrder.toString(), typeName);
         }
         return resElements;
     }
@@ -1392,11 +1242,11 @@ public class CmsADEServer extends A_CmsAjaxServer {
     protected CmsContainerPageBean jsonToCntPage(JSONObject json) throws JSONException {
 
         CmsObject cms = getCmsObject();
-        String paramUri = getRequest().getParameter(ReqParam.URI.getName());
+        String paramUri = getRequest().getParameter(ReqParam.uri.toString());
 
         List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
 
-        JSONObject jsonCnts = json.getJSONObject(JsonCntPage.CONTAINERS.getName());
+        JSONObject jsonCnts = json.getJSONObject(JsonCntPage.containers.toString());
         Iterator<String> itCnt = jsonCnts.keys();
         while (itCnt.hasNext()) {
             String cntKey = itCnt.next();
@@ -1405,11 +1255,11 @@ public class CmsADEServer extends A_CmsAjaxServer {
             String type = jsonCnt.getString(CmsJspTagContainer.JsonContainer.TYPE.getName());
             List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
 
-            JSONArray elems = jsonCnt.getJSONArray(JsonCntPage.ELEMENTS.getName());
+            JSONArray elems = jsonCnt.getJSONArray(JsonCntPage.elements.toString());
             for (int i = 0; i < elems.length(); i++) {
                 JSONObject jsonElem = elems.getJSONObject(i);
 
-                String elemUri = jsonElem.getString(JsonCntElem.URI.getName());
+                String elemUri = jsonElem.getString(JsonCntElem.uri.toString());
                 CmsResource elem;
                 try {
                     elem = cms.readResource(elemUri);
@@ -1422,7 +1272,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                     // skip main-content if acting as template
                     continue;
                 }
-                String formatterUri = jsonElem.getString(JsonCntElem.FORMATTER.getName());
+                String formatterUri = jsonElem.getString(JsonCntElem.formatter.toString());
                 CmsResource formatter;
                 try {
                     formatter = cms.readResource(formatterUri);
@@ -1431,7 +1281,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                     LOG.error(e.getLocalizedMessage(), e);
                     continue;
                 }
-                String clientId = jsonElem.getString(JsonCntElem.ID.getName());
+                String clientId = jsonElem.getString(JsonCntElem.id.toString());
                 Map<String, String> props = new HashMap<String, String>();
                 // checking if there are any properties to set
                 if (clientId.contains("#")) {
@@ -1472,7 +1322,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         for (int i = 0; i < elems.length(); i++) {
             JSONObject jsonElem = elems.getJSONObject(i);
 
-            String elemUri = jsonElem.getString(JsonCntElem.URI.getName());
+            String elemUri = jsonElem.getString(JsonCntElem.uri.toString());
             CmsResource elem;
             try {
                 elem = cms.readResource(elemUri);
@@ -1481,7 +1331,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 LOG.error(e.getLocalizedMessage(), e);
                 continue;
             }
-            String clientId = jsonElem.getString(JsonCntElem.ID.getName());
+            String clientId = jsonElem.getString(JsonCntElem.id.toString());
             Map<String, String> props = new HashMap<String, String>();
             // checking if there are any properties to set
             if (clientId.contains("#")) {

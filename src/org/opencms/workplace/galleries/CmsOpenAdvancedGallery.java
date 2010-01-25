@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2010/01/25 11:55:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/25 12:51:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6
  */
@@ -125,14 +125,14 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 JSONArray galleriesArr = new JSONArray();
                 try {
                     galleriesArr.put(galleryPath);
-                    queryObj.put(CmsGallerySearchServer.ResponseKeys.types.toString(), new JSONArray());
-                    queryObj.put(CmsGallerySearchServer.ResponseKeys.galleries.toString(), galleriesArr);
-                    queryObj.put(CmsGallerySearchServer.ResponseKeys.categories.toString(), new JSONArray());
-                    queryObj.put(CmsGallerySearchServer.QueryKeys.matchesperpage.toString(), 8);
-                    queryObj.put(CmsGallerySearchServer.QueryKeys.query.toString(), "");
-                    queryObj.put(CmsGallerySearchServer.QueryKeys.tabid.toString(), "tabs-result");
-                    queryObj.put(CmsGallerySearchServer.QueryKeys.page.toString(), 1);
-                    jsonObj.put(CmsGallerySearchServer.QueryKeys.querydata.toString(), queryObj);
+                    queryObj.put(CmsGallerySearchServer.ResponseKey.types.toString(), new JSONArray());
+                    queryObj.put(CmsGallerySearchServer.ResponseKey.galleries.toString(), galleriesArr);
+                    queryObj.put(CmsGallerySearchServer.ResponseKey.categories.toString(), new JSONArray());
+                    queryObj.put(CmsGallerySearchServer.QueryKey.matchesperpage.toString(), 8);
+                    queryObj.put(CmsGallerySearchServer.QueryKey.query.toString(), "");
+                    queryObj.put(CmsGallerySearchServer.QueryKey.tabid.toString(), "tabs-result");
+                    queryObj.put(CmsGallerySearchServer.QueryKey.page.toString(), 1);
+                    jsonObj.put(CmsGallerySearchServer.QueryKey.querydata.toString(), queryObj);
                 } catch (JSONException e) {
                     // ignore, because it should not happen!
                 }
