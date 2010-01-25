@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2010/01/20 09:16:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/01/25 09:43:26 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,7 +117,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsResourceType.class);
 
-    /** Flag for showing that this is an additional resource type which defined in a module. */
+    /** Flag for showing that this is an additional resource type which is defined in a module. */
     protected boolean m_addititionalModuleResourceType;
 
     /** The configured class name of this resource type. */
@@ -140,6 +140,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /**  Contains the file extensions mapped to this resource type. */
     protected List<String> m_mappings;
+
+    /** The module name if this is an additional resource type which is defined in a module. */
+    protected String m_moduleName;
 
     /** The configured id of this resource type. */
     protected int m_typeId;
@@ -604,6 +607,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public abstract int getLoaderId();
 
     /**
+     * @see org.opencms.file.types.I_CmsResourceType#getModuleName()
+     */
+    public String getModuleName() {
+
+        return m_moduleName;
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
      */
     public int getTypeId() {
@@ -881,6 +892,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         boolean recursive) throws CmsException {
 
         securityManager.setDateReleased(cms.getRequestContext(), resource, dateReleased);
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#setModuleName(java.lang.String)
+     */
+    public void setModuleName(String moduleName) {
+
+        m_moduleName = moduleName;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeJspRenderer.java,v $
- * Date   : $Date: 2010/01/22 08:49:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/25 09:43:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,20 @@
 
 package org.opencms.file.types;
 
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -48,24 +53,80 @@ import org.apache.commons.logging.Log;
  * Resource type descriptor for the type "jsprenderer".<p>
  *
  * @author Tobias Herrmann 
+ * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.9.0 
  */
 public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsResourceTypeJspRenderer.class);
+    /** Module parameter prefix for the container types. */
+    public static final String MODULE_PARAM_SUFFIX_CONTAINERTYPES = ".ade.containertypes";
 
-    /** Property name for formatter property. */
-    protected static final String PROPERTY_FORMATTER = "ade.formatter";
+    /** Module parameter prefix for the formatter. */
+    public static final String MODULE_PARAM_SUFFIX_FORMATTER = ".ade.formatter";
 
     /** Property name for container types property. */
     protected static final String PROPERTY_CONTAINERTYPES = "ade.containertypes";
 
-    /** Macro key to resolve container type. */
+    /** Property name for formatter property. */
+    protected static final String PROPERTY_FORMATTER = "ade.formatter";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceTypeJspRenderer.class);
+
+    /** Macro key to resolve the container type in the formatter VFS path. */
     private static final String MACRO_CONTAINERTYPE = "ade.containertype";
+
+    /**
+     * @see org.opencms.file.types.CmsResourceTypeXmlContent#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
+     */
+    @Override
+    public CmsResource createResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        String resourcename,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException {
+
+        boolean addPropertyFormatter = true;
+        boolean addPropertyContainerTypes = true;
+        for (Iterator<CmsProperty> i = properties.iterator(); i.hasNext();) {
+            CmsProperty property = i.next();
+            // check if there are already formatter or container types properties defined to be set on creation
+            if (property.getName().equals(PROPERTY_CONTAINERTYPES)) {
+                addPropertyContainerTypes = false;
+            } else if (property.getName().equals(PROPERTY_FORMATTER)) {
+                addPropertyFormatter = false;
+            }
+        }
+
+        if (addPropertyContainerTypes || addPropertyFormatter) {
+            // at least one property has to be set additionally
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(getTypeId());
+            if (resType.isAdditionalModuleResourceType()) {
+                String moduleName = resType.getModuleName();
+                CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+                if (addPropertyContainerTypes) {
+                    // add the container types property
+                    String types = module.getParameter(resType.getTypeName() + MODULE_PARAM_SUFFIX_CONTAINERTYPES);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(types)) {
+                        properties.add(new CmsProperty(PROPERTY_CONTAINERTYPES, null, types));
+                    }
+                }
+                if (addPropertyFormatter) {
+                    // add the formatter property
+                    String formatter = module.getParameter(resType.getTypeName() + MODULE_PARAM_SUFFIX_FORMATTER);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter)) {
+                        properties.add(new CmsProperty(PROPERTY_FORMATTER, null, formatter));
+                    }
+                }
+            }
+        }
+        // call super implementation with eventually extended property list
+        return super.createResource(cms, securityManager, resourcename, content, properties);
+    }
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainerType(CmsObject, CmsResource, String)
@@ -73,21 +134,40 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
     @Override
     public String getFormatterForContainerType(CmsObject cms, CmsResource resource, String containerType) {
 
-        if (containerType.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
+        if (CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE.equals(containerType)) {
             return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
         }
         try {
-            CmsProperty formatterProp = cms.readPropertyObject(resource, PROPERTY_FORMATTER, true);
-            String formatter = formatterProp.getValue();
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(formatter)) {
-                CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+            String formatter = cms.readPropertyObject(resource, PROPERTY_FORMATTER, true).getValue();
+            List<String> types = Collections.emptyList();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(formatter)) {
+                // try to read the formatter from module parameters
+                I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
+                if (resType.isAdditionalModuleResourceType()) {
+                    String moduleName = resType.getModuleName();
+                    CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+                    // read formatter and container types from module parameters
+                    formatter = module.getParameter(resType.getTypeName() + MODULE_PARAM_SUFFIX_FORMATTER);
+                    String typesStr = module.getParameter(resType.getTypeName() + MODULE_PARAM_SUFFIX_CONTAINERTYPES);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(typesStr)) {
+                        types = CmsStringUtil.splitAsList(typesStr, CmsProperty.VALUE_LIST_DELIMITER);
+                    }
+                }
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter)) {
+                // found a formatter, now resolve container type macro in formatter path (if present)
+                CmsMacroResolver resolver = CmsMacroResolver.newInstance().setKeepEmptyMacros(true);
                 resolver.addMacro(MACRO_CONTAINERTYPE, containerType);
                 formatter = resolver.resolveMacros(formatter);
-                CmsProperty typesProp = cms.readPropertyObject(resource, PROPERTY_CONTAINERTYPES, true);
-                List<String> types = typesProp.getValueList();
+                if (types.isEmpty()) {
+                    // still not found types, read them from the property
+                    types = cms.readPropertyObject(resource, PROPERTY_CONTAINERTYPES, true).getValueList();
+                }
                 if (types.isEmpty() || types.contains(containerType)) {
                     return formatter;
                 }
+                // container type not part of the specified types, formatter is not valid
+                return null;
             }
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
@@ -96,6 +176,7 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
                     cms.getSitePath(resource)), e);
             }
         }
-        return null;
+        // try to get formatter out of XSD as fall back
+        return super.getFormatterForContainerType(cms, resource, containerType);
     }
 }

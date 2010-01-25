@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2010/01/15 14:55:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/25 09:43:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -465,6 +465,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     int getLoaderId();
 
     /**
+     * Returns the module name if this is an additional resource type which is defined in a module, or <code>null</code>.<p>
+     * 
+     * @return the module name if this is an additional resource type which is defined in a module, or <code>null</code>
+     */
+    String getModuleName();
+
+    /**
      * Returns the type id of this resource type.<p>
      *
      * @return the type id of this resource type
@@ -758,6 +765,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource,
         long dateReleased,
         boolean recursive) throws CmsException;
+
+    /**
+     * Sets the module name if this is an additional resource type which is defined in a module, or <code>null</code>
+     * 
+     * @param moduleName the module name if this is an additional resource type which is defined in a module, or <code>null</code>
+     */
+    void setModuleName(String moduleName);
 
     /**
      * Undeletes a resource.<p>

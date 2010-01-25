@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/01/25 09:43:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -625,8 +625,15 @@ public class CmsModuleXmlHandler {
             m_resources,
             m_parameters);
 
+        // store module name in the additional resource types
+        List<I_CmsResourceType> moduleResourceTypes = new ArrayList<I_CmsResourceType>(m_resourceTypes.size());
+        for (Iterator<I_CmsResourceType> i = m_resourceTypes.iterator(); i.hasNext();) {
+            I_CmsResourceType resType = i.next();
+            resType.setModuleName(moduleName);
+            moduleResourceTypes.add(resType);
+        }
         // set the additional resource types;
-        m_module.setResourceTypes(m_resourceTypes);
+        m_module.setResourceTypes(moduleResourceTypes);
 
         // set the additional explorer types
         m_module.setExplorerTypes(m_explorerTypeSettings);
