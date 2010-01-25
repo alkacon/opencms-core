@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2009/12/01 13:39:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/25 11:55:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6
  */
@@ -114,25 +114,25 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 String width = "670";
                 String height = "540";
                 galleryUri.append("?");
-                galleryUri.append(CmsGallerySearchServer.ReqParam.DIALOGMODE.getName());
+                galleryUri.append(CmsGallerySearchServer.ReqParam.dialogmode.toString());
                 galleryUri.append("=");
-                galleryUri.append(CmsGallerySearchServer.GalleryMode.VIEW.getName());
+                galleryUri.append(CmsGallerySearchServer.GalleryMode.view.toString());
                 galleryUri.append("&");
-                galleryUri.append(CmsGallerySearchServer.ReqParam.DATA.getName());
+                galleryUri.append(CmsGallerySearchServer.ReqParam.data.toString());
                 galleryUri.append("=");
                 JSONObject jsonObj = new JSONObject();
                 JSONObject queryObj = new JSONObject();
                 JSONArray galleriesArr = new JSONArray();
                 try {
                     galleriesArr.put(galleryPath);
-                    queryObj.put(CmsGallerySearchServer.JsonKeys.TYPES.getName(), new JSONArray());
-                    queryObj.put(CmsGallerySearchServer.JsonKeys.GALLERIES.getName(), galleriesArr);
-                    queryObj.put(CmsGallerySearchServer.JsonKeys.CATEGORIES.getName(), new JSONArray());
-                    queryObj.put(CmsGallerySearchServer.JsonKeys.MATCHESPERPAGE.getName(), 8);
-                    queryObj.put(CmsGallerySearchServer.JsonKeys.QUERY.getName(), "");
-                    queryObj.put(CmsGallerySearchServer.JsonKeys.TABID.getName(), "tabs-result");
-                    queryObj.put(CmsGallerySearchServer.JsonKeys.PAGE.getName(), 1);
-                    jsonObj.put(CmsGallerySearchServer.JsonKeys.QUERYDATA.getName(), queryObj);
+                    queryObj.put(CmsGallerySearchServer.ResponseKeys.types.toString(), new JSONArray());
+                    queryObj.put(CmsGallerySearchServer.ResponseKeys.galleries.toString(), galleriesArr);
+                    queryObj.put(CmsGallerySearchServer.ResponseKeys.categories.toString(), new JSONArray());
+                    queryObj.put(CmsGallerySearchServer.QueryKeys.matchesperpage.toString(), 8);
+                    queryObj.put(CmsGallerySearchServer.QueryKeys.query.toString(), "");
+                    queryObj.put(CmsGallerySearchServer.QueryKeys.tabid.toString(), "tabs-result");
+                    queryObj.put(CmsGallerySearchServer.QueryKeys.page.toString(), 1);
+                    jsonObj.put(CmsGallerySearchServer.QueryKeys.querydata.toString(), queryObj);
                 } catch (JSONException e) {
                     // ignore, because it should not happen!
                 }

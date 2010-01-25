@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/11/17 07:42:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/25 11:55:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6
  * 
@@ -79,7 +79,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
 
         if (m_galleryItem == null) {
             m_galleryItem = (CmsGalleryItemBean)getRequest().getAttribute(
-                CmsGallerySearchServer.ReqParam.GALLERYITEM.getName());
+                CmsGallerySearchServer.ReqParam.galleryitem.toString());
 
         }
         return m_galleryItem;
