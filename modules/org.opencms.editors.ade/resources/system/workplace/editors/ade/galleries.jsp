@@ -5,9 +5,10 @@ String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "edit
 <jsp:useBean id="gallery" class="org.opencms.workplace.galleries.CmsGallerySearchServer">
  <% gallery.init(pageContext, request, response); %>
  </jsp:useBean><%
- 	if (request.getParameter(CmsGallerySearchServer.ReqParam.ACTION.getName())!= null){
+ 	if (request.getParameter(CmsGallerySearchServer.ReqParam.action.toString())!= null){
  	    gallery.serve();
  	}else{ 
+ 	//    gallery.setLocale(request.getParameter(CmsGallerySearchServer.ReqParam.LOCALE.getName()));
 // this is the initial call to the gallery so build the html first
 %><!DOCTYPE html 
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
