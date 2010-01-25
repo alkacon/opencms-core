@@ -1466,13 +1466,18 @@ div.cms-selectbox{
 	z-index: 1;
 
 }
+
 	
 div.cms-selectbox span.cms-select-option, div.cms-selector span.cms-select-option{
 	display:block;
 	padding: 2px 5px 3px;
 	border:none;
     font-size: 13px;
-    font-family: Verdana,Helvetica,Arial,sans-serif
+    font-family: Verdana,Helvetica,Arial,sans-serif;
+    /* gecko based */
+    -moz-user-select: none;
+    /* webkit based */
+    -khtml-user-select: none;
 }
 
 span.cms-select-option:hover{

@@ -12,6 +12,7 @@
      * 'getValue': returns the currently selected value 
      * 'getIndex': returns the currently selected index
      * 'setValue': sets the value to additionalValue
+     * 'setEnabled': enables/disables the selectbox if additionalValue true/false
      * 
      * The following styles are necessary:
      * <style>
@@ -142,7 +143,7 @@ $.fn.selectBox=function(options, additional){
         function _generateReplacer(values){
             var selectbox={};
             selectbox.replacer=$('<div class="cms-selectbox ui-state-default ui-corner-all"><span class="cms-select-opener ui-icon ui-icon-triangle-1-s"></span></div>')
-			$('<span class="cms-current-value cms-select-option"></span>').appendTo(selectbox.replacer).text(values[0].title).attr('rel', values[0].value);
+			$('<span class="cms-current-value cms-select-option" unselectable="on"></span>').appendTo(selectbox.replacer).text(values[0].title).attr('rel', values[0].value);
 			selectbox.selector=_generateSelector(selectbox, values);
             if (!opts.appendTo) {
                 selectbox.selector.appendTo(selectbox.replacer);
@@ -176,10 +177,11 @@ $.fn.selectBox=function(options, additional){
 			for (i=0; i<values.length; i++){
 				$('<span/>', {
                     'class': "cms-select-option", 
-                    'rel': values[i].value, 
+                    'rel': values[i].value,
+                    'unselectable': 'on', 
                     'html': values[i].title, 
                     'click': function(){
-                        _select($(this), selectbox);
+                        return _select($(this), selectbox);
                     }
                 }).appendTo(selector);
             }
@@ -212,12 +214,12 @@ $.fn.selectBox=function(options, additional){
         function setEnabled(enable){
             var selectbox=self.data('selectbox');
             if (enable){
-                selectbox.replacer.removeClass('cms-selectbox-disabled');
+                selectbox.replacer.children().removeClass('ui-state-disabled');
                 selectbox.replacer.unbind('click');
                 selectbox.replacer.click(_start);
             }else{
                 _close();
-                selectbox.replacer.addClass('cms-selectbox-disabled');
+                selectbox.replacer.children().addClass('ui-state-disabled');
                 selectbox.replacer.unbind('click');
             }
         }
