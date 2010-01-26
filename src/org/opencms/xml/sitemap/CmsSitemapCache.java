@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2010/01/07 14:19:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/26 11:00:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -76,12 +76,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
 
     /** Cache for missing online URIs. */
     private Map<String, Boolean> m_missingUrisOnline;
-
-    /** Cache for offline search properties. */
-    private Map<String, Map<String, String>> m_searchPropsOffline;
-
-    /** Cache for online search properties. */
-    private Map<String, Map<String, String>> m_searchPropsOnline;
 
     /** Cache for offline site entries. */
     private Map<String, CmsSiteEntryBean> m_urisOffline;
@@ -193,23 +187,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
     }
 
     /**
-     * Returns the content of the search properties cache for the given parameters.<p>
-     * 
-     * @param path the cache key
-     * @param online if online or offline
-     * 
-     * @return the content of the search properties cache
-     */
-    public Map<String, String> getSearchProps(String path, boolean online) {
-
-        if (online) {
-            return m_searchPropsOnline.get(path);
-        } else {
-            return m_searchPropsOffline.get(path);
-        }
-    }
-
-    /**
      * Returns the content of the URIs cache for the given parameters.<p>
      * 
      * @param path the cache key
@@ -283,22 +260,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
     }
 
     /**
-     * Sets the search properties cache for the given parameters.<p>
-     * 
-     * @param path the cache key
-     * @param props the properties to cache
-     * @param online if online or offline
-     */
-    public void setSearchProps(String path, Map<String, String> props, boolean online) {
-
-        if (online) {
-            m_searchPropsOnline.put(path, props);
-        } else {
-            m_searchPropsOffline.put(path, props);
-        }
-    }
-
-    /**
      * Sets the URI cache for the given parameters.<p>
      * 
      * @param path the cache key
@@ -325,13 +286,11 @@ public final class CmsSitemapCache extends CmsVfsCache {
             m_missingUrisOnline.clear();
             m_urisOnline.clear();
             m_defPropsOnline = null;
-            m_searchPropsOnline.clear();
         } else {
             m_documentsOffline.clear();
             m_missingUrisOffline.clear();
             m_urisOffline.clear();
             m_defPropsOffline = null;
-            m_searchPropsOffline.clear();
         }
     }
 
@@ -350,8 +309,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
         if (resource.getRootPath().equals(CmsResourceTypeXmlSitemap.SCHEMA)) {
             // flush offline default properties 
             m_defPropsOffline = null;
-            // flush offline properties 
-            m_searchPropsOffline.clear();
             return;
         }
 
@@ -367,8 +324,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
         // flush all uri's
         m_urisOffline.clear();
         m_missingUrisOffline.clear();
-        // flush properties
-        m_searchPropsOffline.clear();
     }
 
     /**
@@ -402,13 +357,5 @@ public final class CmsSitemapCache extends CmsVfsCache {
         lruMapMissed = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getMissingUriOnlineSize());
         m_missingUrisOnline = Collections.synchronizedMap(lruMapMissed);
         memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".missingUrisOnline", lruMapMissed);
-
-        Map<String, Map<String, String>> lruMapProperties = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getPropertyOfflineSize());
-        m_searchPropsOffline = Collections.synchronizedMap(lruMapProperties);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".searchPropsOffline", lruMapProperties);
-
-        lruMapProperties = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getPropertyOnlineSize());
-        m_searchPropsOnline = Collections.synchronizedMap(lruMapProperties);
-        memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".searchPropsOnline", lruMapProperties);
     }
 }

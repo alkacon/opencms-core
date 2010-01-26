@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2010/01/07 14:19:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/26 11:00:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -487,9 +487,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the sitemap cache for missing URIs. */
     public static final String N_MISSING_URIS = "missing-uris";
-
-    /** The node name for the sitemap cache for properties. */
-    public static final String N_PROPERTIES = "properties";
 
     /** The node name for the sitemap cache for URIs. */
     public static final String N_URIS = "uris";
@@ -1164,11 +1161,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(sitemapCachePath + "/" + N_MISSING_URIS, 0, A_OFFLINE);
         digester.addCallMethod(sitemapCachePath + "/" + N_MISSING_URIS, "setMissingUriOnlineSize", 1);
         digester.addCallParam(sitemapCachePath + "/" + N_MISSING_URIS, 0, A_ONLINE);
-        // properties cache
-        digester.addCallMethod(sitemapCachePath + "/" + N_PROPERTIES, "setPropertyOfflineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_PROPERTIES, 0, A_OFFLINE);
-        digester.addCallMethod(sitemapCachePath + "/" + N_PROPERTIES, "setPropertyOnlineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_PROPERTIES, 0, A_ONLINE);
         // set the settings
         digester.addSetNext(sitemapCachePath, "setSitemapCacheSettings");
     }
@@ -1593,10 +1585,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             Element missingCacheElem = cacheElem.addElement(N_MISSING_URIS);
             missingCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getMissingUriOfflineSize());
             missingCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getMissingUriOnlineSize());
-            // properties cache
-            Element propsCacheElem = cacheElem.addElement(N_PROPERTIES);
-            propsCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getPropertyOfflineSize());
-            propsCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getPropertyOnlineSize());
             // URIs cache
             Element uriCacheElem = cacheElem.addElement(N_URIS);
             uriCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getUriOfflineSize());

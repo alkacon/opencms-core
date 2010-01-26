@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCacheSettings.java,v $
- * Date   : $Date: 2010/01/07 14:19:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/26 11:00:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.xml.sitemap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.2
  */
@@ -47,9 +47,6 @@ public class CmsSitemapCacheSettings {
 
     /** Default size for missing URI caches. */
     private static final int DEFAULT_MISSING_URI_SIZE = 4096;
-
-    /** Default size for properties caches. */
-    private static final int DEFAULT_PROPERTY_SIZE = 4096;
 
     /** Default size for URI caches. */
     private static final int DEFAULT_URI_SIZE = 4096;
@@ -65,12 +62,6 @@ public class CmsSitemapCacheSettings {
 
     /** The size of the missing URI online cache. */
     private int m_missingUriOnlineSize;
-
-    /** The size of the properties offline cache. */
-    private int m_propertyOfflineSize;
-
-    /** The size of the properties online cache. */
-    private int m_propertyOnlineSize;
 
     /** The size of the URI offline cache. */
     private int m_uriOfflineSize;
@@ -139,32 +130,6 @@ public class CmsSitemapCacheSettings {
     }
 
     /**
-     * Returns the size of the properties offline cache.<p>
-     * 
-     * @return the size of the properties offline cache
-     */
-    public int getPropertyOfflineSize() {
-
-        if (m_propertyOfflineSize <= 0) {
-            return DEFAULT_PROPERTY_SIZE;
-        }
-        return m_propertyOfflineSize;
-    }
-
-    /**
-     * Returns the size of the properties online cache.<p>
-     * 
-     * @return the size of the properties online cache
-     */
-    public int getPropertyOnlineSize() {
-
-        if (m_propertyOnlineSize <= 0) {
-            return DEFAULT_PROPERTY_SIZE;
-        }
-        return m_propertyOnlineSize;
-    }
-
-    /**
      * Returns the size of the URI offline cache.<p>
      * 
      * @return the size of the URI offline cache
@@ -228,26 +193,6 @@ public class CmsSitemapCacheSettings {
     public void setMissingUriOnlineSize(String size) {
 
         m_missingUriOnlineSize = getIntValue(size, DEFAULT_MISSING_URI_SIZE);
-    }
-
-    /**
-     * Sets the size of the cache for sitemap properties.<p>
-     *
-     * @param size the size of the cache for sitemap properties
-     */
-    public void setPropertyOfflineSize(String size) {
-
-        m_propertyOfflineSize = getIntValue(size, DEFAULT_PROPERTY_SIZE);
-    }
-
-    /**
-     * Sets the size of the cache for sitemap properties.<p>
-     *
-     * @param size the size of the cache for sitemap properties
-     */
-    public void setPropertyOnlineSize(String size) {
-
-        m_propertyOnlineSize = getIntValue(size, DEFAULT_PROPERTY_SIZE);
     }
 
     /**
