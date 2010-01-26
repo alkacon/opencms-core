@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2009/12/10 09:59:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/26 11:00:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -278,6 +278,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
         if (schema != null) {
             try {
+                // this wont in most cases read the file content
                 contentDef = unmarshal(cms, schema);
             } catch (CmsException e) {
                 // this should never happen, unless the configured schema is different than the schema in the xml
@@ -300,7 +301,7 @@ public class CmsXmlContentDefinition implements Cloneable {
             }
         }
         if (contentDef == null) {
-            // could still be empty if the xml content has not been save with a version newer than 7.9.0
+            // could still be empty if the xml content has not been saved with a version newer than 7.9.0
             // so, to unmarshall is the only possibility left
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
             contentDef = content.getContentDefinition();
