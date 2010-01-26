@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/26 11:00:38 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -217,7 +218,7 @@ public class CmsJspTagProperty extends TagSupport {
         }
 
         String vfsUri = null;
-        String sitemapUri = null;
+        CmsSiteEntryBean sitemapUri = null;
         boolean search = false;
         if (useAction != null) {
             switch (useAction) {
@@ -260,7 +261,7 @@ public class CmsJspTagProperty extends TagSupport {
                     }
                 case SITEMAP:
                     // try to find property on this sitemap entry
-                    sitemapUri = OpenCms.getSitemapManager().getCurrentUri(req);
+                    sitemapUri = OpenCms.getSitemapManager().getRuntimeInfo(req);
                     if (sitemapUri == null) {
                         // fall back
                         vfsUri = controller.getCmsObject().getRequestContext().getUri();
@@ -268,7 +269,7 @@ public class CmsJspTagProperty extends TagSupport {
                     break;
                 case SEARCH_SITEMAP:
                     // try to find property on this sitemap entry all parent entries
-                    sitemapUri = OpenCms.getSitemapManager().getCurrentUri(req);
+                    sitemapUri = OpenCms.getSitemapManager().getRuntimeInfo(req);
                     if (sitemapUri == null) {
                         // fall back
                         vfsUri = controller.getCmsObject().getRequestContext().getUri();
@@ -283,13 +284,12 @@ public class CmsJspTagProperty extends TagSupport {
         }
 
         // now read the property from the VFS
-        Map<String, String> value;
+        Map<String, String> value = new HashMap<String, String>();
         if (vfsUri != null) {
             value = CmsProperty.toMap(controller.getCmsObject().readPropertyObjects(vfsUri, search));
-        } else if (!search) {
-            value = OpenCms.getSitemapManager().getCurrentEntry(req).getProperties();
-        } else {
-            value = OpenCms.getSitemapManager().getSearchProperties(controller.getCmsObject(), sitemapUri);
+        } else if (sitemapUri != null) {
+            value.putAll(OpenCms.getSitemapManager().getDefaultProperties(controller.getCmsObject()));
+            value = sitemapUri.getProperties(search);
         }
         return value;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2009/12/14 11:06:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/26 11:00:38 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsDirectEditJspIncludeProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -81,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -366,7 +367,7 @@ public class CmsJspActionElement extends CmsJspBean {
         if (isNotInitialized()) {
             return null;
         }
-        if (OpenCms.getSitemapManager().getCurrentUri(getRequest()) == null) {
+        if (OpenCms.getSitemapManager().getRuntimeInfo(getRequest()) == null) {
             return getVfsNavigation();
         } else {
             return getSitemapNavigation();
@@ -380,11 +381,11 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public String getNavigationUri() {
 
-        String uri = OpenCms.getSitemapManager().getCurrentUri(getRequest());
-        if (uri == null) {
-            uri = getCmsObject().getRequestContext().getUri();
+        CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(getRequest());
+        if (sitemap == null) {
+            return getCmsObject().getRequestContext().getUri();
         }
-        return uri;
+        return sitemap.getUri();
     }
 
     /**
@@ -396,7 +397,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public CmsJspSitemapNavBuilder getSitemapNavigation() {
 
-        if (isNotInitialized() || (OpenCms.getSitemapManager().getCurrentUri(getRequest()) == null)) {
+        if (isNotInitialized() || (OpenCms.getSitemapManager().getRuntimeInfo(getRequest()) == null)) {
             return null;
         }
         if (m_sitemapNav == null) {

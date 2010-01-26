@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2010/01/07 14:18:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/26 11:00:38 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.9.2
  */
@@ -78,7 +79,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
         // check if the resource comes from the root site
         abort |= CmsStringUtil.isEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot());
         // check if the resource comes from the /system/ folder
-        abort |= cms.getRequestContext().getUri().startsWith("/system/");
+        abort |= cms.getRequestContext().getUri().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
         if (abort) {
             // skip in all cases above 
             return resource;
@@ -95,9 +96,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
             resource = cms.readResource(entry.getResourceId());
             if (req != null) {
                 // set the element
-                req.setAttribute(CmsSitemapManager.ATTR_SITEMAP_ENTRY, entry.cloneWithoutSubEntries());
-                // store the requested path 
-                req.setAttribute(CmsSitemapManager.ATTR_SITEMAP_CURRENT_URI, cms.getRequestContext().getUri());
+                req.setAttribute(CmsSitemapManager.ATTR_SITEMAP_ENTRY, entry);
             }
             // set the resource path
             cms.getRequestContext().setUri(cms.getSitePath(resource));
