@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/26 11:01:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.9.2 
  * 
@@ -67,11 +67,11 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
 
-    /** The sitemap manager. */
-    protected CmsSitemapManager m_manager;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspSitemapNavBuilder.class);
+
+    /** The sitemap manager. */
+    protected CmsSitemapManager m_manager;
 
     /** The current request. */
     protected HttpServletRequest m_request;
@@ -93,6 +93,25 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
     public CmsJspSitemapNavBuilder(CmsObject cms, HttpServletRequest req) {
 
         init(cms, req);
+    }
+
+    /**
+     * @see org.opencms.jsp.CmsJspNavBuilder#getNavigationBreadCrumb(java.lang.String, int, int, boolean)
+     */
+    @Override
+    public List<CmsJspNavElement> getNavigationBreadCrumb(
+        String folder,
+        int startlevel,
+        int endlevel,
+        boolean currentFolder) {
+
+        // be sure to remove the current (last) entry from the list
+        // since all URIs are 'folders'
+        List<CmsJspNavElement> elements = super.getNavigationBreadCrumb(folder, startlevel, endlevel, currentFolder);
+        if (!elements.isEmpty()) {
+            elements.remove(elements.size() - 1);
+        }
+        return elements;
     }
 
     /**
@@ -123,13 +142,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
                 m_cms.readResource(entry.getResourceId());
                 // permissions are fine, add it to the results
                 entry.setPosition(position);
-                // TODO: what should we do here
                 String entryName = folder + entry.getName() + "/";
-                /*
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getExtension())) {
-                    entryName += "." + entry.getExtension();
-                }
-                */
                 CmsJspNavElement element = getNavigationForSiteEntry(entryName, entry);
                 if ((element != null) && element.isInNavigation()) {
                     result.add(element);
@@ -183,7 +196,10 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         m_request = req;
         m_cms = cms;
         m_manager = OpenCms.getSitemapManager();
-        m_requestUri = m_manager.getCurrentUri(req);
+        CmsSiteEntryBean sitemap = m_manager.getRuntimeInfo(req);
+        if (sitemap != null) {
+            m_requestUri = sitemap.getUri();
+        }
         m_requestUriFolder = CmsResource.getFolderPath(m_requestUri);
     }
 
