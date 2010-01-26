@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDefaultFormatterHelper.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsContainerPageFormatterHelper.java,v $
  * Date   : $Date: 2010/01/26 09:34:18 $
- * Version: $Revision: 1.4 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,31 +34,35 @@ package org.opencms.workplace.galleries;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Helper bean to implement gallery default formatters.<p>
+ * Helper bean to implement gallery preview container page formatters.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.1 $ 
  * 
- * @since 7.6
+ * @since 7.9
  * 
  */
-public class CmsDefaultFormatterHelper extends CmsJspActionElement {
+public class CmsContainerPageFormatterHelper extends CmsJspActionElement {
 
     /** The gallery item info bean. */
     private CmsGalleryItemBean m_galleryItem;
 
     /** The resource. */
     private CmsResource m_resource;
+
+    /** The xml container page. */
+    private CmsContainerPageBean m_containerPageBean;
 
     /**
      * Constructor, with parameters.
@@ -67,7 +71,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      * @param req the JSP request 
      * @param res the JSP response 
      */
-    public CmsDefaultFormatterHelper(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsContainerPageFormatterHelper(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
     }
@@ -107,22 +111,6 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     }
 
     /**
-     * Returns the resource type icon path for the resource.<p>
-     * 
-     * @return the resource type icon path for the resource
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public String getIconPath() throws CmsException {
-
-        if (getGalleryItem().getIcon() != null) {
-            return getGalleryItem().getIcon();
-        }
-        return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-            + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getType()).getIcon());
-    }
-
-    /**
      * Returns the element's path.<p>
      * 
      * @return the element's path
@@ -138,47 +126,18 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     }
 
     /**
-     * Returns the element's resource type name.<p>
+     * Returns the container page bean for this resource.<p>
      * 
-     * @return the element's resource type name
-     * 
-     * @throws CmsException if something goes wrong
+     * @return the container page bean
+     * @throws CmsException if something goes wrong unmarshalling the container page
      */
-    public String getType() throws CmsException {
+    public CmsContainerPageBean getContainerPage() throws CmsException {
 
-        if (getGalleryItem().getTypeName() != null) {
-            return getGalleryItem().getTypeName();
+        if (m_containerPageBean == null) {
+            CmsXmlContainerPage page = CmsXmlContainerPageFactory.unmarshal(getCmsObject(), getResource());
+            m_containerPageBean = page.getCntPage(getCmsObject(), getCmsObject().getRequestContext().getLocale());
         }
-        return OpenCms.getResourceManager().getResourceType(getResource()).getTypeName();
-    }
-
-    /**
-     * Returns the element's resource type id.<p>
-     * 
-     * @return the element's resource type id
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public int getTypeId() throws CmsException {
-
-        if (getGalleryItem().getTypeId() != -5) {
-            return getGalleryItem().getTypeId();
-        }
-        return OpenCms.getResourceManager().getResourceType(getResource()).getTypeId();
-    }
-
-    /**
-     * Returns the element's resource type localized name.<p>
-     * 
-     * @return the element's resource type localized name
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public String getTypeName() throws CmsException {
-
-        return org.opencms.workplace.CmsWorkplaceMessages.getResourceTypeName(
-            getCmsObject().getRequestContext().getLocale(),
-            getType());
+        return m_containerPageBean;
     }
 
     /**
@@ -192,17 +151,8 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(getGalleryItem().getTitle())) {
             return getGalleryItem().getTitle();
         }
+
         return getResource().getName();
-    }
-
-    /**
-     * Returns the elements sub-title.<p>
-     * 
-     * @return the sub-title or <code>null</code> if not available
-     */
-    public String getSubTitle() {
-
-        return getGalleryItem().getSubtitle();
     }
 
 }

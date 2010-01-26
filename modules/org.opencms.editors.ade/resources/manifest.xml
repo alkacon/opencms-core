@@ -133,6 +133,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/editors/ade/container-preview-formatter.jsp</source>
+			<destination>system/workplace/editors/ade/container-preview-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>055e1e54-0a5b-11df-b713-41cdc2144551</uuidstructure>
+			<uuidresource>055e1e55-0a5b-11df-b713-41cdc2144551</uuidresource>
+			<datelastmodified>Tue, 26 Jan 2010 09:55:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Jan 2010 09:13:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
         <file>
 			<source>system/workplace/editors/ade/crop.jsp</source>
 			<destination>system/workplace/editors/ade/crop.jsp</destination>

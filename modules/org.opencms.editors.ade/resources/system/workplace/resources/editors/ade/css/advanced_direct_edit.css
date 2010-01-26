@@ -1478,6 +1478,7 @@ div.cms-selectbox span.cms-select-option, div.cms-selector span.cms-select-optio
     -moz-user-select: none;
     /* webkit based */
     -khtml-user-select: none;
+    cursor: pointer;
 }
 
 span.cms-select-option:hover{
