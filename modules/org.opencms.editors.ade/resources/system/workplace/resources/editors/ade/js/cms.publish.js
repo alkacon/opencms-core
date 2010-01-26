@@ -651,7 +651,7 @@
    
       var params = {
          'resources': resources,
-         'remove-resources': removeResources,
+         'removeResources': removeResources,
          'force': force
       }
       postJSON('publish', params, callback, false, 240000);
