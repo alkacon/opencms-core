@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/26 14:48:26 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2010/01/26 15:59:07 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 7.6
  */
@@ -134,7 +134,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         integrator,
 
         /** The current locale. */
-        locale;
+        locale,
+
+        /** The tabs configuration, which tabs should be displayed. */
+        tabs;
 
     }
 
@@ -412,6 +415,31 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         types
     }
 
+    /** Tab ids used for tab configuration. */
+    protected enum TabId {
+
+        /** The id for categories tab. */
+        cms_tab_categories,
+
+        /** The id for containerpage tab. */
+        cms_tab_containerpage,
+
+        /** The id for galleries tab. */
+        cms_tab_galleries,
+
+        /** The id for types tab. */
+        cms_tab_result,
+
+        /** The id for search tab. */
+        cms_tab_search,
+
+        /** The id for sitemap tab. */
+        cms_tab_sitemap,
+
+        /** The id for types tab. */
+        cms_tab_types
+    }
+
     /** The advanced gallery index name. */
     public static final String ADVANCED_GALLERY_INDEX = "ADE Gallery Index";
 
@@ -422,7 +450,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     public static final String EXCERPT_FIELD_NAME = "excerpt";
 
     /** The result tab id. */
-    public static final String RESULT_TAB_ID = "#tabs-result";
+    public static final String RESULT_TAB_ID = "#cms-tab-result";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchServer.class);
@@ -456,6 +484,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
     /** The available resource types. */
     private List<I_CmsResourceType> m_resourceTypes;
+
+    /** The JSON array request data for the tab configuration. */
+    private JSONArray m_tabs;
 
     /**
      * Empty constructor, required for every JavaBean.<p>
@@ -533,7 +564,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             getCmsObject().getRequestContext().setLocale(m_locale);
             JSONObject data = new JSONObject(dataParam);
             if (action.equals(Action.ALL)) {
-                result.merge(getAllLists(null), true, true);
+                result.merge(getAllLists(null, getTabs()), true, true);
 
                 // TODO: Add containers.
             } else if (action.equals(Action.CATEGORIES)) {
@@ -699,25 +730,36 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * Returns the JSON for type, galleries and categories tab. Uses the given types or all available resource types.<p>
      * 
      * @param modeName the dialog mode name
+     * @param tabs the tabs configuration JSON array
      * 
      * @return available types, galleries and categories as JSON 
      * 
      * @throws JSONException if something goes wrong generating the JSON
      */
-    public JSONObject getAllLists(String modeName) throws JSONException {
+    public JSONObject getAllLists(String modeName, JSONArray tabs) throws JSONException {
 
         JSONObject result = new JSONObject();
         result.put(ResponseKey.types.toString(), buildJSONForTypes(getResourceTypes()));
         result.put(ResponseKey.typeids.toString(), getResourceTypeIds());
-        Map<String, CmsGalleryTypeInfo> galleryTypes = readGalleryTypes(getResourceTypes());
 
+        Map<String, CmsGalleryTypeInfo> galleryTypes = readGalleryTypes(getResourceTypes());
         result.put(ResponseKey.galleries.toString(), buildJSONForGalleries(galleryTypes));
+
         List<CmsResource> galleryFolders = new ArrayList<CmsResource>();
         Iterator<Entry<String, CmsGalleryTypeInfo>> iGalleryTypes = galleryTypes.entrySet().iterator();
         while (iGalleryTypes.hasNext()) {
             galleryFolders.addAll(iGalleryTypes.next().getValue().getGalleries());
         }
-        result.put(ResponseKey.categories.toString(), buildJSONForCategories(readCategories(galleryFolders)));
+        if (tabs.containsString(TabId.cms_tab_categories.toString())) {
+            result.put(ResponseKey.categories.toString(), buildJSONForCategories(readCategories(galleryFolders)));
+        }
+        if (tabs.containsString(TabId.cms_tab_sitemap.toString())) {
+            //TODO: implement
+        }
+
+        if (tabs.containsString(TabId.cms_tab_containerpage.toString())) {
+            // TODO: implement
+        }
         result.put(ResponseKey.locale.toString(), getCmsObject().getRequestContext().getLocale());
 
         result.put(ResponseKey.locales.toString(), buildJSONForLocales());
@@ -761,15 +803,15 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Returns the JSON as string for type, galleries and categories tab. Uses the given types or all available resource types.<p>
+     * Returns the JSON as string for type, galleries, categories, vfs or sitemap tab. Uses the given types or all available resource types and tab configuration.<p>
      * 
-     * @return the type, galleries and categories data as JSON string
+     * @return the type, galleries and categories, vfs and sitemap data as JSON string
      * 
      * @throws JSONException if something goes wrong
      */
     public String getListConfig() throws JSONException {
 
-        JSONObject result = getAllLists(getModeName());
+        JSONObject result = getAllLists(getModeName(), getTabs());
         return result.toString();
     }
 
@@ -1235,21 +1277,21 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     private JSONObject getPreviewData(String resourcePath) throws Exception {
 
         JSONObject result = new JSONObject();
-        CmsObject cms = getCmsObject();
 
         // getting formatted content
         Map<String, Object> reqAttributes = new HashMap<String, Object>();
-        CmsResource resource = cms.readResource(resourcePath);
+        CmsResource resource = getCmsObject().readResource(resourcePath);
         I_CmsResourceType type = getResourceManager().getResourceType(resource.getTypeId());
         CmsGalleryItemBean reqItem = new CmsGalleryItemBean(resource);
         reqItem.setTypeId(resource.getTypeId());
         reqItem.setTypeName(type.getTypeName());
         reqAttributes.put(ReqParam.galleryitem.toString(), reqItem);
-        CmsContainerElementBean cntElem = new CmsContainerElementBean(resource.getStructureId(), null, null);
-        cntElem.setSitePath(cms.getSitePath(resource));
-        reqAttributes.put(CmsADEManager.ATTR_CURRENT_ELEMENT, cntElem);
+        reqAttributes.put(CmsADEManager.ATTR_CURRENT_ELEMENT, new CmsContainerElementBean(
+            resource.getStructureId(),
+            null,
+            null));
         result.put(ItemKey.itemhtml.toString(), type.getFormattedContent(
-            cms,
+            getCmsObject(),
             getRequest(),
             getResponse(),
             I_CmsResourceType.Formatter.GALLERY_PREVIEW,
@@ -1272,7 +1314,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         Iterator<String> propIt = properties.iterator();
         while (propIt.hasNext()) {
             String propertyName = propIt.next();
-            CmsProperty property = cms.readPropertyObject(resource, propertyName, false);
+            CmsProperty property = getCmsObject().readPropertyObject(resource, propertyName, false);
             JSONObject propertyJSON = new JSONObject();
             propertyJSON.put(ItemKey.name.toString(), propertyName);
             propertyJSON.put(ItemKey.value.toString(), property.getValue());
@@ -1374,6 +1416,30 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             m_resourceTypes = readContentTypes(getResourceTypeIds());
         }
         return m_resourceTypes;
+    }
+
+    /**
+     * Returns the tabs configuration with tabs to display.<p>
+     *
+     * @return the tabs as JSONArray 
+     */
+    private JSONArray getTabs() {
+
+        try {
+            if (m_tabs == null) {
+                String tabs = getRequest().getParameter(ReqParam.tabs.toString());
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(tabs)) {
+                    m_tabs = new JSONArray(tabs);
+                }
+            }
+        } catch (JSONException e) {
+            // TODO: set the default configuration
+            m_tabs = new JSONArray();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return m_tabs;
     }
 
     /**

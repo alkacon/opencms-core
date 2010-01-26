@@ -41,6 +41,7 @@ var cms = { data: { GALLERY_SERVER_URL: "${gallery.galleryUri}"}, html: {}, util
     cms.galleries.initValues['dialogMode'] = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
     cms.galleries.initValues['fieldId'] = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
     cms.galleries.initValues['path'] = "${(not empty param.path) ? param.path : 'null'}";
+    cms.galleries.initValues['tabs'] = ${(not empty param.tabs) ? param.tabs : '[]'};
 	// check if any there is a selected resource in editor
     if (cms.galleries.initValues['dialogMode'] == 'editor') {
     	prepareEditor();    	
@@ -85,11 +86,11 @@ div.cms-selectbox{
 	    <div id="cms-gallery-main"> 
 		    <div id="cms-gallery-tabs">
                 <ul>
-                     <li><a href="#tabs-result">Search results</a></li>
-                     <li><a href="#tabs-types">Type</a></li>
-                     <li><a href="#tabs-galleries">Galleries</a></li>
-                     <li><a href="#tabs-categories">Categories</a></li>
-                     <li><a href="#tabs-fulltextsearch">Full Text Search</a></li>
+                     <%-- <li><a href="#cms_tab_result">Search results</a></li>
+                     <li><a href="#cms_tab_types">Type</a></li>
+                     <li><a href="#cms_tab_galleries">Galleries</a></li>
+                     <li><a href="#cms_tab_categories">Categories</a></li>
+                     <li><a href="#cms_tab_search">Full Text Search</a></li> --%>
                 </ul>
             </div>            
         </div>

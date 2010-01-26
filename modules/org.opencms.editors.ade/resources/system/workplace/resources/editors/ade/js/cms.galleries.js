@@ -12,16 +12,22 @@
    /** html-id for tabs. */
    var idGalleriesMain = cms.galleries.idGalleriesMain = 'cms-gallery-main';   
    
-   /** html-id for the tab with search results. */
-   var idTabResult = cms.galleries.idTabResult = 'tabs-result';
+   /** A Map of tab ids. */
+   var arrayTabIndexes = cms.galleries.arrayTabIndexes =  {
+       'cms_tab_results': 0,
+       'cms_tab_types':  1, 
+       'cms_tab_galleries': 2,
+       'cms_tab_categories': 3,
+       'cms_tab_search':4
+   };
    
    /** A Map of tab ids. */
-   var arrayOfTabIds = cms.galleries.arrayOfTabIds =  {
-       'tabs-result': 0,
-       'tabs-types':  1, 
-       'tabs-galleries': 2,
-       'tabs-categories': 3,
-       'tabs-fulltextsearch':4
+   var arrayTabIds = cms.galleries.arrayTabIds =  {
+       'cms_tab_results': 'cms_tab_results',
+       'cms_tab_types': 'cms_tab_types', 
+       'cms_tab_galleries': 'cms_tab_galleries',
+       'cms_tab_categories': 'cms_tab_categories',
+       'cms_tab_search':'cms_tab_search'
    };
    
    /** 
@@ -92,11 +98,12 @@
       galleries: [],
       categories: [],
       query: '',
-      tabid: 1,
+      tabid: cms.galleries.arrayTabIndexes['cms_tab_types'],
       page: 1,
       searchfields: '',
       matchesperpage: 8,
       sortorder: null,
+      tabs: [],
       //locale: null,
       isChanged: {
          types: false,
@@ -105,6 +112,168 @@
          query: false
       }
    };
+   
+   var tabs = {
+       'cms_tab_results': {
+           addTabToList: function () {
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_results'] + '">Search Results</a></li>');
+           },
+           addTabHtml: function(localesArray){
+                      var resultTab = $(cms.galleries.htmlTabResultSceleton);
+                      resultTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
+                          values:[
+                              {value: 'title_asc',title: 'Title Ascending'}, 
+                              {value: 'title_desc',title: 'Title Descending'}, 
+                              {value: 'type_asc',title: 'Type Ascending'}, 
+                              {value: 'type_desc',title: 'Type Descending'}, 
+                              {value: 'dateLastModified_asc',title: 'Date Ascending'},
+                              {value: 'dateLastModified_desc',title: 'Date Descending'},
+                              {value: 'path_asc',title: 'Path Ascending'},
+                              {value: 'path_desc',title: 'Path Descending'}
+                          ],
+                          width: 150,
+                          /* TODO: bind sort functionality */
+                          select: function($this, self, value){              
+                              cms.galleries.searchObject['sortorder'] = value;
+                              // send new search for given sort oder and refresh the result list
+                              // display the first pagination page for sorted results    
+                              cms.galleries.loadSearchResults();          
+                          }}));
+                          resultTab.find('.cms-result-criteria').css('display','none');
+                             
+                      // display the locale select box, if more then one locale is available
+                      if (localesArray.length > 1) {
+                          resultTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
+                                                                    <label>Sort by:&nbsp;</label>\
+                                                              </span>');
+                      resultTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
+                          values:localesArray,
+                          width: 150,
+                          /* TODO: bind sort functionality */
+                          select: function($this, self, value){
+                              var tab = $(self).closest('div.cms-list-options').attr('id');
+                              cms.galleries.searchObject['locale'] = value;
+                              // send new search for given sort oder and refresh the result list
+                              // display the first pagination page for sorted results    
+                              cms.galleries.loadSearchResults();          
+                          }}));
+                       // TODO: set the preselected locales from search object
+                     
+                      }
+                      // add tabs html to tabs
+                      $('#' + cms.galleries.idTabs).append(resultTab);
+               },
+           fillTab: function () {}            
+       },
+       'cms_tab_types': {
+           addTabToList: function () {
+                $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_types'] + '">Types</a></li>');
+           },
+           addTabHtml: function () { 
+                          var typesTab = $(cms.galleries.htmlTabTypesSceleton);
+                          typesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
+                              values:[
+                                  {value: 'title,asc',title: 'Title Ascending'}, 
+                                  {value: 'title,desc',title: 'Title Descending'}         
+                              ],
+                              width: 150,
+                              /* bind sort functionality to selectbox */
+                              select: function($this, self, value){
+                                      var criteria = $(self).closest('div.cms-list-options').attr('id');
+                                      criteria = criteria.replace('options', '');
+                                      var params = value.split(',');
+                                      var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
+                                      cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
+                                  }
+                              }));
+                           // add tabs html to tabs
+                          $('#' + cms.galleries.idTabs).append(typesTab); 
+                       },
+          fillTab: function () {
+                      if (cms.galleries.searchCriteriaListsAsJSON.types) {
+                         cms.galleries.configContentTypes = cms.galleries.searchCriteriaListsAsJSON.typeids;
+                         cms.galleries.fillTypes(cms.galleries.searchCriteriaListsAsJSON.types);
+                         markSelectedCriteria('types');
+                      }
+          }
+      },
+      'cms_tab_galleries': {
+          addTabToList: function () {
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_galleries'] + '">Galleries</a></li>');
+           },
+          addTabHtml : function () {
+                              var galleriesTab = $(cms.galleries.htmlTabGalleriesSceleton);
+                              galleriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
+                                  values:[
+                                      {value: 'title,asc',title: 'Title Ascending'}, 
+                                      {value: 'title,desc',title: 'Title Descending'},
+                                      {value: 'gallerytypeid,asc',title: 'Type Ascending'}, 
+                                      {value: 'gallerytypeid,desc',title: 'Type Descending'}          
+                                  ],
+                                  width: 150,
+                                  /* bind sort functionality to selectbox */
+                                  select: function($this, self, value){
+                                          var criteria = $(self).closest('div.cms-list-options').attr('id');
+                                          criteria = criteria.replace('options', '');
+                                          var params = value.split(',');
+                                          var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
+                                          cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
+                                      }
+                                  }));
+                              // add tabs html to tabs
+                              $('#' + cms.galleries.idTabs).append(galleriesTab);
+                          },
+          fillTab: function () {
+              if (cms.galleries.searchCriteriaListsAsJSON.galleries) {
+                 cms.galleries.fillGalleries(cms.galleries.searchCriteriaListsAsJSON.galleries);
+                 markSelectedCriteria('galleries');
+              }
+          }         
+      },
+      'cms_tab_categories':{
+          addTabToList: function () {
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_categories'] + '">Categories</a></li>');
+           }, 
+          addTabHtml: function () {
+                              var categoriesTab = $(cms.galleries.htmlTabCategoriesSceleton);
+                              categoriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
+                                  values:[
+                                      {value: 'path,asc',title: 'Hierarchy'},
+                                      {value: 'title,asc',title: 'Title Ascending'}, 
+                                      {value: 'title,desc',title: 'Title Descending'}         
+                                  ],
+                                  width: 150,
+                                  /* bind sort functionality to selectbox */
+                                  select: function($this, self, value){
+                                          var criteria = $(self).closest('div.cms-list-options').attr('id');
+                                          criteria = criteria.replace('options', '');
+                                          var params = value.split(',');
+                                          var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
+                                          cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
+                                      }
+                                  })); 
+                              // add tabs html to tabs
+                              $('#' + cms.galleries.idTabs).append(categoriesTab); 
+    
+                           },
+          fillTab: function () {
+              if (cms.galleries.searchCriteriaListsAsJSON.categories) {
+                 cms.galleries.fillCategories(cms.galleries.searchCriteriaListsAsJSON.categories, 'path');
+                 markSelectedCriteria('categories');
+              }                           
+          }
+      },
+      'cms_tab_search': {
+          addTabToList: function () {
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_search'] + '">Full Text Search</a></li>');
+           },
+          addTabHtml: function() {
+                          // add tabs html to tabs
+                          $('#' + cms.galleries.idTabs).append(cms.galleries.htmlTabFTSeachSceleton);
+                     },
+          fillTab: function () {}                           
+      }
+   }
    
    /** Saves the initial list of all available search criteria from server. */
    var searchCriteriaListsAsJSON = cms.galleries.searchCriteriaListsAsJSON = {};
@@ -122,7 +291,7 @@
    };      
         
    /** html fragment for the tab with the results of the search. */
-   var htmlTabResultSceleton = cms.galleries.htmlTabResultSceleton = '<div id="' + cms.galleries.idTabResult + '">\
+   var htmlTabResultSceleton = cms.galleries.htmlTabResultSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_results'] + '">\
             <div class="cms-result-criteria"></div>\
             <div id="resultoptions" class="ui-widget ' +
    cms.galleries.classListOptions +
@@ -138,7 +307,7 @@
          </div>';    
    
    /** html fragment for the tab with the types' list. */
-   var htmlTabTypesSceleton = cms.galleries.htmlTabTypesSceleton = '<div id="tabs-types">\
+   var htmlTabTypesSceleton = cms.galleries.htmlTabTypesSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_types'] + '">\
                 <div id="typesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
                         <label>Sort by:</label>\
@@ -151,7 +320,7 @@
               </div>';
    
    /** html fragment for the tab with the galleries' list. */
-   var htmlTabGalleriesSceleton = cms.galleries.htmlTabGalleriesSceleton = '<div id="tabs-galleries">\
+   var htmlTabGalleriesSceleton = cms.galleries.htmlTabGalleriesSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_galleries'] + '">\
                 <div id="galleriesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
                         <label>Sort by:</label>\
@@ -164,7 +333,7 @@
               </div>';
    
    /** html fragment for the tab with the categories' list. */
-   var htmlTabCategoriesSceleton = cms.galleries.htmlTabCategoriesSceleton = '<div id="tabs-categories">\
+   var htmlTabCategoriesSceleton = cms.galleries.htmlTabCategoriesSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_categories'] + '">\
                 <div id="categoriesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
                         <label>Sort by:</label>\
@@ -177,7 +346,7 @@
               </div>';
    
    /** html fragment for the tab with the types' list. */
-   var htmlTabFTSeachSceleton = cms.galleries.htmlTabFTSeachSceleton = '<div id="tabs-fulltextsearch">\
+   var htmlTabFTSeachSceleton = cms.galleries.htmlTabFTSeachSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_search'] + '">\
              <div class="cms-search-panel ui-corner-all">\
                     <div class="cms-search-options"><b>Search the offline-index:</b></div>\
                     <div class="cms-search-options">\
@@ -215,117 +384,25 @@
               initSearchResult = requestData;
           }
       }
+            
       // read the standard locale and the available locales
       var localesArray = [];      
       if (tabsContent) {
           cms.galleries.searchObject['locale'] = tabsContent['locale'];
           localesArray = tabsContent['locales'];
       }
-                 
-      // init tabs for add dialog
-      var resultTab = $(cms.galleries.htmlTabResultSceleton);
-      resultTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
-          values:[
-              {value: 'title_asc',title: 'Title Ascending'}, 
-              {value: 'title_desc',title: 'Title Descending'}, 
-              {value: 'type_asc',title: 'Type Ascending'}, 
-              {value: 'type_desc',title: 'Type Descending'}, 
-              {value: 'dateLastModified_asc',title: 'Date Ascending'},
-              {value: 'dateLastModified_desc',title: 'Date Descending'},
-              {value: 'path_asc',title: 'Path Ascending'},
-              {value: 'path_desc',title: 'Path Descending'}
-          ],
-          width: 150,
-          /* TODO: bind sort functionality */
-          select: function($this, self, value){              
-              cms.galleries.searchObject['sortorder'] = value;
-              // send new search for given sort oder and refresh the result list
-              // display the first pagination page for sorted results    
-              cms.galleries.loadSearchResults();          
-          }}));
-          resultTab.find('.cms-result-criteria').css('display','none');
-             
-      // display the locale select box, if more then one locale is available
-      if (localesArray.length > 1) {
-          resultTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
-                                                    <label>Sort by:&nbsp;</label>\
-                                              </span>');
-      resultTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
-          values:localesArray,
-          width: 150,
-          /* TODO: bind sort functionality */
-          select: function($this, self, value){
-              var tab = $(self).closest('div.cms-list-options').attr('id');
-              cms.galleries.searchObject['locale'] = value;
-              // send new search for given sort oder and refresh the result list
-              // display the first pagination page for sorted results    
-              cms.galleries.loadSearchResults();          
-          }}));
-       // TODO: set the preselected locales from search object
-     
-      }
-           
-      var typesTab = $(cms.galleries.htmlTabTypesSceleton);
-      typesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
-          values:[
-              {value: 'title,asc',title: 'Title Ascending'}, 
-              {value: 'title,desc',title: 'Title Descending'}         
-          ],
-          width: 150,
-          /* bind sort functionality to selectbox */
-          select: function($this, self, value){
-                  var criteria = $(self).closest('div.cms-list-options').attr('id');
-                  criteria = criteria.replace('options', '');
-                  var params = value.split(',');
-                  var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
-                  cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
-              }
-          })); 
-          
-      var galleriesTab = $(cms.galleries.htmlTabGalleriesSceleton);
-      galleriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
-          values:[
-              {value: 'title,asc',title: 'Title Ascending'}, 
-              {value: 'title,desc',title: 'Title Descending'},
-              {value: 'gallerytypeid,asc',title: 'Type Ascending'}, 
-              {value: 'gallerytypeid,desc',title: 'Type Descending'}          
-          ],
-          width: 150,
-          /* bind sort functionality to selectbox */
-          select: function($this, self, value){
-                  var criteria = $(self).closest('div.cms-list-options').attr('id');
-                  criteria = criteria.replace('options', '');
-                  var params = value.split(',');
-                  var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
-                  cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
-              }
-          }));
       
-      var categoriesTab = $(cms.galleries.htmlTabCategoriesSceleton);
-      categoriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
-          values:[
-              {value: 'path,asc',title: 'Hierarchy'},
-              {value: 'title,asc',title: 'Title Ascending'}, 
-              {value: 'title,desc',title: 'Title Descending'}         
-          ],
-          width: 150,
-          /* bind sort functionality to selectbox */
-          select: function($this, self, value){
-                  var criteria = $(self).closest('div.cms-list-options').attr('id');
-                  criteria = criteria.replace('options', '');
-                  var params = value.split(',');
-                  var sortedArray = sortList(cms.galleries.searchCriteriaListsAsJSON[criteria], params[0], params[1]);
-                  cms.galleries.refreshCriteriaList(sortedArray, criteria, params[0]);
-              }
-          }));  
-
-      // add tabs html to tabs
-      $('#' + cms.galleries.idTabs)
-          .append(resultTab)
-          .append(typesTab)
-          .append(galleriesTab)
-          .append(categoriesTab)
-          .append(cms.galleries.htmlTabFTSeachSceleton);
+      // always add the result tab
+      tabs[cms.galleries.arrayTabIds['cms_tab_results']].addTabToList();
+      tabs[cms.galleries.arrayTabIds['cms_tab_results']].addTabHtml(localesArray);
+      
+      // add another tabs accoding to configuration                 
+      $.each(cms.galleries.initValues['tabs'], function () {
+          var tabId = this;
+          tabs[tabId].addTabToList();
+          tabs[tabId].addTabHtml();
+      });
+        
       // add preview to the galleries html
       $('#' + cms.galleries.idGalleriesMain).append($(cms.previewhandler.htmlPreviewSceleton));                  
       
@@ -410,9 +487,7 @@
            
       $('.cms-item a.ui-icon').live('click', cms.galleries.toggleAdditionalInfo);                       
    }
-   
-   
-   
+         
    /**
     * Add html for search criteria to result tab
     *
@@ -456,20 +531,17 @@
     */
    var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function(/**JSON*/data, message, initSearchResult) {       
       cms.galleries.searchCriteriaListsAsJSON = data;
-      if (cms.galleries.searchCriteriaListsAsJSON.galleries) {
-         cms.galleries.fillGalleries(cms.galleries.searchCriteriaListsAsJSON.galleries);
-         markSelectedCriteria('galleries');
-      }
-      if (cms.galleries.searchCriteriaListsAsJSON.categories) {
-         cms.galleries.fillCategories(cms.galleries.searchCriteriaListsAsJSON.categories, 'path');
-         markSelectedCriteria('categories');
-      }
+      $.each(cms.galleries.initValues['tabs'], function () {
+          var tabId = this;
+          tabs[tabId].fillTab();
+      });
+      
+      // set the available resource types for this galleries
+      // should always be provided for the search
       if (cms.galleries.searchCriteriaListsAsJSON.types) {
-         cms.galleries.configContentTypes = cms.galleries.searchCriteriaListsAsJSON.typeids;
-         cms.galleries.fillTypes(cms.galleries.searchCriteriaListsAsJSON.types);
-         markSelectedCriteria('types');
+          cms.galleries.configContentTypes = cms.galleries.searchCriteriaListsAsJSON.typeids;      
       }
-                          
+               
       if (initSearchResult && initSearchResult.searchresult) {
           cms.galleries.fillResultTab(initSearchResult);         
       } else {
@@ -569,8 +641,8 @@
       $('div.result-pagination').empty().css('display', 'none');
       
       // adjust the height of the result list 
-      var resultContentInnerHeight = $('#cms-gallery-tabs').innerHeight();
-      var resultTabsOuterHeight = $('#cms-gallery-tabs ul').outerHeight();
+      var resultContentInnerHeight = $('#' + cms.galleries.idTabs).innerHeight();
+      var resultTabsOuterHeight = $('#' + cms.galleries.idTabs + ' ul').outerHeight();
       var resultCriteriaOuterHeight = $('.cms-result-criteria').outerHeight(true);
       var resultOptionsOuterHeight = $('#resultoptions').outerHeight(true);      
       var scrollingHeight = resultContentInnerHeight - (resultTabsOuterHeight + resultCriteriaOuterHeight + resultOptionsOuterHeight + 20);      
@@ -722,7 +794,7 @@
                     cms.galleries.searchObject.isChanged.query = true;
                 }
                 if (requestData.querydata.tabid) {
-                    cms.galleries.searchObject['tabid'] = cms.galleries.arrayOfTabIds[requestData.querydata.tabid];
+                    cms.galleries.searchObject['tabid'] = cms.galleries.arrayTabIndexes[requestData.querydata.tabid];
                 }
             }
                 if (cms.galleries.initValues['dialogMode'] == 'editor') {

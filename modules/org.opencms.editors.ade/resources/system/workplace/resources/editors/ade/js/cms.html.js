@@ -131,11 +131,11 @@
         <div id="cms-gallery-main" class="ui-corner-bottom">\
 		    <div id="',galleryTabsId,'" class="ui-corner-bottom">\
                 <ul>\
-                     <li><a href="#tabs-result">Search results</a></li>\
-                     <li><a href="#tabs-types">Type</a></li>\
-                     <li><a href="#tabs-galleries">Galleries</a></li>\
-                     <li><a href="#tabs-categories">Categories</a></li>\
-                     <li><a href="#tabs-fulltextsearch">Full Text Search</a></li>\
+                     <li><a href="#cms_tab_results">Search results</a></li>\
+                     <li><a href="#cms_tab_types">Type</a></li>\
+                     <li><a href="#cms_tab_galleries">Galleries</a></li>\
+                     <li><a href="#cms_tab_categories">Categories</a></li>\
+                     <li><a href="#cms_tab_search">Full Text Search</a></li>\
                 </ul>\
             </div>\
         </div></div>'];

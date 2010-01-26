@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2010/01/25 12:51:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/26 15:59:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6
  */
@@ -130,7 +130,7 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                     queryObj.put(CmsGallerySearchServer.ResponseKey.categories.toString(), new JSONArray());
                     queryObj.put(CmsGallerySearchServer.QueryKey.matchesperpage.toString(), 8);
                     queryObj.put(CmsGallerySearchServer.QueryKey.query.toString(), "");
-                    queryObj.put(CmsGallerySearchServer.QueryKey.tabid.toString(), "tabs-result");
+                    queryObj.put(CmsGallerySearchServer.QueryKey.tabid.toString(), CmsGallerySearchServer.RESULT_TAB_ID);
                     queryObj.put(CmsGallerySearchServer.QueryKey.page.toString(), 1);
                     jsonObj.put(CmsGallerySearchServer.QueryKey.querydata.toString(), queryObj);
                 } catch (JSONException e) {

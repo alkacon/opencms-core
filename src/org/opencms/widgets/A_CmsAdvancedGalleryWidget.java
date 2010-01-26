@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/A_CmsAdvancedGalleryWidget.java,v $
- * Date   : $Date: 2010/01/26 11:00:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/26 15:59:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.json.JSONArray;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.CmsGallerySearchServer;
@@ -41,7 +43,7 @@ import org.opencms.workplace.galleries.CmsGallerySearchServer;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 
  */
@@ -125,6 +127,14 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
             // add 2^32 to the value to ensure that it is unique
             idHash += 4294967296L;
         }
+
+        // reads the configuration String for this widget
+        CmsAdvancedGalleryWidgetConfiguration configuration = new CmsAdvancedGalleryWidgetConfiguration(
+            cms,
+            widgetDialog,
+            param,
+            getConfiguration());
+
         StringBuffer result = new StringBuffer(128);
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
@@ -156,7 +166,7 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
                 + idHash
                 + "');return false;",
             null,
-            getNameLower() + "advancedgallery",
+            configuration.getButtonPrefix() + "gallery",
             Messages.getButtonName(getNameLower()),
             widgetDialog.getButtonStyle()));
         // create preview button
@@ -187,45 +197,50 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
 
         result.append("</td>");
 
-        // reads the configuration String for this widget
-        CmsAdvancedGalleryWidgetConfiguration configuration = new CmsAdvancedGalleryWidgetConfiguration(
-            cms,
-            widgetDialog,
-            param,
-            getConfiguration());
+        // set the gallery configuration parameter
+        result.append("\n<script type=\"text/javascript\">");
+        // resource types
+        result.append("\nvar resourceTypes").append(idHash).append(" = ").append(configuration.getResourceTypes()).append(
+            ";");
+        // tabs to be displayed
+        result.append("\nvar galleryTabs").append(idHash).append(" = ").append(configuration.getTabs()).append(";");
 
-        // set configured resource types
-        if (configuration.getResourceTypes().length() != 0) {
-            result.append("\n<script type=\"text/javascript\">");
-            result.append("\nvar resourceTypes").append(idHash).append(" = ").append(configuration.getResourceTypes()).append(
-                ";");
-            result.append("\n</script>");
-        }
         // set start folder for gallery and if it opens galleries or categories
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
-            result.append("\n<script type=\"text/javascript\">");
             result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
                 "\";");
             result.append("\nvar startupFolders").append(idHash).append(" = null;");
             result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
                 "\";");
-            result.append("\n</script>");
 
         } else if (configuration.getStartUpFolders().length() != 0) {
-            result.append("\n<script type=\"text/javascript\">");
             result.append("\nvar startupFolders").append(idHash).append(" = ").append(configuration.getStartUpFolders()).append(
                 ";");
             result.append("\nvar startupFolder").append(idHash).append(" = null;");
             result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
                 "\";");
-            result.append("\n</script>");
         } else {
-            result.append("\n<script type=\"text/javascript\">");
             result.append("\nvar startupFolder").append(idHash).append(" = null;");
             result.append("\nvar startupFolders").append(idHash).append(" = null;");
             result.append("\nvar startupType").append(idHash).append(" = null;");
-            result.append("\n</script>");
         }
+
+        // set the configuration parameter for imagegallery
+        if (configuration.isImagegallery()) {
+            if (configuration.isShowFormat()) {
+                // create hidden field to store the matching image format value
+                JSONArray formatsJson = new JSONArray(configuration.getFormatValues());
+                result.append("\nvar imgFmts").append(idHash).append(" = ").append(formatsJson).append(";");
+                result.append("\nvar imgFmtNames").append(idHash).append(" = \"").append(
+                    CmsEncoder.escape(configuration.getSelectFormatString(), CmsEncoder.ENCODING_UTF_8)).append("\";");
+                result.append("\nvar useFmts").append(idHash).append(" = true;");
+            } else {
+                result.append("\nvar useFmts").append(idHash).append(" = false;");
+                result.append("\nvar imgFmts").append(idHash).append(" = null;");
+                result.append("\nvar imgFmtNames").append(idHash).append(" = null;");
+            }
+        }
+        result.append("\n</script>");
 
         return result.toString();
     }

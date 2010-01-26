@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/01/21 08:14:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/01/26 15:59:06 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,12 +55,15 @@ var ade = {};
       var startupType = eval('startupType' + idHash);
       var resourceTypes = eval('resourceTypes' + idHash);
       
-      // value of the selected resource in the input field including scale parameter
-      var scalePath = null;
+      // tabs to be displayed
+      var galleryTabs = eval('galleryTabs' + idHash);
+      
+      // vfs path to selected resource from the input field, including scale parameter for the image
+      var selectedPath = null;
       if (fieldId != null && fieldId != "" && fieldId != 'null') {
          var itemField = window.document.getElementById(fieldId);
          if (itemField.value != null && itemField.value != '') {
-            scalePath = itemField.value;
+            selectedPath = itemField.value;
          }
       }
       
@@ -72,8 +75,8 @@ var ade = {};
       
       // Json object as request parameter for standard gallery
       // if input field is not empty
-      if (scalePath) {
-         requestData['resourcepath'] = removeParamFromPath(scalePath);
+      if (selectedPath) {
+         requestData['resourcepath'] = removeParamFromPath(selectedPath);
          requestData['types'] = resourceTypes;
          // id input field is empty
       } else {
@@ -86,7 +89,7 @@ var ade = {};
          requestData['querydata']['categories'] = [];
          requestData['querydata']['matchesperpage'] = 8;
          requestData['querydata']['query'] = '';
-         requestData['querydata']['tabid'] = 'tabs-result';
+         requestData['querydata']['tabid'] = 'cms_tab_results';
          requestData['querydata']['page'] = 1;
          // check the 
          if (startupFolder != null) {
@@ -98,24 +101,37 @@ var ade = {};
       
       var paramString = "dialogmode=" + dialogMode;
       paramString += "&fieldid=" + fieldId;
-      paramString += "&path=" + removeParamFromPath(scalePath);
+      paramString += "&tabs=" + JSON.stringify(galleryTabs);
+      paramString += "&path=" + removeParamFromPath(selectedPath);
       paramString += "&data=" + JSON.stringify(requestData);
       
       // additional parameter for the image resource type
       var initialImageInfos = '';
       if ($.inArray(3, resourceTypes) != -1) {
-         var scaleParam = extractScaleParam(scalePath);
+         // scale params
+         var scaleParam = extractScaleParam(selectedPath);
          var imgWidth = "";
          var imgHeight = "";
          if (scaleParam != null) {
             imgWidth = getScaleValue(scaleParam, "w");
             imgHeight = getScaleValue(scaleParam, "h");
          }
+         
+         var showFormats = eval('useFmts' + idHash);
+    	 var useFormats = false;
+    	 if (showFormats == true) {
+    		var formatNames = escape(eval('imgFmtNames' + idHash));
+    		var formatValues = eval('imgFmts' + idHash);
+    		if (formatNames.toString() != "null") {
+    			useFormats = showFormats;
+    		}
+    	 }
+         
          // additional infos for image gallery
          initialImageInfos = {
             "widgetmode": "simple",
-            "useformats": false,
-            "showformats": true,
+            "useformats": useFormats,
+            "showformats": showFormats,
             "scale": scaleParam,
             "imgwidth": imgWidth,
             "imgheight": imgHeight

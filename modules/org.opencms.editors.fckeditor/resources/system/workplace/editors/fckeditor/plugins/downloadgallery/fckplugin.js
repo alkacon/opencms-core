@@ -41,10 +41,12 @@ function downloadGalleryDialogUrl() {
 		resParam = "&resource=" + editFrame.editform.editedResource;
 	}
 
-	var dataParam = "";
-	var jsonQueryData = "{'querydata':{'types':[146],'galleries':[],'categories':[],'matchesperpage':8,'query':'','tabid':'tabs-results','page':1},'types':[146]}";
-	dataParam += "&data=" + jsonQueryData;	
-	return "<%= cms.link("/system/workplace/editors/ade/galleries.jsp") %>?dialogmode=editor&integrator=fckeditor/plugins/downloadgallery/integrator.js" + dataParam + resParam;
+	var searchParam = "";
+	var jsonQueryData = "{'querydata':{'types':[146],'galleries':[],'categories':[],'matchesperpage':8,'query':'','tabid':'cms_tab_results','page':1},'types':[146]}";
+	var jsonTabsConfig = "['cms_tab_categories','cms_tab_galleries','cms_tab_search']";
+    searchParam += "&data=" + jsonQueryData;
+    searchParam += "&tabs=" + jsonTabsConfig;    
+	return "<%= cms.link("/system/workplace/editors/ade/galleries.jsp") %>?dialogmode=editor&integrator=fckeditor/plugins/downloadgallery/integrator.js" + searchParam + resParam;
 }
 
 

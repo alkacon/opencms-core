@@ -41,12 +41,14 @@ function imageGalleryDialogUrl() {
 		resParam = "&resource=" + editFrame.editform.editedResource;
 	}
 
-	var dataParam = "";
-	var jsonQueryData = "{'querydata':{'types':[3],'galleries':[],'categories':[],'matchesperpage':8,'query':'','tabid':'tabs-results','page':1},'types':[3]}";
-	dataParam += "&data=" + jsonQueryData;
+	var searchParam = "";
+	var jsonQueryData = "{'querydata':{'types':[3],'galleries':[],'categories':[],'matchesperpage':8,'query':'','tabid':'cms_tab_results','page':1},'types':[3]}";
+    var jsonTabsConfig = "['cms_tab_categories','cms_tab_search']";
 	var jsonImageData = "{'widgetmode': 'simple','imgwidth':'','scale':'','showformats':true,'imgheight':'','useformats':false}";
-	dataParam += "&imagedata=" + jsonImageData;
-	return "<%= cms.link("/system/workplace/editors/ade/galleries.jsp") %>?dialogmode=editor&integrator=fckeditor/plugins/imagegallery/integrator.js" + dataParam + resParam;
+    searchParam += "&data=" + jsonQueryData;
+	searchParam += "&tabs=" + jsonTabsConfig;
+	searchParam += "&imagedata=" + jsonImageData;
+	return "<%= cms.link("/system/workplace/editors/ade/galleries.jsp") %>?dialogmode=editor&integrator=fckeditor/plugins/imagegallery/integrator.js" + searchParam + resParam;
 }
 
 

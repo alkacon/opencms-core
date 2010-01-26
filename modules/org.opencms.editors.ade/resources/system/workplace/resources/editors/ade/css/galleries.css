@@ -466,7 +466,7 @@
     }
     
     /** Result tab */
-    #tabs-result .cms-criteria{
+    #cms_tab_results .cms-criteria{
     	display:inline-block;
         padding:2px;
         margin: 1px 0px;          
