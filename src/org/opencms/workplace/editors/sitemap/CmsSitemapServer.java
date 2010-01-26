@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/26 11:00:56 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/01/26 11:21:52 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 7.6
  */
@@ -218,6 +218,26 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         title;
     }
 
+    /** Json property name constants for template information. */
+    protected enum JsonTemplate {
+
+        /** The description. */
+        description,
+
+        /** The image path. */
+        imagepath,
+
+        /** The template site path. */
+        sitepath,
+
+        /** The template. */
+        template,
+
+        /** The title. */
+        title
+
+    }
+
     /** Request parameter name constants. */
     protected enum ReqParam {
 
@@ -239,6 +259,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
     /** Path constant. */
     public static final String PATH_DEFAULT_FORMATTER = "/system/workplace/editors/sitemap/default-formatter.jsp";
+
+    private static final String TEMPLATE_IMAGE_PROPERTY = "ade.image";
 
     /** User additional info key constant. */
     protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
@@ -335,7 +357,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             addContents(models, getPropertyConfig(sitemapRes));
             result.put(JsonResponse.types.name(), creatableTypes);
             result.put(JsonResponse.models.name(), models);
-            result.put("templates", getTemplates());
+            result.put(JsonTemplate.template.name(), getTemplates());
         } else if (action.equals(Action.GET)) {
             if (checkParameters(data, null, JsonRequest.fav.name())) {
                 // get the favorite list
@@ -697,14 +719,14 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         Iterator<CmsResource> templateIt = templates.iterator();
         while (templateIt.hasNext()) {
             CmsResource template = templateIt.next();
-            CmsProperty titleProp = cms.readPropertyObject(template, "Title", false);
-            CmsProperty descProp = cms.readPropertyObject(template, "Description", false);
-            CmsProperty imageProp = cms.readPropertyObject(template, "ade.image", false);
+            CmsProperty titleProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_TITLE, false);
+            CmsProperty descProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+            CmsProperty imageProp = cms.readPropertyObject(template, TEMPLATE_IMAGE_PROPERTY, false);
             JSONObject jTemp = new JSONObject();
-            jTemp.put("sitePath", cms.getSitePath(template));
-            jTemp.put("Title", titleProp.getValue());
-            jTemp.put("Description", descProp.getValue());
-            jTemp.put("Image", imageProp.getValue());
+            jTemp.put(JsonTemplate.sitepath.name(), cms.getSitePath(template));
+            jTemp.put(JsonTemplate.title.name(), titleProp.getValue());
+            jTemp.put(JsonTemplate.description.name(), descProp.getValue());
+            jTemp.put(JsonTemplate.imagepath.name(), imageProp.getValue());
             result.put(cms.getSitePath(template), jTemp);
         }
         return result;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2010/01/19 16:06:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/26 11:21:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.2
  * 
@@ -583,20 +583,23 @@ public class CmsCategoryService {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readCategoryResources(CmsObject cms, String categoryPath, boolean recursive, String referencePath)
-    throws CmsException {
+    public List<CmsResource> readCategoryResources(
+        CmsObject cms,
+        String categoryPath,
+        boolean recursive,
+        String referencePath) throws CmsException {
 
-        Set resources = new HashSet();
+        Set<CmsResource> resources = new HashSet<CmsResource>();
         CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.CATEGORY);
         if (recursive) {
             filter = filter.filterIncludeChildren();
         }
         CmsCategory category = readCategory(cms, categoryPath, referencePath);
-        Iterator itRelations = cms.getRelationsForResource(
+        Iterator<CmsRelation> itRelations = cms.getRelationsForResource(
             cms.getRequestContext().removeSiteRoot(category.getRootPath()),
             filter).iterator();
         while (itRelations.hasNext()) {
-            CmsRelation relation = (CmsRelation)itRelations.next();
+            CmsRelation relation = itRelations.next();
             try {
                 resources.add(relation.getSource(cms, CmsResourceFilter.DEFAULT));
             } catch (CmsException e) {
@@ -605,7 +608,7 @@ public class CmsCategoryService {
                 }
             }
         }
-        List result = new ArrayList(resources);
+        List<CmsResource> result = new ArrayList<CmsResource>(resources);
         Collections.sort(result);
         return result;
     }

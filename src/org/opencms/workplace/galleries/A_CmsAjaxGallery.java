@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2009/11/03 14:03:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/26 11:21:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.0 
  */
@@ -167,7 +167,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     protected String m_galleryTypeParams;
 
     /** The gallery items to display. */
-    private List m_galleryItems;
+    private List<CmsResource> m_galleryItems;
 
     /** The dialog mode the gallery is running in. */
     private String m_paramDialogMode;
@@ -304,9 +304,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      * @param cms the initialized CmsObject for the current user
      * @return a list of galleries
      */
-    public static List getGalleries(int galleryTypeId, CmsObject cms) {
+    public static List<CmsResource> getGalleries(int galleryTypeId, CmsObject cms) {
 
-        List galleries = new ArrayList();
+        List<CmsResource> galleries = new ArrayList<CmsResource>();
         try {
             // get the galleries of the current site
             galleries = cms.readResources("/", CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
@@ -317,7 +317,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
         // if the current site is NOT the root site - add all other galleries from the system path
         if (!cms.getRequestContext().getSiteRoot().equals("")) {
-            List systemGalleries = null;
+            List<CmsResource> systemGalleries = null;
             try {
                 // get the galleries in the /system/ folder
                 systemGalleries = cms.readResources(
@@ -400,7 +400,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      * 
      * @return a list of galleries
      */
-    public List getGalleries() {
+    public List<CmsResource> getGalleries() {
 
         return getGalleries(getGalleryTypeId(), getCms());
     }
@@ -410,7 +410,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      * 
      * @return a list of gallery items (resources)
      */
-    public List getGalleryItems() {
+    public List<CmsResource> getGalleryItems() {
 
         if (m_galleryItems == null) {
             // gallery items have not been read yet
@@ -437,9 +437,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 }
             }
         }
-        List items = m_galleryItems;
-
-        return items;
+        return m_galleryItems;
     }
 
     /**
@@ -683,9 +681,8 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      */
     protected void buildJsonCategoryList() {
 
-        List categories = new ArrayList();
         CmsCategoryService catService = CmsCategoryService.getInstance();
-        List foundCategories = Collections.EMPTY_LIST;
+        List<CmsCategory> foundCategories = Collections.emptyList();
         String editedResource = null;
         if (CmsStringUtil.isNotEmpty(getParamResource())) {
             editedResource = getParamResource();
@@ -697,11 +694,11 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
         }
 
         // the next lines sort the categories according to their path 
-        Map sorted = new TreeMap();
+        Map<String, CmsCategory> sorted = new TreeMap<String, CmsCategory>();
 
-        Iterator i = foundCategories.iterator();
+        Iterator<CmsCategory> i = foundCategories.iterator();
         while (i.hasNext()) {
-            CmsCategory category = (CmsCategory)i.next();
+            CmsCategory category = i.next();
             String categoryPath = category.getPath();
             if (sorted.get(categoryPath) != null) {
                 continue;
@@ -709,11 +706,11 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             sorted.put(categoryPath, category);
         }
 
-        foundCategories = new ArrayList(sorted.values());
-
+        foundCategories = new ArrayList<CmsCategory>(sorted.values());
+        JSONArray categories = new JSONArray();
         i = foundCategories.iterator();
         while (i.hasNext()) {
-            CmsCategory cat = (CmsCategory)i.next();
+            CmsCategory cat = i.next();
 
             JSONObject jsonObj = new JSONObject();
             try {
@@ -727,15 +724,14 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 jsonObj.put("level", CmsResource.getPathLevel(cat.getPath()));
                 // 4: active flag
                 jsonObj.put("active", false);
-                categories.add(jsonObj);
+                categories.put(jsonObj);
             } catch (JSONException e) {
                 // TODO: error handling
             }
         }
-        JSONArray jsonArr = new JSONArray(categories);
         JspWriter out = getJsp().getJspContext().getOut();
         try {
-            out.print(jsonArr.toString());
+            out.print(categories.toString());
         } catch (IOException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -817,11 +813,11 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 }
             }
         }
-        List galleries = new ArrayList();
-        Iterator i = getGalleries().iterator();
+        JSONArray galleries = new JSONArray();
+        Iterator<CmsResource> i = getGalleries().iterator();
         boolean isFirst = true;
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             String path = getCms().getSitePath(res);
             JSONObject jsonObj = new JSONObject();
             // 1: gallery title
@@ -846,7 +842,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                     active = true;
                 }
                 jsonObj.put("active", active);
-                galleries.add(jsonObj);
+                galleries.put(jsonObj);
             } catch (JSONException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(), e);
@@ -854,10 +850,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             }
             isFirst = false;
         }
-        JSONArray jsonArr = new JSONArray(galleries);
         JspWriter out = getJsp().getJspContext().getOut();
         try {
-            out.print(jsonArr.toString());
+            out.print(galleries.toString());
         } catch (IOException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -1013,12 +1008,12 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      * @param resourceitems the file resource to build the displayed items
      * @param parentFolder the parent folder of the collected files (for a gallery)
      */
-    protected void buildJsonResourceItems(List resourceitems, String parentFolder) {
+    protected void buildJsonResourceItems(List<CmsResource> resourceitems, String parentFolder) {
 
         if (resourceitems == null) {
-            resourceitems = new ArrayList();
+            resourceitems = new ArrayList<CmsResource>();
         }
-        List items = new ArrayList(resourceitems.size() + 1);
+
         boolean isPublishEnabled = false;
         boolean hasDirectPublish = false;
         boolean hasWritePermission = false;
@@ -1066,19 +1061,18 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
         } catch (JSONException e) {
             // ignore
         }
-        items.add(publishInfo);
-        Iterator i = resourceitems.iterator();
+        JSONArray items = new JSONArray();
+        items.put(publishInfo);
+        Iterator<CmsResource> i = resourceitems.iterator();
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             // build a JSON object from the item and add it to the list
-            items.add(buildJsonItemObject(res));
+            items.put(buildJsonItemObject(res));
         }
-        // create a JSON array containing all item objects
-        JSONArray jsonArr = new JSONArray(items);
         JspWriter out = getJsp().getJspContext().getOut();
         try {
             // print the JSON array
-            out.print(jsonArr.toString());
+            out.print(items.toString());
         } catch (IOException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -1130,9 +1124,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      *
      * @return the resource items for the selected category
      */
-    protected List getCategoryItems() {
+    protected List<CmsResource> getCategoryItems() {
 
-        List result = Collections.EMPTY_LIST;
+        List<CmsResource> result = Collections.emptyList();
         if (CmsStringUtil.isNotEmpty(getParamGalleryPath())) {
             try {
                 CmsCategoryService service = CmsCategoryService.getInstance();
@@ -1146,11 +1140,11 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 // filter the matched resources to get only the specific items as result
                 int resTypeId = getGalleryItemsTypeId();
                 if (resTypeId != -1) {
-                    List unfiltered = new ArrayList(result);
-                    result = new ArrayList(unfiltered.size());
-                    Iterator i = unfiltered.iterator();
+                    List<CmsResource> unfiltered = new ArrayList<CmsResource>(result);
+                    result = new ArrayList<CmsResource>(unfiltered.size());
+                    Iterator<CmsResource> i = unfiltered.iterator();
                     while (i.hasNext()) {
-                        CmsResource res = (CmsResource)i.next();
+                        CmsResource res = i.next();
                         if (res.getTypeId() == resTypeId) {
                             result.add(res);
                         }
