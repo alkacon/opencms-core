@@ -160,7 +160,7 @@
          var config = JSON.parse(configuration);
          if (config && config.values && config.values.length) {
             for (var i = 0; i < config.values.length; i++) {
-               this.$widget.append('<div class="cms-checkbox-widget-row"><input type="checkbox" value="' + config.values[i] + '" style="vertical-align: middle;" /><span class="cms-checkbox-label">' + config.values[i] + '</span></div>');
+               this.$widget.append('<div class="cms-checkbox-widget-row"><input type="checkbox" value="' + config.values[i].value + '" style="vertical-align: middle;" /><span class="cms-checkbox-label">' + config.values[i].title + '</span></div>');
             }
             $('input:checkbox', this.$widget).click(function() {
                self.setEnabled(true);
@@ -470,8 +470,8 @@
       this.name = name;
       this.defaultValue = entry.defaultValue;
       this.isDefault = isDefault;
-      this.widget.setEnabled(!isDefault);
       this.widget.setValue(this.value);
+      this.widget.setEnabled(!isDefault);
       this.validation = entry.ruleRegex;
       this.validationError = entry.error;
    }
