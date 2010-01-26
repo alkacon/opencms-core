@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/A_CmsAdvancedGalleryWidget.java,v $
- * Date   : $Date: 2010/01/25 11:56:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/26 11:00:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.workplace.galleries.CmsGallerySearchServer;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 
  */
@@ -149,7 +149,7 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
             "javascript:open"
                 + getNameUpper()
                 + "AdvancedGallery('"
-                + CmsGallerySearchServer.GalleryMode.widget.toString()
+                + CmsGallerySearchServer.GalleryMode.widget.name()
                 + "',  '"
                 + id
                 + "',  '"

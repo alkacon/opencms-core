@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEPublishServer.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/01/26 11:00:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 7.9.3
  */
@@ -86,96 +86,39 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
     protected enum JsonResponse {
 
         /** Flag to indicate if the current user can publish. */
-        CANPUBLISH("canPublish"),
+        canPublish,
         /** The list of groups. */
-        GROUPS("groups"),
+        groups,
         /** The list of projects. */
-        PROJECTS("projects"),
+        projects,
         /** A list of resources. */
-        RESOURCES("resources");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonResponse(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        resources;
     }
 
     /** Request parameter name constants for publishing. */
     protected enum ParamPublish {
 
         /** Flag to force publishing with broken links. */
-        FORCE("force"),
+        force,
         /** The project to publish. */
-        PROJECT("project"),
+        project,
         /** Flag to indicate if to publish with related resources. */
-        RELATED("related"),
+        related,
         /** The resources to remove from the publish list. */
-        REMOVE_RESOURCES("remove-resources"),
+        removeResources,
         /** The resources to publish. */
-        RESOURCES("resources"),
+        resources,
         /** Flag to indicate if to publish with siblings. */
-        SIBLINGS("siblings");
-
-        /** Parameter name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private ParamPublish(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        siblings;
     }
 
     /** Request parameter name constants. */
     protected enum ReqParam {
 
         /** The action of execute. */
-        ACTION("action"),
+        action,
         /** Generic data parameter. */
-        DATA("data");
-
-        /** Parameter name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private ReqParam(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        data;
     }
 
     /** The log object for this class. */
@@ -208,15 +151,15 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
 
         HttpServletRequest request = getRequest();
 
-        if (!checkParameters(request, result, ReqParam.ACTION.getName())) {
+        if (!checkParameters(request, result, ReqParam.action.name())) {
             // every request needs to have at least these parameters 
             return result;
         }
-        String actionParam = request.getParameter(ReqParam.ACTION.getName());
+        String actionParam = request.getParameter(ReqParam.action.name());
         Action action = Action.valueOf(actionParam.toUpperCase());
         JSONObject data = new JSONObject();
-        if (checkParameters(request, null, ReqParam.DATA.getName())) {
-            String dataParam = request.getParameter(ReqParam.DATA.getName());
+        if (checkParameters(request, null, ReqParam.data.name())) {
+            String dataParam = request.getParameter(ReqParam.data.name());
             data = new JSONObject(dataParam);
         }
 
@@ -234,14 +177,14 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
         }
 
         // check possible option parameters
-        if (checkParameters(data, null, ParamPublish.RELATED.getName())) {
-            options.setIncludeRelated(data.optBoolean(ParamPublish.RELATED.getName()));
+        if (checkParameters(data, null, ParamPublish.related.name())) {
+            options.setIncludeRelated(data.optBoolean(ParamPublish.related.name()));
         }
-        if (checkParameters(data, null, ParamPublish.SIBLINGS.getName())) {
-            options.setIncludeSiblings(data.optBoolean(ParamPublish.SIBLINGS.getName()));
+        if (checkParameters(data, null, ParamPublish.siblings.name())) {
+            options.setIncludeSiblings(data.optBoolean(ParamPublish.siblings.name()));
         }
-        if (checkParameters(data, null, ParamPublish.PROJECT.getName())) {
-            String projectParam = data.optString(ParamPublish.PROJECT.getName());
+        if (checkParameters(data, null, ParamPublish.project.name())) {
+            String projectParam = data.optString(ParamPublish.project.name());
             try {
                 options.setProjectId(new CmsUUID(projectParam));
             } catch (NumberFormatException e) {
@@ -261,22 +204,22 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
         publish.getOptions().setProjectId(options.getProjectId());
 
         if (action.equals(Action.PUBLISH_LIST)) {
-            if (data.has(ParamPublish.REMOVE_RESOURCES.getName())) {
-                removeFromPublishList(publish, data.optJSONArray(ParamPublish.REMOVE_RESOURCES.getName()));
+            if (data.has(ParamPublish.removeResources.name())) {
+                removeFromPublishList(publish, data.optJSONArray(ParamPublish.removeResources.name()));
                 // we continue to execute the main action
             }
             // get list of resources to publish
             JSONArray groupsToPublish = toJsonArray(publish.getPublishGroups());
-            result.put(JsonResponse.GROUPS.getName(), groupsToPublish);
+            result.put(JsonResponse.groups.name(), groupsToPublish);
         } else if (action.equals(Action.PROJECTS)) {
             JSONArray manageableProjects = toJsonArray(publish.getManageableProjects());
-            result.put(JsonResponse.PROJECTS.getName(), manageableProjects);
+            result.put(JsonResponse.projects.name(), manageableProjects);
         } else if (action.equals(Action.PUBLISH)) {
-            if (data.has(ParamPublish.REMOVE_RESOURCES.getName())) {
-                removeFromPublishList(publish, data.optJSONArray(ParamPublish.REMOVE_RESOURCES.getName()));
+            if (data.has(ParamPublish.removeResources.name())) {
+                removeFromPublishList(publish, data.optJSONArray(ParamPublish.removeResources.name()));
                 // we continue to execute the main action
             }
-            if (!checkParameters(data, result, ParamPublish.RESOURCES.getName())) {
+            if (!checkParameters(data, result, ParamPublish.resources.name())) {
                 return result;
             }
             // save options
@@ -285,7 +228,7 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
                 publish.getOptions().isIncludeSiblings(),
                 publish.getOptions().getProjectId()));
             // resources to publish
-            JSONArray idsToPublish = data.optJSONArray(ParamPublish.RESOURCES.getName());
+            JSONArray idsToPublish = data.optJSONArray(ParamPublish.resources.name());
             List<CmsResource> pubResources;
             try {
                 pubResources = resourcesFromJson(idsToPublish);
@@ -296,9 +239,7 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
             }
             Collections.sort(pubResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
             JSONArray resources = new JSONArray();
-            if (!data.has(ParamPublish.FORCE.getName())
-                || !data.optBoolean(ParamPublish.FORCE.getName())
-                || !isCanPublish()) {
+            if (!data.has(ParamPublish.force.name()) || !data.optBoolean(ParamPublish.force.name()) || !isCanPublish()) {
                 // get the resources with link check problems
                 resources = toJsonArray(publish.getBrokenResources(pubResources));
             }
@@ -307,9 +248,9 @@ public class CmsADEPublishServer extends A_CmsAjaxServer {
                 publish.publishResources(pubResources);
             } else {
                 // return resources with problems
-                result.put(JsonResponse.RESOURCES.getName(), resources);
+                result.put(JsonResponse.resources.name(), resources);
                 // indicate if the user if allowed to publish anyhow
-                result.put(JsonResponse.CANPUBLISH.getName(), isCanPublish());
+                result.put(JsonResponse.canPublish.name(), isCanPublish());
             }
         }
         return result;

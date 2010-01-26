@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsTemplateMenu.java,v $
- * Date   : $Date: 2009/12/09 10:52:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/26 11:00:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,10 +38,10 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
-import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
 
@@ -110,9 +110,6 @@ public class CmsTemplateMenu extends CmsJspActionElement {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateMenu.class);
-
-    /** Property name constant. */
-    private static final String PROPERTY_DETAIL_PAGE = "detail-page";
 
     /** Lazy map with the flags if the elements of the navigation have children. */
     private Map<CmsJspNavElement, Boolean> m_children;
@@ -171,9 +168,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
             Iterator<CmsJspNavElement> it = m_elements.iterator();
             while (it.hasNext()) {
                 CmsJspNavElement navElem = it.next();
-                if (!isDetailPage(navElem)) {
-                    m_navElements.add(navElem);
-                }
+                m_navElements.add(navElem);
             }
         }
         return m_navElements;
@@ -238,7 +233,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
 
                     // check if URI is NOT in the navigation and so a parent folder will be marked as current
                     CmsJspNavElement navElem = uriElem;
-                    while ((navElem != null) && (!navElem.isInNavigation() || isDetailPage(navElem))) {
+                    while ((navElem != null) && (!navElem.isInNavigation())) {
                         String parentPath = CmsResource.getParentFolder(navElem.getResourceName());
                         if (parentPath == null) {
                             break;
@@ -246,7 +241,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
                         navElem = getNavigation().getNavigationForResource(parentPath);
                     }
 
-                    if ((navElem != null) && (!uriElem.isInNavigation() || isDetailPage(uriElem))) {
+                    if ((navElem != null) && (!uriElem.isInNavigation())) {
                         return Boolean.valueOf(elem.equals(navElem));
                     }
 
@@ -255,21 +250,6 @@ public class CmsTemplateMenu extends CmsJspActionElement {
             });
         }
         return m_current;
-    }
-
-    /** 
-     * Returns if the current uri is a default file of a folder.<p>
-     * 
-     * @return if the current uri is a default file of a folder
-     */
-    public boolean getIsDefault() {
-
-        if ((m_elements == null) || m_elements.isEmpty()) {
-            return false;
-        }
-        CmsJspNavElement uriElem = getNavigation().getNavigationForResource();
-        CmsJspNavElement lastElem = m_elements.get(m_elements.size() - 1);
-        return uriElem.getResourceName().equals(lastElem.getResourceName()) && isDetailPage(uriElem);
     }
 
     /**
@@ -393,26 +373,12 @@ public class CmsTemplateMenu extends CmsJspActionElement {
         CmsObject cms = getCmsObject();
         HttpServletRequest req = getRequest();
         CmsResource resUri;
-        if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
-            CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
-            resUri = cms.readResource(id);
+        CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
+        if ((sitemap != null) && (sitemap.getContentId() != null)) {
+            resUri = cms.readResource(sitemap.getContentId());
         } else {
             resUri = cms.readResource(cms.getRequestContext().getUri());
         }
         return resUri;
     }
-
-    /**
-     * Checks if the given navigation element is a detail page.<p>
-     * 
-     * @param navElem the navigation element to check
-     * 
-     * @return <code>true</code> if the given navigation element is a detail page
-     */
-    protected boolean isDetailPage(CmsJspNavElement navElem) {
-
-        String prop = navElem.getProperties().get(PROPERTY_DETAIL_PAGE);
-        return Boolean.parseBoolean(prop);
-    }
-
 }

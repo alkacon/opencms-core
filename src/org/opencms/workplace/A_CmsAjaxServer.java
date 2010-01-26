@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/A_CmsAjaxServer.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/26 11:00:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9
  */
@@ -65,56 +65,18 @@ public abstract class A_CmsAjaxServer extends CmsJspActionElement {
     protected enum JsonResponse {
 
         /** The error message. */
-        ERROR("error"),
+        error,
         /** The response state. */
-        STATE("state");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonResponse(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        state;
     }
 
     /** Json property name constants for response status. */
     protected enum JsonState {
 
         /** An error occurred. */
-        ERROR("error"),
+        error,
         /** The request was executed with any problems. */
-        OK("ok");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonState(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        ok;
     }
 
     /** Mime type constant. */
@@ -181,12 +143,12 @@ public abstract class A_CmsAjaxServer extends CmsJspActionElement {
                     false)), e);
         }
         // add state info
-        if (result.has(JsonResponse.ERROR.getName())) {
+        if (result.has(JsonResponse.error.name())) {
             // add state=error in case an error occurred 
-            result.put(JsonResponse.STATE.getName(), JsonState.ERROR.getName());
-        } else if (!result.has(JsonResponse.STATE.getName())) {
+            result.put(JsonResponse.state.name(), JsonState.error.name());
+        } else if (!result.has(JsonResponse.state.name())) {
             // add state=ok i case no error occurred
-            result.put(JsonResponse.STATE.getName(), JsonState.OK.getName());
+            result.put(JsonResponse.state.name(), JsonState.ok.name());
         }
         // write the result
         result.write(getResponse().getWriter());
@@ -258,7 +220,7 @@ public abstract class A_CmsAjaxServer extends CmsJspActionElement {
      */
     protected void error(JSONObject result, String errorMessage) throws JSONException {
 
-        result.put(JsonResponse.ERROR.getName(), errorMessage);
+        result.put(JsonResponse.error.name(), errorMessage);
         LOG.error(errorMessage);
     }
 
@@ -280,7 +242,7 @@ public abstract class A_CmsAjaxServer extends CmsJspActionElement {
             msg = ((CmsRuntimeException)error).getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(
                 getCmsObject()));
         }
-        result.put(JsonResponse.ERROR.getName(), msg);
+        result.put(JsonResponse.error.name(), msg);
         LOG.error(error.getMessage(), error);
     }
 

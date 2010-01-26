@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/01/26 11:00:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 7.6
  */
@@ -88,98 +88,60 @@ public final class CmsElementUtil {
     public enum JsonElement {
 
         /** Array of HTML code resulting from formatter execution. */
-        CONTENTS("contents"),
+        contents,
         /** The last modification date. */
-        DATE("date"),
+        date,
         /** The description. */
-        DESCRIPTION("description"),
+        description,
         /** The URI. */
-        FILE("file"),
+        file,
         /** Array of formatter URIs. */
-        FORMATTERS("formatters"),
+        formatters,
         /** Element's structure id. */
-        ID("id"),
+        id,
         /** Element's navigation text. */
-        NAVTEXT("navText"),
+        navText,
         /** If the current user is not allowed to edit the given resource, this is the reason of it. */
-        NO_EDIT_REASON("noEditReason"),
+        noEditReason,
         /** The object type, container or element. */
-        OBJTYPE("objtype"),
+        objtype,
         /** The element property information. */
-        PROPERTIES("properties"),
+        properties,
         /** Element's status. */
-        STATUS("status"),
+        status,
         /** Element's subelements in case of a subcontainer, as list of client IDs. */
-        SUBITEMS("subItems"),
+        subItems,
         /** Element's title. */
-        TITLE("title"),
+        title,
         /** Container types. */
-        TYPES("types"),
+        types,
         /** The name of the user that last modified the element. */
-        USER("user");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonElement(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        user;
     }
 
     /** Element Property json property constants. */
     public enum JsonProperty {
 
         /** Property's default value. */
-        DEFAULT_VALUE("defaultValue"),
+        defaultValue,
         /** Property's description. */
-        DESCRIPTION("description"),
+        description,
         /** Property's error message. */
-        ERROR("error"),
+        error,
         /** Property's nice name. */
-        NICE_NAME("niceName"),
+        niceName,
         /** Property's validation regular expression. */
-        RULE_REGEX("ruleRegex"),
+        ruleRegex,
         /** Property's validation rule type. */
-        RULE_TYPE("ruleType"),
+        ruleType,
         /** Property's type. */
-        TYPE("type"),
+        type,
         /** Property's value. */
-        VALUE("value"),
+        value,
         /** Property's widget. */
-        WIDGET("widget"),
+        widget,
         /** Property's widget configuration. */
-        WIDGET_CONF("widgetConf");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonProperty(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        widgetConf;
     }
 
     /** JSON response state value constant. */
@@ -294,32 +256,32 @@ public final class CmsElementUtil {
         JSONObject resElement = new JSONObject();
         CmsResource resource = m_cms.readResource(element.getElementId());
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
-        resElement.put(JsonElement.OBJTYPE.getName(), TYPE_ELEMENT);
-        resElement.put(JsonElement.ID.getName(), element.getClientId());
-        resElement.put(JsonElement.FILE.getName(), resUtil.getFullPath());
-        resElement.put(JsonElement.DATE.getName(), resource.getDateLastModified());
-        resElement.put(JsonElement.USER.getName(), m_cms.readUser(resource.getUserLastModified()).getName());
-        resElement.put(JsonElement.NAVTEXT.getName(), resUtil.getNavText());
-        resElement.put(JsonElement.TITLE.getName(), resUtil.getTitle());
+        resElement.put(JsonElement.objtype.name(), TYPE_ELEMENT);
+        resElement.put(JsonElement.id.name(), element.getClientId());
+        resElement.put(JsonElement.file.name(), resUtil.getFullPath());
+        resElement.put(JsonElement.date.name(), resource.getDateLastModified());
+        resElement.put(JsonElement.user.name(), m_cms.readUser(resource.getUserLastModified()).getName());
+        resElement.put(JsonElement.navText.name(), resUtil.getNavText());
+        resElement.put(JsonElement.title.name(), resUtil.getTitle());
         resElement.put(
-            JsonElement.NO_EDIT_REASON.getName(),
+            JsonElement.noEditReason.name(),
             CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms))));
-        resElement.put(JsonElement.STATUS.getName(), "" + resUtil.getStateAbbreviation());
+        resElement.put(JsonElement.status.name(), "" + resUtil.getStateAbbreviation());
         // add formatted elements
         JSONObject resContents = new JSONObject();
-        resElement.put(JsonElement.CONTENTS.getName(), resContents);
+        resElement.put(JsonElement.contents.name(), resContents);
         // add formatter uris
         JSONObject formatters = new JSONObject();
-        resElement.put(JsonElement.FORMATTERS.getName(), formatters);
+        resElement.put(JsonElement.formatters.name(), formatters);
 
         if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID) {
             CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(m_cms, resource, m_req);
             CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
                 m_cms,
                 m_cms.getRequestContext().getLocale());
-            resElement.put(JsonElement.DESCRIPTION.getName(), subContainer.getDescription());
+            resElement.put(JsonElement.description.name(), subContainer.getDescription());
             JSONArray jTypes = new JSONArray();
-            resElement.put(JsonElement.TYPES.getName(), jTypes);
+            resElement.put(JsonElement.types.name(), jTypes);
             if (subContainer.getTypes().isEmpty()) {
                 if (subContainer.getElements().isEmpty()) {
                     //TODO: use formatter to generate the 'empty'-content
@@ -362,7 +324,7 @@ public final class CmsElementUtil {
             }
             // add subitems
             JSONArray subitems = new JSONArray();
-            resElement.put(JsonElement.SUBITEMS.getName(), subitems);
+            resElement.put(JsonElement.subItems.name(), subitems);
             // iterate the elements
             for (CmsContainerElementBean subElement : subContainer.getElements()) {
                 // collect ids
@@ -441,37 +403,36 @@ public final class CmsElementUtil {
             String propertyName = entry.getKey();
             CmsXmlContentProperty conf = entry.getValue();
             JSONObject jsonProperty = new JSONObject();
-            jsonProperty.put(JsonProperty.VALUE.getName(), CmsXmlContentProperty.getPropValuePaths(
+            jsonProperty.put(JsonProperty.value.name(), CmsXmlContentProperty.getPropValuePaths(
                 m_cms,
                 conf.getPropertyType(),
                 properties.get(propertyName).getStructureValue()));
 
             String propDefault = conf.getDefault();
-            jsonProperty.put(JsonProperty.DEFAULT_VALUE.getName(), propDefault);
+            jsonProperty.put(JsonProperty.defaultValue.name(), propDefault);
 
-            jsonProperty.put(JsonProperty.TYPE.getName(), conf.getPropertyType());
-            jsonProperty.put(JsonProperty.WIDGET.getName(), conf.getWidget());
-            jsonProperty.put(JsonProperty.WIDGET_CONF.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.type.name(), conf.getPropertyType());
+            jsonProperty.put(JsonProperty.widget.name(), conf.getWidget());
+            jsonProperty.put(JsonProperty.widgetConf.name(), CmsMacroResolver.resolveMacros(
                 conf.getWidgetConfiguration(),
                 m_cms,
                 messages));
-            jsonProperty.put(JsonProperty.RULE_TYPE.getName(), conf.getRuleType());
-            jsonProperty.put(JsonProperty.RULE_REGEX.getName(), conf.getRuleRegex());
-            jsonProperty.put(JsonProperty.NICE_NAME.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.ruleType.name(), conf.getRuleType());
+            jsonProperty.put(JsonProperty.ruleRegex.name(), conf.getRuleRegex());
+            jsonProperty.put(JsonProperty.niceName.name(), CmsMacroResolver.resolveMacros(
                 conf.getNiceName(),
                 m_cms,
                 messages));
-            jsonProperty.put(JsonProperty.DESCRIPTION.getName(), CmsMacroResolver.resolveMacros(
+            jsonProperty.put(JsonProperty.description.name(), CmsMacroResolver.resolveMacros(
                 conf.getDescription(),
                 m_cms,
                 messages));
-            jsonProperty.put(JsonProperty.ERROR.getName(), CmsMacroResolver.resolveMacros(
-                conf.getError(),
-                m_cms,
-                messages));
+            jsonProperty.put(
+                JsonProperty.error.name(),
+                CmsMacroResolver.resolveMacros(conf.getError(), m_cms, messages));
             jSONProperties.put(propertyName, jsonProperty);
         }
-        result.put(JsonElement.PROPERTIES.getName(), jSONProperties);
+        result.put(JsonElement.properties.name(), jSONProperties);
         return result;
     }
 }

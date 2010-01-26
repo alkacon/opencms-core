@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/01/20 09:16:36 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/01/26 11:00:56 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -55,6 +54,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 7.6 
  */
@@ -85,32 +85,13 @@ public class CmsJspTagContainer extends TagSupport {
     public enum JsonContainer {
 
         /** The list of elements. */
-        ELEMENTS("elements"),
+        elements,
         /** The max allowed number of elements in the container. */
-        MAXELEMENTS("maxElem"),
+        maxElem,
         /** The container name. */
-        NAME("name"),
+        name,
         /** The container type. */
-        TYPE("type");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonContainer(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        type;
     }
 
     /** The create no tag attribute value constant. */
@@ -168,38 +149,16 @@ public class CmsJspTagContainer extends TagSupport {
 
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
-        boolean actAsTemplate = false;
+        CmsUUID detailId = null;
 
         // get the container page itself, checking the history first
         CmsResource containerPage = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
         if (containerPage == null) {
             containerPage = cms.readResource(cms.getRequestContext().getUri());
         }
-        if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
-            // container page is used as template
-            String cntPagePath = cms.readPropertyObject(
-                containerPage,
-                CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
-                true).getValue("");
-            try {
-                containerPage = cms.readResource(cntPagePath);
-            } catch (CmsException e) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.ERR_CONTAINER_PAGE_NOT_FOUND_3,
-                    cms.getRequestContext().getUri(),
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
-                    cntPagePath), e);
-            }
-            if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.ERR_CONTAINER_PAGE_NOT_FOUND_3,
-                    cms.getRequestContext().getUri(),
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
-                    cntPagePath));
-            }
-            actAsTemplate = true;
-        } else if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
-            actAsTemplate = true;
+        CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
+        if (sitemap != null) {
+            detailId = sitemap.getContentId();
         }
 
         // create tag for container if necessary
@@ -274,7 +233,7 @@ public class CmsJspTagContainer extends TagSupport {
         List<CmsContainerElementBean> allElems = new ArrayList<CmsContainerElementBean>();
         allElems.addAll(container.getElements());
 
-        if (actAsTemplate) {
+        if (detailId != null) {
             if (!cntPage.getTypes().contains(CmsContainerPageBean.TYPE_TEMPLATE)) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_CONTAINER_PAGE_NO_TYPE_3,
@@ -284,18 +243,7 @@ public class CmsJspTagContainer extends TagSupport {
             }
             if (containerType.equals(CmsContainerPageBean.TYPE_TEMPLATE)) {
                 // add template element
-                CmsResource resUri;
-                if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
-                    CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
-                    resUri = cms.readResource(id);
-                } else {
-                    // check the history first
-                    resUri = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
-                    if (resUri == null) {
-                        resUri = cms.readResource(cms.getRequestContext().getUri());
-                    }
-                }
-
+                CmsResource resUri = cms.readResource(detailId);
                 String elementFormatter = OpenCms.getResourceManager().getResourceType(resUri).getFormatterForContainerType(
                     cms,
                     resUri,
@@ -419,15 +367,15 @@ public class CmsJspTagContainer extends TagSupport {
 
         // add container data for the editor
         JSONObject jsonContainer = new JSONObject();
-        jsonContainer.put(JsonContainer.NAME.getName(), container.getName());
-        jsonContainer.put(JsonContainer.TYPE.getName(), container.getType());
-        jsonContainer.put(JsonContainer.MAXELEMENTS.getName(), container.getMaxElements());
+        jsonContainer.put(JsonContainer.name.name(), container.getName());
+        jsonContainer.put(JsonContainer.type.name(), container.getType());
+        jsonContainer.put(JsonContainer.maxElem.name(), container.getMaxElements());
 
         JSONArray jsonElements = new JSONArray();
         for (CmsContainerElementBean element : container.getElements()) {
             jsonElements.put(element.getClientId());
         }
-        jsonContainer.put(JsonContainer.ELEMENTS.getName(), jsonElements);
+        jsonContainer.put(JsonContainer.elements.name(), jsonElements);
         return new StringBuffer("<div class='cms-ade-cnt-data ").append(jsonContainer.toString()).append("' ></div>").toString();
     }
 

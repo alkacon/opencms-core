@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsProjectBean.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/26 11:00:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
@@ -51,28 +51,9 @@ public class CmsProjectBean implements I_CmsJsonifable {
     public enum JsonProperty {
 
         /** The id. */
-        ID("id"),
+        id,
         /** The project name. */
-        NAME("name");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private JsonProperty(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        name;
     }
 
     /** The project id.*/
@@ -119,8 +100,8 @@ public class CmsProjectBean implements I_CmsJsonifable {
     public JSONObject toJson() throws JSONException {
 
         JSONObject json = new JSONObject();
-        json.put(JsonProperty.ID.getName(), getId());
-        json.put(JsonProperty.NAME.getName(), getName());
+        json.put(JsonProperty.id.name(), getId());
+        json.put(JsonProperty.name.name(), getName());
         return json;
     }
 
