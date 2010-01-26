@@ -26,7 +26,6 @@
 	</c:if>
 </c:forEach>
 
-<c:if test="${cms.isDefault || first}">
 	<c:set var="navText" value="${cms.properties['NavText']}" />
 	<c:if test="${empty navText}">
 		<c:set var="navText" value="${cms.properties['Title']}" />
@@ -37,4 +36,3 @@
 		</c:if>
 		<c:out value="${navText}" />
 	</c:if>
-</c:if>
