@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.frontend.template3/resources/system/modules/org.opencms.frontend.template3/java_src/Attic/CmsTemplateMenu.java,v $
- * Date   : $Date: 2009/09/15 13:30:19 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2010/01/26 11:01:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.3 $ 
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
 
@@ -212,22 +212,6 @@ public class CmsTemplateMenu extends CmsJspActionElement {
             });
         }
         return m_current;
-    }
-
-    /** 
-     * Returns if the current uri is a default file of a folder.<p>
-     * 
-     * @return if the current uri is a default file of a folder
-     */
-    public boolean getIsDefault() {
-
-        String path = CmsJspNavBuilder.getDefaultFile(
-            getCmsObject(),
-            CmsResource.getFolderPath(getRequestContext().getUri()));
-        if (path != null) {
-            return path.equals(getRequestContext().getUri());
-        }
-        return false;
     }
 
     /**
