@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/01/21 10:12:58 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/01/26 15:18:22 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 7.6
  */
@@ -90,9 +90,6 @@ public class CmsADEManager {
 
     /** The request attribute name for the current element-bean. */
     public static final String ATTR_CURRENT_ELEMENT = "__currentElement";
-
-    /** The request attribute name for the property configuration. */
-    public static final String ATTR_PROPERTY_CONFIG = "__propertyConfig";
 
     /** The request attribute name for the formatter-info-bean. */
     public static final String ATTR_FORMATTER_INFO = "__formatterInfo";

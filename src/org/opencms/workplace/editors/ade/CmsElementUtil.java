@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/01/26 14:48:26 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/01/26 15:18:22 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 7.6
  */
@@ -218,9 +218,6 @@ public final class CmsElementUtil {
 
             element.setSitePath(m_cms.getSitePath(elementRes));
             m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
-            m_req.setAttribute(
-                CmsADEManager.ATTR_PROPERTY_CONFIG,
-                CmsXmlContentDefinition.getContentHandlerForResource(m_cms, m_cms.readResource(element.getElementId())));
 
             return new String(loaderFacade.getLoader().dump(
                 m_cms,
