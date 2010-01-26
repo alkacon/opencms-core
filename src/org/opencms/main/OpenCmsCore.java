@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/01/19 10:16:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/26 11:00:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -143,7 +143,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -1911,6 +1911,7 @@ public final class OpenCmsCore {
             if (t.getCause() != null) {
                 t = t.getCause();
             }
+            LOG.error(t.getLocalizedMessage(), t);
         }
 
         if (status < 1) {
@@ -1928,6 +1929,7 @@ public final class OpenCmsCore {
             }
         } catch (CmsException e) {
             // result is false
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         if (canWrite) {
@@ -1939,12 +1941,14 @@ public final class OpenCmsCore {
                     res.getWriter().print(createErrorBox(t, req, cms));
                 } catch (IOException e) {
                     // can be ignored
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             } else {
                 try {
                     res.sendError(status, t.toString());
                 } catch (IOException e) {
                     // can be ignored
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }
