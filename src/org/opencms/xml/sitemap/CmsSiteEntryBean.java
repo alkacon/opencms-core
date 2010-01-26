@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2010/01/12 09:38:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/26 11:00:51 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,17 +44,29 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
 public class CmsSiteEntryBean {
 
+    /** The content id, for detail pages. */
+    private CmsUUID m_contentId;
+
     /** The entry id. */
     private final CmsUUID m_id;
 
+    /** The inherited properties. */
+    private Map<String, String> m_inheritedProperties;
+
     /** The entry name. */
     private final String m_name;
+
+    /** The original, sitemap file dependent, uri. */
+    private final String m_originalUri;
+
+    /** The current prefix. */
+    private String m_prefix;
 
     /** The configured properties. */
     private final Map<String, String> m_properties;
@@ -72,6 +84,7 @@ public class CmsSiteEntryBean {
      * Creates a new sitemap entry bean.<p> 
      * 
      * @param id the entry's id
+     * @param originalUri the original, sitemap file dependent, uri
      * @param resourceId the file's structure id
      * @param name the entry's name
      * @param title the entry's title
@@ -80,6 +93,7 @@ public class CmsSiteEntryBean {
      **/
     public CmsSiteEntryBean(
         CmsUUID id,
+        String originalUri,
         CmsUUID resourceId,
         String name,
         String title,
@@ -95,16 +109,18 @@ public class CmsSiteEntryBean {
         : Collections.unmodifiableList(subEntries));
         // do not freeze the properties
         m_properties = (properties == null ? new HashMap<String, String>() : properties);
+        m_originalUri = originalUri;
+        m_prefix = "";
     }
 
     /**
-     * Returns a clone, but without the sub-entries.<p>
-     * 
-     * @return a clone, but without the sub-entries
+     * Returns the content id, for detail pages.<p>
+     *
+     * @return the content id
      */
-    public CmsSiteEntryBean cloneWithoutSubEntries() {
+    public CmsUUID getContentId() {
 
-        return new CmsSiteEntryBean(m_id, m_resourceId, m_name, m_title, m_properties, null);
+        return m_contentId;
     }
 
     /**
@@ -118,6 +134,16 @@ public class CmsSiteEntryBean {
     }
 
     /**
+     * Returns the inherited properties.<p>
+     * 
+     * @return the inherited properties
+     */
+    public Map<String, String> getInheritedProperties() {
+
+        return m_inheritedProperties;
+    }
+
+    /**
      * Returns the name.<p>
      *
      * @return the name
@@ -128,6 +154,16 @@ public class CmsSiteEntryBean {
     }
 
     /**
+     * Returns the original, sitemap file dependent, uri.<p>
+     *
+     * @return the original, sitemap file dependent, uri
+     */
+    public String getOriginalUri() {
+
+        return m_originalUri;
+    }
+
+    /**
      * Returns the configured properties.<p>
      * 
      * @return the configured properties
@@ -135,6 +171,22 @@ public class CmsSiteEntryBean {
     public Map<String, String> getProperties() {
 
         return Collections.unmodifiableMap(m_properties);
+    }
+
+    /**
+     * Returns the properties.<p>
+     * 
+     * @param search if taking into account inherited properties or not
+     * 
+     * @return the properties
+     */
+    public Map<String, String> getProperties(boolean search) {
+
+        if (search) {
+            return getInheritedProperties();
+        } else {
+            return getProperties();
+        }
     }
 
     /**
@@ -168,6 +220,41 @@ public class CmsSiteEntryBean {
     }
 
     /**
+     * Returns the current uri.<p>
+     * 
+     * @return the current uri
+     */
+    public String getUri() {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(m_prefix).append(getOriginalUri());
+        if (getContentId() != null) {
+            sb.append(getContentId()).append('/');
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Sets the contentId.<p>
+     *
+     * @param contentId the contentId to set
+     */
+    public void setContentId(CmsUUID contentId) {
+
+        m_contentId = contentId;
+    }
+
+    /**
+     * Sets the inherited properties.<p>
+     *
+     * @param inheritedProperties the inherited properties to set
+     */
+    public void setInheritedProperties(Map<String, String> inheritedProperties) {
+
+        m_inheritedProperties = inheritedProperties;
+    }
+
+    /**
      * Sets the position of this entry in the level.<p>
      * 
      * @param position the position to set
@@ -178,13 +265,29 @@ public class CmsSiteEntryBean {
     }
 
     /**
+     * Sets the prefix.<p>
+     *
+     * @param prefix the prefix to set
+     */
+    public void setPrefix(String prefix) {
+
+        m_prefix = prefix;
+        if (m_prefix == null) {
+            m_prefix = "";
+        }
+        if (m_prefix.endsWith("/")) {
+            m_prefix = m_prefix.substring(0, m_prefix.length() - 1);
+        }
+    }
+
+    /**
+     * Flexcache will use this as variation key.<p>
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
 
-        StringBuffer sb = new StringBuffer();
-        sb.append(getId()).append(getName()).append(getResourceId()).append(getTitle()).append(getProperties());
-        return sb.toString();
+        return getUri();
     }
 }

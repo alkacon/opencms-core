@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2009/12/21 10:33:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/26 11:00:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,10 +35,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.xml.containerpage.CmsADEManager;
-import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.Map;
 
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,7 +109,7 @@ public class CmsFlexRequestKey {
         m_device = CmsFlexController.getController(req).getCmsCache().getDeviceSelector().getDeviceType(req);
 
         // get the current sitemap entry
-        Object obj = req.getAttribute(CmsSitemapManager.ATTR_SITEMAP_ENTRY);
+        Object obj = OpenCms.getSitemapManager().getRuntimeInfo(req);
         if (obj != null) {
             m_sitemapEntry = obj.toString();
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/26 11:00:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.9.2
  */
@@ -220,23 +220,23 @@ public class CmsXmlContentProperty implements Cloneable {
      * @param properties the properties to extend
      *  
      * @return a merged map of properties
-     * 
-     * @throws CmsException if something goes wrong 
      */
-    public static Map<String, String> mergeDefaults(CmsObject cms, CmsResource resource, Map<String, String> properties)
-    throws CmsException {
+    public static Map<String, String> mergeDefaults(CmsObject cms, CmsResource resource, Map<String, String> properties) {
 
-        Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(
-            cms,
-            resource).getProperties();
         Map<String, String> result = new HashMap<String, String>();
-        for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
-            CmsXmlContentProperty prop = entry.getValue();
-            result.put(entry.getKey(), getPropValueIds(cms, prop.getPropertyType(), prop.getDefault()));
+        try {
+            Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(
+                cms,
+                resource).getProperties();
+            for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
+                CmsXmlContentProperty prop = entry.getValue();
+                result.put(entry.getKey(), getPropValueIds(cms, prop.getPropertyType(), prop.getDefault()));
+            }
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
         }
-        for (Map.Entry<String, String> entry : properties.entrySet()) {
-            result.put(entry.getKey(), entry.getValue());
-        }
+        result.putAll(properties);
         return result;
     }
 
