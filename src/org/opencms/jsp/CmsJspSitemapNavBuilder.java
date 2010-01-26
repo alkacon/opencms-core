@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2010/01/26 11:01:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/26 14:06:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.9.2 
  * 
@@ -109,7 +109,11 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         // since all URIs are 'folders'
         List<CmsJspNavElement> elements = super.getNavigationBreadCrumb(folder, startlevel, endlevel, currentFolder);
         if (!elements.isEmpty()) {
-            elements.remove(elements.size() - 1);
+            int lastIndex = elements.size() - 1;
+            CmsJspNavElement last = elements.get(lastIndex);
+            if (last.getResourceName().equals(m_requestUri)) {
+                elements.remove(lastIndex);
+            }
         }
         return elements;
     }
@@ -141,9 +145,8 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
                 // check permissions
                 m_cms.readResource(entry.getResourceId());
                 // permissions are fine, add it to the results
-                entry.setPosition(position);
-                String entryName = folder + entry.getName() + "/";
-                CmsJspNavElement element = getNavigationForSiteEntry(entryName, entry);
+                String entryName = folderEntry.getUri() + entry.getName() + "/";
+                CmsJspNavElement element = getNavigationForResource(entryName);
                 if ((element != null) && element.isInNavigation()) {
                     result.add(element);
                 }
@@ -200,7 +203,8 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         if (sitemap != null) {
             m_requestUri = sitemap.getUri();
         }
-        m_requestUriFolder = CmsResource.getFolderPath(m_requestUri);
+        // can be null if m_requestUri is the root folder
+        m_requestUriFolder = m_requestUri;
     }
 
     /**
@@ -217,10 +221,23 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         if (uri.endsWith("/")) {
             level--;
         }
+        // fill some properties with some meaningful values
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, entry.getTitle());
         properties.put(CmsPropertyDefinition.PROPERTY_TITLE, entry.getTitle());
-        properties.putAll(entry.getProperties());
+        // check if the current entry is in the navigation
+        // inheriting parents properties
+        boolean isInNavigation = Boolean.parseBoolean(entry.getProperties(true).get(
+            CmsSitemapManager.Property.navigation.name()));
+        if (isInNavigation) {
+            // navText and navPos determine if an entry is in the navigation
+            properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, entry.getTitle());
+        }
+        // put all the rest
+        properties.putAll(entry.getProperties(false));
+        if (!isInNavigation) {
+            // navPos is always set so we have to remove it here
+            properties.remove(CmsPropertyDefinition.PROPERTY_NAVPOS);
+        }
         return new CmsJspNavElement(uri, properties, level);
     }
 }

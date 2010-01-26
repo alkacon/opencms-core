@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/01/26 11:00:56 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/01/26 14:06:23 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 7.5.2
  * 
@@ -741,7 +741,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         Element propElement = null;
         for (Map.Entry<String, String> property : entry.getProperties().entrySet()) {
             String propName = property.getKey();
-            boolean isSitemapProperty = CmsSitemapManager.Property.SITEMAP.getName().equals(propName);
+            boolean isSitemapProperty = CmsSitemapManager.Property.sitemap.name().equals(propName);
             if (!propertiesConf.containsKey(propName) && !isSitemapProperty) {
                 continue;
             }

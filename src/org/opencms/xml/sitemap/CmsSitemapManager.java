@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/26 11:00:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/01/26 14:06:23 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 7.9.2
  */
@@ -79,31 +79,10 @@ public class CmsSitemapManager {
     /** Property name constants. */
     public enum Property {
 
-        /** <code>detail-page</code> property name. */
-        DETAIL_PAGE("detail-page"),
+        /** <code>navigation</code> property name. */
+        navigation,
         /** <code>sitemap</code> property name. */
-        SITEMAP("sitemap");
-
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> 
-         *  @param name the name 
-         */
-        private Property(String name) {
-
-            m_name = name;
-        }
-
-        /** 
-         * Returns the name.<p>
-         * 
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
+        sitemap;
     }
 
     /** Request attribute name constant for the current sitemap entry bean. */
@@ -421,9 +400,7 @@ public class CmsSitemapManager {
         // special case for '/'
         if (entryPaths.isEmpty()) {
             CmsSiteEntryBean entry = sitemap.getSiteEntries().get(0);
-            entry.setPosition(0);
-            entry.setInheritedProperties(properties);
-            entry.setPrefix(sitemapFolder);
+            entry.setRuntimeInfo(sitemapFolder, properties, 0, null);
             LOG.debug(Messages.get().container(
                 Messages.LOG_DEBUG_SITEMAP_FOUND_3,
                 logId,
@@ -449,10 +426,7 @@ public class CmsSitemapManager {
             int size = subEntries.size();
             for (; position < size; position++) {
                 CmsSiteEntryBean entry = subEntries.get(position);
-                properties.putAll(entry.getProperties());
-                entry.setPosition(position);
-                entry.setInheritedProperties(properties);
-                entry.setPrefix(sitemapFolder);
+                entry.setRuntimeInfo(sitemapFolder, properties, position, null);
                 // cache the found entry
                 m_cache.setUri(uri, entry, online);
                 if (!entry.getName().equals(name)) {
@@ -483,7 +457,7 @@ public class CmsSitemapManager {
                     subEntries = entry.getSubEntries();
                     if (subEntries.isEmpty()) {
                         // check sitemap property
-                        String subSitemapId = entry.getProperties().get(CmsSitemapManager.Property.SITEMAP.getName());
+                        String subSitemapId = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subSitemapId)) {
                             // switch to sub-sitemap
                             CmsResource subSitemap = cms.readResource(new CmsUUID(subSitemapId));
@@ -507,23 +481,32 @@ public class CmsSitemapManager {
                         if ((entryPaths.size() == 1) && CmsUUID.isValidUUID(entryPaths.get(0))) {
                             // detail pages
                             CmsUUID id = new CmsUUID(entryPaths.get(0));
-                            CmsResource contentRes = cms.readResource(id); // check that the content exists
+                            // check that the content exists
+                            CmsResource contentRes = cms.readResource(id);
+                            // get the title
+                            String title = cms.readPropertyObject(
+                                contentRes,
+                                CmsPropertyDefinition.PROPERTY_TITLE,
+                                false).getValue(id.toString());
+                            // clone & extend the properties
+                            HashMap<String, String> entryProps = new HashMap<String, String>(entry.getProperties());
+                            // detail pages are NEVER shown in the navigation
+                            entryProps.put(Property.navigation.name(), Boolean.FALSE.toString());
+                            properties.put(Property.navigation.name(), Boolean.FALSE.toString());
+                            // create entry
                             entry = new CmsSiteEntryBean(
                                 entry.getId(),
                                 entry.getOriginalUri(),
                                 entry.getResourceId(),
                                 id.toString(),
-                                cms.readPropertyObject(contentRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
-                                    id.toString()),
-                                entry.getProperties(),
+                                title,
+                                entryProps,
                                 null);
-                            entry.setInheritedProperties(properties);
-                            entry.setPrefix(sitemapFolder);
-                            entry.setContentId(id);
+                            entry.setRuntimeInfo(sitemapFolder, properties, 0, id);
                             LOG.debug(Messages.get().container(
                                 Messages.LOG_DEBUG_SITEMAP_FOUND_3,
                                 logId,
-                                new Integer(position),
+                                new Integer(0),
                                 entry.getUri()).key());
                             return entry;
                         }
@@ -537,6 +520,7 @@ public class CmsSitemapManager {
                         // adjust the sitemap folder
                         sitemapFolder = cms.getRequestContext().removeSiteRoot(uriPath);
                     }
+                    properties.putAll(entry.getProperties());
                 }
                 break;
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/26 11:21:52 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/01/26 14:06:23 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 7.6
  */
@@ -761,7 +761,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             String propType = CmsXmlContentProperty.PropType.string.name();
             if (currentPropertyConf != null) {
                 propType = currentPropertyConf.getPropertyType();
-            } else if (key.equals(CmsSitemapManager.Property.SITEMAP.getName())) {
+            } else if (key.equals(CmsSitemapManager.Property.sitemap.name())) {
                 propType = CmsXmlContentProperty.PropType.vfslist.name();
             }
             props.put(key, CmsXmlContentProperty.getPropValuePaths(cms, propType, prop.getValue()));
@@ -848,7 +848,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 String propType = CmsXmlContentProperty.PropType.string.name();
                 if (currentPropertyConf != null) {
                     propType = currentPropertyConf.getPropertyType();
-                } else if (key.equals(CmsSitemapManager.Property.SITEMAP.getName())) {
+                } else if (key.equals(CmsSitemapManager.Property.sitemap.name())) {
                     propType = CmsXmlContentProperty.PropType.vfslist.name();
                 }
                 properties.put(key, CmsXmlContentProperty.getPropValuePaths(cms, propType, jsonProps.optString(key)));

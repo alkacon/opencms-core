@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2010/01/26 11:00:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/26 14:06:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6 
  */
@@ -108,7 +108,10 @@ public class CmsSiteEntryBean {
         ? Collections.<CmsSiteEntryBean> emptyList()
         : Collections.unmodifiableList(subEntries));
         // do not freeze the properties
-        m_properties = (properties == null ? new HashMap<String, String>() : properties);
+        m_properties = new HashMap<String, String>();
+        if (properties != null) {
+            m_properties.putAll(properties);
+        }
         m_originalUri = originalUri;
         m_prefix = "";
     }
@@ -235,42 +238,16 @@ public class CmsSiteEntryBean {
     }
 
     /**
-     * Sets the contentId.<p>
-     *
+     * Sets the runtime information.<p>
+     * 
+     * @param prefix the prefix to set
+     * @param inheritedProperties the inherited properties to set
+     * @param position the position to set
      * @param contentId the contentId to set
      */
-    public void setContentId(CmsUUID contentId) {
+    public void setRuntimeInfo(String prefix, Map<String, String> inheritedProperties, int position, CmsUUID contentId) {
 
-        m_contentId = contentId;
-    }
-
-    /**
-     * Sets the inherited properties.<p>
-     *
-     * @param inheritedProperties the inherited properties to set
-     */
-    public void setInheritedProperties(Map<String, String> inheritedProperties) {
-
-        m_inheritedProperties = inheritedProperties;
-    }
-
-    /**
-     * Sets the position of this entry in the level.<p>
-     * 
-     * @param position the position to set
-     */
-    public void setPosition(int position) {
-
-        m_properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
-    }
-
-    /**
-     * Sets the prefix.<p>
-     *
-     * @param prefix the prefix to set
-     */
-    public void setPrefix(String prefix) {
-
+        // set the prefix
         m_prefix = prefix;
         if (m_prefix == null) {
             m_prefix = "";
@@ -278,6 +255,17 @@ public class CmsSiteEntryBean {
         if (m_prefix.endsWith("/")) {
             m_prefix = m_prefix.substring(0, m_prefix.length() - 1);
         }
+        // set the inhereted properties
+        m_inheritedProperties = new HashMap<String, String>();
+        if (inheritedProperties != null) {
+            m_inheritedProperties.putAll(inheritedProperties);
+            m_inheritedProperties.putAll(m_properties);
+        }
+        // set the position
+        m_properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
+        m_inheritedProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
+        // set the content id
+        m_contentId = contentId;
     }
 
     /**

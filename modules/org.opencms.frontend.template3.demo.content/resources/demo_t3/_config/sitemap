@@ -12,6 +12,12 @@
           <uuid>3f3b9451-9d2a-11de-b26f-dd9f629b113b</uuid>
         </link>
       </VfsFile>
+      <Properties>
+        <Name><![CDATA[navigation]]></Name>
+        <Value>
+          <String><![CDATA[true]]></String>
+        </Value>
+      </Properties>
       <SiteEntry>
         <Id><![CDATA[6a92725f-ff5c-11de-afed-5b6dea36776d]]></Id>
         <Name><![CDATA[dictionary]]></Name>
