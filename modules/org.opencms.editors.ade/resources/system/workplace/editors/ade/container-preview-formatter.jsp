@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
 <% 
-org.opencms.workplace.galleries.CmsContainerPageFormatterHelper cms = new org.opencms.workplace.galleries.CmsContainerPageFormatterHelper(pageContext, request, response);
+CmsContainerPageFormatterHelper cms = new CmsContainerPageFormatterHelper(pageContext, request, response);
 pageContext.setAttribute("cms", cms);
 %>
 <fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />

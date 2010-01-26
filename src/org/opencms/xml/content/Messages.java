@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Messages.java,v $
- * Date   : $Date: 2010/01/07 14:14:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/26 15:09:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,6 +135,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_UNMARSHAL_1 = "ERR_XMLCONTENT_UNMARSHAL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_XML_SCHEMA_COULD_NOT_PARSE_PROPERTY_CONFIG_1 = "ERR_XML_SCHEMA_COULD_NOT_PARSE_PROPERTY_CONFIG_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CATEGORY_CHECK_EMPTY_ERROR_0 = "GUI_CATEGORY_CHECK_EMPTY_ERROR_0";

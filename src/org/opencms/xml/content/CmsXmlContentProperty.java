@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2010/01/26 11:00:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/26 15:09:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,11 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -50,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.9.2
  */
@@ -98,6 +101,12 @@ public class CmsXmlContentProperty implements Cloneable {
 
     /** IDs separator constant. */
     public static final String PROP_SEPARATOR = ",";
+
+    /** IDs separator constant. */
+    public static final String CONF_KEYVALUE_SEPARATOR = ":";
+
+    /** IDs separator constant. */
+    public static final String CONF_PARAM_SEPARATOR = "\\|";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContentProperty.class);
@@ -430,6 +439,45 @@ public class CmsXmlContentProperty implements Cloneable {
     public String getWidgetConfiguration() {
 
         return m_widgetConfiguration;
+    }
+
+    /**
+     * Returns the widget configuration string parsed into a JSONObject.<p>
+     * 
+     * The configuration string should be a map of key value pairs separated by ':' and '|': KEY_1:VALUE_1|KEY_2:VALUE_2 ...
+     * 
+     * @param cms the current CmsObject instance
+     * @param messages the messages used to resolve macros
+     * @return the configuration JSON
+     */
+    public JSONObject getWidgetConfigurationAsJSON(CmsObject cms, CmsMessages messages) {
+
+        String conf = CmsMacroResolver.resolveMacros(m_widgetConfiguration, cms, messages);
+        JSONObject result = new JSONObject();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(conf)) {
+            String[] confEntries = conf.split(CONF_PARAM_SEPARATOR);
+            for (int i = 0; i < confEntries.length; i++) {
+
+                try {
+                    String entry = confEntries[i];
+                    String key, value;
+                    if (entry.contains(CONF_KEYVALUE_SEPARATOR)) {
+                        key = entry.substring(0, entry.indexOf(CONF_KEYVALUE_SEPARATOR));
+                        value = entry.substring(entry.indexOf(CONF_KEYVALUE_SEPARATOR));
+                    } else {
+                        key = entry;
+                        value = "";
+                    }
+                    result.put(key, value);
+                } catch (Exception e) {
+                    LOG.error(Messages.get().container(
+                        Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1,
+                        m_propertyName), e);
+                }
+            }
+
+        }
+        return result;
     }
 
     /**

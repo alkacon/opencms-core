@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/26 14:06:23 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2010/01/26 15:09:47 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 7.6
  */
@@ -260,7 +260,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     /** Path constant. */
     public static final String PATH_DEFAULT_FORMATTER = "/system/workplace/editors/sitemap/default-formatter.jsp";
 
-    private static final String TEMPLATE_IMAGE_PROPERTY = "ade.image";
+    /** Template image property name. */
+    public static final String PROPERTY_TEMPLATE_IMAGE = "ade.image";
 
     /** User additional info key constant. */
     protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
@@ -546,10 +547,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
             jsonProperty.put(JsonProperty.type.name(), conf.getPropertyType());
             jsonProperty.put(JsonProperty.widget.name(), conf.getWidget());
-            jsonProperty.put(JsonProperty.widgetConf.name(), CmsMacroResolver.resolveMacros(
-                conf.getWidgetConfiguration(),
-                cms,
-                messages));
+            jsonProperty.put(JsonProperty.widgetConf.name(), conf.getWidgetConfigurationAsJSON(cms, messages));
             jsonProperty.put(JsonProperty.ruleType.name(), conf.getRuleType());
             jsonProperty.put(JsonProperty.ruleRegex.name(), conf.getRuleRegex());
             jsonProperty.put(JsonProperty.niceName.name(), CmsMacroResolver.resolveMacros(
@@ -721,7 +719,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsResource template = templateIt.next();
             CmsProperty titleProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_TITLE, false);
             CmsProperty descProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-            CmsProperty imageProp = cms.readPropertyObject(template, TEMPLATE_IMAGE_PROPERTY, false);
+            CmsProperty imageProp = cms.readPropertyObject(template, PROPERTY_TEMPLATE_IMAGE, false);
             JSONObject jTemp = new JSONObject();
             jTemp.put(JsonTemplate.sitepath.name(), cms.getSitePath(template));
             jTemp.put(JsonTemplate.title.name(), titleProp.getValue());

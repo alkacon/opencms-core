@@ -122,8 +122,7 @@
     * @param {String} configuration a '|'-separated list of selection values, for example 'choice1|choice2|choice3'
     */
    var SelectorWidget = cms.property.SelectorWidget = function(configuration) {
-      var options = parseSelectOptions(configuration);
-      this.$widget = _buildSelectList(options);
+      this.$widget = _buildSelectList(configuration);
    }
    
    SelectorWidget.prototype = {
@@ -157,27 +156,23 @@
       this.$widget = $('<div class="cms-checkbox-widget" style="position: relative; display: inline-block; width: 200px; vertical-align: top;"></div>');
       this.$widgetOverlay = $('<div class="cms-widget-overlay" style="display: none; position: absolute; top: 0px; left: 0px; width: 200px; background: #FFFFFF; border: solid 1px #999999; padding: 2px;"></div>').appendTo(this.$widget);
       if (configuration) {
-         var config = JSON.parse(configuration);
-         if (config && config.values && config.values.length) {
-            for (var i = 0; i < config.values.length; i++) {
-               this.$widget.append('<div class="cms-checkbox-widget-row"><input type="checkbox" value="' + config.values[i].value + '" style="vertical-align: middle;" /><span class="cms-checkbox-label">' + config.values[i].title + '</span></div>');
-            }
-            $('input:checkbox', this.$widget).click(function() {
-               self.setEnabled(true);
-            });
-            this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>Use default</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
-            $('input:checkbox', this.$defaultSwitch).change(function() {
-               self.setEnabled($(this).closest('.cms-editable-field').hasClass('cms-default-value'));
-               return false;
-            });
-            this.$widget.hover(function() {
-               self.hoverIn();
-            }, function() {
-               self.hoverOut();
-            })
+         for (var value in configuration) {
+           this.$widget.append('<div class="cms-checkbox-widget-row"><input type="checkbox" value="' + value + '" style="vertical-align: middle;" /><span class="cms-checkbox-label">' + configuration[value]+ '</span></div>');
          }
+         $('input:checkbox', this.$widget).click(function() {
+           self.setEnabled(true);
+         });
+         this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>Use default</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
+         $('input:checkbox', this.$defaultSwitch).change(function() {
+           self.setEnabled($(this).closest('.cms-editable-field').hasClass('cms-default-value'));
+           return false;
+         });
+         this.$widget.hover(function() {
+           self.hoverIn();
+         }, function() {
+           self.hoverOut();
+         })
       }
-      
       this.defaultValue = defaultValue;
    }
    
@@ -236,8 +231,6 @@
    var galleryFieldIdCounter = 0;
    
    var GalleryWidget = function(configuration, defaultValue) {
-      var configObj = eval('({' + (configuration || "") + '})');
-      
       var self = this;
       var html = '\
            <div>\
@@ -255,10 +248,10 @@
       $('.cms-gallery-valuedisplay', $widget).css('width', '200px').css('display', 'inline').attr('id', fieldId);
       $('.cms-property-opengallery', $widget).click(function() {
          window.contextPath = cms.data.CONTEXT;
-         window.startupFolder_prop = configObj.startupFolder || '/demo_t3/cntpages';
-         window.startupFolders_prop = configObj.startupFolders || null;
-         window.startupType_prop = configObj.startupType || 'gallery';
-         window.resourceTypes_prop = configObj.resourceTypes || [13];
+         window.startupFolder_prop = configuration.startupFolder || '/demo_t3/cntpages';
+         window.startupFolders_prop = configuration.startupFolders || null;
+         window.startupType_prop = configuration.startupType || 'gallery';
+         window.resourceTypes_prop = configuration.resourceTypes || [13];
          window.defaultAdvancedGalleryPath = (cms.data.GALLERY_PATH || cms.data.GALLERY_SERVER_URL) + '?';
          openDefaultAdvancedGallery("property", fieldId, '_prop');
       });
@@ -382,11 +375,10 @@
    
    var RadioWidget = function(configuration) {
       this.name = "cms-radio-" + Math.floor(Math.random() * 10000000000000001);
-      var options = parseSelectOptions(configuration);
       var $widget = this.$widget = $('<div></div>');
       var radioButtons = this.radioButtons = [];
-      for (var optionValue in options) {
-         var optionText = options[optionValue];
+      for (var optionValue in configuration) {
+         var optionText = configuration[optionValue];
          var $radio = $('<input type="radio" name="' + this.optionValue + '"></input>').attr('value', optionValue);
          $radio.appendTo($widget);
          $('<span></span>').text(optionText).appendTo($widget);
