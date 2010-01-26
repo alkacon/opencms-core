@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2009/12/21 11:22:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/26 11:01:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  * 
@@ -108,6 +109,12 @@ public final class CmsJspElFunctions {
             try {
                 // try to use the given name as user name
                 result = OpenCms.initCmsObject(String.valueOf(input));
+                // try to set the right site root
+                ServletRequest req = convertRequest(input);
+                if (req instanceof HttpServletRequest) {
+                    result.getRequestContext().setSiteRoot(
+                        OpenCms.getSiteManager().matchRequest((HttpServletRequest)req).getSiteRoot());
+                }
             } catch (CmsException e) {
                 result = null;
             }
@@ -115,6 +122,12 @@ public final class CmsJspElFunctions {
         if (result == null) {
             try {
                 result = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+                // try to set the right site root
+                ServletRequest req = convertRequest(input);
+                if (req instanceof HttpServletRequest) {
+                    result.getRequestContext().setSiteRoot(
+                        OpenCms.getSiteManager().matchRequest((HttpServletRequest)req).getSiteRoot());
+                }
             } catch (CmsException e1) {
                 // this should never fail since we can always create a "Guest" user 
             }
@@ -343,11 +356,11 @@ public final class CmsJspElFunctions {
         if (req == null) {
             return null;
         }
-        String ret = OpenCms.getSitemapManager().getCurrentUri(req);
-        if (ret == null) {
-            getCmsObject(input).getRequestContext().getUri();
+        CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
+        if (sitemap == null) {
+            return getCmsObject(input).getRequestContext().getUri();
         }
-        return ret;
+        return sitemap.getUri();
     }
 
     /**
@@ -385,11 +398,11 @@ public final class CmsJspElFunctions {
     }
 
     /**
-     * Returns the current sitemap entry if available, so it can be <code>null</code>.<p> 
+     * Returns the current sitemap bean if available, so it can be <code>null</code>.<p> 
      * 
-     * @param input the request convertible object to get the sitemap entry from
+     * @param input the request convertible object to get the sitemap bean from
      * 
-     * @return the current sitemap entry, or <code>null</code>
+     * @return the current sitemap bean, or <code>null</code>
      */
     public static CmsSiteEntryBean getSitemap(Object input) {
 
@@ -397,7 +410,7 @@ public final class CmsJspElFunctions {
         if (req == null) {
             return null;
         }
-        return OpenCms.getSitemapManager().getCurrentEntry(req);
+        return OpenCms.getSitemapManager().getRuntimeInfo(req);
     }
 
     /**
