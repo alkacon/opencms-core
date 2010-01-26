@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/01/26 11:00:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
@@ -69,81 +70,44 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 7.9.2
  */
 public class CmsSitemapManager {
 
-    /**
-     * Entry data. As a result from calling the {@link #getEntry()} method.<p>
-     * 
-     * @see #getEntry()
-     */
-    protected class EntryData {
+    /** Property name constants. */
+    public enum Property {
 
-        /** The entry. */
-        private CmsSiteEntryBean m_entry;
+        /** <code>detail-page</code> property name. */
+        DETAIL_PAGE("detail-page"),
+        /** <code>sitemap</code> property name. */
+        SITEMAP("sitemap");
 
-        /** The properties. */
-        private Map<String, String> m_properties;
+        /** Property name. */
+        private String m_name;
 
-        /** The sitemap. */
-        private CmsXmlSitemap m_sitemap;
+        /** Constructor.<p> 
+         *  @param name the name 
+         */
+        private Property(String name) {
 
-        /**
-         * Default constructor.<p>
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
          * 
-         * @param entry the entry
-         * @param properties the properties
-         * @param sitemap the sitemap
+         * @return the name
          */
-        public EntryData(CmsSiteEntryBean entry, Map<String, String> properties, CmsXmlSitemap sitemap) {
+        public String getName() {
 
-            m_entry = entry;
-            m_properties = properties;
-            m_sitemap = sitemap;
-        }
-
-        /**
-         * Returns the entry.<p>
-         *
-         * @return the entry
-         */
-        public CmsSiteEntryBean getEntry() {
-
-            return m_entry;
-        }
-
-        /**
-         * Returns the properties.<p>
-         *
-         * @return the properties
-         */
-        public Map<String, String> getProperties() {
-
-            return m_properties;
-        }
-
-        /**
-         * Returns the sitemap.<p>
-         *
-         * @return the sitemap
-         */
-        public CmsXmlSitemap getSitemap() {
-
-            return m_sitemap;
+            return m_name;
         }
     }
 
-    /** Request attribute name constant fro the current sitemap URI. */
-    public static final String ATTR_SITEMAP_CURRENT_URI = "__currentSitemapURI";
-
     /** Request attribute name constant for the current sitemap entry bean. */
     public static final String ATTR_SITEMAP_ENTRY = "__currentSitemapEntry";
-
-    /** Constant property name for sub-sitemap reference. */
-    public static final String PROPERTY_SITEMAP = "sitemap";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapManager.class);
@@ -249,27 +213,42 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Reads the current sitemap entry bean from the request.<p>
+     * Returns the default sitemap properties.<p>
      * 
-     * @param req the servlet request
+     * @param cms the current cms context
      * 
-     * @return the sitemap entry bean, or <code>null</code> if not found
+     * @return the default sitemap properties
      */
-    public CmsSiteEntryBean getCurrentEntry(ServletRequest req) {
+    public Map<String, String> getDefaultProperties(CmsObject cms) {
 
-        return (CmsSiteEntryBean)req.getAttribute(ATTR_SITEMAP_ENTRY);
-    }
-
-    /**
-     * Reads the current sitemap URI from the request.<p>
-     * 
-     * @param req the servlet request
-     * 
-     * @return the sitemap URI, or <code>null</code> if the sitemap is not used
-     */
-    public String getCurrentUri(ServletRequest req) {
-
-        return (String)req.getAttribute(ATTR_SITEMAP_CURRENT_URI);
+        boolean online = cms.getRequestContext().currentProject().isOnlineProject();
+        Map<String, String> defProps = m_cache.getDefaultProps(online);
+        if (defProps != null) {
+            return defProps;
+        }
+        // default properties are not resource dependent, 
+        // they are system wide, defined in the XSD
+        // but we need a resource to get to the content handler
+        // so get the first sitemap we can find
+        List<CmsResource> sitemaps = new ArrayList<CmsResource>();
+        try {
+            sitemaps = cms.readResources(
+                "/",
+                CmsResourceFilter.requireType(CmsResourceTypeXmlSitemap.getStaticTypeId()),
+                true);
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        if (sitemaps.isEmpty()) {
+            // should never happen
+            defProps = new HashMap<String, String>();
+        } else {
+            CmsResource resource = sitemaps.get(0);
+            defProps = CmsXmlContentProperty.mergeDefaults(cms, resource, Collections.<String, String> emptyMap());
+        }
+        m_cache.setDefaultProps(defProps, online);
+        return defProps;
     }
 
     /**
@@ -317,18 +296,28 @@ public class CmsSitemapManager {
         }
 
         // get it
-        EntryData data = getEntry(cms, uri, online, false);
-        if (data == null) {
+        uriEntry = getEntry(cms, uri, online);
+        if (uriEntry == null) {
             // cache the missed attempt
             m_cache.setMissingUri(path, online);
-            return null;
+        } else {
+            // cache the found entry
+            m_cache.setUri(path, uriEntry, online);
         }
 
-        // cache the found entry
-        uriEntry = data.getEntry();
-        m_cache.setUri(path, uriEntry, online);
-
         return uriEntry;
+    }
+
+    /**
+     * Reads the current sitemap URI bean from the request.<p>
+     * 
+     * @param req the servlet request
+     * 
+     * @return the sitemap URI bean, or <code>null</code> if not found
+     */
+    public CmsSiteEntryBean getRuntimeInfo(ServletRequest req) {
+
+        return (CmsSiteEntryBean)req.getAttribute(ATTR_SITEMAP_ENTRY);
     }
 
     /**
@@ -338,7 +327,7 @@ public class CmsSitemapManager {
      */
     public List<I_CmsResourceType> getSearchableResourceTypes() {
 
-        //TODO: the searchable resource types should be read from configuration
+        // TODO: the searchable resource types should be read from configuration
         List<I_CmsResourceType> types = new ArrayList<I_CmsResourceType>();
         try {
             types.add(OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
@@ -348,53 +337,6 @@ public class CmsSitemapManager {
             }
         }
         return types;
-    }
-
-    /**
-     * Returns the sitemap properties for a given URI, with search.<p> 
-     * 
-     * @param cms the current cms context
-     * @param uri the URI
-     * 
-     * @return the properties, taken also into account default values, could be <code>null</code> if URI not found
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public Map<String, String> getSearchProperties(CmsObject cms, String uri) throws CmsException {
-
-        String path = cms.getRequestContext().addSiteRoot(uri);
-
-        // check the cache
-        boolean online = cms.getRequestContext().currentProject().isOnlineProject();
-        Map<String, String> properties = m_cache.getSearchProps(path, online);
-        if (properties != null) {
-            // found in cache
-            return properties;
-        }
-
-        // check the missed cache
-        if (m_cache.getMissingUri(path, online) != null) {
-            // already marked as not found
-            return null;
-        }
-
-        // try to find the sitemap entry with its properties
-        EntryData data = getEntry(cms, path, online, true);
-        if (data == null) {
-            // cache the missed attempt
-            m_cache.setMissingUri(path, online);
-            return null;
-        }
-
-        // merge default properties
-        properties = new HashMap<String, String>();
-        properties.putAll(getDefaultProperties(cms, data.getSitemap().getFile(), online));
-        properties.putAll(data.getProperties());
-
-        // cache the found properties
-        m_cache.setSearchProps(path, properties, online);
-
-        return properties;
     }
 
     /**
@@ -418,42 +360,17 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Returns the default sitemap properties.<p>
-     * 
-     * @param cms the current cms context
-     * @param resource the resource, should a sitemap
-     * @param online if online or offline, the same as in the cms context, but just to not access it again
-     * 
-     * @return the default sitemap properties
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected Map<String, String> getDefaultProperties(CmsObject cms, CmsResource resource, boolean online)
-    throws CmsException {
-
-        Map<String, String> defProps = m_cache.getDefaultProps(online);
-        if (defProps != null) {
-            return defProps;
-        }
-        defProps = CmsXmlContentProperty.mergeDefaults(cms, resource, Collections.<String, String> emptyMap());
-        m_cache.setDefaultProps(defProps, online);
-        return defProps;
-    }
-
-    /**
      * Returns the site entry for the given URI, or <code>null</code> if not found.<p> 
      * 
      * @param cms the current CMS context
      * @param uri the URI to look for
      * @param online if online or offline, the same than in the cms context, but just to not access it again
-     * @param collectProperties if to collect parent entries properties
      * 
      * @return the site entry for the given URI, or <code>null</code> if not found
      * 
      * @throws CmsException if something goes wrong
      */
-    protected EntryData getEntry(CmsObject cms, String uri, boolean online, boolean collectProperties)
-    throws CmsException {
+    protected CmsSiteEntryBean getEntry(CmsObject cms, String uri, boolean online) throws CmsException {
 
         CmsUUID logId = null;
         if (LOG.isDebugEnabled()) {
@@ -464,16 +381,18 @@ public class CmsSitemapManager {
         CmsXmlSitemap sitemapXml = null;
         String sitemapFolder = cms.getRequestContext().removeSiteRoot(uri);
         String originalSitemapFolder = sitemapFolder;
+        boolean isRootSite = cms.getRequestContext().getSiteRoot().equals("");
+        CmsSite site = null;
+        if (isRootSite) {
+            site = OpenCms.getSiteManager().getSiteForRootPath(uri);
+        }
         while (sitemapFolder != null) {
             if (cms.existsResource(sitemapFolder)) {
                 String prop = cms.readPropertyObject(sitemapFolder, CmsPropertyDefinition.PROPERTY_SITEMAP, true).getValue();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop)) {
-                    if (cms.getRequestContext().getSiteRoot().equals("")) {
+                    if (isRootSite && (site != null)) {
                         // adjust the property path, since it will be a site path, and we are in the root
-                        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(uri);
-                        if (site != null) {
-                            prop = site.getSiteRoot() + prop;
-                        }
+                        prop = site.getSiteRoot() + prop;
                     }
                     if (cms.existsResource(prop)) {
                         sitemapXml = CmsXmlSitemapFactory.unmarshal(cms, cms.readResource(prop));
@@ -489,6 +408,7 @@ public class CmsSitemapManager {
         }
         CmsSitemapBean sitemap = sitemapXml.getSitemap(cms, cms.getRequestContext().getLocale());
         if ((sitemap == null) || sitemap.getSiteEntries().isEmpty()) {
+            // sitemap is empty
             return null;
         }
         LinkedList<String> entryPaths = new LinkedList<String>(CmsStringUtil.splitAsList(
@@ -496,23 +416,20 @@ public class CmsSitemapManager {
             "/"));
         // property collection
         Map<String, String> properties = new HashMap<String, String>();
-        if (collectProperties) {
-            // start with the root entry properties
-            properties.putAll(sitemap.getSiteEntries().get(0).getProperties());
-        }
+        // start with the root entry properties
+        properties.putAll(sitemap.getSiteEntries().get(0).getProperties());
         // special case for '/'
         if (entryPaths.isEmpty()) {
-            if (sitemap.getSiteEntries().isEmpty()) {
-                return null;
-            }
             CmsSiteEntryBean entry = sitemap.getSiteEntries().get(0);
             entry.setPosition(0);
+            entry.setInheritedProperties(properties);
+            entry.setPrefix(sitemapFolder);
             LOG.debug(Messages.get().container(
                 Messages.LOG_DEBUG_SITEMAP_FOUND_3,
                 logId,
                 new Integer(0),
-                entry.getName()).key());
-            return new EntryData(entry, properties, sitemapXml);
+                entry.getUri()).key());
+            return entry;
         }
         // get started
         String uriPath = cms.getRequestContext().getSiteRoot() + sitemapFolder;
@@ -532,38 +449,41 @@ public class CmsSitemapManager {
             int size = subEntries.size();
             for (; position < size; position++) {
                 CmsSiteEntryBean entry = subEntries.get(position);
+                properties.putAll(entry.getProperties());
+                entry.setPosition(position);
+                entry.setInheritedProperties(properties);
+                entry.setPrefix(sitemapFolder);
+                // cache the found entry
+                m_cache.setUri(uri, entry, online);
                 if (!entry.getName().equals(name)) {
                     // no match
                     LOG.debug(Messages.get().container(
                         Messages.LOG_DEBUG_SITEMAP_NO_MATCH_3,
                         logId,
                         new Integer(position),
-                        entry.getName()).key());
+                        entry.getUri()).key());
                     continue;
                 }
                 LOG.debug(Messages.get().container(
                     Messages.LOG_DEBUG_SITEMAP_MATCH_3,
                     logId,
                     new Integer(position),
-                    entry.getName()).key());
-                if (collectProperties) {
-                    properties.putAll(entry.getProperties());
-                }
+                    entry.getUri()).key());
                 if (entryPaths.isEmpty()) {
                     // if nothing left, we got a match
                     LOG.debug(Messages.get().container(
                         Messages.LOG_DEBUG_SITEMAP_FOUND_3,
                         logId,
                         new Integer(position),
-                        entry.getName()).key());
-                    entry.setPosition(position);
-                    return new EntryData(entry, properties, sitemapXml);
+                        entry.getUri()).key());
+                    return entry;
                 } else {
+                    boolean changedSitemap = false;
                     // continue with sub-entries
                     subEntries = entry.getSubEntries();
                     if (subEntries.isEmpty()) {
                         // check sitemap property
-                        String subSitemapId = entry.getProperties().get(CmsSitemapManager.PROPERTY_SITEMAP);
+                        String subSitemapId = entry.getProperties().get(CmsSitemapManager.Property.SITEMAP.getName());
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subSitemapId)) {
                             // switch to sub-sitemap
                             CmsResource subSitemap = cms.readResource(new CmsUUID(subSitemapId));
@@ -577,16 +497,45 @@ public class CmsSitemapManager {
                                 // no sitemap found
                                 return null;
                             }
+                            // continue with the sub-sitemap
                             subEntries = sitemap.getSiteEntries();
+                            changedSitemap = true;
                         }
                     }
                     finished = subEntries.isEmpty();
                     if (finished) {
+                        if ((entryPaths.size() == 1) && CmsUUID.isValidUUID(entryPaths.get(0))) {
+                            // detail pages
+                            CmsUUID id = new CmsUUID(entryPaths.get(0));
+                            CmsResource contentRes = cms.readResource(id); // check that the content exists
+                            entry = new CmsSiteEntryBean(
+                                entry.getId(),
+                                entry.getOriginalUri(),
+                                entry.getResourceId(),
+                                id.toString(),
+                                cms.readPropertyObject(contentRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
+                                    id.toString()),
+                                entry.getProperties(),
+                                null);
+                            entry.setInheritedProperties(properties);
+                            entry.setPrefix(sitemapFolder);
+                            entry.setContentId(id);
+                            LOG.debug(Messages.get().container(
+                                Messages.LOG_DEBUG_SITEMAP_FOUND_3,
+                                logId,
+                                new Integer(position),
+                                entry.getUri()).key());
+                            return entry;
+                        }
                         LOG.debug(Messages.get().container(
                             Messages.LOG_DEBUG_SITEMAP_NO_SUBENTRIES_3,
                             logId,
                             new Integer(position),
-                            entry.getName()).key());
+                            entry.getUri()).key());
+                    }
+                    if (changedSitemap) {
+                        // adjust the sitemap folder
+                        sitemapFolder = cms.getRequestContext().removeSiteRoot(uriPath);
                     }
                 }
                 break;

@@ -9,7 +9,7 @@
         <uuid>bd8587dc-a11a-11de-9057-dd9f629b113b</uuid>
       </link>
     </Links>
-    <Facade><![CDATA[/demo_t3/today/news/news/]]></Facade>
+    <Facade><![CDATA[/demo_t3/today/news/]]></Facade>
     <Collector><![CDATA[allInFolderPriorityDateDesc]]></Collector>
     <Parameter><![CDATA[%(link1)news_%(number).html|t3news|8]]></Parameter>
     <More><![CDATA[More]]></More>

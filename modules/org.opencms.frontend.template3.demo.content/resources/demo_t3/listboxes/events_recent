@@ -9,7 +9,7 @@
         <uuid>cb1e5da0-a11a-11de-9057-dd9f629b113b</uuid>
       </link>
     </Links>
-    <Facade><![CDATA[/demo_t3/today/events/event/]]></Facade>
+    <Facade><![CDATA[/demo_t3/today/events/]]></Facade>
     <Collector><![CDATA[allInFolderDateReleasedDesc]]></Collector>
     <Parameter><![CDATA[%(link1)event_%(number).html|t3event|2]]></Parameter>
     <More/>

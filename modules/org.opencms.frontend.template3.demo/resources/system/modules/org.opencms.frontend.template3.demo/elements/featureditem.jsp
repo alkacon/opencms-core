@@ -15,13 +15,13 @@
 		<c:set var="file"><cms:contentshow element="%(opencms.filename)" /></c:set>
 <%
   String category = CmsCategoryService.getInstance().readResourceCategories(jsp.getCmsObject(), pageContext.getAttribute("file").toString()).get(0).getName().toLowerCase();
-  String link = "/demo_t3/cntpages/item_composite.html";
+  String link = "/demo_t3/dictionary/item_composite/";
   if (category.contains("liliaceous")) {
-    link = "/demo_t3/cntpages/item_liliaceous.html";
+    link = "/demo_t3/dictionary/item_liliaceous/";
   } else if (category.contains("rosaceous")) {
-    link = "/demo_t3/cntpages/item_rosaceous.html";
+    link = "/demo_t3/dictionary/item_rosaceous/";
   } 
-  link += "?id=" + jsp.getCmsObject().readResource(pageContext.getAttribute("file").toString()).getStructureId();
+  link += jsp.getCmsObject().readResource(pageContext.getAttribute("file").toString()).getStructureId() + "/";
   pageContext.setAttribute("link", link);
 %>
 		<c:if test="${cnt == cur}">

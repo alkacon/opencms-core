@@ -72,24 +72,28 @@
 String itemPath = cms.getCmsObject().getRequestContext().removeSiteRoot(((org.opencms.search.CmsSearchResult)pageContext.getAttribute("item")).getPath());
 try {
   CmsResource res = cms.getCmsObject().readResource(itemPath);
+  boolean detailPage = true;
   if (res.getTypeId() == 147) { //news
-    itemPath = "/demo_t3/today/news/news/?id=" +res.getStructureId();
+    itemPath = "/demo_t3/today/news/";
   } else if (res.getTypeId() == 149) { //event
-    itemPath = "/demo_t3/today/events/event/?id=" +res.getStructureId();
+    itemPath = "/demo_t3/today/events/";
   } else if (res.getTypeId() == 148) { //item
     String category = CmsCategoryService.getInstance().readResourceCategories(cms.getCmsObject(), itemPath).get(0).getName().toLowerCase();
-    itemPath = "/demo_t3/dictionary/item_composite/?id=" +res.getStructureId();
-    if (category.contains("liliaceous")) {
-      itemPath = "/demo_t3/dictionary/item_liliaceous/?id=" +res.getStructureId();
+    itemPath = "/demo_t3/dictionary/item_composite/";
+    if (category.contains("liliaceous")) { 
+      itemPath = "/demo_t3/dictionary/item_liliaceous/";
     } else if (category.contains("rosaceous")) {
-      itemPath = "/demo_t3/dictionary/item_rosaceous/?id=" +res.getStructureId();
+      itemPath = "/demo_t3/dictionary/item_rosaceous/";
     } 
-    itemPath += "?id=" + res.getStructureId();
   } else {
     List<CmsRelation> relations = cms.getCmsObject().getRelationsForResource(itemPath, CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_STRONG));
     if (relations.size()>1) {
       itemPath = cms.getCmsObject().getSitePath(relations.get(0).getSource(cms.getCmsObject(), CmsResourceFilter.ALL));
     }
+    detailPage = false;
+  }
+  if (detailPage) {
+      itemPath+=res.getStructureId().toString()+"/";
   }
   pageContext.setAttribute("itemPath", itemPath);
 } catch(Exception e) {

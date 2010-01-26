@@ -1833,32 +1833,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/today/event-template.html</source>
-			<destination>demo_t3/cntpages/today/event-template.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>9ec0fe78-a12a-11de-9057-dd9f629b113b</uuidstructure>
-			<uuidresource>9ec0fe79-a12a-11de-9057-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:37:49 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 14 Sep 2009 12:32:09 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Events Template]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>demo_t3/cntpages/today/events.html</source>
 			<destination>demo_t3/cntpages/today/events.html</destination>
 			<type>containerpage</type>
@@ -1899,32 +1873,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Flower Today]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/cntpages/today/news-template.html</source>
-			<destination>demo_t3/cntpages/today/news-template.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>dbbf0202-a12a-11de-9057-dd9f629b113b</uuidstructure>
-			<uuidresource>dbbf0203-a12a-11de-9057-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:38:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 14 Sep 2009 12:33:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[News Template]]></value>
 				</property>
 			</properties>
 			<relations>

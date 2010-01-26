@@ -73,105 +73,6 @@
             </Value>
           </Properties>
         </SiteEntry>
-        <SiteEntry>
-          <Id><![CDATA[6a927263-ff5c-11de-afed-5b6dea36776d]]></Id>
-          <Name><![CDATA[common-yarrow]]></Name>
-          <Title><![CDATA[Common Yarrow]]></Title>
-          <VfsFile>
-            <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/common-yarrow.html]]></target>
-              <uuid>36b11c8b-e4af-11de-842a-2fbc40eca8be</uuid>
-            </link>
-          </VfsFile>
-        </SiteEntry>
-        <SiteEntry>
-          <Id><![CDATA[6a927264-ff5c-11de-afed-5b6dea36776d]]></Id>
-          <Name><![CDATA[dahlia]]></Name>
-          <Title><![CDATA[Dahlia]]></Title>
-          <VfsFile>
-            <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/dahlia.html]]></target>
-              <uuid>1af75545-e4af-11de-842a-2fbc40eca8be</uuid>
-            </link>
-          </VfsFile>
-        </SiteEntry>
-        <SiteEntry>
-          <Id><![CDATA[6a927265-ff5c-11de-afed-5b6dea36776d]]></Id>
-          <Name><![CDATA[gerbera]]></Name>
-          <Title><![CDATA[Gerbera]]></Title>
-          <VfsFile>
-            <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/gerbera.html]]></target>
-              <uuid>2626cc28-e4af-11de-842a-2fbc40eca8be</uuid>
-            </link>
-          </VfsFile>
-        </SiteEntry>
-        <SiteEntry>
-          <Id><![CDATA[6a927266-ff5c-11de-afed-5b6dea36776d]]></Id>
-          <Name><![CDATA[lily]]></Name>
-          <Title><![CDATA[Lily]]></Title>
-          <VfsFile>
-            <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/lily.html]]></target>
-              <uuid>4d92f5f4-e4af-11de-842a-2fbc40eca8be</uuid>
-            </link>
-          </VfsFile>
-        </SiteEntry>
-        <SiteEntry>
-          <Id><![CDATA[6a927267-ff5c-11de-afed-5b6dea36776d]]></Id>
-          <Name><![CDATA[meadowsweet]]></Name>
-          <Title><![CDATA[Meadowsweet]]></Title>
-          <VfsFile>
-            <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/meadowsweet.html]]></target>
-              <uuid>678c96b0-e4af-11de-842a-2fbc40eca8be</uuid>
-            </link>
-          </VfsFile>
-        </SiteEntry>
-        <SiteEntry>
-          <Id><![CDATA[6a927268-ff5c-11de-afed-5b6dea36776d]]></Id>
-          <Name><![CDATA[mountain-avens]]></Name>
-          <Title><![CDATA[Mountain Avens]]></Title>
-          <VfsFile>
-            <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/mountain-avens.html]]></target>
-              <uuid>6016cc6d-e4af-11de-842a-2fbc40eca8be</uuid>
-            </link>
-          </VfsFile>
-        </SiteEntry>
-        <SiteEntry>
-          <Id><![CDATA[6a927269-ff5c-11de-afed-5b6dea36776d]]></Id>
-          <Name><![CDATA[radnor-lily]]></Name>
-          <Title><![CDATA[Radnor Lily]]></Title>
-          <VfsFile>
-            <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/radnor-lily.html]]></target>
-              <uuid>52470827-e4af-11de-842a-2fbc40eca8be</uuid>
-            </link>
-          </VfsFile>
-        </SiteEntry>
-        <SiteEntry>
-          <Id><![CDATA[6a92726a-ff5c-11de-afed-5b6dea36776d]]></Id>
-          <Name><![CDATA[rose]]></Name>
-          <Title><![CDATA[Rose]]></Title>
-          <VfsFile>
-            <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/rose.html]]></target>
-              <uuid>5bc6fa4a-e4af-11de-842a-2fbc40eca8be</uuid>
-            </link>
-          </VfsFile>
-        </SiteEntry>
-        <SiteEntry>
-          <Id><![CDATA[6a92726b-ff5c-11de-afed-5b6dea36776d]]></Id>
-          <Name><![CDATA[tulip]]></Name>
-          <Title><![CDATA[Tulip]]></Title>
-          <VfsFile>
-            <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/tulip.html]]></target>
-              <uuid>3d74118e-e4af-11de-842a-2fbc40eca8be</uuid>
-            </link>
-          </VfsFile>
-        </SiteEntry>
       </SiteEntry>
       <SiteEntry>
         <Id><![CDATA[6a92726c-ff5c-11de-afed-5b6dea36776d]]></Id>
@@ -237,23 +138,6 @@
               <uuid>93de012d-a1c6-11de-9d96-dd9f629b113b</uuid>
             </link>
           </VfsFile>
-          <SiteEntry>
-            <Id><![CDATA[f22775f5-ff5c-11de-8297-efb64a7400e0]]></Id>
-            <Name><![CDATA[event]]></Name>
-            <Title><![CDATA[Events Template]]></Title>
-            <VfsFile>
-              <link type="STRONG">
-                <target><![CDATA[/sites/default/demo_t3/cntpages/today/event-template.html]]></target>
-                <uuid>9ec0fe78-a12a-11de-9057-dd9f629b113b</uuid>
-              </link>
-            </VfsFile>
-            <Properties>
-              <Name><![CDATA[detail-page]]></Name>
-              <Value>
-                <String><![CDATA[true]]></String>
-              </Value>
-            </Properties>
-          </SiteEntry>
         </SiteEntry>
         <SiteEntry>
           <Id><![CDATA[f22775f6-ff5c-11de-8297-efb64a7400e0]]></Id>
@@ -265,23 +149,6 @@
               <uuid>07358d03-a1c6-11de-9d96-dd9f629b113b</uuid>
             </link>
           </VfsFile>
-          <SiteEntry>
-            <Id><![CDATA[f22775f7-ff5c-11de-8297-efb64a7400e0]]></Id>
-            <Name><![CDATA[news]]></Name>
-            <Title><![CDATA[News Template]]></Title>
-            <VfsFile>
-              <link type="STRONG">
-                <target><![CDATA[/sites/default/demo_t3/cntpages/today/news-template.html]]></target>
-                <uuid>dbbf0202-a12a-11de-9057-dd9f629b113b</uuid>
-              </link>
-            </VfsFile>
-            <Properties>
-              <Name><![CDATA[detail-page]]></Name>
-              <Value>
-                <String><![CDATA[true]]></String>
-              </Value>
-            </Properties>
-          </SiteEntry>
         </SiteEntry>
       </SiteEntry>
       <SiteEntry>

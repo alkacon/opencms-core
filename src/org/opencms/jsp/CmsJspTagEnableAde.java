@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/01/20 12:40:45 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/01/26 11:00:18 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,6 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.galleries.CmsGallerySearchServer;
-import org.opencms.xml.containerpage.CmsContainerPageBean;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 7.6 
  */
@@ -261,9 +260,11 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                     }
                     LOG.debug(e.getLocalizedMessage(), e);
                 }
-            } else if (req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER) != null) {
-                CmsUUID id = new CmsUUID(req.getParameter(CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER));
-                currentUri = cms.getSitePath(cms.readResource(id));
+            } else if (OpenCms.getSitemapManager().getRuntimeInfo(req) != null) {
+                CmsUUID id = OpenCms.getSitemapManager().getRuntimeInfo(req).getContentId();
+                if (id != null) {
+                    currentUri = cms.getSitePath(cms.readResource(id));
+                }
             }
             CmsProperty sitemapProperty = cms.readPropertyObject(
                 containerPage,

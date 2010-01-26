@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBoxContentMapping.java,v $
- * Date   : $Date: 2009/10/20 07:38:55 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2010/01/26 11:00:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.collectors.CmsDateResourceComparator;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlHtmlValue;
@@ -63,7 +61,7 @@ import java.util.Set;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.3 $ 
  */
 public class CmsListBoxContentMapping {
 
@@ -245,23 +243,26 @@ public class CmsListBoxContentMapping {
     /** Constant to map to the list box entry date. */
     public static final String ENTRY_DATE = "Date";
 
-    /** Constant to map to the list box entry description (also called value). */
-    public static final String ENTRY_TEXT = "Text";
+    /** Constant to map to the list box entry image. */
+    public static final String ENTRY_IMAGE = "Image";
 
     /** Constant to map to the list box link. */
     public static final String ENTRY_LINK = "Link";
 
+    /** Constant to map to the list box entry description (also called value). */
+    public static final String ENTRY_TEXT = "Text";
+
     /** Constant to map to the list box entry title. */
     public static final String ENTRY_TITLE = "Title";
-
-    /** Constant to map to the list box entry image. */
-    public static final String ENTRY_IMAGE = "Image";
 
     /** Constant array with all possible list box mappings. */
     public static final String[] MAPPINGS = {ENTRY_TITLE, ENTRY_AUTHOR, ENTRY_TEXT, ENTRY_DATE, ENTRY_LINK, ENTRY_IMAGE};
 
     /** Constant list with all possible list box mappings. */
     public static final List<String> MAPPINGS_LIST = Collections.unmodifiableList(Arrays.asList(MAPPINGS));
+
+    /** The facade container page. */
+    private String m_facade;
 
     /** The map of mappings from the XML content to the list box entry. */
     private Map<String, CmsListBoxFieldMapping> m_mappings;
@@ -419,10 +420,7 @@ public class CmsListBoxContentMapping {
             if (link == null) {
                 // calculate the link                
                 link = OpenCms.getLinkManager().getServerLink(cms, m_facade);
-                link = CmsRequestUtil.appendParameter(
-                    link,
-                    CmsContainerPageBean.TEMPLATE_ELEMENT_PARAMETER,
-                    content.getFile().getStructureId().toString());
+                link += content.getFile().getStructureId().toString() + "/";
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(link)) {
                 result.setLink(link);
@@ -484,6 +482,16 @@ public class CmsListBoxContentMapping {
 
         CmsListBoxFieldMapping mapping = m_mappings.get(ENTRY_TITLE);
         return (mapping != null) ? (String)mapping.getXmlFields().get(0) : null;
+    }
+
+    /**
+     * Sets the facade container page.<p>
+     * 
+     * @param facade the facade container page
+     */
+    public void setFacade(String facade) {
+
+        m_facade = facade;
     }
 
     /**
@@ -556,18 +564,5 @@ public class CmsListBoxContentMapping {
             }
         }
         return result;
-    }
-
-    /** The facade container page. */
-    private String m_facade;
-
-    /**
-     * Sets the facade container page.<p>
-     * 
-     * @param facade the facade container page
-     */
-    public void setFacade(String facade) {
-
-        m_facade = facade;
     }
 }
