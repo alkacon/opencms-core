@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2010/01/21 10:12:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/26 14:48:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -59,6 +59,9 @@ public class CmsContainerElementBean {
 
     /** The configured properties. */
     private final Map<String, String> m_properties;
+
+    /** The element site path, only set while rendering. */
+    private String m_sitePath;
 
     /**
      * Creates a new container page element bean.<p> 
@@ -134,12 +137,32 @@ public class CmsContainerElementBean {
     }
 
     /**
+     * Returns the element site path, only set while rendering.<p>
+     * 
+     * @return the element site path
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
 
         return m_clientId.hashCode();
+    }
+
+    /**
+     * Sets the element's site path.<p>
+     * 
+     * @param sitePath the element's site path to set
+     */
+    public void setSitePath(String sitePath) {
+
+        m_sitePath = sitePath;
     }
 
     /**

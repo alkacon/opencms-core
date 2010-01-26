@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/01/26 11:00:56 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/01/26 14:48:26 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 7.6 
  */
@@ -320,7 +320,7 @@ public class CmsJspTagContainer extends TagSupport {
                             containerType)));
                         continue;
                     }
-
+                    subelement.setSitePath(subelementUri);
                     // execute the formatter jsp for the given element uri
                     CmsJspTagInclude.includeTagAction(
                         pageContext,
@@ -336,6 +336,7 @@ public class CmsJspTagContainer extends TagSupport {
             } else {
                 String elementFormatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
 
+                element.setSitePath(cms.getSitePath(resUri));
                 // execute the formatter jsp for the given element uri
                 CmsJspTagInclude.includeTagAction(
                     pageContext,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/01/26 11:00:56 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/01/26 14:48:26 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 7.6
  */
@@ -216,23 +216,19 @@ public final class CmsElementUtil {
             eb.init(m_cms, CmsDirectEditMode.TRUE, m_cms.getSitePath(elementRes));
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
 
-            Object currentElement = m_req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
+            element.setSitePath(m_cms.getSitePath(elementRes));
             m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
             m_req.setAttribute(
                 CmsADEManager.ATTR_PROPERTY_CONFIG,
                 CmsXmlContentDefinition.getContentHandlerForResource(m_cms, m_cms.readResource(element.getElementId())));
 
-            try {
-                return new String(loaderFacade.getLoader().dump(
-                    m_cms,
-                    loaderRes,
-                    null,
-                    m_cms.getRequestContext().getLocale(),
-                    m_req,
-                    m_res), CmsLocaleManager.getResourceEncoding(m_cms, elementRes));
-            } finally {
-                m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, currentElement);
-            }
+            return new String(loaderFacade.getLoader().dump(
+                m_cms,
+                loaderRes,
+                null,
+                m_cms.getRequestContext().getLocale(),
+                m_req,
+                m_res), CmsLocaleManager.getResourceEncoding(m_cms, elementRes));
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }

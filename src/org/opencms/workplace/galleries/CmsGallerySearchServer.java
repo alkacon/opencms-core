@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/25 15:45:40 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2010/01/26 14:48:26 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 7.6
  */
@@ -464,7 +464,6 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         super();
     }
-
 
     /**
      * Returns script tags for resource type specific handling of the gallery preview for the given types.<p>
@@ -908,7 +907,8 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 String title = "";
                 try {
                     // read the gallery title
-                    title = getCmsObject().readPropertyObject(sitePath, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("");
+                    title = getCmsObject().readPropertyObject(sitePath, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
+                        "");
                 } catch (CmsException e) {
                     // error reading title property
                     if (LOG.isErrorEnabled()) {
@@ -1235,21 +1235,21 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     private JSONObject getPreviewData(String resourcePath) throws Exception {
 
         JSONObject result = new JSONObject();
+        CmsObject cms = getCmsObject();
 
         // getting formatted content
         Map<String, Object> reqAttributes = new HashMap<String, Object>();
-        CmsResource resource = getCmsObject().readResource(resourcePath);
+        CmsResource resource = cms.readResource(resourcePath);
         I_CmsResourceType type = getResourceManager().getResourceType(resource.getTypeId());
         CmsGalleryItemBean reqItem = new CmsGalleryItemBean(resource);
         reqItem.setTypeId(resource.getTypeId());
         reqItem.setTypeName(type.getTypeName());
         reqAttributes.put(ReqParam.galleryitem.toString(), reqItem);
-        reqAttributes.put(CmsADEManager.ATTR_CURRENT_ELEMENT, new CmsContainerElementBean(
-            resource.getStructureId(),
-            null,
-            null));
+        CmsContainerElementBean cntElem = new CmsContainerElementBean(resource.getStructureId(), null, null);
+        cntElem.setSitePath(cms.getSitePath(resource));
+        reqAttributes.put(CmsADEManager.ATTR_CURRENT_ELEMENT, cntElem);
         result.put(ItemKey.itemhtml.toString(), type.getFormattedContent(
-            getCmsObject(),
+            cms,
             getRequest(),
             getResponse(),
             I_CmsResourceType.Formatter.GALLERY_PREVIEW,
@@ -1272,7 +1272,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         Iterator<String> propIt = properties.iterator();
         while (propIt.hasNext()) {
             String propertyName = propIt.next();
-            CmsProperty property = getCmsObject().readPropertyObject(resource, propertyName, false);
+            CmsProperty property = cms.readPropertyObject(resource, propertyName, false);
             JSONObject propertyJSON = new JSONObject();
             propertyJSON.put(ItemKey.name.toString(), propertyName);
             propertyJSON.put(ItemKey.value.toString(), property.getValue());
