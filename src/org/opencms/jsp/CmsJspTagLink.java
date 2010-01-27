@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2010/01/27 12:58:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/27 13:10:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,13 +55,13 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagLink extends BodyTagSupport {
 
-    /** The value of the <code>detailview</code> property. */
+    /** The value of the <code>detailview</code> attribute. */
     private String m_detailView;
 
     /** The log object for this class. */
@@ -202,12 +202,10 @@ public class CmsJspTagLink extends BodyTagSupport {
     /**
      * Sets the detail view URI.<p>
      * 
-     * @param name the detail view URI to set
+     * @param detailView the detail view URI to set
      */
-    public void setDetailview(String name) {
+    public void setDetailview(String detailView) {
 
-        if (name != null) {
-            m_detailView = name.toLowerCase();
-        }
+        m_detailView = detailView;
     }
 }

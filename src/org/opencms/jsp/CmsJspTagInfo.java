@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2010/01/27 12:58:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/27 13:10:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *  
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,7 +111,7 @@ public class CmsJspTagInfo extends TagSupport {
     /** Array list of allowed property values for more convenient lookup. */
     private static final List<String> SYSTEM_PROPERTIES_LIST = Arrays.asList(SYSTEM_PROPERTIES);
 
-    /** The value of the <code>property</code> property. */
+    /** The value of the <code>property</code> attribute. */
     private String m_property;
 
     /**
