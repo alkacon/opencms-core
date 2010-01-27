@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2010/01/26 11:00:38 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/27 12:58:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -733,17 +733,44 @@ public class CmsJspActionElement extends CmsJspBean {
      * This is the same as using the <code>&lt;cms:link&gt;***&lt;/cms:link&gt;</code> tag.<p>
      * 
      * @param target the URI in the OpenCms VFS to link to
+     * 
      * @return the translated link
      * 
      * @see org.opencms.jsp.CmsJspTagLink
+     * @see #link(String, String)
      */
     public String link(String target) {
+
+        return link(target, null);
+    }
+
+    /**
+     * Returns a link to a file in the OpenCms VFS 
+     * that has been adjusted according to the web application path and the 
+     * OpenCms static export rules.<p>
+     * 
+     * Please note that the target is always assumed to be in the OpenCms VFS, so you can't use 
+     * this method for links external to OpenCms.<p>
+     * 
+     * Relative links are converted to absolute links, using the current element URI as base.<p>
+     * 
+     * This is the same as using the <code>&lt;cms:link detailview=&quot;...&quot; &gt;***&lt;/cms:link&gt;</code> tag.<p>
+     * 
+     * @param target the URI in the OpenCms VFS to link to
+     * @param detailPage the optional detail page URI
+     * 
+     * @return the translated link
+     * 
+     * @see org.opencms.jsp.CmsJspTagLink
+     * @see #link(String)
+     */
+    public String link(String target, String detailPage) {
 
         if (isNotInitialized()) {
             return getMessage(NOT_INITIALIZED);
         }
         try {
-            return CmsJspTagLink.linkTagAction(target, getRequest());
+            return CmsJspTagLink.linkTagAction(target, null, getRequest());
         } catch (Throwable t) {
             handleException(t);
         }

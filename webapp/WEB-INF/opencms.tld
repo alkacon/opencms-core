@@ -29,7 +29,7 @@
         <attribute>
             <name>file</name>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <name>escapeHtml</name>
             <rtexprvalue>true</rtexprvalue>
@@ -75,6 +75,10 @@
         <name>link</name>
         <tag-class>org.opencms.jsp.CmsJspTagLink</tag-class>
         <body-content>JSP</body-content>
+        <attribute>
+            <name>detailview</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
     </tag>   
     
     <tag>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2010/01/27 12:25:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/27 12:58:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,11 +55,14 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagLink extends BodyTagSupport {
+
+    /** The value of the <code>detailview</code> property. */
+    private String m_detailView;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagLink.class);
@@ -80,36 +83,52 @@ public class CmsJspTagLink extends BodyTagSupport {
      * Relative links are converted to absolute links, using the current element URI as base.<p>
      * 
      * @param target the link that should be calculated, can be relative or absolute
+     * @param detailView the optional detail view URI
      * @param req the current request
      * 
      * @return the target link adjusted according to the web application path and the OpenCms static export rules
      * 
      * @see org.opencms.staticexport.CmsLinkManager#substituteLinkForUnknownTarget(org.opencms.file.CmsObject, String)
      */
-    public static String linkTagAction(String target, ServletRequest req) {
+    public static String linkTagAction(String target, String detailView, ServletRequest req) {
 
         CmsFlexController controller = CmsFlexController.getController(req);
 
+        // be sure the link is absolute
         String absoluteLink = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
+
+        // deal with possible anchors
         int pos = absoluteLink.length();
         int anchorPos = absoluteLink.lastIndexOf('#');
         if ((anchorPos != -1) && (anchorPos < pos)) {
             pos = anchorPos;
         }
+        // deal with possible parameters
         int paramPos = absoluteLink.lastIndexOf('?');
         if ((paramPos != -1) && (paramPos < pos)) {
             pos = paramPos;
         }
-        String vfsName = absoluteLink.substring(0, pos);
+        // get the vfs name
+        String uri = absoluteLink.substring(0, pos);
+        // get the rest
         String linkInfo = (pos == absoluteLink.length()) ? "" : absoluteLink.substring(pos);
-        String uri = vfsName;
+
         CmsObject cms = controller.getCmsObject();
         try {
-            CmsResource res = cms.readResource(vfsName);
-            String detailView = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW, true).getValue(
-                "");
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(detailView)) {
-                uri = detailView;
+            // check for detail view
+            CmsResource res = cms.readResource(uri);
+            // first try from the TAG property
+            String detailViewProp = detailView;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(detailViewProp)) {
+                // then with the VFS property
+                detailViewProp = cms.readPropertyObject(
+                    res,
+                    CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW,
+                    true).getValue("");
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailViewProp)) {
+                // if detail view found, adjust the uri
+                uri = detailViewProp;
                 if (!uri.endsWith("/")) {
                     uri += "/";
                 }
@@ -119,8 +138,11 @@ public class CmsJspTagLink extends BodyTagSupport {
         } catch (CmsException e) {
             LOG.debug(e.getLocalizedMessage(), e);
         }
-        String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, uri);
-        return link + linkInfo;
+        // append again anchors & parameters
+        uri += linkInfo;
+
+        // generate the link
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, uri);
     }
 
     /**
@@ -142,7 +164,7 @@ public class CmsJspTagLink extends BodyTagSupport {
                 String link = getBodyContent().getString();
                 getBodyContent().clear();
                 // Calculate the link substitution
-                String newlink = linkTagAction(link, req);
+                String newlink = linkTagAction(link, m_detailView, req);
                 // Write the result back to the page                
                 getBodyContent().print(newlink);
                 getBodyContent().writeOut(pageContext.getOut());
@@ -155,5 +177,37 @@ public class CmsJspTagLink extends BodyTagSupport {
             }
         }
         return EVAL_PAGE;
+    }
+
+    /**
+     * Returns the set detail view URI.<p>
+     * 
+     * @return the set detail view URI 
+     */
+    public String getDetailview() {
+
+        return m_detailView != null ? m_detailView : "";
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
+    @Override
+    public void release() {
+
+        super.release();
+        m_detailView = null;
+    }
+
+    /**
+     * Sets the detail view URI.<p>
+     * 
+     * @param name the detail view URI to set
+     */
+    public void setDetailview(String name) {
+
+        if (name != null) {
+            m_detailView = name.toLowerCase();
+        }
     }
 }
