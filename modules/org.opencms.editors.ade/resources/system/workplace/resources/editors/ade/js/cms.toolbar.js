@@ -1539,6 +1539,7 @@
       load: function(callback) {
          if (!galleryInitialized) {
             galleryInitialized = true;
+            cms.galleries.initValues['tabs'] = ['cms_tab_types','cms_tab_galleries','cms_tab_categories','cms_tab_search'];
             cms.galleries.initAddDialog();
             // remove corner-all class from tabs after initialization 
             $('#' + cms.html.galleryTabsId).removeClass('ui-corner-all');

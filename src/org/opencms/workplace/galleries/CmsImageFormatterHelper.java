@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageFormatterHelper.java,v $
- * Date   : $Date: 2010/01/26 11:00:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/27 10:54:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.loader.CmsImageScaler;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 
  * 
@@ -65,13 +66,6 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
 
         /** The active image data. */
         activeimage,
-
-        /** The copyright property of the image. */
-        // TODO: these are json keys, so why are some of them capitalized?
-        Copyright,
-
-        /** The description property of the image. */
-        Description,
 
         /** The errors. */
         errors,
@@ -142,18 +136,11 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
             }
 
             // 3: image copyright            
-            String copyright = property(JsonKeys.Copyright.name(), getCmsObject().getSitePath(getResource()), "");
-            activeImageObj.put(JsonKeys.Copyright.name().toLowerCase(), CmsStringUtil.escapeJavaScript(copyright));
-            //TODO: can be removed. this infos are available for all resources
-            // 4: image title            
-            //String title = property(JsonKeys.Title.name(), getCmsObject().getSitePath(getResource()), "");
-            //activeImageObj.put(JsonKeys.Title.name().toLowerCase(), CmsStringUtil.escapeJavaScript(title));
-            // 5: image description            
-            //String description = property(JsonKeys.Description.name(), getCmsObject().getSitePath(getResource()), "");
-            //activeImageObj.put(
-            //    JsonKeys.Description.name().toLowerCase(),
-            //    CmsStringUtil.escapeJavaScript(description));
-
+            String copyright = property(CmsPropertyDefinition.PROPERTY_COPYRIGHT, getCmsObject().getSitePath(
+                getResource()), "");
+            activeImageObj.put(
+                CmsPropertyDefinition.PROPERTY_COPYRIGHT.toLowerCase(),
+                CmsStringUtil.escapeJavaScript(copyright));
             // 6: image structure id hash code
             activeImageObj.put(JsonKeys.hash.name(), getResource().getStructureId().hashCode());
             jsonObj.put(JsonKeys.activeimage.name(), activeImageObj);
@@ -175,7 +162,10 @@ public class CmsImageFormatterHelper extends CmsDefaultFormatterHelper {
 
         CmsProperty currentProperty = null;
         try {
-            currentProperty = getCmsObject().readPropertyObject(getResource(), JsonKeys.Title.name(), false);
+            currentProperty = getCmsObject().readPropertyObject(
+                getResource(),
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                false);
         } catch (CmsException e) {
             // TODO: improve error handling
             if (LOG.isErrorEnabled()) {

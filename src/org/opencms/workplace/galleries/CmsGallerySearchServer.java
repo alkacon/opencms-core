@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/26 15:59:07 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2010/01/27 10:54:03 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 7.6
  */
@@ -428,7 +428,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         cms_tab_galleries,
 
         /** The id for types tab. */
-        cms_tab_result,
+        cms_tab_results,
 
         /** The id for search tab. */
         cms_tab_search,
@@ -449,9 +449,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     /** The excerpt field constant. */
     public static final String EXCERPT_FIELD_NAME = "excerpt";
 
+    //TODO: remove
     /** The result tab id. */
-    public static final String RESULT_TAB_ID = "#cms-tab-result";
-
+    //public static final String RESULT_TAB_ID = "#cms_tab_results";
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchServer.class);
 
@@ -664,7 +664,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             sResult.put(QueryKey.page.toString(), params.getResultPage());
             sResult.put(QueryKey.resultlist.toString(), buildJSONForSearchResult(searchResults));
             queryData.put(QueryKey.page.toString(), currentPage);
-            queryData.put(QueryKey.tabid.toString(), RESULT_TAB_ID);
+            queryData.put(QueryKey.tabid.toString(), TabId.cms_tab_results.toString());
             result.put(QueryKey.querydata.toString(), queryData);
             result.put(ResponseKey.searchresult.toString(), sResult);
         }
@@ -1430,6 +1430,13 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 String tabs = getRequest().getParameter(ReqParam.tabs.toString());
                 if (!CmsStringUtil.isEmptyOrWhitespaceOnly(tabs)) {
                     m_tabs = new JSONArray(tabs);
+                } else {
+                    // set standard configuration
+                    m_tabs = new JSONArray();
+                    m_tabs.put(TabId.cms_tab_types);
+                    m_tabs.put(TabId.cms_tab_galleries);
+                    m_tabs.put(TabId.cms_tab_categories);
+                    m_tabs.put(TabId.cms_tab_search);
                 }
             }
         } catch (JSONException e) {

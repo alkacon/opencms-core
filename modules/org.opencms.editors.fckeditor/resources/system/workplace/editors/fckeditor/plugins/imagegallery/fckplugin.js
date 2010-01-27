@@ -43,7 +43,7 @@ function imageGalleryDialogUrl() {
 
 	var searchParam = "";
 	var jsonQueryData = "{'querydata':{'types':[3],'galleries':[],'categories':[],'matchesperpage':8,'query':'','tabid':'cms_tab_results','page':1},'types':[3]}";
-    var jsonTabsConfig = "['cms_tab_categories','cms_tab_search']";
+    var jsonTabsConfig = "['cms_tab_galleries','cms_tab_categories','cms_tab_search']";
 	var jsonImageData = "{'widgetmode': 'simple','imgwidth':'','scale':'','showformats':true,'imgheight':'','useformats':false}";
     searchParam += "&data=" + jsonQueryData;
 	searchParam += "&tabs=" + jsonTabsConfig;

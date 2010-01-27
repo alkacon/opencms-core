@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2009/11/09 14:58:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/27 10:54:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -114,6 +114,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property for the content encoding. */
     public static final String PROPERTY_CONTENT_ENCODING = "content-encoding";
+
+    /** Property for the content encoding. */
+    public static final String PROPERTY_COPYRIGHT = "Copyright";
 
     /** Property for the default file in folders. */
     public static final String PROPERTY_DEFAULT_FILE = "default-file";

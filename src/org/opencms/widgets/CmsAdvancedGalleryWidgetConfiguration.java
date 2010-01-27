@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsAdvancedGalleryWidgetConfiguration.java,v $
- * Date   : $Date: 2010/01/26 15:59:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/27 10:54:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0 
  */
@@ -166,9 +166,9 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         /** The resource type array for the containerpage gallery. */
         RESOURCETYPE_CONTAINERPAGEGALLERY("[13]"),
 
-        //TODO: must be changed to binary=[2], now set to 146 for test purposes
+        //TODO: must be changed to binary=[2], now set to 13 for test purposes
         /** The resource type array for the downloadgallery. */
-        RESOURCETYPE_DOWNLOADGALLERY("[147]"),
+        RESOURCETYPE_DOWNLOADGALLERY("[2]"),
 
         /** The resource type array for the imagegallery. */
         RESOURCETYPE_IMAGEGALLERY("[3]"),
@@ -183,7 +183,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         TABS_CONTAINERPAGEGALLERY("['cms_tab_types','cms_tab_galleries','cms_tab_categories','cms_tab_search']"),
 
         /** Tabs configuration for the downloadgallery. */
-        TABS_DOWNLOADGALLERY("['cms_tab_galleries','cms_tab_galleries','cms_tab_categories','cms_tab_search']"),
+        TABS_DOWNLOADGALLERY("['cms_tab_galleries','cms_tab_categories','cms_tab_search']"),
 
         /** Tabs configuration for the imagegallery. */
         TABS_IMAGEGALLERY("['cms_tab_galleries','cms_tab_categories','cms_tab_search']"),

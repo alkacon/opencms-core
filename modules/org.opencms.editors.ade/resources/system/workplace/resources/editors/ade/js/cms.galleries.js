@@ -515,7 +515,8 @@
                 'action': 'all',
                 'data': JSON.stringify({
                    'types': cms.galleries.configContentTypes
-                })
+                }),
+                'tabs':JSON.stringify(cms.galleries.initValues['tabs'])     
              },
              'type': 'POST',
              'dataType': 'json',
@@ -624,7 +625,7 @@
                 'action': 'search',
                 'data': JSON.stringify({
                    'querydata': preparedSearchObject
-                })
+                })           
              },
              'type': 'POST',
              'dataType': 'json',
