@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/01/27 12:58:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *  
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,9 +109,9 @@ public class CmsJspTagInfo extends TagSupport {
     };
 
     /** Array list of allowed property values for more convenient lookup. */
-    private static final List SYSTEM_PROPERTIES_LIST = Arrays.asList(SYSTEM_PROPERTIES);
+    private static final List<String> SYSTEM_PROPERTIES_LIST = Arrays.asList(SYSTEM_PROPERTIES);
 
-    // member variables    
+    /** The value of the <code>property</code> property. */
     private String m_property;
 
     /**
@@ -178,6 +178,7 @@ public class CmsJspTagInfo extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -200,7 +201,7 @@ public class CmsJspTagInfo extends TagSupport {
     }
 
     /**
-     * Returns the selected info property.
+     * Returns the selected info property.<p>
      * 
      * @return the selected info property 
      */
@@ -212,6 +213,7 @@ public class CmsJspTagInfo extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         super.release();
@@ -219,7 +221,7 @@ public class CmsJspTagInfo extends TagSupport {
     }
 
     /**
-     * Sets the info property name.
+     * Sets the info property name.<p>
      * 
      * @param name the info property name to set
      */
