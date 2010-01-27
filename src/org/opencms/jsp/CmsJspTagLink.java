@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/01/27 12:25:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,15 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -50,7 +55,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,16 +90,47 @@ public class CmsJspTagLink extends BodyTagSupport {
 
         CmsFlexController controller = CmsFlexController.getController(req);
 
-        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-            controller.getCmsObject(),
-            CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri()));
+        String absoluteLink = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
+        int pos = absoluteLink.length();
+        int anchorPos = absoluteLink.lastIndexOf('#');
+        if ((anchorPos != -1) && (anchorPos < pos)) {
+            pos = anchorPos;
+        }
+        int paramPos = absoluteLink.lastIndexOf('?');
+        if ((paramPos != -1) && (paramPos < pos)) {
+            pos = paramPos;
+        }
+        String vfsName = absoluteLink.substring(0, pos);
+        String linkInfo = (pos == absoluteLink.length()) ? "" : absoluteLink.substring(pos);
+        String uri = vfsName;
+        CmsObject cms = controller.getCmsObject();
+        try {
+            CmsResource res = cms.readResource(vfsName);
+            String detailView = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW, true).getValue(
+                "");
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(detailView)) {
+                uri = detailView;
+                if (!uri.endsWith("/")) {
+                    uri += "/";
+                }
+                uri += res.getStructureId().toString();
+                uri += "/";
+            }
+        } catch (CmsException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, uri);
+        return link + linkInfo;
     }
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * 
      * @return EVAL_PAGE
+     * 
      * @throws JspException in case something goes wrong
      */
+    @Override
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2010/01/27 10:54:03 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/27 12:25:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -99,6 +99,12 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property for the active method in the administration view. */
     public static final String PROPERTY_ACTIV = "activemethod";
+
+    /** Property for the container page configuration. */
+    public static final String PROPERTY_ADE_CNTPAGE_CONFIG = "ade.cntpage.config";
+
+    /** Property for the sitemap detail view. */
+    public static final String PROPERTY_ADE_SITEMAP_DETAILVIEW = "ade.sitemap.detailview";
 
     /** Property for the allowed set of locales. */
     public static final String PROPERTY_AVAILABLE_LOCALES = "locale-available";
@@ -205,7 +211,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the visible method in the administration view. */
     public static final String PROPERTY_VISIBLE = "visiblemethod";
 
-    /** The propertydefinitiontype for resources. */
+    /** The property definition type for resources. */
     public static final int PROPERYDEFINITION_RESOURCE = 1;
 
     /** Property value is treated as a link or list of links. */

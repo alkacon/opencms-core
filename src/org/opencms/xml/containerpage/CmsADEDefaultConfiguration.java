@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2010/01/07 15:27:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/27 12:25:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -79,9 +79,6 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
 
     /** Default search page size constant. */
     public static final int DEFAULT_SEARCH_PAGE_SIZE = 10;
-
-    /** property name constant. */
-    protected static final String PROPERTY_CONTAINER_CONFIG = "ade.cntpage.config";
 
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsADEDefaultConfiguration.class);
@@ -178,7 +175,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         String cfgPath = null;
         try {
             // get the resource type configuration file from the vfs tree
-            cfgPath = cms.readPropertyObject(containerPageUri, PROPERTY_CONTAINER_CONFIG, true).getValue();
+            cfgPath = cms.readPropertyObject(containerPageUri, CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG, true).getValue();
         } catch (CmsException e) {
             // should never happen 
             LOG.error(e.getLocalizedMessage(), e);
@@ -193,7 +190,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
                     CmsPropertyDefinition.PROPERTY_TEMPLATE,
                     true).getValue();
                 // get the resource type configuration file from the template itself
-                cfgPath = cms.readPropertyObject(templateUri, PROPERTY_CONTAINER_CONFIG, true).getValue();
+                cfgPath = cms.readPropertyObject(templateUri, CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG, true).getValue();
             } catch (CmsException e) {
                 // should never happen
                 LOG.error(e.getLocalizedMessage(), e);
@@ -205,7 +202,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             LOG.warn(Messages.get().getBundle().key(
                 Messages.ERR_CONFIG_NOT_SET_2,
                 containerPageUri,
-                PROPERTY_CONTAINER_CONFIG));
+                CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG));
             return null;
         }
 
@@ -216,7 +213,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             throw new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_CONFIG_NOT_FOUND_3,
                 containerPageUri,
-                PROPERTY_CONTAINER_CONFIG,
+                CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG,
                 cfgPath));
         }
     }

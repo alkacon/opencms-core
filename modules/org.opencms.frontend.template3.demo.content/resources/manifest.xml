@@ -2102,6 +2102,10 @@
 					<name>Title</name>
 					<value><![CDATA[Events]]></value>
 				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/today/events/]]></value>
+				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -3759,6 +3763,10 @@
 					<name>Title</name>
 					<value><![CDATA[Common yarrow]]></value>
 				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/dictionary/item_composite/]]></value>
+				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -3802,6 +3810,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dahlia]]></value>
+				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/dictionary/item_composite/]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -3847,6 +3859,10 @@
 					<name>Title</name>
 					<value><![CDATA[Gerbera]]></value>
 				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/dictionary/item_composite/]]></value>
+				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -3890,6 +3906,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Lily]]></value>
+				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/dictionary/item_liliaceous/]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -3935,6 +3955,10 @@
 					<name>Title</name>
 					<value><![CDATA[Meadowsweet]]></value>
 				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/dictionary/item_rosaceous/]]></value>
+				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -3978,6 +4002,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Mountain Avens]]></value>
+				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/dictionary/item_rosaceous/]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -4023,6 +4051,10 @@
 					<name>Title</name>
 					<value><![CDATA[Radnor Lily]]></value>
 				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/dictionary/item_liliaceous/]]></value>
+				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4067,6 +4099,10 @@
 					<name>Title</name>
 					<value><![CDATA[Rose]]></value>
 				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/dictionary/item_rosaceous/]]></value>
+				</property>
 			</properties>
 			<relations>
 				<relation>
@@ -4110,6 +4146,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Tulip]]></value>
+				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/dictionary/item_liliaceous/]]></value>
 				</property>
 			</properties>
 			<relations>
@@ -4339,6 +4379,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Flower news]]></value>
+				</property>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/demo_t3/today/news/]]></value>
 				</property>
 			</properties>
 			<relations/>
