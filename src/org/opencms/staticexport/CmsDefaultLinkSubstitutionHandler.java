@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2010/01/07 14:21:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/27 11:08:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  * 
@@ -107,8 +107,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         String vfsName;
         String parameters;
-        int pos = absoluteLink.indexOf('?');
         // check if the link has parameters, if so cut them
+        int pos = absoluteLink.indexOf('?');
         if (pos >= 0) {
             vfsName = absoluteLink.substring(0, pos);
             parameters = absoluteLink.substring(pos);
@@ -117,6 +117,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             parameters = null;
         }
 
+        // check for anchor
         String anchor = null;
         pos = vfsName.indexOf('#');
         if (pos >= 0) {
@@ -137,8 +138,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         if (targetSite == null) {
             targetSite = currentSite;
         }
-        String serverPrefix;
+
         // if the link points to another site, there needs to be a server prefix
+        String serverPrefix;
         if (targetSite != currentSite) {
             serverPrefix = targetSite.getUrl();
         } else {
@@ -146,11 +148,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         }
 
         // in the online project, check static export and secure settings
-
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
-
             // first check if this link needs static export
-
             CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();
             // check if we need relative links in the exported pages
             if (exportManager.relativeLinksInExport(cms.getRequestContext().getSiteRoot()
@@ -173,7 +172,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         // base URI must also be exported
                         uriBaseName = exportManager.getRfsName(cms, cms.getRequestContext().getUri());
                     } else {
-                        // base URI dosn't need to be exported
+                        // base URI doesn't need to be exported
                         uriBaseName = exportManager.getVfsPrefix() + cms.getRequestContext().getUri();
                     }
                     // cache export base URI
@@ -196,6 +195,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     try {
                         resource = cms.readResource(vfsName);
                     } catch (CmsException e) {
+                        LOG.debug(e.getLocalizedMessage(), e);
                         // sitemap case
                         try {
                             CmsSiteEntryBean entry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
@@ -204,7 +204,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                             }
                         } catch (CmsException e1) {
                             // should never happen
-                            LOG.error(e.getLocalizedMessage(), e);
+                            LOG.error(e1.getLocalizedMessage(), e1);
                         }
                     }
                     if ((resource != null) && exportManager.isExportLink(cms, resource)) {
@@ -286,7 +286,6 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             if ((parameters != null) && (resultLink != null)) {
                 resultLink = resultLink.concat(parameters);
             }
-
         }
 
         if ((anchor != null) && (resultLink != null)) {
