@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/A_CmsAdvancedGalleryWidget.java,v $
- * Date   : $Date: 2010/01/26 15:59:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/27 16:27:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.workplace.galleries.CmsGallerySearchServer;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 
  */
@@ -199,6 +199,7 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
 
         // set the gallery configuration parameter
         result.append("\n<script type=\"text/javascript\">");
+
         // resource types
         result.append("\nvar resourceTypes").append(idHash).append(" = ").append(configuration.getResourceTypes()).append(
             ";");
@@ -206,19 +207,19 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
         result.append("\nvar galleryTabs").append(idHash).append(" = ").append(configuration.getTabs()).append(";");
 
         // set start folder for gallery and if it opens galleries or categories
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
+        if ((configuration.getStartUpFolders() != null) && (configuration.getStartUpFolders().length() != 0)) {
+            result.append("\nvar startupFolders").append(idHash).append(" = ").append(configuration.getStartUpFolders()).append(
+                ";");
+            result.append("\nvar startupFolder").append(idHash).append(" = null;");
+            result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
+                "\";");
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
             result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
                 "\";");
             result.append("\nvar startupFolders").append(idHash).append(" = null;");
             result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
                 "\";");
 
-        } else if (configuration.getStartUpFolders().length() != 0) {
-            result.append("\nvar startupFolders").append(idHash).append(" = ").append(configuration.getStartUpFolders()).append(
-                ";");
-            result.append("\nvar startupFolder").append(idHash).append(" = null;");
-            result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
-                "\";");
         } else {
             result.append("\nvar startupFolder").append(idHash).append(" = null;");
             result.append("\nvar startupFolders").append(idHash).append(" = null;");
