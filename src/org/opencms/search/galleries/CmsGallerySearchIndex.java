@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2010/01/19 15:35:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/27 15:14:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.search.galleries;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -42,6 +43,7 @@ import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.Messages;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,7 +64,7 @@ import org.apache.lucene.util.Version;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -177,12 +179,17 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             // store separate fields query for excerpt highlighting  
             Query fieldsQuery = null;
 
+            Locale locale = params.getLocale() == null ? null : CmsLocaleManager.getLocale(params.getLocale());
             if (params.getSearchWords() != null) {
                 // this search contains a full text search component
                 BooleanQuery booleanFieldsQuery = new BooleanQuery();
-                // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
-                for (int i = 0; i < params.getFields().size(); i++) {
-                    QueryParser p = new QueryParser(Version.LUCENE_CURRENT, params.getFields().get(i), getAnalyzer());
+                OpenCms.getLocaleManager();
+                // extend the field names with the locale information
+                List<String> fields = params.getFields();
+                fields = getLocaleExtendedFields(params.getFields(), locale);
+                // add one sub-query for each of the selected fields, e.g. "content", "title" etc.                
+                for (String field : fields) {
+                    QueryParser p = new QueryParser(Version.LUCENE_CURRENT, field, getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getSearchWords()), BooleanClause.Occur.SHOULD);
                 }
                 fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
@@ -243,7 +250,8 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                                 searchResult = new CmsGallerySearchResult(
                                     Math.round((hits.scoreDocs[i].score / hits.getMaxScore()) * 100f),
                                     doc,
-                                    excerpt);
+                                    excerpt,
+                                    locale);
                                 searchResults.add(searchResult);
                             }
                             cnt++;
@@ -316,7 +324,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         if (locale != null) {
             // add query categories (if required)
             filter.add(new FilterClause(
-                getTermQueryFilter(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALE, locale),
+                getTermQueryFilter(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALES, locale),
                 BooleanClause.Occur.MUST));
         }
 
@@ -339,5 +347,29 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns a list of locale extended field names.<p>
+     * 
+     * @param fields the field name to extend
+     * @param locale the locale to extend the field names with
+     * 
+     * @return a list of locale extended field names
+     */
+    protected List<String> getLocaleExtendedFields(List<String> fields, Locale locale) {
+
+        List<String> result = new ArrayList<String>(fields.size() * 2);
+        for (String fieldName : fields) {
+            result.add(fieldName);
+            if (locale != null) {
+                result.add(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(fieldName, locale));
+            } else {
+                for (Locale l : OpenCms.getLocaleManager().getAvailableLocales()) {
+                    result.add(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(fieldName, l));
+                }
+            }
+        }
+        return result;
     }
 }

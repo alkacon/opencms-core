@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/gallery/TestCmsGallerySearchBasic.java,v $
- * Date   : $Date: 2010/01/19 15:35:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/27 15:14:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
@@ -154,7 +154,6 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsGallerySearchBasic.class.getName());
 
-        suite.addTest(new TestCmsGallerySearchBasic("testGallerySearchIndexSetup"));
         suite.addTest(new TestCmsGallerySearchBasic("testGallerySearchIndexCreation"));
         suite.addTest(new TestCmsGallerySearchBasic("testGallerySortSearchResults"));
 
@@ -193,55 +192,6 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         CmsSearchIndex adeIndex = OpenCms.getSearchManager().getIndex(INDEX_GALLERIES);
         assertNotNull("Index for galleries not initialized", adeIndex);
         assertEquals("Index for galleries not of required class", CmsGallerySearchIndex.class, adeIndex.getClass());
-    }
-
-    /**
-     * Creates a new search index setup for this test.<p>
-     * 
-     * @throws Exception in case the test fails
-     */
-    public void testGallerySearchIndexSetup() throws Exception {
-
-        echo("Testing creation of special index for galleries");
-
-        String indexName = "ADE Galleries";
-
-        CmsGallerySearchIndex searchIndex = new CmsGallerySearchIndex(indexName);
-        searchIndex.setProjectName("Offline");
-        searchIndex.setLocale(Locale.ENGLISH);
-        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_OFFLINE);
-        // available pre-configured in the test configuration files opencms-search.xml
-        searchIndex.addSourceName("ADE_gallery_source");
-        searchIndex.addConfigurationParameter(CmsSearchIndex.BACKUP_REINDEXING, "true");
-
-        // initialize the new index
-        searchIndex.initialize();
-
-        // add the search index to the manager
-        OpenCms.getSearchManager().addSearchIndex(searchIndex);
-
-        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
-        // this call does not throws the rebuild index event
-        OpenCms.getSearchManager().rebuildIndex(indexName, report);
-
-        // perform a search on the newly generated index
-        CmsGallerySearch searchBean = new CmsGallerySearch();
-        CmsGallerySearchParameters searchParams = new CmsGallerySearchParameters();
-        CmsGallerySearchResultList searchResult;
-
-        searchBean.init(getCmsObject());
-        searchBean.setIndex(indexName);
-
-        searchParams.setSearchWords(">>SearchEgg1<<");
-
-        // assert one file is found in the default site     
-        searchResult = searchBean.getResult(searchParams);
-        printResults(searchResult, getCmsObject());
-        assertEquals(1, searchResult.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", (searchResult.get(0)).getPath());
-
-        // remove the search index so that it does not interfere with the next tests
-        OpenCms.getSearchManager().removeSearchIndex(searchIndex);
     }
 
     /**

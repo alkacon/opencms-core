@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchResult.java,v $
- * Date   : $Date: 2010/01/20 09:12:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/27 15:14:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,15 @@
 
 package org.opencms.search.galleries;
 
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.OpenCms;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
@@ -47,7 +50,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0 
  */
@@ -83,6 +86,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     /** The length of the search result. */
     protected int m_length;
 
+    /** The locales in which the content is available. */
+    protected List<String> m_locales;
+
     /** The resource path of this search result. */
     protected String m_path;
 
@@ -113,8 +119,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
      * @param score the score of this search result
      * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
      * @param excerpt the excerpt of the search result's content
+     * @param locale the locale to create the result for
      */
-    public CmsGallerySearchResult(int score, Document doc, String excerpt) {
+    public CmsGallerySearchResult(int score, Document doc, String excerpt, Locale locale) {
 
         m_score = score;
         m_excerpt = excerpt;
@@ -125,16 +132,37 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
             m_path = f.stringValue();
         }
 
+        if (locale == null) {
+            OpenCms.getLocaleManager();
+            locale = CmsLocaleManager.getDefaultLocale();
+        }
+
         m_title = null;
         f = doc.getFieldable(CmsSearchField.FIELD_TITLE);
         if (f != null) {
             m_title = f.stringValue();
+        }
+        if (m_title == null) {
+            f = doc.getFieldable(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(
+                CmsSearchField.FIELD_TITLE,
+                locale));
+            if (f != null) {
+                m_title = f.stringValue();
+            }
         }
 
         m_description = null;
         f = doc.getFieldable(CmsSearchField.FIELD_DESCRIPTION);
         if (f != null) {
             m_description = f.stringValue();
+        }
+        if (m_description == null) {
+            f = doc.getFieldable(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(
+                CmsSearchField.FIELD_DESCRIPTION,
+                locale));
+            if (f != null) {
+                m_description = f.stringValue();
+            }
         }
 
         m_resourceType = null;
@@ -232,6 +260,13 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         if (f != null) {
             String containers = f.stringValue();
             m_containerTypes = CmsStringUtil.splitAsList(containers, ' ');
+        }
+
+        m_locales = null;
+        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALES);
+        if (f != null) {
+            String locales = f.stringValue();
+            m_locales = CmsStringUtil.splitAsList(locales, ' ');
         }
     }
 
@@ -361,6 +396,16 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     public int getLength() {
 
         return m_length;
+    }
+
+    /**
+     * Returns the list of locales this search result is available for.<p>
+     * 
+     * @return the list of locales this search result is available for
+     */
+    public List<String> getLocales() {
+
+        return m_locales;
     }
 
     /**

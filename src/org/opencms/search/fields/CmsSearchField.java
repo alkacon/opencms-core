@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/27 15:14:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.0 
  */
@@ -281,14 +281,32 @@ public class CmsSearchField {
     /**
      * Creates a Lucene field from the configuration and the provided content.<p>
      * 
-     * If no valid content is provided (ie. the content is either <code>null</code> or 
+     * The configured name of the field as provided by {@link #getName()} is used.<p>
+     * 
+     * If no valid content is provided (that is the content is either <code>null</code> or 
      * only whitespace), then no field is created and <code>null</code> is returned.<p>
      * 
      * @param content the content to create the field with
      * 
-     * @return a Lucene field created from the configuration and the provided conten
+     * @return a Lucene field created from the configuration and the provided content
      */
     public Field createField(String content) {
+
+        return createField(getName(), content);
+    }
+
+    /**
+     * Creates a Lucene field with the given name from the configuration and the provided content.<p>
+     * 
+     * If no valid content is provided (that is the content is either <code>null</code> or 
+     * only whitespace), then no field is created and <code>null</code> is returned.<p>
+     * 
+     * @param name the name of the field to create
+     * @param content the content to create the field with
+     * 
+     * @return a Lucene field with the given name from the configuration and the provided content
+     */
+    public Field createField(String name, String content) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(content)) {
             content = getDefaultValue();
@@ -307,7 +325,7 @@ public class CmsSearchField {
             if (isStored() || isCompressed()) {
                 store = Field.Store.YES;
             }
-            Field result = new Field(getName(), content, store, index);
+            Field result = new Field(name, content, store, index);
             if (getBoost() != BOOST_DEFAULT) {
                 result.setBoost(getBoost());
             }

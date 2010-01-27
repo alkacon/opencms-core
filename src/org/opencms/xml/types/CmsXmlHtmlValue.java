@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2009/09/04 15:01:15 $
- * Version: $Revision: 1.42.2.1 $
+ * Date   : $Date: 2010/01/27 15:14:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,8 +75,14 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
 
+    /** Null value for plain text extraction errors. */
+    private static final String NULL_VALUE = "null";
+
     /** Base type for single type instances, required for XML pages. */
     private static final I_CmsXmlSchemaType TYPE_BASE = new CmsXmlHtmlValue("base", "1", "1");
+
+    /** The plain text value of the element node. */
+    private String m_plainTextValue;
 
     /** The String value of the element node. */
     private String m_stringValue;
@@ -188,11 +194,17 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
     @Override
     public String getPlainText(CmsObject cms) {
 
-        try {
-            return CmsHtmlExtractor.extractText(this.getStringValue(cms), m_document.getEncoding());
-        } catch (Exception exc) {
+        if (m_plainTextValue == null) {
+            try {
+                m_plainTextValue = CmsHtmlExtractor.extractText(this.getStringValue(cms), m_document.getEncoding());
+            } catch (Exception exc) {
+                m_plainTextValue = NULL_VALUE;
+            }
+        }
+        if (m_plainTextValue == NULL_VALUE) {
             return null;
         }
+        return m_plainTextValue;
     }
 
     /**

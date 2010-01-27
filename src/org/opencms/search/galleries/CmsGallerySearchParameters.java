@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchParameters.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/27 15:14:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.search.galleries;
 
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.fields.CmsSearchField;
@@ -46,7 +47,7 @@ import org.apache.lucene.search.SortField;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -437,6 +438,9 @@ public class CmsGallerySearchParameters {
      */
     public String getLocale() {
 
+        if (m_locale == null) {
+            m_locale = CmsLocaleManager.getDefaultLocale().toString();
+        }
         return m_locale;
     }
 
@@ -532,9 +536,9 @@ public class CmsGallerySearchParameters {
             case state_desc:
                 return SORT_STATE_DESC;
             case title_asc:
-                return SORT_TITLE_ASC;
+                return getTitleSort(getLocale(), false);
             case title_desc:
-                return SORT_TITLE_DESC;
+                return getTitleSort(getLocale(), true);
             case type_asc:
                 return SORT_TYPE_ASC;
             case type_desc:
@@ -567,6 +571,20 @@ public class CmsGallerySearchParameters {
             m_sortOrder = CmsGallerySortParam.DEFAULT;
         }
         return m_sortOrder;
+    }
+
+    /**
+     * Returns a sort for a localized title.<p>
+     * 
+     * @param locale the locale to sort with
+     * @param desc indicates if the sort should be descending
+     * 
+     * @return a sort for a localized title
+     */
+    public Sort getTitleSort(String locale, boolean desc) {
+
+        String titleName = CmsGallerySearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE, locale);
+        return new Sort(new SortField[] {new SortField(titleName, SortField.STRING, desc), SortField.FIELD_SCORE});
     }
 
     /**

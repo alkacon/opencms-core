@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchFieldMapping.java,v $
- * Date   : $Date: 2010/01/20 09:12:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/27 15:14:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.search.galleries;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.OpenCms;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -48,7 +48,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -70,19 +70,19 @@ public class CmsGallerySearchFieldMapping extends CmsSearchFieldMapping {
     public static final String FIELD_RESOURCE_LENGTH = "res_length";
 
     /** Name of the field that contains the resource locale. */
-    public static final String FIELD_RESOURCE_LOCALE = "res_locale";
+    public static final String FIELD_RESOURCE_LOCALES = "res_locales";
 
     /** Name of the field that contains the resource state. */
     public static final String FIELD_RESOURCE_STATE = "res_state";
+
+    /** Name of the field that contains the structure id the resource. */
+    public static final String FIELD_RESOURCE_STRUCTURE_ID = "res_structureId";
 
     /** Name of the field that contains the name of the user who created the resource. */
     public static final String FIELD_RESOURCE_USER_CREATED = "res_userCreated";
 
     /** Name of the field that contains the name of the user who last modified the resource. */
     public static final String FIELD_RESOURCE_USER_LASTMODIFIED = "res_userLastModified";
-
-    /** Name of the field that contains the structure id the resource. */
-    public static final String FIELD_RESOURCE_STRUCTURE_ID = "res_structureId";
 
     /**
      * Public constructor for a new search field mapping.<p>
@@ -139,15 +139,21 @@ public class CmsGallerySearchFieldMapping extends CmsSearchFieldMapping {
                     extractionResult,
                     properties,
                     propertiesSearched);
-            } else if (CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALE.equals(getParam())) {
-                Locale l;
-                List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, res);
-                if ((locales != null) && (locales.size() > 0)) {
-                    l = locales.get(0);
+            } else if (CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALES.equals(getParam())) {
+                List<Locale> locales = null;
+                if (CmsResourceTypeXmlContent.isXmlContent(res)) {
+                    // resource type is XML content - just return the locales actually available
+                    result = extractionResult.getContentItems().get(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALES);
                 } else {
-                    l = CmsLocaleManager.getDefaultLocale();
+                    // for all other resource types we return the locales available
+                    locales = OpenCms.getLocaleManager().getAvailableLocales(cms, res);
+                    StringBuffer buf = new StringBuffer();
+                    for (Locale locale : locales) {
+                        buf.append(locale.toString());
+                        buf.append(' ');
+                    }
+                    result = buf.toString();
                 }
-                result = l.toString();
             }
         } else {
             // default mapping

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2010/01/05 14:05:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/27 15:14:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -455,6 +455,36 @@ public class CmsLocaleManager implements I_CmsEventListener {
                 resourceName,
                 CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES,
                 true).getValue();
+        } catch (CmsException exc) {
+            // noop
+        }
+
+        List<Locale> result = null;
+        if (availableNames != null) {
+            result = getAvailableLocales(availableNames);
+        }
+        if ((result == null) || (result.size() == 0)) {
+            return m_availableLocales;
+        } else {
+            return result;
+        }
+    }
+
+    /**
+     * Returns an array of available locale names for the given resource.<p>
+     * 
+     * @param cms the current cms permission object
+     * @param resource the resource
+     * 
+     * @return an array of available locale names
+     * 
+     * @see #getAvailableLocales()
+     */
+    public List<Locale> getAvailableLocales(CmsObject cms, CmsResource resource) {
+
+        String availableNames = null;
+        try {
+            availableNames = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES, true).getValue();
         } catch (CmsException exc) {
             // noop
         }

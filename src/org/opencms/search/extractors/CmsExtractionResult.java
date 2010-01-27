@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractionResult.java,v $
- * Date   : $Date: 2009/09/07 12:41:37 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2010/01/27 15:14:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,13 +49,13 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExtractionResult implements I_CmsExtractionResult, Serializable {
 
-    /** UID rerquired for safe serialization. */
+    /** UID required for safe serialization. */
     private static final long serialVersionUID = 1465447302192195154L;
 
     /** The extracted individual content items. */
@@ -65,7 +65,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     private byte[] m_serializedVersion;
 
     /**
-     * Creates a new extration result without meta information and without additional fields.<p>
+     * Creates a new extraction result without meta information and without additional fields.<p>
      * 
      * @param content the extracted content
      */
