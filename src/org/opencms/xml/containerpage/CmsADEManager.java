@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/01/26 15:18:22 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/01/27 08:20:23 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 7.6
  */
@@ -261,7 +262,7 @@ public class CmsADEManager {
                     properties.put(propertyName, new CmsProperty(
                         propertyName,
                         null,
-                        CmsXmlContentProperty.getPropValueIds(cms, prop.getPropertyType(), prop.getDefault())));
+                        CmsXmlContentPropertyHelper.getPropValueIds(cms, prop.getPropertyType(), prop.getDefault())));
                 }
             }
         } catch (Exception e) {

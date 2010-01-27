@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2010/01/26 11:00:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/01/27 08:20:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import java.util.HashMap;
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -250,7 +250,7 @@ public class CmsJspTagProperty extends TagSupport {
                     // try to find property on the container element
                     try {
                         CmsContainerElementBean currentElement = OpenCms.getADEManager().getCurrentElement(req);
-                        return CmsXmlContentProperty.mergeDefaults(
+                        return CmsXmlContentPropertyHelper.mergeDefaults(
                             cms,
                             cms.readResource(currentElement.getElementId()),
                             currentElement.getProperties());

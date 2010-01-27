@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/26 11:00:56 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/01/27 08:20:23 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,6 +63,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 7.6
  */
@@ -295,10 +296,8 @@ public class CmsADEServer extends A_CmsAjaxServer {
             Iterator<String> itProperties = properties.keys();
             while (itProperties.hasNext()) {
                 String propertyName = itProperties.next();
-                cnfProps.put(propertyName, CmsXmlContentProperty.getPropValueIds(
-                    cms,
-                    propertiesConf.get(propertyName).getPropertyType(),
-                    properties.getString(propertyName)));
+                cnfProps.put(propertyName, CmsXmlContentPropertyHelper.getPropValueIds(cms, propertiesConf.get(
+                    propertyName).getPropertyType(), properties.getString(propertyName)));
             }
         }
         return new CmsContainerElementBean(structureId, null, cnfProps);
@@ -502,7 +501,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
             String elemParam = data.optString(JsonRequest.elem.name());
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
             CmsContainerElementBean element = getCachedElement(elemParam);
-            result = elemUtil.getElementPropertyInfo(element);
+            result.put(JsonRequest.properties.name(), elemUtil.getElementPropertyInfo(element));
         } else if (action.equals(Action.SET)) {
             if (checkParameters(data, null, JsonRequest.fav.name())) {
                 // save the favorite list
@@ -579,7 +578,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
      * @param resource the container page's resource 
      * @param cntPage the container page to use
      * @param elemUri the current element uri, <code>null</code> if not to be used as template
-     * @param types ythe container page types
+     * @param types the container page types
      * 
      * @return the data for the given container page
      * 

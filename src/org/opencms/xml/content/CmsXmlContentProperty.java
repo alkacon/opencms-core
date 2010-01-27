@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2010/01/26 15:09:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/01/27 08:20:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,56 +31,16 @@
 
 package org.opencms.xml.content;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsMessages;
-import org.opencms.json.JSONObject;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
-import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
-import org.opencms.xml.CmsXmlContentDefinition;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-
 /**
- * Contains the property configuration for a container-page element.
+ * XML property configuration.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.9.2
  */
 public class CmsXmlContentProperty implements Cloneable {
-
-    /** Property type constants. */
-    public enum PropType {
-        /** Property type constant string. */
-        string,
-        /** Property type constant VFS list. */
-        vfslist;
-
-        /**
-         * Checks if the given type is {@link #vfslist}.<p>
-         * 
-         * @param type the type to check
-         * 
-         * @return <code>true</code> if the given type is {@link #vfslist}
-         */
-        public static boolean isVfsList(String type) {
-
-            if (type == null) {
-                return false;
-            }
-            return valueOf(type.toLowerCase()) == vfslist;
-        }
-    }
 
     /** XML node name constants. */
     public enum XmlNode {
@@ -99,17 +59,31 @@ public class CmsXmlContentProperty implements Cloneable {
         Value;
     }
 
+    /** Property type constants. */
+    public enum PropType {
+        /** Property type constant string. */
+        string,
+        /** Property type constant VFS list. */
+        vfslist;
+    
+        /**
+         * Checks if the given type is {@link #vfslist}.<p>
+         * 
+         * @param type the type to check
+         * 
+         * @return <code>true</code> if the given type is {@link #vfslist}
+         */
+        public static boolean isVfsList(String type) {
+    
+            if (type == null) {
+                return false;
+            }
+            return valueOf(type.toLowerCase()) == vfslist;
+        }
+    }
+
     /** IDs separator constant. */
     public static final String PROP_SEPARATOR = ",";
-
-    /** IDs separator constant. */
-    public static final String CONF_KEYVALUE_SEPARATOR = ":";
-
-    /** IDs separator constant. */
-    public static final String CONF_PARAM_SEPARATOR = "\\|";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsXmlContentProperty.class);
 
     /** Default value. */
     private String m_default;
@@ -178,147 +152,6 @@ public class CmsXmlContentProperty implements Cloneable {
         m_niceName = niceName;
         m_description = description;
         m_error = error;
-    }
-
-    /**
-     * Returns a converted property value depending on the given type.<p>
-     * 
-     * If the type is {@link PropType#vfslist}, the value is parsed as a 
-     * list of paths and converted to a list of IDs.<p>
-     * 
-     * @param cms the current CMS context
-     * @param type the property type
-     * @param value the raw property value
-     * 
-     * @return a converted property value depending on the given type
-     */
-    public static String getPropValueIds(CmsObject cms, String type, String value) {
-
-        if (PropType.isVfsList(type)) {
-            return convertPathsToIds(cms, value);
-        }
-        return value;
-    }
-
-    /**
-     * Returns a converted property value depending on the given type.<p>
-     * 
-     * If the type is {@link PropType#vfslist}, the value is parsed as a 
-     * list of IDs and converted to a list of paths.<p>
-     * 
-     * @param cms the current CMS context
-     * @param type the property type
-     * @param value the raw property value
-     * 
-     * @return a converted property value depending on the given type
-     */
-    public static String getPropValuePaths(CmsObject cms, String type, String value) {
-
-        if (PropType.isVfsList(type)) {
-            return convertIdsToPaths(cms, value);
-        }
-        return value;
-    }
-
-    /**
-     * Extends the given properties with the default values 
-     * from the resource's property configuration.<p>
-     * 
-     * @param cms the current CMS context
-     * @param resource the resource to get the property configuration from 
-     * @param properties the properties to extend
-     *  
-     * @return a merged map of properties
-     */
-    public static Map<String, String> mergeDefaults(CmsObject cms, CmsResource resource, Map<String, String> properties) {
-
-        Map<String, String> result = new HashMap<String, String>();
-        try {
-            Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(
-                cms,
-                resource).getProperties();
-            for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
-                CmsXmlContentProperty prop = entry.getValue();
-                result.put(entry.getKey(), getPropValueIds(cms, prop.getPropertyType(), prop.getDefault()));
-            }
-        } catch (CmsException e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        result.putAll(properties);
-        return result;
-    }
-
-    /**
-     * Converts a string containing zero or more structure ids into a string containing the corresponding VFS paths.<p>
-     *   
-     * @param cms the CmsObject to use for the VFS operations 
-     * @param value a string representation of a list of ids
-     * 
-     * @return a string representation of a list of paths
-     */
-    private static String convertIdsToPaths(CmsObject cms, String value) {
-
-        if (value == null) {
-            return null;
-        }
-        String result = "";
-        // represent vfslists as lists of path in JSON
-        List<String> ids = CmsStringUtil.splitAsList(value, PROP_SEPARATOR);
-        StringBuffer buffer = new StringBuffer();
-        if (ids.size() > 0) {
-            for (String id : ids) {
-                try {
-                    CmsResource propResource = cms.readResource(new CmsUUID(id));
-                    buffer.append(cms.getSitePath(propResource));
-                } catch (Exception e) {
-                    // should never happen
-                    LOG.error(e.getLocalizedMessage(), e);
-                    continue;
-                }
-                buffer.append(PROP_SEPARATOR);
-            }
-            // don't include last comma (which exists since ids.size() isn't zero)  
-            result = buffer.substring(0, buffer.length() - PROP_SEPARATOR.length());
-        }
-        return result;
-
-    }
-
-    /**
-     * Converts a string containing zero or more VFS paths into a string containing the corresponding structure ids.<p>
-     *   
-     * @param cms the CmsObject to use for the VFS operations 
-     * @param value a string representation of a list of paths
-     * 
-     * @return a string representation of a list of ids
-     */
-    private static String convertPathsToIds(CmsObject cms, String value) {
-
-        if (value == null) {
-            return null;
-        }
-        String result = "";
-        // represent vfslists as lists of path in JSON
-        List<String> paths = CmsStringUtil.splitAsList(value, PROP_SEPARATOR);
-        StringBuffer buffer = new StringBuffer();
-        if (paths.size() > 0) {
-            for (String path : paths) {
-                try {
-                    CmsResource propResource = cms.readResource(path);
-                    buffer.append(propResource.getStructureId().toString());
-                } catch (CmsException e) {
-                    // should never happen
-                    LOG.error(e.getLocalizedMessage(), e);
-                    continue;
-                }
-                buffer.append(PROP_SEPARATOR);
-            }
-            // don't include last comma (which exists since ids.size() isn't zero)  
-            result = buffer.substring(0, buffer.length() - PROP_SEPARATOR.length());
-        }
-        return result;
-
     }
 
     /**
@@ -439,45 +272,6 @@ public class CmsXmlContentProperty implements Cloneable {
     public String getWidgetConfiguration() {
 
         return m_widgetConfiguration;
-    }
-
-    /**
-     * Returns the widget configuration string parsed into a JSONObject.<p>
-     * 
-     * The configuration string should be a map of key value pairs separated by ':' and '|': KEY_1:VALUE_1|KEY_2:VALUE_2 ...
-     * 
-     * @param cms the current CmsObject instance
-     * @param messages the messages used to resolve macros
-     * @return the configuration JSON
-     */
-    public JSONObject getWidgetConfigurationAsJSON(CmsObject cms, CmsMessages messages) {
-
-        String conf = CmsMacroResolver.resolveMacros(m_widgetConfiguration, cms, messages);
-        JSONObject result = new JSONObject();
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(conf)) {
-            String[] confEntries = conf.split(CONF_PARAM_SEPARATOR);
-            for (int i = 0; i < confEntries.length; i++) {
-
-                try {
-                    String entry = confEntries[i];
-                    String key, value;
-                    if (entry.contains(CONF_KEYVALUE_SEPARATOR)) {
-                        key = entry.substring(0, entry.indexOf(CONF_KEYVALUE_SEPARATOR));
-                        value = entry.substring(entry.indexOf(CONF_KEYVALUE_SEPARATOR));
-                    } else {
-                        key = entry;
-                        value = "";
-                    }
-                    result.put(key, value);
-                } catch (Exception e) {
-                    LOG.error(Messages.get().container(
-                        Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1,
-                        m_propertyName), e);
-                }
-            }
-
-        }
-        return result;
     }
 
     /**

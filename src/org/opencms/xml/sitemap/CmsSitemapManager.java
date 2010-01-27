@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/26 14:06:23 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/01/27 08:20:23 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 7.9.2
  */
@@ -224,7 +225,7 @@ public class CmsSitemapManager {
             defProps = new HashMap<String, String>();
         } else {
             CmsResource resource = sitemaps.get(0);
-            defProps = CmsXmlContentProperty.mergeDefaults(cms, resource, Collections.<String, String> emptyMap());
+            defProps = CmsXmlContentPropertyHelper.mergeDefaults(cms, resource, Collections.<String, String> emptyMap());
         }
         m_cache.setDefaultProps(defProps, online);
         return defProps;

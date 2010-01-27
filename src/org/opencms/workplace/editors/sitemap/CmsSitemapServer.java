@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/26 15:09:47 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2010/01/27 08:20:23 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.editors.sitemap;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -45,7 +44,6 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -56,12 +54,12 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsPermissionViolationException;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsSiteEntryBean;
 import org.opencms.xml.sitemap.CmsSitemapBean;
 import org.opencms.xml.sitemap.CmsSitemapManager;
@@ -90,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 7.6
  */
@@ -392,7 +390,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             result.put(JsonResponse.name.name(), cms.getRequestContext().getFileTranslator().translateResource(name));
         } else if (action.equals(Action.PROPS)) {
             CmsResource sitemapRes = cms.readResource(sitemapParam);
-            result.put(JsonResponse.properties.name(), getPropertyInfoJSON(sitemapRes));
+            result.put(JsonResponse.properties.name(), CmsXmlContentPropertyHelper.getPropertyInfoJSON(cms, sitemapRes));
         } else if (action.equals(Action.SAVE)) {
             // save the sitemap
             CmsResource sitemapRes = cms.readResource(sitemapParam);
@@ -518,53 +516,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     }
 
     /**
-     * Returns the property information for the given sitemap as a JSON object.<p>
-     * 
-     * @param sitemapRes the sitemap resource
-     * 
-     * @return the property information
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if something goes wrong generating the JSON
-     */
-    public JSONObject getPropertyInfoJSON(CmsResource sitemapRes) throws CmsException, JSONException {
-
-        CmsObject cms = getCmsObject();
-
-        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
-        CmsMessages messages = CmsXmlContentDefinition.getContentHandlerForResource(cms, sitemapRes).getMessages(
-            settings.getLocale());
-        JSONObject jsonProperties = new JSONObject();
-        Map<String, CmsXmlContentProperty> propertiesConf = getPropertyConfig(sitemapRes);
-        Iterator<Map.Entry<String, CmsXmlContentProperty>> itProperties = propertiesConf.entrySet().iterator();
-        while (itProperties.hasNext()) {
-            Map.Entry<String, CmsXmlContentProperty> entry = itProperties.next();
-            String propertyName = entry.getKey();
-            CmsXmlContentProperty conf = entry.getValue();
-            JSONObject jsonProperty = new JSONObject();
-
-            jsonProperty.put(JsonProperty.defaultValue.name(), conf.getDefault());
-
-            jsonProperty.put(JsonProperty.type.name(), conf.getPropertyType());
-            jsonProperty.put(JsonProperty.widget.name(), conf.getWidget());
-            jsonProperty.put(JsonProperty.widgetConf.name(), conf.getWidgetConfigurationAsJSON(cms, messages));
-            jsonProperty.put(JsonProperty.ruleType.name(), conf.getRuleType());
-            jsonProperty.put(JsonProperty.ruleRegex.name(), conf.getRuleRegex());
-            jsonProperty.put(JsonProperty.niceName.name(), CmsMacroResolver.resolveMacros(
-                conf.getNiceName(),
-                cms,
-                messages));
-            jsonProperty.put(JsonProperty.description.name(), CmsMacroResolver.resolveMacros(
-                conf.getDescription(),
-                cms,
-                messages));
-            jsonProperty.put(JsonProperty.error.name(), CmsMacroResolver.resolveMacros(conf.getError(), cms, messages));
-            jsonProperties.put(propertyName, jsonProperty);
-        }
-        return jsonProperties;
-    }
-
-    /**
      * Returns the data for the given sitemap.<p>
      * 
      * @param resource the sitemap's resource 
@@ -610,7 +561,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         result.put(JsonResponse.superSitemaps.name(), superSitemapsJSON);
 
         // collect the properties
-        result.put(JsonResponse.properties.name(), getPropertyInfoJSON(resource));
+        result.put(JsonResponse.properties.name(), CmsXmlContentPropertyHelper.getPropertyInfoJSON(cms, resource));
 
         return result;
     }
@@ -762,7 +713,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             } else if (key.equals(CmsSitemapManager.Property.sitemap.name())) {
                 propType = CmsXmlContentProperty.PropType.vfslist.name();
             }
-            props.put(key, CmsXmlContentProperty.getPropValuePaths(cms, propType, prop.getValue()));
+            props.put(key, CmsXmlContentPropertyHelper.getPropValuePaths(cms, propType, prop.getValue()));
         }
         result.put(JsonSiteEntry.properties.name(), props);
 
@@ -849,7 +800,10 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 } else if (key.equals(CmsSitemapManager.Property.sitemap.name())) {
                     propType = CmsXmlContentProperty.PropType.vfslist.name();
                 }
-                properties.put(key, CmsXmlContentProperty.getPropValuePaths(cms, propType, jsonProps.optString(key)));
+                properties.put(key, CmsXmlContentPropertyHelper.getPropValuePaths(
+                    cms,
+                    propType,
+                    jsonProps.optString(key)));
             }
             JSONArray jsonSub = json.optJSONArray(JsonSiteEntry.subentries.name());
             CmsSiteEntryBean entry = new CmsSiteEntryBean(id, null, linkId, name, title, properties, recursive

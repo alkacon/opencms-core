@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/01/26 15:18:22 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/01/27 08:20:23 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.editors.ade;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -39,7 +38,6 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -47,20 +45,18 @@ import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsSubContainerBean;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
-import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -78,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 7.6
  */
@@ -117,31 +113,6 @@ public final class CmsElementUtil {
         types,
         /** The name of the user that last modified the element. */
         user;
-    }
-
-    /** Element Property json property constants. */
-    public enum JsonProperty {
-
-        /** Property's default value. */
-        defaultValue,
-        /** Property's description. */
-        description,
-        /** Property's error message. */
-        error,
-        /** Property's nice name. */
-        niceName,
-        /** Property's validation regular expression. */
-        ruleRegex,
-        /** Property's validation rule type. */
-        ruleType,
-        /** Property's type. */
-        type,
-        /** Property's value. */
-        value,
-        /** Property's widget. */
-        widget,
-        /** Property's widget configuration. */
-        widgetConf;
     }
 
     /** JSON response state value constant. */
@@ -383,49 +354,22 @@ public final class CmsElementUtil {
     public JSONObject getElementPropertyInfo(CmsContainerElementBean element) throws CmsException, JSONException {
 
         CmsResource elementRes = m_cms.readResource(element.getElementId());
-        CmsUserSettings settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
-        CmsMessages messages = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, elementRes).getMessages(
-            settings.getLocale());
-        JSONObject result = new JSONObject();
-        JSONObject jSONProperties = new JSONObject();
-        Map<String, CmsXmlContentProperty> propertiesConf = m_manager.getElementPropertyConfiguration(m_cms, elementRes);
+        JSONObject jsonProperties = CmsXmlContentPropertyHelper.getPropertyInfoJSON(m_cms, elementRes);
         Map<String, CmsProperty> properties = m_manager.getElementProperties(m_cms, element);
-        Iterator<Map.Entry<String, CmsXmlContentProperty>> itProperties = propertiesConf.entrySet().iterator();
+        Iterator<Map.Entry<String, CmsProperty>> itProperties = properties.entrySet().iterator();
         while (itProperties.hasNext()) {
-            Map.Entry<String, CmsXmlContentProperty> entry = itProperties.next();
+            Map.Entry<String, CmsProperty> entry = itProperties.next();
             String propertyName = entry.getKey();
-            CmsXmlContentProperty conf = entry.getValue();
-            JSONObject jsonProperty = new JSONObject();
-            jsonProperty.put(JsonProperty.value.name(), CmsXmlContentProperty.getPropValuePaths(
-                m_cms,
-                conf.getPropertyType(),
-                properties.get(propertyName).getStructureValue()));
-
-            String propDefault = conf.getDefault();
-            jsonProperty.put(JsonProperty.defaultValue.name(), propDefault);
-
-            jsonProperty.put(JsonProperty.type.name(), conf.getPropertyType());
-            jsonProperty.put(JsonProperty.widget.name(), conf.getWidget());
-            jsonProperty.put(JsonProperty.widgetConf.name(), CmsMacroResolver.resolveMacros(
-                conf.getWidgetConfiguration(),
-                m_cms,
-                messages));
-            jsonProperty.put(JsonProperty.ruleType.name(), conf.getRuleType());
-            jsonProperty.put(JsonProperty.ruleRegex.name(), conf.getRuleRegex());
-            jsonProperty.put(JsonProperty.niceName.name(), CmsMacroResolver.resolveMacros(
-                conf.getNiceName(),
-                m_cms,
-                messages));
-            jsonProperty.put(JsonProperty.description.name(), CmsMacroResolver.resolveMacros(
-                conf.getDescription(),
-                m_cms,
-                messages));
-            jsonProperty.put(
-                JsonProperty.error.name(),
-                CmsMacroResolver.resolveMacros(conf.getError(), m_cms, messages));
-            jSONProperties.put(propertyName, jsonProperty);
+            JSONObject jsonProperty = jsonProperties.optJSONObject(propertyName);
+            if (jsonProperty != null) {
+                jsonProperty.put(
+                    CmsXmlContentPropertyHelper.JsonProperty.value.name(),
+                    CmsXmlContentPropertyHelper.getPropValuePaths(
+                        m_cms,
+                        jsonProperty.getString(CmsXmlContentPropertyHelper.JsonProperty.type.name()),
+                        properties.get(propertyName).getStructureValue()));
+            }
         }
-        result.put(JsonElement.properties.name(), jSONProperties);
-        return result;
+        return jsonProperties;
     }
 }
