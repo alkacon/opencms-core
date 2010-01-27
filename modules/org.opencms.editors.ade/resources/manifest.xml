@@ -4055,26 +4055,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/ade/js/cms.messages.js</source>
-			<destination>system/workplace/resources/editors/ade/js/cms.messages.js</destination>
-			<type>plain</type>
-			<uuidstructure>a5dda1f7-bcc8-11de-92b5-99487bd5b80a</uuidstructure>
-			<uuidresource>a5dda1f8-bcc8-11de-92b5-99487bd5b80a</uuidresource>
-			<datelastmodified>Mon, 19 Oct 2009 16:01:22 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 19 Oct 2009 16:01:22 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[cms.messages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/editors/ade/js/cms.move.js</source>
 			<destination>system/workplace/resources/editors/ade/js/cms.move.js</destination>
 			<type>plain</type>
