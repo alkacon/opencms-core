@@ -1,9 +1,10 @@
-<%@ page import="org.opencms.file.*"%>
-<%@ page import="org.opencms.jsp.*"%>
-<%@ page import="java.util.*"%>
-<%@ page import="javax.servlet.*"%>
-<%@ page import="java.io.*"%>
-<%@ page import="org.opencms.workplace.*"%>
+<%@ page import="org.opencms.file.*, 
+	org.opencms.i18n.CmsResourceBundleLoader, 
+	org.opencms.jsp.*, 
+	java.util.*, 
+	javax.servlet.*,
+	java.io.*,
+	org.opencms.workplace.*"%>
 <%!
 public void setJavascriptMessage(String name, JspWriter out, ResourceBundle bundle) throws IOException {
 	String value = bundle.getString(name).replace("'", "\\'");
@@ -24,7 +25,7 @@ public void setAllMessages(JspWriter out, ResourceBundle bundle) throws Exceptio
 <%
     CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
     Locale locale = settings.getUserSettings().getLocale();
-    ResourceBundle bundle = ResourceBundle.getBundle("org.opencms.workplace.editors.ade.ade_messages", locale);
+    ResourceBundle bundle = CmsResourceBundleLoader.getBundle("org.opencms.workplace.editors.ade.messagesADE", locale);
 %>
 (function(cms) { var M = cms.messages;
 <%

@@ -4,10 +4,10 @@
    var /** long */ AJAX_TIMEOUT = 20000;
    
    /** Generic error message for json parse errors. */
-   var /** String */ JSON_PARSE_ERROR = cms.messages.JSON_PARSE_ERROR;
+   var /** String */ ERR_JSON_PARSE_0 = cms.messages.ERR_JSON_PARSE_0;
    
    /** Generic error message for ajax post errors. */
-   var /** String */ AJAX_SENT_ERROR = cms.messages.AJAX_SENT_ERROR;
+   var /** String */ ERR_AJAX_SENT_0 = cms.messages.ERR_AJAX_SENT_0;
    
    /** Keeping track of requests to be able to abort them. */
    var /** Array<XMLHttpRequest> */ requests = [];
@@ -67,7 +67,7 @@
             if (cms.toolbar && cms.toolbar.leavingPage) {
                return;
             }
-            alert(AJAX_SENT_ERROR);
+            alert(ERR_AJAX_SENT_0);
             afterPost(false);
          },
          'success': function(data) {
@@ -75,7 +75,7 @@
             try {
                var jsonData = JSON.parse(data, revive);
             } catch (e) {
-               alert(JSON_PARSE_ERROR);
+               alert(ERR_JSON_PARSE_0);
                afterPost(false, {});
                return;
             }

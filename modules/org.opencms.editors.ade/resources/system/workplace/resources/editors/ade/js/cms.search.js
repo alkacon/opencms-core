@@ -289,8 +289,8 @@
          _setSearchMode(true);
       });
       var buttons = [];
-      buttons[M.SEARCH_DIALOG_BUTTON_SEARCH] = _submitSearch;
-      buttons[M.SEARCH_DIALOG_BUTTON_CANCEL] = function() {
+      buttons[M.GUI_SEARCH_DIALOG_BUTTON_SEARCH_0] = _submitSearch;
+      buttons[M.GUI_SEARCH_DIALOG_BUTTON_CANCEL_0] = function() {
          $(this).dialog('close');
          $('form span.ade-error', $('#cms-search-dialog')).remove();
       };
@@ -301,7 +301,7 @@
          modal: true,
          zIndex: 99999,
          width: 340,
-         title: M.SEARCH_DIALOG_TITLE,
+         title: M.GUI_SEARCH_DIALOG_TITLE_0,
          resizable: false,
          buttons: buttons
       });
@@ -366,14 +366,14 @@
     * Show the 'LOADING' text for the search menu.
     */
    var _showLoading = function() {
-      $('.cms-loading').text(M.SEARCH_LOADING_SIGN);
+      $('.cms-loading').text(M.GUI_SEARCH_LOADING_SIGN_0);
    }
    
    /**
     * Hide the LOADING text for the search menu and display the number of search results loaded instead.
     */
    var _hideLoading = function() {
-      $('.cms-loading').text(cms.util.format(M.SEARCH_NUM_RESULTS, cms.search.getNumberOfResults(), cms.search.getTotalNumberOfResults()));
+      $('.cms-loading').text(cms.util.format(M.GUI_SEARCH_NUM_RESULTS_2, cms.search.getNumberOfResults(), cms.search.getTotalNumberOfResults()));
    }
    
    

@@ -176,16 +176,16 @@
          // appending publish-dialog content
          $(document.body).append(cms.publish.publishDialog);
          var buttons = {};
-         buttons[M.PUBLISH_DIALOG_OK] = function() {
+         buttons[M.GUI_PUBLISH_DIALOG_OK_0] = function() {
             $(this).dialog('close');
          }
-         buttons[M.PUBLISH_DIALOG_CANCEL] = function() {
+         buttons[M.GUI_PUBLISH_DIALOG_CANCEL_0] = function() {
             $(this).dialog('close');
          }
          $('#' + cms.publish.publishDialogId).dialog({
             buttons: buttons,
             width: 340,
-            title: M.PUBLISH_DIALOG_TITLE,
+            title: M.GUI_PUBLISH_DIALOG_TITLE_0,
             modal: true,
             autoOpen: true,
             draggable: true,
@@ -268,7 +268,7 @@
    var directDeleteItem = cms.toolbar.directDeleteItem = /** void */ function() {
       var elemId = $(this).closest('.cms-editable').attr('rel');
       var buttons = {};
-      buttons[M.DIRECT_DELETE_OK] = function() {
+      buttons[M.GUI_DIRECT_DELETE_OK_0] = function() {
          $(this).dialog('close');
          cms.data.deleteResources([elemId], function(ok) {
             var elemList = [elemId];
@@ -295,13 +295,13 @@
          });
       }
       
-      buttons[M.DIRECT_DELETE_CANCEL] = function() {
+      buttons[M.GUI_DIRECT_DELETE_CANCEL_0] = function() {
          $(this).dialog('close');
       }
-      $('<div id="cms-delete-dialog" style="display:none;" title="' + M.DIRECT_DELETE_TITLE + '">\
+      $('<div id="cms-delete-dialog" style="display:none;" title="' + M.GUI_DIRECT_DELETE_TITLE_0 + '">\
           <p>\
             ' +
-      M.DIRECT_DELETE_CONFIRM +
+      M.GUI_DIRECT_DELETE_CONFIRM_0 +
       '\
           </p>\
         </div>').appendTo("body").dialog({
@@ -602,7 +602,7 @@
       editorDialog.dialog({
          width: dialogWidth - 50,
          height: dialogHeight,
-         title: cms.util.format(M.EDITOR_TITLE, ((newLink) ? M.EDITOR_NEW_RESOURCE : path)), // mmoossen: resource name in title
+         title: cms.util.format(M.GUI_EDITOR_TITLE_1, ((newLink) ? M.GUI_EDITOR_NEW_RESOURCE_0 : path)), // mmoossen: resource name in title
          modal: true,
          autoOpen: true,
          closeOnEscape: false,
@@ -865,12 +865,12 @@
    var initFavDialog = cms.toolbar.initFavDialog = function() {
       $("#fav-edit").click(showFavDialog);
       var buttons = {};
-      buttons[M.FAV_EDIT_OK] = favEditOK;
-      buttons[M.FAV_EDIT_CANCEL] = favEditCancel;
+      buttons[M.GUI_FAV_EDIT_OK_0] = favEditOK;
+      buttons[M.GUI_FAV_EDIT_CANCEL_0] = favEditCancel;
       $('#fav-dialog').dialog({
          width: 380,
          // height: 500,
-         title: M.FAV_EDIT_TITLE,
+         title: M.GUI_FAV_EDIT_TITLE_0,
          modal: true,
          autoOpen: false,
          draggable: true,
@@ -983,19 +983,19 @@
       }
       
       if ($('#cms-save-dialog').size() == 0) {
-         $('<div id="cms-save-dialog" style="display:none;" title="' + M.SAVE_PAGE_TITLE + '"></div>').appendTo('body');
+         $('<div id="cms-save-dialog" style="display:none;" title="' + M.GUI_SAVE_PAGE_TITLE_0 + '"></div>').appendTo('body');
       }
       $dlg = $('#cms-save-dialog');
       $dlg.empty();
-      $dlg.append('<p>' + M.SAVE_PAGE_CONFIRM + '</p>');
+      $dlg.append('<p>' + M.GUI_SAVE_PAGE_CONFIRM_0 + '</p>');
       var buttons = {};
       
-      buttons[M.SAVE_PAGE_CANCEL] = function() {
+      buttons[M.GUI_SAVE_PAGE_CANCEL_0] = function() {
          $dlg.dialog('destroy');
          markAsInactive($('button[name="save"]'));
       }
       
-      buttons[M.SAVE_PAGE_OK] = function() {
+      buttons[M.GUI_SAVE_PAGE_OK_0] = function() {
          markAsInactive($('button[name="save"]'));
          $dlg.dialog('destroy');
          savePage();
@@ -1083,7 +1083,7 @@
     */
    var onUnload = cms.toolbar.onUnload = function() {
       if (cms.toolbar.pageChanged) {
-         var saveChanges = window.confirm(cms.util.format(M.UNLOAD_SAVE_CONFIRM, window.location.href));
+         var saveChanges = window.confirm(cms.util.format(M.GUI_UNLOAD_SAVE_CONFIRM_1, window.location.href));
          if (saveChanges) {
             cms.toolbar.savePage();
          } else {
@@ -1098,7 +1098,7 @@
                   deleteFromFavListAndRecList(newElems);
                   if (!ok) {
                      // TODO
-                     alert(M.UNLOAD_DELETE_ERROR);
+                     alert(M.ERR_UNLOAD_DELETE_0);
                   }
                });
             }
@@ -1135,7 +1135,7 @@
     */
    var leavePageDialog = cms.toolbar.leavePageDialog = function(target) {
       var buttons = {};
-      buttons[M.LEAVE_PAGE_SAVE] = function() {
+      buttons[M.GUI_LEAVE_PAGE_SAVE_0] = function() {
          $(this).dialog('destroy');
          savePage(function(ok) {
             if (ok) {
@@ -1144,19 +1144,19 @@
          });
       };
       
-      buttons[M.LEAVE_PAGE_OK] = function() {
+      buttons[M.GUI_LEAVE_PAGE_OK_0] = function() {
          $(this).dialog('destroy');
          leavePage(target);
       };
       
-      buttons[M.LEAVE_PAGE_CANCEL] = function() {
+      buttons[M.GUI_LEAVE_PAGE_CANCEL_0] = function() {
          $(this).dialog('destroy');
       };
       
       $('#cms-leave-dialog').dialog({
          autoOpen: true,
          modal: true,
-         title: M.LEAVE_PAGE_TITLE,
+         title: M.GUI_LEAVE_PAGE_TITLE_0,
          zIndex: 9999,
          buttons: buttons,
          close: function() {
@@ -1418,7 +1418,7 @@
       name: 'save',
       createButton: function() {
          var self = this;
-         self.button = $('<button name="Save" title="' + M.SAVE_BUTTON_TITLE + '"  class="cms-right ui-state-default ui-corner-all cms-deactivated"><span class="ui-icon cms-icon-save"/>&nbsp;</button>');
+         self.button = $('<button name="Save" title="' + M.GUI_SAVE_BUTTON_TITLE_0 + '"  class="cms-right ui-state-default ui-corner-all cms-deactivated"><span class="ui-icon cms-icon-save"/>&nbsp;</button>');
          self.button.click(showSaveDialog);
          return self.button;
       },
@@ -1472,7 +1472,7 @@
       name: 'storage',
       createButton: function() {
          var self = this;
-         self.button = makeWideButton('storage', M.STORAGE_BUTTON_TITLE, 'cms-icon-favorites');
+         self.button = makeWideButton('storage', M.GUI_STORAGE_BUTTON_TITLE_0, 'cms-icon-favorites');
          self.button.click(function() {
             toggleMode(self);
          })
@@ -1508,7 +1508,7 @@
       name: 'recent',
       createButton: function() {
          var self = this;
-         self.button = makeWideButton('recent', M.RECENT_BUTTON_TITLE, 'cms-icon-recent').click(function() {
+         self.button = makeWideButton('recent', M.GUI_RECENT_BUTTON_TITLE_0, 'cms-icon-recent').click(function() {
             toggleMode(self);
          });
          return self.button;
@@ -1529,7 +1529,7 @@
       menuId: cms.html.galleryMenuId,
       createButton: function() {
          var self = this;
-         self.button = makeWideButton('add', M.ADD_BUTTON_TITLE, 'cms-icon-new').click(function() {
+         self.button = makeWideButton('add', M.GUI_ADD_BUTTON_TITLE_0, 'cms-icon-new').click(function() {
             toggleMode(self);
          });
          return self.button;
@@ -1558,7 +1558,7 @@
       isEdit: true,
       createButton: function() {
          var self = this;
-         self.button = makeModeButton(this.name, M.PROP_BUTTON_TITLE, 'cms-icon-prop').click(function() {
+         self.button = makeModeButton(this.name, M.GUI_PROP_BUTTON_TITLE_0, 'cms-icon-prop').click(function() {
             toggleMode(self);
          });
          return self.button;
@@ -1585,7 +1585,7 @@
       isEdit: true,
       createButton: function() {
          var self = this;
-         self.button = makeModeButton(this.name, M.DELETE_BUTTON_TITLE, 'cms-icon-delete').click(function() {
+         self.button = makeModeButton(this.name, M.GUI_DELETE_BUTTON_TITLE_0, 'cms-icon-delete').click(function() {
             toggleMode(self);
          });
          return self.button;
@@ -1612,7 +1612,7 @@
       isEdit: true,
       createButton: function() {
          var self = this;
-         self.button = makeModeButton(this.name, M.EDIT_BUTTON_TITLE, 'cms-icon-edit').click(function() {
+         self.button = makeModeButton(this.name, M.GUI_EDIT_BUTTON_TITLE_0, 'cms-icon-edit').click(function() {
             toggleMode(self);
          });
          return self.button;
@@ -1644,7 +1644,7 @@
       isEdit: true,
       createButton: function() {
          var self = this;
-         self.button = makeModeButton(this.name, M.MOVE_BUTTON_TITLE, 'cms-icon-move').click(function() {
+         self.button = makeModeButton(this.name, M.GUI_MOVE_BUTTON_TITLE_0, 'cms-icon-move').click(function() {
             toggleMode(self);
          });
          return self.button;
@@ -1674,25 +1674,25 @@
       name: 'reset',
       createButton: function() {
          var self = this;
-         self.button = makeModeButton(this.name, M.RESET_BUTTON_TITLE, 'cms-icon-reset').click(function() {
+         self.button = makeModeButton(this.name, M.GUI_RESET_BUTTON_TITLE_0, 'cms-icon-reset').click(function() {
             if (!cms.toolbar.toolbarReady) {
                return;
             }
             if ($('#cms-reset-dialog').size() == 0) {
-               $('<div id="cms-reset-dialog" style="display:none">' + M.RESET_CONFIRM + '</div>').appendTo('body');
+               $('<div id="cms-reset-dialog" style="display:none">' + M.GUI_RESET_CONFIRM_0 + '</div>').appendTo('body');
             }
             var $dlg = $('#cms-reset-dialog');
             if (self.button.hasClass('cms-deactivated')) {
                return;
             }
             var buttons = {};
-            buttons[M.RESET_OK] = function() {
+            buttons[M.GUI_RESET_OK_0] = function() {
                $(this).dialog('destroy');
                reloadPage();
                
             }
             
-            buttons[M.RESET_CANCEL] = function() {
+            buttons[M.GUI_RESET_CANCEL_0] = function() {
                $(this).dialog('destroy');
             }
             
@@ -1700,7 +1700,7 @@
                autoOpen: true,
                modal: true,
                zIndex: 9999,
-               title: M.RESET_TITLE,
+               title: M.GUI_RESET_TITLE_0,
                buttons: buttons,
                close: function() {
                   $(this).dialog('destroy');

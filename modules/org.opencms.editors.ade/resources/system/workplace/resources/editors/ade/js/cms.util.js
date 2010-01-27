@@ -286,7 +286,7 @@
     */
    var leavePageDialog = cms.util.leavePageDialog = function(target, saveFunction, leaveFunction) {
       var buttons = {};
-      buttons[M.LEAVE_PAGE_SAVE] = function() {
+      buttons[M.GUI_LEAVE_PAGE_SAVE_0] = function() {
          $(this).dialog('destroy');
          saveFunction(function(ok) {
             if (ok) {
@@ -295,22 +295,22 @@
          });
       };
       
-      buttons[M.LEAVE_PAGE_OK] = function() {
+      buttons[M.GUI_LEAVE_PAGE_OK_0] = function() {
          $(this).dialog('destroy');
          $.isFunction(leaveFunction) ? leaveFunction(target) : window.location.href=target;
       };
       
-      buttons[M.LEAVE_PAGE_CANCEL] = function() {
+      buttons[M.GUI_LEAVE_PAGE_CANCEL_0] = function() {
          $(this).dialog('destroy');
       };
       var $dialogDiv = $('#cms-leave-dialog');
       if (!$dialogDiv.length){
-          $dialogDiv=$('<div id="cms-leave-dialog" style="display: none;">' + M.LEAVE_PAGE_CONFIRM + '</div>').appendTo('body');
+          $dialogDiv=$('<div id="cms-leave-dialog" style="display: none;">' + M.GUI_LEAVE_PAGE_CONFIRM_0 + '</div>').appendTo('body');
       }
       $dialogDiv.dialog({
          autoOpen: true,
          modal: true,
-         title: M.LEAVE_PAGE_TITLE,
+         title: M.GUI_LEAVE_PAGE_TITLE_0,
          zIndex: 9999,
          buttons: buttons,
          close: function() {

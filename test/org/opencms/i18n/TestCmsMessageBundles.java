@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2009/06/04 14:35:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/01/27 14:35:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -131,13 +131,15 @@ public abstract class TestCmsMessageBundles extends TestCase {
     protected String doPreTestBundle(I_CmsMessageBundle bundle, Locale locale) {
 
         String className = bundle.getClass().getName();
-        if (!className.endsWith(".Messages")) {
+        int indexOfMessages = className.lastIndexOf(".Messages");
+        if (indexOfMessages < 0) {
             return "Bundle '" + className + "' is not a 'Messages' class.\n";
         }
-        if (!className.toLowerCase().equals(bundle.getBundleName())) {
+        if (!className.toLowerCase().equals(bundle.getBundleName().toLowerCase())) {
             return "Bundle '" + bundle.getBundleName() + "' has not the form: packagename.messages.\n";
         }
-        if (!bundle.getBundleName().endsWith(".messages")) {
+        indexOfMessages = bundle.getBundleName().lastIndexOf(".messages");
+        if (indexOfMessages < 0) {
             return "The Message bundle '"
                 + bundle.getBundleName()
                 + "' does not ends with: '.messages'. \n "
@@ -221,13 +223,14 @@ public abstract class TestCmsMessageBundles extends TestCase {
                         && !key.startsWith(KEY_PREFIX_INIT)
                         && !key.startsWith(KEY_PREFIX_LOG) && !key.startsWith(KEY_PREFIX_RPT))) {
                     errorMessages.add("Key '" + key + "' must have the form {ERR|LOG|INIT|GUI|RPT}_KEYNAME_{0-9}.");
+                    continue;
                 }
                 int argCount = 0;
                 try {
                     argCount = Integer.valueOf(key.substring(key.length() - 1)).intValue();
-                } catch (Exception e) {
-                    System.out.println(bundle.getBundleName());
-                    throw e;
+                } catch (Throwable e) {
+                    errorMessages.add("Key '" + key + "' must end in the number of parameters.");
+                    continue;
                 }
                 if (testKeyValue && isPresent) {
                     for (int j = 0; j < argCount; j++) {

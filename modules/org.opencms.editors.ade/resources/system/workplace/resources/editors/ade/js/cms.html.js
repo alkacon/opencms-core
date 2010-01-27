@@ -74,7 +74,7 @@
       var addMenuItem = '';
       if (menuId == favoriteMenuId) {
          listId = favoriteListId;
-         addMenuItem = '<button id="fav-edit" name="Edit_Favorites" title="'+M.EDIT_FAVORITES_BUTTON+'" class="ui-state-default ui-corner-all cms-edit-favorites">'+M.EDIT_FAVORITES_BUTTON+'</button>';
+         addMenuItem = '<button id="fav-edit" name="Edit_Favorites" title="'+M.GUI_EDIT_FAVORITES_BUTTON_0+'" class="ui-state-default ui-corner-all cms-edit-favorites">'+M.GUI_EDIT_FAVORITES_BUTTON_0+'</button>';
       } else if (menuId == recentMenuId) {
          listId = recentListId;
       } else {
@@ -110,7 +110,7 @@
                         <ul id="', favoriteListId, '" class="cms-list-scrolling-inner cms-item-list">\
                         </ul>\
                     </div>\
-                    <button id="fav-edit" name="Edit_Favorites" title="', M.EDIT_FAVORITES_BUTTON, '" class="ui-state-default ui-corner-all cms-edit-favorites">',M.EDIT_FAVORITES_BUTTON,'</button>\
+                    <button id="fav-edit" name="Edit_Favorites" title="', M.GUI_EDIT_FAVORITES_BUTTON_0, '" class="ui-state-default ui-corner-all cms-edit-favorites">',M.GUI_EDIT_FAVORITES_BUTTON_0,'</button>\
                 </div>\
                 <div id="recent-tab">\
                     <div class="cms-list-scrolling ui-corner-all">\
@@ -143,12 +143,12 @@
           <div class="connect ui-corner-top"></div>\
           <div class="ui-widget-shadow ui-corner-all" style="width: 345px"></div>\
           <div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
-              <button class="cms-search-button ui-corner-all ui-state-default">'+M.SEARCH_BUTTON+'</button>\
+              <button class="cms-search-button ui-corner-all ui-state-default">'+M.GUI_SEARCH_BUTTON_0+'</button>\
               <div class="cms-scrolling" style="display:none">\
                   <ul id="cms-search-list"  class="cms-scrolling-inner cms-item-list">\
                   </ul>\
               </div>\
-              <div class="cms-loading">'+M.PLEASE_START_SEARCH+'</div>\
+              <div class="cms-loading">'+M.GUI_PLEASE_START_SEARCH_0+'</div>\
           </div>\
       </div>';
    
@@ -204,17 +204,17 @@
           <form>\
               <ol class="ade-forms">\
                    <li class="ade-required">\
-                       <label for="cms-search-query">'+M.SEARCH_DIALOG_QUERY+'<span class="ade-required">*</span></label>\
+                       <label for="cms-search-query">'+M.GUI_SEARCH_DIALOG_QUERY_0+'<span class="ade-required">*</span></label>\
                        <input type="text" name="cms-search-query" class="cms-search-query" id="cms-search-query"></input>\
                    </li>\
-                   <li><a href="#" class="cms-advanced-search cms-to-basic-search" style="display:none; text-decoration:underline">'+M.SEARCH_DIALOG_BASIC+'</a></li>\
-                   <li><a href="#" class="cms-basic-search cms-to-advanced-search" style="text-decoration:underline">'+M.SEARCH_DIALOG_ADVANCED+'</a></li>\
+                   <li><a href="#" class="cms-advanced-search cms-to-basic-search" style="display:none; text-decoration:underline">'+M.GUI_SEARCH_DIALOG_BASIC_0+'</a></li>\
+                   <li><a href="#" class="cms-basic-search cms-to-advanced-search" style="text-decoration:underline">'+M.GUI_SEARCH_DIALOG_ADVANCED_0+'</a></li>\
                    <li class="cms-advanced-search" style="display:none">\
-                      <label for="cms-search-path">'+M.SEARCH_DIALOG_PATH+'</label>\
+                      <label for="cms-search-path">'+M.GUI_SEARCH_DIALOG_PATH_0+'</label>\
                       <input type="text" name="cms-search-path" class="cms-search-path" id="cms-search-path"></input>\
                    </li>\
                    <br>\
-                   <li class="cms-advanced-search" style="display:none"><b>'+M.SEARCH_DIALOG_TYPES+'</b><span class="ade-required">*</span></li>\
+                   <li class="cms-advanced-search" style="display:none"><b>'+M.GUI_SEARCH_DIALOG_TYPES_0+'</b><span class="ade-required">*</span></li>\
                    <li class="cms-advanced-search ade-required ade-grouping" style="display:none">\
                        <div class="cms-search-type-list">'];
       
