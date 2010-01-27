@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/01/27 09:49:37 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.5.2
  * 
@@ -99,10 +99,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Formatter,
         /** Container name node name. */
         Name,
-        /** Element URI node name. */
-        Uri,
         /** Container type node name. */
-        Type;
+        Type,
+        /** Element URI node name. */
+        Uri;
     }
 
     /** The log object for this class. */
@@ -257,6 +257,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         // lock the file
         cms.lockResourceTemporary(cms.getSitePath(file));
 
+        // keep unused containers
+        CmsContainerPageBean savePage = addUnusedContainers(cms, cntPage);
+
         // wipe the locale
         Locale locale = cms.getRequestContext().getLocale();
         if (hasLocale(locale)) {
@@ -271,7 +274,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
         // add the nodes to the raw XML structure
         Element parent = getLocaleNode(locale);
-        saveCntPage(cms, parent, cntPage, propertiesConf);
+        saveCntPage(cms, parent, savePage, propertiesConf);
 
         // generate bookmarks
         initDocument(m_document, m_encoding, m_contentDefinition);
@@ -279,6 +282,36 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         // write to VFS
         file.setContents(marshal());
         cms.writeFile(file);
+    }
+
+    /**
+     * Merges the containers of the current document that are not used in the given container page with it.<p>
+     * 
+     * @param cms the current CMS context
+     * @param cntPage the container page to merge
+     * 
+     * @return a new container page with the additional unused containers
+     */
+    protected CmsContainerPageBean addUnusedContainers(CmsObject cms, CmsContainerPageBean cntPage) {
+
+        Locale locale = cms.getRequestContext().getLocale();
+
+        // get the used containers first
+        Map<String, CmsContainerBean> currentContainers = cntPage.getContainers();
+        List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
+        for (String cntName : cntPage.getNames()) {
+            containers.add(currentContainers.get(cntName));
+        }
+
+        // now get the unused containers 
+        CmsContainerPageBean currentCntPage = getCntPage(cms, locale);
+        for (String cntName : currentCntPage.getNames()) {
+            if (!currentContainers.containsKey(cntName)) {
+                containers.add(currentCntPage.getContainers().get(cntName));
+            }
+        }
+
+        return new CmsContainerPageBean(locale, containers);
     }
 
     /**

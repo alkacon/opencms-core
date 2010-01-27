@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerPageBean.java,v $
- * Date   : $Date: 2010/01/26 11:00:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/27 09:49:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6
  */
@@ -109,6 +109,16 @@ public class CmsContainerPageBean {
     }
 
     /**
+     * Returns the list of container names.<p>
+     *
+     * @return the list of container names
+     */
+    public List<String> getNames() {
+
+        return m_names;
+    }
+
+    /**
      * Returns the types.<p>
      *
      * @return the types
@@ -116,15 +126,5 @@ public class CmsContainerPageBean {
     public Set<String> getTypes() {
 
         return m_types;
-    }
-
-    /**
-     * Returns the list of container names.<p>
-     *
-     * @return the list of container names
-     */
-    protected List<String> getNames() {
-
-        return m_names;
     }
 }
