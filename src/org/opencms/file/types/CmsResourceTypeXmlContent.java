@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2010/01/26 11:00:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/27 14:59:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +94,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /** The (optional) schema of this resource. */
     private String m_schema;
+
+    // TODO: correctly cache m_containerFormatters
+    private int todo;
 
     /**
      * Returns <code>true</code> in case the given resource is an XML content.<p>
