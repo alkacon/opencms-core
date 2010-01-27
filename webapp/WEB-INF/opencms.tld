@@ -591,6 +591,11 @@
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<name>detailview</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>        
     
     <function>

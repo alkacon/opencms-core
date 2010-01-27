@@ -114,7 +114,7 @@
 				<div id="col2_content" class="clearfix">
 					<!-- anchor for accessible link to main content -->
 					<a id="content" name="content"></a>
-					<cms:container name="templatecnt" type="template" maxElements="1" />
+					<cms:container name="templatecnt" type="template" maxElements="1" detailview="true" />
 					
 					<!-- include the second body from an xml page, if available -->
 					<c:if test="${page.hasValue['body2']}">

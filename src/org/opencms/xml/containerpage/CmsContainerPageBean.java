@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerPageBean.java,v $
- * Date   : $Date: 2010/01/27 09:49:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/27 15:00:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,14 +45,11 @@ import java.util.Set;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6
  */
 public class CmsContainerPageBean {
-
-    /** The template container type. */
-    public static final String TYPE_TEMPLATE = "template";
 
     /** The containers. */
     private final Map<String, CmsContainerBean> m_containers;

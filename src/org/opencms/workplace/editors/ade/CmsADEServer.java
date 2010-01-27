@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/27 08:20:23 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/01/27 15:00:39 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 7.6
  */
@@ -605,13 +605,28 @@ public class CmsADEServer extends A_CmsAjaxServer {
         // collect searchable type elements
         resElements.merge(getSearchResourceTypes(cms.getSitePath(resource), types), true, false);
 
-        // collect page elements
         CmsElementUtil elemUtil = new CmsElementUtil(
             cms,
             getRequest().getParameter(ReqParam.uri.name()),
             getRequest(),
             getResponse());
         Set<String> ids = new HashSet<String>();
+
+        // add the detail view element
+        if (elemUri != null) {
+            CmsResource elemRes = cms.readResource(elemUri);
+            CmsContainerElementBean element = new CmsContainerElementBean(elemRes.getStructureId(), null, null);
+            m_sessionCache.setCacheContainerElement(element.getClientId(), element);
+            // check if the element already exists
+            String id = element.getClientId();
+            // get the element data
+            JSONObject resElement = elemUtil.getElementData(element, types);
+            // store element data
+            ids.add(id);
+            resElements.put(id, resElement);
+        }
+
+        // collect page elements
         for (Map.Entry<String, CmsContainerBean> entry : cntPage.getContainers().entrySet()) {
             CmsContainerBean container = entry.getValue();
 
@@ -620,26 +635,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
             if ((container.getMaxElements() > -1) && (renderElems > container.getMaxElements())) {
                 renderElems = container.getMaxElements();
             }
-            // add the template element, this will be executed only once during the whole 'for' iteration
-            if ((elemUri != null) && container.getType().equals(CmsContainerPageBean.TYPE_TEMPLATE)) {
-                renderElems--;
-
-                CmsResource elemRes = cms.readResource(elemUri);
-                CmsContainerElementBean element = new CmsContainerElementBean(elemRes.getStructureId(), null, null);
-                m_sessionCache.setCacheContainerElement(element.getClientId(), element);
-                // check if the element already exists
-                String id = element.getClientId();
-                // collect ids
-                if (ids.contains(id)) {
-                    continue;
-                }
-                // get the element data
-                JSONObject resElement = elemUtil.getElementData(element, types);
-                // store element data
-                ids.add(id);
-                resElements.put(id, resElement);
-            }
-
             // iterate the elements
             for (CmsContainerElementBean element : container.getElements()) {
                 if (renderElems < 1) {
@@ -1238,7 +1233,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
     protected CmsContainerPageBean jsonToCntPage(JSONObject json) throws JSONException {
 
         CmsObject cms = getCmsObject();
-        String paramUri = getRequest().getParameter(ReqParam.uri.name());
 
         List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
 
@@ -1262,10 +1256,6 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 } catch (CmsException e) {
                     // should never happen
                     LOG.error(e.getLocalizedMessage(), e);
-                    continue;
-                }
-                if (type.equals(CmsContainerPageBean.TYPE_TEMPLATE) && elemUri.equals(paramUri)) {
-                    // skip main-content if acting as template
                     continue;
                 }
                 String formatterUri = jsonElem.getString(JsonCntElem.formatter.name());

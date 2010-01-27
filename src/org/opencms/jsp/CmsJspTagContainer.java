@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/01/26 14:48:26 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/01/27 15:00:38 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 7.6 
  */
@@ -106,6 +106,9 @@ public class CmsJspTagContainer extends TagSupport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1228397990961282556L;
 
+    /** The detailview attribute value. */
+    private boolean m_detailView;
+
     /** The maxElements attribute value. */
     private String m_maxElements;
 
@@ -130,6 +133,7 @@ public class CmsJspTagContainer extends TagSupport {
      * @param containerMaxElements the maximal number of elements in the container 
      * @param tag the tag to create
      * @param tagClass the tag class attribute
+     * @param detailView if the current container is target of detail views
      * @param req the current request
      * @param res the current response
      * 
@@ -144,6 +148,7 @@ public class CmsJspTagContainer extends TagSupport {
         String containerMaxElements,
         String tag,
         String tagClass,
+        boolean detailView,
         ServletRequest req,
         ServletResponse res) throws CmsException, JspException, IOException {
 
@@ -220,8 +225,6 @@ public class CmsJspTagContainer extends TagSupport {
             }
             return;
         }
-        // actualize the cache
-        container.setMaxElements(maxElements);
 
         // validate the type
         if (!containerType.equals(container.getType())) {
@@ -230,32 +233,30 @@ public class CmsJspTagContainer extends TagSupport {
                 new Object[] {cms.getSitePath(containerPage), locale, containerName, containerType}));
         }
 
+        // actualize the cache
+        container.setMaxElements(maxElements);
+
         List<CmsContainerElementBean> allElems = new ArrayList<CmsContainerElementBean>();
         allElems.addAll(container.getElements());
 
-        if (detailId != null) {
-            if (!cntPage.getTypes().contains(CmsContainerPageBean.TYPE_TEMPLATE)) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.ERR_CONTAINER_PAGE_NO_TYPE_3,
-                    cms.getRequestContext().getUri(),
-                    cms.getSitePath(containerPage),
-                    CmsContainerPageBean.TYPE_TEMPLATE));
-            }
-            if (containerType.equals(CmsContainerPageBean.TYPE_TEMPLATE)) {
-                // add template element
-                CmsResource resUri = cms.readResource(detailId);
-                String elementFormatter = OpenCms.getResourceManager().getResourceType(resUri).getFormatterForContainerType(
-                    cms,
-                    resUri,
-                    containerType);
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormatter)) {
+        if ((detailId != null) && detailView) {
+            // add detail view element
+            CmsResource resUri = cms.readResource(detailId);
+            String elementFormatter = OpenCms.getResourceManager().getResourceType(resUri).getFormatterForContainerType(
+                cms,
+                resUri,
+                containerType);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormatter)) {
+                // throw exception if offline, ignore if online
+                if (!isOnline) {
                     throw new CmsIllegalStateException(Messages.get().container(
                         Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
                         cms.getSitePath(resUri),
                         OpenCms.getResourceManager().getResourceType(resUri).getTypeName(),
-                        CmsContainerPageBean.TYPE_TEMPLATE));
+                        containerType));
                 }
-                // execute the formatter jsp for the given element uri
+            } else {
+                // add the detail view in first first of the current container
                 CmsContainerElementBean element = new CmsContainerElementBean(
                     resUri.getStructureId(),
                     cms.readResource(elementFormatter).getStructureId(),
@@ -429,6 +430,7 @@ public class CmsJspTagContainer extends TagSupport {
                     getMaxElements(),
                     getTag(),
                     getTagClass(),
+                    m_detailView,
                     req,
                     res);
             } catch (Exception ex) {
@@ -439,6 +441,16 @@ public class CmsJspTagContainer extends TagSupport {
             }
         }
         return SKIP_BODY;
+    }
+
+    /**
+     * Returns the boolean value if this container is target of detail views.<p>
+     * 
+     * @return <code>true</code> or <code>false</code> 
+     */
+    public String getDetailview() {
+
+        return String.valueOf(m_detailView);
     }
 
     /**
@@ -501,6 +513,19 @@ public class CmsJspTagContainer extends TagSupport {
         m_type = null;
         m_name = null;
         m_maxElements = null;
+        m_tag = null;
+        m_tagClass = null;
+        m_detailView = false;
+    }
+
+    /**
+     * Sets if the current container is target of detail views.<p>
+     * 
+     * @param detailView <code>true</code> or <code>false</code>
+     */
+    public void setDetailview(String detailView) {
+
+        m_detailView = Boolean.parseBoolean(detailView);
     }
 
     /**
