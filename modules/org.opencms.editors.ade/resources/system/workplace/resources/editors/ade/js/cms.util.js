@@ -357,14 +357,14 @@
             if (numSelected == 0) {
                var labelText = $('legend', $item).text();
                labelText = labelText.replace(' *', '');
-               $item.append('<span class="ade-error">' + cms.util.format(M.FIELD_CANT_BE_EMPTY, labelText) + '</span>');
+               $item.append('<span class="ade-error">' + cms.util.format(M.GUI_FIELD_CANT_BE_EMPTY_1, labelText) + '</span>');
                hasError = true;
             }
          } else {
             if (jQuery.trim($('input, textarea', $item).val()) == '') {
                var labelText = $('label', $item).text();
                labelText = labelText.replace(' *', '');
-               $item.append('<span class="ade-error">' + cms.util.format(M.FIELD_CANT_BE_EMPTY, labelText) + '</span>');
+               $item.append('<span class="ade-error">' + cms.util.format(M.GUI_FIELD_CANT_BE_EMPTY_1, labelText) + '</span>');
                hasError = true;
             }
          }
@@ -396,7 +396,7 @@
       $dialog.appendTo('body');
       $dialog.text(text);
       var buttons = {};
-      buttons[M.ALERT_OK] = function() {
+      buttons[M.GUI_ALERT_OK_0] = function() {
          $dialog.dialog('destroy');
          $dialog.remove();
       }

@@ -215,7 +215,7 @@ $('document').ready(function() {
    if (cms.data.NO_EDIT_REASON) {
       $('#toolbar_content button').addClass('cms-deactivated').unbind('click');
       // TODO: better display an red-square-icon in the toolbar with a tooltip
-      cms.util.dialogAlert(cms.data.NO_EDIT_REASON, M.CANT_EDIT_TITLE);
+      cms.util.dialogAlert(cms.data.NO_EDIT_REASON, M.GUI_CANT_EDIT_TITLE_0);
       var $buttons = $(cms.util.makeCombinedSelector(['Move', 'Delete', 'Add', 'New', 'Favorites', 'Recent'], 'button[name="%"]'));
       $buttons.unbind('click').unbind('mouseover').css('color', '#aaaaaa');
       $buttons.attr('alt', cms.data.NO_EDIT_REASON);
@@ -226,7 +226,7 @@ $('document').ready(function() {
          autoClose: true
       });
    } else if (cms.util.isFirebugActive()) {
-      cms.util.dialogAlert(M.FIREBUG_ACTIVE, M.FIREBUG_ACTIVE_TITLE)
+      cms.util.dialogAlert(M.GUI_FIREBUG_ACTIVE_0, M.GUI_FIREBUG_ACTIVE_TITLE_0)
    }
    cms.data.loadAllData(function(ok) {
       if (ok) {

@@ -339,7 +339,7 @@
          $dlg.empty();
          var options = {
             autoOpen: true,
-            title: M.COLOR_SELECT_TITLE,
+            title: M.GUI_COLOR_SELECT_TITLE_0,
             modal: true,
             stack: true,
             zIndex: 10999,
@@ -533,7 +533,7 @@
     */
    var buildPropertyTable = cms.property.buildPropertyTable = function(properties, widgets) {
       var $table = $('<table cellspacing="0" cellpadding="3" align="left"></table>');
-      $table.append('<tr><th><b>' + M.PROPERTIES_HEADING_NAME + '</b></th><th><b>' + M.PROPERTIES_HEADING_EDIT + '</b></th><th><b>' + M.PROPERTIES_HEADING_DEFAULT + '</b></th></tr>');
+      $table.append('<tr><th><b>' + M.GUI_PROPERTIES_HEADING_NAME_0 + '</b></th><th><b>' + M.GUI_PROPERTIES_HEADING_EDIT_0 + '</b></th><th><b>' + M.GUI_PROPERTIES_HEADING_DEFAULT_0 + '</b></th></tr>');
       var $fields = $('<div></div>')
       for (var propName in properties) {
          //         var defaultEntry = properties[propName];
@@ -594,7 +594,7 @@
       var widgets = {}
       var newProps = {};
       if (_isEmpty(properties)) {
-         cms.util.dialogAlert(M.NO_PROPERTIES, M.NO_PROPERTIES_TITLE);
+         cms.util.dialogAlert(M.GUI_NO_PROPERTIES_0, M.GUI_NO_PROPERTIES_TITLE_0);
          return;
       }
       var $table = buildPropertyTable(properties, widgets);
@@ -606,11 +606,11 @@
       }
       
       var buttons = {};
-      buttons[M.EDIT_PROPERTIES_CANCEL] = function() {
+      buttons[M.GUI_EDIT_PROPERTIES_CANCEL_0] = function() {
          _destroy();
       };
       var options = {
-         title: M.EDIT_PROPERTIES_TITLE,
+         title: M.GUI_EDIT_PROPERTIES_TITLE_0,
          modal: true,
          autoOpen: true,
          width: 470,
@@ -622,7 +622,7 @@
       $dlg.dialog(options);
       
       
-      var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text(M.EDIT_PROPERTIES_OK);
+      var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text(M.GUI_EDIT_PROPERTIES_OK_0);
       
       var validateAll = function() {
          var result = true;

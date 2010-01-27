@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/01/27 14:35:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/27 15:23:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6.0 
  */
@@ -208,9 +208,53 @@ public class MessagesADE extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STORAGE_BUTTON_TITLE_0 = "GUI_STORAGE_BUTTON_TITLE_0";
 
+    // cms.property.js
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COLOR_SELECT_TITLE_0 = "GUI_COLOR_SELECT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_PROPERTIES_TITLE_0 = "GUI_EDIT_PROPERTIES_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_PROPERTIES_OK_0 = "GUI_EDIT_PROPERTIES_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_PROPERTIES_CANCEL_0 = "GUI_EDIT_PROPERTIES_CANCEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_PROPERTIES_0 = "GUI_NO_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_PROPERTIES_TITLE_0 = "GUI_NO_PROPERTIES_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTIES_HEADING_NAME_0 = "GUI_PROPERTIES_HEADING_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTIES_HEADING_EDIT_0 = "GUI_PROPERTIES_HEADING_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTIES_HEADING_DEFAULT_0 = "GUI_PROPERTIES_HEADING_DEFAULT_0";
+
     // cms.util.js
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LEAVE_PAGE_CONFIRM_0 = "GUI_LEAVE_PAGE_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FIELD_CANT_BE_EMPTY_1 = "GUI_FIELD_CANT_BE_EMPTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALERT_OK_0 = "GUI_ALERT_OK_0";
+
+    // cms.init.js
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CANT_EDIT_TITLE_0 = "GUI_CANT_EDIT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FIREBUG_ACTIVE_0 = "GUI_FIREBUG_ACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FIREBUG_ACTIVE_TITLE_0 = "GUI_FIREBUG_ACTIVE_TITLE_0";
 
     // bundle name
     /** Name of the used resource bundle. */
