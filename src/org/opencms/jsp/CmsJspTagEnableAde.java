@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/01/26 11:00:18 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/01/27 09:33:53 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -68,65 +69,96 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 7.6 
  */
 public class CmsJspTagEnableAde extends BodyTagSupport {
 
-    /** Messages URI constant. */
-    public static final String ADE_MESSAGES_URI = "/system/workplace/editors/ade/cms.messages.jsp";
+    /** URI constants. */
+    protected enum Uri {
 
-    /** ADE Server URI constant. */
-    public static final String ADE_SERVER_URI = "/system/workplace/editors/ade/server.jsp";
+        /** Messages URI constant. */
+        ADE_MESSAGES("/system/workplace/editors/ade/cms.messages.jsp"),
 
-    /** Editor URI constant. */
-    public static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
+        /** ADE Server URI constant. */
+        ADE_SERVER("/system/workplace/editors/ade/server.jsp"),
 
-    /** Macro name constant. */
-    public static final String MACRO_CURRENT_CNTPAGE = "currentContainerPage";
+        /** Editor URI constant. */
+        EDITOR("/system/workplace/editors/editor.jsp"),
 
-    /** Macro name constant. */
-    public static final String MACRO_CURRENT_LOCALE = "currentLocale";
+        /** Publish Server URI constant. */
+        PUBLISH_SERVER("/system/workplace/editors/ade/publish-server.jsp"),
 
-    /** Macro name constant. */
-    public static final String MACRO_CURRENT_URI = "currentUri";
+        /** Default advanced direct edit include file URI. */
+        INCLUDE_FILE("/system/workplace/editors/ade/include.txt");
 
-    /** Macro name constant. */
-    public static final String MACRO_EDITOR_URI = "editorUri";
+        /** The uri. */
+        private String m_uri;
 
-    /** Macro name constant. */
-    public static final String MACRO_GALLERY_ADDITIONAL_JAVASCRIPT = "galleryAdditionalJavascript";
+        /**
+         * Constructor.<p>
+         * 
+         * @param uri the uri
+         */
+        private Uri(String uri) {
 
-    /** Macro name constant. */
-    public static final String MACRO_GALLERY_SERVER_PATH = "galleryServerPath";
+            m_uri = uri;
+        }
 
-    /** Macro name constant. */
-    public static final String MACRO_GALLERY_SERVER_URI = "galleryServerUri";
+        /**
+         * Returns the uri.<p>
+         * 
+         * @return the uri
+         */
+        public String getUri() {
 
-    /** Macro name constant. */
-    public static final String MACRO_MESSAGES_URI = "messagesUri";
+            return m_uri;
+        }
+    }
 
-    /** Macro name constant. */
-    public static final String MACRO_NO_EDIT_REASON = "noEditReason";
+    /** Macro name constants. */
+    protected enum Macro {
 
-    /** Macro name constant. */
-    public static final String MACRO_PUBLISH_URI = "publishUri";
+        /** Macro name constant. */
+        currentContainerPage,
 
-    /** Macro name constant. */
-    public static final String MACRO_SERVER_URI = "serverUri";
+        /** Macro name constant. */
+        currentLocale,
 
-    /** Macro name constant. */
-    public static final String MACRO_SITEMAP_URI = "sitemapUri";
+        /** Macro name constant. */
+        currentUri,
 
-    /** Macro name constant. */
-    public static final String MACRO_SKIN_URI = "skinUri";
+        /** Macro name constant. */
+        editorUri,
 
-    /** Publish Server URI constant. */
-    public static final String PUBLISH_SERVER_URI = "/system/workplace/editors/ade/publish-server.jsp";
+        /** Macro name constant. */
+        galleryAdditionalJavascript,
 
-    /** Default advanced direct edit include file URI. */
-    protected static final String INCLUDE_FILE = "/system/workplace/editors/ade/include.txt";
+        /** Macro name constant. */
+        galleryServerPath,
+
+        /** Macro name constant. */
+        galleryServerUri,
+
+        /** Macro name constant. */
+        messagesUri,
+
+        /** Macro name constant. */
+        noEditReason,
+
+        /** Macro name constant. */
+        publishUri,
+
+        /** Macro name constant. */
+        serverUri,
+
+        /** Macro name constant. */
+        sitemapUri,
+
+        /** Macro name constant. */
+        skinUri;
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagEnableAde.class);
@@ -185,11 +217,11 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         CmsMemoryObjectCache cache = CmsMemoryObjectCache.getInstance();
         CmsLinkManager linkMan = OpenCms.getLinkManager();
 
-        String headerInclude = (String)cache.getCachedObject(CmsJspTagEnableAde.class, INCLUDE_FILE);
+        String headerInclude = (String)cache.getCachedObject(CmsJspTagEnableAde.class, Uri.INCLUDE_FILE.getUri());
         if (headerInclude == null) {
             // the file is not available in the cache
             try {
-                CmsFile file = cms.readFile(INCLUDE_FILE);
+                CmsFile file = cms.readFile(Uri.INCLUDE_FILE.getUri());
                 // get the encoding for the resource
                 CmsProperty property = cms.readPropertyObject(
                     file,
@@ -202,29 +234,31 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 // resolve macros in include header
                 CmsMacroResolver resolver = CmsMacroResolver.newInstance();
                 resolver.setKeepEmptyMacros(true); // be sure request macros stay there
-                String editorUri = linkMan.substituteLink(cms, EDITOR_URI);
-                resolver.addMacro(MACRO_EDITOR_URI, editorUri);
-                String serverUri = linkMan.substituteLink(cms, ADE_SERVER_URI);
-                resolver.addMacro(MACRO_SERVER_URI, serverUri);
-                String publishUri = linkMan.substituteLink(cms, PUBLISH_SERVER_URI);
-                resolver.addMacro(MACRO_PUBLISH_URI, publishUri);
+                String editorUri = linkMan.substituteLink(cms, Uri.EDITOR.getUri());
+                resolver.addMacro(Macro.editorUri.name(), editorUri);
+                String serverUri = linkMan.substituteLink(cms, Uri.ADE_SERVER.getUri());
+                resolver.addMacro(Macro.serverUri.name(), serverUri);
+                String publishUri = linkMan.substituteLink(cms, Uri.PUBLISH_SERVER.getUri());
+                resolver.addMacro(Macro.publishUri.name(), publishUri);
                 String galleryServerUri = linkMan.substituteLink(cms, CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
-                resolver.addMacro(MACRO_GALLERY_SERVER_URI, galleryServerUri);
-                resolver.addMacro(MACRO_GALLERY_SERVER_PATH, CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
+                resolver.addMacro(Macro.galleryServerUri.name(), galleryServerUri);
+                resolver.addMacro(Macro.galleryServerPath.name(), CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
 
                 String skinUri = CmsWorkplace.getSkinUri();
-                resolver.addMacro(MACRO_SKIN_URI, skinUri);
-                resolver.addMacro(MACRO_MESSAGES_URI, linkMan.substituteLink(cms, ADE_MESSAGES_URI));
+                resolver.addMacro(Macro.skinUri.name(), skinUri);
+                resolver.addMacro(Macro.messagesUri.name(), linkMan.substituteLink(cms, Uri.ADE_MESSAGES.getUri()));
 
                 headerInclude = resolver.resolveMacros(headerInclude);
 
                 // store this in the cache
-                cache.putCachedObject(CmsJspTagEnableAde.class, INCLUDE_FILE, headerInclude);
+                cache.putCachedObject(CmsJspTagEnableAde.class, Uri.INCLUDE_FILE.getUri(), headerInclude);
 
             } catch (CmsException e) {
                 // this should better not happen
                 headerInclude = "";
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_DIRECT_EDIT_NO_HEADER_1, INCLUDE_FILE), e);
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_DIRECT_EDIT_NO_HEADER_1,
+                    Uri.INCLUDE_FILE.getUri()), e);
             }
         }
 
@@ -242,9 +276,10 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 searchableTypes.add(type);
             }
             resolver.addMacro(
-                MACRO_GALLERY_ADDITIONAL_JAVASCRIPT,
+                Macro.galleryAdditionalJavascript.name(),
                 CmsGallerySearchServer.getAdditionalJavascriptForTypes(searchableTypes));
 
+            boolean isDetailPage = false;
             CmsResource containerPage = cms.readResource(currentUri);
             if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
                 // container page is used as template
@@ -261,9 +296,11 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                     LOG.debug(e.getLocalizedMessage(), e);
                 }
             } else if (OpenCms.getSitemapManager().getRuntimeInfo(req) != null) {
+                // detail page
                 CmsUUID id = OpenCms.getSitemapManager().getRuntimeInfo(req).getContentId();
                 if (id != null) {
                     currentUri = cms.getSitePath(cms.readResource(id));
+                    isDetailPage = true;
                 }
             }
             CmsProperty sitemapProperty = cms.readPropertyObject(
@@ -271,20 +308,25 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 CmsPropertyDefinition.PROPERTY_SITEMAP,
                 true);
             String sitemapUri = linkMan.substituteLink(cms, sitemapProperty.getValue());
-            resolver.addMacro(MACRO_SITEMAP_URI, sitemapUri);
+            resolver.addMacro(Macro.sitemapUri.name(), sitemapUri);
             String containerPageUri = cms.getSitePath(containerPage);
-            resolver.addMacro(MACRO_CURRENT_URI, currentUri);
-            resolver.addMacro(MACRO_CURRENT_CNTPAGE, containerPageUri);
-            String noEditReason = new CmsResourceUtil(cms, containerPage).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
-                cms));
-            resolver.addMacro(MACRO_NO_EDIT_REASON, CmsEncoder.escapeHtml(noEditReason));
+            resolver.addMacro(Macro.currentUri.name(), currentUri);
+            resolver.addMacro(Macro.currentContainerPage.name(), containerPageUri);
+            String noEditReason = null;
+            Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            if (isDetailPage) {
+                noEditReason = Messages.get().getBundle(workplaceLocale).key(Messages.GUI_NO_EDIT_REASON_DETAIL_PAGE_0);
+            } else {
+                noEditReason = new CmsResourceUtil(cms, containerPage).getNoEditReason(workplaceLocale);
+            }
+            resolver.addMacro(Macro.noEditReason.name(), CmsEncoder.escapeHtml(noEditReason));
         } catch (Exception e) {
             if (!LOG.isDebugEnabled()) {
                 LOG.warn(e.getLocalizedMessage());
             }
             LOG.debug(e.getLocalizedMessage(), e);
         }
-        resolver.addMacro(MACRO_CURRENT_LOCALE, cms.getRequestContext().getLocale().toString());
+        resolver.addMacro(Macro.currentLocale.name(), cms.getRequestContext().getLocale().toString());
 
         headerInclude = resolver.resolveMacros(headerInclude);
 

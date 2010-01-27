@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/27 09:33:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -504,6 +504,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0 = "GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_EDIT_REASON_DETAIL_PAGE_0 = "GUI_NO_EDIT_REASON_DETAIL_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PLEASE_SELECT_0 = "GUI_PLEASE_SELECT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -562,6 +565,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_RESOURCE_TYPES_0 = "LOG_NO_RESOURCE_TYPES_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_USER_AGENTS_0 = "LOG_NO_USER_AGENTS_0";
 
@@ -587,7 +591,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_VISITING_1 = "LOG_VISITING_1";
 
     /** Name of the used resource bundle. */
-
     private static final String BUNDLE_NAME = "org.opencms.workplace.editors.messages";
 
     /** Static instance member. */
@@ -596,7 +599,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** Constant to create button tooltip dynamically. */
     private static final String POSTFIX_LIST = "LIST_0";
 
-    /**Constant to create button tooltip dynamically. */
+    /** Constant to create button tooltip dynamically. */
     private static final String PREFIX_GUI_BUTTON = "GUI_EDITOR_BUTTON_";
 
     /**
