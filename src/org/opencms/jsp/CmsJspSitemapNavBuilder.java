@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2010/01/26 14:06:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/27 08:16:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.9.2 
  * 
@@ -138,7 +138,6 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
             return result;
         }
 
-        int position = 0;
         List<CmsSiteEntryBean> entries = folderEntry.getSubEntries();
         for (CmsSiteEntryBean entry : entries) {
             try {
@@ -154,7 +153,6 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
                 // not enough permissions
                 LOG.debug(e.getLocalizedMessage(), e);
             }
-            position++;
         }
 
         Collections.sort(result);
