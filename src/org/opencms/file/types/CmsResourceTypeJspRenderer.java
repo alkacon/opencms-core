@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeJspRenderer.java,v $
- * Date   : $Date: 2010/01/25 09:43:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/01/28 08:04:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.9.0 
  */
@@ -163,7 +163,7 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
                     // still not found types, read them from the property
                     types = cms.readPropertyObject(resource, PROPERTY_CONTAINERTYPES, true).getValueList();
                 }
-                if (types.isEmpty() || types.contains(containerType)) {
+                if ((types == null) || types.isEmpty() || types.contains(containerType)) {
                     return formatter;
                 }
                 // container type not part of the specified types, formatter is not valid
