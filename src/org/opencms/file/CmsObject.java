@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/28 15:03:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -2384,6 +2384,23 @@ public final class CmsObject {
     public List<CmsPublishedResource> readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
 
         return m_securityManager.readPublishedResources(m_context, publishHistoryId);
+    }
+
+    /**
+     * Returns all relations matching the given filter.<p> 
+     * 
+     * @param filter the filter to match the relation 
+     * 
+     * @return all relations matching the given filter
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#getRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
+     * @see #getRelationsForResource(CmsResource, CmsRelationFilter)
+     */
+    public List<CmsRelation> readRelations(CmsRelationFilter filter) throws CmsException {
+
+        return m_securityManager.getRelationsForResource(m_context, null, filter);
     }
 
     /**

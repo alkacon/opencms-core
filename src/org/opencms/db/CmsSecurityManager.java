@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2010/01/20 09:16:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/28 15:03:18 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2266,12 +2266,14 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // check the access permissions
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL);
+            if (resource != null) {
+                checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL);
+            }
             result = m_driverManager.getRelationsForResource(dbc, resource, filter);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_RELATIONS_1,
-                context.removeSiteRoot(resource.getRootPath())), e);
+                (resource != null) ? context.removeSiteRoot(resource.getRootPath()) : "null"), e);
         } finally {
             dbc.clear();
         }
