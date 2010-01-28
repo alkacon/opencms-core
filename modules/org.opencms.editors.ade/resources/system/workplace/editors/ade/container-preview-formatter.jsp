@@ -15,7 +15,7 @@ pageContext.setAttribute("cms", cms);
 <c:forEach var="element" items="${container.value.elements}">
 <p style="margin:5px;"><%
 CmsResource res=cms.getCmsObject().readResource(((CmsContainerElementBean)pageContext.getAttribute("element")).getElementId());
-CmsProperty titleProp=cms.getCmsObject().readPropertyObject(res, "Title", false);
+CmsProperty titleProp=cms.getCmsObject().readPropertyObject(res, org.opencms.file.CmsPropertyDefinition.PROPERTY_TITLE, false);
 %><%=titleProp.getValue() %><br /><%=cms.getCmsObject().getSitePath(res) %></p>
 </c:forEach>
 </div>
