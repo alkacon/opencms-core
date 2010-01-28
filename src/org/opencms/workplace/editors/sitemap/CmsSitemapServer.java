@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/27 08:20:23 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2010/01/28 15:03:46 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 7.6
  */
@@ -400,6 +400,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             try {
                 cms.lockResourceTemporary(sitemapParam);
             } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
                 error(result, e.getLocalizedMessage(getWorkplaceLocale()));
             }
         } else if (action.equals(Action.STOPEDIT)) {
@@ -407,7 +408,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             try {
                 cms.unlockResource(sitemapParam);
             } catch (CmsException e) {
-                error(result, e.getLocalizedMessage(getWorkplaceLocale()));
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         } else if (action.equals(Action.CONTENT)) {
             CmsResource sitemapRes = CmsHistoryResourceHandler.getResourceWithHistory(cms, sitemapParam);
