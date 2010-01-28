@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2009/09/04 15:01:17 $
- * Version: $Revision: 1.40.2.1 $
+ * Date   : $Date: 2010/01/28 15:04:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -656,13 +656,11 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         }
         // update mapping of locales to element names
         Set<String> sn = m_elementNames.get(locale);
-        if (sn != null) {
-            sn.add(path);
-        } else {
-            Set<String> set = new HashSet<String>();
-            set.add(path);
-            m_elementNames.put(locale, set);
+        if (sn == null) {
+            sn = new HashSet<String>();
+            m_elementNames.put(locale, sn);
         }
+        sn.add(path);
     }
 
     /**
