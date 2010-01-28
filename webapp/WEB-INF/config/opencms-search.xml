@@ -132,6 +132,24 @@
 				</resourcetypes>
 			</documenttype>	
 			<documenttype>
+				<name>xmlcontent-galleries</name>
+				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlContent</class>
+				<mimetypes/>
+				<resourcetypes>
+					<resourcetype>*</resourcetype>
+				</resourcetypes>
+			</documenttype>	
+            <documenttype>
+				<name>xmlpage-galleries</name>
+				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlPage</class>
+				<mimetypes>
+					<mimetype>text/html</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>xmlpage</resourcetype>
+				</resourcetypes>
+			</documenttype>		
+			<documenttype>
 				<name>openoffice</name>
 				<class>org.opencms.search.documents.CmsDocumentOpenOffice</class>
 				<mimetypes>
@@ -253,8 +271,8 @@
 					<resource>/sites/</resource>
 				</resources>
 				<documenttypes-indexed>
-	                <name>xmlpage</name>
-					<name>xmlcontent</name>
+	                <name>xmlpage-galleries</name>
+					<name>xmlcontent-galleries</name>
 	                <name>page</name>
 	                <name>text</name>
 	                <name>pdf</name>
@@ -265,8 +283,9 @@
 	                <name>mspowerpoint</name>
 	                <name>image</name>
 	                <name>generic</name>
+	                <name>openoffice</name>
 				</documenttypes-indexed>				
-			</indexsource> 
+			</indexsource>     
 		</indexsources>		
 		<fieldconfigurations>		
 			<fieldconfiguration>
@@ -295,7 +314,7 @@
 					</field>			
 				</fields>
 			</fieldconfiguration>	
-            <fieldconfiguration>
+			<fieldconfiguration class="org.opencms.search.galleries.CmsGallerySearchFieldConfiguration">
 				<name>ADE_gallery_fields</name>
 				<description>The standard OpenCms search index field configuration.</description>
 				<fields>
@@ -336,8 +355,8 @@
 					<field name="res_userLastModified" store="true" index="untokenized">
 						<mapping type="attribute">userLastModified</mapping>
 					</field>	
-					<field name="res_locale" store="true" index="untokenized">
-						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">res_locale</mapping>
+					<field name="res_locales" store="true" index="true" analyzer="WhitespaceAnalyzer">
+						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">res_locales</mapping>
 					</field>
 					<field name="additional_info" store="true" index="false">
 						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
@@ -346,7 +365,7 @@
 						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
 					</field>
 				</fields>
-			</fieldconfiguration>		
+			</fieldconfiguration>	
 		</fieldconfigurations>				
 	</search>
 </opencms>
