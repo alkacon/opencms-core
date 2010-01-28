@@ -1432,7 +1432,7 @@
       name: 'sitemap',
       createButton: function() {
          var self = this;
-         self.button = $('<button name="sitemap" title="'+M.GUI_TOOLBAR_SITEMAP_TITLE+'" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-sitemap"/>&nbsp;</button>');
+         self.button = $('<button name="sitemap" title="'+M.GUI_TOOLBAR_SITEMAP_TITLE_0+'" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-sitemap"/>&nbsp;</button>');
          self.button.click(function() {
             if (!cms.toolbar.toolbarReady || $(this).hasClass('cms-deactivated')) {
                return;
@@ -1742,7 +1742,7 @@
          cms.toolbar.dom.buttons[modeName] = modeObj.button;
       }
       
-      cms.toolbar.dom.showToolbar = $('<button id="show-button" title="'+M.GUI_TOOLBAR_TOGGLE_TOOLBAR+'" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>').appendTo(_bodyEl);
+      cms.toolbar.dom.showToolbar = $('<button id="show-button" title="'+M.GUI_TOOLBAR_TOGGLE_TOOLBAR_0+'" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>').appendTo(_bodyEl);
       
       // initializing dialogs and event-handler
       window.onbeforeunload = function() {

@@ -1,4 +1,5 @@
 (function(cms) {
+    var M = cms.messages;
 
    ///// Content Handler Function definition //////////////////////////    
    
@@ -16,18 +17,18 @@
    /** Html sceleton for the upper button bar in the editable properties area. */
    var switchToFormatBar = '<div class="button-bar cms-top-bottom">\
                                <button name="switchToFormat" class="cms-right ui-state-default ui-corner-all">\
-                                     <span class="cms-galleries-button">Image&nbsp;Format</span>\
+                                     <span class="cms-galleries-button">'+M.GUI_PREVIEW_HTML_FORMAT_BUTTON_0+'</span>\
                                </button>\
-                               <span class="cms-title">File Properties:</span>\
+                               <span class="cms-title">'+M.GUI_PREVIEW_HTML_FORMAT_LABEL_0+'</span>\
                             </div>';
    /** Html sceleton for the lower button bar in the editable properties area. */                      
    var okCloseButtonBar = '<div class="button-bar cms-top">\
                                  <button name="previewSave" class="cms-button-disabled cms-right ui-state-default ui-corner-all">\
-                                     <span class="cms-galleries-button">Save</span>\
+                                     <span class="cms-galleries-button">'+M.GUI_PREVIEW_HTML_FORMAT_SAVE_BUTTON_0+'</span>\
                                  </button>\
                            </div>';                             
    //<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
-                                 //      <span class="cms-galleries-button">Close</span>\
+                                 //      <span class="cms-galleries-button">'+M.GUI_PREVIEW_HTML_FORMAT_CLOSE_BUTTON_0+'</span>\
                                  //</button>\
    /** html fragment for the item preview. */
    cms.previewhandler.htmlPreviewSceleton = '<div id="cms-preview" class="ui-corner-all">\
@@ -39,23 +40,23 @@
    /** Array with format values for the drop down. */
    cms.previewhandler.editorTargetDropDown = [
        {   'value':'',
-           'title':'Not set' 
+           'title':M.GUI_PREVIEW_DROP_DOWN_TARGET_NOT_SET_0 
        },
        {   'value':'_blank',
-           'title':'New Window (_blank)'                
+           'title':M.GUI_PREVIEW_DROP_DOWN_TARGET_BLANK_0                
        },
        {    'value':'_top',
-            'title':'Topmost Window (_top)'           
+            'title':M.GUI_PREVIEW_DROP_DOWN_TARGET_TOP_0           
        },        
        {    'value':'_self',
-            'title':'Same Window (_self)'           
+            'title':M.GUI_PREVIEW_DROP_DOWN_TARGET_SELF_0           
        },
        {    'value':'_parent',
-            'title':'Parent Window (_parent)'           
+            'title':M.GUI_PREVIEW_DROP_DOWN_TARGET_PARENT_0           
        }       
    ];                                                
                                                 
-   var tabsNav = '<ul><li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">Properties</a></li></ul>'                                               
+   var tabsNav = '<ul><li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">'+M.GUI_PREVIEW_HTML_FORMAT_PROPERTIES_LINK_0+'</a></li></ul>'                                               
    
    /**
     * Displays the content of the preview item.
@@ -124,7 +125,7 @@
       // add the select box in editor for default preview
       if (cms.galleries.isEditorMode() && showTargetSelectBox) {
           target.find('button[name="previewSave"]').before('<div class="cms-drop-down cms-format-line cms-left" id="' + cms.previewhandler.keys['editorTarget'] + '">\
-                         <label class="cms-item-title cms-width-85">Target:</label>\
+                         <label class="cms-item-title cms-width-85">'+M.GUI_PREVIEW_EDIT_AREA_TARGET_0+'</label>\
                      </div>');
           target.find('.cms-drop-down label').after($.fn.selectBox('generate', {
             values: cms.previewhandler.editorTargetDropDown,
@@ -140,7 +141,7 @@
       // add select button if in widget or editor mode
       if (cms.galleries.isSelectableItem()) {
          target.find('button[name="previewSave"]').before('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
-                                <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                                <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">'+M.GUI_PREVIEW_EDIT_AREA_SELECT_0+'</span>\
                           </button>');
          target.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);        
       }
@@ -162,7 +163,7 @@
           $('<div class="cms-editable-field '+( i%2  == 0 ? 'cms-left' : 'cms-right')+'"></div>').attr('alt', itemProperties[i]['name'])
              .appendTo(form)
              .append('<span class="cms-item-title cms-width-90">' + itemProperties[i]['name'] + '</span>')
-             .append('<input class="cms-item-edit ui-corner-all" name="' + itemProperties[i]['name'] + '" title="Edit ' + itemProperties[i]['name'] + '" value="' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '') + '" />');
+             .append('<input class="cms-item-edit ui-corner-all" name="' + itemProperties[i]['name'] + '" title="'+cms.util.format(M.GUI_PREVIEW_EDIT_PROPERTY_NAME_1, itemProperties[i]['name'])+'" value="' + (itemProperties[i]['value'] ? itemProperties[i]['value'] : '') + '" />');
           // set the the activeItem properties 'title' and 'description'
           if (itemProperties[i]['name'] == cms.previewhandler.keys['title'] ) {
                 cms.galleries.activeItem['title'] = itemProperties[i]['value'] ? itemProperties[i]['value'] : ''; 
@@ -380,7 +381,7 @@
             cms.galleries.getContentHandler()['closePreview']();
          } else if ($(this).hasClass('cms-properties-changed')) {            
             //text, title, yesLabel, noLabel, callback
-            cms.util.dialogConfirmCancel('Do you want to save changed properties?', 'Save', 'Yes', 'No', 'Cancel', saveAndClosePreview);
+            cms.util.dialogConfirmCancel(M.GUI_PREVIEW_CLOSE_CONFIRM_TEXT_0, M.GUI_PREVIEW_CONFIRM_SAVE_0, M.GUI_PREVIEW_CONFIRM_YES_0, M.GUI_PREVIEW_CONFIRM_NO_0, M.GUI_PREVIEW_CONFIRM_CANCEL_0, saveAndClosePreview);
          } else {
              cms.galleries.getContentHandler()['closePreview']();     
          }                   
@@ -393,7 +394,7 @@
          var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');       
          if ($(this).hasClass('cms-properties-changed')) {            
             //text, title, yesLabel, noLabel, callback
-            cms.util.dialogConfirmCancel('Do you want to save changed properties?', 'Save', 'Yes', 'No', 'Cancel', cms.galleries.getContentHandler()['saveAndSelectItem']);
+            cms.util.dialogConfirmCancel(M.GUI_PREVIEW_SELECT_ITEM_CONFIRM_TEXT_0, M.GUI_PREVIEW_CONFIRM_SAVE_0, M.GUI_PREVIEW_CONFIRM_YES_0, M.GUI_PREVIEW_CONFIRM_NO_0, M.GUI_PREVIEW_CONFIRM_CANCEL_0, cms.galleries.getContentHandler()['saveAndSelectItem']);
          } else {
             cms.galleries.getContentHandler(resType)['setValues'][cms.galleries.initValues['dialogMode']]();  
          }                   

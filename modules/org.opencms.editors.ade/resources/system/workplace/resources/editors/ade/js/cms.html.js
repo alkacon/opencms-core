@@ -102,8 +102,8 @@
         <div class="ui-corner-bottom">\
 		    <div id="menuTabs" class="ui-corner-bottom">\
                 <ul>\
-                     <li><a href="#favorite-tab">', M.GUI_STORAGEMENU_TABS_FAVORITES_LINK, '</a></li>\
-                     <li><a href="#recent-tab">', M.GUI_STORAGEMENU_TABS_RECENT_LINK, '</a></li>\
+                     <li><a href="#favorite-tab">', M.GUI_STORAGEMENU_TABS_FAVORITES_LINK_0, '</a></li>\
+                     <li><a href="#recent-tab">', M.GUI_STORAGEMENU_TABS_RECENT_LINK_0, '</a></li>\
                 </ul>\
                 <div id="favorite-tab">\
                     <div class="cms-list-scrolling ui-corner-all">\
