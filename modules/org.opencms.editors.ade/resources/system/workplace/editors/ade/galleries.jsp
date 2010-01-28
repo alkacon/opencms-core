@@ -15,8 +15,8 @@ String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "edit
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-1.4.js"></script>
-<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-ui-1.8a1.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-1.4.1.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-ui-1.8rc1.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>lib/json2.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>lib/jquery.pagination.js"></script>
 <script type="text/javascript">
