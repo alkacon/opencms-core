@@ -61,31 +61,31 @@
    
    /** Array with format values for the drop down. */
    var formatDropDown = [];
-   
+
    /** Array with format values for the drop down. */
    var editorAlignDropDown = [
        {  'value':'',
-           'title':'Not set' 
+           'title':M.GUI_IMAGEPREVIEW_DROP_DOWN_ALIGN_NOT_SET_0
        },
        {   'value':'left',
-           'title':'left'                
+           'title':M.GUI_IMAGEPREVIEW_DROP_DOWN_ALIGN_LEFT_0
        },
        {    'value':'right',
-            'title':'right'           
-       }       
+            'title':M.GUI_IMAGEPREVIEW_DROP_DOWN_ALIGN_RIGHT_0
+       }
    ];
-      
-   
+
+
    /** Array with format values for the drop down. */
    var editorLangDropDown = [
        {  'value':'',
-           'title':'Not set' 
+           'title':M.GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_NOT_SET_0 
        },
        {   'value':'ltr',
-           'title':'Left to Right (LTR)'                
+           'title':M.GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_LTR_0                
        },
        {    'value':'rtl',
-            'title':'Right to Left (LTR)'           
+            'title':M.GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_RTL_0           
        }       
    ];
    

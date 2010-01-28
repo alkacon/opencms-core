@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/01/28 17:06:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/01/28 17:26:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6.0 
  */
@@ -436,6 +436,82 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGEPREVIEW_IMAGE_INFO_SELECT_LABEL_0 = "GUI_IMAGEPREVIEW_IMAGE_INFO_SELECT_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_DROP_DOWN_ALIGN_NOT_SET_0 = "GUI_IMAGEPREVIEW_DROP_DOWN_ALIGN_NOT_SET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_DROP_DOWN_ALIGN_LEFT_0 = "GUI_IMAGEPREVIEW_DROP_DOWN_ALIGN_LEFT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_DROP_DOWN_ALIGN_RIGHT_0 = "GUI_IMAGEPREVIEW_DROP_DOWN_ALIGN_RIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_NOT_SET_0 = "GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_NOT_SET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_LTR_0 = "GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_LTR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_RTL_0 = "GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_RTL_0";
+
+    // cms.prieviewhandler.js
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_HTML_FORMAT_BUTTON_0 = "GUI_PREVIEW_HTML_FORMAT_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_HTML_FORMAT_LABEL_0 = "GUI_PREVIEW_HTML_FORMAT_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_HTML_FORMAT_SAVE_BUTTON_0 = "GUI_PREVIEW_HTML_FORMAT_SAVE_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_HTML_FORMAT_CLOSE_BUTTON_0 = "GUI_PREVIEW_HTML_FORMAT_CLOSE_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_HTML_FORMAT_PROPERTIES_LINK_0 = "GUI_PREVIEW_HTML_FORMAT_PROPERTIES_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_EDIT_AREA_TARGET_0 = "GUI_PREVIEW_EDIT_AREA_TARGET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_EDIT_AREA_SELECT_0 = "GUI_PREVIEW_EDIT_AREA_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_EDIT_PROPERTY_NAME_1 = "GUI_PREVIEW_EDIT_PROPERTY_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_DROP_DOWN_TARGET_NOT_SET_0 = "GUI_PREVIEW_DROP_DOWN_TARGET_NOT_SET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_DROP_DOWN_TARGET_BLANK_0 = "GUI_PREVIEW_DROP_DOWN_TARGET_BLANK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_DROP_DOWN_TARGET_TOP_0 = "GUI_PREVIEW_DROP_DOWN_TARGET_TOP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_DROP_DOWN_TARGET_SELF_0 = "GUI_PREVIEW_DROP_DOWN_TARGET_SELF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_DROP_DOWN_TARGET_PARENT_0 = "GUI_PREVIEW_DROP_DOWN_TARGET_PARENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_CLOSE_CONFIRM_TEXT_0 = "GUI_PREVIEW_CLOSE_CONFIRM_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_SELECT_ITEM_CONFIRM_TEXT_0 = "GUI_PREVIEW_SELECT_ITEM_CONFIRM_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_CONFIRM_SAVE_0 = "GUI_PREVIEW_CONFIRM_SAVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_CONFIRM_YES_0 = "GUI_PREVIEW_CONFIRM_YES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_CONFIRM_NO_0 = "GUI_PREVIEW_CONFIRM_NO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_CONFIRM_CANCEL_0 = "GUI_PREVIEW_CONFIRM_CANCEL_0";
 
     // bundle name
     /** Name of the used resource bundle. */
