@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/01/27 08:20:23 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/01/28 13:03:08 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 7.9.2
  */
@@ -368,7 +368,7 @@ public class CmsSitemapManager {
         }
         while (sitemapFolder != null) {
             if (cms.existsResource(sitemapFolder)) {
-                String prop = cms.readPropertyObject(sitemapFolder, CmsPropertyDefinition.PROPERTY_SITEMAP, true).getValue();
+                String prop = cms.readPropertyObject(sitemapFolder, CmsPropertyDefinition.PROPERTY_SITEMAP, false).getValue();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop)) {
                     if (isRootSite && (site != null)) {
                         // adjust the property path, since it will be a site path, and we are in the root
