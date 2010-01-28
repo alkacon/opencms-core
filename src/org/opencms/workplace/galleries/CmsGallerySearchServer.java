@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/28 14:46:41 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2010/01/28 16:04:04 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 7.6
  */
@@ -175,7 +175,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         SITEMAPENTRY,
 
         /** To retrieve the path to the given resource. */
-        VFSPATH;
+        VFSPATH,
+
+        /** To get the VFS tree. */
+        VFSTREE;
     }
 
     /**
@@ -424,7 +427,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         typeids,
 
         /** The gallery-types. */
-        types
+        types,
+
+        /** The VFS tree. */
+        vfstree
     }
 
     /** JSON keys used for the sitemap tree. */
@@ -477,7 +483,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         cms_tab_sitemap,
 
         /** The id for types tab. */
-        cms_tab_types
+        cms_tab_types,
+
+        /** The id for vfs-tree tab. */
+        cms_tab_vfstree
     }
 
     /** JSON keys used for the vfs tree. */
@@ -623,6 +632,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             getCmsObject().getRequestContext().setLocale(m_locale);
             JSONObject data = new JSONObject(dataParam);
             String resourcePath;
+            String siteRoot;
             switch (action) {
                 case ALL:
                     result.merge(getAllLists(null, getTabs()), true, true);
@@ -660,9 +670,13 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     }
                     result.put(ResponseKey.path.toString(), path);
                     break;
+                case VFSTREE:
+                    siteRoot = data.getString(SitemapKey.siteRoot.name());
+                    result.put(ResponseKey.vfstree.name(), buildJSONForVfsTree(siteRoot));
+                    break;
                 case SITEMAPENTRY:
                 case SITEMAPTREE:
-                    String siteRoot = data.getString(SitemapKey.siteRoot.name());
+                    siteRoot = data.getString(SitemapKey.siteRoot.name());
                     String locale = data.getString(SitemapKey.locale.name());
                     String targetUri = data.getString(SitemapKey.sitemapUri.name());
                     result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(
@@ -671,6 +685,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                         CmsLocaleManager.getLocale(locale),
                         action.equals(Action.SITEMAPTREE)));
                     break;
+                default:
             }
         }
         return result;
@@ -835,7 +850,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         if (tabs.containsString(TabId.cms_tab_sitemap.toString())) {
             result.put(ResponseKey.sitemap.name(), buildJSONForSitemap("/demo_t3/", null, null, true));
         }
-
+        if (tabs.containsString(TabId.cms_tab_vfstree.toString())) {
+            result.put(ResponseKey.vfstree.name(), buildJSONForVfsTree(null));
+        }
         if (tabs.containsString(TabId.cms_tab_containerpage.toString())) {
             // TODO: implement
         }
@@ -1376,7 +1393,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         }
 
         List<CmsResource> subFolders = getCmsObject().readResources(
-            resource.getName(),
+            getCmsObject().getSitePath(resource),
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder(),
             false);
         if (!subFolders.isEmpty()) {
