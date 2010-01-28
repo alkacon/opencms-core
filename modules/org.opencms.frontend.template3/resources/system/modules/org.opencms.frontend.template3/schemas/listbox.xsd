@@ -52,6 +52,7 @@
 				<formatter type="center" uri="/system/modules/org.opencms.frontend.template3/elements/listbox-formatter.jsp" />
 				<formatter type="left" uri="/system/modules/org.opencms.frontend.template3/elements/listbox-formatter.jsp" />
 				<formatter type="footer" uri="/system/modules/org.opencms.frontend.template3/elements/listbox-formatter.jsp" />
+				<formatter type="template" uri="/system/modules/org.opencms.frontend.template3/elements/listbox-formatter.jsp" />
 			</formatters>
 		</xsd:appinfo>
 	</xsd:annotation>  
