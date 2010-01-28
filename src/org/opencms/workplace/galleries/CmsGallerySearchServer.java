@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/27 10:54:03 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2010/01/28 10:51:57 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,10 @@ package org.opencms.workplace.galleries;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -61,6 +63,7 @@ import org.opencms.workplace.editors.ade.CmsFormatterInfoBean;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -84,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 7.6
  */
@@ -408,11 +411,42 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         /** The search result. */
         searchresult,
 
+        /** The sitemap. */
+        sitemap,
+
         /** The type id's. */
         typeids,
 
         /** The gallery-types. */
         types
+    }
+
+    /** JSON keys used for the sitemap tree. */
+    protected enum SitemapKey {
+
+        /** the has sub entries flag. */
+        hasSubEntries,
+
+        /** The explorer type icon. */
+        icon,
+
+        /** The locale. */
+        locale,
+
+        /** The root entry. */
+        rootEntry,
+
+        /** The site root. */
+        siteRoot,
+
+        /** The sub entries. */
+        subEntries,
+
+        /** The title. */
+        title,
+
+        /** The uri. */
+        sitemapUri
     }
 
     /** Tab ids used for tab configuration. */
@@ -438,6 +472,25 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         /** The id for types tab. */
         cms_tab_types
+    }
+
+    /** JSON keys used for the vfs tree. */
+    protected enum VfsTreeKey {
+
+        /** The folder name. */
+        name,
+
+        /** The folder path. */
+        path,
+
+        /** The root folder. */
+        rootFolder,
+
+        /** The site root. */
+        siteRoot,
+
+        /** The sub folders. */
+        subFolders
     }
 
     /** The advanced gallery index name. */
@@ -735,8 +788,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * @return available types, galleries and categories as JSON 
      * 
      * @throws JSONException if something goes wrong generating the JSON
+     * @throws CmsException if something goes wrong reading the sitemap
      */
-    public JSONObject getAllLists(String modeName, JSONArray tabs) throws JSONException {
+    public JSONObject getAllLists(String modeName, JSONArray tabs) throws JSONException, CmsException {
 
         JSONObject result = new JSONObject();
         result.put(ResponseKey.types.toString(), buildJSONForTypes(getResourceTypes()));
@@ -754,7 +808,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             result.put(ResponseKey.categories.toString(), buildJSONForCategories(readCategories(galleryFolders)));
         }
         if (tabs.containsString(TabId.cms_tab_sitemap.toString())) {
-            //TODO: implement
+            result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(null, null, null));
         }
 
         if (tabs.containsString(TabId.cms_tab_containerpage.toString())) {
@@ -787,15 +841,21 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         try {
             JSONObject data = getReqDataObj();
-            if ((data != null) && data.has(ItemKey.resourcepath.toString())) {
-                String resourcePath = data.getString(ItemKey.resourcepath.toString());
-                result = findResourceInGallery(resourcePath);
-            } else if ((data != null) && data.has(QueryKey.querydata.toString())) {
-                JSONObject queryData = data.getJSONObject(QueryKey.querydata.toString());
-                result.put(QueryKey.querydata.toString(), queryData);
-                result.put(ResponseKey.searchresult.toString(), search(queryData));
+            if (data != null) {
+                String resourcePath = data.optString(ItemKey.resourcepath.name());
+                String sitemapUri = data.optString(SitemapKey.sitemapUri.name());
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourcePath)) {
+                    result = findResourceInGallery(resourcePath);
+
+                } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sitemapUri)) {
+                    result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(sitemapUri, null, null));
+                } else {
+                    JSONObject queryData = data.getJSONObject(QueryKey.querydata.name());
+                    result.put(QueryKey.querydata.name(), queryData);
+                    result.put(ResponseKey.searchresult.name(), search(queryData));
+                }
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             // TODO: improve error handling
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -808,8 +868,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * @return the type, galleries and categories, vfs and sitemap data as JSON string
      * 
      * @throws JSONException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    public String getListConfig() throws JSONException {
+    public String getListConfig() throws JSONException, CmsException {
 
         JSONObject result = getAllLists(getModeName(), getTabs());
         return result.toString();
@@ -888,7 +949,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             JSONObject jsonObj = new JSONObject();
             try {
                 CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(
-                    OpenCms.getResourceManager().getResourceType("folder"),
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME),
                     false);
                 // 1: category title
                 jsonObj.put(ItemKey.title.toString(), cat.getTitle());
@@ -902,7 +963,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 // 4 category level
                 jsonObj.put(ItemKey.level.toString(), CmsResource.getPathLevel(cat.getPath()));
                 String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting("folder").getIcon());
+                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getIcon());
                 formatterInfo.setIcon(iconPath);
                 jsonObj.put(ItemKey.itemhtml.toString(), getFormattedListContent(formatterInfo));
                 result.put(jsonObj);
@@ -1072,6 +1133,92 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /**
+     * Generates a JSON object containing the sitemap for the given site and locale,
+     * containing all sub entries up to the given target uri.<p>
+     * 
+     * @param targetUri the target uri
+     * @param siteRoot the site to select
+     * @param locale the sitemap locale
+     * @return the JSON representation of the sitemap
+     * @throws CmsException if something goes wrong reading the sitemap entries
+     * @throws JSONException if something goes wrong generating the JSON
+     */
+    private JSONObject buildJSONForSitemap(String targetUri, String siteRoot, Locale locale)
+    throws CmsException, JSONException {
+
+        CmsObject cms = getCmsObject();
+        CmsRequestContext context = cms.getRequestContext();
+
+        boolean switchSites = false;
+        String currentSiteRoot = context.getSiteRoot();
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot) && !currentSiteRoot.equals(siteRoot)) {
+            switchSites = true;
+            context.setSiteRoot(siteRoot);
+        }
+
+        boolean switchLocales = false;
+        Locale currentLocale = context.getLocale();
+        if ((locale != null) && !currentLocale.equals(locale)) {
+            switchLocales = true;
+            context.setLocale(locale);
+        }
+
+        JSONObject result = new JSONObject();
+        try {
+            CmsSiteEntryBean rootEntry = OpenCms.getSitemapManager().getEntryForUri(cms, "/");
+            result.put(SitemapKey.siteRoot.name(), context.getSiteRoot());
+            result.put(SitemapKey.locale.name(), context.getLocale().toString());
+            result.put(SitemapKey.rootEntry.name(), buildJSONForSitemapEntry(rootEntry, targetUri));
+        } finally {
+            if (switchSites) {
+                context.setSiteRoot(currentSiteRoot);
+            }
+            if (switchLocales) {
+                context.setLocale(currentLocale);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Generates the JSON object for a sitemap entry and its sub entries depending on the target uri.<p>
+     * 
+     * In case the target uri starts with the uri of the entry, all sub entries will be included.
+     * So, until the target uri is reached, all sub entries will be included.<p>
+     * 
+     * @param entry the sitemap entry
+     * @param targetUri the target uri
+     * @return the JSON representation of the entry
+     * @throws JSONException if something goes wrong generating the JSON
+     * @throws CmsException if something goes wrong reading the entry resource
+     */
+    private JSONObject buildJSONForSitemapEntry(CmsSiteEntryBean entry, String targetUri)
+    throws JSONException, CmsException {
+
+        JSONObject result = new JSONObject();
+        result.put(SitemapKey.title.name(), entry.getTitle());
+        result.put(SitemapKey.sitemapUri.name(), entry.getUri());
+        String iconPath = CmsWorkplace.RES_PATH_FILETYPES;
+        iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+            m_resourceManager.getResourceType(getCmsObject().readResource(entry.getResourceId())).getTypeName()).getIcon();
+        result.put(SitemapKey.icon.name(), iconPath);
+        if (!entry.getSubEntries().isEmpty()) {
+            result.put(SitemapKey.hasSubEntries.name(), true);
+            if (targetUri.startsWith(entry.getUri(), 0)) {
+                JSONArray subEntries = new JSONArray();
+                Iterator<CmsSiteEntryBean> it = entry.getSubEntries().iterator();
+                while (it.hasNext()) {
+                    subEntries.put(buildJSONForSitemapEntry(it.next(), targetUri));
+                }
+                result.put(SitemapKey.subEntries.name(), subEntries);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Generates a JSON-Map for all available content types.<p>
      * 
      * @param types the gallery-types
@@ -1129,6 +1276,62 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
+        }
+
+        return result;
+    }
+
+    /**
+     * Generates a JSON object containing the VFS-Tree.
+     * 
+     * @param siteRoot the site root
+     * @return the JSON object representing the VFS-Tree
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if something goes wrong generating the JSON
+     */
+    private JSONObject buildJSONForVfsTree(String siteRoot) throws CmsException, JSONException {
+
+        JSONObject result = new JSONObject();
+        CmsObject cms = getCmsObject();
+        CmsRequestContext context = cms.getRequestContext();
+
+        boolean switchSites = false;
+        String currentSiteRoot = context.getSiteRoot();
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot) && !currentSiteRoot.equals(siteRoot)) {
+            switchSites = true;
+            context.setSiteRoot(siteRoot);
+        }
+
+        try {
+            CmsResource siteRootFolder = cms.readResource("/");
+            result.put(VfsTreeKey.siteRoot.name(), context.getSiteRoot());
+            result.put(VfsTreeKey.rootFolder.name(), buildJSONForVfsTreeEntry(siteRootFolder));
+
+        } finally {
+            if (switchSites) {
+                context.setSiteRoot(currentSiteRoot);
+            }
+        }
+        return result;
+    }
+
+    private JSONObject buildJSONForVfsTreeEntry(CmsResource resource) throws JSONException, CmsException {
+
+        JSONObject result = new JSONObject();
+        result.put(VfsTreeKey.name.name(), resource.getName());
+        result.put(VfsTreeKey.path.name(), getCmsObject().getSitePath(resource));
+        List<CmsResource> subFolders = getCmsObject().readResources(
+            resource.getName(),
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder(),
+            false);
+        if (!subFolders.isEmpty()) {
+            JSONArray subFoldersJSON = new JSONArray();
+            Iterator<CmsResource> it = subFolders.iterator();
+            while (it.hasNext()) {
+                subFoldersJSON.put(buildJSONForVfsTreeEntry(it.next()));
+            }
+            result.put(VfsTreeKey.subFolders.name(), subFoldersJSON);
         }
 
         return result;
@@ -1488,23 +1691,17 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         String queryStr = queryData.getString(QueryKey.query.toString());
         int matches = queryData.getInt(QueryKey.matchesperpage.toString());
         CmsGallerySearchParameters.CmsGallerySortParam sortOrder;
-        if (queryData.has(QueryKey.sortorder.toString())) {
-            String temp = queryData.getString(QueryKey.sortorder.toString());
-            try {
-                sortOrder = CmsGallerySearchParameters.CmsGallerySortParam.valueOf(temp);
-            } catch (Exception e) {
-                sortOrder = CmsGallerySearchParameters.CmsGallerySortParam.DEFAULT;
-            }
-        } else {
+        String temp = queryData.optString(QueryKey.sortorder.toString());
+        try {
+            sortOrder = CmsGallerySearchParameters.CmsGallerySortParam.valueOf(temp);
+        } catch (Exception e) {
             sortOrder = CmsGallerySearchParameters.CmsGallerySortParam.DEFAULT;
         }
+
         int page = queryData.getInt(QueryKey.page.toString());
-        String locale;
-        if (queryData.has(QueryKey.locale.toString())
-            && !CmsStringUtil.isEmptyOrWhitespaceOnly(queryData.getString(QueryKey.locale.toString()))) {
-            locale = queryData.getString(QueryKey.locale.toString());
-        } else {
-            locale = getRequest().getParameter(ReqParam.locale.toString());
+        String locale = queryData.optString(QueryKey.locale.toString());
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(locale)) {
+            locale = getCmsObject().getRequestContext().getLocale().toString();
         }
         List<String> typeNames = new ArrayList<String>();
 
@@ -1725,4 +1922,5 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         }
         return ret;
     }
+
 }
