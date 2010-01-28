@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/28 16:04:04 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2010/01/28 16:26:06 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 7.6
  */
@@ -848,10 +848,13 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             result.put(ResponseKey.categories.toString(), buildJSONForCategories(readCategories(galleryFolders)));
         }
         if (tabs.containsString(TabId.cms_tab_sitemap.toString())) {
+            // TODO: change target uri to "/"
+            // TODO add available site roots
             result.put(ResponseKey.sitemap.name(), buildJSONForSitemap("/demo_t3/", null, null, true));
         }
         if (tabs.containsString(TabId.cms_tab_vfstree.toString())) {
             result.put(ResponseKey.vfstree.name(), buildJSONForVfsTree(null));
+            // TODO add available site roots
         }
         if (tabs.containsString(TabId.cms_tab_containerpage.toString())) {
             // TODO: implement
