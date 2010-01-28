@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/28 10:51:57 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2010/01/28 14:46:41 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 7.6
  */
@@ -167,6 +167,12 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
 
         /** To set the resource properties. */
         SETPROPERTIES,
+
+        /** To get the sitemap tree. */
+        SITEMAPTREE,
+
+        /** To get a sitemap entry. */
+        SITEMAPENTRY,
 
         /** To retrieve the path to the given resource. */
         VFSPATH;
@@ -616,36 +622,55 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             m_locale = CmsLocaleManager.getLocale(localeParam);
             getCmsObject().getRequestContext().setLocale(m_locale);
             JSONObject data = new JSONObject(dataParam);
-            if (action.equals(Action.ALL)) {
-                result.merge(getAllLists(null, getTabs()), true, true);
+            String resourcePath;
+            switch (action) {
+                case ALL:
+                    result.merge(getAllLists(null, getTabs()), true, true);
+                    break;
+                case CATEGORIES:
+                    result.put(ResponseKey.categories.toString(), readSystemCategories());
+                    break;
+                case CONTAINERS:
+                    // TODO: Add containers.
+                    break;
+                case GALLERIES:
+                    JSONArray resourceTypesParam = data.getJSONArray(ResponseKey.types.toString());
+                    List<I_CmsResourceType> resourceTypes = readContentTypes(resourceTypesParam);
+                    Map<String, CmsGalleryTypeInfo> galleryTypes = readGalleryTypes(resourceTypes);
 
-                // TODO: Add containers.
-            } else if (action.equals(Action.CATEGORIES)) {
-                result.put(ResponseKey.categories.toString(), readSystemCategories());
-            } else if (action.equals(Action.CONTAINERS)) {
-                // TODO:  Will be implemented later.
-            } else if (action.equals(Action.GALLERIES)) {
-                JSONArray resourceTypesParam = data.getJSONArray(ResponseKey.types.toString());
-                List<I_CmsResourceType> resourceTypes = readContentTypes(resourceTypesParam);
-                Map<String, CmsGalleryTypeInfo> galleryTypes = readGalleryTypes(resourceTypes);
-
-                result.put(ResponseKey.galleries.toString(), buildJSONForGalleries(galleryTypes));
-            } else if (action.equals(Action.SEARCH)) {
-                JSONObject query = data.getJSONObject(QueryKey.querydata.toString());
-                result.put(ResponseKey.searchresult.toString(), search(query));
-            } else if (action.equals(Action.PREVIEW)) {
-                String resourcePath = data.getString(ItemKey.path.toString());
-                result.put(ResponseKey.previewdata.toString(), getPreviewData(resourcePath));
-            } else if (action.equals(Action.SETPROPERTIES)) {
-                String resourcePath = data.getString(ItemKey.path.toString());
-                JSONArray properties = data.getJSONArray(ItemKey.properties.toString());
-                result.put(ResponseKey.previewdata.toString(), setProperties(resourcePath, properties));
-            } else if (action.equals(Action.VFSPATH)) {
-                String path = data.getString(ItemKey.linkpath.toString());
-                if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                    path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                }
-                result.put(ResponseKey.path.toString(), path);
+                    result.put(ResponseKey.galleries.toString(), buildJSONForGalleries(galleryTypes));
+                    break;
+                case SEARCH:
+                    JSONObject query = data.getJSONObject(QueryKey.querydata.toString());
+                    result.put(ResponseKey.searchresult.toString(), search(query));
+                    break;
+                case PREVIEW:
+                    resourcePath = data.getString(ItemKey.path.toString());
+                    result.put(ResponseKey.previewdata.toString(), getPreviewData(resourcePath));
+                    break;
+                case SETPROPERTIES:
+                    resourcePath = data.getString(ItemKey.path.toString());
+                    JSONArray properties = data.getJSONArray(ItemKey.properties.toString());
+                    result.put(ResponseKey.previewdata.toString(), setProperties(resourcePath, properties));
+                    break;
+                case VFSPATH:
+                    String path = data.getString(ItemKey.linkpath.toString());
+                    if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                        path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                    }
+                    result.put(ResponseKey.path.toString(), path);
+                    break;
+                case SITEMAPENTRY:
+                case SITEMAPTREE:
+                    String siteRoot = data.getString(SitemapKey.siteRoot.name());
+                    String locale = data.getString(SitemapKey.locale.name());
+                    String targetUri = data.getString(SitemapKey.sitemapUri.name());
+                    result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(
+                        targetUri,
+                        siteRoot,
+                        CmsLocaleManager.getLocale(locale),
+                        action.equals(Action.SITEMAPTREE)));
+                    break;
             }
         }
         return result;
@@ -808,7 +833,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             result.put(ResponseKey.categories.toString(), buildJSONForCategories(readCategories(galleryFolders)));
         }
         if (tabs.containsString(TabId.cms_tab_sitemap.toString())) {
-            result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(null, null, null));
+            result.put(ResponseKey.sitemap.name(), buildJSONForSitemap("/demo_t3/", null, null, true));
         }
 
         if (tabs.containsString(TabId.cms_tab_containerpage.toString())) {
@@ -848,7 +873,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     result = findResourceInGallery(resourcePath);
 
                 } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sitemapUri)) {
-                    result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(sitemapUri, null, null));
+                    result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(sitemapUri, null, null, true));
                 } else {
                     JSONObject queryData = data.getJSONObject(QueryKey.querydata.name());
                     result.put(QueryKey.querydata.name(), queryData);
@@ -1143,7 +1168,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * @throws CmsException if something goes wrong reading the sitemap entries
      * @throws JSONException if something goes wrong generating the JSON
      */
-    private JSONObject buildJSONForSitemap(String targetUri, String siteRoot, Locale locale)
+    private JSONObject buildJSONForSitemap(String targetUri, String siteRoot, Locale locale, boolean startFromRoot)
     throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
@@ -1163,10 +1188,14 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             switchLocales = true;
             context.setLocale(locale);
         }
-
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(targetUri)) {
+            targetUri = "/";
+        }
+        // TODO: set startUri to "/" for startFromRoot once the sitemap manager is ready.
+        String startUri = startFromRoot ? "/demo_t3/" : targetUri;
         JSONObject result = new JSONObject();
         try {
-            CmsSiteEntryBean rootEntry = OpenCms.getSitemapManager().getEntryForUri(cms, "/");
+            CmsSiteEntryBean rootEntry = OpenCms.getSitemapManager().getEntryForUri(cms, startUri);
             result.put(SitemapKey.siteRoot.name(), context.getSiteRoot());
             result.put(SitemapKey.locale.name(), context.getLocale().toString());
             result.put(SitemapKey.rootEntry.name(), buildJSONForSitemapEntry(rootEntry, targetUri));
@@ -1199,10 +1228,21 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         JSONObject result = new JSONObject();
         result.put(SitemapKey.title.name(), entry.getTitle());
         result.put(SitemapKey.sitemapUri.name(), entry.getUri());
+        I_CmsResourceType resType = m_resourceManager.getResourceType(getCmsObject().readResource(entry.getResourceId()));
         String iconPath = CmsWorkplace.RES_PATH_FILETYPES;
-        iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-            m_resourceManager.getResourceType(getCmsObject().readResource(entry.getResourceId())).getTypeName()).getIcon();
+        iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType.getTypeName()).getIcon();
         result.put(SitemapKey.icon.name(), iconPath);
+        try {
+            CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(resType, false);
+            formatterInfo.setTitleInfo(ItemKey.title.toString(), ItemKey.title.toString(), entry.getTitle());
+            formatterInfo.setIcon(iconPath);
+            result.put(ItemKey.itemhtml.toString(), getFormattedListContent(formatterInfo));
+        } catch (Exception e) {
+            // TODO: Improve error handling
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         if (!entry.getSubEntries().isEmpty()) {
             result.put(SitemapKey.hasSubEntries.name(), true);
             if (targetUri.startsWith(entry.getUri(), 0)) {
@@ -1321,6 +1361,20 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         JSONObject result = new JSONObject();
         result.put(VfsTreeKey.name.name(), resource.getName());
         result.put(VfsTreeKey.path.name(), getCmsObject().getSitePath(resource));
+        try {
+            CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeFolder.RESOURCE_TYPE_NAME), false);
+            formatterInfo.setTitleInfo(ItemKey.title.toString(), ItemKey.title.toString(), resource.getName());
+            formatterInfo.setIcon(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getIcon()));
+            result.put(ItemKey.itemhtml.toString(), getFormattedListContent(formatterInfo));
+        } catch (Exception e) {
+            // TODO: Improve error handling
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
         List<CmsResource> subFolders = getCmsObject().readResources(
             resource.getName(),
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder(),
@@ -1489,10 +1543,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         reqItem.setTypeId(resource.getTypeId());
         reqItem.setTypeName(type.getTypeName());
         reqAttributes.put(ReqParam.galleryitem.toString(), reqItem);
-        reqAttributes.put(CmsADEManager.ATTR_CURRENT_ELEMENT, new CmsContainerElementBean(
-            resource.getStructureId(),
-            null,
-            null));
+        CmsContainerElementBean element = new CmsContainerElementBean(resource.getStructureId(), null, null);
+        element.setSitePath(getCmsObject().getSitePath(resource));
+        reqAttributes.put(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
         result.put(ItemKey.itemhtml.toString(), type.getFormattedContent(
             getCmsObject(),
             getRequest(),
