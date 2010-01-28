@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/01/27 15:00:38 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/01/28 08:08:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 7.6 
  */
@@ -154,16 +154,11 @@ public class CmsJspTagContainer extends TagSupport {
 
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
-        CmsUUID detailId = null;
 
         // get the container page itself, checking the history first
         CmsResource containerPage = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(req);
         if (containerPage == null) {
             containerPage = cms.readResource(cms.getRequestContext().getUri());
-        }
-        CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
-        if (sitemap != null) {
-            detailId = sitemap.getContentId();
         }
 
         // create tag for container if necessary
@@ -239,29 +234,38 @@ public class CmsJspTagContainer extends TagSupport {
         List<CmsContainerElementBean> allElems = new ArrayList<CmsContainerElementBean>();
         allElems.addAll(container.getElements());
 
-        if ((detailId != null) && detailView) {
-            // add detail view element
-            CmsResource resUri = cms.readResource(detailId);
-            String elementFormatter = OpenCms.getResourceManager().getResourceType(resUri).getFormatterForContainerType(
-                cms,
-                resUri,
-                containerType);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormatter)) {
-                // throw exception if offline, ignore if online
-                if (!isOnline) {
-                    throw new CmsIllegalStateException(Messages.get().container(
-                        Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                        cms.getSitePath(resUri),
-                        OpenCms.getResourceManager().getResourceType(resUri).getTypeName(),
-                        containerType));
+        if (detailView) {
+            CmsUUID detailId = null;
+            CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
+            if (sitemap != null) {
+                detailId = sitemap.getContentId();
+            }
+            if (detailId != null) {
+                // read detail view 
+                CmsResource resUri = cms.readResource(detailId);
+                // get the right formatter
+                String elementFormatter = OpenCms.getResourceManager().getResourceType(resUri).getFormatterForContainerType(
+                    cms,
+                    resUri,
+                    containerType);
+                // check it
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementFormatter)) {
+                    // throw exception if offline, ignore if online
+                    if (!isOnline) {
+                        throw new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                            cms.getSitePath(resUri),
+                            OpenCms.getResourceManager().getResourceType(resUri).getTypeName(),
+                            containerType));
+                    }
+                } else {
+                    // add the detail view in first first of the current container
+                    CmsContainerElementBean element = new CmsContainerElementBean(
+                        resUri.getStructureId(),
+                        cms.readResource(elementFormatter).getStructureId(),
+                        null); // when used as template element there are no properties
+                    allElems.add(0, element);
                 }
-            } else {
-                // add the detail view in first first of the current container
-                CmsContainerElementBean element = new CmsContainerElementBean(
-                    resUri.getStructureId(),
-                    cms.readResource(elementFormatter).getStructureId(),
-                    null); // when used as template element there are no properties
-                allElems.add(0, element);
             }
         }
 
