@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGalleryDocumentXmlContent.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/01/28 14:48:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -101,8 +101,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                 StringBuffer content = new StringBuffer();
                 for (String xpath : xmlContent.getNames(locale)) {
                     I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
-                    I_CmsXmlContentHandler handler = value.getContentDefinition().getContentHandler();
-                    if (handler.isSearchable(value)) {
+                    if (value.getContentDefinition().getContentHandler().isSearchable(value)) {
                         // create the content value for the locale by adding all String values in the XML nodes
                         String extracted = value.getPlainText(cms);
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
@@ -110,7 +109,8 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                             content.append('\n');
                         }
                     }
-                    String[] mappings = handler.getMappings(value.getPath());
+                    String[] mappings = xmlContent.getContentDefinition().getContentHandler().getMappings(
+                        value.getPath());
                     if ((mappings != null) && (mappings.length > 0)) {
                         // mappings are defined, lets check if we have mappings that interest us
                         for (String mapping : mappings) {
