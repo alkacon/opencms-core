@@ -1,4 +1,5 @@
 (function(cms) {
+    var M = cms.messages;
 
    ///// Content Handler Function definition //////////////////////////       
    /** Reouse type constant for the image. */
@@ -103,21 +104,21 @@
    var htmlCropSceleton = '<div id="cms-image-crop" class="ui-corner-all"></div>';
    
    /** html fragment for the image format tab html. */
-   var htmlForamtTabSceleton = '<li><a href="#' + keys['formatTabId'] + '">Image format</a></li>'
+   var htmlForamtTabSceleton = '<li><a href="#' + keys['formatTabId'] + '">'+M.GUI_IMAGEPREVIEW_SELCTION_FORMAT_LINK+'</a></li>'
    
    /** html fragment for the tab navigation. */
    var tabsNav = {
        'widget': '<ul>\
-                      <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">Properties</a></li>\
-                      <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">Image format</a></li>\
-                      <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">Image infos</a></li>\
+                      <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_PROPERTIES_LINK+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_FORMAT_LINK+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_INFO_LINK+'</a></li>\
                   </ul>',
         'editor' : '<ul>\
-                      <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">Properties</a></li>\
-                      <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">Image format</a></li>\
-                      <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">Image infos</a></li>\
-                      <li><a href="#' + cms.imagepreviewhandler.keys['editorFormatTabId'] + '">Editor formats</a></li>\
-                      <li><a href="#' + cms.imagepreviewhandler.keys['editorAdvancedTabId'] + '">Advanced</a></li>\
+                      <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_PROPERTIES_LINK+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_FORMAT_LINK+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_INFO_LINK+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['editorFormatTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_EDITOR_FORMAT_LINK+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['editorAdvancedTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_ADVANCED_LINK+'</a></li>\
                   </ul>'     
    } ;
    
@@ -125,11 +126,11 @@
    
     /** Html sceleton for width and height format fields. */                             
     var  widthHeightFieldsHtml = '<div class="cms-format-line" alt="' + keys['previewWidth'] + '" >\
-                                <span class="cms-item-title cms-width-50">Width:</span>\
+                                <span class="cms-item-title cms-width-50">'+M.GUI_IMAGEPREVIEW_HTML_WIDTH_LABEL+'</span>\
                                 <input class="ui-corner-all ui-widget-content ui-state-disabled" disabled="true" type="text"/>\
                             </div>\
                             <div class="cms-format-line" alt="' + keys['previewHeight'] + '">\
-                                <span class="cms-item-title cms-width-50">Height:</span>\
+                                <span class="cms-item-title cms-width-50">'+M.GUI_IMAGEPREVIEW_HTML_HEIGHT_LABEL+'</span>\
                                 <input class="ui-corner-all ui-widget-content ui-state-disabled" disabled="true" type="text"/>\
                             </div>';
     // TODO: eventual comment on as cancel button    
@@ -146,94 +147,94 @@
                            
     /** Html sceleton for the format select box in the image format area. */                              
     var selectBoxHtml = '<div class="cms-drop-down cms-format-line" alt="' + keys['imageFormat'] + '">\
-                               <label class="cms-item-title cms-width-50">Format:</label>\
+                               <label class="cms-item-title cms-width-50">'+M.GUI_IMAGEPREVIEW_HTML_FORMAT_LABEL+'</label>\
                                <button class="ui-state-default ui-corner-all" name="' + keys['cropShow'] + '">\
-                                    <span class="cms-galleries-button cms-galleries-icon-crop cms-icon-text">Cropping</span>\
+                                    <span class="cms-galleries-button cms-galleries-icon-crop cms-icon-text">'+M.GUI_IMAGEPREVIEW_HTML_CROPPING_BUTTON+'</span>\
                                </button>\
                                <button class="ui-state-default ui-corner-all" name="' + keys['cropRemove'] + '">\
-                                    <span class="cms-galleries-button cms-galleries-icon-cropremove cms-icon-text">Remove&nbsp;cropping</span>\
+                                    <span class="cms-galleries-button cms-galleries-icon-cropremove cms-icon-text">'+M.GUI_IMAGEPREVIEW_HTML_CROPPING_REMOVE_BUTTON+'</span>\
                                </button>\
                            </div>';                                                          
 
    /** */
    var editorFormatTabHtml = '<div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
-                                  <span class="cms-item-title cms-width-95">Title&nbsp;/&nbsp;Alt-Text</span>\
-                                  <input id="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
+                                  <span class="cms-item-title cms-width-95">'+M.GUI_IMAGEPREVIEW_HTML_TITLE_ALT_LABEL+'</span>\
+                                  <input id="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_TITLE_ALT_TITLE+'" value="" />\
                               </div>\
                               <div class="cms-editable-field cms-left cms-width-305" alt="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '">\
-                                  <span class="cms-item-title cms-editor-title cms-width-150 cms-left">Create image spacing</span>\
+                                  <span class="cms-item-title cms-editor-title cms-width-150 cms-left">'+M.GUI_IMAGEPREVIEW_HTML_SPACING_LABEL+'</span>\
                                   <div id="' + cms.imagepreviewhandler.editorKeys['imgSpacing'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
                                   <div class="cms-format-line cms-right" alt="width">\
-                                      <span class="cms-item-title cms-editor-title cms-width-60">HSpace:</span>\
+                                      <span class="cms-item-title cms-editor-title cms-width-60">'+M.GUI_IMAGEPREVIEW_HTML_HSPACE_LABEL+'</span>\
                                       <input id="' + cms.imagepreviewhandler.editorKeys['hSpace'] + '" class="ui-corner-all ui-widget-content" type="text"/>\
                                   </div>\
                               </div>\
                               <div class="cms-drop-down cms-format-line cms-right" id="' + editorKeys['imgAlign'] + '">\
-                                  <label class="cms-item-title cms-width-50">Align:</label>\
+                                  <label class="cms-item-title cms-width-50">'+M.GUI_IMAGEPREVIEW_HTML_ALIGN_LABEL+'</label>\
                               </div>\
                               <div class="cms-format-line cms-width-305" alt="width" style="clear:left;">\
                                   <input id="' + cms.imagepreviewhandler.editorKeys['vSpace'] + '" class="ui-corner-all ui-widget-content cms-right" type="text"/>\
-                                  <span class="cms-item-title cms-editor-title cms-width-60 cms-right">VSpace:</span>\
+                                  <span class="cms-item-title cms-editor-title cms-width-60 cms-right">'+M.GUI_IMAGEPREVIEW_HTML_VSPACE_LABEL+'</span>\
                               </div>'
    /** Html fragment for the enhanced mode in editor mode. */
    var enhancedInsetAltCopyright = '<div id="' + cms.imagepreviewhandler.editorKeys['fckInsertAlt'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
-                              <div class="cms-checkbox-label cms-left">Insert subtitle</div>\
+                              <div class="cms-checkbox-label cms-left">'+M.GUI_IMAGEPREVIEW_HTML_SUBTITLE_LABEL+'</div>\
                               <button id="' + cms.imagepreviewhandler.editorKeys['fckResetTitle'] + '" class="cms-right ui-state-default ui-corner-all" >\
-                                  <span class="cms-galleries-button">Reset Title</span>\
+                                  <span class="cms-galleries-button">'+M.GUI_IMAGEPREVIEW_HTML_RESET_TITLE_BUTTON+'</span>\
                               </button>\
                               <div class="cms-editable-field cms-left cms-width-320" alt="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '">\
-                                  <span class="cms-item-title cms-width-95">Copyright</span>\
-                                  <input id="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="Edit" value="" />\
+                                  <span class="cms-item-title cms-width-95">'+M.GUI_IMAGEPREVIEW_HTML_COPYRIGHT_LABEL+'</span>\
+                                  <input id="' + cms.imagepreviewhandler.editorKeys['fckCopy'] + '" class="cms-item-edit ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_COPYRIGHT_TITLE+'" value="" />\
                               </div>\
                               <div id="' + cms.imagepreviewhandler.editorKeys['fckInsertCr'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left"></div>\
-                              <div class="cms-checkbox-label cms-left">Insert Copyright</div>\
+                              <div class="cms-checkbox-label cms-left">'+M.GUI_IMAGEPREVIEW_HTML_INSERT_COPYRIGHT_LABEL+'</div>\
                               <button id="' + cms.imagepreviewhandler.editorKeys['fckReserCr'] + '" class="cms-right ui-state-default ui-corner-all" style="clear:right;">\
-                                  <span class="cms-galleries-button">Reset Copyright</span>\
+                                  <span class="cms-galleries-button">'+M.GUI_IMAGEPREVIEW_HTML_RESET_COPYRIGHT_BUTTON+'</span>\
                               </button>';
    
    /** Html fragment for the enhanced mode in editor mode. */
    var enhancedInsertLink = '<div id="' + cms.imagepreviewhandler.editorKeys['linkOriginal'] + '" class="cms-checkbox-gallery cms-checkbox-unchecked cms-left checkbox-margin"></div>\
-                              <div class="cms-checkbox-title cms-left">Insert link to image in original format</div>';
+                              <div class="cms-checkbox-title cms-left">'+M.GUI_IMAGEPREVIEW_HTML_INSERT_LINK_LABEL+'</div>';
                               
    /** Html for the advenced tab in editor mode. */                              
-   var advancedTabHtml = '<div class="cms-header-small cms-clear-right">Link</div>\
+   var advancedTabHtml = '<div class="cms-header-small cms-clear-right">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LINK_LABEL+'</div>\
                      <div class="cms-editable-field cms-left cms-width-500" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
-                          <span class="cms-item-title cms-width-95">Url:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advLinkUrl'] + '" class="cms-item-edit cms-width-390 ui-corner-all" name="TODO" title="Edit ' + '' + '" value="" />\
+                          <span class="cms-item-title cms-width-95">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_URL_LABEL+'</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLinkUrl'] + '" class="cms-item-edit cms-width-390 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LINK_TITLE+' ' + '' + '" value="" />\
                      </div>\
                      <button id="' + cms.imagepreviewhandler.editorKeys['advBrowseServer'] + '" class="cms-right ui-state-default ui-corner-all">\
-                          <span class="cms-galleries-button">Browse Server</span>\
+                          <span class="cms-galleries-button">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_BROWSE_SERVER+'</span>\
                      </button>\
                      <div class="cms-drop-down cms-format-line cms-left" id="' + editorKeys['advLinkTarget'] + '">\
-                         <label class="cms-item-title cms-width-95">Target:</label>\
+                         <label class="cms-item-title cms-width-95">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_TARGET_LABEL+'</label>\
                      </div>\
-                     <div class="cms-header-small cms-clear-left">Other Attributes</div>\
+                     <div class="cms-header-small cms-clear-left">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ATTRIBUTES_LABEL+'</div>\
                      <div class="cms-editable-field cms-left cms-width-620 cms-clear-right" alt="' + cms.imagepreviewhandler.editorKeys['advId'] + '">\
-                          <span class="cms-item-title cms-width-150">Id:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advId'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                          <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ID_LABEL+'</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advId'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ID_TITLE+'" value="" />\
                      </div>\
                      <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '">\
-                          <span class="cms-item-title cms-width-150">Stylesheet Classes:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                          <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLESHEET_LABEL+'</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLESHEET_TITLE+'" value="" />\
                      </div>\
                      <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '">\
-                          <span class="cms-item-title cms-width-150">Style:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                          <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLE_LABEL+'</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLE_TITLE+'" value="" />\
                      </div>\
                      <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '">\
-                          <span class="cms-item-title cms-width-150">Long Description URL:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                          <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_DESCRIPTION_LABEL+'</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_DESCRIPTION_TITLE+'" value="" />\
                      </div>\
                      <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '">\
-                          <span class="cms-item-title cms-width-150">Advisory Title:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                          <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ADVISORY_TITLE_LABEL+'</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ADVISORY_TITLE_TITLE+'" value="" />\
                      </div>\
                      <div class="cms-drop-down cms-format-line cms-left cms-width-620" id="' + editorKeys['advLangDir'] + '">\
-                         <label class="cms-item-title cms-width-150">Language Direction:</label>\
+                         <label class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_LABEL+'</label>\
                      </div>\
                      <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '">\
-                          <span class="cms-item-title cms-width-150">Language Code:</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="Edit" value="" />\
+                          <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_CODE_LABEL+'</span>\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_CODE_TITLE+'" value="" />\
                      </div>';                              
                                                                 
    /**
@@ -332,17 +333,17 @@
       // TODO: eventual comment on as cancel button    
       /*$('#' + cms.imagepreviewhandler.keys['imageInfosTabId']).find('div.cms-field:last')
           .prepend('<button name="previewClose" class="cms-right ui-state-default ui-corner-all">\
-                          <span class="cms-galleries-button">Close</span>\
+                          <span class="cms-galleries-button">'+M.GUI_IMAGEPREVIEW_IMAGE_INFO_CLOSE_LABEL+'</span>\
                     </button>');*/          
       /*targetInfos.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);*/
       if (cms.galleries.isSelectableItem()) {
           // add select button
           /*targetInfos.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
-                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">'+M.GUI_IMAGEPREVIEW_IMAGE_INFO_SELECT_LABEL+'</span>\
                              </button>');*/
           $('#' + cms.imagepreviewhandler.keys['imageInfosTabId']).find('div.cms-field:last')
               .prepend('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
-                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                                   <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">'+M.GUI_IMAGEPREVIEW_IMAGE_INFO_SELECT_LABEL+'</span>\
                              </button>');                              
           targetInfos.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);
        }          
@@ -361,10 +362,10 @@
             //targetFormat.find('button[name="previewClose"]').click(cms.galleries.getContentHandler(cms.imagepreviewhandler.typeConst)['closePreview']);
             // add select button
             targetFormat.find('div[alt="' + keys['previewHeight'] + '"]').prepend('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
-                                       <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+                                       <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">'+M.GUI_IMAGEPREVIEW_IMAGE_INFO_SELECT_LABEL+'</span>\
                                  </button>');
             /*targetFormat.find('button[name="previewClose"]').after('<button name="previewSelect" class="cms-right ui-state-default ui-corner-all">\
-             <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Select</span>\
+             <span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">'+M.GUI_IMAGEPREVIEW_IMAGE_INFO_SELECT_LABEL+'</span>\
              </button>');*/
             targetFormat.find('button[name="previewSelect"]').click(cms.galleries.getContentHandler()['selectItemWithConfirmation']);
       }         

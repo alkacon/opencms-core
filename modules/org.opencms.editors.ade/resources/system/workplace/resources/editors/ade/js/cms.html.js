@@ -102,8 +102,8 @@
         <div class="ui-corner-bottom">\
 		    <div id="menuTabs" class="ui-corner-bottom">\
                 <ul>\
-                     <li><a href="#favorite-tab">Favorites</a></li>\
-                     <li><a href="#recent-tab">Recent</a></li>\
+                     <li><a href="#favorite-tab">', M.GUI_STORAGEMENU_TABS_FAVORITES_LINK, '</a></li>\
+                     <li><a href="#recent-tab">', M.GUI_STORAGEMENU_TABS_RECENT_LINK, '</a></li>\
                 </ul>\
                 <div id="favorite-tab">\
                     <div class="cms-list-scrolling ui-corner-all">\
@@ -229,17 +229,17 @@
    
    var subcontainerDialog = cms.html.subcontainerDialog = function(containerElement){
        var html = ['<div id="cms-overlay-editing" class="ui-dialog ui-widget ui-widget-content ui-corner-all">\
-           <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" unselectable="on" style="-moz-user-select: none;"><span class="ui-dialog-title" id="ui-dialog-title-cms-leave-dialog" unselectable="on" style="-moz-user-select: none;">Edit sub-container</span></div>\
+           <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" unselectable="on" style="-moz-user-select: none;"><span class="ui-dialog-title" id="ui-dialog-title-cms-leave-dialog" unselectable="on" style="-moz-user-select: none;">', M.GUI_SUBCONTAINER_DIALOG_TITLE_0, '</span></div>\
            <div style="margin:10px">\
-               <div class="cms-editable-field" alt="title"><span class="cms-item-title cms-width-90">Title</span><input class="cms-item-edit ui-corner-all" name="title" title="Edit title" value="',
+               <div class="cms-editable-field" alt="title"><span class="cms-item-title cms-width-90">', M.GUI_SUBCONTAINER_DIALOG_LABEL_TITLE_0, '</span><input class="cms-item-edit ui-corner-all" name="title" title="', M.GUI_SUBCONTAINER_DIALOG_INPUT_TITLE_0, '" value="',
                containerElement['title'],
                '" /></div>\
-               <div class="cms-editable-field" alt="description"><span class="cms-item-title cms-width-90">Description</span><input name="description" title="Edit description" value="',
+               <div class="cms-editable-field" alt="description"><span class="cms-item-title cms-width-90">', M.GUI_SUBCONTAINER_DIALOG_LABEL_DESCRIPTION_0, '</span><input name="description" title="', M.GUI_SUBCONTAINER_DIALOG_INPUT_DESCRIPTION_0, '" value="',
                containerElement['description'],
                '" class="cms-item-edit ui-corner-all" /></div>\
                <div class="cms-button-bar">\
-                   <button class="cms-right ui-state-default ui-corner-all" name="subcontainerCancel"><span class="cms-galleries-button">Cancel</span></button>\
-                   <button class="cms-right ui-state-default ui-corner-all" name="subcontainerSave"><span class="cms-galleries-button">Save</span></button>\
+                   <button class="cms-right ui-state-default ui-corner-all" name="subcontainerCancel"><span class="cms-galleries-button">', M.GUI_SUBCONTAINER_DIALOG_CANCEL_0, '</span></button>\
+                   <button class="cms-right ui-state-default ui-corner-all" name="subcontainerSave"><span class="cms-galleries-button">', M.GUI_SUBCONTAINER_DIALOG_SAVE_0, '</span></button>\
                    <br clear="all"/>\
                </div>\
            </div></div>'];

@@ -162,7 +162,7 @@
          $('input:checkbox', this.$widget).click(function() {
            self.setEnabled(true);
          });
-         this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>Use default</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
+         this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>'+M.GUI_CHECKBOXWIDGET_DEFAULT_SWITCH+'</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
          $('input:checkbox', this.$defaultSwitch).change(function() {
            self.setEnabled($(this).closest('.cms-editable-field').hasClass('cms-default-value'));
            return false;
@@ -240,8 +240,8 @@
            </div>\
        ';
       var $widget = self.$widget = $(html).css('display', 'inline');
-      $('button.cms-property-opengallery', $widget).text('Change');
-      $('button.cms-gallery-resetfield', $widget).text('Reset');
+      $('button.cms-property-opengallery', $widget).text(M.GUI_GALLERYWIDGET_BUTTON_CHANGE);
+      $('button.cms-gallery-resetfield', $widget).text(M.GUI_GALLERYWIDGET_BUTTON_RESET);
       $('button', $widget).addClass('ui-corner-all ui-state-default');
       
       var fieldId = 'cms-gallery-field-' + galleryFieldIdCounter++;
@@ -294,8 +294,6 @@
    var setGalleryValues = cms.property.setGalleryValues = function() {
       var itemId = $('#cms-preview').attr('alt');
       setGalleryResourcePath(itemId);
-      
-      
    }
    
    

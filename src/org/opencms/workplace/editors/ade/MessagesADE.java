@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/01/27 15:23:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/28 14:23:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6.0 
  */
@@ -80,6 +80,33 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SEARCH_DIALOG_TYPES_0 = "GUI_SEARCH_DIALOG_TYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STORAGEMENU_TABS_FAVORITES_LINK = "GUI_STORAGEMENU_TABS_FAVORITES_LINK";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STORAGEMENU_TABS_RECENT_LINK = "GUI_STORAGEMENU_TABS_RECENT_LINK";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SUBCONTAINER_DIALOG_TITLE_0 = "GUI_SUBCONTAINER_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SUBCONTAINER_DIALOG_LABEL_TITLE_0 = "GUI_SUBCONTAINER_DIALOG_LABEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SUBCONTAINER_DIALOG_INPUT_TITLE_0 = "GUI_SUBCONTAINER_DIALOG_INPUT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SUBCONTAINER_DIALOG_LABEL_DESCRIPTION_0 = "GUI_SUBCONTAINER_DIALOG_LABEL_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SUBCONTAINER_DIALOG_INPUT_DESCRIPTION_0 = "GUI_SUBCONTAINER_DIALOG_INPUT_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SUBCONTAINER_DIALOG_CANCEL_0 = "GUI_SUBCONTAINER_DIALOG_CANCEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SUBCONTAINER_DIALOG_SAVE_0 = "GUI_SUBCONTAINER_DIALOG_SAVE_0";
 
     // cms.move.js
     // this key is never used
@@ -208,6 +235,12 @@ public class MessagesADE extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STORAGE_BUTTON_TITLE_0 = "GUI_STORAGE_BUTTON_TITLE_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_SITEMAP_TITLE = "GUI_TOOLBAR_SITEMAP_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_TOGGLE_TOOLBAR = "GUI_TOOLBAR_TOGGLE_TOOLBAR";
+
     // cms.property.js
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COLOR_SELECT_TITLE_0 = "GUI_COLOR_SELECT_TITLE_0";
@@ -236,6 +269,15 @@ public class MessagesADE extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTIES_HEADING_DEFAULT_0 = "GUI_PROPERTIES_HEADING_DEFAULT_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERYWIDGET_BUTTON_CHANGE = "GUI_GALLERYWIDGET_BUTTON_CHANGE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERYWIDGET_BUTTON_RESET = "GUI_GALLERYWIDGET_BUTTON_RESET";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKBOXWIDGET_DEFAULT_SWITCH = "GUI_CHECKBOXWIDGET_DEFAULT_SWITCH";
+
     // cms.util.js
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LEAVE_PAGE_CONFIRM_0 = "GUI_LEAVE_PAGE_CONFIRM_0";
@@ -255,6 +297,145 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FIREBUG_ACTIVE_TITLE_0 = "GUI_FIREBUG_ACTIVE_TITLE_0";
+
+    // cms.imagepreviewhandler.js
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_SELCTION_FORMAT_LINK = "GUI_IMAGEPREVIEW_SELCTION_FORMAT_LINK";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_TABS_PROPERTIES_LINK = "GUI_IMAGEPREVIEW_TABS_PROPERTIES_LINK";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_TABS_IMAGE_FORMAT_LINK = "GUI_IMAGEPREVIEW_TABS_IMAGE_FORMAT_LINK";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_TABS_IMAGE_INFO_LINK = "GUI_IMAGEPREVIEW_TABS_IMAGE_INFO_LINK";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_TABS_EDITOR_FORMAT_LINK = "GUI_IMAGEPREVIEW_TABS_EDITOR_FORMAT_LINK";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_TABS_ADVANCED_LINK = "GUI_IMAGEPREVIEW_TABS_ADVANCED_LINK";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_WIDTH_LABEL = "GUI_IMAGEPREVIEW_HTML_WIDTH_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_HEIGHT_LABEL = "GUI_IMAGEPREVIEW_HTML_HEIGHT_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_FORMAT_LABEL = "GUI_IMAGEPREVIEW_HTML_FORMAT_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_CROPPING_BUTTON = "GUI_IMAGEPREVIEW_HTML_CROPPING_BUTTON";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_CROPPING_REMOVE_BUTTON = "GUI_IMAGEPREVIEW_HTML_CROPPING_REMOVE_BUTTON";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_TITLE_ALT_LABEL = "GUI_IMAGEPREVIEW_HTML_TITLE_ALT_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_TITLE_ALT_TITLE = "GUI_IMAGEPREVIEW_HTML_TITLE_ALT_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_SPACING_LABEL = "GUI_IMAGEPREVIEW_HTML_SPACING_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_HSPACE_LABEL = "GUI_IMAGEPREVIEW_HTML_HSPACE_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ALIGN_LABEL = "GUI_IMAGEPREVIEW_HTML_ALIGN_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_VSPACE_LABEL = "GUI_IMAGEPREVIEW_HTML_VSPACE_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_SUBTITLE_LABEL = "GUI_IMAGEPREVIEW_HTML_SUBTITLE_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_RESET_TITLE_BUTTON = "GUI_IMAGEPREVIEW_HTML_RESET_TITLE_BUTTON";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_COPYRIGHT_LABEL = "GUI_IMAGEPREVIEW_HTML_COPYRIGHT_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_COPYRIGHT_TITLE = "GUI_IMAGEPREVIEW_HTML_COPYRIGHT_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_INSERT_COPYRIGHT_LABEL = "GUI_IMAGEPREVIEW_HTML_INSERT_COPYRIGHT_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_RESET_COPYRIGHT_BUTTON = "GUI_IMAGEPREVIEW_HTML_RESET_COPYRIGHT_BUTTON";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_INSERT_LINK_LABEL = "GUI_IMAGEPREVIEW_HTML_INSERT_LINK_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_EDIT_TITLE = "GUI_IMAGEPREVIEW_HTML_EDIT_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_LINK_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_LINK_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_LINK_TITLE = "GUI_IMAGEPREVIEW_HTML_ADVANCED_LINK_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_URL_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_URL_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_BROWSE_SERVER = "GUI_IMAGEPREVIEW_HTML_ADVANCED_BROWSE_SERVER";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_TARGET_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_TARGET_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_ATTRIBUTES_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_ATTRIBUTES_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_ID_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_ID_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_ID_TITLE = "GUI_IMAGEPREVIEW_HTML_ADVANCED_ID_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLESHEET_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLESHEET_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLESHEET_TITLE = "GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLESHEET_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLE_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLE_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLE_TITLE = "GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLE_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_DESCRIPTION_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_DESCRIPTION_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_DESCRIPTION_TITLE = "GUI_IMAGEPREVIEW_HTML_ADVANCED_DESCRIPTION_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_ADVISORY_TITLE_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_ADVISORY_TITLE_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_ADVISORY_TITLE_TITLE = "GUI_IMAGEPREVIEW_HTML_ADVANCED_ADVISORY_TITLE_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_CODE_LABEL = "GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_CODE_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_CODE_TITLE = "GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_CODE_TITLE";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_IMAGE_INFO_CLOSE_LABEL = "GUI_IMAGEPREVIEW_IMAGE_INFO_CLOSE_LABEL";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_IMAGE_INFO_SELECT_LABEL = "GUI_IMAGEPREVIEW_IMAGE_INFO_SELECT_LABEL";
 
     // bundle name
     /** Name of the used resource bundle. */
