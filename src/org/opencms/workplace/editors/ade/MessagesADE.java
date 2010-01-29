@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/01/28 17:26:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/01/29 09:27:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6.0 
  */
@@ -512,6 +512,55 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_CONFIRM_CANCEL_0 = "GUI_PREVIEW_CONFIRM_CANCEL_0";
+
+    //cms.publish.js
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0 = "GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0 = "GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0 = "GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0 = "GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_CHECKBOXES_REL_RES_0 = "GUI_PUBLISH_CHECKBOXES_REL_RES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_CHECKBOXES_SIBLINGS_0 = "GUI_PUBLISH_CHECKBOXES_SIBLINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_UNREMOVE_BUTTON_0 = "GUI_PUBLISH_UNREMOVE_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_REMOVE_BUTTON_0 = "GUI_PUBLISH_REMOVE_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DIALOG_PUBLISH_0 = "GUI_PUBLISH_DIALOG_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DIALOG_NO_RES_0 = "GUI_PUBLISH_DIALOG_NO_RES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DIALOG_OK_BUTTON_0 = "GUI_PUBLISH_DIALOG_OK_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0 = "GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DIALOG_PROBLEM_1 = "GUI_PUBLISH_DIALOG_PROBLEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DIALOG_MY_CHANGES_0 = "GUI_PUBLISH_DIALOG_MY_CHANGES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DIALOG_BROKEN_LINKS_0 = "GUI_PUBLISH_DIALOG_BROKEN_LINKS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DIALOG_BACK_0 = "GUI_PUBLISH_DIALOG_BACK_0";
 
     // bundle name
     /** Name of the used resource bundle. */

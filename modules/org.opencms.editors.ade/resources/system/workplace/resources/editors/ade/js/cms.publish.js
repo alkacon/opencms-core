@@ -1,4 +1,6 @@
 (function(cms) {
+   var M = cms.messages;
+   
    var checkboxCount = 0;
    
    var publishDialogId = cms.publish.publishDialogId = 'publishlist';
@@ -131,9 +133,9 @@
          if (isRemove) {
             checkbox.setEnabled(false);
             checkbox.setChecked(false);
-            $removeButton.attr('title', '€Unremove');
+            $removeButton.attr('title', M.GUI_PUBLISH_UNREMOVE_BUTTON_0);
          } else {
-            $removeButton.attr('title', '€Remove')
+            $removeButton.attr('title', M.GUI_PUBLISH_REMOVE_BUTTON_0)
             if (!$row.hasClass('cms-has-info')) {
                checkbox.setEnabled(true);
                checkbox.setChecked(true);
@@ -195,7 +197,7 @@
             this.$dialog = $dlg;
             $dlg.dialog({
                autoOpen: true,
-               title: '€Publish',
+               title: M.GUI_PUBLISH_DIALOG_PUBLISH_0,
                modal: true,
                zIndex: 9999,
                width: 750,
@@ -255,18 +257,18 @@
          $dlg.empty();
          if (data.length == 0) {
             var $projectSelector = self.createProjectSelector().css('float', 'right');
-            $('<div></div>').text('€There are no resources to publish.').append($projectSelector).appendTo($dlg);
-            dialogButton('€OK').css('clear', 'both').css('margin-top', '75px').css('float', 'right').click(function() {
+            $('<div></div>').text(M.GUI_PUBLISH_DIALOG_NO_RES_0).append($projectSelector).appendTo($dlg);
+            dialogButton(M.GUI_PUBLISH_DIALOG_OK_BUTTON_0).css('clear', 'both').css('margin-top', '75px').css('float', 'right').click(function() {
                self.destroy();
             }).appendTo($dlg);
             return;
          }
          
          this.$topPanel = $('<div class="cms-publish-selectbar">\
-             <span class="cms-label cms-left">€Select:</span>\
-             <button name="all" class="ui-state-default ui-corner-all">€All</button>\
-             <button name="none" class="ui-state-default ui-corner-all">€None</button>\
-             <span class="cms-label cms-right">€Publish list:</span>\
+             <span class="cms-label cms-left">'+M.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0+'</span>\
+             <button name="all" class="ui-state-default ui-corner-all">'+M.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0+'</button>\
+             <button name="none" class="ui-state-default ui-corner-all">'+M.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0+'</button>\
+             <span class="cms-label cms-right">'+M.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0+'</span>\
              </div>').appendTo($dlg);
          $('button[name="all"]', self.$topPanel).click(function() {
             $.each(util.Checkbox.getCheckboxes(self.$mainPanel), util.bindFn(util.Checkbox.prototype.setChecked, [true]));
@@ -285,12 +287,12 @@
          this.$checkboxes = $('<div class="cms-publish-optionbar"></div>').appendTo($dlg);
          var relatedCheckbox = new cms.util.Checkbox();
          
-         this.$checkboxes.append(relatedCheckbox.$dom).append('<span>€Publish related resources</span>');
+         this.$checkboxes.append(relatedCheckbox.$dom).append('<span>'+M.GUI_PUBLISH_CHECKBOXES_REL_RES_0+'</span>');
          relatedCheckbox.setChecked(!!self.checkedRelated);
          
          var siblingsCheckbox = new cms.util.Checkbox();
          
-         this.$checkboxes.append(siblingsCheckbox.$dom).append('<span>€Publish siblings</span>');
+         this.$checkboxes.append(siblingsCheckbox.$dom).append('<span>'+M.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0+'</span>');
          siblingsCheckbox.setChecked(!!self.checkedSiblings);
          
          var _updateState = function() {
@@ -305,10 +307,10 @@
          
          
          this.$bottomPanel = $('<div class="cms-publish-buttonbar"></div>').appendTo($dlg);
-         var $cancel = dialogButton('€Cancel').css('float', 'right').appendTo(self.$bottomPanel).click(function() {
+         var $cancel = dialogButton(M.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0).css('float', 'right').appendTo(self.$bottomPanel).click(function() {
             self.destroy();
          });
-         var $publish = dialogButton('€Publish').css('float', 'right').appendTo(self.$bottomPanel).click(function() {
+         var $publish = dialogButton(M.GUI_PUBLISH_DIALOG_PUBLISH_0).css('float', 'right').appendTo(self.$bottomPanel).click(function() {
             self.resourcesToPublish = self.getResourcesToPublish();
             self.resourcesToRemove = self.getResourcesToRemove();
             self.startPublish();
@@ -319,7 +321,7 @@
             this.addGroup(data[i]);
          }
          if (self.problemCount > 0) {
-            var $problemDiv = $('<div/>').text(cms.util.format('€There are {0} resources with problems in the publish list.', "" + self.problemCount)).css('margin', '15px 0').css('font-weight', 'bold').insertAfter($scrollPanel);
+            var $problemDiv = $('<div/>').text(cms.util.format(M.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + self.problemCount)).css('margin', '15px 0').css('font-weight', 'bold').insertAfter($scrollPanel);
             $('<span class="cms-publish-warning/>').css({'float': 'left', 'margin-right': '8px', 'margin-left': '15px'}).prependTo($problemDiv);
          }
          self.restoreState();
@@ -332,8 +334,8 @@
       addGroup: function(group) {
          var $main = this.$mainPanel;
          var $group = $('<ul/>').appendTo($main);
-         var $selectAll = $('<button/>').addClass('cms-publish-select-button ui-state-default ui-corner-all').text('€All');
-         var $selectNone = $('<button/>').addClass('cms-publish-select-button ui-state-default ui-corner-all').text('€None');
+         var $selectAll = $('<button/>').addClass('cms-publish-select-button ui-state-default ui-corner-all').text(M.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0);
+         var $selectNone = $('<button/>').addClass('cms-publish-select-button ui-state-default ui-corner-all').text(M.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0);
 
          var _setAllChecked = function(checked) {
             var checkboxes = cms.util.Checkbox.getCheckboxes($group);
@@ -398,7 +400,7 @@
             $removeButton.addClass('cms-icon-publish-remove');
             
             var removeButtonState = 0;
-            $removeButton.attr('title', '€Remove');
+            $removeButton.attr('title', M.GUI_PUBLISH_REMOVE_BUTTON_0);
             if (resource.info) {
                $row.addClass('cms-has-info');
             }
@@ -445,7 +447,7 @@
          var self = this;
          var projects = cms.publish.projects;
          var userListId = '';
-         var userListLabel = '€My changes';
+         var userListLabel = M.GUI_PUBLISH_DIALOG_MY_CHANGES_0;
          var values = [];
          values.push({
             value: userListId,
@@ -602,14 +604,14 @@
          var self = this;
          var $dlg = this.getDialog();
          $dlg.empty();
-         $('<div></div>').text('€The following links will be broken:').appendTo($dlg);
+         $('<div></div>').text(M.GUI_PUBLISH_DIALOG_BROKEN_LINKS_0).appendTo($dlg);
          var $scrollPanel = $('<div/>').addClass('cms-publish-scrolling').css('position', 'relative').appendTo($dlg);
          var $linkCheckPanel = self.$linkCheckPanel = $('<ul/>').appendTo($scrollPanel);
          
          var $linkCheckButtons = $('<div></div>').css('clear', 'both').appendTo($dlg);
-         var $backButton = dialogButton('€Back').css('float', 'right').appendTo($linkCheckButtons);
-         var $cancelButton = dialogButton('€Cancel').css('float', 'right').appendTo($linkCheckButtons);
-         var $forceButton = dialogButton('€Publish').css('float', 'right');
+         var $backButton = dialogButton(M.GUI_PUBLISH_DIALOG_BACK_0).css('float', 'right').appendTo($linkCheckButtons);
+         var $cancelButton = dialogButton(M.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0).css('float', 'right').appendTo($linkCheckButtons);
+         var $forceButton = dialogButton(M.GUI_PUBLISH_DIALOG_PUBLISH_0).css('float', 'right');
          if (data.canPublish) {
             $forceButton.appendTo($linkCheckButtons);
          }
