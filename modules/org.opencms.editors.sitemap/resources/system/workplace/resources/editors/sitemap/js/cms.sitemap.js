@@ -3290,12 +3290,17 @@
                titleError = M.SITEMAP_ERROR_EDIT_DIALOG_TITLE_MUST_NOT_BE_EMPTY;
                result = false;
             }
+            topPanel.showTitleError(titleError);
+            
+            
+            var pathError = null;
             if (path == '') {
                pathError = M.ERR_SITEMAP_EDIT_DIALOG_PATH_CANT_BE_EMPTY_0;
                result = false;
             }
-            topPanel.showTitleError(titleError);
             topPanel.showPathError(pathError);
+            
+            
             if (!isRoot) {
                // no url name validation for the root entry of root sitemaps 
                var isDuplicate = otherUrlNames[newUrlName];
