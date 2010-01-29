@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/29 09:02:22 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2010/01/29 10:13:29 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 7.6
  */
@@ -821,9 +821,10 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 LOG.error(e.getLocalizedMessage());
                 continue;
             }
-            String path = json.optString(JsonSiteEntry.path.name());
-            if (path != null) {
+
+            if (json.has(JsonSiteEntry.path.name())) {
                 // if there is a path, it overrides the UUID 
+                String path = json.optString(JsonSiteEntry.path.name());
                 try {
                     CmsResource resource = getCmsObject().readResource(path);
                     linkId = resource.getStructureId();
