@@ -1,7 +1,6 @@
 	
 /************************************ sitemap ************************************************/	
 	
-	
       * {
           font-family: Helvetica, Arial, sans-serif;
           margin: 0px;
@@ -21,9 +20,6 @@
           margin: 0px;
           padding: 0px;
       }
-      
-      
-      	
       
       li div.cms-sitemap-item {
           margin-left: 20px;
@@ -367,6 +363,7 @@ div.ui-widget-header a.cms-subsitemap {
 .cms-menu .cms-sitemap-item .cms-additional-item[rel=url] {
 	display: none;
 }
+
 	
 .cms-esa-box {
      position: fixed;
@@ -395,17 +392,9 @@ div.ui-widget-header a.cms-subsitemap {
 	color: #888888;
 }
 
-
-
-
-
-
-
-
-
-
-
-
+#cms-new-list .cms-icon-triangle {
+	display: none;
+}
 
 
 /************** basic *******************************************************/

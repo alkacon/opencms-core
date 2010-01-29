@@ -157,20 +157,20 @@
       this.$widgetOverlay = $('<div class="cms-widget-overlay" style="display: none; position: absolute; top: 0px; left: 0px; width: 200px; background: #FFFFFF; border: solid 1px #999999; padding: 2px;"></div>').appendTo(this.$widget);
       if (configuration) {
          for (var value in configuration) {
-           this.$widget.append('<div class="cms-checkbox-widget-row"><input type="checkbox" value="' + value + '" style="vertical-align: middle;" /><span class="cms-checkbox-label">' + configuration[value]+ '</span></div>');
+            this.$widget.append('<div class="cms-checkbox-widget-row"><input type="checkbox" value="' + value + '" style="vertical-align: middle;" /><span class="cms-checkbox-label">' + configuration[value] + '</span></div>');
          }
          $('input:checkbox', this.$widget).click(function() {
-           self.setEnabled(true);
+            self.setEnabled(true);
          });
          this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>'+M.GUI_CHECKBOXWIDGET_DEFAULT_SWITCH_0+'</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
          $('input:checkbox', this.$defaultSwitch).change(function() {
-           self.setEnabled($(this).closest('.cms-editable-field').hasClass('cms-default-value'));
-           return false;
+            self.setEnabled($(this).closest('.cms-editable-field').hasClass('cms-default-value'));
+            return false;
          });
          this.$widget.hover(function() {
-           self.hoverIn();
+            self.hoverIn();
          }, function() {
-           self.hoverOut();
+            self.hoverOut();
          })
       }
       this.defaultValue = defaultValue;
@@ -230,13 +230,21 @@
    };
    var galleryFieldIdCounter = 0;
    
+   var getConfigValue = function(strValue, defaultValue) {
+      if (strValue) {
+         return eval('(' + strValue + ')');
+      } else {
+         return defaultValue;
+      }
+   }
+   
    var GalleryWidget = function(configuration, defaultValue) {
       var self = this;
       var html = '\
            <div>\
                <input type="text" readonly="true"  class="cms-item-edit ui-corner-all cms-gallery-valuedisplay"></input>\
-               <button class="cms-property-opengallery"></button>\
-               <button class="cms-gallery-resetfield"></button>\
+               <span class="cms-property-opengallery cms-edit cms-edit-enabled" style="height:20px; width:20px; vertical-align:top; display: inline-block"></span>\
+               <span class="cms-gallery-resetfield cms-delete" style="height:20px;width:20px;vertical-align:top; display: inline-block"></span>\
            </div>\
        ';
       var $widget = self.$widget = $(html).css('display', 'inline');
@@ -248,17 +256,19 @@
       $('.cms-gallery-valuedisplay', $widget).css('width', '200px').css('display', 'inline').attr('id', fieldId);
       $('.cms-property-opengallery', $widget).click(function() {
          window.contextPath = cms.data.CONTEXT;
-         window.startupFolder_prop = configuration.startupFolder || '/demo_t3/cntpages';
-         window.startupFolders_prop = configuration.startupFolders || null;
-         window.startupType_prop = configuration.startupType || 'gallery';
-         window.resourceTypes_prop = configuration.resourceTypes || [13];
+         
+         window.startupFolder_prop = getConfigValue(configuration.startupFolder, null);
+         window.startupFolders_prop = getConfigValue(configuration.startupFolders, null);
+         window.startupType_prop = getConfigValue(configuration.startupType, 'gallery');
+         window.resourceTypes_prop = getConfigValue(configuration.resourceTypes, [13]);
+         window.galleryTabs_prop = getConfigValue(configuration.galleryTabs, ['cms_tab_categories', 'cms_tab_galleries', 'cms_tab_search']);
+         window.useFmts_prop = getConfigValue(configuration.useFmts, false);
          window.defaultAdvancedGalleryPath = (cms.data.GALLERY_PATH || cms.data.GALLERY_SERVER_URL) + '?';
          openDefaultAdvancedGallery("property", fieldId, '_prop');
       });
       $('.cms-gallery-resetfield', $widget).click(function() {
          $('input', $widget).val('');
       });
-      
    };
    
    GalleryWidget.prototype = {
@@ -281,7 +291,11 @@
       var fieldId = cms.galleries.initValues['fieldId'];
       if (fieldId != null && fieldId != "") {
          var imgField = window.parent.document.getElementById(fieldId);
-         $(imgField).val(itemId);
+         if ('INPUT' == $(imgField).attr('nodeName')) {
+            $(imgField).val(itemId);
+         } else {
+            $(imgField).text(itemId).attr('title', itemId);
+         }
          try {
             // toggle preview icon if possible
             window.parent.checkPreview(fieldid);
@@ -294,6 +308,8 @@
    var setGalleryValues = cms.property.setGalleryValues = function() {
       var itemId = $('#cms-preview').attr('alt');
       setGalleryResourcePath(itemId);
+      
+      
    }
    
    

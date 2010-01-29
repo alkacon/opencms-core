@@ -22,6 +22,8 @@
     * testEnabled: function(element)
     *     If set, this function  will be called in the click handler, and direct input will
     *     be enabled only if it returns true. 
+    * formatInput: function(element, input)
+    *     Function that formats the input field after it is activated.
     *
     * @param {Object} options the options
     */
@@ -52,6 +54,9 @@
          var previousValue = $.isFunction(opts.readValue) ? opts.readValue(elem) : elem.text();
          var input = $('<input name="directInput" type="text" class="' + opts.inputClass + '" value="' + previousValue + '" />');
          _copyCss(elem, input);
+         if (opts.formatInput) {
+             opts.formatInput(elem, input);
+         }
          input.insertBefore(elem);
          
          if (opts.marginHack && $.browser.msie && $.browser.version <= 7.0) {
@@ -99,8 +104,9 @@
             }
          });
          
-         // set the value on loosing focus
+         // set the value on losing focus
          input.blur(function() {
+            
             if ($.isFunction(opts.setValue)) {
                opts.setValue(elem, input);
             } else {

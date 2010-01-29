@@ -177,6 +177,14 @@
        }, callback);
    }
    
+   /**
+   * Checks whether there exist links to any of a list of sitemap entry ids 
+   * (This is only a dummy function right now)
+   */
+   var checkLinks = cms.data.checkLinks = function(entryIds, callback) {
+       // dummy function
+       window.setTimeout(function() { callback(false) }, 0);
+   }
    
    /**
     * Sends a url name candidate to the server for translation, then calls a callback with the translated name.
@@ -191,7 +199,11 @@
             return;
          }
          // also replace slashes with underscores
-         callback(data.name.replace(/\//g, '_'));
+         var result = data.name.replace(/\//g, '_');
+         if (result == '') {
+             result = '_';
+         }
+         callback(result);
       });
    }
 
@@ -202,6 +214,7 @@
    var getSitemapProperties = cms.data.getSitemapProperties = function(callback) {
       cms.data.sitemapPostJSON('props', {}, callback)
    }
+ 
    
    var addContent = cms.data.addContent = function(entries, callback) {
        cms.data.sitemapPostJSON('content', {

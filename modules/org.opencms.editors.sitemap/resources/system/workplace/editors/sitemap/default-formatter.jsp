@@ -11,12 +11,12 @@ pageContext.setAttribute("cms", cms);
 <div class="ui-corner-all cms-sitemap-item ui-state-default">
   <div class="cms-sitemap-entry-header ui-state-hover ui-corner-all"  >
   <a class="cms-left ui-icon cms-icon-triangle"></a>
-  <h3>${cms.entry.title}</h3>
+  <h3 title="${cms.entry.title}">${cms.entry.title}</h3>
   </div>
   <div class="cms-additional">
     <div class="cms-additional-item cms-editable-field" rel="url-name">
-    	<span class="cms-item-title cms-width-90"><fmt:message key="GUI_DEFAULT_FORMATTER_URL_NAME_0" /></span><%--
-    	--%><input class="cms-item-edit cms-url-name ui-corner-all" name="url-name" alt="${cms.entry.name}" value="${cms.entry.name}" />
+    	<span class="cms-additional-item-title cms-width-90"><fmt:message key="GUI_DEFAULT_FORMATTER_URL_NAME_0" /></span><%--
+  	--%><span class="cms-additional-item-value cms-url-name" title="${cms.entry.name}">${cms.entry.name}</span>
     </div>
     <div class="cms-additional-item" rel="url">
         <span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_URL_0" /></span><%--
@@ -24,7 +24,7 @@ pageContext.setAttribute("cms", cms);
     </div>
     <div class="cms-additional-item" rel="path">
         <span class="cms-additional-item-title"><fmt:message key="GUI_DEFAULT_FORMATTER_VFSPATH_0" /></span><%--
-    --%><span class="cms-additional-item-value cms-vfs-path" alt="${cms.path}">${cms.path}</span>
+    --%><span class="cms-additional-item-value cms-vfs-path" title="${cms.path}">${cms.path}</span>
     </div>
   </div>
 </div>

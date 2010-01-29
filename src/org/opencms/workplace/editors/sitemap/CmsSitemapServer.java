@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/28 15:03:46 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2010/01/29 09:02:22 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 7.6
  */
@@ -194,7 +194,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         /** The title property. */
         title,
         /** Creatable types */
-        types;
+        types,
+        /** The path of the resource which references the sitemap by its sitemap property */
+        referencePath
     }
 
     /** Json property name constants for sitemap entries. */
@@ -212,6 +214,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         properties,
         /** The sub-entries. */
         subentries,
+        /** The entry's VFS path */
+        path,
         /** The title. */
         title;
     }
@@ -357,6 +361,12 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             result.put(JsonResponse.types.name(), creatableTypes);
             result.put(JsonResponse.models.name(), models);
             result.put(JsonTemplate.template.name(), getTemplates());
+            // This requires that the sitemap is below the folder that references the sitemap with 
+            // its 'sitemap' property. It also doesn't work for sub-sitemaps. 
+            String referencePath = getFirstAncestorWithProperty(
+                cms.getSitePath(sitemapRes),
+                CmsPropertyDefinition.PROPERTY_SITEMAP);
+            result.put(JsonResponse.referencePath.name(), referencePath);
         } else if (action.equals(Action.GET)) {
             if (checkParameters(data, null, JsonRequest.fav.name())) {
                 // get the favorite list
@@ -364,9 +374,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             } else if (checkParameters(data, result, JsonRequest.rec.name())) {
                 CmsResource sitemapRes = CmsHistoryResourceHandler.getResourceWithHistory(cms, sitemapParam);
                 // get recent list
-                result.put(JsonResponse.recent.name(), addContents(
+                result.put(JsonResponse.recent.name(), addIds(addContents(
                     m_sessionCache.getRecentList(),
-                    getPropertyConfig(sitemapRes)));
+                    getPropertyConfig(sitemapRes))));
             } else {
                 return result;
             }
@@ -433,7 +443,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             JSONObject jsonEntry = jsonifyEntry(entryBean, propertyConf);
             JSONArray entries = new JSONArray();
             entries.put(jsonEntry);
-            addContents(entries, propertyConf);
             result.put(JsonResponse.entry.name(), jsonEntry);
         } else if (action.equals(Action.NEW_SITEMAP)) {
             CmsSitemapManager manager = OpenCms.getSitemapManager();
@@ -633,6 +642,32 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     }
 
     /**
+     * Adds UUIDs to the JSON list of site entries.<p>
+     * 
+     * @param jsonEntriesList the JSON list of site entries
+     * 
+     * @return the original JSON list of site entries with newly generated ids 
+     * 
+     */
+    protected JSONArray addIds(JSONArray jsonEntriesList) {
+
+        for (int i = 0; i < jsonEntriesList.length(); i++) {
+            try {
+                JSONObject json = jsonEntriesList.getJSONObject(i);
+                json.put(JsonSiteEntry.id.name(), (new CmsUUID()).toString());
+                addIds(json.getJSONArray(JsonSiteEntry.subentries.name()));
+            } catch (Exception e) {
+                // should never happen, catches JSON parsing
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+        return jsonEntriesList;
+    }
+
+    /**
      * Returns the property configuration for the given sitemap.<p>
      * 
      * @param sitemap the sitemap resource for which the property configuration should be returned
@@ -786,6 +821,16 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 LOG.error(e.getLocalizedMessage());
                 continue;
             }
+            String path = json.optString(JsonSiteEntry.path.name());
+            if (path != null) {
+                // if there is a path, it overrides the UUID 
+                try {
+                    CmsResource resource = getCmsObject().readResource(path);
+                    linkId = resource.getStructureId();
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage());
+                }
+            }
             CmsObject cms = getCmsObject();
             String name = json.optString(JsonSiteEntry.name.name());
             String title = json.optString(JsonSiteEntry.title.name());
@@ -847,4 +892,30 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         return entryBean;
     }
+
+    /**
+     * Returns the path of the first ancestor of a resource which has a given property set.
+     * 
+     * @param sitePath the path of the resource 
+     * @param propertyName the name of the property to search for
+     *  
+     * @return the path of the firsts ancestor of sitePath for which the property named by propertyName is set
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    private String getFirstAncestorWithProperty(String sitePath, String propertyName) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        String ancestorPath = sitePath;
+        while (ancestorPath != null) {
+            CmsResource ancestor = cms.readResource(ancestorPath);
+            CmsProperty prop = cms.readPropertyObject(ancestor, propertyName, false);
+            if (!prop.isNullProperty()) {
+                return cms.getSitePath(ancestor);
+            }
+            ancestorPath = CmsResource.getParentFolder(ancestorPath);
+        }
+        return null;
+    }
+
 }
