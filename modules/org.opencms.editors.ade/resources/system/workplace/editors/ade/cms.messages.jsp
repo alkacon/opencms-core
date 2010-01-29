@@ -22,7 +22,7 @@ public void setAllMessages(JspWriter out, ResourceBundle bundle) throws Exceptio
 %>
 <%
     CmsDialog dialog = new CmsDialog(pageContext, request, response);
-    ResourceBundle bundle = CmsResourceBundleLoader.getBundle("org.opencms.workplace.editors.ade.messagesADE", dialog.getLocale(););
+    ResourceBundle bundle = CmsResourceBundleLoader.getBundle("org.opencms.workplace.editors.ade.messagesADE", dialog.getLocale());
 %>
 (function(cms) { var M = cms.messages;
 <%
