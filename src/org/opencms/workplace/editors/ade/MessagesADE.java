@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/01/29 09:27:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/01/29 11:21:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6.0 
  */
@@ -561,6 +561,29 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_DIALOG_BACK_0 = "GUI_PUBLISH_DIALOG_BACK_0";
+
+    // image-preview-formatter.jsp
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_FORMATTER_PATH_0 = "GUI_IMAGEPREVIEW_FORMATTER_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_FORMATTER_NAME_0 = "GUI_IMAGEPREVIEW_FORMATTER_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_FORMATTER_FORMAT_0 = "GUI_IMAGEPREVIEW_FORMATTER_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_FORMATTER_TITLE_0 = "GUI_IMAGEPREVIEW_FORMATTER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_FORMATTER_LAST_MODIFIED_0 = "GUI_IMAGEPREVIEW_FORMATTER_LAST_MODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_FORMATTER_TYPE_0 = "GUI_IMAGEPREVIEW_FORMATTER_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_FORMATTER_SIZE_0 = "GUI_IMAGEPREVIEW_FORMATTER_SIZE_0";
 
     // bundle name
     /** Name of the used resource bundle. */

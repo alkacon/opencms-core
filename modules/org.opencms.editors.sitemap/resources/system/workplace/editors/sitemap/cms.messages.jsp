@@ -19,10 +19,9 @@ public void setAllMessages(JspWriter out, ResourceBundle bundle) throws Exceptio
     }
 }
 %><%
-    CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
-    Locale locale = settings.getUserSettings().getLocale();
-    ResourceBundle adeBundle = CmsResourceBundleLoader.getBundle("org.opencms.workplace.editors.ade.messagesADE", locale);
-    ResourceBundle sitemapBundle = CmsResourceBundleLoader.getBundle("org.opencms.workplace.editors.sitemap.messagesSitemap", locale);
+	CmsDialog dialog = new CmsDialog(pageContext, request, response);
+    ResourceBundle adeBundle = CmsResourceBundleLoader.getBundle("org.opencms.workplace.editors.ade.messagesADE", dialog.getLocale());
+    ResourceBundle sitemapBundle = CmsResourceBundleLoader.getBundle("org.opencms.workplace.editors.sitemap.messagesSitemap", dialog.getLocale());
 %>
 (function(cms) { var M = cms.messages;
 <%

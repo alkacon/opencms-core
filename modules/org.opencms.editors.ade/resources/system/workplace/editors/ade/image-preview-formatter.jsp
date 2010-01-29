@@ -1,10 +1,13 @@
-<%@ page import="org.opencms.workplace.galleries.*"%>
+<%@ page import="org.opencms.workplace.galleries.*, org.opencms.workplace.*, java.util.*"%>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
 <% 
-org.opencms.workplace.galleries.CmsImageFormatterHelper cms = new org.opencms.workplace.galleries.CmsImageFormatterHelper(pageContext, request, response);
-pageContext.setAttribute("cms", cms);
+	CmsImageFormatterHelper cms = new CmsImageFormatterHelper(pageContext, request, response);
+	pageContext.setAttribute("cms", cms);
+
+	CmsDialog dialog = new CmsDialog(pageContext, request, response);
+	pageContext.setAttribute("locale", dialog.getLocale().toString());
 %>
 <div>
 <style>
@@ -60,18 +63,20 @@ pageContext.setAttribute("cms", cms);
 	}		
 		 
 </style>
-<fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
+<fmt:setLocale value="${locale}" />
+<fmt:bundle basename="org.opencms.workplace.editors.ade.messagesADE">
 	<%-- <h3>${cms.title}</h3> --%>
 	<div class="cms-image-preview"></div>
 	<div class="cms-image-info">
-			<div class="cms-field cms-left cms-width-600"><span class="cms-item-title cms-width-95">Path:</span><span class="cms-value cms-width-500">${cms.path}</span></div>			
-			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95">Name:</span><span class="cms-value cms-width-200">${cms.title}</span></div>
-			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95">Format:</span><span class="cms-value cms-width-200">${cms.format}</span></div>
-			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95">Title:</span><span class="cms-value cms-width-200">${cms.propertyTitle}</span></div>
-			<c:set var="dateModified" value="<%=new java.util.Date(cms.getResource().getDateLastModified()) %>" />
-			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95">Last modified:</span><span class="cms-value cms-width-200">${dateModified}</span></div>
-			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95">Type:</span><span class="cms-value cms-width-200">${cms.ending}</span></div>						
-			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95">Size:</span><span class="cms-value cms-width-50">${cms.size}</span></div>
+			<div class="cms-field cms-left cms-width-600"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_PATH_0" /></span><span class="cms-value cms-width-500">${cms.path}</span></div>			
+			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_NAME_0" /></span><span class="cms-value cms-width-200">${cms.title}</span></div>
+			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_FORMAT_0" /></span><span class="cms-value cms-width-200">${cms.format}</span></div>
+			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_TITLE_0" /></span><span class="cms-value cms-width-200">${cms.propertyTitle}</span></div>
+			<c:set var="dateModified" value="<%=new Date(cms.getResource().getDateLastModified()) %>" />
+			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_LAST_MODIFIED_0" /></span><span class="cms-value cms-width-200"><fmt:formatDate value="${dateModified}" dateStyle="MEDIUM" type="both" /></span></div>
+			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_TYPE_0" /></span><span class="cms-value cms-width-200">${cms.ending}</span></div>						
+			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_SIZE_0" /></span><span class="cms-value cms-width-50">${cms.size}</span></div>
     </div>	
 	<input type="hidden" value='${cms.jsonForActiveImage}'>
+</fmt:bundle>
 </div>

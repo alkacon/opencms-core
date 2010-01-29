@@ -19,13 +19,10 @@ public void setAllMessages(JspWriter out, ResourceBundle bundle) throws Exceptio
     }
 }
 // TODO: make a class for this JSP
-// TODO: create a class for the messages. and include it to the test cases
-// TODO: do not get the locale from the session, that wont work with a front-end login!
 %>
 <%
-    CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
-    Locale locale = settings.getUserSettings().getLocale();
-    ResourceBundle bundle = CmsResourceBundleLoader.getBundle("org.opencms.workplace.editors.ade.messagesADE", locale);
+    CmsDialog dialog = new CmsDialog(pageContext, request, response);
+    ResourceBundle bundle = CmsResourceBundleLoader.getBundle("org.opencms.workplace.editors.ade.messagesADE", dialog.getLocale(););
 %>
 (function(cms) { var M = cms.messages;
 <%
