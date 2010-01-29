@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/MessagesSitemap.java,v $
- * Date   : $Date: 2010/01/29 09:02:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/01/29 14:42:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6.0 
  */
@@ -59,12 +59,14 @@ public class MessagesSitemap extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_LABEL_EDIT_DIALOG_PATH_0 = "GUI_SITEMAP_LABEL_EDIT_DIALOG_PATH_0";
-    
+
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITEMAP_ENTRY_NO_TITLE_0="GUI_SITEMAP_ENTRY_NO_TITLE_0";     
+    public static final String GUI_SITEMAP_BUTTON_CREATE_FIRST_SITEMAP_ENTRY_0 = "GUI_SITEMAP_BUTTON_CREATE_FIRST_SITEMAP_ENTRY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_ENTRY_NO_TITLE_0 = "GUI_SITEMAP_ENTRY_NO_TITLE_0";
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.editors.sitemap.messagesSitemap";
-
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new MessagesSitemap();

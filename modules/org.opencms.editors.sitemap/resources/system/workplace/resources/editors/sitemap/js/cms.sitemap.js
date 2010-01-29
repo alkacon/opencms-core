@@ -2273,37 +2273,45 @@
    }
    
    /**
-    * Creates the button for creating a root sitemap entry in  an entry sitemap.
+    * Creates the button for creating a root sitemap entry in  an empty sitemap.
     *
     * @param modelEntry the entry to use as a template for newly created elements
     */
    var makeRootCreationButton = function(modelEntry) {
-      var $button = $('<button/>').text('€Create a  sitemap entry').addClass('ui-state-default ui-corner-all');
-      $button.appendTo('#cms-main > .cms-box');
-      $button.click(function() {
-         var $dummyEntry = _buildSitemapElement(modelEntry);
-         var entryObj = new SitemapEntry($dummyEntry.get(0));
-         entryObj.setPath('');
-         var okCallback = function(newTitle, newUrlName, newPath, newProperties) {
-            cms.data.createEntry('containerpage', function(ok, data) {
-               var entry = data.entry;
-               var $sitemapElement = _buildSitemapElement(entry);
-               var newEntryObj = new SitemapEntry($sitemapElement);
-               newEntryObj.setTitle(newTitle);
-               newEntryObj.setUrlName(newUrlName);
-               newEntryObj.setPath(newPath);
-               newEntryObj.setProperties(newProperties);
+      var $button = $('<button/>').text(M.GUI_SITEMAP_BUTTON_CREATE_FIRST_SITEMAP_ENTRY_0).addClass('ui-state-default ui-corner-all');
+      var $button = $('<button/>', {
+         text: M.GUI_SITEMAP_BUTTON_CREATE_FIRST_SITEMAP_ENTRY_0,
+         'class': 'ui-state-default ui-corner-all',
+         css: {
+            'margin-left': '10px',
+            'padding': '5px'
+         },
+         
+         click: function() {
+            var $sitemapElement = _buildSitemapElement(modelEntry);
+            var entryObj = new SitemapEntry($sitemapElement.get(0));
+            entryObj.setPath('');
+            var okCallback = function(newTitle, newUrlName, newPath, newProperties) {
+               entryObj.setTitle(newTitle);
+               entryObj.setUrlName(newUrlName);
+               entryObj.setProperties(newProperties);
                $sitemapElement.find(cms.util.format('.{0}, .{1}', dropzoneClass, itemClass)).droppable(cms.sitemap.dropOptions);
-               newEntryObj.makeEditableRecursively();
+               $sitemapElement.addClass('cms-root-sitemap');
+               addHandles($sitemapElement.children('.' + itemClass), sitemapModes);
+               entryObj.setUrls('');
+               entryObj.makeEditableRecursively();
+               $sitemapElement.draggable(cms.sitemap.dragOptions);
                $sitemapElement.appendTo('#cms-sitemap');
-            });
-            $button.remove();
-         };
-         var cancelCallback = function() {
-                  // do nothing
-         };
-         showEntryEditor(entryObj, false, [], okCallback, cancelCallback);
+               $button.remove();
+               setSitemapChanged(true);
+            };
+            var cancelCallback = function() {
+                        // do nothing
+            };
+            showEntryEditor(entryObj, true, [], okCallback, cancelCallback);
+         }
       });
+      $button.appendTo('#cms-main > .cms-box');
    }
    
    /**
@@ -2323,7 +2331,7 @@
       var sitemap = data.sitemap;
       var $sitemap = null;
       if (sitemap.length == 0) {
-         //makeRootCreationButton(cms.sitemap.models[0]);
+         makeRootCreationButton(cms.sitemap.models[0]);
          $sitemap = $([]);
       } else {
          $sitemap = cms.sitemap.buildSitemap(sitemap);
@@ -2437,7 +2445,7 @@
       var resultStr = /*decodeURIComponent*/ ($item.attr("rel"));
       return JSON.parse(resultStr);
    }
-   
+     
    /**
     * Sets the entry data for a sitemap entry.
     * @param {Object} $item the sitemap entry
@@ -3073,6 +3081,7 @@
       
       var $pathRow = _rowInput(M.GUI_SITEMAP_LABEL_EDIT_DIALOG_PATH_0).appendTo(self.$dom);
       var $pathErrorRow = _rowText('').appendTo(self.$dom).hide();
+      $pathErrorRow.css('color', '#ff0000');
       
       var $pathInput = $('input', $pathRow);
       var fieldId = 'cms-edit-dialog-path' + (editorPanelPathFieldId++);
@@ -3225,6 +3234,7 @@
       var newProps = {};
       var $table = cms.property.buildPropertyTable(properties, widgets);
       var $dlg = makeDialogDiv('cms-property-dialog');
+      $dlg.addClass('cms-validation');
       var isRoot = entry.isRootOfRootSitemap();
       var topPanel = new EditDialogTopPanel(isRoot);
       
@@ -3343,6 +3353,12 @@
       $dlg.nextAll().click(function() {
          _validateAll(_validationCallback);
       });
+      
+      $dlg.bind('validation', function() {
+         _validateAll(_validationCallback);
+      });
+      
+      
       $dlg.keydown(function(e) {
          // user pressed Tab or Enter
          if (e.keyCode == 9 || e.keyCode == 13) {
