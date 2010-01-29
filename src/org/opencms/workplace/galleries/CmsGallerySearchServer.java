@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/28 16:26:06 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2010/01/29 11:32:17 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 7.6
  */
@@ -462,7 +462,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     }
 
     /** Tab ids used for tab configuration. */
-    protected enum TabId {
+    public enum TabId {
 
         /** The id for categories tab. */
         cms_tab_categories,
