@@ -50,7 +50,11 @@
       
    ///// Additional infos for image format processing ////////
    /** Default format value for the drop down. */
-   var defaultFormatOptions = 'original|user|free cropping|small|large';
+   var defaultFormatOptions = M.GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_ORIGINAL_0+'|'+
+                              M.GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_USER_0+'|'+
+                              M.GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_FREE_0+'|'+
+                              M.GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_SMALL_0+'|'+
+                              M.GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_LARGE_0;
    var defaultFormatValues = ['original', 'user', 'free', '200x?', '500x?'];
    
    /** Default values for the max size of the image in the preview. */

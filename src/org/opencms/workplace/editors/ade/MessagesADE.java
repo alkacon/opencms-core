@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/01/29 11:21:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/01/29 14:55:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6.0 
  */
@@ -107,11 +107,6 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SUBCONTAINER_DIALOG_SAVE_0 = "GUI_SUBCONTAINER_DIALOG_SAVE_0";
-
-    // cms.move.js
-    // this key is never used
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_SUBCONTAINER_ELEMENTS_NOT_LOADED_0 = "ERR_SUBCONTAINER_ELEMENTS_NOT_LOADED_0";
 
     // cms.search.js
     /** Message constant for key in the resource bundle. */
@@ -236,10 +231,10 @@ public class MessagesADE extends A_CmsMessageBundle {
     public static final String GUI_STORAGE_BUTTON_TITLE_0 = "GUI_STORAGE_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_SITEMAP_TITLE_0 = "GUI_TOOLBAR_SITEMAP_TITLE";
+    public static final String GUI_TOOLBAR_SITEMAP_TITLE_0 = "GUI_TOOLBAR_SITEMAP_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_TOGGLE_TOOLBAR_0 = "GUI_TOOLBAR_TOGGLE_TOOLBAR";
+    public static final String GUI_TOOLBAR_TOGGLE_TOOLBAR_0 = "GUI_TOOLBAR_TOGGLE_TOOLBAR_0";
 
     // cms.property.js
     /** Message constant for key in the resource bundle. */
@@ -300,7 +295,7 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     // cms.imagepreviewhandler.js
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_IMAGEPREVIEW_SELCTION_FORMAT_LINK_0 = "GUI_IMAGEPREVIEW_SELCTION_FORMAT_LINK";
+    public static final String GUI_IMAGEPREVIEW_SELCTION_FORMAT_LINK_0 = "GUI_IMAGEPREVIEW_SELCTION_FORMAT_LINK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGEPREVIEW_TABS_PROPERTIES_LINK_0 = "GUI_IMAGEPREVIEW_TABS_PROPERTIES_LINK_0";
@@ -455,6 +450,21 @@ public class MessagesADE extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_RTL_0 = "GUI_IMAGEPREVIEW_DROP_DOWN_LANGUAGE_RTL_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_ORIGINAL_0 = "GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_ORIGINAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_USER_0 = "GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_FREE_0 = "GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_FREE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_SMALL_0 = "GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_SMALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_LARGE_0 = "GUI_IMAGEPREVIEW_IMAGE_FORMAT_DROP_DOWN_LARGE_0";
+
     // cms.prieviewhandler.js
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_HTML_FORMAT_BUTTON_0 = "GUI_PREVIEW_HTML_FORMAT_BUTTON_0";
@@ -563,7 +573,6 @@ public class MessagesADE extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_DIALOG_BACK_0 = "GUI_PUBLISH_DIALOG_BACK_0";
 
     // image-preview-formatter.jsp
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGEPREVIEW_FORMATTER_PATH_0 = "GUI_IMAGEPREVIEW_FORMATTER_PATH_0";
 
@@ -584,6 +593,22 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGEPREVIEW_FORMATTER_SIZE_0 = "GUI_IMAGEPREVIEW_FORMATTER_SIZE_0";
+
+    // crop.jsp
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CROP_CANCEL_0 = "GUI_CROP_CANCEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CROP_OK_0 = "GUI_CROP_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CROP_WIDTH_0 = "GUI_CROP_WIDTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CROP_HEIGHT_0 = "GUI_CROP_HEIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CROP_SCALE_0 = "GUI_CROP_SCALE_0";
 
     // bundle name
     /** Name of the used resource bundle. */

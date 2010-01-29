@@ -1,5 +1,9 @@
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
-String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "editors/ade/";
+<%@ page import="org.opencms.workplace.*"%>
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
+<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %><%
+	String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "editors/ade/";
+	CmsDialog dialog = new CmsDialog(pageContext, request, response);
+	pageContext.setAttribute("locale", dialog.getLocale().toString());
 %><%-- 
 --%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -88,7 +92,7 @@ String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "edit
     }
         
 </style>
-<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-1.3.2.js"></script>
+<script type="text/javascript" src="<%= adeResourcePath %>lib/jquery-1.4.1.js"></script>
 <script type="text/javascript" src="<%= adeResourcePath %>lib/jquery.imgareaselect.min.js"></script>
 <script type="text/javascript">
 var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {}, messages: {} };
@@ -328,6 +332,8 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 </script>
 </head>
 <body>
+<fmt:setLocale value="${locale}" />
+<fmt:bundle basename="org.opencms.workplace.editors.ade.messagesADE">
 	<div id="cms-cropping-main">
 	    <div class="cms-border ui-widget-content ui-corner-all">						
 			<div class="imgbg">
@@ -339,17 +345,18 @@ var cms = { html: {}, previewhandler:{}, imagepreviewhandler: {}, galleries: {},
 		<div class="cms-border ui-widget-content ui-corner-all">		
 			<div class="selection">				
 				<button class="cms-right ui-state-default ui-corner-all" name="crop-cancel">
-					<span class="cms-galleries-button">Cancel</span>
+					<span class="cms-galleries-button"><fmt:message key="GUI_CROP_CANCEL_0" /></span>
 				</button>
 				<button class="cms-right ui-state-default ui-corner-all" name="crop-ok">
-					<span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text">Ok</span>
+					<span class="cms-galleries-button cms-galleries-icon-apply cms-icon-text"><fmt:message key="GUI_CROP_OK_0" /></span>
 				</button>
-				<span class="cms-item-title">Width:</span><span id="w" class="cms-item-value"></span>
-				<span class="cms-item-title">Height:</span><span id="h" class="cms-item-value"></span>
-				<span class="cms-item-title">Scale:</span><span id="r" class="cms-item-value"></span>
+				<span class="cms-item-title"><fmt:message key="GUI_CROP_WIDTH_0" /></span><span id="w" class="cms-item-value"></span>
+				<span class="cms-item-title"><fmt:message key="GUI_CROP_HEIGHT_0" /></span><span id="h" class="cms-item-value"></span>
+				<span class="cms-item-title"><fmt:message key="GUI_CROP_SCALE_0" /></span><span id="r" class="cms-item-value"></span>
 				
 			</div>	
 		</div>
 	</div>
+</fmt:bundle>
 </body>
 </html>
