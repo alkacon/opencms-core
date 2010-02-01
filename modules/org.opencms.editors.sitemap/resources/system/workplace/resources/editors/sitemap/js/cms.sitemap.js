@@ -814,23 +814,13 @@
             $sitemapElement.find(cms.util.format('.{0}, .{1}', dropzoneClass, itemClass)).droppable(cms.sitemap.dropOptions);
             callback($sitemapElement);
          });
-      } else if (isNewItem) {
-         cms.data.createEntry('containerpage', function(ok, data) {
-            if (!ok) {
-               callback(null);
-               return;
-            }
-            var entry = data.entry;
-            var $sitemapElement = _buildSitemapElement(entry);
-            $sitemapElement.find(cms.util.format('.{0}, .{1}', dropzoneClass, itemClass)).droppable(cms.sitemap.dropOptions);
-            var entryObj = new SitemapEntry($sitemapElement);
-            entryObj.makeEditableRecursively();
-            callback($sitemapElement);
-         })
       } else {
          callback($draggable.clone());
       }
    }
+   
+   
+   
    
    /**
     * Event handler for droppable drop-event dragging from menu into tree.
@@ -871,6 +861,7 @@
          }
          
          var _completeDrop = function() {
+            var dropEntry = new SitemapEntry($dropClone.get(0));
             if ($dropzone.hasClass(dropzoneClass)) {
                // dropping over dropzone, so insert before
                li.before($dropClone);
@@ -894,6 +885,7 @@
             $dropClone.find('div.cms-handle').remove();
             $dropClone.find('div.' + itemClass).removeClass(dragClass);
             dropEntry.setUrls(parentURL);
+            dropEntry.makeEditable();
             $dropzone.removeClass(classHovered);
             setSitemapChanged(true);
             // refresh droppable
@@ -909,10 +901,24 @@
          if (duplicateStatus.duplicate || ui.draggable.hasClass('cms-new-sitemap-entry')) {
             var otherUrlNames = duplicateStatus.otherUrlNames;
             showEntryEditor(dropEntry, true, otherUrlNames, function(newTitle, newUrlName, newPath, newProperties) {
-               _completeDrop();
-               _resetMenu();
+               cms.data.createEntry('containerpage', function(ok, data) {
+                  if (!ok) {
+                     return;
+                  }
+                  var $newElement = _buildSitemapElement(data.entry);
+                  var newEntryObj = new SitemapEntry($newElement);
+                  newEntryObj.setTitle(newTitle);
+                  newEntryObj.setUrlName(newUrlName);
+                  newEntryObj.setProperties(newProperties);
+                  $dropClone = $newElement;
+                  _completeDrop();
+                  _resetMenu();
+                  
+               });
             }, function() {
+            
                $dropzone.removeClass(classHovered);
+               
                _resetMenu();
                return;
             });
@@ -922,6 +928,14 @@
          }
       });
    }
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    /**
@@ -1263,21 +1277,25 @@
     */
    var newPage = function() {
       var button = this;
-      cms.data.createEntry('containerpage', function(ok, data) {
-         if (!ok) {
-            return;
-         }
-         var entry = data.entry;
-         var $parentElement = $(button).closest('li');
-         var parentEntry = new SitemapEntry($parentElement);
-         var $sitemapElement = _buildSitemapElement(entry);
-         var entryObj = new SitemapEntry($sitemapElement.get(0));
-         entryObj.makeEditable();
-         $sitemapElement.find(cms.util.format('.{0}, .{1}', dropzoneClass, itemClass)).droppable(cms.sitemap.dropOptions);
-         addHandles($sitemapElement.children('.' + itemClass), sitemapModes);
-         
-         var otherUrlNames = _getOtherUrlNames($(button).closest('li').children('ul'));
-         showEntryEditor(entryObj, true, otherUrlNames, function(newTitle, newUrlName, newProperties) {
+      var entry = cms.sitemap.models[0];
+      var $parentElement = $(button).closest('li');
+      var parentEntry = new SitemapEntry($parentElement);
+      var otherUrlNames = _getOtherUrlNames($(button).closest('li').children('ul'));
+      showEntryEditor(new SitemapEntry(_buildSitemapElement(entry)), false, otherUrlNames, function(newTitle, newUrlName, newPath, newProperties) {
+         cms.data.createEntry('containerpage', function(ok, data) {
+            if (!ok) {
+               return;
+            }
+            var $sitemapElement = _buildSitemapElement(data.entry);
+            var entryObj = new SitemapEntry($sitemapElement.get(0));
+            entryObj.makeEditable();
+            $sitemapElement.find(cms.util.format('.{0}, .{1}', dropzoneClass, itemClass)).droppable(cms.sitemap.dropOptions);
+            addHandles($sitemapElement.children('.' + itemClass), sitemapModes);
+            entryObj.setProperties(newProperties);
+            entryObj.setPath(newPath);
+            entryObj.setUrlName(newUrlName);
+            entryObj.setTitle(newTitle);
+            
             var $currentEntryUl = $parentElement.children('ul');
             if ($currentEntryUl.size() == 0) {
                $currentEntryUl = $('<ul/>').appendTo($(button).closest('li'));
@@ -1288,12 +1306,13 @@
             entryObj.setUrls(parentURL);
             addHandles($sitemapElement.children('div.' + itemClass), sitemapModes);
             $sitemapElement.draggable(cms.sitemap.dragOptions);
-            
             setSitemapChanged(true);
+            
          });
+      }, function() {
+            // cancel edit dialog, do nothing
       });
    };
-   
    
    
    /**
@@ -1826,7 +1845,9 @@
       createHandle: function(elem) {
          var $entry = $(elem).closest('.' + classSitemapEntry);
          var e = new SitemapEntry($entry);
-         if ($entry.parent().size() > 0 && $entry.parent().closest('.' + classSitemapEntry).size() == 0 && $entry.siblings('.' + classSitemapEntry).size() == 0) {
+         if ($entry.parent().size() > 0 && $entry.parent().closest('.' + classSitemapEntry).size() == 0 && $entry.siblings('.' + classSitemapEntry).filter(function(i, sibling) {
+             return new SitemapEntry(sibling).getId() != e.getId();
+         }).size() == 0) {
             // last toplevel entry, so we can't delete it
             return $([]);
          } else {
@@ -2297,7 +2318,6 @@
                entryObj.setProperties(newProperties);
                $sitemapElement.find(cms.util.format('.{0}, .{1}', dropzoneClass, itemClass)).droppable(cms.sitemap.dropOptions);
                $sitemapElement.addClass('cms-root-sitemap');
-               addHandles($sitemapElement.children('.' + itemClass), sitemapModes);
                entryObj.setUrls('');
                entryObj.makeEditableRecursively();
                $sitemapElement.draggable(cms.sitemap.dragOptions);
@@ -2445,7 +2465,7 @@
       var resultStr = /*decodeURIComponent*/ ($item.attr("rel"));
       return JSON.parse(resultStr);
    }
-     
+   
    /**
     * Sets the entry data for a sitemap entry.
     * @param {Object} $item the sitemap entry
@@ -3012,6 +3032,7 @@
             $goToPageButton.insertBefore($editPathButton);
          }
          $li.addClass('cms-editable-entry');
+         setChangeHandler($item.find('input'), handleUrlNameChange);
       },
       
       makeEditableRecursively: function() {
