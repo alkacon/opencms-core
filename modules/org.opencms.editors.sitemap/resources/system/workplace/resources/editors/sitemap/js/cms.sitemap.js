@@ -735,7 +735,7 @@
       var duplicateStatus = checkDuplicateOnDrop($dragged, $(this));
       if (!sameParent && duplicateStatus.duplicate) {
          var otherUrlNames = duplicateStatus.otherUrlNames;
-         showEntryEditor(draggedEntry, true, otherUrlNames, function(newTitle, newUrlName, path, newProperties) {
+         showEntryEditor(draggedEntry, true, otherUrlNames, false, function(newTitle, newUrlName, path, newProperties) {
             var previousUrl = draggedEntry.getUrl();
             var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
             draggedEntry.setUrls(parentUrl);
@@ -900,7 +900,7 @@
          var duplicateStatus = checkDuplicateOnDrop($dropClone, $dropzone);
          if (duplicateStatus.duplicate || ui.draggable.hasClass('cms-new-sitemap-entry')) {
             var otherUrlNames = duplicateStatus.otherUrlNames;
-            showEntryEditor(dropEntry, true, otherUrlNames, function(newTitle, newUrlName, newPath, newProperties) {
+            showEntryEditor(dropEntry, true, otherUrlNames, false, function(newTitle, newUrlName, newPath, newProperties) {
                cms.data.createEntry('containerpage', function(ok, data) {
                   if (!ok) {
                      return;
@@ -948,7 +948,7 @@
       var currentEntry = new SitemapEntry($entry.get(0));
       var $ul = $entry.closest('ul');
       var otherUrlNames = _getOtherUrlNames($ul, $entry.get(0));
-      showEntryEditor(currentEntry, true, otherUrlNames, function(newTitle, newUrlName, newPath, newProperties) {
+      showEntryEditor(currentEntry, true, otherUrlNames, true, function(newTitle, newUrlName, newPath, newProperties) {
          var previousUrl = currentEntry.getUrl();
          var parentUrl = previousUrl.substring(0, previousUrl.lastIndexOf('/'));
          currentEntry.setUrls(parentUrl)
@@ -1281,7 +1281,7 @@
       var $parentElement = $(button).closest('li');
       var parentEntry = new SitemapEntry($parentElement);
       var otherUrlNames = _getOtherUrlNames($(button).closest('li').children('ul'));
-      showEntryEditor(new SitemapEntry(_buildSitemapElement(entry)), false, otherUrlNames, function(newTitle, newUrlName, newPath, newProperties) {
+      showEntryEditor(new SitemapEntry(_buildSitemapElement(entry)), false, otherUrlNames, false, function(newTitle, newUrlName, newPath, newProperties) {
          cms.data.createEntry('containerpage', function(ok, data) {
             if (!ok) {
                return;
@@ -1767,7 +1767,7 @@
        */
       setPath: function(path) {
          var self = this;
-         self.$frame.find('.cms-esa-path-value').text(path).attr('alt', path);
+         self.$frame.find('.cms-esa-path-value').text(path).attr('alt', path).attr('title', path);
       },
       
       /**
@@ -1845,9 +1845,11 @@
       createHandle: function(elem) {
          var $entry = $(elem).closest('.' + classSitemapEntry);
          var e = new SitemapEntry($entry);
-         if ($entry.parent().size() > 0 && $entry.parent().closest('.' + classSitemapEntry).size() == 0 && $entry.siblings('.' + classSitemapEntry).filter(function(i, sibling) {
-             return new SitemapEntry(sibling).getId() != e.getId();
-         }).size() == 0) {
+         if ($entry.parent().size() > 0 && $entry.parent().closest('.' + classSitemapEntry).size() == 0 &&
+         $entry.siblings('.' + classSitemapEntry).filter(function(i, sibling) {
+            return new SitemapEntry(sibling).getId() != e.getId();
+         }).size() ==
+         0) {
             // last toplevel entry, so we can't delete it
             return $([]);
          } else {
@@ -2328,11 +2330,39 @@
             var cancelCallback = function() {
                         // do nothing
             };
-            showEntryEditor(entryObj, true, [], okCallback, cancelCallback);
+            showEntryEditor(entryObj, true, [], true, okCallback, cancelCallback);
          }
       });
       $button.appendTo('#cms-main > .cms-box');
    }
+   
+   var TemplateSelector = function() {
+      var self = this;
+      self.$dom = $('<div/>');
+      
+      
+   }
+   
+   TemplateSelector.prototype = {
+      /**
+       * Returns the selected template or null if no template is selected
+       */
+      getTemplate: function() {
+         return null;
+      },
+      
+      /**
+       * Returns true if the template property should be inherited
+       */
+      shouldInherit: function() {
+         return false;
+      }
+   };
+   
+   
+   
+   
+   
    
    /**
     * AJAX handler that initializes the sitemap after loading it as JSON.
@@ -2342,6 +2372,7 @@
    var onLoadSitemap = cms.sitemap.onLoadSitemap = function(ok, data) {
       cms.data.newTypes = data.types;
       cms.sitemap.models = data.models;
+      cms.templates = data.template;
       cms.sitemap.referencePath = data.referencePath;
       cms.sitemap.setWaitOverlayVisible(false);
       if (!ok) {
@@ -3074,8 +3105,9 @@
     *
     * @param {Object} isRoot flag that indicates whether the sitemap entry for which this widget is created is the root entry of a root sitemap.
     */
-   var EditDialogTopPanel = function(isRoot) {
+   var EditDialogTopPanel = function(isRoot, canEditPath) {
       var self = this;
+      self.canEditPath = canEditPath;
       self.$dom = $('<div/>');
       var _rowInput = function(label) {
       
@@ -3100,44 +3132,45 @@
       }
       var $urlNameErrorRow = _rowText('').appendTo(self.$dom).hide();
       
-      var $pathRow = _rowInput(M.GUI_SITEMAP_LABEL_EDIT_DIALOG_PATH_0).appendTo(self.$dom);
-      var $pathErrorRow = _rowText('').appendTo(self.$dom).hide();
-      $pathErrorRow.css('color', '#ff0000');
-      
-      var $pathInput = $('input', $pathRow);
-      var fieldId = 'cms-edit-dialog-path' + (editorPanelPathFieldId++);
-      $pathInput.attr('id', fieldId);
-      
-      var $editPathButton = $('<span/>', {
-         'class': 'cms-edit cms-edit-enabled',
-         css: {
-            'width': '24px',
-            'height': '24px',
-            'vertical-align': 'top',
-            'display': 'inline-block'
-         },
-         click: function() {
-            window.contextPath = cms.data.CONTEXT;
-            window.startupFolder_path = null;
-            window.startupFolders_path = null;
-            window.startupType_path = 'gallery';
-            window.resourceTypes_path = [13];
-            window.defaultAdvancedGalleryPath = (cms.data.GALLERY_PATH || cms.data.GALLERY_SERVER_URL) + '?';
-            window.galleryTabs_path = ['cms_tab_categories', 'cms_tab_galleries', 'cms_tab_search']
-            openDefaultAdvancedGallery("property", fieldId, '_path');
-            self.editedPath = true;
-         }
-      });
-      
-      $editPathButton.insertAfter($pathInput);
-      
+      if (canEditPath) {
+         var $pathRow = _rowInput(M.GUI_SITEMAP_LABEL_EDIT_DIALOG_PATH_0).appendTo(self.$dom);
+         $pathRow.find('input').attr('readonly', 'true');
+         var $pathErrorRow = _rowText('').appendTo(self.$dom).hide();
+         $pathErrorRow.css('color', '#ff0000');
+         
+         var $pathInput = $('input', $pathRow);
+         var fieldId = 'cms-edit-dialog-path' + (editorPanelPathFieldId++);
+         $pathInput.attr('id', fieldId);
+         
+         var $editPathButton = $('<span/>', {
+            'class': 'cms-edit cms-edit-enabled',
+            css: {
+               'width': '24px',
+               'height': '24px',
+               'vertical-align': 'top',
+               'display': 'inline-block'
+            },
+            click: function() {
+               window.contextPath = cms.data.CONTEXT;
+               window.startupFolder_path = null;
+               window.startupFolders_path = null;
+               window.startupType_path = 'gallery';
+               window.resourceTypes_path = [13];
+               window.defaultAdvancedGalleryPath = (cms.data.GALLERY_PATH || cms.data.GALLERY_SERVER_URL) + '?';
+               window.galleryTabs_path = ['cms_tab_categories', 'cms_tab_galleries', 'cms_tab_search']
+               openDefaultAdvancedGallery("property", fieldId, '_path');
+               self.editedPath = true;
+            }
+         });
+         self.$pathRow = $pathRow;
+         self.$pathErrorRow = $pathErrorRow;
+         $editPathButton.insertAfter($pathInput);
+      }
       $urlNameErrorRow.css('color', '#ff0000');
       self.$titleRow = $titleRow;
       self.$urlNameRow = $urlNameRow;
       self.$titleErrorRow = $titleErrorRow;
       self.$urlNameErrorRow = $urlNameErrorRow;
-      self.$pathRow = $pathRow;
-      self.$pathErrorRow = $pathErrorRow;
    }
    
    EditDialogTopPanel.prototype = {
@@ -3162,11 +3195,17 @@
       
       getPath: function() {
          var self = this;
+         if (!self.canEditPath) {
+            return null;
+         }
          return self.$pathRow.find('input').val();
       },
       
       setPath: function(newValue) {
          var self = this;
+         if (!self.canEditPath) {
+            return;
+         }
          self.$pathRow.find('input').val(newValue);
       },
       
@@ -3228,7 +3267,11 @@
        * @param {Object} errorMessage the error message
        */
       showPathError: function(errorMessage) {
+      
          var self = this;
+         if (!self.canEditPath) {
+            return;
+         }
          if (errorMessage) {
             self.$pathErrorRow.show().text(errorMessage);
          } else {
@@ -3236,6 +3279,94 @@
          }
       }
    }
+   
+   var TemplateSelector = function() {
+      var self = this;
+      var $dom = self.$dom = $('<span style="display: inline-block"/>');
+      var makeTemplateSelectionItem = function(path, title, description, image) {
+         var $item = $('<div/>');
+         $item.css('margin', '2px');
+         var $image = $('<img src="' + image + '"/>').css({
+            'float': 'left',
+            'margin-right': '3px'
+         });
+         $item.append($image);
+         var $texts = $('<div/>').appendTo($item);
+         $('<div/>').text(title).css('font-weight', 'bold').appendTo($texts);
+         $('<div/>').text(description).appendTo($texts);
+         $('<div/>').css('clear', 'both').appendTo($item);
+         return $('<div/>').append($item).html();
+      }
+      
+      var img1 = '/opencms/opencms/system/modules/org.opencms.frontend.template3/templates/template1.png';
+      var img2 = '/opencms/opencms/system/modules/org.opencms.frontend.template3/templates/template2.png';
+      var values = [{
+         value: 'title_asc',
+         title: makeTemplateSelectionItem('blargwarg', 'Title Title Title', 'Description Description Description Description Description', img1)
+      }, {
+         value: 'title_desc',
+         title: makeTemplateSelectionItem('blargwarg', 'Title Title Title', 'Description Description Description Description Description', img2)
+      }, {
+         value: 'none',
+         title: '<span>' + M.GUI_SITEMAP_NO_TEMPLATE_0 + '</span>'
+      }];
+      var $selectBox = $.fn.selectBox('generate', {
+         useHeight: true,
+         values: values,
+         width: 400,
+         select: function(selectbox, elem, value) {
+            if (value != 'none') {
+               self.$checkbox.get(0).enabled = true;
+            }
+         }
+      });
+      $selectBox.css('white-space', 'normal');
+      
+      $selectBox.appendTo($dom);
+      $selectBox.selectBox('setValue', 'none');
+      
+      var $checkboxDiv = $('<div/>').css('margin-top', '5px');
+      
+      var $checkbox = $('<input type="checkbox" />');
+      
+      var $checkboxLabel = $('<span/>').text('Use for sub-pages');
+      $checkboxDiv.append($checkbox).append($checkboxLabel);
+      
+      $checkboxDiv.insertAfter($selectBox);
+      $checkboxLabel.insertAfter($checkbox);
+      self.$selectBox = $selectBox;
+      self.$checkbox = $checkbox;
+   }
+   
+   TemplateSelector.prototype = {
+      setProperties: function(template, templateInherit) {
+         var self = this;
+         if (!template || template == 'none') {
+            self.$selectBox.selectBox('setValue', 'none');
+            self.$checkbox.get(0).checked = false;
+            self.$checkbox.get(0).disabled = true;
+         } else {
+            self.$checkbox.get(0).disabled = false;
+            self.$selectBox.selectBox('setValue', template);
+            self.$checkbox.get(0).checked = (templateInherit == template);
+         }
+         
+      },
+      
+      getProperties: function() {
+         var self = this;
+         var result = {};
+         var value = self.$selectBox.selectBox('getValue');
+         if (value != 'none') {
+            result['template'] = value;
+            if (self.$checkbox.get(0).checked) {
+               result['template-inherit'] = value;
+            }
+         }
+         return result;
+      }
+   }
+   
    
    /**
     * Displays the property editor.
@@ -3246,23 +3377,38 @@
     * @param callback the callback which is called if the user clicks OK
     * @param cancelCallback the callback which is called if the user clicks Cancel
     */
-   var showEntryEditor = cms.sitemap.showEntryEditor = function(entry, writeData, otherUrlNames, callback, cancelCallback) {
+   var showEntryEditor = cms.sitemap.showEntryEditor = function(entry, writeData, otherUrlNames, canEditPath, callback, cancelCallback) {
       var title = entry.getTitle();
       var urlName = entry.getUrlName();
       var path = entry.getPath();
       var properties = entry.getPropertiesWithDefinitions();
       var widgets = {};
       var newProps = {};
+      //var template = properties['template'].value || null;
+      //var templateInherit = properties['template-inherit'].value || null;
+      delete properties['template'];
+      delete properties['template-inherit'];
+      
       var $table = cms.property.buildPropertyTable(properties, widgets);
       var $dlg = makeDialogDiv('cms-property-dialog');
       $dlg.addClass('cms-validation');
       var isRoot = entry.isRootOfRootSitemap();
-      var topPanel = new EditDialogTopPanel(isRoot);
+      var topPanel = new EditDialogTopPanel(isRoot, canEditPath);
       
       topPanel.setTitle(title);
       topPanel.setUrlName(urlName);
       topPanel.setPath(path);
       topPanel.$dom.appendTo($dlg);
+      
+      //      var $templateField = $('<div class="cms-editable-field cms-default-value">\
+      //      <span class="cms-item-title cms-width-90">' + M.GUI_SITEMAP_LABEL_TEMPLATE_0 + '</span>\
+      //      </div>');
+      //      var templateSelector = new TemplateSelector();
+      //      $templateField.find('.cms-item-title').css('vertical-align', 'top');
+      //      $templateField.find('.cms-item-title').after(templateSelector.$dom);
+      //      //$templateField.appendTo($dlg);
+      //      var templateFieldWidth = $templateField.width();
+      //      templateSelector.setProperties(template, templateInherit);
       
       $('<hr/>').css({
          'margin-top': '15px',
@@ -3288,7 +3434,7 @@
          title: M.SITEMAP_EDIT_DIALOG_TITLE,
          modal: true,
          autoOpen: true,
-         width: 470,
+         width: 550,
          zIndex: 9999,
          close: _destroy,
          buttons: buttons
@@ -3323,13 +3469,14 @@
             }
             topPanel.showTitleError(titleError);
             
-            
-            var pathError = null;
-            if (path == '') {
-               pathError = M.ERR_SITEMAP_EDIT_DIALOG_PATH_CANT_BE_EMPTY_0;
-               result = false;
+            if (canEditPath) {
+               var pathError = null;
+               if (path == '') {
+                  pathError = M.ERR_SITEMAP_EDIT_DIALOG_PATH_CANT_BE_EMPTY_0;
+                  result = false;
+               }
+               topPanel.showPathError(pathError);
             }
-            topPanel.showPathError(pathError);
             
             
             if (!isRoot) {
@@ -3395,10 +3542,14 @@
                for (widgetName in widgets) {
                   widgets[widgetName].save(newProps);
                }
+               //               var templateProps = templateSelector.getProperties();
+               //               for (var templateName in templateProps) {
+               //                  newProps[templateName] = templateProps[templateName];
+               //               }
                if (writeData) {
                   entry.setTitle(topPanel.getTitle());
                   entry.setUrlName(topPanel.getUrlName());
-                  if (topPanel.editedPath) {
+                  if (canEditPath && topPanel.editedPath) {
                      entry.setPath(topPanel.getPath());
                      entry.setEditedPath();
                   }
