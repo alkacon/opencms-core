@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/02 10:06:27 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/02/02 10:10:10 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 7.9.2
  */
@@ -168,9 +168,7 @@ public class CmsSitemapManager {
             CmsResourceTypeXmlSitemap.getStaticTypeName());
         String sitemapPath = cms.getSitePath(newSitemapRes);
         CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, title);
-        List<CmsProperty> props = new ArrayList<CmsProperty>();
-        props.add(titleProp);
-        cms.writePropertyObjects(sitemapPath, props);
+        cms.writePropertyObject(sitemapPath, titleProp);
         cms.unlockResource(sitemapPath);
         return newSitemapRes;
     }
