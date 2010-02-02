@@ -13,6 +13,7 @@
 
 	<xsd:complexType name="OpenCmsAlkaconSitemap">
 		<xsd:sequence>
+			<xsd:element name="EntryPoint" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="SiteEntry" type="OpenCmsAlkaconSiteEntry" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
@@ -21,10 +22,12 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.sitemap.messages"/>
+			<handler class="org.opencms.xml.sitemap.CmsXmlSitemapHandler" />
 			<properties>
 				<property name="test1" type="string" widget="string" default=""/>
 				<property name="test2" type="vfslist" widget="gallery" default=""/>
 				<property name="navigation" type="string" widget="checkbox" default="false" widget-config="true"/>
+				<property name="sitemap" type="vfslist" />
 			</properties>
 		</xsd:appinfo>
 	</xsd:annotation>  
