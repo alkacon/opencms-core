@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2010/02/02 10:06:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/02/02 14:09:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.6 
  */
@@ -306,6 +306,7 @@ public class CmsSiteEntryBean {
         // set the inhereted properties
         m_inheritedProperties = new HashMap<String, String>();
         if (inheritedProperties != null) {
+            // it is important that they are cloned, see CmsSitemapManager#getEntry(...)
             m_inheritedProperties.putAll(inheritedProperties);
             m_inheritedProperties.putAll(m_properties);
         }
