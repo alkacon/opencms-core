@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2010/01/26 14:06:23 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/02/02 10:06:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,10 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -44,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.6 
  */
@@ -62,11 +65,8 @@ public class CmsSiteEntryBean {
     /** The entry name. */
     private final String m_name;
 
-    /** The original, sitemap file dependent, uri. */
+    /** The original uri, without content ID. */
     private final String m_originalUri;
-
-    /** The current prefix. */
-    private String m_prefix;
 
     /** The configured properties. */
     private final Map<String, String> m_properties;
@@ -74,11 +74,36 @@ public class CmsSiteEntryBean {
     /** The file's structure id. */
     private final CmsUUID m_resourceId;
 
+    /** Flag to indicate if this is a sitemap or a VFS entry. */
+    private final boolean m_sitemap;
+
     /** The list of sub-entries. */
     private final List<CmsSiteEntryBean> m_subEntries;
 
     /** The entry title. */
     private final String m_title;
+
+    /**
+     * Creates a new VFS entry bean.<p>
+     * 
+     * @param cms the current CMS context
+     * @param uri the current URI
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsSiteEntryBean(CmsObject cms, String uri)
+    throws CmsException {
+
+        CmsResource res = cms.readResource(uri);
+        m_id = res.getStructureId();
+        m_resourceId = res.getStructureId();
+        m_name = res.getName();
+        m_title = null;
+        m_subEntries = Collections.<CmsSiteEntryBean> emptyList();
+        m_properties = null;
+        m_originalUri = uri;
+        m_sitemap = false;
+    }
 
     /**
      * Creates a new sitemap entry bean.<p> 
@@ -113,7 +138,7 @@ public class CmsSiteEntryBean {
             m_properties.putAll(properties);
         }
         m_originalUri = originalUri;
-        m_prefix = "";
+        m_sitemap = true;
     }
 
     /**
@@ -203,6 +228,33 @@ public class CmsSiteEntryBean {
     }
 
     /**
+     * Returns the current root uri.<p>
+     * 
+     * @return the current root uri
+     */
+    public String getRootPath() {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(getOriginalUri());
+        if (getContentId() != null) {
+            sb.append(getContentId()).append('/');
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Returns the current site uri.<p>
+     * 
+     * @param cms the current CMS context
+     * 
+     * @return the current site uri
+     */
+    public String getSitePath(CmsObject cms) {
+
+        return cms.getRequestContext().removeSiteRoot(getRootPath());
+    }
+
+    /**
      * Returns the sub-entries.<p>
      *
      * @return the sub-entries
@@ -223,38 +275,34 @@ public class CmsSiteEntryBean {
     }
 
     /**
-     * Returns the current uri.<p>
+     * Checks if this is a sitemap entry.<p>
      * 
-     * @return the current uri
+     * @return <code>true</code> if this is a sitemap entry
      */
-    public String getUri() {
+    public boolean isSitemap() {
 
-        StringBuffer sb = new StringBuffer();
-        sb.append(m_prefix).append(getOriginalUri());
-        if (getContentId() != null) {
-            sb.append(getContentId()).append('/');
-        }
-        return sb.toString();
+        return m_sitemap;
+    }
+
+    /**
+     * Checks if this is a VFS entry.<p>
+     * 
+     * @return <code>true</code> if this is a VFS entry
+     */
+    public boolean isVfs() {
+
+        return !m_sitemap;
     }
 
     /**
      * Sets the runtime information.<p>
      * 
-     * @param prefix the prefix to set
      * @param inheritedProperties the inherited properties to set
      * @param position the position to set
      * @param contentId the contentId to set
      */
-    public void setRuntimeInfo(String prefix, Map<String, String> inheritedProperties, int position, CmsUUID contentId) {
+    public void setRuntimeInfo(Map<String, String> inheritedProperties, int position, CmsUUID contentId) {
 
-        // set the prefix
-        m_prefix = prefix;
-        if (m_prefix == null) {
-            m_prefix = "";
-        }
-        if (m_prefix.endsWith("/")) {
-            m_prefix = m_prefix.substring(0, m_prefix.length() - 1);
-        }
         // set the inhereted properties
         m_inheritedProperties = new HashMap<String, String>();
         if (inheritedProperties != null) {
@@ -276,6 +324,6 @@ public class CmsSiteEntryBean {
     @Override
     public String toString() {
 
-        return getUri();
+        return getRootPath();
     }
 }

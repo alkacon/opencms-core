@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/01/29 11:32:17 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2010/02/02 10:06:18 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * 
  * @since 7.6
  */
@@ -1238,17 +1238,22 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * 
      * @param entry the sitemap entry
      * @param targetUri the target uri
+     * 
      * @return the JSON representation of the entry
+     * 
      * @throws JSONException if something goes wrong generating the JSON
      * @throws CmsException if something goes wrong reading the entry resource
      */
     private JSONObject buildJSONForSitemapEntry(CmsSiteEntryBean entry, String targetUri)
     throws JSONException, CmsException {
 
+        // TODO: there should not be any private method in this class, use protected instead
+        CmsObject cms = getCmsObject();
+
         JSONObject result = new JSONObject();
         result.put(SitemapKey.title.name(), entry.getTitle());
-        result.put(SitemapKey.sitemapUri.name(), entry.getUri());
-        I_CmsResourceType resType = m_resourceManager.getResourceType(getCmsObject().readResource(entry.getResourceId()));
+        result.put(SitemapKey.sitemapUri.name(), entry.getSitePath(cms));
+        I_CmsResourceType resType = m_resourceManager.getResourceType(cms.readResource(entry.getResourceId()));
         String iconPath = CmsWorkplace.RES_PATH_FILETYPES;
         iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType.getTypeName()).getIcon();
         result.put(SitemapKey.icon.name(), iconPath);
@@ -1265,7 +1270,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         }
         if (!entry.getSubEntries().isEmpty()) {
             result.put(SitemapKey.hasSubEntries.name(), true);
-            if (targetUri.startsWith(entry.getUri(), 0)) {
+            if (targetUri.startsWith(entry.getSitePath(cms))) {
                 JSONArray subEntries = new JSONArray();
                 Iterator<CmsSiteEntryBean> it = entry.getSubEntries().iterator();
                 while (it.hasNext()) {

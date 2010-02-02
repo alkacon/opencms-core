@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2010/01/26 11:01:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/02 10:06:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  * 
@@ -360,7 +360,7 @@ public final class CmsJspElFunctions {
         if (sitemap == null) {
             return getCmsObject(input).getRequestContext().getUri();
         }
-        return sitemap.getUri();
+        return sitemap.getSitePath(getCmsObject(input));
     }
 
     /**

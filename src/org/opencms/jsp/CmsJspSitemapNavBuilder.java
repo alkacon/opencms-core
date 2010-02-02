@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2010/01/27 08:16:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/02/02 10:06:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.9.2 
  * 
@@ -137,6 +137,9 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         if (folderEntry == null) {
             return result;
         }
+        if (folderEntry.isVfs()) {
+            return super.getNavigationForFolder(folder);
+        }
 
         List<CmsSiteEntryBean> entries = folderEntry.getSubEntries();
         for (CmsSiteEntryBean entry : entries) {
@@ -144,7 +147,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
                 // check permissions
                 m_cms.readResource(entry.getResourceId());
                 // permissions are fine, add it to the results
-                String entryName = folderEntry.getUri() + entry.getName() + "/";
+                String entryName = folderEntry.getSitePath(m_cms) + entry.getName() + "/";
                 CmsJspNavElement element = getNavigationForResource(entryName);
                 if ((element != null) && element.isInNavigation()) {
                     result.add(element);
@@ -173,6 +176,9 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
+        if (uriEntry.isVfs()) {
+            return super.getNavigationForResource(resource);
+        }
         return getNavigationForSiteEntry(resource, uriEntry);
     }
 
@@ -199,7 +205,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         m_manager = OpenCms.getSitemapManager();
         CmsSiteEntryBean sitemap = m_manager.getRuntimeInfo(req);
         if (sitemap != null) {
-            m_requestUri = sitemap.getUri();
+            m_requestUri = sitemap.getSitePath(m_cms);
         }
         // can be null if m_requestUri is the root folder
         m_requestUriFolder = m_requestUri;
