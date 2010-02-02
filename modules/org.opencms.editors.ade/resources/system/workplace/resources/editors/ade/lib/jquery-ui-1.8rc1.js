@@ -656,6 +656,11 @@ $.widget("ui.draggable", $.ui.mouse, {
 		this.handle = this._getHandle(event);
 		if (!this.handle)
 			return false;
+            
+        if ($.browser.msie) {
+            // fix for the problem with nested draggables in IE (JQuery UI ticket #4333)
+            event.stopPropagation();
+        }
 
 		return true;
 
