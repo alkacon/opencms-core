@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapBean.java,v $
- * Date   : $Date: 2009/11/03 13:30:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/02/02 10:06:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,38 +40,43 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6
  */
 public class CmsSitemapBean {
 
-    /** The site entries. */
-    private final List<CmsSiteEntryBean> m_siteEntries;
+    /** The entry point, as root path. */
+    private final String m_entryPoint;
 
     /** The locale. */
     private final Locale m_locale;
+
+    /** The site entries. */
+    private final List<CmsSiteEntryBean> m_siteEntries;
 
     /** 
      * Creates a new sitemap bean.<p> 
      * 
      * @param locale the locale
+     * @param entryPoint the entry point
      * @param siteEntries the site entries
      **/
-    public CmsSitemapBean(Locale locale, List<CmsSiteEntryBean> siteEntries) {
+    public CmsSitemapBean(Locale locale, String entryPoint, List<CmsSiteEntryBean> siteEntries) {
 
         m_locale = locale;
+        m_entryPoint = entryPoint;
         m_siteEntries = Collections.unmodifiableList(siteEntries);
     }
 
     /**
-     * Returns the site entries.<p>
-     *
-     * @return the site entries
+     * Returns the entry point, as root path.<p>
+     * 
+     * @return the entry point
      */
-    public List<CmsSiteEntryBean> getSiteEntries() {
+    public String getEntryPoint() {
 
-        return m_siteEntries;
+        return m_entryPoint;
     }
 
     /**
@@ -82,5 +87,15 @@ public class CmsSitemapBean {
     public Locale getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the site entries.<p>
+     *
+     * @return the site entries
+     */
+    public List<CmsSiteEntryBean> getSiteEntries() {
+
+        return m_siteEntries;
     }
 }

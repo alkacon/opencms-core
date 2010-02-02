@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/01/26 14:06:23 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/02/02 10:06:27 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 7.5.2
  * 
@@ -94,11 +94,13 @@ public class CmsXmlSitemap extends CmsXmlContent {
     /** XML node name constants. */
     public enum XmlNode {
 
+        /** Entry point node name. */
+        EntryPoint,
         /** Entry ID node name. */
         Id,
         /** Entry name node name. */
         Name,
-        /** A site entry. */
+        /** Site entry node name. */
         SiteEntry,
         /** Title node name. */
         Title,
@@ -400,8 +402,11 @@ public class CmsXmlSitemap extends CmsXmlContent {
         // lock the file
         cms.lockResourceTemporary(cms.getSitePath(file));
 
-        // wipe the locale
         Locale locale = cms.getRequestContext().getLocale();
+        // save the entry point
+        Element entryPoint = getLocaleNode(locale).element(XmlNode.EntryPoint.name());
+
+        // wipe the locale
         if (hasLocale(locale)) {
             removeLocale(locale);
         }
@@ -412,8 +417,13 @@ public class CmsXmlSitemap extends CmsXmlContent {
             cms,
             getFile()).getProperties();
 
-        // recursively add the nodes to the raw XML structure
+        // store the entry point
         Element parent = getLocaleNode(locale);
+        parent.clearContent();
+        if (entryPoint != null) {
+            parent.add(entryPoint.detach());
+        }
+        // recursively add the nodes to the raw XML structure
         for (CmsSiteEntryBean entry : entries) {
             saveEntry(cms, parent, entry, propertiesConf);
         }
@@ -525,11 +535,26 @@ public class CmsXmlSitemap extends CmsXmlContent {
                     CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
 
                 addLocale(locale);
-                String rootPath = "";
+                // get entry point
+                Element entryPoint = sitemap.element(XmlNode.EntryPoint.name());
+                String entryPointPath = null;
+                if (entryPoint != null) {
+                    createBookmark(entryPoint, locale, sitemap, null, definition);
+                    Element linkEntryPoint = entryPoint.element(CmsXmlPage.NODE_LINK);
+                    if (linkEntryPoint == null) {
+                        // this can happen when adding the entry node to the xml content
+                        // it is not dangerous since the link has to be set before saving 
+                    } else {
+                        entryPointPath = new CmsLink(linkEntryPoint).getUri();
+                    }
+                } else {
+                    entryPointPath = "/";
+                }
 
-                List<CmsSiteEntryBean> entries = readSiteEntries(sitemap, rootPath, definition, locale, null);
-
-                m_sitemaps.put(locale, new CmsSitemapBean(locale, entries));
+                // get the entries
+                List<CmsSiteEntryBean> entries = readSiteEntries(sitemap, "", definition, locale, entryPointPath);
+                // create the sitemap
+                m_sitemaps.put(locale, new CmsSitemapBean(locale, entryPointPath, entries));
             } catch (NullPointerException e) {
                 LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
                     org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
@@ -561,12 +586,9 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
             // entry itself
             int entryIndex = CmsXmlUtils.getXpathIndexInt(entry.getUniquePath(rootElem));
-            String entryPath = CmsXmlUtils.concatXpath(rootPath, CmsXmlUtils.createXpathElement(
-                entry.getName(),
-                entryIndex));
-            if (entryPath.startsWith("/")) {
-                // this will happen when root path is empty
-                entryPath = entryPath.substring(1);
+            String entryPath = CmsXmlUtils.createXpathElement(entry.getName(), entryIndex);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rootPath)) {
+                entryPath = CmsXmlUtils.concatXpath(rootPath, entryPath);
             }
             I_CmsXmlSchemaType entrySchemaType = rootDef.getSchemaType(entry.getName());
             I_CmsXmlContentValue entryValue = entrySchemaType.createValue(this, entry, locale);
@@ -593,6 +615,10 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
             // name
             Element name = entry.element(XmlNode.Name.name());
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(rootPath)) {
+                // ensure the root entry has no name
+                name.clearContent();
+            }
             createBookmark(name, locale, entry, entryPath, entryDef);
             String entryName = name.getTextTrim();
 
@@ -605,12 +631,12 @@ public class CmsXmlSitemap extends CmsXmlContent {
             Element uri = entry.element(XmlNode.VfsFile.name());
             createBookmark(uri, locale, entry, entryPath, entryDef);
             Element linkUri = uri.element(CmsXmlPage.NODE_LINK);
-            CmsUUID linkId = null;
+            CmsUUID uriId = null;
             if (linkUri == null) {
                 // this can happen when adding the entry node to the xml content
                 // it is not dangerous since the link has to be set before saving 
             } else {
-                linkId = new CmsLink(linkUri).getStructureId();
+                uriId = new CmsLink(linkUri).getStructureId();
             }
 
             Map<String, String> propertiesMap = new HashMap<String, String>();
@@ -700,13 +726,13 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 propertiesMap.put(propName.getTextTrim(), val);
             }
 
-            String path = "/";
-            if (parentUri != null) {
-                path = parentUri + entryName + "/";
+            String path = parentUri + entryName;
+            if (!path.endsWith("/")) {
+                path += "/";
             }
             List<CmsSiteEntryBean> subEntries = readSiteEntries(entry, entryPath, entryDef, locale, path);
 
-            entries.add(new CmsSiteEntryBean(entryId, path, linkId, entryName, titleValue, propertiesMap, subEntries));
+            entries.add(new CmsSiteEntryBean(entryId, path, uriId, entryName, titleValue, propertiesMap, subEntries));
         }
         return entries;
     }
@@ -741,8 +767,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         Element propElement = null;
         for (Map.Entry<String, String> property : entry.getProperties().entrySet()) {
             String propName = property.getKey();
-            boolean isSitemapProperty = CmsSitemapManager.Property.sitemap.name().equals(propName);
-            if (!propertiesConf.containsKey(propName) && !isSitemapProperty) {
+            if (!propertiesConf.containsKey(propName)) {
                 continue;
             }
             // only if the property is configured in the schema we will save it to the sitemap
@@ -756,8 +781,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
             // the property value
             String value = property.getValue();
-            if (isSitemapProperty
-                || CmsXmlContentProperty.PropType.isVfsList(propertiesConf.get(propName).getPropertyType())) {
+            if (CmsXmlContentProperty.PropType.isVfsList(propertiesConf.get(propName).getPropertyType())) {
                 // resource list value
                 Element filelistElem = valueElement.addElement(CmsXmlContentProperty.XmlNode.FileList.name());
                 for (String strId : CmsStringUtil.splitAsList(value, CmsXmlContentProperty.PROP_SEPARATOR)) {
