@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/01/29 10:13:29 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2010/02/02 10:06:31 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -50,9 +49,6 @@ import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsRelation;
-import org.opencms.relations.CmsRelationFilter;
-import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -88,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 7.6
  */
@@ -187,10 +183,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         sitemap,
         /** The sitepath. */
         sitepath,
-        /** Flag to indicate if this is a top-level sitemap or a sub-sitemap. */
-        subSitemap,
-        /** List of the URIs of sitemaps which reference the current sitemap */
-        superSitemaps,
+        /** Super sitemap URI */
+        superSitemap,
         /** The title property. */
         title,
         /** Creatable types */
@@ -343,7 +337,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsResource sitemapRes = CmsHistoryResourceHandler.getResourceWithHistory(cms, sitemapParam);
             // first load, get everything
             CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes, request);
-            result = getSitemap(sitemapRes, xmlSitemap);
+            result = getSitemap(xmlSitemap);
 
             CmsSitemapManager manager = OpenCms.getSitemapManager();
             List<CmsResource> creatableElements = manager.getCreatableElements(cms, sitemapParam, request);
@@ -361,12 +355,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             result.put(JsonResponse.types.name(), creatableTypes);
             result.put(JsonResponse.models.name(), models);
             result.put(JsonTemplate.template.name(), getTemplates());
-            // This requires that the sitemap is below the folder that references the sitemap with 
-            // its 'sitemap' property. It also doesn't work for sub-sitemaps. 
-            String referencePath = getFirstAncestorWithProperty(
-                cms.getSitePath(sitemapRes),
-                CmsPropertyDefinition.PROPERTY_SITEMAP);
-            result.put(JsonResponse.referencePath.name(), referencePath);
         } else if (action.equals(Action.GET)) {
             if (checkParameters(data, null, JsonRequest.fav.name())) {
                 // get the favorite list
@@ -528,7 +516,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     /**
      * Returns the data for the given sitemap.<p>
      * 
-     * @param resource the sitemap's resource 
      * @param xmlSitemap the XML sitemap to use
      * 
      * @return the data for the given sitemap
@@ -536,7 +523,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
      * @throws JSONException if something goes wrong with the JSON manipulation
      * @throws CmsException if something goes wrong
      */
-    public JSONObject getSitemap(CmsResource resource, CmsXmlSitemap xmlSitemap) throws JSONException, CmsException {
+    public JSONObject getSitemap(CmsXmlSitemap xmlSitemap) throws JSONException, CmsException {
 
         CmsObject cms = getCmsObject();
         CmsSitemapBean sitemap = xmlSitemap.getSitemap(cms, cms.getRequestContext().getLocale());
@@ -544,7 +531,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         JSONObject result = new JSONObject();
 
         // get properties configuration 
-        Map<String, CmsXmlContentProperty> propertiesConf = getPropertyConfig(resource);
+        Map<String, CmsXmlContentProperty> propertiesConf = getPropertyConfig(xmlSitemap.getFile());
 
         // collect the site map entries
         JSONArray siteEntries = new JSONArray();
@@ -556,22 +543,15 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         }
         result.put(JsonResponse.sitemap.name(), siteEntries);
 
-        // check if this is a top-level sitemap, by checking that it is not linked from another sitemap
-        boolean topLevel = true;
-        JSONArray superSitemapsJSON = new JSONArray();
-        CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_WEAK);
-        for (CmsRelation relation : cms.getRelationsForResource(resource, filter)) {
-            CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
-            if (CmsResourceTypeXmlSitemap.isSitemap(source)) {
-                topLevel = false;
-                superSitemapsJSON.put(cms.getSitePath(source));
-            }
-        }
-        result.put(JsonResponse.subSitemap.name(), !topLevel);
-        result.put(JsonResponse.superSitemaps.name(), superSitemapsJSON);
+        CmsXmlSitemap superSitemap = OpenCms.getSitemapManager().getParentSitemap(cms, xmlSitemap);
+        String superSitemapPath = superSitemap == null ? "" : cms.getSitePath(superSitemap.getFile());
+        result.put(JsonResponse.superSitemap.name(), superSitemapPath);
+        result.put(JsonResponse.referencePath.name(), cms.getRequestContext().removeSiteRoot(sitemap.getEntryPoint()));
 
         // collect the properties
-        result.put(JsonResponse.properties.name(), CmsXmlContentPropertyHelper.getPropertyInfoJSON(cms, resource));
+        result.put(JsonResponse.properties.name(), CmsXmlContentPropertyHelper.getPropertyInfoJSON(
+            cms,
+            xmlSitemap.getFile()));
 
         return result;
     }
@@ -746,8 +726,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             String propType = CmsXmlContentProperty.PropType.string.name();
             if (currentPropertyConf != null) {
                 propType = currentPropertyConf.getPropertyType();
-            } else if (key.equals(CmsSitemapManager.Property.sitemap.name())) {
-                propType = CmsXmlContentProperty.PropType.vfslist.name();
             }
             props.put(key, CmsXmlContentPropertyHelper.getPropValuePaths(cms, propType, prop.getValue()));
         }
@@ -844,8 +822,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 String propType = CmsXmlContentProperty.PropType.string.name();
                 if (currentPropertyConf != null) {
                     propType = currentPropertyConf.getPropertyType();
-                } else if (key.equals(CmsSitemapManager.Property.sitemap.name())) {
-                    propType = CmsXmlContentProperty.PropType.vfslist.name();
                 }
                 properties.put(key, CmsXmlContentPropertyHelper.getPropValuePaths(
                     cms,
@@ -893,30 +869,4 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         return entryBean;
     }
-
-    /**
-     * Returns the path of the first ancestor of a resource which has a given property set.
-     * 
-     * @param sitePath the path of the resource 
-     * @param propertyName the name of the property to search for
-     *  
-     * @return the path of the firsts ancestor of sitePath for which the property named by propertyName is set
-     *  
-     * @throws CmsException if something goes wrong 
-     */
-    private String getFirstAncestorWithProperty(String sitePath, String propertyName) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        String ancestorPath = sitePath;
-        while (ancestorPath != null) {
-            CmsResource ancestor = cms.readResource(ancestorPath);
-            CmsProperty prop = cms.readPropertyObject(ancestor, propertyName, false);
-            if (!prop.isNullProperty()) {
-                return cms.getSitePath(ancestor);
-            }
-            ancestorPath = CmsResource.getParentFolder(ancestorPath);
-        }
-        return null;
-    }
-
 }

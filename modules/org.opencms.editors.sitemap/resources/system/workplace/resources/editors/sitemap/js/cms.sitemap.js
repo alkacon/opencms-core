@@ -2388,12 +2388,12 @@
          $sitemap = cms.sitemap.buildSitemap(sitemap);
       }
       $sitemap.appendTo('#' + sitemapId);
-      // Ignore data.subSitemap for now
-      if (/*!data.subSitemap*/true) {
+      if (data.superSitemap.length == 0) {
+         // this sitemap is the root sitemap if and only if it does have a super sitemap
          $('#' + sitemapId).children('.' + classSitemapEntry).addClass('cms-root-sitemap');
       }
-      var $sitemapLinks = _buildSitemapLinks(data.superSitemaps);
-      $('#cms-main > .cms-box').prepend($sitemapLinks);
+      var $sitemapLink = _buildSitemapLink(data.superSitemap);
+      $('#cms-main > .cms-box').prepend($sitemapLink);
       
       initSitemap();
       if (!cms.data.NO_EDIT_REASON) {
@@ -2424,22 +2424,19 @@
    
    
    /**
-    * Builds a HTML element consisting of links to parent sitemaps of this sitemap
+    * Builds a HTML element consisting of a link to the parent sitemap of this sitemap
     *
-    * @param {Object} sitemapPaths the list of sitemap paths of the parent sitemaps
+    * @param {String} sitemapPath the parent sitemap path
     */
-   var _buildSitemapLinks = function(sitemapPaths) {
-      if (sitemapPaths.length == 0) {
+   var _buildSitemapLink = function(sitemapPath) {
+      if (sitemapPath.length == 0) {
          return $([]);
       }
       var $result = $('<div/>').addClass('ui-corner-all cms-sitemap-links');
       $('<div/>').text('Sitemaps referencing this sitemap: ').appendTo($result);
-      var $links = $('<ul/>').appendTo($result);
-      for (var i = 0; i < sitemapPaths.length; i++) {
-         var path = sitemapPaths[i];
-         var $link = $('<a/>').attr('href', cms.data.CONTEXT + path).text(path);
-         $('<li/>').append($link).appendTo($links);
-      }
+      var $list = $('<ul/>').appendTo($result);
+      var $link = $('<a/>').attr('href', cms.data.CONTEXT + sitemapPath).text(sitemapPath);
+      $('<li/>').append($link).appendTo($list);
       return $result;
    }
    
