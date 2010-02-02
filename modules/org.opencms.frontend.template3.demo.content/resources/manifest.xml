@@ -64,10 +64,6 @@
 					<value><![CDATA[en]]></value>
 				</property>
 				<property>
-					<name>sitemap</name>
-					<value><![CDATA[/demo_t3/_config/sitemap]]></value>
-				</property>
-				<property>
 					<name>style.config</name>
 					<value><![CDATA[/demo_t3/_config/new/cntpages]]></value>
 				</property>
@@ -237,6 +233,11 @@
                 </property>
 			</properties>
 			<relations>
+				<relation>
+					<id>5ae56cfe-9c82-11de-adde-dd9f629b113b</id>
+					<path>/demo_t3/</path>
+					<type>ENTRY_POINT</type>
+				</relation>
 				<relation>
 					<id>b80d39af-c865-11de-a457-ab20365f6268</id>
 					<path>/system/workplace/editors/sitemap/schemas/sitemap.xsd</path>

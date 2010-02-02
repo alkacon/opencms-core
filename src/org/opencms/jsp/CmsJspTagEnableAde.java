@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/01/27 12:50:59 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/02/02 10:06:23 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,8 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.galleries.CmsGallerySearchServer;
+import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsXmlSitemap;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -69,7 +71,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 7.6 
  */
@@ -281,6 +283,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
             boolean isDetailPage = false;
             CmsResource containerPage = cms.readResource(currentUri);
+            CmsXmlSitemap sitemap = null;
             if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
                 // container page is used as template
                 String cntPagePath = cms.readPropertyObject(
@@ -295,19 +298,21 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                     }
                     LOG.debug(e.getLocalizedMessage(), e);
                 }
-            } else if (OpenCms.getSitemapManager().getRuntimeInfo(req) != null) {
-                // detail page
-                CmsUUID id = OpenCms.getSitemapManager().getRuntimeInfo(req).getContentId();
-                if (id != null) {
-                    currentUri = cms.getSitePath(cms.readResource(id));
-                    isDetailPage = true;
+            } else {
+                CmsSiteEntryBean sitemapInfo = OpenCms.getSitemapManager().getRuntimeInfo(req);
+                if (sitemapInfo != null) {
+                    // detail page
+                    CmsUUID id = sitemapInfo.getContentId();
+                    if (id != null) {
+                        currentUri = cms.getSitePath(cms.readResource(id));
+                        isDetailPage = true;
+                    }
+                    // sitemap uri
+                    sitemap = OpenCms.getSitemapManager().getSitemapForUri(cms, sitemapInfo.getSitePath(cms));
                 }
             }
-            CmsProperty sitemapProperty = cms.readPropertyObject(
-                containerPage,
-                CmsPropertyDefinition.PROPERTY_SITEMAP,
-                true);
-            String sitemapUri = linkMan.substituteLink(cms, sitemapProperty.getValue());
+
+            String sitemapUri = (sitemap == null) ? "" : linkMan.substituteLink(cms, sitemap.getFile());
             resolver.addMacro(Macro.sitemapUri.name(), sitemapUri);
             String containerPageUri = cms.getSitePath(containerPage);
             resolver.addMacro(Macro.currentUri.name(), currentUri);
