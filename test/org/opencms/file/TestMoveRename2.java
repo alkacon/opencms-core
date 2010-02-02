@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2009/09/07 12:41:42 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2010/02/02 09:18:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -297,7 +297,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         page = CmsXmlPageFactory.unmarshal(cms, file, true);
         CmsLinkTable links = page.getLinkTable("test", Locale.ENGLISH);
         assertEquals(links.size(), 1);
-        assertEquals(links.getLink("link0").getVfsUri(), filename);
+        assertEquals(links.getLink("link0").getSitePath(), filename);
     }
 
     /**

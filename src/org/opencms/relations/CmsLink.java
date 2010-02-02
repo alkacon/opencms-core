@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/02/02 09:18:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -376,7 +376,7 @@ public class CmsLink {
             }
 
             // return the link with the server prefix, if necessary 
-            return OpenCms.getLinkManager().substituteLink(cms, getVfsUri(), siteRoot);
+            return OpenCms.getLinkManager().substituteLink(cms, getSitePath(), siteRoot);
         } else {
 
             // don't touch external links
@@ -471,6 +471,25 @@ public class CmsLink {
     }
 
     /**
+     * Returns the vfs link of the target if it is internal.<p>
+     * 
+     * @return the full link destination or null if the link is not internal
+     */
+    public String getSitePath() {
+
+        if (m_internal) {
+            String siteRoot = getSiteRoot();
+            if (siteRoot != null) {
+                return m_uri.substring(siteRoot.length());
+            } else {
+                return m_uri;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Return the site root if the target of this link is internal, or <code>null</code> otherwise.<p>
      * 
      * @return the site root if the target of this link is internal, or <code>null</code> otherwise
@@ -529,20 +548,14 @@ public class CmsLink {
     /**
      * Returns the vfs link of the target if it is internal.<p>
      * 
-     * @return the full link destination or null if the link is not internal.
+     * @return the full link destination or null if the link is not internal
+     * 
+     * @deprecated Use {@link #getSitePath()} instead
      */
+    @Deprecated
     public String getVfsUri() {
 
-        if (m_internal) {
-            String siteRoot = getSiteRoot();
-            if (siteRoot != null) {
-                return m_uri.substring(siteRoot.length());
-            } else {
-                return m_uri;
-            }
-        }
-
-        return null;
+        return getSitePath();
     }
 
     /**

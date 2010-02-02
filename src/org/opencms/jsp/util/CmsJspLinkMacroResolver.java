@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspLinkMacroResolver.java,v $
- * Date   : $Date: 2009/09/09 15:54:54 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2010/02/02 09:18:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.4 
  */
@@ -207,7 +207,7 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
             newMacro.append(I_CmsMacroResolver.MACRO_DELIMITER);
             newMacro.append(I_CmsMacroResolver.MACRO_START);
             newMacro.append(macro);
-            newMacro.append(link.getVfsUri());
+            newMacro.append(link.getSitePath());
             if ((link.getStructureId() != null) && !link.getStructureId().isNullUUID()) {
                 newMacro.append(KEY_SEPARATOR).append(link.getStructureId());
             }
