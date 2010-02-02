@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2009/12/15 15:24:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/02/02 15:34:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,9 @@ package org.opencms.util;
 
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -65,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -511,6 +514,32 @@ public final class CmsRequestUtil {
     }
 
     /**
+     * Converts the given parameter map into an JSON object.<p>
+     * 
+     * @param params the parameters map to convert
+     * 
+     * @return the JSON representation of the given parameter map
+     */
+    public static JSONObject getJsonParameterMap(Map<String, String[]> params) {
+
+        JSONObject result = new JSONObject();
+        for (Map.Entry<String, String[]> entry : params.entrySet()) {
+            String paramKey = entry.getKey();
+            JSONArray paramValue = new JSONArray();
+            for (int i = 0, l = entry.getValue().length; i < l; i++) {
+                paramValue.put(entry.getValue()[i]);
+            }
+            try {
+                result.putOpt(paramKey, paramValue);
+            } catch (JSONException e) {
+                // should never happen
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Reads value from the request parameters,
      * will return <code>null</code> if the value is not available or only white space.<p>
      * 
@@ -545,6 +574,28 @@ public final class CmsRequestUtil {
         String result = request.getParameter(paramName);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
             result = null;
+        }
+        return result;
+    }
+
+    /**
+     * Converts the given JSON object into a valid parameter map.<p>
+     * 
+     * @param params the JSON object to convert
+     * 
+     * @return the parameter map from the given JSON object
+     */
+    public static Map<String, String[]> getParameterMapFromJSON(JSONObject params) {
+
+        Map<String, String[]> result = new HashMap<String, String[]>();
+        Iterator<String> itKeys = params.keys();
+        while (itKeys.hasNext()) {
+            String key = itKeys.next();
+            JSONArray paramValue = params.optJSONArray(key);
+            result.put(key, new String[paramValue.length()]);
+            for (int i = 0, l = paramValue.length(); i < l; i++) {
+                result.get(key)[i] = paramValue.optString(i);
+            }
         }
         return result;
     }
