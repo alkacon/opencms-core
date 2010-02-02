@@ -50,6 +50,7 @@
           "LOCALE"          : "%(currentLocale)",
           "SKIN_URI"        : "%(skinUri)",
           "CONTEXT"         : "%(contextPath)",
+          "REQUEST_PARAMS"  : JSON.stringify(%(requestParams)),
           "NO_EDIT_REASON"  : "%(noEditReason)"
         }, 
         publish: {

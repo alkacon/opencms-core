@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/02/02 10:06:23 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/02/02 15:36:05 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,14 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
@@ -71,29 +74,59 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 7.6 
  */
 public class CmsJspTagEnableAde extends BodyTagSupport {
+
+    /** Macro name constants. */
+    protected enum Macro {
+
+        /** Macro name constant for the current container page URI. */
+        currentContainerPage,
+        /** Macro name constant for the current locale. */
+        currentLocale,
+        /** Macro name constant for the current URI. */
+        currentUri,
+        /** Macro name constant for the editor's URI . */
+        editorUri,
+        /** Macro name constant for the gallery javascript URI. */
+        galleryAdditionalJavascript,
+        /** Macro name constant for the gallery server URI . */
+        galleryServerPath,
+        // TODO: delete one of this
+        /** Macro name constant for the gallery server URI . */
+        galleryServerUri,
+        /** Macro name constant for the current messages javascript URI. */
+        messagesUri,
+        /** Macro name constant for any reason to do not edit the current container page if applicable. */
+        noEditReason,
+        /** Macro name constant for the publish server URI. */
+        publishUri,
+        /** Macro name constant for the current request parameters. */
+        requestParams,
+        /** Macro name constant for the container page editor URI. */
+        serverUri,
+        /** Macro name constant for the current XML sitemap URI. */
+        sitemapUri,
+        /** Macro name constant for the skin URI. */
+        skinUri;
+    }
 
     /** URI constants. */
     protected enum Uri {
 
         /** Messages URI constant. */
         ADE_MESSAGES("/system/workplace/editors/ade/cms.messages.jsp"),
-
         /** ADE Server URI constant. */
         ADE_SERVER("/system/workplace/editors/ade/server.jsp"),
-
         /** Editor URI constant. */
         EDITOR("/system/workplace/editors/editor.jsp"),
-
-        /** Publish Server URI constant. */
-        PUBLISH_SERVER("/system/workplace/editors/ade/publish-server.jsp"),
-
         /** Default advanced direct edit include file URI. */
-        INCLUDE_FILE("/system/workplace/editors/ade/include.txt");
+        INCLUDE_FILE("/system/workplace/editors/ade/include.txt"),
+        /** Publish Server URI constant. */
+        PUBLISH_SERVER("/system/workplace/editors/ade/publish-server.jsp");
 
         /** The uri. */
         private String m_uri;
@@ -117,49 +150,6 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
             return m_uri;
         }
-    }
-
-    /** Macro name constants. */
-    protected enum Macro {
-
-        /** Macro name constant. */
-        currentContainerPage,
-
-        /** Macro name constant. */
-        currentLocale,
-
-        /** Macro name constant. */
-        currentUri,
-
-        /** Macro name constant. */
-        editorUri,
-
-        /** Macro name constant. */
-        galleryAdditionalJavascript,
-
-        /** Macro name constant. */
-        galleryServerPath,
-
-        /** Macro name constant. */
-        galleryServerUri,
-
-        /** Macro name constant. */
-        messagesUri,
-
-        /** Macro name constant. */
-        noEditReason,
-
-        /** Macro name constant. */
-        publishUri,
-
-        /** Macro name constant. */
-        serverUri,
-
-        /** Macro name constant. */
-        sitemapUri,
-
-        /** Macro name constant. */
-        skinUri;
     }
 
     /** The log object for this class. */
@@ -325,6 +315,8 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                 noEditReason = new CmsResourceUtil(cms, containerPage).getNoEditReason(workplaceLocale);
             }
             resolver.addMacro(Macro.noEditReason.name(), noEditReason);
+            JSONObject params = CmsRequestUtil.getJsonParameterMap(CmsCollectionsGenericWrapper.<String, String[]> map(req.getParameterMap()));
+            resolver.addMacro(Macro.requestParams.name(), params.toString());
         } catch (Exception e) {
             if (!LOG.isDebugEnabled()) {
                 LOG.warn(e.getLocalizedMessage());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/01/27 15:00:39 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/02/02 15:36:04 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -50,6 +51,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -87,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 7.6
  */
@@ -235,6 +237,8 @@ public class CmsADEServer extends A_CmsAjaxServer {
         data,
         /** The current locale. */
         locale,
+        /** The request's parameters. */
+        params,
         /** Element uri. */
         uri;
     }
@@ -377,6 +381,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
             ReqParam.action.name(),
             ReqParam.locale.name(),
             ReqParam.cntpage.name(),
+            ReqParam.params.name(),
             ReqParam.uri.name())) {
             // every request needs to have at least these parameters 
             return result;
@@ -387,6 +392,9 @@ public class CmsADEServer extends A_CmsAjaxServer {
         cms.getRequestContext().setLocale(CmsLocaleManager.getLocale(localeParam));
         String cntPageParam = request.getParameter(ReqParam.cntpage.name());
         String uriParam = request.getParameter(ReqParam.uri.name());
+        JSONObject reqParams = new JSONObject(request.getParameter(ReqParam.params.name()));
+        CmsFlexController.getController(request).getCurrentRequest().addParameterMap(
+            CmsRequestUtil.getParameterMapFromJSON(reqParams));
 
         JSONObject data = new JSONObject();
         if (checkParameters(request, null, ReqParam.data.name())) {

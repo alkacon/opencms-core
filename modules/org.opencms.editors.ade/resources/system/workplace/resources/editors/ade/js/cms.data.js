@@ -186,6 +186,7 @@
          'uri': CURRENT_URI,
          'locale': LOCALE,
          'action': action,
+         'params': cms.data.REQUEST_PARAMS,
          'data': JSON.stringify(data)
       }, afterPost, sync, timeout, _jsonRevive);
    }
