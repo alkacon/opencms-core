@@ -30,6 +30,7 @@
    var abortAllRequests = cms.comm.abortAllRequests = /** void */ function() {
        for (i = 0, l = requests.length; i < l; i++) {
            try {
+               requests[i].isAborted = true;
                requests[i].abort();
            } catch(e) {
                // ignore
@@ -63,15 +64,22 @@
          'timeout': timeout,
          'async': async,
          'error': function(xhr, status, error) {
-             removeRequest(xhr);
+            removeRequest(xhr);
             if (cms.toolbar && cms.toolbar.leavingPage) {
                return;
             }
             alert(ERR_AJAX_SENT_0);
             afterPost(false);
          },
-         'success': function(data) {
+
+         'success': function(data,status, req) {
              removeRequest(xhr);
+
+             // since the success function will also be called when the request is aborted,
+             // the isAborted property is set in the request object by the abortAllRequests function
+             if (req.isAborted) {
+                 return;
+             }
             try {
                var jsonData = JSON.parse(data, revive);
             } catch (e) {
