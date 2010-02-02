@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2009/09/14 13:59:34 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2010/02/02 10:06:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,6 +60,8 @@ import java.util.Locale;
  *   <li>{@link #JSP_WEAK}</li>
  *   <li>{@link #OU_RESOURCE}</li>
  *   <li>{@link #CATEGORY}</li>
+ *   <li>{@link #XSD}</li>
+ *   <li>{@link #ENTRY_POINT}</li>
  * </ul>
  * <p>
  * 
@@ -67,7 +69,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.3.0
  */
@@ -117,6 +119,9 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the weak links from xmlcontent to the used xsd. */
     public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", false, false);
 
+    /** Constant for the weak links from sitemap to their entry point. */
+    public static final CmsRelationType ENTRY_POINT = new CmsRelationType(11, "ENTRY_POINT", false, false);
+
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;
 
@@ -134,7 +139,8 @@ public final class CmsRelationType implements Serializable {
         EMBEDDED_OBJECT,
         OU_RESOURCE,
         CATEGORY,
-        XSD};
+        XSD,
+        ENTRY_POINT};
 
     /** Flag to indicate if the relations of this type are parsed from the content or not. */
     private final boolean m_defInContent;
@@ -190,17 +196,17 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List filterDefinedInContent(Collection relationTypes) {
+    public static List<CmsRelationType> filterDefinedInContent(Collection<CmsRelationType> relationTypes) {
 
-        List list = new ArrayList(relationTypes);
-        Iterator it = list.iterator();
+        List<CmsRelationType> result = new ArrayList<CmsRelationType>(relationTypes);
+        Iterator<CmsRelationType> it = result.iterator();
         while (it.hasNext()) {
-            CmsRelationType type = (CmsRelationType)it.next();
+            CmsRelationType type = it.next();
             if (!type.isDefinedInContent()) {
                 it.remove();
             }
         }
-        return list;
+        return result;
     }
 
     /**
@@ -210,17 +216,17 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List filterInternal(Collection relationTypes) {
+    public static List<CmsRelationType> filterInternal(Collection<CmsRelationType> relationTypes) {
 
-        List list = new ArrayList(relationTypes);
-        Iterator it = list.iterator();
+        List<CmsRelationType> result = new ArrayList<CmsRelationType>(relationTypes);
+        Iterator<CmsRelationType> it = result.iterator();
         while (it.hasNext()) {
-            CmsRelationType type = (CmsRelationType)it.next();
+            CmsRelationType type = it.next();
             if (!type.isInternal()) {
                 it.remove();
             }
         }
-        return list;
+        return result;
     }
 
     /**
@@ -230,17 +236,17 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List filterNotDefinedInContent(Collection relationTypes) {
+    public static List<CmsRelationType> filterNotDefinedInContent(Collection<CmsRelationType> relationTypes) {
 
-        List list = new ArrayList(relationTypes);
-        Iterator it = list.iterator();
+        List<CmsRelationType> result = new ArrayList<CmsRelationType>(relationTypes);
+        Iterator<CmsRelationType> it = result.iterator();
         while (it.hasNext()) {
-            CmsRelationType type = (CmsRelationType)it.next();
+            CmsRelationType type = it.next();
             if (type.isDefinedInContent()) {
                 it.remove();
             }
         }
-        return list;
+        return result;
     }
 
     /**
@@ -250,17 +256,17 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List filterStrong(Collection relationTypes) {
+    public static List<CmsRelationType> filterStrong(Collection<CmsRelationType> relationTypes) {
 
-        List list = new ArrayList(relationTypes);
-        Iterator it = list.iterator();
+        List<CmsRelationType> result = new ArrayList<CmsRelationType>(relationTypes);
+        Iterator<CmsRelationType> it = result.iterator();
         while (it.hasNext()) {
-            CmsRelationType type = (CmsRelationType)it.next();
+            CmsRelationType type = it.next();
             if (!type.isStrong()) {
                 it.remove();
             }
         }
-        return list;
+        return result;
     }
 
     /**
@@ -270,17 +276,17 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List filterUserDefined(Collection relationTypes) {
+    public static List<CmsRelationType> filterUserDefined(Collection<CmsRelationType> relationTypes) {
 
-        List list = new ArrayList(relationTypes);
-        Iterator it = list.iterator();
+        List<CmsRelationType> result = new ArrayList<CmsRelationType>(relationTypes);
+        Iterator<CmsRelationType> it = result.iterator();
         while (it.hasNext()) {
-            CmsRelationType type = (CmsRelationType)it.next();
+            CmsRelationType type = it.next();
             if (type.isInternal()) {
                 it.remove();
             }
         }
-        return list;
+        return result;
     }
 
     /**
@@ -290,17 +296,17 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List filterWeak(Collection relationTypes) {
+    public static List<CmsRelationType> filterWeak(Collection<CmsRelationType> relationTypes) {
 
-        List list = new ArrayList(relationTypes);
-        Iterator it = list.iterator();
+        List<CmsRelationType> result = new ArrayList<CmsRelationType>(relationTypes);
+        Iterator<CmsRelationType> it = result.iterator();
         while (it.hasNext()) {
-            CmsRelationType type = (CmsRelationType)it.next();
+            CmsRelationType type = it.next();
             if (type.isStrong()) {
                 it.remove();
             }
         }
-        return list;
+        return result;
     }
 
     /**
@@ -308,9 +314,9 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List getAll() {
+    public static List<CmsRelationType> getAll() {
 
-        List all = new ArrayList(Arrays.asList(VALUE_ARRAY));
+        List<CmsRelationType> all = new ArrayList<CmsRelationType>(Arrays.asList(VALUE_ARRAY));
         all.addAll(OpenCms.getResourceManager().getRelationTypes());
         return Collections.unmodifiableList(all);
     }
@@ -320,7 +326,7 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List getAllDefinedInContent() {
+    public static List<CmsRelationType> getAllDefinedInContent() {
 
         return filterDefinedInContent(getAll());
     }
@@ -330,7 +336,7 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List getAllInternal() {
+    public static List<CmsRelationType> getAllInternal() {
 
         return Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
     }
@@ -340,7 +346,7 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List getAllNotDefinedInContent() {
+    public static List<CmsRelationType> getAllNotDefinedInContent() {
 
         return filterNotDefinedInContent(getAll());
     }
@@ -350,7 +356,7 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List getAllStrong() {
+    public static List<CmsRelationType> getAllStrong() {
 
         return filterStrong(getAll());
     }
@@ -360,7 +366,7 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List getAllUserDefined() {
+    public static List<CmsRelationType> getAllUserDefined() {
 
         return OpenCms.getResourceManager().getRelationTypes();
     }
@@ -370,7 +376,7 @@ public final class CmsRelationType implements Serializable {
      * 
      * @return a list of {@link CmsRelationType} objects
      */
-    public static List getAllWeak() {
+    public static List<CmsRelationType> getAllWeak() {
 
         return filterWeak(getAll());
     }
@@ -392,7 +398,7 @@ public final class CmsRelationType implements Serializable {
         }
         id -= USER_DEFINED_MODE_LIMIT;
         if ((id >= 0) && (id < getAllUserDefined().size())) {
-            return (CmsRelationType)getAllUserDefined().get(id);
+            return getAllUserDefined().get(id);
         }
         throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
             org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
@@ -492,7 +498,7 @@ public final class CmsRelationType implements Serializable {
             }
             // user defined
             for (int i = 0; i < getAllUserDefined().size(); i++) {
-                CmsRelationType type = (CmsRelationType)getAllUserDefined().get(i);
+                CmsRelationType type = getAllUserDefined().get(i);
                 if (valueUp.equals(type.m_name)) {
                     return type;
                 }
@@ -504,6 +510,7 @@ public final class CmsRelationType implements Serializable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (this == obj) {
@@ -613,6 +620,7 @@ public final class CmsRelationType implements Serializable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_id;
@@ -651,6 +659,7 @@ public final class CmsRelationType implements Serializable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_name;
