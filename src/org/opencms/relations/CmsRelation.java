@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/02/03 08:05:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Comparator;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.3.0 
  */
@@ -54,20 +54,17 @@ public class CmsRelation {
     /**
      * A comparator for the source & target path plus the relation type of 2 relations.<p>
      */
-    public static final Comparator COMPARATOR = new Comparator() {
+    public static final Comparator<CmsRelation> COMPARATOR = new Comparator<CmsRelation>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        public int compare(CmsRelation r1, CmsRelation r2) {
 
-            if ((o1 == o2) || !(o1 instanceof CmsRelation) || !(o2 instanceof CmsRelation)) {
+            if (r1 == r2) {
                 return 0;
             }
-
-            CmsRelation r1 = (CmsRelation)o1;
             String p1 = r1.getSourcePath() + r1.getTargetPath() + r1.getType().getId();
-            CmsRelation r2 = (CmsRelation)o2;
             String p2 = r2.getSourcePath() + r2.getTargetPath() + r2.getType().getId();
 
             return p1.compareTo(p2);
@@ -129,6 +126,7 @@ public class CmsRelation {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (this == obj) {
@@ -252,6 +250,7 @@ public class CmsRelation {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_hashCode == 0) {
@@ -271,6 +270,7 @@ public class CmsRelation {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer str = new StringBuffer();

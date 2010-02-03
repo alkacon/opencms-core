@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationFilter.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/02/03 08:05:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public final class CmsRelationFilter implements Cloneable {
     private boolean m_target;
 
     /** The types to filter. */
-    private Set m_types = new HashSet();
+    private Set<CmsRelationType> m_types = new HashSet<CmsRelationType>();
 
     /**
      * Private constructor.<p>
@@ -92,11 +92,12 @@ public final class CmsRelationFilter implements Cloneable {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsRelationFilter filter = new CmsRelationFilter(m_source, m_target);
         filter.m_structureId = m_structureId;
-        filter.m_types = new HashSet(m_types);
+        filter.m_types = new HashSet<CmsRelationType>(m_types);
         filter.m_path = m_path;
         filter.m_includeSubresources = m_includeSubresources;
         return filter;
@@ -113,7 +114,7 @@ public final class CmsRelationFilter implements Cloneable {
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllDefinedInContent());
         } else {
-            filter.m_types = new HashSet(CmsRelationType.filterDefinedInContent(filter.m_types));
+            filter.m_types = new HashSet<CmsRelationType>(CmsRelationType.filterDefinedInContent(filter.m_types));
         }
         return filter;
     }
@@ -141,7 +142,7 @@ public final class CmsRelationFilter implements Cloneable {
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllInternal());
         } else {
-            filter.m_types = new HashSet(CmsRelationType.filterInternal(filter.m_types));
+            filter.m_types = new HashSet<CmsRelationType>(CmsRelationType.filterInternal(filter.m_types));
         }
         return filter;
     }
@@ -157,7 +158,7 @@ public final class CmsRelationFilter implements Cloneable {
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllNotDefinedInContent());
         } else {
-            filter.m_types = new HashSet(CmsRelationType.filterNotDefinedInContent(filter.m_types));
+            filter.m_types = new HashSet<CmsRelationType>(CmsRelationType.filterNotDefinedInContent(filter.m_types));
         }
         return filter;
     }
@@ -201,7 +202,7 @@ public final class CmsRelationFilter implements Cloneable {
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllStrong());
         } else {
-            filter.m_types = new HashSet(CmsRelationType.filterStrong(filter.m_types));
+            filter.m_types = new HashSet<CmsRelationType>(CmsRelationType.filterStrong(filter.m_types));
         }
         return filter;
     }
@@ -245,7 +246,7 @@ public final class CmsRelationFilter implements Cloneable {
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllUserDefined());
         } else {
-            filter.m_types = new HashSet(CmsRelationType.filterUserDefined(filter.m_types));
+            filter.m_types = new HashSet<CmsRelationType>(CmsRelationType.filterUserDefined(filter.m_types));
         }
         return filter;
     }
@@ -261,7 +262,7 @@ public final class CmsRelationFilter implements Cloneable {
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllWeak());
         } else {
-            filter.m_types = new HashSet(CmsRelationType.filterWeak(filter.m_types));
+            filter.m_types = new HashSet<CmsRelationType>(CmsRelationType.filterWeak(filter.m_types));
         }
         return filter;
     }
@@ -291,7 +292,7 @@ public final class CmsRelationFilter implements Cloneable {
      *
      * @return the types to filter
      */
-    public Set getTypes() {
+    public Set<CmsRelationType> getTypes() {
 
         return Collections.unmodifiableSet(m_types);
     }
@@ -306,9 +307,9 @@ public final class CmsRelationFilter implements Cloneable {
         if ((m_types == null) || m_types.isEmpty()) {
             return true;
         }
-        Iterator itTypes = m_types.iterator();
+        Iterator<CmsRelationType> itTypes = m_types.iterator();
         while (itTypes.hasNext()) {
-            CmsRelationType type = (CmsRelationType)itTypes.next();
+            CmsRelationType type = itTypes.next();
             if (type.isDefinedInContent()) {
                 return true;
             }
@@ -364,6 +365,7 @@ public final class CmsRelationFilter implements Cloneable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer str = new StringBuffer(128);
