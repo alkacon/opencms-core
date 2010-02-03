@@ -1569,7 +1569,7 @@
       },
       
       isCompatibleWith: function(elemId) {
-         return true;
+         return !(cms.data.NO_EDIT_REASON);
       },
       
       createHandle: function(elemId, elem) {
@@ -1596,7 +1596,7 @@
       },
       
       isCompatibleWith: function(elem) {
-         return true;
+         return !(cms.data.NO_EDIT_REASON);
       },
       
       createHandle: function(elemId, elem) {
@@ -1655,7 +1655,7 @@
       },
       
       isCompatibleWith: function(elem) {
-         return true;
+         return !(cms.data.NO_EDIT_REASON);
       },
       
       createHandle: function(elemId, elem) {
