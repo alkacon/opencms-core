@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2010/02/03 13:48:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/02/03 14:50:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -293,7 +293,6 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
             schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
         }
-        schema = cms.getRequestContext().removeSiteRoot(schema);
         CmsLink xsdLink = new CmsLink(null, CmsRelationType.XSD, schema, true);
         xsdLink.checkConsistency(cms);
         links.add(xsdLink);
