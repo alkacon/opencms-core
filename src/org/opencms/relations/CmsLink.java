@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2010/02/02 09:18:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/02/03 13:33:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,8 +110,8 @@ public class CmsLink {
     /** The internal name of the link. */
     private String m_name;
 
-    /** The parameters of the query , if any. */
-    private Map m_parameters;
+    /** The parameters of the query, if any. */
+    private Map<String, String[]> m_parameters;
 
     /** The query, if any. */
     private String m_query;
@@ -290,6 +290,7 @@ public class CmsLink {
      *  
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -395,6 +396,7 @@ public class CmsLink {
      * @deprecated use {@link #getLink(CmsObject)} instead, 
      *      the process editor option is set using the OpenCms request context attributes
      */
+    @Deprecated
     public String getLink(CmsObject cms, boolean processEditorLinks) {
 
         return getLink(cms);
@@ -418,7 +420,7 @@ public class CmsLink {
      */
     public String getParameter(String name) {
 
-        String[] p = (String[])getParameterMap().get(name);
+        String[] p = getParameterMap().get(name);
         if (p != null) {
             return p[0];
         }
@@ -429,9 +431,9 @@ public class CmsLink {
     /**
      * Returns the map of parameters of this link.<p>
      * 
-     * @return the map of parameters (<code>Map(String[])</code>)
+     * @return the map of parameters
      */
-    public Map getParameterMap() {
+    public Map<String, String[]> getParameterMap() {
 
         if (m_parameters == null) {
             m_parameters = CmsRequestUtil.createParameterMap(m_query);
@@ -442,9 +444,9 @@ public class CmsLink {
     /**
      * Returns the set of available parameter names for this link.<p>
      * 
-     * @return a <code>Set</code> of parameter names
+     * @return the parameter names
      */
-    public Set getParameterNames() {
+    public Set<String> getParameterNames() {
 
         return getParameterMap().keySet();
     }
@@ -453,11 +455,12 @@ public class CmsLink {
      * Returns all parameter values for the given name.<p>
      * 
      * @param name the name of the parameter
-     * @return a <code>String[]</code> of all parameter values or <code>null</code>
+     * 
+     * @return all parameter values or <code>null</code>
      */
     public String[] getParameterValues(String name) {
 
-        return (String[])getParameterMap().get(name);
+        return getParameterMap().get(name);
     }
 
     /**
@@ -561,6 +564,7 @@ public class CmsLink {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         int result = m_type.hashCode();
@@ -583,6 +587,7 @@ public class CmsLink {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_uri;
