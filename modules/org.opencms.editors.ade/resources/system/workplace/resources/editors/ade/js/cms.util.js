@@ -58,7 +58,7 @@
       var offset = elem.offset();
       var cssPosition = $(document.body).css('position');
       if (cssPosition == 'relative' || cssPosition == 'absolute') {
-         var bodyOffset=$(document.body).offset();
+         var bodyOffset = $(document.body).offset();
          position.left = offset.left - bodyOffset.left;
          position.top = offset.top - bodyOffset.top;
       } else {
@@ -108,9 +108,9 @@
             
          });
       } else {
-          elem.filter('.ui-sortable').css('min-height','');
-          var height = elem.outerHeight();
-          height = (height > minHeight) ? height : minHeight;
+         elem.filter('.ui-sortable').css('min-height', '');
+         var height = elem.outerHeight();
+         height = (height > minHeight) ? height : minHeight;
          var elemPos = getElementPosition(elem);
          dimension.top = elemPos.top;
          dimension.left = elemPos.left;
@@ -137,7 +137,10 @@
          scrOfY = document.documentElement.scrollTop;
          scrOfX = document.documentElement.scrollLeft;
       }
-      return { 'scrollX': scrOfX, 'scrollY': scrOfY };
+      return {
+         'scrollX': scrOfX,
+         'scrollY': scrOfY
+      };
    }
    
    
@@ -277,7 +280,7 @@
    }
    
    
-      /**
+   /**
     * Opens the leave page confirm dialog (if page has changed)
     *
     * @param {String} target the target page to open
@@ -289,24 +292,27 @@
       buttons[M.GUI_LEAVE_PAGE_CANCEL_0] = function() {
          $(this).dialog('destroy');
       };
-
+      
       buttons[M.GUI_LEAVE_PAGE_SAVE_0] = function() {
          $(this).dialog('destroy');
          saveFunction(function(ok) {
             if (ok) {
-               $.isFunction(leaveFunction) ? leaveFunction(target) : window.location.href=target;
+               $.isFunction(leaveFunction) ? leaveFunction(target) : window.location.href = target;
             }
          });
       };
       
       buttons[M.GUI_LEAVE_PAGE_OK_0] = function() {
          $(this).dialog('destroy');
-         $.isFunction(leaveFunction) ? leaveFunction(target) : window.location.href=target;
+         if (cms.comm && cms.comm.abortAllRequests) {
+            cms.comm.abortAllRequests();
+         }
+         $.isFunction(leaveFunction) ? leaveFunction(target) : window.location.href = target;
       };
       
       var $dialogDiv = $('#cms-leave-dialog');
-      if (!$dialogDiv.length){
-          $dialogDiv=$('<div id="cms-leave-dialog" style="display: none;">' + M.GUI_LEAVE_PAGE_CONFIRM_0 + '</div>').appendTo('body');
+      if (!$dialogDiv.length) {
+         $dialogDiv = $('<div id="cms-leave-dialog" style="display: none;">' + M.GUI_LEAVE_PAGE_CONFIRM_0 + '</div>').appendTo('body');
       }
       $dialogDiv.dialog({
          autoOpen: true,
@@ -409,8 +415,21 @@
             $dialog.dialog('destroy');
             $dialog.remove();
          },
+         position: 'top',
          buttons: buttons
       });
+      fixDialogPosition($dialog);
+   }
+   
+   /**
+    * Sets a JQuery UI dialog's position to fixed.
+    *   
+    * @param {Object} $dialog the dialog whose position should be set to fixed
+    */
+   var fixDialogPosition = cms.util.fixDialogPosition = function($dialog) {
+       var $dlgWindow = $dialog.closest('.ui-dialog');
+       var top = ($(window).height() - $dlgWindow.height()) / 2;
+       $dlgWindow.closest('.ui-dialog').css({'top': top+'px', 'position': 'fixed'});
    }
    
    
@@ -443,7 +462,7 @@
       var $dlg = $('<div/>').text(text).appendTo('body');
       var buttons = {};
       buttons[cancelLabel] = function() {
-         $dlg.dialog('destroy').remove();        
+         $dlg.dialog('destroy').remove();
       }
       buttons[noLabel] = function() {
          $dlg.dialog('destroy').remove();
@@ -453,7 +472,7 @@
          $dlg.dialog('destroy').remove();
          callback(true);
       }
-            
+      
       $dlg.dialog({
          autoOpen: true,
          zIndex: 9999,
@@ -461,7 +480,7 @@
          title: title,
          modal: true,
          close: function() {
-            $dlg.dialog('destroy').remove();            
+            $dlg.dialog('destroy').remove();
          }
       });
    }
