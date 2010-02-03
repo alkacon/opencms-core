@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/containerpage/TestCmsXmlContainerPage.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/03 13:47:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
@@ -87,8 +87,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("cntpagesystemtest", "/");
-                importData("cntpagetest", "/sites/default/");
+                setupOpenCms("ade-setup", "/");
+                importData("adetest", "/sites/default/");
             }
 
             @Override

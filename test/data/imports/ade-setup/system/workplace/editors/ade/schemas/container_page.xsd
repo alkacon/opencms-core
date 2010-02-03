@@ -22,6 +22,7 @@
 		<xsd:appinfo>
 			<handler class="org.opencms.xml.containerpage.CmsContainerPageHandler"/>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<modelfolder uri="%(property.style.config)" /> 
 		</xsd:appinfo>
 
 	</xsd:annotation>  

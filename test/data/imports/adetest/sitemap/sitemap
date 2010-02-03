@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AlkaconSitemaps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/sitemap/schemas/sitemap.xsd">
+  <AlkaconSitemap language="en">
+    <EntryPoint>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/]]></target>
+        <uuid>cc11c869-0f28-11df-9dfe-d5d2a77384e9</uuid>
+      </link>
+    </EntryPoint>
+    <SiteEntry>
+      <Id><![CDATA[f9a153c5-10a2-11df-9b07-d5d2a77384e9]]></Id>
+      <Name/>
+      <Title><![CDATA[Testcase]]></Title>
+      <VfsFile>
+        <link type="STRONG">
+          <target><![CDATA[/sites/default/containerpage/index.html]]></target>
+          <uuid>53c2af31-bc8a-11de-ad02-99487bd5b80a</uuid>
+        </link>
+      </VfsFile>
+      <Properties>
+        <Name><![CDATA[navigation]]></Name>
+        <Value>
+          <String><![CDATA[true]]></String>
+        </Value>
+      </Properties>
+    </SiteEntry>
+  </AlkaconSitemap>
+</AlkaconSitemaps>
