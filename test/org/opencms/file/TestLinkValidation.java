@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2009/09/07 12:41:45 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2010/02/03 14:52:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -625,7 +625,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename1)));
         List brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename1));
-        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 3 : 2));
+        assertEquals((mode == MODE_XMLCONTENT_BOTH ? 3 : 2), brokenLinks.size());
         assertTrue(brokenLinks.contains(new CmsRelation(res1, res2, relType1)));
         assertTrue(brokenLinks.contains(new CmsRelation(res1, res3, relType1)));
         if (mode == MODE_XMLCONTENT_BOTH) {
@@ -651,7 +651,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename4)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename4));
-        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertEquals((mode == MODE_XMLCONTENT_BOTH ? 2 : 1), brokenLinks.size());
         assertTrue(brokenLinks.contains(new CmsRelation(res4, res2, relType1)));
         if (mode == MODE_XMLCONTENT_BOTH) {
             assertTrue(brokenLinks.contains(new CmsRelation(res4, res2, CmsRelationType.XML_WEAK)));

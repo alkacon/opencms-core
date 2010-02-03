@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/editors/ade/Attic/TestADEPublish.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/02/03 14:52:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestADEPublish extends OpenCmsTestCase {
 
@@ -120,6 +120,8 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
 
         CmsADEPublish adePub = new CmsADEPublish(cms);
+
+        // TODO: from time to time there are still some resources in the list :( 
 
         // check before
         List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
