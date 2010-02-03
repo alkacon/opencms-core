@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/02/02 15:36:05 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/02/03 08:43:54 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
@@ -74,7 +75,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 7.6 
  */
@@ -314,7 +315,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             } else {
                 noEditReason = new CmsResourceUtil(cms, containerPage).getNoEditReason(workplaceLocale);
             }
-            resolver.addMacro(Macro.noEditReason.name(), noEditReason);
+            resolver.addMacro(Macro.noEditReason.name(), CmsStringUtil.escapeJavaScript(noEditReason));
             JSONObject params = CmsRequestUtil.getJsonParameterMap(CmsCollectionsGenericWrapper.<String, String[]> map(req.getParameterMap()));
             resolver.addMacro(Macro.requestParams.name(), params.toString());
         } catch (Exception e) {
