@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2010/01/20 09:16:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/02/03 14:52:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -580,15 +580,17 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // check the links
             CmsFile newRes1 = cms.readFile(filename1);
             List links1 = validatable.parseLinks(cms, newRes1);
-            assertEquals(links1.size(), 2);
-            assertEquals(links1.get(0).toString(), cms.getRequestContext().addSiteRoot(filename2));
+            assertEquals(links1.size(), 3);
+            // first one is the XSD
             assertEquals(links1.get(1).toString(), cms.getRequestContext().addSiteRoot(filename2));
+            assertEquals(links1.get(2).toString(), cms.getRequestContext().addSiteRoot(filename2));
 
             CmsFile newRes2 = cms.readFile(filename2);
             List links2 = validatable.parseLinks(cms, newRes2);
-            assertEquals(links2.size(), 2);
+            assertEquals(links2.size(), 3);
             assertEquals(links2.get(0).toString(), cms.getRequestContext().addSiteRoot(filename1));
-            assertEquals(links2.get(1).toString(), cms.getRequestContext().addSiteRoot(filename1));
+            // second one is the XSD
+            assertEquals(links2.get(2).toString(), cms.getRequestContext().addSiteRoot(filename1));
         } finally {
             try {
                 if (zipExportFilename != null) {
