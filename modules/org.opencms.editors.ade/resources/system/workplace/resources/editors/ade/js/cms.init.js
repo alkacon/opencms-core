@@ -134,8 +134,8 @@ $.extend($.ui.sortable.prototype, {
                   this.containers.push(inst);
                }
             };
-         };
-      } else {
+                     };
+               } else {
          this.containers = [this];
          queries = [[$.isFunction(this.options.items) ? this.options.items.call(this.element[0], event, {
             item: this.currentItem
@@ -159,40 +159,66 @@ $.extend($.ui.sortable.prototype, {
                top: 0
             });
          };
-      };
+               };
       
-     },
-     /**
-      * Internal event-handler for the mouse-move event. Introducing a workaround for a bug in IE8
-      * that sets the event.button property to 0 even with the mouse button still pressed.<p>
-      * 
-      * @param {Object} event the mouse-move event
-      */
-     _mouseMove: function(event) {
-		// IE mouseup check - mouseup happened when mouse was out of window
-        /*
-         * cms-addition:
-         * don't do this in IE8 as event.button may be 0 even with the mouse button down
-         */
-		if ($.browser.msie && $.browser.version < 8 && !event.button) {
-            return this._mouseUp(event);
-		}
-
-		if (this._mouseStarted) {
-			this._mouseDrag(event);
-			return event.preventDefault();
-		}
-
-		if (this._mouseDistanceMet(event) && this._mouseDelayMet(event)) {
-			this._mouseStarted =
-				(this._mouseStart(this._mouseDownEvent, event) !== false);
-			(this._mouseStarted ? this._mouseDrag(event) : this._mouseUp(event));
-		}
-
-		return !this._mouseStarted;
-	}
+         },
+   /**
+    * Internal event-handler for the mouse-move event. Introducing a workaround for a bug in IE8
+    * that sets the event.button property to 0 even with the mouse button still pressed.<p>
+    *
+    * @param {Object} event the mouse-move event
+    */
+   _mouseMove: function(event) {
+      // IE mouseup check - mouseup happened when mouse was out of window
+      /*
+       * cms-addition:
+       * don't do this in IE8 as event.button may be 0 even with the mouse button down
+       */
+      if ($.browser.msie && $.browser.version < 8 && !event.button) {
+         return this._mouseUp(event);
+      }
+      
+      if (this._mouseStarted) {
+         this._mouseDrag(event);
+         return event.preventDefault();
+      }
+      
+      if (this._mouseDistanceMet(event) && this._mouseDelayMet(event)) {
+         this._mouseStarted = (this._mouseStart(this._mouseDownEvent, event) !== false);
+         (this._mouseStarted ? this._mouseDrag(event) : this._mouseUp(event));
+      }
+      
+      return !this._mouseStarted;
+   }
 })
 
+
+/**
+ * Helper function to deactivate a button in the toolbar
+ *
+ * @param {Object} elem the button DOM object to be deactivated
+ */
+var deactivateButton = function(elem, info) {
+   var $elem = $(elem);
+   var w = $elem.outerWidth();
+   var h = $elem.outerHeight();
+   var pos = $elem.offset();
+   var toolbarOffset = $('#toolbar_content').offset();
+   var left = pos.left - toolbarOffset.left;
+   var top = pos.top - toolbarOffset.top;
+   var $overlay = $('<div/>').css({
+      'position': 'absolute',
+      'opacity': '0.5',
+      'background-color': '#888888',
+      'width': w,
+      'height': h,
+      'top': top,
+      'left': left,
+      'z-index': '999999'
+   });
+   $overlay.attr('title', info);
+   $overlay.appendTo('#toolbar_content');
+}
 
 /**
  * Application entry point.
@@ -213,21 +239,18 @@ $('document').ready(function() {
    cms.toolbar.dom.toolbar.css('cursor', 'wait');
    var M = cms.messages;
    if (cms.data.NO_EDIT_REASON) {
-      $('#toolbar_content button').addClass('cms-deactivated').unbind('click');
+      //$('#toolbar_content button').addClass('cms-deactivated').unbind('click');
       // TODO: better display an red-square-icon in the toolbar with a tooltip
       cms.util.dialogAlert(cms.data.NO_EDIT_REASON, M.GUI_CANT_EDIT_TITLE_0);
-      var $buttons = $(cms.util.makeCombinedSelector(['Move', 'Delete', 'Add', 'New', 'Favorites', 'Recent'], 'button[name="%"]'));
-      $buttons.unbind('click').unbind('mouseover').css('color', '#aaaaaa');
-      $buttons.attr('alt', cms.data.NO_EDIT_REASON);
-      $buttons.jHelperTip({
-         trigger: "hover",
-         source: "attribute",
-         attrName: "alt",
-         autoClose: true
+      var buttonSelector = cms.util.makeCombinedSelector(['move', 'delete', 'add', 'new', 'reset', 'favorites', 'storage', 'properties'], '#toolbar_content button[name="%"]');
+      var $buttons = $(buttonSelector);
+      $buttons.unbind('click').unbind('mouseover').addClass('cms-deactivated').each(function() {
+         deactivateButton(this, cms.data.NO_EDIT_REASON);
       });
    } else if (cms.util.isFirebugActive()) {
       cms.util.dialogAlert(M.GUI_FIREBUG_ACTIVE_0, M.GUI_FIREBUG_ACTIVE_TITLE_0)
    }
+   
    cms.data.loadAllData(function(ok) {
       if (ok) {
          cms.data.fillContainers();
