@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2010/02/02 10:06:27 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/02/03 15:10:53 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.9.2
  */
@@ -88,7 +88,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
         // check if the resource is in the site map
         try {
             // find the site map entry
-            CmsSiteEntryBean entry = OpenCms.getSitemapManager().getEntryForUri(cms, cms.getRequestContext().getUri());
+            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, cms.getRequestContext().getUri());
             if ((entry == null) || entry.isVfs()) {
                 return resource;
             }

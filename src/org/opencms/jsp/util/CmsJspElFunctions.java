@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2010/02/02 10:06:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/02/03 15:10:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.2
  * 
@@ -356,7 +356,7 @@ public final class CmsJspElFunctions {
         if (req == null) {
             return null;
         }
-        CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
+        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
         if (sitemap == null) {
             return getCmsObject(input).getRequestContext().getUri();
         }
@@ -404,7 +404,7 @@ public final class CmsJspElFunctions {
      * 
      * @return the current sitemap bean, or <code>null</code>
      */
-    public static CmsSiteEntryBean getSitemap(Object input) {
+    public static CmsSitemapEntry getSitemap(Object input) {
 
         ServletRequest req = convertRequest(input);
         if (req == null) {

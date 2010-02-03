@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/01/28 08:08:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/02/03 15:10:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 7.6 
  */
@@ -236,7 +236,7 @@ public class CmsJspTagContainer extends TagSupport {
 
         if (detailView) {
             CmsUUID detailId = null;
-            CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
+            CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
             if (sitemap != null) {
                 detailId = sitemap.getContentId();
             }

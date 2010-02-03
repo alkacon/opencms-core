@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSiteEntryBean.java,v $
- * Date   : $Date: 2010/02/02 14:09:29 $
- * Version: $Revision: 1.12 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
+ * Date   : $Date: 2010/02/03 15:10:53 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,11 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 7.6 
  */
-public class CmsSiteEntryBean {
+public class CmsSitemapEntry {
 
     /** The content id, for detail pages. */
     private CmsUUID m_contentId;
@@ -78,7 +78,7 @@ public class CmsSiteEntryBean {
     private final boolean m_sitemap;
 
     /** The list of sub-entries. */
-    private final List<CmsSiteEntryBean> m_subEntries;
+    private final List<CmsSitemapEntry> m_subEntries;
 
     /** The entry title. */
     private final String m_title;
@@ -91,7 +91,7 @@ public class CmsSiteEntryBean {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsSiteEntryBean(CmsObject cms, String uri)
+    public CmsSitemapEntry(CmsObject cms, String uri)
     throws CmsException {
 
         CmsResource res = cms.readResource(uri);
@@ -99,7 +99,7 @@ public class CmsSiteEntryBean {
         m_resourceId = res.getStructureId();
         m_name = res.getName();
         m_title = null;
-        m_subEntries = Collections.<CmsSiteEntryBean> emptyList();
+        m_subEntries = Collections.<CmsSitemapEntry> emptyList();
         m_properties = null;
         m_originalUri = uri;
         m_sitemap = false;
@@ -116,21 +116,21 @@ public class CmsSiteEntryBean {
      * @param properties the properties as a map of name/value pairs
      * @param subEntries the list of sub-entries
      **/
-    public CmsSiteEntryBean(
+    public CmsSitemapEntry(
         CmsUUID id,
         String originalUri,
         CmsUUID resourceId,
         String name,
         String title,
         Map<String, String> properties,
-        List<CmsSiteEntryBean> subEntries) {
+        List<CmsSitemapEntry> subEntries) {
 
         m_id = id;
         m_resourceId = resourceId;
         m_name = name;
         m_title = title;
         m_subEntries = (subEntries == null
-        ? Collections.<CmsSiteEntryBean> emptyList()
+        ? Collections.<CmsSitemapEntry> emptyList()
         : Collections.unmodifiableList(subEntries));
         // do not freeze the properties
         m_properties = new HashMap<String, String>();
@@ -259,7 +259,7 @@ public class CmsSiteEntryBean {
      *
      * @return the sub-entries
      */
-    public List<CmsSiteEntryBean> getSubEntries() {
+    public List<CmsSitemapEntry> getSubEntries() {
 
         return m_subEntries;
     }

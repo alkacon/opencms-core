@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/02 14:09:29 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/02/03 15:10:53 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 7.9.2
  */
@@ -257,13 +257,13 @@ public class CmsSitemapManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsSiteEntryBean getEntryForUri(CmsObject cms, String uri) throws CmsException {
+    public CmsSitemapEntry getEntryForUri(CmsObject cms, String uri) throws CmsException {
 
         String path = cms.getRequestContext().addSiteRoot(uri);
 
         // check the cache
         boolean online = cms.getRequestContext().currentProject().isOnlineProject();
-        CmsSiteEntryBean uriEntry = m_cache.getUri(path, online);
+        CmsSitemapEntry uriEntry = m_cache.getUri(path, online);
         if (uriEntry != null) {
             // found in cache
             return uriEntry;
@@ -273,7 +273,7 @@ public class CmsSitemapManager {
         if (m_cache.getMissingUri(path, online) != null) {
             // already marked as not found, return VFS entry if possible
             try {
-                return new CmsSiteEntryBean(cms, uri);
+                return new CmsSitemapEntry(cms, uri);
             } catch (CmsException e) {
                 return null;
             }
@@ -286,7 +286,7 @@ public class CmsSitemapManager {
             m_cache.setMissingUri(path, online);
             // return VFS entry if possible
             try {
-                return new CmsSiteEntryBean(cms, uri);
+                return new CmsSitemapEntry(cms, uri);
             } catch (CmsException e) {
                 return null;
             }
@@ -329,9 +329,9 @@ public class CmsSitemapManager {
      * 
      * @return the sitemap URI bean, or <code>null</code> if not found
      */
-    public CmsSiteEntryBean getRuntimeInfo(ServletRequest req) {
+    public CmsSitemapEntry getRuntimeInfo(ServletRequest req) {
 
-        return (CmsSiteEntryBean)req.getAttribute(ATTR_SITEMAP_ENTRY);
+        return (CmsSitemapEntry)req.getAttribute(ATTR_SITEMAP_ENTRY);
     }
 
     /**
@@ -413,7 +413,7 @@ public class CmsSitemapManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected CmsSiteEntryBean getEntry(CmsObject cms, String uri, boolean online) throws CmsException {
+    protected CmsSitemapEntry getEntry(CmsObject cms, String uri, boolean online) throws CmsException {
 
         String rootUri = cms.getRequestContext().addSiteRoot(uri);
         CmsUUID logId = null;
@@ -426,7 +426,7 @@ public class CmsSitemapManager {
                 Boolean.valueOf(online)).key());
         }
         // find closest match from cache
-        CmsSiteEntryBean startEntry = null;
+        CmsSitemapEntry startEntry = null;
         String startUri = rootUri;
         while (!startUri.equals("/") && (startEntry == null)) {
             startUri = CmsResource.getParentFolder(startUri);
@@ -487,8 +487,8 @@ public class CmsSitemapManager {
             "/"));
         // get started
         String uriPath = startUri;
-        CmsSiteEntryBean parentEntry = startEntry;
-        List<CmsSiteEntryBean> subEntries = startEntry.getSubEntries();
+        CmsSitemapEntry parentEntry = startEntry;
+        List<CmsSitemapEntry> subEntries = startEntry.getSubEntries();
         boolean finished = false;
         while (!finished) {
             String name = entryPaths.removeFirst();
@@ -497,7 +497,7 @@ public class CmsSitemapManager {
             int position = 0;
             int size = subEntries.size();
             for (; position < size; position++) {
-                CmsSiteEntryBean entry = subEntries.get(position);
+                CmsSitemapEntry entry = subEntries.get(position);
                 if (entry.getInheritedProperties() == null) {
                     // update the entry only if needed
                     entry.setRuntimeInfo(properties, position, null);
@@ -581,7 +581,7 @@ public class CmsSitemapManager {
                 entryProps.put(Property.navigation.name(), Boolean.FALSE.toString());
                 properties.put(Property.navigation.name(), Boolean.FALSE.toString());
                 // create entry
-                CmsSiteEntryBean contentEntry = new CmsSiteEntryBean(
+                CmsSitemapEntry contentEntry = new CmsSitemapEntry(
                     parentEntry.getId(),
                     parentEntry.getOriginalUri(),
                     parentEntry.getResourceId(),

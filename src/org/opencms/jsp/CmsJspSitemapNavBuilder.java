@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2010/02/02 10:06:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/02/03 15:10:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.9.2 
  * 
@@ -127,7 +127,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         folder = CmsResource.getFolderPath(folder);
         List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
 
-        CmsSiteEntryBean folderEntry = null;
+        CmsSitemapEntry folderEntry = null;
         try {
             folderEntry = m_manager.getEntryForUri(m_cms, folder);
         } catch (CmsException e) {
@@ -141,8 +141,8 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
             return super.getNavigationForFolder(folder);
         }
 
-        List<CmsSiteEntryBean> entries = folderEntry.getSubEntries();
-        for (CmsSiteEntryBean entry : entries) {
+        List<CmsSitemapEntry> entries = folderEntry.getSubEntries();
+        for (CmsSitemapEntry entry : entries) {
             try {
                 // check permissions
                 m_cms.readResource(entry.getResourceId());
@@ -168,7 +168,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
     @Override
     public CmsJspNavElement getNavigationForResource(String resource) {
 
-        CmsSiteEntryBean uriEntry;
+        CmsSitemapEntry uriEntry;
         try {
             uriEntry = m_manager.getEntryForUri(m_cms, resource);
         } catch (CmsException e) {
@@ -203,7 +203,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         m_request = req;
         m_cms = cms;
         m_manager = OpenCms.getSitemapManager();
-        CmsSiteEntryBean sitemap = m_manager.getRuntimeInfo(req);
+        CmsSitemapEntry sitemap = m_manager.getRuntimeInfo(req);
         if (sitemap != null) {
             m_requestUri = sitemap.getSitePath(m_cms);
         }
@@ -219,7 +219,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
      *              
      * @return a navigation element for the given sitemap entry
      */
-    protected CmsJspNavElement getNavigationForSiteEntry(String uri, CmsSiteEntryBean entry) {
+    protected CmsJspNavElement getNavigationForSiteEntry(String uri, CmsSitemapEntry entry) {
 
         int level = CmsResource.getPathLevel(uri);
         if (uri.endsWith("/")) {

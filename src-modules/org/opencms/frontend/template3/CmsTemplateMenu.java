@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsTemplateMenu.java,v $
- * Date   : $Date: 2010/01/26 11:00:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/02/03 15:10:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
 
@@ -373,7 +373,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
         CmsObject cms = getCmsObject();
         HttpServletRequest req = getRequest();
         CmsResource resUri;
-        CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
+        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
         if ((sitemap != null) && (sitemap.getContentId() != null)) {
             resUri = cms.readResource(sitemap.getContentId());
         } else {

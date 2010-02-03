@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/02/02 10:06:18 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2010/02/03 15:10:54 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.opencms.workplace.editors.ade.CmsFormatterInfoBean;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 7.6
  */
@@ -1215,7 +1215,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         String startUri = startFromRoot ? "/demo_t3/" : targetUri;
         JSONObject result = new JSONObject();
         try {
-            CmsSiteEntryBean rootEntry = OpenCms.getSitemapManager().getEntryForUri(cms, startUri);
+            CmsSitemapEntry rootEntry = OpenCms.getSitemapManager().getEntryForUri(cms, startUri);
             result.put(SitemapKey.siteRoot.name(), context.getSiteRoot());
             result.put(SitemapKey.locale.name(), context.getLocale().toString());
             result.put(SitemapKey.rootEntry.name(), buildJSONForSitemapEntry(rootEntry, targetUri));
@@ -1244,7 +1244,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * @throws JSONException if something goes wrong generating the JSON
      * @throws CmsException if something goes wrong reading the entry resource
      */
-    private JSONObject buildJSONForSitemapEntry(CmsSiteEntryBean entry, String targetUri)
+    private JSONObject buildJSONForSitemapEntry(CmsSitemapEntry entry, String targetUri)
     throws JSONException, CmsException {
 
         // TODO: there should not be any private method in this class, use protected instead
@@ -1272,7 +1272,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             result.put(SitemapKey.hasSubEntries.name(), true);
             if (targetUri.startsWith(entry.getSitePath(cms))) {
                 JSONArray subEntries = new JSONArray();
-                Iterator<CmsSiteEntryBean> it = entry.getSubEntries().iterator();
+                Iterator<CmsSitemapEntry> it = entry.getSubEntries().iterator();
                 while (it.hasNext()) {
                     subEntries.put(buildJSONForSitemapEntry(it.next(), targetUri));
                 }

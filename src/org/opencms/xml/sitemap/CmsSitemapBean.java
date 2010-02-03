@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapBean.java,v $
- * Date   : $Date: 2010/02/02 10:06:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/02/03 15:10:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6
  */
@@ -53,7 +53,7 @@ public class CmsSitemapBean {
     private final Locale m_locale;
 
     /** The site entries. */
-    private final List<CmsSiteEntryBean> m_siteEntries;
+    private final List<CmsSitemapEntry> m_siteEntries;
 
     /** 
      * Creates a new sitemap bean.<p> 
@@ -62,7 +62,7 @@ public class CmsSitemapBean {
      * @param entryPoint the entry point
      * @param siteEntries the site entries
      **/
-    public CmsSitemapBean(Locale locale, String entryPoint, List<CmsSiteEntryBean> siteEntries) {
+    public CmsSitemapBean(Locale locale, String entryPoint, List<CmsSitemapEntry> siteEntries) {
 
         m_locale = locale;
         m_entryPoint = entryPoint;
@@ -94,7 +94,7 @@ public class CmsSitemapBean {
      *
      * @return the site entries
      */
-    public List<CmsSiteEntryBean> getSiteEntries() {
+    public List<CmsSitemapEntry> getSiteEntries() {
 
         return m_siteEntries;
     }

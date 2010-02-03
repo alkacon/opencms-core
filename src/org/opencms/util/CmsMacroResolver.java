@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2010/02/02 10:06:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/02/03 15:10:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -623,7 +623,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         break;
                     case 9:
                         // sitemap
-                        CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(
+                        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(
                             m_jspPageContext.getRequest());
                         value = m_cms.getRequestContext().getUri();
                         if (sitemap != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2010/02/02 10:06:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/02/03 15:10:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsDirectEditJspIncludeProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -82,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -381,7 +381,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public String getNavigationUri() {
 
-        CmsSiteEntryBean sitemap = OpenCms.getSitemapManager().getRuntimeInfo(getRequest());
+        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(getRequest());
         if (sitemap == null) {
             return getCmsObject().getRequestContext().getUri();
         }

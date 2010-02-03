@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/02/03 08:43:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/02/03 15:10:54 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.galleries.CmsGallerySearchServer;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 
 import java.io.IOException;
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 7.6 
  */
@@ -290,7 +290,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                     LOG.debug(e.getLocalizedMessage(), e);
                 }
             } else {
-                CmsSiteEntryBean sitemapInfo = OpenCms.getSitemapManager().getRuntimeInfo(req);
+                CmsSitemapEntry sitemapInfo = OpenCms.getSitemapManager().getRuntimeInfo(req);
                 if (sitemapInfo != null) {
                     // detail page
                     CmsUUID id = sitemapInfo.getContentId();

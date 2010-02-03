@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2010/01/26 11:00:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/02/03 15:10:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,14 +47,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.9.2
  */
 public class CmsDefaultFormatterHelper extends CmsJspActionElement {
 
     /** The current entry. */
-    private CmsSiteEntryBean m_entry;
+    private CmsSitemapEntry m_entry;
 
     /** The entry's resource. */
     private CmsResource m_resource;
@@ -76,10 +76,10 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      * 
      * @return the current site entry
      */
-    public CmsSiteEntryBean getEntry() {
+    public CmsSitemapEntry getEntry() {
 
         if (m_entry == null) {
-            m_entry = (CmsSiteEntryBean)getRequest().getAttribute(CmsSitemapServer.ATTR_SITEMAP_ENTRY);
+            m_entry = (CmsSitemapEntry)getRequest().getAttribute(CmsSitemapServer.ATTR_SITEMAP_ENTRY);
         }
         return m_entry;
     }

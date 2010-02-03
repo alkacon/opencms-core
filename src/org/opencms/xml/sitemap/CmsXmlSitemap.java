@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/02/02 10:06:27 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/02/03 15:10:53 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 7.5.2
  * 
@@ -395,7 +395,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void save(CmsObject cms, List<CmsSiteEntryBean> entries) throws CmsException {
+    public void save(CmsObject cms, List<CmsSitemapEntry> entries) throws CmsException {
 
         CmsFile file = getFile();
 
@@ -424,7 +424,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
             parent.add(entryPoint.detach());
         }
         // recursively add the nodes to the raw XML structure
-        for (CmsSiteEntryBean entry : entries) {
+        for (CmsSitemapEntry entry : entries) {
             saveEntry(cms, parent, entry, propertiesConf);
         }
 
@@ -552,7 +552,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 }
 
                 // get the entries
-                List<CmsSiteEntryBean> entries = readSiteEntries(sitemap, "", definition, locale, entryPointPath);
+                List<CmsSitemapEntry> entries = readSiteEntries(sitemap, "", definition, locale, entryPointPath);
                 // create the sitemap
                 m_sitemaps.put(locale, new CmsSitemapBean(locale, entryPointPath, entries));
             } catch (NullPointerException e) {
@@ -573,14 +573,14 @@ public class CmsXmlSitemap extends CmsXmlContent {
      * 
      * @return the site entries with sub entries
      */
-    protected List<CmsSiteEntryBean> readSiteEntries(
+    protected List<CmsSitemapEntry> readSiteEntries(
         Element rootElem,
         String rootPath,
         CmsXmlContentDefinition rootDef,
         Locale locale,
         String parentUri) {
 
-        List<CmsSiteEntryBean> entries = new ArrayList<CmsSiteEntryBean>();
+        List<CmsSitemapEntry> entries = new ArrayList<CmsSitemapEntry>();
         for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(rootElem, XmlNode.SiteEntry.name()); itCnts.hasNext();) {
             Element entry = itCnts.next();
 
@@ -730,9 +730,9 @@ public class CmsXmlSitemap extends CmsXmlContent {
             if (!path.endsWith("/")) {
                 path += "/";
             }
-            List<CmsSiteEntryBean> subEntries = readSiteEntries(entry, entryPath, entryDef, locale, path);
+            List<CmsSitemapEntry> subEntries = readSiteEntries(entry, entryPath, entryDef, locale, path);
 
-            entries.add(new CmsSiteEntryBean(entryId, path, uriId, entryName, titleValue, propertiesMap, subEntries));
+            entries.add(new CmsSitemapEntry(entryId, path, uriId, entryName, titleValue, propertiesMap, subEntries));
         }
         return entries;
     }
@@ -750,7 +750,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
     protected void saveEntry(
         CmsObject cms,
         Element parent,
-        CmsSiteEntryBean entry,
+        CmsSitemapEntry entry,
         Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
 
         // the entry
@@ -801,7 +801,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         // the subentries
         int subentryCount = 0;
-        for (CmsSiteEntryBean subentry : entry.getSubEntries()) {
+        for (CmsSitemapEntry subentry : entry.getSubEntries()) {
             saveEntry(cms, entryElement, subentry, propertiesConf);
             subentryCount++;
         }

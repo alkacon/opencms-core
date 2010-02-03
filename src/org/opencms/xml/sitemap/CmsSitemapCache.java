@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2010/01/26 11:00:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/02/03 15:10:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6 
  */
@@ -78,10 +78,10 @@ public final class CmsSitemapCache extends CmsVfsCache {
     private Map<String, Boolean> m_missingUrisOnline;
 
     /** Cache for offline site entries. */
-    private Map<String, CmsSiteEntryBean> m_urisOffline;
+    private Map<String, CmsSitemapEntry> m_urisOffline;
 
     /** Cache for online site entries. */
-    private Map<String, CmsSiteEntryBean> m_urisOnline;
+    private Map<String, CmsSitemapEntry> m_urisOnline;
 
     /**
      * Initializes the cache. Only intended to be called during startup.<p>
@@ -194,7 +194,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
      * 
      * @return the content of the URIs cache
      */
-    public CmsSiteEntryBean getUri(String path, boolean online) {
+    public CmsSitemapEntry getUri(String path, boolean online) {
 
         if (online) {
             return m_urisOnline.get(path);
@@ -266,7 +266,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
      * @param entry the sitemap entry to cache
      * @param online if online or offline
      */
-    public void setUri(String path, CmsSiteEntryBean entry, boolean online) {
+    public void setUri(String path, CmsSitemapEntry entry, boolean online) {
 
         if (online) {
             m_urisOnline.put(path, entry);
@@ -342,7 +342,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
         m_documentsOnline = Collections.synchronizedMap(lruMapDocs);
         memMonitor.register(CmsSitemapCache.class.getName() + ".sitemapDocsOnline", lruMapDocs);
 
-        Map<String, CmsSiteEntryBean> lruMapUri = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUriOfflineSize());
+        Map<String, CmsSitemapEntry> lruMapUri = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUriOfflineSize());
         m_urisOffline = Collections.synchronizedMap(lruMapUri);
         memMonitor.register(CmsSitemapResourceHandler.class.getName() + ".urisOffline", lruMapUri);
 

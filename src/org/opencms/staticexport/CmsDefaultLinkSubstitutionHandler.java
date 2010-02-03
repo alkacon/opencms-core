@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2010/01/27 11:08:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/03 15:10:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.net.URI;
 
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  * 
@@ -198,7 +198,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         LOG.debug(e.getLocalizedMessage(), e);
                         // sitemap case
                         try {
-                            CmsSiteEntryBean entry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
+                            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
                             if (entry != null) {
                                 resource = cms.readResource(entry.getResourceId());
                             }

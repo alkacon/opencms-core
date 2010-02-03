@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2010/01/27 08:20:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/02/03 15:10:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,7 +218,7 @@ public class CmsJspTagProperty extends TagSupport {
         }
 
         String vfsUri = null;
-        CmsSiteEntryBean sitemapUri = null;
+        CmsSitemapEntry sitemapUri = null;
         boolean search = false;
         if (useAction != null) {
             switch (useAction) {

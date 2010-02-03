@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/02 10:06:31 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2010/02/03 15:10:53 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
-import org.opencms.xml.sitemap.CmsSiteEntryBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapBean;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 7.6
  */
@@ -346,7 +346,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             for (CmsResource resource : creatableElements) {
                 String typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
                 creatableTypes.put(typeName);
-                CmsSiteEntryBean siteEntryData = resourceToSiteEntryBean(cms, resource);
+                CmsSitemapEntry siteEntryData = resourceToSiteEntryBean(cms, resource);
                 if (typeName.equals(CmsResourceTypeXmlContainerPage.getStaticTypeName())) {
                     models.put(jsonifyEntry(siteEntryData, getPropertyConfig(sitemapRes)));
                 }
@@ -421,12 +421,12 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsProperty titleProp = cms.readPropertyObject(newResource, CmsPropertyDefinition.PROPERTY_TITLE, false);
             String title = titleProp.getValue();
             String name = newResource.getName();
-            CmsSiteEntryBean entryBean = new CmsSiteEntryBean(new CmsUUID(), null, // this is not needed since it will be correctly set while saving
+            CmsSitemapEntry entryBean = new CmsSitemapEntry(new CmsUUID(), null, // this is not needed since it will be correctly set while saving
                 newResource.getStructureId(),
                 name,
                 title,
                 new HashMap<String, String>(),
-                new ArrayList<CmsSiteEntryBean>());
+                new ArrayList<CmsSitemapEntry>());
             Map<String, CmsXmlContentProperty> propertyConf = getPropertyConfig(sitemapRes);
             JSONObject jsonEntry = jsonifyEntry(entryBean, propertyConf);
             JSONArray entries = new JSONArray();
@@ -462,7 +462,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
      * @throws ServletException if a jsp related error occurs
      * @throws IOException if a jsp related error occurs
      */
-    public String getEntryContent(CmsSiteEntryBean entry) throws CmsException, ServletException, IOException {
+    public String getEntryContent(CmsSitemapEntry entry) throws CmsException, ServletException, IOException {
 
         CmsObject cms = getCmsObject();
         CmsResource elementRes = cms.readResource(entry.getResourceId());
@@ -535,7 +535,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         // collect the site map entries
         JSONArray siteEntries = new JSONArray();
-        for (CmsSiteEntryBean entry : sitemap.getSiteEntries()) {
+        for (CmsSitemapEntry entry : sitemap.getSiteEntries()) {
             JSONObject siteEntry = jsonifyEntry(entry, propertiesConf);
             if (siteEntry != null) {
                 siteEntries.put(siteEntry);
@@ -604,7 +604,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     protected JSONArray addContents(JSONArray jsonEntriesList, Map<String, CmsXmlContentProperty> propertyConf)
     throws CmsException {
 
-        List<CmsSiteEntryBean> list = jsonToEntryList(jsonEntriesList, propertyConf, false);
+        List<CmsSitemapEntry> list = jsonToEntryList(jsonEntriesList, propertyConf, false);
         for (int i = 0; i < jsonEntriesList.length(); i++) {
             try {
                 JSONObject json = jsonEntriesList.getJSONObject(i);
@@ -708,7 +708,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
      * @throws JSONException if an error occurs during the JSON processing
      * @throws CmsException if something goes wrong
      */
-    protected JSONObject jsonifyEntry(CmsSiteEntryBean entry, Map<String, CmsXmlContentProperty> propertyConf)
+    protected JSONObject jsonifyEntry(CmsSitemapEntry entry, Map<String, CmsXmlContentProperty> propertyConf)
     throws JSONException, CmsException {
 
         JSONObject result = new JSONObject();
@@ -750,7 +750,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         // subentries
         JSONArray subentries = new JSONArray();
-        for (CmsSiteEntryBean subentry : entry.getSubEntries()) {
+        for (CmsSitemapEntry subentry : entry.getSubEntries()) {
             JSONObject jsonSubEntry = jsonifyEntry(subentry, propertyConf);
             if (jsonSubEntry != null) {
                 subentries.put(jsonSubEntry);
@@ -771,12 +771,12 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
      * 
      * @return a list of sitemap entries
      */
-    protected List<CmsSiteEntryBean> jsonToEntryList(
+    protected List<CmsSitemapEntry> jsonToEntryList(
         JSONArray array,
         Map<String, CmsXmlContentProperty> propertyConf,
         boolean recursive) throws CmsException {
 
-        List<CmsSiteEntryBean> result = new ArrayList<CmsSiteEntryBean>(array.length());
+        List<CmsSitemapEntry> result = new ArrayList<CmsSitemapEntry>(array.length());
         for (int i = 0; i < array.length(); i++) {
             JSONObject json = array.optJSONObject(i);
             CmsUUID id;
@@ -829,9 +829,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                     jsonProps.optString(key)));
             }
             JSONArray jsonSub = json.optJSONArray(JsonSiteEntry.subentries.name());
-            CmsSiteEntryBean entry = new CmsSiteEntryBean(id, null, linkId, name, title, properties, recursive
+            CmsSitemapEntry entry = new CmsSitemapEntry(id, null, linkId, name, title, properties, recursive
             ? jsonToEntryList(jsonSub, propertyConf, true)
-            : Collections.<CmsSiteEntryBean> emptyList());
+            : Collections.<CmsSitemapEntry> emptyList());
             result.add(entry);
         }
         return result;
@@ -847,7 +847,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected CmsSiteEntryBean resourceToSiteEntryBean(CmsObject cms, CmsResource resource) throws CmsException {
+    protected CmsSitemapEntry resourceToSiteEntryBean(CmsObject cms, CmsResource resource) throws CmsException {
 
         CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
         String title = titleProp.getValue();
@@ -858,14 +858,14 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             name = name.substring(0, dotPos);
         }
 
-        CmsSiteEntryBean entryBean = new CmsSiteEntryBean(
+        CmsSitemapEntry entryBean = new CmsSitemapEntry(
             new CmsUUID(),
             null,
             resource.getStructureId(),
             name,
             title,
             new HashMap<String, String>(),
-            new ArrayList<CmsSiteEntryBean>());
+            new ArrayList<CmsSitemapEntry>());
 
         return entryBean;
     }
