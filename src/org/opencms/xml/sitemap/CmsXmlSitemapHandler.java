@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemapHandler.java,v $
- * Date   : $Date: 2010/02/02 10:06:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/02/03 13:48:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,10 +34,6 @@ package org.opencms.xml.sitemap;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
-import org.opencms.relations.CmsRelationFilter;
-import org.opencms.relations.CmsRelationType;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
@@ -47,21 +43,16 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.util.LinkedList;
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Handles some special situations while saving a sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6
  */
 public class CmsXmlSitemapHandler extends CmsDefaultXmlContentHandler {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDefaultXmlContentHandler.class);
 
     /**
      * @see org.opencms.xml.content.CmsDefaultXmlContentHandler#prepareForWrite(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.file.CmsFile)
@@ -91,24 +82,6 @@ public class CmsXmlSitemapHandler extends CmsDefaultXmlContentHandler {
         }
         file.setContents(content.marshal());
         // do the rest
-        CmsFile result = super.prepareForWrite(cms, content, file);
-        // write special relation to the entry point
-        cms.deleteRelationsFromResource(
-            cms.getSitePath(file),
-            CmsRelationFilter.TARGETS.filterType(CmsRelationType.ENTRY_POINT));
-        try {
-            I_CmsXmlContentValue entryPoint = content.getValue(
-                CmsXmlSitemap.XmlNode.EntryPoint.name(),
-                content.getLocales().get(0));
-            if (entryPoint != null) {
-                String path = entryPoint.getStringValue(cms);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
-                    cms.addRelationToResource(cms.getSitePath(file), path, CmsRelationType.ENTRY_POINT.getName());
-                }
-            }
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        return result;
+        return super.prepareForWrite(cms, content, file);
     }
 }

@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.9.1</opencms_version>
-		<createdate>Wed, 09 Dec 2009 10:55:54 GMT</createdate>
+		<createdate>Wed, 03 Feb 2010 14:07:05 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,7 +14,7 @@
 		<group>Template 3</group>
 		<class/>
 		<description><![CDATA[This module contains contents for the Template 3 Demo Site.]]></description>
-		<version>7.5.11</version>
+		<version>7.5.12</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -23,7 +23,7 @@
 		<dependencies>
 			<dependency name="org.opencms.frontend.template3.demo" version="7.6"/>
 			<dependency name="org.opencms.frontend.template3" version="7.6"/>
-            <dependency name="org.opencms.editors.sitemap" version="7.6"/>
+			<dependency name="org.opencms.editors.sitemap" version="7.6"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
@@ -113,25 +113,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-   		<file>
-			<destination>demo_t3/_config/subsitemaps</destination>
-			<type>folder</type>
-			<uuidstructure>3fbb5944-e958-11de-b3a4-a1401acbb1fd</uuidstructure>
-			<datelastmodified>Tue, 15 Dec 2009 09:00:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 15 Dec 2009 09:00:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-			    <property type="shared">
-			        <name>ade.cntpage.config</name>
-                    <value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
-			    </property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-
 		<file>
 			<source>demo_t3/_config/options</source>
 			<destination>demo_t3/_config/options</destination>
@@ -149,16 +130,9 @@
 					<value><![CDATA[Header and Footer]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c51934dd-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/options.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
-        
 		<file>
 			<source>demo_t3/_config/restype.config</source>
 			<destination>demo_t3/_config/restype.config</destination>
@@ -176,16 +150,10 @@
 					<value><![CDATA[Resource Type Configuration]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>f5315b30-914f-11de-9f57-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/type_config.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
-   		<file>
+		<file>
 			<source>demo_t3/_config/sitemap_restype.config</source>
 			<destination>demo_t3/_config/sitemap_restype.config</destination>
 			<type>containerpage_config</type>
@@ -202,13 +170,7 @@
 					<value><![CDATA[Resource Type Configuration]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>f5315b30-914f-11de-9f57-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/type_config.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -232,18 +194,7 @@
 					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
                 </property>
 			</properties>
-			<relations>
-				<relation>
-					<id>5ae56cfe-9c82-11de-adde-dd9f629b113b</id>
-					<path>/demo_t3/</path>
-					<type>ENTRY_POINT</type>
-				</relation>
-				<relation>
-					<id>b80d39af-c865-11de-a457-ab20365f6268</id>
-					<path>/system/workplace/editors/sitemap/schemas/sitemap.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -263,13 +214,7 @@
 					<value><![CDATA[Color settings]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c53102a6-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/style.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -302,13 +247,7 @@
 					<value><![CDATA[New Article]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -332,13 +271,7 @@
 					<value><![CDATA[0]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -369,11 +302,6 @@
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -394,13 +322,7 @@
 					<value><![CDATA[New linkbox]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c503b104-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -420,13 +342,7 @@
 					<value><![CDATA[New listbox]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c51208ea-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -450,13 +366,7 @@
 					<value><![CDATA[New Subcontainer]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>5a7d2853-e403-11de-8b28-975b367aae60</id>
-					<path>/system/workplace/editors/ade/schemas/sub_container.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -480,13 +390,7 @@
 					<value><![CDATA[1253010960000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>884e3cdd-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -506,13 +410,7 @@
 					<value><![CDATA[New textbox]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -554,13 +452,7 @@
 					<value><![CDATA[title]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -575,18 +467,12 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-   				<property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Container page]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -601,13 +487,25 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demo_t3/_config/subsitemaps</destination>
+			<type>folder</type>
+			<uuidstructure>3fbb5944-e958-11de-b3a4-a1401acbb1fd</uuidstructure>
+			<datelastmodified>Tue, 15 Dec 2009 09:00:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 15 Dec 2009 09:00:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>ade.cntpage.config</name>
+					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
+				</property>
+			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -653,13 +551,7 @@
 					<value><![CDATA[Wonderful World of Flowers]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -679,13 +571,7 @@
 					<value><![CDATA[Flower dictionary]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -705,13 +591,7 @@
 					<value><![CDATA[Flower-related events]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -731,13 +611,7 @@
 					<value><![CDATA[Extranet of Flowers]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -757,13 +631,7 @@
 					<value><![CDATA[Welcome to our extranet]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -783,13 +651,7 @@
 					<value><![CDATA[Images]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -809,13 +671,7 @@
 					<value><![CDATA[Welcome to the OpenCms Demo]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -835,13 +691,7 @@
 					<value><![CDATA[Login for the Extranet]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -861,13 +711,7 @@
 					<value><![CDATA[Flower-related news]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -887,13 +731,7 @@
 					<value><![CDATA[Rare plants and flowers]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -913,13 +751,7 @@
 					<value><![CDATA[Flower Today]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -947,13 +779,7 @@
 					<value><![CDATA[UTF-8 Demo]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -981,13 +807,7 @@
 					<value><![CDATA[/demo/_config_/layout/threecolumns]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88102250-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/article.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1025,13 +845,7 @@
 					<value><![CDATA[Flower Images]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1051,13 +865,7 @@
 					<value><![CDATA[OpenCms Demo T3]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1077,13 +885,7 @@
 					<value><![CDATA[Introduction]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1111,13 +913,7 @@
 					<value><![CDATA[/demo_t3/]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1174,11 +970,6 @@
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -1209,11 +1000,6 @@
 					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -1246,11 +1032,6 @@
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -1271,13 +1052,7 @@
 					<value><![CDATA[Dictionary]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1307,11 +1082,6 @@
 					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -1344,11 +1114,6 @@
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -1379,11 +1144,6 @@
 					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -1416,11 +1176,6 @@
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -1451,11 +1206,6 @@
 					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -1488,11 +1238,6 @@
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -1523,11 +1268,6 @@
 					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -1560,11 +1300,6 @@
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -1595,11 +1330,6 @@
 					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -1651,13 +1381,7 @@
 					<value><![CDATA[Extranet of Flowers]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1677,13 +1401,7 @@
 					<value><![CDATA[Login for the Extranet]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1746,13 +1464,7 @@
 					<value><![CDATA[Secrets of Flower]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1772,13 +1484,7 @@
 					<value><![CDATA[Rare plants and flowers]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1798,13 +1504,7 @@
 					<value><![CDATA[I18N Example]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1850,13 +1550,7 @@
 					<value><![CDATA[Events]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1876,13 +1570,7 @@
 					<value><![CDATA[Flower Today]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1902,13 +1590,7 @@
 					<value><![CDATA[News]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1954,13 +1636,7 @@
 					<value><![CDATA[Flower View]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2137,13 +1813,7 @@
 					<value><![CDATA[1215244800000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2172,13 +1842,7 @@
 					<value><![CDATA[1217628000000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2202,13 +1866,7 @@
 					<value><![CDATA[1244280720000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2236,13 +1894,7 @@
 					<value><![CDATA[1227987000000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2270,13 +1922,7 @@
 					<value><![CDATA[1250409600000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2304,13 +1950,7 @@
 					<value><![CDATA[1240473600000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2338,13 +1978,7 @@
 					<value><![CDATA[1226652180000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2372,13 +2006,7 @@
 					<value><![CDATA[1236416400000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2402,13 +2030,7 @@
 					<value><![CDATA[1222341780000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>88174e43-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/event.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -3780,11 +3402,6 @@
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -3827,11 +3444,6 @@
 					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -3876,11 +3488,6 @@
 					<path>/system/categories/species/composite-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -3923,11 +3530,6 @@
 					<id>6340dabc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/liliaceous-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -3972,11 +3574,6 @@
 					<path>/system/categories/species/rosaceous-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -4019,11 +3616,6 @@
 					<id>55d24abc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/rosaceous-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -4068,11 +3660,6 @@
 					<path>/system/categories/species/liliaceous-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -4115,11 +3702,6 @@
 					<id>55d24abc-dbb1-11dc-997c-9f7a6a6ce285</id>
 					<path>/system/categories/species/rosaceous-plants/</path>
 					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
 				</relation>
 			</relations>
 			<accesscontrol/>
@@ -4164,11 +3746,6 @@
 					<path>/system/categories/species/liliaceous-plants/</path>
 					<type>CATEGORY</type>
 				</relation>
-				<relation>
-					<id>881c0936-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/item.xsd</path>
-					<type>XSD</type>
-				</relation>
 			</relations>
 			<accesscontrol/>
 		</file>
@@ -4202,13 +3779,7 @@
 					<value><![CDATA[All events]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c51208ea-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4228,13 +3799,7 @@
 					<value><![CDATA[Recent events]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c51208ea-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4254,13 +3819,7 @@
 					<value><![CDATA[Composite Plants]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c51208ea-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4280,13 +3839,7 @@
 					<value><![CDATA[Liliaceous Plants]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c51208ea-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4306,13 +3859,7 @@
 					<value><![CDATA[Rosaceous Plants]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c51208ea-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4332,13 +3879,7 @@
 					<value><![CDATA[All News]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c51208ea-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4358,13 +3899,7 @@
 					<value><![CDATA[Recent news]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c51208ea-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/listbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4414,13 +3949,7 @@
 					<value><![CDATA[/demo/_config_/layouts/threecolumns]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>884e3cdd-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4444,13 +3973,7 @@
 					<value><![CDATA[1228471800000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>884e3cdd-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4474,13 +3997,7 @@
 					<value><![CDATA[1228472220000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>884e3cdd-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4509,13 +4026,7 @@
 					<value><![CDATA[1]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>884e3cdd-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4539,13 +4050,7 @@
 					<value><![CDATA[1231151580000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>884e3cdd-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4569,13 +4074,7 @@
 					<value><![CDATA[1224503100000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>884e3cdd-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4599,13 +4098,7 @@
 					<value><![CDATA[1228914240000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>884e3cdd-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4629,13 +4122,7 @@
 					<value><![CDATA[1219755240000]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>884e3cdd-9c7c-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/news.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4668,13 +4155,7 @@
 					<value><![CDATA[Available documents in the extranet]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c503b104-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/linkbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4702,13 +4183,7 @@
 					<value><![CDATA[/demo_t3/]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c529d6b3-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/search.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4736,13 +4211,7 @@
 					<value><![CDATA[/demo_t3/]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>f0a3e109-a1f3-11de-aa46-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3.demo/schemas/imagesource.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4784,13 +4253,7 @@
 					<value><![CDATA[Toolbox Container]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>5a7d2853-e403-11de-8b28-975b367aae60</id>
-					<path>/system/workplace/editors/ade/schemas/sub_container.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4823,13 +4286,7 @@
 					<value><![CDATA[Navigation boxes]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4849,13 +4306,7 @@
 					<value><![CDATA[Direct edit]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4875,13 +4326,7 @@
 					<value><![CDATA[All Events]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4901,13 +4346,7 @@
 					<value><![CDATA[Infobox]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4927,13 +4366,7 @@
 					<value><![CDATA[The flower parade]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4953,13 +4386,7 @@
 					<value><![CDATA[Box generated from a JSP]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4979,13 +4406,7 @@
 					<value><![CDATA[Complex Layoutpage]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5005,13 +4426,7 @@
 					<value><![CDATA[Link box]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5031,13 +4446,7 @@
 					<value><![CDATA[Login]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5057,13 +4466,7 @@
 					<value><![CDATA[Login]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5083,13 +4486,7 @@
 					<value><![CDATA[Multilanguage Pages]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5109,13 +4506,7 @@
 					<value><![CDATA[All News]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5135,13 +4526,7 @@
 					<value><![CDATA[Photo album]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5161,13 +4546,7 @@
 					<value><![CDATA[Rotation box]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5187,13 +4566,7 @@
 					<value><![CDATA[Starting page]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5213,13 +4586,7 @@
 					<value><![CDATA[UTF-8 Demo]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5239,13 +4606,7 @@
 					<value><![CDATA[OpenCms Workplace]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5265,13 +4626,7 @@
 					<value><![CDATA[XML based contents]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5291,13 +4646,7 @@
 					<value><![CDATA[XML-based events]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5317,13 +4666,7 @@
 					<value><![CDATA[XML-based News]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5343,22 +4686,16 @@
 					<value><![CDATA[XML pages]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>c5382e99-9c7a-11de-adde-dd9f629b113b</id>
-					<path>/system/modules/org.opencms.frontend.template3/schemas/textbox.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>a30c85ac-e327-11de-95a2-2fbc40eca8be</uuidstructure>
-			<datelastmodified>Mon, 07 Dec 2009 11:57:04 GMT</datelastmodified>
+			<uuidstructure>cb6b00e4-0f28-11df-9dfe-d5d2a77384e9</uuidstructure>
+			<datelastmodified>Mon, 01 Feb 2010 11:56:13 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 07 Dec 2009 11:57:04 GMT</datecreated>
+			<datecreated>Mon, 01 Feb 2010 11:56:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

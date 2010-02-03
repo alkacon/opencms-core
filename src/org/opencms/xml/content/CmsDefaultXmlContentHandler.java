@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/01/18 14:05:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/02/03 13:48:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
-import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
@@ -95,7 +94,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -751,22 +750,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         removeEmptyMappings(cms, content);
         // write categories (if there is a category widget present)
         file = writeCategories(cms, file, content);
-        // write special relation to the xsd
-        cms.deleteRelationsFromResource(
-            cms.getSitePath(file),
-            CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
-        String schema = content.getContentDefinition().getSchemaLocation();
-        if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
-            schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
-        }
-        schema = cms.getRequestContext().removeSiteRoot(schema);
-        if (cms.existsResource(schema)) {
-            cms.addRelationToResource(cms.getSitePath(file), schema, CmsRelationType.XSD.getName());
-        } else {
-            LOG.warn(org.opencms.db.generic.Messages.get().getBundle().key(
-                org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
-                schema));
-        }
         // return the result
         return file;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2010/02/02 10:06:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/02/03 13:48:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.3.0
  */
@@ -117,10 +117,10 @@ public final class CmsRelationType implements Serializable {
     public static final CmsRelationType XML_WEAK = new CmsRelationType(4, PREFIX_XML + VALUE_WEAK, false, true);
 
     /** Constant for the weak links from xmlcontent to the used xsd. */
-    public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", false, false);
+    public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", true, true);
 
     /** Constant for the weak links from sitemap to their entry point. */
-    public static final CmsRelationType ENTRY_POINT = new CmsRelationType(11, "ENTRY_POINT", false, false);
+    public static final CmsRelationType ENTRY_POINT = new CmsRelationType(11, "ENTRY_POINT", true, true);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;

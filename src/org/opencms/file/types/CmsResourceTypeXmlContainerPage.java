@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2009/12/21 09:05:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/02/03 13:48:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,10 +44,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.types.CmsXmlHtmlValue;
@@ -72,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -285,9 +287,19 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         }
 
         Set<CmsLink> links = new HashSet<CmsLink>();
-        List<Locale> locales = xmlContent.getLocales();
+
+        // add XSD link
+        String schema = xmlContent.getContentDefinition().getSchemaLocation();
+        if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
+            schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
+        }
+        schema = cms.getRequestContext().removeSiteRoot(schema);
+        CmsLink xsdLink = new CmsLink(null, CmsRelationType.XSD, schema, true);
+        xsdLink.checkConsistency(cms);
+        links.add(xsdLink);
 
         // iterate over all languages
+        List<Locale> locales = xmlContent.getLocales();
         Iterator<Locale> i = locales.iterator();
         while (i.hasNext()) {
             Locale locale = i.next();
