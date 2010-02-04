@@ -27,7 +27,10 @@
 				<property name="test1" type="string" widget="string" default=""/>
 				<property name="test2" type="vfslist" widget="gallery" default=""/>
 				<property name="navigation" type="string" widget="checkbox" default="false" widget-config="true"/>
-				<property name="sitemap" type="vfslist" />
+				
+				<!-- The widget property has to be set because of the DTD even if it can never be edited directly -->
+				<property name="sitemap" type="vfslist"  widget="string"/>
+				
 			</properties>
 		</xsd:appinfo>
 	</xsd:annotation>  
