@@ -741,7 +741,7 @@
         <name>sitemap</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
-            org.opencms.xml.sitemap.CmsSiteEntryBean getSitemap(java.lang.Object)
+            org.opencms.xml.sitemap.CmsSitemapEntry getSitemap(java.lang.Object)
         </function-signature>
     </function>
 
