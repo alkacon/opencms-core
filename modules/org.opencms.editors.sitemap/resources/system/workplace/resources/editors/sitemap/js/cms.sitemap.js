@@ -1224,11 +1224,8 @@
          var $buttons = $(selector)
          
          $buttons.each(function() {
-            deactivateButton(this, 'BLARG');
+            deactivateButton(this, cms.data.NO_EDIT_REASON);
          });
-         
-         
-         
       }
       
       $('.cms-icon-triangle').live('click', function() {
