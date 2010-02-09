@@ -262,6 +262,8 @@
    
    
    
+   
+   
    var replaceListElements = function(list, oldElem, newElem) {
       var result = [];
       for (var i = 0; i < list.length; i++) {
@@ -423,14 +425,47 @@
    
    /**
     * Sets a JQuery UI dialog's position to fixed.
-    *   
+    *
     * @param {Object} $dialog the dialog whose position should be set to fixed
     */
    var fixDialogPosition = cms.util.fixDialogPosition = function($dialog) {
-       var $dlgWindow = $dialog.closest('.ui-dialog');
-       var top = ($(window).height() - $dlgWindow.height()) / 2;
-       $dlgWindow.closest('.ui-dialog').css({'top': top+'px', 'position': 'fixed'});
+      var $dlgWindow = $dialog.closest('.ui-dialog');
+      var top = ($(window).height() - $dlgWindow.height()) / 2;
+      $dlgWindow.closest('.ui-dialog').css({
+         'top': top + 'px',
+         'position': 'fixed'
+      });
    }
+   
+   /**
+    * Updates the height of a dialog after a given element in the dialog has changed.
+    *
+    * @param {Object} $dialog the dialog to update
+    * @param {Object} $element the element which has changed
+    */
+   var updateDialogHeightForElement = cms.util.updateDialogHeightForElement = function($dialog, $element) {
+      var elemBottom = $element.offset().top + $element.height();
+      var dlgBottom = $dialog.offset().top + $dialog.height();
+      if (dlgBottom < elemBottom) {
+         $dialog.dialog('option', 'height', $dialog.closest('.ui-dialog').height() + (elemBottom - dlgBottom));
+      }
+   }
+   
+   /**
+    * Updates the height of a dialog after a given element in the dialog has changed.
+    *
+    * @param {Object} $dialog the dialog to update
+    * @param {Object} $element the element which has changed
+    */
+   var updateDialogHeightForOffset = cms.util.updateDialogHeightForOffset = function($dialog, offset) {
+      var dlgBottom = $dialog.offset().top + $dialog.height();
+      if (dlgBottom < offset) {
+         $dialog.dialog('option', 'height', $dialog.closest('.ui-dialog').height() + (offset - dlgBottom));
+      }
+   }
+   
+   
+   
    
    
    var dialogConfirm = cms.util.dialogConfirm = function(text, title, yesLabel, noLabel, callback) {

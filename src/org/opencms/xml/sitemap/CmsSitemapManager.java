@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/03 15:10:53 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/02/09 10:17:18 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 7.9.2
  */
@@ -229,6 +229,31 @@ public class CmsSitemapManager {
         }
         m_cache.setDefaultProps(defProps, online);
         return defProps;
+    }
+
+    /**
+     * Returns the default template for the given sitemap, or null if there is none.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations
+     * @param sitemapUri the URI of the sitemap
+     * @param request the servlet request
+     * 
+     * @return the default template
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsResource getDefaultTemplate(CmsObject cms, String sitemapUri, ServletRequest request) throws CmsException {
+
+        //TODO: use the properties inherited from super-sitemaps to find the default template
+        CmsProperty prop = cms.readPropertyObject(sitemapUri, CmsPropertyDefinition.PROPERTY_SITEMAP_TEMPLATE, true);
+        String templatePath = prop.getValue();
+        try {
+            CmsResource resource = cms.readResource(templatePath);
+            return resource;
+        } catch (CmsException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**

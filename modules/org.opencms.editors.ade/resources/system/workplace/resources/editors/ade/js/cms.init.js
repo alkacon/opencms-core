@@ -242,7 +242,7 @@ $('document').ready(function() {
       //$('#toolbar_content button').addClass('cms-deactivated').unbind('click');
       // TODO: better display an red-square-icon in the toolbar with a tooltip
       cms.util.dialogAlert(cms.data.NO_EDIT_REASON, M.GUI_CANT_EDIT_TITLE_0);
-      var buttonSelector = cms.util.makeCombinedSelector(['move', 'delete', 'add', 'new', 'reset', 'favorites', 'storage', 'properties'], '#toolbar_content button[name="%"]');
+      var buttonSelector = cms.util.makeCombinedSelector(['move', 'delete', 'add', 'new', 'reset', 'favorites', 'storage', 'properties', 'Save'], '#toolbar_content button[name="%"]');
       var $buttons = $(buttonSelector);
       $buttons.unbind('click').unbind('mouseover').addClass('cms-deactivated').each(function() {
          deactivateButton(this, cms.data.NO_EDIT_REASON);

@@ -253,7 +253,7 @@
       $('button', $widget).addClass('ui-corner-all ui-state-default');
       
       var fieldId = 'cms-gallery-field-' + galleryFieldIdCounter++;
-      $('.cms-gallery-valuedisplay', $widget).css('width', '200px').css('display', 'inline').attr('id', fieldId);
+      $('.cms-gallery-valuedisplay', $widget).css('display', 'inline').attr('id', fieldId);
       $('.cms-property-opengallery', $widget).click(function() {
          window.contextPath = cms.data.CONTEXT;
          

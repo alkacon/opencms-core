@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/01/29 14:42:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/02/09 10:17:18 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -175,7 +175,6 @@ var ade = {};
             },
             open: function() {
                $iframeBox.append($iframe);
-               $iframeBox.closest('.ui-dialog').css('position', 'fixed').css('top', '0px');
             },
             resizable: false,
             autoOpen: true,
@@ -183,6 +182,7 @@ var ade = {};
             height: 517 + ($.browser.msie ? 11 : 0)
          
          });
+         cms.util.fixDialogPosition($iframeBox);
       }
    }
    

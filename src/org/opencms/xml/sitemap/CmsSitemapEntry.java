@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/02/03 15:10:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/02/09 10:17:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,17 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
 public class CmsSitemapEntry {
+
+    /** Name for the template property. */
+    public static final String PROPERTY_TEMPLATE = "template";
+
+    /** Name for the inherited template property. */
+    public static final String PROPERTY_TEMPLATE_INHERIT = "template-inherit";
 
     /** The content id, for detail pages. */
     private CmsUUID m_contentId;
@@ -262,6 +268,31 @@ public class CmsSitemapEntry {
     public List<CmsSitemapEntry> getSubEntries() {
 
         return m_subEntries;
+    }
+
+    /**
+     * Returns the template that should be used for this sitemap entry.<p>
+     * 
+     * The template is normally determined by the template-inherit property (which may have
+     * been inherited from another sitemap entry), but can be overridden by setting an entry's 
+     * template property. Inherited values of the template property will be ignored. If a template
+     * can't be found by inspecting those properties, the default value passed as a parameter is returned. 
+     *
+     * @param defaultValue the value to be returned if no template can be found 
+     * @return the template to be used, or the default value 
+     */
+    public String getTemplate(String defaultValue) {
+
+        Map<String, String> ownProperties = getProperties(false);
+        Map<String, String> allProperties = getInheritedProperties();
+
+        if (ownProperties.containsKey(PROPERTY_TEMPLATE)) {
+            return ownProperties.get(PROPERTY_TEMPLATE);
+        } else if (allProperties.containsKey(PROPERTY_TEMPLATE_INHERIT)) {
+            return allProperties.get(PROPERTY_TEMPLATE_INHERIT);
+        } else {
+            return defaultValue;
+        }
     }
 
     /**

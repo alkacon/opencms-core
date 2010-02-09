@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/03 15:10:53 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2010/02/09 10:17:18 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,8 +56,8 @@ import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapBean;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 7.6
  */
@@ -179,6 +179,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         properties,
         /** The recent list. */
         recent,
+        /** The path of the resource which references the sitemap by its sitemap property */
+        referencePath,
         /** The sitemap tree. */
         sitemap,
         /** The sitepath. */
@@ -188,9 +190,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         /** The title property. */
         title,
         /** Creatable types */
-        types,
-        /** The path of the resource which references the sitemap by its sitemap property */
-        referencePath
+        types
     }
 
     /** Json property name constants for sitemap entries. */
@@ -204,18 +204,21 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         linkId,
         /** The name. */
         name,
+        /** The entry's VFS path */
+        path,
         /** The properties. */
         properties,
         /** The sub-entries. */
         subentries,
-        /** The entry's VFS path */
-        path,
         /** The title. */
         title;
     }
 
     /** Json property name constants for template information. */
     protected enum JsonTemplate {
+
+        /** The default template */
+        defaultTemplate,
 
         /** The description. */
         description,
@@ -300,6 +303,30 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     }
 
     /**
+     * Returns a JSON object representing a given template.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations.
+     * @param template the template resource
+     * 
+     * @return a JSON object that represents the template
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws JSONException if a JSON operation goes wrong
+     */
+    public static JSONObject getTemplateJson(CmsObject cms, CmsResource template) throws CmsException, JSONException {
+
+        CmsProperty titleProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        CmsProperty descProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        CmsProperty imageProp = cms.readPropertyObject(template, PROPERTY_TEMPLATE_IMAGE, false);
+        JSONObject jTemp = new JSONObject();
+        jTemp.put(JsonTemplate.sitepath.name(), cms.getSitePath(template));
+        jTemp.put(JsonTemplate.title.name(), titleProp.getValue());
+        jTemp.put(JsonTemplate.description.name(), descProp.getValue());
+        jTemp.put(JsonTemplate.imagepath.name(), imageProp.getValue());
+        return jTemp;
+    }
+
+    /**
      * Handles all sitemap requests.<p>
      * 
      * @return the result
@@ -355,6 +382,11 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             result.put(JsonResponse.types.name(), creatableTypes);
             result.put(JsonResponse.models.name(), models);
             result.put(JsonTemplate.template.name(), getTemplates());
+            CmsResource defaultTemplate = OpenCms.getSitemapManager().getDefaultTemplate(cms, sitemapParam, request);
+            if (defaultTemplate != null) {
+                JSONObject templateJson = getTemplateJson(cms, defaultTemplate);
+                result.put(JsonTemplate.defaultTemplate.name(), templateJson);
+            }
         } else if (action.equals(Action.GET)) {
             if (checkParameters(data, null, JsonRequest.fav.name())) {
                 // get the favorite list
@@ -684,14 +716,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         Iterator<CmsResource> templateIt = templates.iterator();
         while (templateIt.hasNext()) {
             CmsResource template = templateIt.next();
-            CmsProperty titleProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_TITLE, false);
-            CmsProperty descProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-            CmsProperty imageProp = cms.readPropertyObject(template, PROPERTY_TEMPLATE_IMAGE, false);
-            JSONObject jTemp = new JSONObject();
-            jTemp.put(JsonTemplate.sitepath.name(), cms.getSitePath(template));
-            jTemp.put(JsonTemplate.title.name(), titleProp.getValue());
-            jTemp.put(JsonTemplate.description.name(), descProp.getValue());
-            jTemp.put(JsonTemplate.imagepath.name(), imageProp.getValue());
+            JSONObject jTemp = CmsSitemapServer.getTemplateJson(cms, template);
             result.put(cms.getSitePath(template), jTemp);
         }
         return result;

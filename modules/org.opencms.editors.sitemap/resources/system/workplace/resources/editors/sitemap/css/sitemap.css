@@ -246,6 +246,21 @@
       	    padding: 5px;
       	}
       	
+      	#cms-property-dialog .cms-item-edit {
+      		width: 390px;
+      	}
+      	
+      	#cms-property-dialog .cms-selectbox {
+      		margin-left: 4px;
+      	}
+      	
+      	#cms-property-dialog .cms-gallery-valuedisplay {
+      		margin-left: -4px;
+      	}
+      	
+      	
+      	
+      	
       	
 
 .cms-sub-sitemap-ref > .cms-sitemap-item > .cms-sitemap-entry-header {
@@ -395,6 +410,11 @@ div.ui-widget-header a.cms-subsitemap {
 #cms-new-list .cms-icon-triangle {
 	display: none;
 }
+
+#cms-property-dialog .cms-selector {
+	max-height: 150px;
+	overflow-y: scroll;
+} 
 
 
 /************** basic *******************************************************/

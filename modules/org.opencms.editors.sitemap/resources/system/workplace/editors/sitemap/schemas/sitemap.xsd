@@ -31,6 +31,10 @@
 				<!-- The widget property has to be set because of the DTD even if it can never be edited directly -->
 				<property name="sitemap" type="vfslist"  widget="string"/>
 				
+				<property name="template" type="string" widget="string" />
+				<property name="template-inherit" type="string" widget="string" />
+				
+				
 			</properties>
 		</xsd:appinfo>
 	</xsd:annotation>  

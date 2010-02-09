@@ -200,9 +200,6 @@
          }
          // also replace slashes with underscores
          var result = data.name.replace(/\//g, '_');
-         if (result == '') {
-             result = '_';
-         }
          callback(result);
       });
    }

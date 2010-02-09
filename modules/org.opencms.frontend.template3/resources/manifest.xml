@@ -1638,7 +1638,7 @@
 		<file>
 			<source>system/modules/org.opencms.frontend.template3/templates/main.jsp</source>
 			<destination>system/modules/org.opencms.frontend.template3/templates/main.jsp</destination>
-			<type>jsp</type>
+			<type>containerpage_template</type>
 			<uuidstructure>c541a47e-9c7a-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>c541a47f-9c7a-11de-adde-dd9f629b113b</uuidresource>
 			<datelastmodified>Tue, 20 Oct 2009 12:37:08 GMT</datelastmodified>

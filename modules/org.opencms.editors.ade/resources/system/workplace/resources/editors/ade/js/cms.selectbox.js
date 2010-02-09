@@ -7,6 +7,7 @@
      * Use following options:
      * open: function(elem) called when select-box is opened
      * select: function(this, elem, value) called when a value is selected
+     * useHeight: boolean    if true, uses the current selector height to position the selectbox items
      * 
      * The following methods can be called by $(selector).selectBox('method name', additionalValue):
      * 'getValue': returns the currently selected value 
@@ -91,9 +92,16 @@ $.fn.selectBox=function(options, additional){
                     }
                     selectbox.selector.offset(offset).css('display', 'block');
                 }
+                if (selectbox.opts.useHeight) {
+                    var $currentValue = selectbox.replacer.find('.cms-current-value');
+                    var $selector = selectbox.selector;
+                    $selector.css('top', $currentValue.outerHeight());
+                }
+
                 if ($.isFunction(selectbox.opts.open)) {
                     selectbox.opts.open(this);
                 }
+
             }else{
                 _close();
             }
@@ -111,7 +119,9 @@ $.fn.selectBox=function(options, additional){
             var valueOptions=selectbox.selector.find('.cms-select-option');
             var index = valueOptions.index($this);
             var value=$this.attr('rel');
-            selectbox.replacer.find('span.cms-current-value').html($this.html()).attr('rel',value);
+            var $currentValue = selectbox.replacer.find('span.cms-current-value'); 
+            $currentValue.html($this.html()).attr('rel',value);
+            
             _close();
             if ($.isFunction(selectbox.opts.select)){
                 selectbox.opts.select($this.get(0), selectbox.replacer, value, index);
@@ -143,7 +153,7 @@ $.fn.selectBox=function(options, additional){
         function _generateReplacer(values){
             var selectbox={};
             selectbox.replacer=$('<div class="cms-selectbox ui-state-default ui-corner-all"><span class="cms-select-opener ui-icon ui-icon-triangle-1-s"></span></div>')
-			$('<span class="cms-current-value cms-select-option" unselectable="on"></span>').appendTo(selectbox.replacer).text(values[0].title).attr('rel', values[0].value);
+			$('<span class="cms-current-value cms-select-option" unselectable="on"></span>').appendTo(selectbox.replacer).html(values[0].title).attr('rel', values[0].value);
 			selectbox.selector=_generateSelector(selectbox, values);
             if (!opts.appendTo) {
                 selectbox.selector.appendTo(selectbox.replacer);
