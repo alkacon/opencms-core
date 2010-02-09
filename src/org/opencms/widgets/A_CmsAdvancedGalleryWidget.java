@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/A_CmsAdvancedGalleryWidget.java,v $
- * Date   : $Date: 2010/01/27 16:27:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/02/09 11:05:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,13 +37,14 @@ import org.opencms.json.JSONArray;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.CmsGallerySearchServer;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 /**
  * Base class for all advanced gallery widget implementations.<p>
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 
  */
@@ -200,6 +201,17 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
         // set the gallery configuration parameter
         result.append("\n<script type=\"text/javascript\">");
 
+        String locale = "";
+        if (param instanceof I_CmsXmlContentValue) {
+            I_CmsXmlContentValue xmlContentValue = (I_CmsXmlContentValue)param;
+            locale = xmlContentValue.getLocale().getLanguage();
+        } else {
+            locale = widgetDialog.getLocale().getLanguage();
+        }
+
+        // locale for the galleries
+        result.append("\nvar locale").append(idHash).append(" = \"").append(locale).append("\";");
+
         // resource types
         result.append("\nvar resourceTypes").append(idHash).append(" = ").append(configuration.getResourceTypes()).append(
             ";");
@@ -224,6 +236,13 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
             result.append("\nvar startupFolder").append(idHash).append(" = null;");
             result.append("\nvar startupFolders").append(idHash).append(" = null;");
             result.append("\nvar startupType").append(idHash).append(" = null;");
+        }
+        if (configuration.getStartupTabId() != null) {
+            result.append("\nvar startupTabId").append(idHash).append(" = \"").append(configuration.getStartupTabId()).append(
+                "\";");
+        } else {
+            result.append("\nvar startupTabId").append(idHash).append(" = \"").append(
+                CmsGallerySearchServer.TabId.cms_tab_results).append("\";");
         }
 
         // set the configuration parameter for imagegallery

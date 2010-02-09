@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2010/01/27 10:54:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/02/09 11:05:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.6
  */
@@ -125,6 +125,7 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 tabsConfig.put(CmsGallerySearchServer.TabId.cms_tab_galleries.toString());
                 tabsConfig.put(CmsGallerySearchServer.TabId.cms_tab_categories.toString());
                 tabsConfig.put(CmsGallerySearchServer.TabId.cms_tab_search.toString());
+                tabsConfig.put(CmsGallerySearchServer.TabId.cms_tab_sitemap.toString());
 
                 galleryUri.append(tabsConfig.toString());
                 galleryUri.append("&");
@@ -159,7 +160,7 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 jsOpener.append(width);
                 jsOpener.append(", height=");
                 jsOpener.append(height);
-                jsOpener.append(", resizable=yes, top=100, left=270, status=yes');");
+                jsOpener.append(", resizable=yes, top=100, left=270, status=yes, scrollbars=yes,toolbar=yes');");
             }
         } catch (CmsException e) {
             // requested type is not configured

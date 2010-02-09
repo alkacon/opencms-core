@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/02/09 10:17:18 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/02/09 11:05:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,6 +59,11 @@ var ade = {};
       // tabs to be displayed
       var galleryTabs = eval('galleryTabs' + idHash);
       
+      // start tab id
+      var startupTabId = eval('startupTabId' + idHash);
+      // locale
+      var locale = eval('locale' + idHash);    
+      
       // vfs path to selected resource from the input field, including scale parameter for the image
       var selectedPath = null;
       if (fieldId != null && fieldId != "" && fieldId != 'null') {
@@ -67,8 +72,7 @@ var ade = {};
             selectedPath = itemField.value;
          }
       }
-      
-      //alert(JSON.stringify([startupFolder, startupFolders, startupType, resourceTypes]));
+           
       var searchKeys = {
          'category': 'categories',
          'gallery': 'galleries'
@@ -90,8 +94,9 @@ var ade = {};
          requestData['querydata']['categories'] = [];
          requestData['querydata']['matchesperpage'] = 8;
          requestData['querydata']['query'] = '';
-         requestData['querydata']['tabid'] = 'cms_tab_results';
+         requestData['querydata']['tabid'] = startupTabId;
          requestData['querydata']['page'] = 1;
+         requestData['querydata']['locale'] = locale;
          // check the startup parameter
          if (startupFolder != null) {
             requestData['querydata'][searchKeys[startupType]] = [startupFolder];
@@ -99,13 +104,13 @@ var ade = {};
             requestData['querydata'][searchKeys[startupType]] = startupFolders;
          }
       }
+
       
       var paramString = "dialogmode=" + dialogMode;
       paramString += "&fieldid=" + fieldId;
       paramString += "&tabs=" + JSON.stringify(galleryTabs);
       paramString += "&path=" + removeParamFromPath(selectedPath);
       paramString += "&data=" + JSON.stringify(requestData);
-      
       // additional parameter for the image resource type
       var initialImageInfos = '';
       if ($.inArray(3, resourceTypes) != -1) {
@@ -139,7 +144,9 @@ var ade = {};
          };
          paramString += "&imagedata=" + JSON.stringify(initialImageInfos);
       }
+
       var galleryWidgetUri = contextPath + defaultAdvancedGalleryPath + paramString;
+
       var galleryId = fieldId + '-gallery';
       var galleryElem = document.getElementById(galleryId);
       if (!galleryElem) { // make sure the gallery isn't opened twice

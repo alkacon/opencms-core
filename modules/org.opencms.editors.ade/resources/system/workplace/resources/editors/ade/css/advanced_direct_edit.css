@@ -671,7 +671,8 @@ div.cms-dialog {
     }
     .cms-list-with-checkbox div.cms-list-item {
     	margin-left: 32px;
-    }
+    }    
+    
     div.cms-list-item {
         margin: 2px;
     }
@@ -1546,6 +1547,48 @@ span.cms-select-opener{
 
 .cms-checkbox-disabled {
 	background-image: none;
+}
+
+/* Sitemap tree opener */
+div.cms-tree-opener {
+    cursor: pointer;
+    display: block;
+    float: left;
+    width: 22px;
+    height: 22px;
+    user-select: none;
+    -moz-user-select: none;
+    background: transparent url(images/expandable.gif) no-repeat scroll 50% 50%;
+}
+      
+.cms-opened div.cms-tree-opener{
+    background-image: url(images/collapsable.gif);
+}
+
+.cms-list-without-subtree div.cms-tree-opener{
+     background: transparent no-repeat scroll 50% 50%;
+     
+}
+
+.cms-list-with-subtree div.cms-list-item {
+   	margin-left: 22px;
+}
+
+.cms-list-without-subtree div.cms-list-item {
+    margin-left:22px;
+}
+
+#sitemap li.cms-item .ui-widget-content {
+    line-height: 22px;
+}
+
+#sitemap div.cms-list-itemcontent .cms-list-image {
+    height:22px;
+    width:22px;
+}
+
+#sitemap div.cms-list-itemcontent div {
+    height:22px;
 }
 
 /* loading animation */

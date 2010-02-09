@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/02/03 15:10:54 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2010/02/09 11:05:35 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 7.6
  */
@@ -1253,9 +1253,14 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         JSONObject result = new JSONObject();
         result.put(SitemapKey.title.name(), entry.getTitle());
         result.put(SitemapKey.sitemapUri.name(), entry.getSitePath(cms));
-        I_CmsResourceType resType = m_resourceManager.getResourceType(cms.readResource(entry.getResourceId()));
-        String iconPath = CmsWorkplace.RES_PATH_FILETYPES;
-        iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType.getTypeName()).getIcon();
+
+        I_CmsResourceType resType = getResourceManager().getResourceType(cms.readResource(entry.getResourceId()));
+        String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
+            + OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType.getTypeName()).getIcon());
+
+        //I_CmsResourceType resType = getResourceManager().getResourceType(cms.readResource(entry.getResourceId()));
+        //String iconPath = CmsWorkplace.RES_PATH_FILETYPES;
+        //iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType.getTypeName()).getIcon();
         result.put(SitemapKey.icon.name(), iconPath);
         try {
             CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(resType, false);

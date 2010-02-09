@@ -592,7 +592,7 @@
         margin-right: 20px;
     }
     
-    /** Categories levels*/         
+    /** Categories and sitemap levels*/         
    .cms-list.cms-active-level.cms-level-1 {
        margin-left: 33px;
    }
@@ -603,6 +603,74 @@
       
    .cms-list.cms-active-level.cms-level-3 {
        margin-left: 99px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-4 {
+       margin-left: 132px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-5 {
+       margin-left: 165px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-6 {
+       margin-left: 198px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-7 {
+       margin-left: 231px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-8 {
+       margin-left: 264px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-9 {
+       margin-left: 297px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-10 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-11 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-12 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-13 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-14 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-15 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-16 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-17 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-18 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-19 {
+       margin-left: 330px;
+   }
+   
+   .cms-list.cms-active-level.cms-level-20 {
+       margin-left: 330px;
    }
       
     /** Pagination plugin*/

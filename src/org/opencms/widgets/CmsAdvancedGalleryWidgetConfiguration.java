@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsAdvancedGalleryWidgetConfiguration.java,v $
- * Date   : $Date: 2010/01/27 16:27:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/09 11:05:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.galleries.CmsGallerySearchServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +98,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.5.0 
  */
@@ -107,6 +108,9 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         /** Configuration key name for the container pages. */
         container,
 
+        /** Configuration key name for the default configuration. */
+        defaultgallery,
+
         /** Configuration key name for the downloadgallery. */
         downloadgallery,
 
@@ -114,10 +118,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         imagegallery,
 
         /** Configuration key name for the sitemap. */
-        sitemap,
-
-        /** Configuration key name for the default configuration. */
-        defaultgallery;
+        sitemap;
 
         /** The default configuration gallery key. */
         public static final CmsGalleryConfigKeys DEFAULT = defaultgallery;
@@ -203,7 +204,6 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         /** The resource type array for the containerpage gallery. */
         RESOURCETYPE_DEFAULTGALLERY("[]"),
 
-        //TODO: must be changed to binary=[2], now set to 13 for test purposes
         /** The resource type array for the downloadgallery. */
         RESOURCETYPE_DOWNLOADGALLERY("[2]"),
 
@@ -211,7 +211,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         RESOURCETYPE_IMAGEGALLERY("[3]"),
 
         /** The resource type array for the sitemap gallery. */
-        RESOURCETYPE_SITEMAPGALLERY("[15]"),
+        RESOURCETYPE_SITEMAP("[13]"),
 
         /** The button prefix for the sitemapgallery. */
         SITEMAP("html"),
@@ -229,7 +229,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         TABS_IMAGEGALLERY("['cms_tab_galleries','cms_tab_categories','cms_tab_search']"),
 
         /** Tabs configuration for the sitemapgallery. */
-        TABS_SITEMAPGALLERY("['cms_tab_types','cms_tab_galleries','cms_tab_categories','cms_tab_search']");
+        TABS_SITEMAP("['cms_tab_galleries','cms_tab_categories','cms_tab_search','cms_tab_sitemap']");
 
         /** Property name. */
         private String m_name;
@@ -291,6 +291,9 @@ public class CmsAdvancedGalleryWidgetConfiguration {
 
     /** The initial loaded folders. */
     private JSONArray m_startUpFolders;
+
+    /** The html id of the tab to open by gallery start. */
+    private String m_startupTabId;
 
     /** The tabs to be display for the gallery. */
     private JSONArray m_tabs;
@@ -420,6 +423,16 @@ public class CmsAdvancedGalleryWidgetConfiguration {
     }
 
     /**
+     * Returns the html tab id to start the gallery.<p>
+     *
+     * @return the thtml tab id
+     */
+    public String getStartupTabId() {
+
+        return m_startupTabId;
+    }
+
+    /**
      * Returns the tabs to be displayed in the gallery.<p>
      *
      * @return the tabs as JSON array
@@ -440,6 +453,77 @@ public class CmsAdvancedGalleryWidgetConfiguration {
     }
 
     /**
+     * Returns the imagegallery flag. <p>
+     *
+     * @return true, if gallery is of type imagegallery, false otherwise
+     */
+    public boolean isImagegallery() {
+
+        return m_isImagegallery;
+    }
+
+    /**
+     * Returns if the description field should be shown.<p>
+     * 
+     * @return true if the description field should be shown, otherwise false
+     */
+    public boolean isShowDescription() {
+
+        return m_showDescription;
+    }
+
+    /**
+     * Returns if the format select box should be shown.<p>
+     * 
+     * @return true if the format select box should be shown, otherwise false
+     */
+    public boolean isShowFormat() {
+
+        return m_showFormat;
+    }
+
+    /**
+     * Sets the tab id to start the gallery by opening.<p>
+     *
+     * @param startupTabId the start tab id
+     */
+    public void setStartupTabId(String startupTabId) {
+
+        m_startupTabId = startupTabId;
+    }
+
+    /**
+     * Sets the type of the initial item list to load, either gallery or category.<p>
+     * 
+     * @param type the type of the initial item list to load
+     */
+    protected void setType(String type) {
+
+        m_type = type;
+    }
+
+    /**
+     * Returns the gallery type name from the configuration. <p>
+     * 
+     * @param jsonObj the configuration of the gallery as json object 
+     * @return the gallery name key name
+     */
+    private CmsGalleryConfigKeys getGalleryType(JSONObject jsonObj) {
+
+        if (jsonObj.has(CmsGalleryConfigKeys.downloadgallery.toString())) {
+            return CmsGalleryConfigKeys.downloadgallery;
+        } else if (jsonObj.has(CmsGalleryConfigKeys.imagegallery.toString())) {
+            return CmsGalleryConfigKeys.imagegallery;
+        } else if (jsonObj.has(CmsGalleryConfigKeys.container.toString())) {
+            return CmsGalleryConfigKeys.container;
+        } else if (jsonObj.has(CmsGalleryConfigKeys.sitemap.toString())) {
+            return CmsGalleryConfigKeys.sitemap;
+        } else {
+            return CmsGalleryConfigKeys.DEFAULT;
+        }
+    }
+
+    /**
      * Initializes the widget configuration using the given configuration string.<p>
      * 
      * @param cms an initialized instance of a CmsObject
@@ -449,11 +533,6 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      */
     //TODO: must be private?
     private void init(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param, String configuration) {
-
-        // if (configuration == null) {
-        // no configuration String found, return
-        //    return;
-        // }
 
         // if configuration is set, generate JSON object
         JSONObject configJsonObj = new JSONObject();
@@ -490,12 +569,37 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 setImagegallery(true);
                 // set the prefix for the imagegallery button
                 setButtonPrefix(CmsGalleryConfigValues.IMAGE.getName());
+                // set start tab
+                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_results.toString());
 
                 // set the parameter from the configuration
                 gConfigJsonObj = configJsonObj.optJSONObject(CmsGalleryConfigKeys.imagegallery.toString());
                 setImageGalleryConfigParams(cms, widgetDialog, param, gConfigJsonObj);
                 break;
             case sitemap:
+                // set the preselected resource types available for this advanced gallery
+                // set the preselected gallery tabs to be displayed
+                try {
+                    resTypes = new JSONArray(CmsGalleryConfigValues.RESOURCETYPE_SITEMAP.getName());
+                    tabs = new JSONArray(CmsGalleryConfigValues.TABS_SITEMAP.getName());
+                } catch (JSONException e) {
+                    // should not happen
+                    resTypes = new JSONArray();
+                    tabs = new JSONArray();
+                }
+                setResourceTypes(resTypes);
+                setTabs(tabs);
+                setImagegallery(false);
+                // set the prefix for the containerpage button
+                setButtonPrefix(CmsGalleryConfigValues.SITEMAP.getName());
+                // set start tab
+                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_sitemap.toString());
+
+                // set the parameter from the configuration
+                gConfigJsonObj = configJsonObj.optJSONObject(CmsGalleryConfigKeys.sitemap.toString());
+                setDefaultgalleryConfigPart(cms, widgetDialog, param, gConfigJsonObj);
+                break;
+            case container:
                 // set the preselected resource types available for this advanced gallery
                 // set the preselected gallery tabs to be displayed
                 try {
@@ -509,29 +613,10 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 setResourceTypes(resTypes);
                 setTabs(tabs);
                 setImagegallery(false);
-                // set the prefix for the containerpage button
-                setButtonPrefix(CmsGalleryConfigValues.CONTAINER.getName());
-
-                // set the parameter from the configuration
-                gConfigJsonObj = configJsonObj.optJSONObject(CmsGalleryConfigKeys.sitemap.toString());
-                setDefaultgalleryConfigPart(cms, widgetDialog, param, gConfigJsonObj);
-                break;
-            case container:
-                // set the preselected resource types available for this advanced gallery
-                // set the preselected gallery tabs to be displayed
-                try {
-                    resTypes = new JSONArray(CmsGalleryConfigValues.RESOURCETYPE_SITEMAPGALLERY.getName());
-                    tabs = new JSONArray(CmsGalleryConfigValues.TABS_SITEMAPGALLERY.getName());
-                } catch (JSONException e) {
-                    // should not happen
-                    resTypes = new JSONArray();
-                    tabs = new JSONArray();
-                }
-                setResourceTypes(resTypes);
-                setTabs(tabs);
-                setImagegallery(false);
                 // set the prefix for the sitemap button
-                setButtonPrefix(CmsGalleryConfigValues.SITEMAP.getName());
+                setButtonPrefix(CmsGalleryConfigValues.CONTAINER.getName());
+                // set start tab
+                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_results.toString());
 
                 // set the parameter from the configuration
                 gConfigJsonObj = configJsonObj.optJSONObject(CmsGalleryConfigKeys.container.toString());
@@ -553,6 +638,8 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 setImagegallery(false);
                 // set the prefix for the download button
                 setButtonPrefix(CmsGalleryConfigValues.DOWNLOAD.getName());
+                // set start tab
+                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_results.toString());
 
                 // set the parameter from the configuration
                 gConfigJsonObj = configJsonObj.optJSONObject(CmsGalleryConfigKeys.downloadgallery.toString());
@@ -572,69 +659,10 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 setResourceTypes(resTypes);
                 setTabs(tabs);
                 setImagegallery(false);
+                // set start tab
+                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_results.toString());
                 // set the prefix for the download button
                 setButtonPrefix(CmsGalleryConfigValues.DEFAULT.getName());
-        }
-    }
-
-    /**
-     * Returns the imagegallery flag. <p>
-     *
-     * @return true, if gallery is of type imagegallery, false otherwise
-     */
-    public boolean isImagegallery() {
-
-        return m_isImagegallery;
-    }
-
-    /**
-     * Returns if the description field should be shown.<p>
-     * 
-     * @return true if the description field should be shown, otherwise false
-     */
-    public boolean isShowDescription() {
-
-        return m_showDescription;
-    }
-
-    /**
-     * Returns if the format select box should be shown.<p>
-     * 
-     * @return true if the format select box should be shown, otherwise false
-     */
-    public boolean isShowFormat() {
-
-        return m_showFormat;
-    }
-
-    /**
-     * Sets the type of the initial item list to load, either gallery or category.<p>
-     * 
-     * @param type the type of the initial item list to load
-     */
-    protected void setType(String type) {
-
-        m_type = type;
-    }
-
-    /**
-     * Returns the gallery type name from the configuration. <p>
-     * 
-     * @param jsonObj the configuration of the gallery as json object 
-     * @return the gallery name key name
-     */
-    private CmsGalleryConfigKeys getGalleryType(JSONObject jsonObj) {
-
-        if (jsonObj.has(CmsGalleryConfigKeys.downloadgallery.toString())) {
-            return CmsGalleryConfigKeys.downloadgallery;
-        } else if (jsonObj.has(CmsGalleryConfigKeys.imagegallery.toString())) {
-            return CmsGalleryConfigKeys.imagegallery;
-        } else if (jsonObj.has(CmsGalleryConfigKeys.container.toString())) {
-            return CmsGalleryConfigKeys.container;
-        } else if (jsonObj.has(CmsGalleryConfigKeys.sitemap.toString())) {
-            return CmsGalleryConfigKeys.sitemap;
-        } else {
-            return CmsGalleryConfigKeys.DEFAULT;
         }
     }
 
@@ -889,4 +917,5 @@ public class CmsAdvancedGalleryWidgetConfiguration {
 
         m_tabs = tabs;
     }
+
 }

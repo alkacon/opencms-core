@@ -12,14 +12,9 @@
    /** html-id for tabs. */
    var idGalleriesMain = cms.galleries.idGalleriesMain = 'cms-gallery-main';   
    
+   //TODO: must be more generic, so at the beginning the indeces can be changed on the fly
    /** A Map of tab ids. */
-   var arrayTabIndexes = cms.galleries.arrayTabIndexes =  {
-       'cms_tab_results': 0,
-       'cms_tab_types':  1, 
-       'cms_tab_galleries': 2,
-       'cms_tab_categories': 3,
-       'cms_tab_search':4
-   };
+   var arrayTabIndexes = cms.galleries.arrayTabIndexes =  {};
    
    /** A Map of tab ids. */
    var arrayTabIds = cms.galleries.arrayTabIds =  {
@@ -27,7 +22,10 @@
        'cms_tab_types': 'cms_tab_types', 
        'cms_tab_galleries': 'cms_tab_galleries',
        'cms_tab_categories': 'cms_tab_categories',
-       'cms_tab_search':'cms_tab_search'
+       'cms_tab_search':'cms_tab_search',
+       'cms_tab_vfs':'cms_tab_vfs',
+       'cms_tab_containertypes':'cms_tab_containertypes',
+       'cms_tab_sitemap':'cms_tab_sitemap'
    };
    
    /** 
@@ -78,6 +76,21 @@
    /** html-class fragment for level information of the categories. */
    var classConstLevel = 'cms-level-';
    
+   /** html-class for the level margin mode. */
+   var classLevelActive = 'cms-active-level';
+   
+   /** html-class for opened subtree in a sitemap. */
+   var classTreeOpened = 'cms-opened';
+   
+   /** css-class for sitemap entries with subtree. */
+   var classTreeWithSubtree = 'cms-list-with-subtree';
+   
+   /** css-class for sitemap leafs. */
+   var classTreeWithoutSubtree = 'cms-list-without-subtree';
+   
+   /** Constant value for the sitemap margin. */
+   cms.galleries.constSitemapMargin = 22;
+  
    /**
     * Map of selected search criteria.
     *
@@ -140,11 +153,28 @@
                               cms.galleries.loadSearchResults();          
                           }}));
                           resultTab.find('.cms-result-criteria').css('display','none');
+                          
+                      
+                      /*resultTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
+                                                                    <label>&nbsp;</label>\
+                                                              </span>');
+                      resultTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
+                          values:[{value:'all_files',title:'All files'},
+                                  {value:'user_created',title:'Files created by me'},
+                                  {value:'user_modified',title:'Fieles last modified by me'}],
+                          width: 150,                          
+                          select: function($this, self, value){
+                              var tab = $(self).closest('div.cms-list-options').attr('id');
+                              cms.galleries.searchObject['locale'] = value;
+                              // send new search for given sort oder and refresh the result list
+                              // display the first pagination page for sorted results    
+                              //TODO implement function on selection          
+                          }}));  */                       
                              
                       // display the locale select box, if more then one locale is available
                       if (localesArray.length > 1) {
                           resultTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
-                                                                    <label>Sort by:&nbsp;</label>\
+                                                                    <label>Locale:</label>\
                                                               </span>');
                       resultTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
                           values:localesArray,
@@ -169,7 +199,7 @@
            addTabToList: function () {
                 $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_types'] + '">Types</a></li>');
            },
-           addTabHtml: function () { 
+           addTabHtml: function (param) { 
                           var typesTab = $(cms.galleries.htmlTabTypesSceleton);
                           typesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
                               values:[
@@ -201,7 +231,7 @@
           addTabToList: function () {
                $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_galleries'] + '">Galleries</a></li>');
            },
-          addTabHtml : function () {
+          addTabHtml : function (param) {
                               var galleriesTab = $(cms.galleries.htmlTabGalleriesSceleton);
                               galleriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
                                   values:[
@@ -234,7 +264,7 @@
           addTabToList: function () {
                $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_categories'] + '">Categories</a></li>');
            }, 
-          addTabHtml: function () {
+          addTabHtml: function (param) {
                               var categoriesTab = $(cms.galleries.htmlTabCategoriesSceleton);
                               categoriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
                                   values:[
@@ -267,13 +297,106 @@
           addTabToList: function () {
                $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_search'] + '">Full Text Search</a></li>');
            },
-          addTabHtml: function() {
+          addTabHtml: function(param) {
                           // add tabs html to tabs
                           $('#' + cms.galleries.idTabs).append(cms.galleries.htmlTabFTSeachSceleton);
                      },
           fillTab: function () {}                           
+      },
+      'cms_tab_vfs': {
+          addTabToList: function () {
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_vfs'] + '">Vfs Tree</a></li>');
+           },
+          addTabHtml: function(param) {
+                          // add tabs html to tabs
+                          $('#' + cms.galleries.idTabs).append(cms.galleries.htmlTabVfsTreeSceleton);
+                     },
+          fillTab: function () {}
+      },
+      'cms_tab_containertypes' :{
+          addTabToList: function () {
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_containertypes'] + '">Full Text Search</a></li>');
+           },
+          addTabHtml: function(param) {
+                          // add tabs html to tabs
+                          $('#' + cms.galleries.idTabs).append(cms.galleries.htmlTabContainerTypesSceleton);
+                     },
+          fillTab: function () {}
+      },
+      'cms_tab_sitemap' :{
+          addTabToList: function () {
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_sitemap'] + '">Sitemap</a></li>');
+           },
+          addTabHtml: function(localesArray) {
+                          var sitemapTab = $(cms.galleries.htmlTabSitemapSceleton);
+                          sitemapTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
+                          values:[
+                              {value: 'title_asc',title: 'Title Ascending'}, 
+                              {value: 'title_desc',title: 'Title Descending'}, 
+                              {value: 'type_asc',title: 'Type Ascending'}, 
+                              {value: 'type_desc',title: 'Type Descending'}, 
+                              {value: 'dateLastModified_asc',title: 'Date Ascending'},
+                              {value: 'dateLastModified_desc',title: 'Date Descending'},
+                              {value: 'path_asc',title: 'Path Ascending'},
+                              {value: 'path_desc',title: 'Path Descending'}
+                          ],
+                          width: 150,
+                          /* TODO: bind sort functionality */
+                          select: function($this, self, value){              
+                              cms.galleries.searchObject['sortorder'] = value;
+                              // send new search for given sort oder and refresh the result list
+                              // display the first pagination page for sorted results    
+                              cms.galleries.loadSearchResults();          
+                          }}));
+                          sitemapTab.find('.cms-result-criteria').css('display','none');
+                             
+                      // display the locale select box, if more then one locale is available
+                      if (localesArray.length > 1) {
+                          sitemapTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
+                                                                    <label>Locale:</label>\
+                                                              </span>');
+                      sitemapTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
+                          values:localesArray,
+                          width: 150,                          
+                          select: function($this, self, value){
+                              // TODO: implement select function
+                              var tab = $(self).closest('div.cms-list-options').attr('id');
+                              //cms.galleries.searchObject['locale'] = value;
+                              // send new search for given sort oder and refresh the result list
+                              // display the first pagination page for sorted results    
+                              //cms.galleries.loadSearchResults();          
+                          }}));
+                       // TODO: set the preselected locales from search object
+                     
+                      }
+                      // add tabs html to tabs
+                      $('#' + cms.galleries.idTabs).append(sitemapTab);
+
+                        
+                      $('#sitemap > ul').find('li.' + classTreeWithSubtree).live('click', function () {
+                          var sitemapUri = $(this).attr('alt');
+                          if ($(this).hasClass(classTreeOpened)) {
+                              var rootLevel = getEntryLevel(this);
+                              removeSubEntry(this, rootLevel);
+                              $(this).removeClass(classTreeOpened);
+                          } else {
+                              // TODO: provide the site root
+                              cms.galleries.loadSitemapEntry(sitemapUri,"/sites/default");
+                          }
+                       });                        
+                     },
+          fillTab: function () {
+              if (cms.galleries.searchCriteriaListsAsJSON.sitemap) {
+                 // TODO implement
+                 cms.galleries.fillSitemap(cms.galleries.searchCriteriaListsAsJSON.sitemap);
+                 // TODO: mark selected resource
+              } 
+          }
       }
    }
+   
+   
+   
    
    /** Saves the initial list of all available search criteria from server. */
    var searchCriteriaListsAsJSON = cms.galleries.searchCriteriaListsAsJSON = {};
@@ -297,7 +420,7 @@
    cms.galleries.classListOptions +
    '">\
                         <span class="cms-drop-down">\
-                            <label>Sort by:&nbsp;</label>\
+                            <label>Sort by:</label>\
                         </span>\
              </div>\
              <div id="results" class="cms-list-scrolling ui-corner-all result-tab-scrolling">\
@@ -345,7 +468,7 @@
                 </div>\
               </div>';
    
-   /** html fragment for the tab with the types' list. */
+   /** html fragment for the tab with the full text search. */
    var htmlTabFTSeachSceleton = cms.galleries.htmlTabFTSeachSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_search'] + '">\
              <div class="cms-search-panel ui-corner-all">\
                     <div class="cms-search-options"><b>Search the offline-index:</b></div>\
@@ -358,16 +481,39 @@
                         <div class="cms-checkbox-label">Title</div>\
                         <div id="searchInContent" class="cms-list-checkbox"></div>\
                         <div class="cms-checkbox-label">Content</div>\
-                    </div>\
+                    </div> -->\
                     <div class="cms-search-options">\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed after:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
-                    </div>-->\
+                   </div>\
+                   <div class="cms-search-options">\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Created after:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Created before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                    </div>\
                     <div class="cms-search-options">\
                         <button class="ui-state-default ui-corner-all cms-item-left-bottom">Search</button>\
                     </div>\
              </div>\
-          </div>';    
+          </div>'; 
+   
+   /** html fragment for the tab with vfs tree. */
+   var htmlTabVfsTreeSceleton = cms.galleries.htmlTabVfsTreeSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_vfs'] + '">\
+             <div class="cms-search-panel ui-corner-all">Vfs tree</div></div>'; 
+             
+   /** html fragment for the tab with container types. */
+   var htmlTabContainerTypesSceleton = cms.galleries.htmlTabContainerTypesSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_containertypes'] + '">\
+             <div class="cms-search-panel ui-corner-all">Container types</div></div>';
+             
+   /** html fragment for the tab with sitemap. */
+   var htmlTabSitemapSceleton = cms.galleries.htmlTabSitemapSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_sitemap'] + '">\
+                <div id="sitemapoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
+                    <span class="cms-drop-down">\
+                        <label>Sort by:</label>\
+                    </span>\
+                </div>\
+                <div id="sitemap" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
+                    <ul class="'+classScrollingInner+'"></ul>\
+                </div>\</div>';      
    
    /**
     * Init function for search/add dialog.
@@ -376,6 +522,17 @@
     */
    var initAddDialog = cms.galleries.initAddDialog = function(tabsContent, requestData) {       
       // handle the request parameter:
+      
+      // set the indices for the tabs
+      var tabIndex = 0;
+      cms.galleries.arrayTabIndexes[cms.galleries.arrayTabIds['cms_tab_results']] = tabIndex;
+      tabIndex = tabIndex + 1;                   
+      $.each(cms.galleries.initValues['tabs'], function () {
+          var tabId = this;
+          cms.galleries.arrayTabIndexes[this] = tabIndex;
+          tabIndex = tabIndex + 1; 
+      });
+      
       // initialize the search object and the initial search 
       var initSearchResult = null;          
       if (requestData) {
@@ -400,7 +557,7 @@
       $.each(cms.galleries.initValues['tabs'], function () {
           var tabId = this;
           tabs[tabId].addTabToList();
-          tabs[tabId].addTabHtml();
+          tabs[tabId].addTabHtml(localesArray);
       });
         
       // add preview to the galleries html
@@ -846,7 +1003,7 @@
       // switch on or to switch off the hierarchic view
       var classActive = '';
       if (option == 'path') {
-         classActive = 'cms-active-level';
+         classActive = classLevelActive;
       }
       //add the types to the list
       for (var i = 0; i < categories.length; i++) {                  
@@ -948,6 +1105,156 @@
          $("li[alt='" + this.typeid + "']").appendTo('#types > ul');
       });
    }
+   
+   var fillSitemap = cms.galleries.fillSitemap = function (/**JSON*/sitemap) {           
+      // get the rootEntry and append it to the sitemap window       
+      if (sitemap.rootEntry) {
+          var rootEntry = $(sitemap.rootEntry.itemhtml).appendTo('#sitemap > ul')
+              .attr('alt', sitemap.rootEntry.sitemapUri).addClass(classLevelActive + ' ' + classConstLevel + '0')
+              .css('margin-left',getLevelMargin(0,cms.galleries.constSitemapMargin));              
+          rootEntry.find('div[rel=""]').remove();
+          //rootEntry.find('.cms-list-itemcontent')
+          //        .append('<div class="cms-handle-button cms-select-item"></div>');
+          // add the Sub tree in the first level    
+          if (sitemap.rootEntry.hasSubEntries) {              
+              rootEntry.addClass(classTreeWithSubtree + ' ' + classTreeOpened).prepend('<div class="cms-tree-opener"></div>');
+              var subEntries = sitemap.rootEntry.subEntries;
+              for (var i = 0; i < subEntries.length; i++) {
+                  var subEntry = $(subEntries[i].itemhtml);                 
+                  rootEntry.after(subEntry);
+                  subEntry.attr('alt', subEntries[i].sitemapUri)
+                          .addClass(classLevelActive + ' ' + classConstLevel + 1)
+                          .css('margin-left',getLevelMargin(1,cms.galleries.constSitemapMargin))
+                          .prepend('<div class="cms-tree-opener"></div>');
+                  subEntry.find('div[rel=""]').remove();
+                  if (subEntries[i].hasSubEntries) {                      
+                      subEntry.addClass(classTreeWithSubtree);                      
+                  } else {
+                      subEntry.addClass(classTreeWithoutSubtree);
+                  }              
+              }   
+          }                  
+      }
+      // TODO do something to perfrom the search
+      /* cms.galleries.searchObject.isChanged.categories = true;*/
+   }
+      
+   /**
+    * Returns the calculated margin value for the given level and margin unit.
+    * 
+    * @param {Object} level
+    * @param {Object} margin
+    */
+   var getLevelMargin = function (/**Integer*/level,/**Integer*/ margin) {
+       return level * margin;
+   }
+   
+   /**
+    * Returns the indetion level of the selected entry.
+    * 
+    * @param {Object} liEntry the clicked html tag 
+    */
+   var getEntryLevel = function (/**Object*/ liEntry) {
+       var classAttr =  $(liEntry).attr('class');
+       if (classAttr.length > 0) {
+            var classAttr = classAttr.split(' ');        
+            for (var i = 0; i < classAttr.length; i++ ) {
+                var className = classAttr[i];                                 
+                if (classAttr[i].indexOf(classConstLevel) != -1) {
+                    var levelClass = classAttr[i]; 
+                    var firstIndex = levelClass.lastIndexOf('-') + 1;
+                    var level = levelClass.substring(firstIndex);                    
+                    return parseInt(level);                                     
+                }
+            }   
+       }
+                                              
+   }
+   
+   /**
+    * Removes the subentries of the given entry from the html. 
+    * Only the entries with the bigger indention level will be removed.
+    *  
+    * @param {Object} rootEntry
+    * @param {Object} rootLevel
+    */
+   var removeSubEntry = function (/**Object*/rootEntry, /**int*/ rootLevel) {
+       var subEntry =  $(rootEntry).next();
+       var subEntryLevel = getEntryLevel(subEntry);
+       while (parseInt(subEntryLevel) > parseInt(rootLevel)) {
+           $(subEntry).remove();
+           subEntry = $(rootEntry).next();
+           if (subEntry.length > 0) {
+               subEntryLevel = getEntryLevel(subEntry);    
+           } else {
+               subEntryLevel = rootLevel;    
+           }              
+       }       
+   }
+  
+  /**
+   * Loads the subentries to the given sitemap uri
+   * @param {Object} sitemapUri the sitemap uri of the selected entry
+   */ 
+  var loadSitemapEntry = cms.galleries.loadSitemapEntry  = function (/**String*/sitemapUri, siteRoot) {       
+       // TODO: siteRoot!!!
+       // TODO: locale from selectbox              
+       
+       $.ajax({
+         'url': cms.data.GALLERY_SERVER_URL,
+         'data': {
+            'action': 'SITEMAPENTRY',
+            'data': JSON.stringify({
+               'siteRoot': siteRoot,
+               'locale': 'en', 
+               'sitemapUri': sitemapUri
+            })
+         },
+         'type': 'POST',
+         'dataType': 'json',
+         'success': cms.galleries.refreshSitemap
+      });
+   }
+   
+   /**
+    * Callback function to refresh the subtry entries of the selected entry in the sitemap, after clicking on entry.
+    * 
+    * @param {Object} data the subentries of the selected entry
+    */
+   var refreshSitemap = cms.galleries.refreshSitemap = function (/**JSON object*/data) {
+       
+      // get the rootEntry and append it to the sitemap window       
+      if (data.sitemap.rootEntry) {        
+          var rootEntry = $('li[alt="' + data.sitemap.rootEntry.sitemapUri + '"]');
+          var rootLevel = getEntryLevel(rootEntry);          
+          // add the Sub tree in the first level    
+          if (data.sitemap.rootEntry.subEntries) {          
+              rootEntry.addClass(classTreeOpened);
+              var subEntries = data.sitemap.rootEntry.subEntries;
+              for (var i = 0; i < subEntries.length; i++) {
+                  var subEntry = $(subEntries[i].itemhtml);
+                  // TODO: the order of the entries
+                  rootEntry.after(subEntry);                  
+                  var subLevel = rootLevel + 1;                
+                  //TODO: bind click event to close the subtree                  
+                  subEntry.attr('alt', subEntries[i].sitemapUri)
+                          .addClass(classLevelActive + ' ' + classConstLevel + subLevel)
+                          .css('margin-left',getLevelMargin((subLevel < 12 ? subLevel : subLevel-5),cms.galleries.constSitemapMargin))
+                          .prepend('<div class="cms-tree-opener"></div>');
+                  subEntry.find('div[rel=""]').remove();
+                  if (subEntries[i].hasSubEntries) {                      
+                      subEntry.addClass(classTreeWithSubtree);
+                      // TODO: bind click event
+                  } else {
+                      subEntry.addClass(classTreeWithoutSubtree);
+                 }
+                 rootEntry = subEntry;                                               
+              }   
+          }                  
+      } 
+   } 
+   
+   
    
    /**
     * Adds the search criteria html to the result tab.
