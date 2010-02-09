@@ -175,11 +175,13 @@
          $('button.ui-state-active').trigger('click');
          // appending publish-dialog content
          $(document.body).append(cms.publish.publishDialog);
+         
          var buttons = {};
-         buttons[M.GUI_PUBLISH_DIALOG_OK_0] = function() {
+         buttons[M.GUI_PUBLISH_DIALOG_CANCEL_0] = function() {
             $(this).dialog('close');
          }
-         buttons[M.GUI_PUBLISH_DIALOG_CANCEL_0] = function() {
+         
+         buttons[M.GUI_PUBLISH_DIALOG_OK_0] = function() {
             $(this).dialog('close');
          }
          $('#' + cms.publish.publishDialogId).dialog({
@@ -268,6 +270,10 @@
    var directDeleteItem = cms.toolbar.directDeleteItem = /** void */ function() {
       var elemId = $(this).closest('.cms-editable').attr('rel');
       var buttons = {};
+      buttons[M.GUI_DIRECT_DELETE_CANCEL_0] = function() {
+         $(this).dialog('close');
+      }
+      
       buttons[M.GUI_DIRECT_DELETE_OK_0] = function() {
          $(this).dialog('close');
          cms.data.deleteResources([elemId], function(ok) {
@@ -295,9 +301,6 @@
          });
       }
       
-      buttons[M.GUI_DIRECT_DELETE_CANCEL_0] = function() {
-         $(this).dialog('close');
-      }
       $('<div id="cms-delete-dialog" style="display:none;" title="' + M.GUI_DIRECT_DELETE_TITLE_0 + '">\
           <p>\
             ' +
@@ -865,8 +868,8 @@
    var initFavDialog = cms.toolbar.initFavDialog = function() {
       $("#fav-edit").click(showFavDialog);
       var buttons = {};
-      buttons[M.GUI_FAV_EDIT_OK_0] = favEditOK;
       buttons[M.GUI_FAV_EDIT_CANCEL_0] = favEditCancel;
+      buttons[M.GUI_FAV_EDIT_OK_0] = favEditOK;
       $('#fav-dialog').dialog({
          width: 380,
          // height: 500,
@@ -1144,14 +1147,16 @@
          });
       };
       
+      
+      buttons[M.GUI_LEAVE_PAGE_CANCEL_0] = function() {
+         $(this).dialog('destroy');
+      };
+      
       buttons[M.GUI_LEAVE_PAGE_OK_0] = function() {
          $(this).dialog('destroy');
          leavePage(target);
       };
       
-      buttons[M.GUI_LEAVE_PAGE_CANCEL_0] = function() {
-         $(this).dialog('destroy');
-      };
       
       $('#cms-leave-dialog').dialog({
          autoOpen: true,
@@ -1479,7 +1484,7 @@
          self.button = makeWideButton('storage', M.GUI_STORAGE_BUTTON_TITLE_0, 'cms-icon-favorites');
          self.button.click(function() {
             toggleMode(self);
-         })
+         });
          return self.button;
       },
       menuId: cms.html.storageMenuId,
@@ -1690,15 +1695,16 @@
                return;
             }
             var buttons = {};
+            buttons[M.GUI_RESET_CANCEL_0] = function() {
+               $(this).dialog('destroy');
+            }
+            
             buttons[M.GUI_RESET_OK_0] = function() {
                $(this).dialog('destroy');
                reloadPage();
                
             }
             
-            buttons[M.GUI_RESET_CANCEL_0] = function() {
-               $(this).dialog('destroy');
-            }
             
             $('#cms-reset-dialog').dialog({
                autoOpen: true,
