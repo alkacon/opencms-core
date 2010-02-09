@@ -1026,6 +1026,33 @@
       return $parent.attr('id') == sitemapId && $parent.children().size() == 1;
    }
    
+   /**
+    * Helper function to deactivate a button in the toolbar
+    *
+    * @param {Object} elem the button DOM object to be deactivated
+    */
+   var deactivateButton = function(elem, info) {
+      var $elem = $(elem);
+      var w = $elem.outerWidth();
+      var h = $elem.outerHeight();
+      var pos = $elem.offset();
+      var toolbarOffset = $('#toolbar_content').offset();
+      var left = pos.left - toolbarOffset.left;
+      var top = pos.top - toolbarOffset.top;
+      var $overlay = $('<div/>').css({
+         'position': 'absolute',
+         'opacity': '0.5',
+         'background-color': '#888888',
+         'width': w,
+         'height': h,
+         'top': top,
+         'left': left,
+         'z-index': '999999'
+      });
+      $overlay.attr('title', info);
+      $overlay.appendTo('#toolbar_content');
+   }
+   
    
    
    /**
@@ -1125,6 +1152,8 @@
       $('#' + sitemapId + ' span.' + classOpener).live('click', function() {
          $(this).parent().toggleClass(classClosed);
       });
+      
+      
       if (canEdit) {
          //         $('a.cms-delete').live('click', deletePage);
          //         $('a.cms-new').live('click', newPage);
@@ -1189,6 +1218,17 @@
          
          $('#fav-edit').click(_editFavorites);
          $(window).unload(onUnload);
+      } else {
+      
+         var selector = cms.util.makeCombinedSelector(['save', 'subsitemap', 'add', 'new', 'recent', 'reset'], '#toolbar_content button[name=%]');
+         var $buttons = $(selector)
+         
+         $buttons.each(function() {
+            deactivateButton(this, 'BLARG');
+         });
+         
+         
+         
       }
       
       $('.cms-icon-triangle').live('click', function() {
@@ -3053,8 +3093,8 @@
                'width': '230px',
                'overflow': 'hidden'
             });
-
-
+            
+            
             var $editPathButton = $('<div/>', {
                'class': 'cms-edit cms-edit-enabled',
                css: {
@@ -3465,7 +3505,7 @@
             _setCheckboxEnabled(value != 'none');
             self.selectCallback();
          },
-         open: self.openCallback,
+         open: self.openCallback
       });
       $selectBox.css('white-space', 'normal');
       
