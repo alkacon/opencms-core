@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/09 10:17:18 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2010/02/09 11:28:49 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 7.6
  */
@@ -848,7 +848,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 if (currentPropertyConf != null) {
                     propType = currentPropertyConf.getPropertyType();
                 }
-                properties.put(key, CmsXmlContentPropertyHelper.getPropValuePaths(
+                properties.put(key, CmsXmlContentPropertyHelper.getPropValueIds(
                     cms,
                     propType,
                     jsonProps.optString(key)));
