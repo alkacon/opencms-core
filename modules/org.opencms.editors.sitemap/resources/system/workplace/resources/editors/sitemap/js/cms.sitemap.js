@@ -3024,6 +3024,7 @@
        */
       setEditedPath: function() {
          this.$li.addClass('cms-edited-path');
+         setSitemapChanged(true);
       },
       
       /**
@@ -3052,6 +3053,8 @@
                'width': '230px',
                'overflow': 'hidden'
             });
+
+
             var $editPathButton = $('<div/>', {
                'class': 'cms-edit cms-edit-enabled',
                css: {
