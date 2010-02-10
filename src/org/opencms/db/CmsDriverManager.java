@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/01/20 09:16:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/02/10 14:28:06 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -8218,26 +8218,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // only an anchor
                     continue;
                 }
-                CmsRelation originalRelation;
-                try {
-                    // get the target resource
-                    CmsResource target = readResource(dbc, link.getTarget(), CmsResourceFilter.ALL);
-                    originalRelation = new CmsRelation(resource, target, link.getType());
-                } catch (Exception e) {
-                    // if link is broken maintain name and default time window
-                    originalRelation = new CmsRelation(
-                        resource.getStructureId(),
-                        resource.getRootPath(),
-                        CmsUUID.getNullUUID(),
-                        link.getTarget(),
-                        link.getType());
-                }
+                CmsRelation originalRelation = new CmsRelation(
+                    resource.getStructureId(),
+                    resource.getRootPath(),
+                    link.getStructureId(),
+                    link.getTarget(),
+                    link.getType());
+
                 // do not write twice the same relation
                 if (writtenRelations.contains(originalRelation)) {
                     continue;
                 }
                 writtenRelations.add(originalRelation);
 
+                // TODO: it would be good to have the link locale to make the relation just to the right sibling
                 // create the relations in content for all siblings 
                 Iterator<CmsResource> itSiblings = readSiblings(dbc, resource, CmsResourceFilter.ALL).iterator();
                 while (itSiblings.hasNext()) {
