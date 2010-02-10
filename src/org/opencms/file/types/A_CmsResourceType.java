@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2010/01/25 09:43:26 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/02/10 10:45:37 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -960,12 +960,11 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);
             I_CmsResourceType type = getResourceType(file);
             // update the relations after writing!!
-            List<CmsLink> links = null;
             if (type instanceof I_CmsLinkParseable) {
                 // if the new type is link parseable
-                links = ((I_CmsLinkParseable)type).parseLinks(cms, file);
+                List<CmsLink> links = ((I_CmsLinkParseable)type).parseLinks(cms, file);
+                securityManager.updateRelationsForResource(cms.getRequestContext(), file, links);
             }
-            securityManager.updateRelationsForResource(cms.getRequestContext(), file, links);
             return file;
         }
         // folders can never be written like a file
