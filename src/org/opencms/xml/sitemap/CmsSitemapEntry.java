@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/02/09 10:17:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/02/10 14:28:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -107,7 +107,7 @@ public class CmsSitemapEntry {
         m_title = null;
         m_subEntries = Collections.<CmsSitemapEntry> emptyList();
         m_properties = null;
-        m_originalUri = uri;
+        m_originalUri = res.getRootPath();
         m_sitemap = false;
     }
 
