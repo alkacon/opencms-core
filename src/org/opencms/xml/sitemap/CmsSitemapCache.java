@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2010/02/03 15:10:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/02/10 14:27:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
@@ -272,6 +272,10 @@ public final class CmsSitemapCache extends CmsVfsCache {
             m_urisOnline.put(path, entry);
         } else {
             m_urisOffline.put(path, entry);
+        }
+        // if caching by path, also cache by id
+        if (!CmsUUID.isValidUUID(path)) {
+            setUri(entry.getId().toString(), entry, online);
         }
     }
 
