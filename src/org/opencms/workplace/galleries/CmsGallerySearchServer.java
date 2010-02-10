@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/02/09 11:05:35 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2010/02/10 09:10:53 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 7.6
  */
@@ -458,7 +458,10 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         title,
 
         /** The uri. */
-        sitemapUri
+        sitemapUri,
+
+        /** The site path of the resource. */
+        sitePath
     }
 
     /** Tab ids used for tab configuration. */
@@ -1253,6 +1256,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         JSONObject result = new JSONObject();
         result.put(SitemapKey.title.name(), entry.getTitle());
         result.put(SitemapKey.sitemapUri.name(), entry.getSitePath(cms));
+        result.put(SitemapKey.sitePath.name(), entry.getSitePath(cms));
 
         I_CmsResourceType resType = getResourceManager().getResourceType(cms.readResource(entry.getResourceId()));
         String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
