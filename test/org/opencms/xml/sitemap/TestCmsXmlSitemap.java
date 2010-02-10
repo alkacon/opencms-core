@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/sitemap/Attic/TestCmsXmlSitemap.java,v $
- * Date   : $Date: 2010/02/03 13:52:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/02/10 14:28:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.xml.sitemap;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -55,7 +56,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCmsXmlSitemap extends OpenCmsTestCase {
 
@@ -120,7 +121,7 @@ public class TestCmsXmlSitemap extends OpenCmsTestCase {
         CmsResource xsdResource = cms.readResource(xsdName);
         List<CmsRelation> relations = cms.getRelationsForResource(
             sitemapResource,
-            CmsRelationFilter.ALL.filterType(CmsRelationType.XSD));
+            CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
         assertEquals(1, relations.size());
         assertRelation(new CmsRelation(sitemapResource, xsdResource, CmsRelationType.XSD), relations.get(0));
 
@@ -129,7 +130,7 @@ public class TestCmsXmlSitemap extends OpenCmsTestCase {
         CmsResource entrypointResource = cms.readResource(entrypointName);
         relations = cms.getRelationsForResource(
             sitemapResource,
-            CmsRelationFilter.ALL.filterType(CmsRelationType.ENTRY_POINT));
+            CmsRelationFilter.TARGETS.filterType(CmsRelationType.ENTRY_POINT));
         assertEquals(1, relations.size());
         assertRelation(
             new CmsRelation(sitemapResource, entrypointResource, CmsRelationType.ENTRY_POINT),
@@ -140,12 +141,12 @@ public class TestCmsXmlSitemap extends OpenCmsTestCase {
         CmsResource cntPageResource = cms.readResource(cntPageName);
         relations = cms.getRelationsForResource(
             sitemapResource,
-            CmsRelationFilter.ALL.filterType(CmsRelationType.XML_STRONG));
+            CmsRelationFilter.TARGETS.filterType(CmsRelationType.XML_STRONG));
         assertEquals(1, relations.size());
         assertRelation(new CmsRelation(sitemapResource, cntPageResource, CmsRelationType.XML_STRONG), relations.get(0));
 
         // summarize all relations
-        relations = cms.getRelationsForResource(sitemapResource, CmsRelationFilter.ALL);
+        relations = cms.getRelationsForResource(sitemapResource, CmsRelationFilter.TARGETS);
         assertEquals(3, relations.size());
     }
 
@@ -157,11 +158,42 @@ public class TestCmsXmlSitemap extends OpenCmsTestCase {
     public void testLink() throws Exception {
 
         CmsObject cms = getCmsObject();
+
         String contentName = "/containerpage/content.html";
         CmsFile contentFile = cms.readFile(contentName);
+
+        // check before
+        String xsdName = "/containerpage/content.xsd";
+        CmsResource xsdResource = cms.readResource(xsdName);
+        List<CmsRelation> relations = cms.getRelationsForResource(
+            contentFile,
+            CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
+        assertEquals(1, relations.size());
+        assertRelation(new CmsRelation(contentFile, xsdResource, CmsRelationType.XSD), relations.get(0));
+        relations = cms.getRelationsForResource(contentFile, CmsRelationFilter.TARGETS);
+        assertEquals(1, relations.size());
+
+        // add link
         CmsXmlContent contentXml = CmsXmlContentFactory.unmarshal(cms, contentFile);
         I_CmsXmlContentValue contentValue = contentXml.getValue("Text", Locale.ENGLISH);
         contentValue.setStringValue(cms, "<a href='/'>sitemap link</a>");
         contentFile.setContents(contentXml.marshal());
+        cms.lockResource(contentName);
+        cms.writeFile(contentFile);
+
+        // check afterwards
+        relations = cms.getRelationsForResource(contentFile, CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
+        assertEquals(1, relations.size());
+        assertRelation(new CmsRelation(contentFile, xsdResource, CmsRelationType.XSD), relations.get(0));
+        relations = cms.getRelationsForResource(
+            contentFile,
+            CmsRelationFilter.TARGETS.filterType(CmsRelationType.HYPERLINK));
+        assertEquals(1, relations.size());
+        assertRelation(new CmsRelation(
+            contentFile,
+            OpenCms.getSitemapManager().getEntryForUri(cms, "/"),
+            CmsRelationType.HYPERLINK), relations.get(0));
+        relations = cms.getRelationsForResource(contentFile, CmsRelationFilter.TARGETS);
+        assertEquals(2, relations.size());
     }
 }

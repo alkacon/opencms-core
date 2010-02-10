@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2010/02/03 08:05:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/02/10 14:28:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.Comparator;
 
@@ -45,7 +46,7 @@ import java.util.Comparator;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.3.0 
  */
@@ -121,6 +122,18 @@ public class CmsRelation {
         m_targetId = ((targetId != null) ? targetId : CmsUUID.getNullUUID());
         m_targetPath = ((targetPath != null) ? targetPath : UNDEF);
         m_type = ((type != null) ? type : CmsRelationType.XML_WEAK);
+    }
+
+    /**
+     * Creates a new relation object of the given type between the give resource and sitemap entry.<p>
+     * 
+     * @param source the source resource
+     * @param target the target sitemap entry
+     * @param type the relation type
+     */
+    public CmsRelation(CmsResource source, CmsSitemapEntry target, CmsRelationType type) {
+
+        this(source.getStructureId(), source.getRootPath(), target.getId(), target.getRootPath(), type);
     }
 
     /**
