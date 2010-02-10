@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/09 10:17:18 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/02/10 14:28:14 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 7.9.2
  */
@@ -270,6 +270,36 @@ public class CmsSitemapManager {
     throws CmsException {
 
         return CmsXmlContentDefinition.getContentHandlerForResource(cms, resource).getProperties();
+    }
+
+    /**
+     * Returns the site entry for the given id, or <code>null</code> if not found.<p> 
+     * 
+     * @param cms the current CMS context
+     * @param id the id to look for
+     * 
+     * @return the site entry for the given id, or <code>null</code> if not found
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsSitemapEntry getEntryForId(CmsObject cms, CmsUUID id) throws CmsException {
+
+        // check the cache
+        boolean online = cms.getRequestContext().currentProject().isOnlineProject();
+        CmsSitemapEntry uriEntry = m_cache.getUri(id.toString(), online);
+        if (uriEntry != null) {
+            // found in cache
+            return uriEntry;
+        }
+
+        CmsObject cloneCms = OpenCms.initCmsObject(cms);
+        cloneCms.getRequestContext().setSiteRoot("");
+
+        CmsSitemapEntry entry = visitEntry(cloneCms, id, "/");
+        if ((entry != null) && entry.isSitemap()) {
+            return entry;
+        }
+        return null;
     }
 
     /**
@@ -643,5 +673,47 @@ public class CmsSitemapManager {
             path = path.substring(0, path.length() - 1);
         }
         return path;
+    }
+
+    /**
+     * Recursively visits the sitemap entries to find a match for the given id.<p>
+     * 
+     * @param cms the CMS context, should be in the root site
+     * @param id the id to search for
+     * @param path the starting URI (as root path)
+     * 
+     * @return the matching entry, or <code>null</code> if not found
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsSitemapEntry visitEntry(CmsObject cms, CmsUUID id, String path) throws CmsException {
+
+        CmsSitemapEntry entry = getEntryForUri(cms, path);
+        // check if found
+        if (entry.getId().equals(id)) {
+            return entry;
+        }
+        if (entry.isSitemap()) {
+            // sitemap case
+            for (CmsSitemapEntry subEntry : entry.getSubEntries()) {
+                CmsSitemapEntry found = visitEntry(cms, id, subEntry.getRootPath());
+                if (found != null) {
+                    return found;
+                }
+            }
+        } else {
+            // vfs case
+            List<CmsResource> subresources = cms.readResources(
+                path,
+                CmsResourceFilter.DEFAULT.addRequireFolder(),
+                false);
+            for (CmsResource subresource : subresources) {
+                CmsSitemapEntry found = visitEntry(cms, id, subresource.getRootPath());
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
     }
 }

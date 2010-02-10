@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2010/02/03 13:33:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/10 14:28:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsUriSplitter;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.Map;
 import java.util.Set;
@@ -59,7 +60,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,6 +222,17 @@ public class CmsLink {
      */
     public void checkConsistency(CmsObject cms) {
 
+        checkConsistency(cms, true);
+    }
+
+    /**
+     * Checks and updates the structure id or the path of the target.<p>  
+     * 
+     * @param cms the cms context
+     * @param checkSitemap if to also check the sitemap
+     */
+    public void checkConsistency(CmsObject cms, boolean checkSitemap) {
+
         if (!m_internal || (cms == null)) {
             return;
         }
@@ -230,18 +242,28 @@ public class CmsLink {
                 throw new CmsException(Messages.get().container(Messages.LOG_BROKEN_LINK_NO_ID_0));
             }
             // first look for the resource with the given structure id
-            CmsResource res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
-            if (!res.getRootPath().equals(m_target)) {
+            CmsSitemapEntry entry = null;
+            if (checkSitemap) {
+                entry = OpenCms.getSitemapManager().getEntryForId(cms, m_structureId);
+            }
+            String rootPath = null;
+            if (entry != null) {
+                rootPath = entry.getRootPath();
+            } else {
+                CmsResource res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
+                rootPath = res.getRootPath();
+            }
+            if (!rootPath.equals(m_target)) {
                 // update path if needed
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_BROKEN_LINK_UPDATED_BY_ID_3,
                         m_structureId,
                         m_target,
-                        res.getRootPath()));
+                        rootPath));
                 }
                 // set the new target
-                m_target = res.getRootPath();
+                m_target = rootPath;
                 setUri();
                 // update xml node
                 CmsLinkUpdateUtil.updateXml(this, m_element, true);
@@ -255,22 +277,35 @@ public class CmsLink {
                 return;
             }
             // go on with the resource with the given path
-            String siteRoot = cms.getRequestContext().getSiteRoot();
+            String siteTarget = cms.getRequestContext().removeSiteRoot(m_target);
             try {
-                cms.getRequestContext().setSiteRoot("");
                 // now look for the resource with the given path
-                CmsResource res = cms.readResource(m_target, CmsResourceFilter.ALL);
-                if (!res.getStructureId().equals(m_structureId)) {
+                CmsSitemapEntry entry = null;
+                if (checkSitemap) {
+                    entry = OpenCms.getSitemapManager().getEntryForUri(cms, siteTarget);
+                }
+                String rootPath = null;
+                CmsUUID id = null;
+                if (entry != null) {
+                    rootPath = entry.getRootPath();
+                    id = entry.getId();
+                } else {
+                    CmsResource res = cms.readResource(siteTarget, CmsResourceFilter.ALL);
+                    rootPath = res.getRootPath();
+                    id = res.getStructureId();
+                }
+
+                if (!id.equals(m_structureId)) {
                     // update structure id if needed
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_BROKEN_LINK_UPDATED_BY_NAME_3,
                             m_target,
                             m_structureId,
-                            res.getStructureId()));
+                            id));
                     }
-                    m_target = res.getRootPath(); // could change by a translation rule
-                    m_structureId = res.getStructureId();
+                    m_target = rootPath;
+                    m_structureId = id;
                     CmsLinkUpdateUtil.updateXml(this, m_element, true);
                 }
             } catch (CmsException e1) {
@@ -279,8 +314,6 @@ public class CmsLink {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROKEN_LINK_BY_NAME_1, m_target), e1);
                 }
                 m_structureId = null;
-            } finally {
-                cms.getRequestContext().setSiteRoot(siteRoot);
             }
         }
     }
