@@ -1,6 +1,7 @@
 <%@ page session="false" import="org.opencms.workplace.editors.sitemap.CmsSitemapActionElement, org.opencms.workplace.CmsWorkplace" %>
 <%@ page import="org.opencms.main.*" %>
 <%@ page import="org.opencms.workplace.galleries.*" %>
+<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
   CmsSitemapActionElement jsp = new CmsSitemapActionElement(pageContext, request, response);
@@ -42,7 +43,7 @@
          imagepreviewhandler: {}
       };
     </script>
-    <script type="text/javascript" src="<cms:link>%(link.weak:/system/workplace/editors/sitemap/cms.messages.jsp:b829e977-c865-11de-a457-ab20365f6268)</cms:link>"></script>
+    <script type="text/javascript" src="<cms:link>%(link.weak:/system/workplace/editors/sitemap/cms.messages.jsp:37c782f0-0b52-11df-b090-c30e96d87ec0)</cms:link>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.comm.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.html.js")%>"></script>
     <script type="text/javascript" src="<%=CmsWorkplace.getResourceUri("editors/ade/js/cms.data.js")%>"></script>
@@ -73,8 +74,9 @@
     <link rel="stylesheet" type="text/css" media="screen" href="<%=CmsWorkplace.getResourceUri("editors/ade/css/galleries.css")%>"/>
   </head>
   <body>
+    <fmt:setBundle basename="org.opencms.workplace.editors.sitemap.messages" />
     <div id="cms-main">
-      <h1 class="cms-headline">Sitemap-Editor</h1>
+      <h1 class="cms-headline"><fmt:message key="GUI_SITEMAP_EDITOR_TITLE_0"/></h1>
       <div class="cms-box ui-corner-all">
         <ul id="cms-sitemap"></ul>
         <div class="cms-clearer"></div>
