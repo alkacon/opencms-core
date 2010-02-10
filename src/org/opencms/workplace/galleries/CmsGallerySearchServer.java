@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/02/10 09:10:53 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2010/02/10 14:21:53 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 7.6
  */
@@ -658,8 +658,25 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     result.put(ResponseKey.searchresult.toString(), search(query));
                     break;
                 case PREVIEW:
+                    siteRoot = data.optString(SitemapKey.siteRoot.name());
                     resourcePath = data.getString(ItemKey.path.toString());
-                    result.put(ResponseKey.previewdata.toString(), getPreviewData(resourcePath));
+                    CmsObject cms = getCmsObject();
+                    CmsRequestContext context = cms.getRequestContext();
+
+                    boolean switchSites = false;
+                    String currentSiteRoot = context.getSiteRoot();
+
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot) && !currentSiteRoot.equals(siteRoot)) {
+                        switchSites = true;
+                        context.setSiteRoot(siteRoot);
+                    }
+                    try {
+                        result.put(ResponseKey.previewdata.toString(), getPreviewData(resourcePath));
+                    } finally {
+                        if (switchSites) {
+                            context.setSiteRoot(currentSiteRoot);
+                        }
+                    }
                     break;
                 case SETPROPERTIES:
                     resourcePath = data.getString(ItemKey.path.toString());
@@ -891,12 +908,13 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             JSONObject data = getReqDataObj();
             if (data != null) {
                 String resourcePath = data.optString(ItemKey.resourcepath.name());
-                String sitemapUri = data.optString(SitemapKey.sitemapUri.name());
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourcePath)) {
-                    result = findResourceInGallery(resourcePath);
-
-                } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sitemapUri)) {
-                    result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(sitemapUri, null, null, true));
+                    CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), resourcePath);
+                    if (entry.isSitemap()) {
+                        result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(resourcePath, null, null, true));
+                    } else {
+                        result = findResourceInGallery(resourcePath);
+                    }
                 } else {
                     JSONObject queryData = data.getJSONObject(QueryKey.querydata.name());
                     result.put(QueryKey.querydata.name(), queryData);
@@ -1187,6 +1205,8 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
      * @param targetUri the target uri
      * @param siteRoot the site to select
      * @param locale the sitemap locale
+     * @param startFromRoot flag if only a single sitemap entry is requested or the whole sitemap starting from root 
+     * 
      * @return the JSON representation of the sitemap
      * @throws CmsException if something goes wrong reading the sitemap entries
      * @throws JSONException if something goes wrong generating the JSON
@@ -1222,6 +1242,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
             result.put(SitemapKey.siteRoot.name(), context.getSiteRoot());
             result.put(SitemapKey.locale.name(), context.getLocale().toString());
             result.put(SitemapKey.rootEntry.name(), buildJSONForSitemapEntry(rootEntry, targetUri));
+
         } finally {
             if (switchSites) {
                 context.setSiteRoot(currentSiteRoot);
@@ -1256,7 +1277,6 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         JSONObject result = new JSONObject();
         result.put(SitemapKey.title.name(), entry.getTitle());
         result.put(SitemapKey.sitemapUri.name(), entry.getSitePath(cms));
-        result.put(SitemapKey.sitePath.name(), entry.getSitePath(cms));
 
         I_CmsResourceType resType = getResourceManager().getResourceType(cms.readResource(entry.getResourceId()));
         String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
@@ -1568,10 +1588,11 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     private JSONObject getPreviewData(String resourcePath) throws Exception {
 
         JSONObject result = new JSONObject();
-
+        CmsObject cms = getCmsObject();
+        CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resourcePath);
         // getting formatted content
         Map<String, Object> reqAttributes = new HashMap<String, Object>();
-        CmsResource resource = getCmsObject().readResource(resourcePath);
+        CmsResource resource = getCmsObject().readResource(sitemapEntry.getResourceId());
         I_CmsResourceType type = getResourceManager().getResourceType(resource.getTypeId());
         CmsGalleryItemBean reqItem = new CmsGalleryItemBean(resource);
         reqItem.setTypeId(resource.getTypeId());
