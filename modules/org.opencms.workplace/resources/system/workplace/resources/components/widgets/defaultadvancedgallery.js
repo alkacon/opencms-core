@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/02/09 11:05:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/02/10 15:16:22 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,10 +38,25 @@ var requestData;
 var ade = {};
 (function(ade) {
    // closes the gallery window 
-   ade.closeGallery=function(win, fieldId) {
+   ade.closeGallery = function(win, fieldId) {
       win.$(win.document.getElementById(fieldId + '-gallery')).dialog('destroy').remove();
       win.$('.cms-validation').trigger('validation');
    }
+   
+   /**
+    * Sets a JQuery UI dialog's position to fixed.
+    *
+    * @param {Object} $dialog the dialog whose position should be set to fixed
+    */
+   var fixDialogPosition = function($dialog) {
+      var $dlgWindow = $dialog.closest('.ui-dialog');
+      var top = ($(window).height() - $dlgWindow.height()) / 2;
+      $dlgWindow.closest('.ui-dialog').css({
+         'top': top + 'px',
+         'position': 'fixed'
+      });
+   }
+   
    
    // opens the default advanced gallery popup window
    ade.openDefaultAdvancedGallery = function(dialogMode, fieldId, idHash) {
@@ -62,7 +77,7 @@ var ade = {};
       // start tab id
       var startupTabId = eval('startupTabId' + idHash);
       // locale
-      var locale = eval('locale' + idHash);    
+      var locale = eval('locale' + idHash);
       
       // vfs path to selected resource from the input field, including scale parameter for the image
       var selectedPath = null;
@@ -72,7 +87,7 @@ var ade = {};
             selectedPath = itemField.value;
          }
       }
-           
+      
       var searchKeys = {
          'category': 'categories',
          'gallery': 'galleries'
@@ -104,7 +119,7 @@ var ade = {};
             requestData['querydata'][searchKeys[startupType]] = startupFolders;
          }
       }
-
+      
       
       var paramString = "dialogmode=" + dialogMode;
       paramString += "&fieldid=" + fieldId;
@@ -124,14 +139,14 @@ var ade = {};
          }
          
          var showFormats = eval('useFmts' + idHash);
-    	 var useFormats = false;
-    	 if (showFormats == true) {
-    		var formatNames = escape(eval('imgFmtNames' + idHash));
-    		var formatValues = eval('imgFmts' + idHash);
-    		if (formatNames.toString() != "null") {
-    			useFormats = showFormats;
-    		}
-    	 }
+         var useFormats = false;
+         if (showFormats == true) {
+            var formatNames = escape(eval('imgFmtNames' + idHash));
+            var formatValues = eval('imgFmts' + idHash);
+            if (formatNames.toString() != "null") {
+               useFormats = showFormats;
+            }
+         }
          
          // additional infos for image gallery
          initialImageInfos = {
@@ -144,23 +159,23 @@ var ade = {};
          };
          paramString += "&imagedata=" + JSON.stringify(initialImageInfos);
       }
-
+      
       var galleryWidgetUri = contextPath + defaultAdvancedGalleryPath + paramString;
-
+      
       var galleryId = fieldId + '-gallery';
       var galleryElem = document.getElementById(galleryId);
       if (!galleryElem) { // make sure the gallery isn't opened twice
          var $iframe = $('<iframe/>', {
-             'src': galleryWidgetUri,
-             'name': 'gallery-iframe',
-             'css': {
-                 'width': '100%',
-                 'height': '100%',
-                 'border': 'none',
-                 'overflow': 'hidden'
-             },
-             'frameborder': '0',
-             'framespacing': '0'
+            'src': galleryWidgetUri,
+            'name': 'gallery-iframe',
+            'css': {
+               'width': '100%',
+               'height': '100%',
+               'border': 'none',
+               'overflow': 'hidden'
+            },
+            'frameborder': '0',
+            'framespacing': '0'
          });
          var $iframeBox = $('<div/>').appendTo(document.body);
          $iframeBox.css({
@@ -189,12 +204,12 @@ var ade = {};
             height: 517 + ($.browser.msie ? 11 : 0)
          
          });
-         cms.util.fixDialogPosition($iframeBox);
+         fixDialogPosition($iframeBox);
       }
    }
    
    // opens a preview popup window to display the currently selected download
-   ade.previewDefault=function (fieldId) {
+   ade.previewDefault = function(fieldId) {
       var downUri = document.getElementById(fieldId).value;
       downUri = downUri.replace(/ /, "");
       if ((downUri != "") && (downUri.charAt(0) == "/")) {
