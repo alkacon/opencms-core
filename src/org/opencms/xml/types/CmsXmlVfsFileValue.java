@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2010/01/18 15:17:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/10 14:28:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.sitemap.CmsXmlSitemap;
 
 import java.util.Locale;
 
@@ -56,7 +57,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.0 
  */
@@ -177,7 +178,11 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(getPath()));
         CmsLink link = new CmsLink(linkElement);
         // link management check
-        link.checkConsistency(cms);
+        if (m_document instanceof CmsXmlSitemap) {
+            link.checkConsistency(cms, false);
+        } else {
+            link.checkConsistency(cms);
+        }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(link.getTarget())) {
             return null;
         }
