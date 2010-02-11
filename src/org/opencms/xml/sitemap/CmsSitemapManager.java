@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/11 10:21:50 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/02/11 10:43:03 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 7.9.2
  */
@@ -245,7 +245,7 @@ public class CmsSitemapManager {
     public CmsResource getDefaultTemplate(CmsObject cms, String sitemapUri, ServletRequest request) throws CmsException {
 
         //TODO: use the properties inherited from super-sitemaps to find the default template
-        CmsProperty prop = cms.readPropertyObject(sitemapUri, CmsPropertyDefinition.PROPERTY_SITEMAP_TEMPLATE, true);
+        CmsProperty prop = cms.readPropertyObject(sitemapUri, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
         String templatePath = prop.getValue();
         try {
             CmsResource resource = cms.readResource(templatePath);
@@ -426,7 +426,7 @@ public class CmsSitemapManager {
         // find the correct sitemap
         for (CmsRelation relation : cms.readRelations(CmsRelationFilter.TARGETS.filterType(CmsRelationType.ENTRY_POINT))) {
             if (rootUri.startsWith(relation.getTargetPath())) {
-                if ((bestMatch == null) || !bestMatch.getTargetPath().startsWith(relation.getTargetPath())) {
+                if ((bestMatch == null) || relation.getTargetPath().startsWith(bestMatch.getTargetPath())) {
                     bestMatch = relation;
                 }
             }

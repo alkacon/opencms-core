@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2010/02/09 10:17:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/02/11 10:43:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */
@@ -192,9 +192,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property for the secure transmission of resources. */
     public static final String PROPERTY_SECURE = "secure";
-
-    /** Property for the sitemap default template. */
-    public static final String PROPERTY_SITEMAP_TEMPLATE = "ade.sitemap.template";
 
     /** Property for the stylesheet of files. */
     public static final String PROPERTY_STYLESHEET = "stylesheet";
