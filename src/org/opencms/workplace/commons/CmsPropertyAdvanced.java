@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2009/09/14 11:45:33 $
- * Version: $Revision: 1.37.2.1 $
+ * Date   : $Date: 2010/02/11 10:20:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.37.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -939,8 +939,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
                 if (!lock.isNullLock()) {
                     // determine if resource is editable...
-                    if (lock.isExclusiveOwnedBy(getCms().getRequestContext().currentUser())
-                        || (lock.isDirectlyInherited() && lock.isOwnedBy(getCms().getRequestContext().currentUser()))) {
+                    if (lock.isDirectlyOwnedBy(getCms().getRequestContext().currentUser())) {
                         // lock is exclusive and belongs to the current user
                         if (lock.isInProject(getCms().getRequestContext().currentProject())
                             || Boolean.valueOf(getParamUsetempfileproject()).booleanValue()) {

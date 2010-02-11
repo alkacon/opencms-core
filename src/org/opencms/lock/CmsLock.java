@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2009/09/10 16:26:21 $
- * Version: $Revision: 1.32.2.1 $
+ * Date   : $Date: 2010/02/11 10:20:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.lock;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
@@ -45,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -225,6 +226,52 @@ public class CmsLock implements Comparable<CmsLock> {
     public boolean isDirectlyInherited() {
 
         return m_type.isDirectlyInherited();
+    }
+
+    /**
+     * Returns <code>true</code> if this is an exclusive, temporary exclusive, or 
+     * directly inherited lock, and the given user is the owner of this lock.<p>
+     * 
+     * @param user the user to compare to the owner of this lock
+     * 
+     * @return <code>true</code> if this is an exclusive, temporary exclusive, or 
+     *      directly inherited lock, and the given user is the owner of this lock
+     */
+    public boolean isDirectlyOwnedBy(CmsUser user) {
+
+        return (isExclusive() || isDirectlyInherited()) && isOwnedBy(user);
+    }
+
+    /**
+     * Returns <code>true</code> if this is an exclusive, temporary exclusive, or 
+     * directly inherited lock, and the current user is the owner of this lock,
+     * checking also the project of the lock.<p>
+     * 
+     * @param cms the CMS context to check
+     * 
+     * @return <code>true</code> if this is an exclusive, temporary exclusive, or 
+     *      directly inherited lock, and the current user is the owner of this lock
+     */
+    public boolean isDirectlyOwnedInProjectBy(CmsObject cms) {
+
+        return (isExclusive() || isDirectlyInherited())
+            && isOwnedInProjectBy(cms.getRequestContext().currentUser(), cms.getRequestContext().currentProject());
+    }
+
+    /**
+     * Returns <code>true</code> if this is an exclusive, temporary exclusive, or 
+     * directly inherited lock, and the given user is the owner of this lock,
+     * checking also the project of the lock.<p>
+     * 
+     * @param user the user to compare to the owner of this lock
+     * @param project the project to compare to the project of this lock
+     * 
+     * @return <code>true</code> if this is an exclusive, temporary exclusive, or 
+     *      directly inherited lock, and the given user is the owner of this lock
+     */
+    public boolean isDirectlyOwnedInProjectBy(CmsUser user, CmsProject project) {
+
+        return (isExclusive() || isDirectlyInherited()) && isOwnedInProjectBy(user, project);
     }
 
     /**

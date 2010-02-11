@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/02/03 13:48:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/02/11 10:20:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -812,7 +812,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     CmsLock lock = rootCms.getLock(filename);
                     if (lock.isUnlocked()) {
                         rootCms.lockResource(filename);
-                    } else if (!lock.isExclusiveOwnedBy(rootCms.getRequestContext().currentUser())) {
+                    } else if (!lock.isDirectlyOwnedInProjectBy(rootCms)) {
                         rootCms.changeLock(filename);
                     }
 

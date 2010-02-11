@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/11 10:20:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.4
  */
@@ -2219,7 +2219,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 CmsLock lock = cms.getLock(file);
                 if (lock.isUnlocked()) {
                     cms.lockResource(resName);
-                } else if (!lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser())) {
+                } else if (!lock.isDirectlyOwnedInProjectBy(cms)) {
                     cms.changeLock(resName);
                 }
                 // rewrite the file
