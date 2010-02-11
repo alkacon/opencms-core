@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/01/27 08:20:23 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/02/11 15:06:52 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 7.6
  */
@@ -239,10 +239,12 @@ public final class CmsElementUtil {
         resElement.put(JsonElement.formatters.name(), formatters);
 
         if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID) {
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
             CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(m_cms, resource, m_req);
             CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
                 m_cms,
                 m_cms.getRequestContext().getLocale());
+
             resElement.put(JsonElement.description.name(), subContainer.getDescription());
             JSONArray jTypes = new JSONArray();
             resElement.put(JsonElement.types.name(), jTypes);
@@ -251,7 +253,7 @@ public final class CmsElementUtil {
                     //TODO: use formatter to generate the 'empty'-content
                     String emptySub = "<div>NEW AND EMPTY</div>";
                     for (String type : types) {
-                        formatters.put(type, "formatter");
+                        formatters.put(type, resType.getFormatterForContainerType(m_cms, resource, type));
 
                         resContents.put(type, emptySub);
                     }
@@ -264,16 +266,17 @@ public final class CmsElementUtil {
                 for (String type : subContainer.getTypes()) {
                     jTypes.put(type);
                     if (types.contains(type)) {
-                        formatters.put(type, "formatter"); // empty formatters
+                        formatters.put(type, resType.getFormatterForContainerType(m_cms, resource, type)); // empty formatters
                         resContents.put(type, "<div>should not be used</div>"); // empty contents
                     }
                 }
             }
+
+            String jspResult;
             String defaultFormatter = OpenCms.getResourceManager().getResourceType(resource).getFormatterForContainerType(
                 m_cms,
                 resource,
                 CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE);
-            String jspResult;
             try {
                 jspResult = getElementContent(element, m_cms.readResource(defaultFormatter));
                 // set the results
