@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2010/02/03 15:10:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/02/11 13:56:59 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.9.2 
  * 
@@ -231,7 +231,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         // check if the current entry is in the navigation
         // inheriting parents properties
         boolean isInNavigation = Boolean.parseBoolean(entry.getProperties(true).get(
-            CmsSitemapManager.Property.navigation.name()));
+            CmsSitemapManager.Property.navigation.getName()));
         if (isInNavigation) {
             // navText and navPos determine if an entry is in the navigation
             properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, entry.getTitle());

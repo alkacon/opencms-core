@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/11 10:43:03 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/02/11 13:56:59 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 7.9.2
  */
@@ -82,10 +82,46 @@ public class CmsSitemapManager {
     /** Property name constants. */
     public enum Property {
 
+        /** <code>template</code> property name. */
+        template("template"),
+        /** <code>template-inhertited</code> property name. */
+        templateInherited("template-inhertited"),
         /** <code>navigation</code> property name. */
-        navigation,
+        navigation("navigation"),
         /** <code>sitemap</code> property name. */
-        sitemap;
+        sitemap("sitemap");
+
+        /** The name of the property. */
+        private final String m_name;
+
+        /**
+         * Default constructor.<p>
+         * 
+         * @param name the name of the property
+         */
+        private Property(String name) {
+
+            m_name = name;
+        }
+
+        /**
+         * Returns the name of the property.<p>
+         * 
+         * @return the name of the property
+         */
+        public String getName() {
+
+            return m_name;
+        }
+
+        /**
+         * @see java.lang.Enum#toString()
+         */
+        @Override
+        public String toString() {
+
+            return m_name;
+        }
     }
 
     /** Request attribute name constant for the current sitemap entry bean. */
@@ -634,8 +670,8 @@ public class CmsSitemapManager {
                 // clone & extend the properties
                 HashMap<String, String> entryProps = new HashMap<String, String>(parentEntry.getProperties());
                 // detail pages are NEVER shown in the navigation
-                entryProps.put(Property.navigation.name(), Boolean.FALSE.toString());
-                properties.put(Property.navigation.name(), Boolean.FALSE.toString());
+                entryProps.put(Property.navigation.getName(), Boolean.FALSE.toString());
+                properties.put(Property.navigation.getName(), Boolean.FALSE.toString());
                 // create entry
                 CmsSitemapEntry contentEntry = new CmsSitemapEntry(
                     parentEntry.getId(),
