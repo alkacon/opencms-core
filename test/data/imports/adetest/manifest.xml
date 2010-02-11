@@ -34,13 +34,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<relations>
-				<relation>
-					<id>53af9c5a-bc8a-11de-ad02-99487bd5b80a</id>
-					<path>/containerpage/content.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -90,13 +84,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<relations>
-				<relation>
-					<id>b9b0c444-81a5-11de-9b82-dd9f629b113b</id>
-					<path>/system/workplace/editors/ade/schemas/container_page.xsd</path>
-					<type>XSD</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
