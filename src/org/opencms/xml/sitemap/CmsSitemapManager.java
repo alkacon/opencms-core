@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/10 14:28:14 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/02/11 10:21:50 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 7.9.2
  */
@@ -295,6 +295,7 @@ public class CmsSitemapManager {
         CmsObject cloneCms = OpenCms.initCmsObject(cms);
         cloneCms.getRequestContext().setSiteRoot("");
 
+        // this is slow! :(
         CmsSitemapEntry entry = visitEntry(cloneCms, id, "/");
         if ((entry != null) && entry.isSitemap()) {
             return entry;
