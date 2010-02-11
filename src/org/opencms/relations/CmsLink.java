@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2010/02/11 10:21:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/02/11 13:56:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -238,6 +238,12 @@ public class CmsLink {
                 rootPath = res.getRootPath();
             } catch (CmsException e) {
                 CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForId(cms, m_structureId);
+                if (entry == null) {
+                    // not found
+                    throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
+                        org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
+                        m_target));
+                }
                 rootPath = entry.getRootPath();
             }
             if (!rootPath.equals(m_target)) {
