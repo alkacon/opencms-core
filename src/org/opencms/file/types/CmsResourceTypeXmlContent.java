@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2010/02/03 14:50:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/02/11 10:22:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -321,9 +321,18 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
             schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
         }
-        CmsLink xsdLink = new CmsLink(null, CmsRelationType.XSD, schema, true);
-        xsdLink.checkConsistency(cms);
-        links.add(xsdLink);
+        try {
+            CmsResource schemaRes = cms.readResource(cms.getRequestContext().removeSiteRoot(schema));
+            CmsLink xsdLink = new CmsLink(
+                null,
+                CmsRelationType.XSD,
+                schemaRes.getStructureId(),
+                schemaRes.getRootPath(),
+                true);
+            links.add(xsdLink);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
 
         // iterate over all languages
         List<Locale> locales = xmlContent.getLocales();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2010/02/10 14:28:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/02/11 10:21:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -60,7 +61,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -222,17 +223,6 @@ public class CmsLink {
      */
     public void checkConsistency(CmsObject cms) {
 
-        checkConsistency(cms, true);
-    }
-
-    /**
-     * Checks and updates the structure id or the path of the target.<p>  
-     * 
-     * @param cms the cms context
-     * @param checkSitemap if to also check the sitemap
-     */
-    public void checkConsistency(CmsObject cms, boolean checkSitemap) {
-
         if (!m_internal || (cms == null)) {
             return;
         }
@@ -242,16 +232,13 @@ public class CmsLink {
                 throw new CmsException(Messages.get().container(Messages.LOG_BROKEN_LINK_NO_ID_0));
             }
             // first look for the resource with the given structure id
-            CmsSitemapEntry entry = null;
-            if (checkSitemap) {
-                entry = OpenCms.getSitemapManager().getEntryForId(cms, m_structureId);
-            }
             String rootPath = null;
-            if (entry != null) {
-                rootPath = entry.getRootPath();
-            } else {
+            try {
                 CmsResource res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
                 rootPath = res.getRootPath();
+            } catch (CmsException e) {
+                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForId(cms, m_structureId);
+                rootPath = entry.getRootPath();
             }
             if (!rootPath.equals(m_target)) {
                 // update path if needed
@@ -280,20 +267,15 @@ public class CmsLink {
             String siteTarget = cms.getRequestContext().removeSiteRoot(m_target);
             try {
                 // now look for the resource with the given path
-                CmsSitemapEntry entry = null;
-                if (checkSitemap) {
-                    entry = OpenCms.getSitemapManager().getEntryForUri(cms, siteTarget);
+                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, siteTarget);
+                if (entry == null) {
+                    // not found
+                    throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
+                        org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
+                        m_target));
                 }
-                String rootPath = null;
-                CmsUUID id = null;
-                if (entry != null) {
-                    rootPath = entry.getRootPath();
-                    id = entry.getId();
-                } else {
-                    CmsResource res = cms.readResource(siteTarget, CmsResourceFilter.ALL);
-                    rootPath = res.getRootPath();
-                    id = res.getStructureId();
-                }
+                String rootPath = entry.getRootPath();
+                CmsUUID id = entry.getId();
 
                 if (!id.equals(m_structureId)) {
                     // update structure id if needed
