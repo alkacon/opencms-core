@@ -162,7 +162,7 @@
          $('input:checkbox', this.$widget).click(function() {
             self.setEnabled(true);
          });
-         this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>'+M.GUI_CHECKBOXWIDGET_DEFAULT_SWITCH_0+'</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
+         this.$defaultSwitch = $('<div class="cms-widget-defaultswitch"><span>' + M.GUI_CHECKBOXWIDGET_DEFAULT_SWITCH_0 + '</span>&nbsp;<input type="checkbox" value="true" name="defaultswitch" /></div>').appendTo(this.$widgetOverlay);
          $('input:checkbox', this.$defaultSwitch).change(function() {
             self.setEnabled($(this).closest('.cms-editable-field').hasClass('cms-default-value'));
             return false;
@@ -258,6 +258,9 @@
          window.contextPath = cms.data.CONTEXT;
          
          window.startupFolder_prop = getConfigValue(configuration.startupFolder, null);
+         window.startupTabId_prop = 'cms_tab_results';
+         window.locale_prop = cms.data.LOCALE;
+         
          window.startupFolders_prop = getConfigValue(configuration.startupFolders, null);
          window.startupType_prop = getConfigValue(configuration.startupType, 'gallery');
          window.resourceTypes_prop = getConfigValue(configuration.resourceTypes, [13]);
