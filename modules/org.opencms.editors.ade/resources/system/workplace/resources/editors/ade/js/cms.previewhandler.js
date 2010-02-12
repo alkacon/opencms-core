@@ -268,6 +268,7 @@
           });
           
           var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');
+          resType = resType != null ? resType : 'default'; 
           // save changes via ajax if there are any
           if (changes['properties'].length != 0) {
              $.ajax({
@@ -302,6 +303,7 @@
     */
    var saveAndSelectItem = function(/***Boolean*/isConfirmed) {
       var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');
+      resType = resType != null ? resType : 'default'; 
       if (isConfirmed) {
           var changedProperties = $('.cms-item-edit.cms-item-changed');      
           // build json object with changed properties

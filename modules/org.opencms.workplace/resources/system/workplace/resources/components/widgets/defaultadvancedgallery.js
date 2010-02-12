@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/02/10 15:16:22 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/02/12 13:56:27 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ var ade = {};
          'category': 'categories',
          'gallery': 'galleries'
       };
-      
+
       // Json object as request parameter for standard gallery
       // if input field is not empty
       if (selectedPath) {
@@ -204,7 +204,7 @@ var ade = {};
             height: 517 + ($.browser.msie ? 11 : 0)
          
          });
-         fixDialogPosition($iframeBox);
+        // fixDialogPosition($iframeBox);
       }
    }
    

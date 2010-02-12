@@ -2323,6 +2323,46 @@
 			<accesscontrol/>
 		</file>
         <file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/preview.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/preview.png</destination>
+			<type>image</type>
+			<uuidstructure>a1ab4ee6-1580-11df-b6e3-33343b134ce9</uuidstructure>
+			<uuidresource>a1ab4ee7-1580-11df-b6e3-33343b134ce9</uuidresource>
+			<datelastmodified>Tue, 09 Feb 2010 13:44:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 09 Feb 2010 13:40:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/preview_in.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/preview_in.png</destination>
+			<type>image</type>
+			<uuidstructure>3fe1c7b9-1581-11df-b6e3-33343b134ce9</uuidstructure>
+			<uuidresource>3fe1c7ba-1581-11df-b6e3-33343b134ce9</uuidresource>
+			<datelastmodified>Tue, 09 Feb 2010 13:44:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 09 Feb 2010 13:44:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/publish.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/publish.png</destination>
 			<type>image</type>

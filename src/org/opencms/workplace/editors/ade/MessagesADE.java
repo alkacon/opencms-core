@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/01/29 14:55:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/02/12 13:56:27 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6.0 
  */
@@ -292,6 +292,13 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FIREBUG_ACTIVE_TITLE_0 = "GUI_FIREBUG_ACTIVE_TITLE_0";
+
+    // cms.galleries.js
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_LABEL_SITEROOT_0 = "GUI_GALLERIES_DROP_DOWN_LABEL_SITEROOT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_LABEL_LOCALE_0 = "GUI_GALLERIES_DROP_DOWN_LABEL_LOCALE_0";
 
     // cms.imagepreviewhandler.js
     /** Message constant for key in the resource bundle. */

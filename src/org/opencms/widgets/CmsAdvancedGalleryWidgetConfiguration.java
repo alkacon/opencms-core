@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsAdvancedGalleryWidgetConfiguration.java,v $
- * Date   : $Date: 2010/02/09 11:05:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/02/12 13:56:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.5.0 
  */
@@ -189,7 +189,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         /** The button prefix for the containerpagegallery. */
         CONTAINER("html"),
 
-        /** The button prefix for the downloadgallery. */
+        /** The button prefix for the default gallery. */
         DEFAULT("html"),
 
         /** The button prefix for the downloadgallery. */
@@ -229,7 +229,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         TABS_IMAGEGALLERY("['cms_tab_galleries','cms_tab_categories','cms_tab_search']"),
 
         /** Tabs configuration for the sitemapgallery. */
-        TABS_SITEMAP("['cms_tab_galleries','cms_tab_categories','cms_tab_search','cms_tab_sitemap']");
+        TABS_SITEMAP("['cms_tab_categories','cms_tab_search','cms_tab_sitemap']");
 
         /** Property name. */
         private String m_name;

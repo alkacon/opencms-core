@@ -1,4 +1,7 @@
 ﻿(function(cms) {    
+   
+   /** Message bundle. */
+   var M = cms.messages;
 
    /** A map with all available content handlers. */
    var contentTypeHandlers = cms.galleries.contentTypeHandlers = {};
@@ -328,69 +331,68 @@
                $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_sitemap'] + '">Sitemap</a></li>');
            },
           addTabHtml: function(localesArray) {
-                          var sitemapTab = $(cms.galleries.htmlTabSitemapSceleton);
-                          sitemapTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
-                          values:[
-                              {value: 'title_asc',title: 'Title Ascending'}, 
-                              {value: 'title_desc',title: 'Title Descending'}, 
-                              {value: 'type_asc',title: 'Type Ascending'}, 
-                              {value: 'type_desc',title: 'Type Descending'}, 
-                              {value: 'dateLastModified_asc',title: 'Date Ascending'},
-                              {value: 'dateLastModified_desc',title: 'Date Descending'},
-                              {value: 'path_asc',title: 'Path Ascending'},
-                              {value: 'path_desc',title: 'Path Descending'}
-                          ],
-                          width: 150,
-                          /* TODO: bind sort functionality */
-                          select: function($this, self, value){              
-                              cms.galleries.searchObject['sortorder'] = value;
-                              // send new search for given sort oder and refresh the result list
-                              // display the first pagination page for sorted results    
-                              cms.galleries.loadSearchResults();          
-                          }}));
-                          sitemapTab.find('.cms-result-criteria').css('display','none');
-                             
+                      var sitemapTab = $(cms.galleries.htmlTabSitemapSceleton);
+ 
                       // display the locale select box, if more then one locale is available
                       if (localesArray.length > 1) {
                           sitemapTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
                                                                     <label>Locale:</label>\
                                                               </span>');
-                      sitemapTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
-                          values:localesArray,
-                          width: 150,                          
-                          select: function($this, self, value){
-                              // TODO: implement select function
-                              var tab = $(self).closest('div.cms-list-options').attr('id');
-                              //cms.galleries.searchObject['locale'] = value;
-                              // send new search for given sort oder and refresh the result list
-                              // display the first pagination page for sorted results    
-                              //cms.galleries.loadSearchResults();          
-                          }}));
-                       // TODO: set the preselected locales from search object
-                     
+                          sitemapTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
+                              values:localesArray,
+                              width: 150,
+                              select: function($this, self, value){
+                                  var sitemapUri = cms.galleries.searchCriteriaListsAsJSON.sitemap.rootEntry.sitemapUri;
+                                  var siteRoot = $( '#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:first')
+                                      .selectBox('getValue');
+                                  cms.galleries.loadSitemap(sitemapUri, siteRoot, value);         
+                          }
+                          }));                     
                       }
                       // add tabs html to tabs
                       $('#' + cms.galleries.idTabs).append(sitemapTab);
 
                         
-                      $('#sitemap > ul').find('li.' + classTreeWithSubtree).live('click', function () {
-                          var sitemapUri = $(this).attr('alt');
-                          if ($(this).hasClass(classTreeOpened)) {
-                              var rootLevel = getEntryLevel(this);
-                              removeSubEntry(this, rootLevel);
-                              $(this).removeClass(classTreeOpened);
-                          } else {
-                              // TODO: provide the site root
-                              cms.galleries.loadSitemapEntry(sitemapUri,"/sites/default");
-                          }
+                      $('#sitemap li.' + classTreeWithSubtree).find('div.cms-tree-opener').live('click', function (e) {
+                          e.stopPropagation();
+                          var selectLi = $(this).closest('li');
+                          var sitemapUri = selectLi.attr('alt');
+                          if (selectLi.hasClass(classTreeOpened)) {
+                              var rootLevel = getEntryLevel(selectLi);
+                              removeSubEntry(selectLi, rootLevel);
+                              selectLi.removeClass(classTreeOpened);
+                          } else {                              
+                              var siteRoot = $('#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:first')
+                                  .selectBox('getValue');
+                              var locale = $('#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:last')
+                                  .selectBox('getValue');    
+                              cms.galleries.loadSitemapEntry(sitemapUri, siteRoot, locale);
+                          }                          
                        });                        
                      },
           fillTab: function () {
+              //if ()
               if (cms.galleries.searchCriteriaListsAsJSON.sitemap) {
+                  // TODO: extend the siteRoot selectbox with the given list of the siteroots    
+                  var siteRoot = cms.galleries.searchCriteriaListsAsJSON.sitemap.siteRoot;
+                  var sitemapUri = cms.galleries.searchCriteriaListsAsJSON.sitemap.rootEntry.sitemapUri;
+                  $('#' + cms.galleries.arrayTabIds['cms_tab_sitemap'])
+                      .find('span.cms-drop-down:first label')
+                      .after($.fn.selectBox('generate',{
+                          values:[
+                              {value: siteRoot ,title: siteRoot}                             
+                          ],
+                          width: 150,
+                          select: function($this, self, value){
+                              var locale = $('#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:last')
+                                  .selectBox('getValue');
+                              cms.galleries.loadSitemap(sitemapUri, value, locale);         
+                          }                                               
+                      }));
                  // TODO implement
-                 cms.galleries.fillSitemap(cms.galleries.searchCriteriaListsAsJSON.sitemap);
+                 cms.galleries.fillSitemap(cms.galleries.searchCriteriaListsAsJSON);
                  // TODO: mark selected resource
-              } 
+              }                                         
           }
       }
    }
@@ -508,7 +510,7 @@
    var htmlTabSitemapSceleton = cms.galleries.htmlTabSitemapSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_sitemap'] + '">\
                 <div id="sitemapoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
-                        <label>Sort by:</label>\
+                        <label>' + M.GUI_GALLERIES_DROP_DOWN_LABEL_SITEROOT_0 + '</label>\
                     </span>\
                 </div>\
                 <div id="sitemap" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
@@ -537,7 +539,8 @@
       var initSearchResult = null;          
       if (requestData) {
           cms.galleries.setSearchObject(requestData);    
-          if (requestData['searchresult']) {
+          // set the initial search if there search results or sitemap entries
+          if (requestData['searchresult'] || requestData['sitemap']) {
               initSearchResult = requestData;
           }
       }
@@ -576,32 +579,44 @@
         },
         selected: cms.galleries.searchObject['tabid']    // should be the result tab, so the it does not have to switch
       });
-      
-      
-                  
+
       // removing ui-widget-header and ui-corner-all from ui-tabs-nav for layout reasons
       $('#' + cms.galleries.idGalleriesMain + ' .ui-tabs-nav').removeClass('ui-widget-header').removeClass('ui-corner-all');
                
-      // bind all other events at the end          
-      // bind click, dbclick events on items in criteria lists
-      $('#types li.cms-list, #galleries li.cms-list, #categories li.cms-list')
-          .live('dblclick', cms.galleries.dblclickListItem)
-          .live('click', cms.galleries.clickListItem);
-      // bind dbclick event to the items in the result list
-      $('#results li.cms-list').live('dblclick', cms.galleries.dblclickToShowPreview);
-      $('#results li.cms-list').live('click', cms.galleries.clickResultItem); 
-      
-      // load content of the search criteris tabs    
-      cms.galleries.loadSearchLists(tabsContent, initSearchResult);     
-          
+      // bind all other events at the end
       // bind hover event on items in criteria and result lists
       $('li.cms-list')
           .live('mouseover', function() {
              $(this).addClass(cms.galleries.classListItemHover);
           }).live('mouseout', function() {
              $(this).removeClass(cms.galleries.classListItemHover);
-      });        
+      }); 
+                
+      // click events on items in criteria lists
+      $('#types li.cms-list, #galleries li.cms-list, #categories li.cms-list')
+          .live('dblclick', cms.galleries.dblclickListItem)
+          .live('click', cms.galleries.clickListItem);
+      // click event on items in the result list
+      $('#results div.cms-preview-item').live('click', clickResultPreview );
+      // click event on select-button of the item in the result list(dialogmode = widget|editor)          
+      $('#results div.cms-select-item').live('click' , clickResultSelect );
+      $('#results li.cms-list, #sitemap li.cms-list').live('click', clickListItemToHightlight);
       
+      // bind the hover and click events to the ok button on the full text search tab 
+      $('.cms-search-options button').hover(function() {
+         $(this).addClass('ui-state-hover');
+      }, function() {
+         $(this).removeClass('ui-state-hover');
+      }).click(function() {
+         //switch to result tab index = 0
+         $('#' + cms.galleries.idTabs).tabs("enable", 0);
+         $('#' + cms.galleries.idTabs).tabs('select', 0);
+      });          
+      
+      // bind click event to the preview and select handle of the sitemap tab
+      $('#sitemap div.cms-select-item').live('click' , clickSitemapSelect);      
+      $('#sitemap div.cms-preview-item').live('click', clickSitemapPreview); 
+
       // add active class to checkbox of search tab  
       $('#searchInTitle, #searchInContent')
           .click(function() {
@@ -621,28 +636,75 @@
          
       // bind click events to the close button of the search criteria on the result tab            
       $('div.cms-search-remove').live('click', cms.galleries.removeCriteria);
+                        
+      $('.cms-item a.ui-icon').live('click', cms.galleries.toggleAdditionalInfo); 
       
-      // bind the hover and click events to the ok button on the full text search tab 
-      $('.cms-search-options button').hover(function() {
-         $(this).addClass('ui-state-hover');
-      }, function() {
-         $(this).removeClass('ui-state-hover');
-      }).click(function() {
-         //switch to result tab index = 0
-         $('#' + cms.galleries.idTabs).tabs("enable", 0);
-         $('#' + cms.galleries.idTabs).tabs('select', 0);
-      });          
-      
-      // bind click event to the select-button of the item in the result list(dialogmode = widget|editor)     
-      $('.cms-handle-button.cms-select-item').live('click',function(e){        
+      // load content of the search criteris tabs    
+      cms.galleries.loadSearchLists(tabsContent, initSearchResult);     
+          
+                            
+   }
+   
+   /**
+    * Callback function for clicking preview handle in the result list.
+    */
+   var clickResultPreview = function () {       
+          var resType = $(this).closest('li').data('type');               
+          var itemId = $(this).closest('li').attr('alt'); 
+          cms.galleries.clickToShowPreview(itemId, resType);                
+   }
+   
+   /**
+    * Callback function for clicking preview handle in the sitemap tree.
+    */
+   var clickSitemapPreview = function() {        
+        var resType = cms.galleries.getContentHandler()['type'];
+        var itemId = $(this).closest('li').attr('alt');
+        cms.galleries.clickToShowPreview(itemId, resType);
+    }
+   
+   /**
+    * Callbacl function for selecting resource from the result list.
+    * @param {Object} event the click event
+    */
+   var clickResultSelect = function(event) {
+          // avoid event propagation to the surround 'li'
+          event.stopPropagation();
           var resType = $(this).closest('li').data('type');               
           var itemId = $(this).closest('li').attr('alt');          
-          cms.galleries.getContentHandler()['setValuesFromList'][cms.galleries.initValues['dialogMode']](itemId);
-          // avoid event propagation to the surround 'li'
-          e.stopPropagation();                    
-      });
-           
-      $('.cms-item a.ui-icon').live('click', cms.galleries.toggleAdditionalInfo);                       
+          cms.galleries.getContentHandler()['setValuesFromList'][cms.galleries.initValues['dialogMode']](itemId);                            
+   }
+   
+   /**
+    * Callback function for select sitemap entry from list.
+    * 
+    * @param {Object} event the click event
+    */
+   var clickSitemapSelect = function(event) {
+       // avoid event propagation to the surround 'li'
+       event.stopPropagation();
+       var resType = cms.galleries.getContentHandler()['type'];               
+       var itemId = $(this).closest('li').attr('alt');          
+       cms.galleries.getContentHandler()['setValuesFromList'][cms.galleries.initValues['dialogMode']](itemId);                              
+   }
+   
+   /**
+    * Callback function for highlighting a list item on click.
+    * 
+    * @param {Object} event the click event
+    */
+   var clickListItemToHightlight = function (event) {
+           if (!event.isPropagationStopped()) {
+               var isSelected = $(this).hasClass('cms-list-item-active');
+               // deselect selected items
+               $('#results li, #sitemap li').toggleClass('cms-list-item-active', false);
+               // set the selection
+               if (isSelected) {
+                   $(this).toggleClass('cms-list-item-active', false);             
+               } else {
+                   $(this).toggleClass('cms-list-item-active', true);
+               }    
+           }                             
    }
          
    /**
@@ -652,11 +714,11 @@
     * @param {String} searchCriteria the given search criteria
     */
    var addCreteriaToTab = cms.galleries.addCreteriaToTab =  function(/** String*/content, /** String*/ searchCriteria) {
-      $('.cms-result-criteria').removeAttr('style');  
-      var target = $('<span id="selected' + searchCriteria + '" class="cms-criteria ui-widget-content ui-state-hover ui-corner-all"></span>')
-          .appendTo($('.cms-result-criteria'));
-      target.append('<div class="cms-search-title">' + content + '</div>')
-          .append('<div class="cms-search-remove ui-icon ui-icon-closethick ui-corner-all"></div>');
+      $('.cms-result-criteria').removeAttr('style');      
+          var target = $('<span id="selected' + searchCriteria + '" class="cms-criteria ui-widget-content ui-state-hover ui-corner-all"></span>')
+              .appendTo($('.cms-result-criteria'));
+          target.append('<div class="cms-search-title">' + content + '</div>')
+              .append('<div class="cms-search-remove ui-icon ui-icon-closethick ui-corner-all"></div>');       
    }
     
   /**
@@ -684,11 +746,17 @@
    
    /**
     * Fills the list in the search criteria tabs.
-    *
-    * @param {Object} JSON map object
+    * 
+    * @param {Object} data the content of the tabs
+    * @param {Object} message status message of the callback function in ajax call
+    * @param {Object} initSearchResult the initial search results for selected resource or sitemap entry
     */
    var fillCriteriaTabs = cms.galleries.fillCriteriaTabs = function(/**JSON*/data, message, initSearchResult) {       
       cms.galleries.searchCriteriaListsAsJSON = data;
+      // set the initial sitemap tree to the selected entry 
+      if (initSearchResult.sitemap) {
+          cms.galleries.searchCriteriaListsAsJSON.sitemap = initSearchResult.sitemap;
+      }
       $.each(cms.galleries.initValues['tabs'], function () {
           var tabId = this;
           tabs[tabId].fillTab();
@@ -893,16 +961,24 @@
       var target = $('#results > ul').empty().removeAttr('id').attr('id', cms.html.galleryResultListPrefix + pageData.searchresult.resultpage);
       $.each(pageData.searchresult.resultlist, function() {
           var resultElement=$(this.itemhtml).appendTo(target);
-          resultElement.attr('alt', this.path);                                     
-          resultElement.data('type', this.type);
+          resultElement.attr('alt', this.path)          
+              .data('type', this.type);
+          resultElement.find('.cms-list-itemcontent')
+              .append($('<div/>',{ 'class': "cms-handle-button"}));
+          resultElement.find('.cms-handle-button')
+              .append($('<div/>',{'class':'cms-preview-item'}));
           if(isSelectableItem()) {
-              resultElement.find('.cms-list-itemcontent')
-                  .append('<div class="cms-handle-button cms-select-item"></div>');
+              resultElement.find('.cms-handle-button').prepend($('<div/>',{'class':'cms-select-item'}));
+              
+              //.append(<div class="cms-select-item">&nbsp;</div><div class="cms-preview-item">&nbsp;</div></div>');
+                  //.append('<div class="cms-handle-button cms-select-item"></div>');
           }
           // if in ade container-page
          if ((cms.toolbar && cms.toolbar.toolbarReady) || cms.sitemap) {
-             resultElement.attr('rel', this.clientid);
-             resultElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
+             resultElement.attr('rel', this.clientid);             
+             resultElement.find('.cms-handle-button')
+              .prepend($('<div/>',{'class':'cms-move'}));
+             //resultElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
          }
          if (cms.sitemap) {
              cms.sitemap.initDragForGallery(this, resultElement);
@@ -911,9 +987,10 @@
       
       // if a resource is selected open the preview     
       if (cms.galleries.activeItem['path'] != null && cms.galleries.activeItem['path'] != "" ){
-          $('#results li.cms-list[alt=' + cms.galleries.activeItem['path'] + ']').trigger('click');              	                    
-          if (cms.galleries.activeItem['isInitial'] == true) {
-              $('#results li.cms-list[alt=' + cms.galleries.activeItem['path'] + ']').trigger('dblclick');
+          $('#results li.cms-list[alt="' + cms.galleries.activeItem['path'] + '"]').trigger('click');              	                    
+          
+          if (cms.galleries.activeItem['isInitial'] == true) {              
+              $('#results li.cms-list[alt="' + cms.galleries.activeItem['path'] + '"]').find('div.cms-preview-item').trigger('click');
           }
               	          
       } 
@@ -921,7 +998,7 @@
    
    /**
      * Sets the values of the search object.
-     * The parameter should look like: {'querydata': {'galleries':...,}', 'tabid':..,}
+     * The parameter should look like: {'querydata': {'galleries':...,}', 'tabid':..,''sitemap':{}}
      * @param {Object} requestData a JSON object with search object data 
      */
     var setSearchObject = cms.galleries.setSearchObject = function(/**JSON object*/requestData) {
@@ -955,22 +1032,28 @@
                     cms.galleries.searchObject['tabid'] = cms.galleries.arrayTabIndexes[requestData.querydata.tabid];
                 }
             }
-                if (cms.galleries.initValues['dialogMode'] == 'editor') {
+            
+            // set the sitemap tab, if sitemap entry was preselected
+            if(requestData.sitemap) {
+                cms.galleries.searchObject['tabid'] = cms.galleries.arrayTabIndexes['cms_tab_sitemap'];
+            }
+            
+            if (cms.galleries.initValues['dialogMode'] == 'editor') {
                     // Set the path to currently selected item            
                     if (cms.galleries.initValues['path'] != null && cms.galleries.initValues['path'] != 'null') {
                         cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
                         cms.galleries.activeItem['isInitial'] = true;
                     }
                     
-                } else if (cms.galleries.initValues['dialogMode'] == 'widget') {
-                    // Set the path to currently selected item            
-                    if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null' &&
+            } else if (cms.galleries.initValues['dialogMode'] == 'widget') {
+                // Set the path to currently selected item            
+                if (cms.galleries.initValues['fieldId'] != null && cms.galleries.initValues['fieldId'] != 'null' &&
                     cms.galleries.initValues['path'] != null &&
                     cms.galleries.initValues['path'] != 'null') {
                         cms.galleries.activeItem['path'] = cms.galleries.initValues['path'];
                         cms.galleries.activeItem['isInitial'] = true;
-                    }
                 }
+            }
         }
             
         
@@ -1084,7 +1167,11 @@
          var toolbarReady = cms.toolbar && cms.toolbar.toolbarReady;
          if (toolbarReady && $.inArray(typeName, cms.data.newTypes)>=0) {
              typeElement.attr('rel', typeName);
-             typeElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
+             typeElement.find('.cms-list-itemcontent')
+              .append($('<div/>',{ 'class': "cms-handle-button"}));
+             typeElement.find('.cms-handle-button')
+              .append($('<div/>',{'class':'cms-move'}));
+             //typeElement.find('.cms-list-itemcontent').append('<a class="cms-handle cms-move"></a>');
              if (cms.sitemap) {
                  cms.sitemap.initDragForGalleryType(types[i], typeElement);
              }
@@ -1106,37 +1193,110 @@
       });
    }
    
-   var fillSitemap = cms.galleries.fillSitemap = function (/**JSON*/sitemap) {           
+
+  /**
+   * Loads the sitemap opened to show the selected sitemap entri
+   * 
+   * @param {Object} sitemapUri the sitemap uri of the selected entry
+   * @param {Object} siteRoot the selected siteroot
+   * @param {Object} locale the selected locale
+   */ 
+  var loadSitemap = cms.galleries.loadSitemap  = function (sitemapUri, siteRoot, locale) {       
+       // TODO: siteRoot!!!
+       // TODO: locale from selectbox              
+       
+       $.ajax({
+         'url': cms.data.GALLERY_SERVER_URL,
+         'data': {
+            'action': 'SITEMAPTREE',
+            'data': JSON.stringify({
+               'siteRoot': siteRoot,
+               'locale': locale, 
+               'sitemapUri': sitemapUri
+            })
+         },
+         'type': 'POST',
+         'dataType': 'json',
+         'success': cms.galleries.fillSitemap
+      });
+   }
+   
+   /**
+    * Callback function dor displaying the the sitemap tree opened to show the selected entry.
+    * 
+    * @param {Object} data the sitemap data as JSON
+    */
+   var fillSitemap = cms.galleries.fillSitemap = function (/**JSON*/data) {           
+      
+      $('#sitemap > ul').children().remove();
       // get the rootEntry and append it to the sitemap window       
-      if (sitemap.rootEntry) {
-          var rootEntry = $(sitemap.rootEntry.itemhtml).appendTo('#sitemap > ul')
-              .attr('alt', sitemap.rootEntry.sitemapUri).addClass(classLevelActive + ' ' + classConstLevel + '0')
+      if (data.sitemap.rootEntry) {
+          var rootEntry = $(data.sitemap.rootEntry.itemhtml).appendTo('#sitemap > ul')
+              .attr('alt', data.sitemap.rootEntry.sitemapUri).addClass(classLevelActive + ' ' + classConstLevel + '0')
               .css('margin-left',getLevelMargin(0,cms.galleries.constSitemapMargin));              
           rootEntry.find('div[rel=""]').remove();
-          //rootEntry.find('.cms-list-itemcontent')
-          //        .append('<div class="cms-handle-button cms-select-item"></div>');
-          // add the Sub tree in the first level    
-          if (sitemap.rootEntry.hasSubEntries) {              
+          // add preview and select handle
+          rootEntry.find('.cms-list-itemcontent')
+              .append($('<div/>',{ 'class': "cms-handle-button"}));
+          rootEntry.find('.cms-handle-button')
+              .append($('<div/>',{'class':'cms-select-item'}))
+              .append($('<div/>',{'class':'cms-preview-item'}));
+          // set the siteRoot value and the locale from json
+          $( '#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:first').selectBox('setValue',data.sitemap.siteRoot);                
+          $( '#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:last').selectBox('setValue',data.sitemap.locale);
+          // add the sub tree in the first level    
+          if (data.sitemap.rootEntry.hasSubEntries) {              
               rootEntry.addClass(classTreeWithSubtree + ' ' + classTreeOpened).prepend('<div class="cms-tree-opener"></div>');
-              var subEntries = sitemap.rootEntry.subEntries;
+              var subEntries = data.sitemap.rootEntry.subEntries;
+              addSitemapLevel(subEntries, rootEntry, 1);             
+          }
+          // if a sitemap entry was preselected open the preview     
+          if (cms.galleries.activeItem['path'] != null && cms.galleries.activeItem['path'] != "" ){
+                             	                    
+                  if (cms.galleries.activeItem['isInitial'] == true) {
+                     $('#sitemap li.cms-list[alt="' + cms.galleries.activeItem['path'] + '"]').find('div.cms-preview-item').trigger('click');                                                 
+                  } else {
+                      $('#sitemap li.cms-list[alt="' + cms.galleries.activeItem['path'] + '"]').trigger('click');   
+                  }                	                            
+          }                    
+      }
+      // TODO do something to perfrom the search
+      /* cms.galleries.searchObject.isChanged.categories = true;*/
+   }
+   
+   
+   /**
+    * Displayes recusive the sitemap leaves.
+    * 
+    * @param {Object} subEntries the subentries of one tree level of the sitemap
+    * @param {Object} rootEntry the parent entry
+    * @param {Object} level the level inside the tree
+    */
+    var addSitemapLevel = cms.galleries.addSitemapLevel = function (/**JSON*/subEntries, /**Object*/ rootEntry, /**Integer*/level) {                                              
               for (var i = 0; i < subEntries.length; i++) {
                   var subEntry = $(subEntries[i].itemhtml);                 
                   rootEntry.after(subEntry);
                   subEntry.attr('alt', subEntries[i].sitemapUri)
-                          .addClass(classLevelActive + ' ' + classConstLevel + 1)
-                          .css('margin-left',getLevelMargin(1,cms.galleries.constSitemapMargin))
+                          .addClass(classLevelActive + ' ' + classConstLevel + level)
+                          .css('margin-left',getLevelMargin(level, cms.galleries.constSitemapMargin))
                           .prepend('<div class="cms-tree-opener"></div>');
                   subEntry.find('div[rel=""]').remove();
+                  // add preview and select handle
+                  subEntry.find('.cms-list-itemcontent')
+                      .append($('<div/>',{ 'class': "cms-handle-button"}));
+                  subEntry.find('.cms-handle-button')
+                      .append($('<div/>',{'class':'cms-select-item'}))
+                      .append($('<div/>',{'class':'cms-preview-item'}));
                   if (subEntries[i].hasSubEntries) {                      
-                      subEntry.addClass(classTreeWithSubtree);                      
+                      subEntry.addClass(classTreeWithSubtree);
+                      if (subEntries[i].subEntries) {
+                          subEntry.addClass(classTreeOpened);
+                          addSitemapLevel(subEntries[i].subEntries, subEntry, level+1);
+                      }                      
                   } else {
                       subEntry.addClass(classTreeWithoutSubtree);
-                  }              
-              }   
-          }                  
-      }
-      // TODO do something to perfrom the search
-      /* cms.galleries.searchObject.isChanged.categories = true;*/
+                  }                         
+      }     
    }
       
    /**
@@ -1196,8 +1356,7 @@
    * Loads the subentries to the given sitemap uri
    * @param {Object} sitemapUri the sitemap uri of the selected entry
    */ 
-  var loadSitemapEntry = cms.galleries.loadSitemapEntry  = function (/**String*/sitemapUri, siteRoot) {       
-       // TODO: siteRoot!!!
+  var loadSitemapEntry = cms.galleries.loadSitemapEntry  = function (/**String*/sitemapUri, siteRoot, locale) {       
        // TODO: locale from selectbox              
        
        $.ajax({
@@ -1206,7 +1365,7 @@
             'action': 'SITEMAPENTRY',
             'data': JSON.stringify({
                'siteRoot': siteRoot,
-               'locale': 'en', 
+               'locale': locale, 
                'sitemapUri': sitemapUri
             })
          },
@@ -1225,7 +1384,7 @@
        
       // get the rootEntry and append it to the sitemap window       
       if (data.sitemap.rootEntry) {        
-          var rootEntry = $('li[alt="' + data.sitemap.rootEntry.sitemapUri + '"]');
+          var rootEntry = $('li[alt="' + data.sitemap.rootEntry.sitemapUri + '"]');          
           var rootLevel = getEntryLevel(rootEntry);          
           // add the Sub tree in the first level    
           if (data.sitemap.rootEntry.subEntries) {          
@@ -1242,6 +1401,11 @@
                           .css('margin-left',getLevelMargin((subLevel < 12 ? subLevel : subLevel-5),cms.galleries.constSitemapMargin))
                           .prepend('<div class="cms-tree-opener"></div>');
                   subEntry.find('div[rel=""]').remove();
+                  subEntry.find('.cms-list-itemcontent')
+                      .append($('<div/>',{ 'class': "cms-handle-button"}));
+                  subEntry.find('.cms-handle-button')
+                      .append($('<div/>',{'class':'cms-select-item'}))
+                      .append($('<div/>',{'class':'cms-preview-item'}));
                   if (subEntries[i].hasSubEntries) {                      
                       subEntry.addClass(classTreeWithSubtree);
                       // TODO: bind click event
@@ -1292,14 +1456,14 @@
                        cms.galleries.addCreteriaToTab(titles, searchCriteria);
                    } else if (selectedLis.length > 1) {
                       $.each(selectedLis, function() {
-                      if (titles.length == 0) {
-                          titles = multipleSelect.concat($('li[alt=' + this + ']').find('.cms-list-title').text());
-                      } else {
-                          titles = titles.concat(", ").concat($('li[alt=' + this + ']').find('.cms-list-title').text());
-                      }
-                  });
-                  cms.galleries.addCreteriaToTab(titles, searchCriteria);
-               }
+                          if (titles.length == 0) {
+                              titles = multipleSelect.concat($('li[alt=' + this + ']').find('.cms-list-title').text());
+                          } else {
+                              titles = titles.concat(", ").concat($('li[alt=' + this + ']').find('.cms-list-title').text());
+                          }
+                      });
+                      cms.galleries.addCreteriaToTab(titles, searchCriteria);
+                   }
                cms.galleries.searchObject.isChanged[searchCriteria] = false;
                }              
             }
@@ -1517,44 +1681,31 @@
     * Callback function for click event on the item in the result list.
     */
    var clickResultItem = cms.galleries.clickResultItem = function () {       
-       var isSelected = $(this).hasClass('cms-list-item-active');
+      
+       //var isSelected = $(this.hasClass('cms-list-item-active');
        // deselect selected items
        $('#results li').toggleClass('cms-list-item-active', false);
-       if (isSelected) {
-           $(this).toggleClass('cms-list-item-active', false);             
+       if ($(this).hasClass('cms-list-item-active')) {
+           this.toggleClass('cms-list-item-active', false);             
        } else {
-           $(this).toggleClass('cms-list-item-active', true);
+           this.toggleClass('cms-list-item-active', true);
        }
+       
    }
    
   /** 
    * Callback function for dbclick event on the item in the result list.
-   * 
+   * @param {Object} element the selected clicked html element
    */
-  var dblclickToShowPreview = cms.galleries.dblclickToShowPreview = function() {      
-      // retrieve the resource id
-      var itemId = $(this).attr('alt');
-      
+  var clickToShowPreview = cms.galleries.clickToShowPreview = function(itemId, itemType) {      
       // set the resouce id as alt attribute and empty the content of the preview
       $('#cms-preview').attr('alt', itemId);  
-            
-      //$('#cms-preview div.preview-area,  #' + cms.previewhandler.keys['propertiesTabId']).empty();
-      //$('#' + cms.imagepreviewhandler.keys['formatTabId']).empty().remove();
-      //$('#' + cms.previewhandler.editableTabId).find('a[href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '"]').closest('li').remove();
-      
-      
-      
+
       // reset the active item object
       cms.galleries.resetActiveItem();
       
       // retrieve the resource type and load the preview      
-      var itemType = $(this).data('type');
-      loadItemPreview(itemId, itemType);
-      
-      //deselect items in the list and set active class to the item which was dblclicked
-      $('#result li.list-item').toggleClass('cms-list-item-active', false);
-      $(this).toggleClass('cms-list-item-active', true);
-       
+      loadItemPreview(itemId, itemType);                  
   } 
      
     /**
@@ -1564,7 +1715,7 @@
      * @param {Object} itemType the type of the resource
      */      
     var loadItemPreview = cms.galleries.loadItemPreview = function(/**String*/ itemId, /**String*/itemType) {
-      
+      itemType = itemType!=null ? itemType : ''; 
       $.ajax({
          'url': cms.data.GALLERY_SERVER_URL,
          'data': {
