@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2010/02/09 11:05:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/02/12 13:57:53 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.6
  */
@@ -125,7 +125,7 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 tabsConfig.put(CmsGallerySearchServer.TabId.cms_tab_galleries.toString());
                 tabsConfig.put(CmsGallerySearchServer.TabId.cms_tab_categories.toString());
                 tabsConfig.put(CmsGallerySearchServer.TabId.cms_tab_search.toString());
-                tabsConfig.put(CmsGallerySearchServer.TabId.cms_tab_sitemap.toString());
+                //tabsConfig.put(CmsGallerySearchServer.TabId.cms_tab_sitemap.toString());
 
                 galleryUri.append(tabsConfig.toString());
                 galleryUri.append("&");
