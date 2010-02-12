@@ -1835,7 +1835,7 @@
          var self = this;
          var entryObj = new SitemapEntry($entry.get(0));
          self.setTitle(entryObj.getTitle());
-         self.setPath(entryObj.getPath());
+         self.setPath(entryObj.getDisplayedUrl());
          self.$entry = $entry;
       },
       
@@ -2000,7 +2000,10 @@
             top: boxOffset.top + 10,
             left: boxOffset.left + 603
          });
-         this.esa.$frame.draggable();
+         this.esa.$frame.draggable({
+            handle: '.ui-widget-header'
+         
+         });
          this.button.addClass('ui-state-active');
       },
       
@@ -2829,6 +2832,12 @@
       getUrl: function() {
          return this.$item.find('span.cms-url').attr('alt');
       },
+      
+      getDisplayedUrl: function() {
+         return this.$item.find('span.cms-url').attr('title');
+      },
+      
+      
       
       /**
        * Recursively adjusts the URLs of the subtree starting at this sitemap entry.
