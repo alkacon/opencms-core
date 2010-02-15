@@ -5,13 +5,13 @@
     <EntryPoint>
       <link type="WEAK">
         <target><![CDATA[/sites/default/]]></target>
-        <uuid>cc11c869-0f28-11df-9dfe-d5d2a77384e9</uuid>
+        <uuid>60c7d68d-16f2-11df-8a7c-1159e84ec841</uuid>
       </link>
     </EntryPoint>
     <SiteEntry>
       <Id><![CDATA[f9a153c5-10a2-11df-9b07-d5d2a77384e9]]></Id>
       <Name/>
-      <Title><![CDATA[Testcase]]></Title>
+      <Title><![CDATA[Testcase Root]]></Title>
       <VfsFile>
         <link type="STRONG">
           <target><![CDATA[/sites/default/containerpage/index.html]]></target>
@@ -24,6 +24,36 @@
           <String><![CDATA[true]]></String>
         </Value>
       </Properties>
+      <SiteEntry>
+        <Id><![CDATA[bde7b37c-1a18-11df-8bc6-1159e84ec841]]></Id>
+        <Name><![CDATA[subsitemap]]></Name>
+        <Title><![CDATA[Testcase Root]]></Title>
+        <VfsFile>
+          <link type="STRONG">
+            <target><![CDATA[/sites/default/containerpage/index.html]]></target>
+            <uuid>53c2af31-bc8a-11de-ad02-99487bd5b80a</uuid>
+          </link>
+        </VfsFile>
+        <Properties>
+          <Name><![CDATA[navigation]]></Name>
+          <Value>
+            <String><![CDATA[true]]></String>
+          </Value>
+        </Properties>
+        <Properties>
+          <Name><![CDATA[sitemap]]></Name>
+          <Value>
+            <FileList>
+              <Uri>
+                <link type="WEAK">
+                  <target><![CDATA[/sites/default/sitemap/subsitemap]]></target>
+                  <uuid>ed2df165-1714-11df-bcb4-1159e84ec841</uuid>
+                </link>
+              </Uri>
+            </FileList>
+          </Value>
+        </Properties>
+      </SiteEntry>
     </SiteEntry>
   </AlkaconSitemap>
 </AlkaconSitemaps>

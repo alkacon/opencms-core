@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/sitemap/Attic/TestCmsXmlSitemap.java,v $
- * Date   : $Date: 2010/02/10 14:28:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/02/15 10:02:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsXmlSitemap extends OpenCmsTestCase {
 
@@ -84,6 +84,7 @@ public class TestCmsXmlSitemap extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsXmlSitemap("testUnmarshall"));
         suite.addTest(new TestCmsXmlSitemap("testLink"));
+        suite.addTest(new TestCmsXmlSitemap("testSubsitemap"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -137,17 +138,39 @@ public class TestCmsXmlSitemap extends OpenCmsTestCase {
             relations.get(0));
 
         // assert xml-strong relations
-        String cntPageName = "/containerpage/index.html";
-        CmsResource cntPageResource = cms.readResource(cntPageName);
         relations = cms.getRelationsForResource(
             sitemapResource,
             CmsRelationFilter.TARGETS.filterType(CmsRelationType.XML_STRONG));
         assertEquals(1, relations.size());
+        String cntPageName = "/containerpage/index.html";
+        CmsResource cntPageResource = cms.readResource(cntPageName);
         assertRelation(new CmsRelation(sitemapResource, cntPageResource, CmsRelationType.XML_STRONG), relations.get(0));
+
+        // assert xml-weak relations
+        String subsitemapName = "/sitemap/subsitemap";
+        CmsResource subsitemapResource = cms.readResource(subsitemapName);
+        relations = cms.getRelationsForResource(
+            sitemapResource,
+            CmsRelationFilter.TARGETS.filterType(CmsRelationType.XML_WEAK));
+        assertEquals(1, relations.size());
+        assertRelation(new CmsRelation(sitemapResource, subsitemapResource, CmsRelationType.XML_WEAK), relations.get(0));
 
         // summarize all relations
         relations = cms.getRelationsForResource(sitemapResource, CmsRelationFilter.TARGETS);
-        assertEquals(3, relations.size());
+        assertEquals(4, relations.size());
+    }
+
+    /**
+     * Tests accessing to access a subsitemap entry.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testSubsitemap() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, "/subsitemap/");
+        assertEquals("/sites/default/subsitemap/", entry.getRootPath());
     }
 
     /**

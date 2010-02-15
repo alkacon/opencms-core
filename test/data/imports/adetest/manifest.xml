@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.9.1</opencms_version>
-		<createdate>Wed, 03 Feb 2010 09:07:42 GMT</createdate>
+		<createdate>Thu, 11 Feb 2010 14:06:18 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -88,6 +88,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>containerpage/index2.html</source>
+			<destination>containerpage/index2.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>8d753e43-1714-11df-bcb4-1159e84ec841</uuidstructure>
+			<uuidresource>8d753e44-1714-11df-bcb4-1159e84ec841</uuidresource>
+			<datelastmodified>Mon, 19 Oct 2009 08:37:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 11 Feb 2010 13:51:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>sitemap</destination>
 			<type>folder</type>
 			<uuidstructure>9fc469f0-10a2-11df-9b07-d5d2a77384e9</uuidstructure>
@@ -106,7 +121,7 @@
 			<type>sitemap</type>
 			<uuidstructure>ad7c3962-10a2-11df-9b07-d5d2a77384e9</uuidstructure>
 			<uuidresource>ad7c3963-10a2-11df-9b07-d5d2a77384e9</uuidresource>
-			<datelastmodified>Wed, 03 Feb 2010 09:05:30 GMT</datelastmodified>
+			<datelastmodified>Thu, 11 Feb 2010 14:05:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 03 Feb 2010 09:01:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -117,6 +132,27 @@
 					<value><![CDATA[/system/workplace/editors/sitemap/sitemap.jsp]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sitemap/subsitemap</source>
+			<destination>sitemap/subsitemap</destination>
+			<type>sitemap</type>
+			<uuidstructure>ed2df165-1714-11df-bcb4-1159e84ec841</uuidstructure>
+			<uuidresource>ed2df166-1714-11df-bcb4-1159e84ec841</uuidresource>
+			<datelastmodified>Thu, 11 Feb 2010 14:05:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 11 Feb 2010 13:54:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/workplace/editors/sitemap/sitemap.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>
