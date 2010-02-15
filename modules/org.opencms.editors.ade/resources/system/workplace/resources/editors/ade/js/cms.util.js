@@ -464,9 +464,13 @@
       }
    }
    
-   
-   
-   
+   /**
+    * Reverses a string.
+    * @param {Object} s the string to reverse
+    */
+   var reverseString = cms.util.reverseString = function(s) {
+       return s.split('').reverse().join('');
+   }
    
    var dialogConfirm = cms.util.dialogConfirm = function(text, title, yesLabel, noLabel, callback) {
       var $dlg = $('<div/>').text(text).appendTo('body');

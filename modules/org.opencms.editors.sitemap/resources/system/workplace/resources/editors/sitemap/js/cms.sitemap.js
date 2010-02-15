@@ -950,18 +950,10 @@
    }
    
    
-   
-   
-   
-   
-   
-   
    var cutLastPathSegment = function(path) {
       path = path.replace(/\/$/, '');
       path = path.replace(/\/[^\/]*$/, '');
    }
-   
-   
    
    
    /**
@@ -1158,7 +1150,7 @@
          //         $('a.cms-delete').live('click', deletePage);
          //         $('a.cms-new').live('click', newPage);
          //         $('a.cms-edit').live('click', editPage);
-         $('#' + sitemapId + ' .cms-sitemap-entry:not(.cms-sub-sitemap-ref) > div.' + itemClass + ' h3').directInput({
+         $('#' + sitemapId + ' .cms-sitemap-entry:not(.cms-subsitemap-root) > div.' + itemClass + ' h3').directInput({
             marginHack: true,
             live: true,
             valueChanged: function() {
@@ -1967,11 +1959,7 @@
                cms.util.dialogAlert(M.ERR_SITEMAP_SUBSITEMAP_SELECTION_INVALID_0, M.SITEMAP_ERROR_SUBSITEMAP_SELECTION_ERROR_TITLE);
                return;
             }
-            
             var sitemap = [entryObj.serialize(false)];
-            // No url name for root of new sub-sitemap
-            sitemap[0].name = '';
-            
             cms.data.createSitemap(sitemap, entryObj.getTitle(), function(ok, data) {
                if (!ok) {
                   return;
@@ -1984,11 +1972,21 @@
                $element.children('.' + classOpener).remove();
                var entryObj = new SitemapEntry($element);
                entryObj.setSitemap(path);
-               entryObj.setProperties({});
                setSitemapChanged(true);
+               var sitemap = serializeSitemap($('#' + sitemapId));
+               cms.data.saveSitemap(sitemap, function() {
+                              });
             });
          }
-         this.esa = new EntrySelectionArea('#' + sitemapId + ' .' + itemClass, 'cms-subsitemap-entry-selected', convertToSubsitemap);
+         var _confirmConvertToSubsitemap = function($element) {
+            cms.util.dialogConfirm(M.GUI_SITEMAP_CONFIRM_CREATE_SUBSITEMAP_0, M.GUI_SITEMAP_CONFIRM_CREATE_SUBSITEMAP_TITLE_0, M.GUI_SITEMAP_CONFIRM_CREATE_SUBSITEMAP_OK_0, M.GUI_SITEMAP_CONFIRM_CREATE_SUBSITEMAP_CANCEL_0, function() {
+               convertToSubsitemap($element);
+            });
+         }
+         
+         
+         
+         this.esa = new EntrySelectionArea('#' + sitemapId + ' .' + itemClass, 'cms-subsitemap-entry-selected', _confirmConvertToSubsitemap);
          this.esa.setCloseHandler(function() {
             $('button[name=' + self.name + '].ui-state-active').trigger('click');
          });
@@ -2461,6 +2459,8 @@
       if (data.superSitemap.length == 0) {
          // this sitemap is the root sitemap if and only if it does have a super sitemap
          $('#' + sitemapId).children('.' + classSitemapEntry).addClass('cms-root-sitemap');
+      } else {
+          $('#' + sitemapId).children('.' + classSitemapEntry).addClass('cms-subsitemap-root');
       }
       var $sitemapLink = _buildSitemapLink(data.superSitemap);
       $('#cms-main > .cms-box').prepend($sitemapLink);
@@ -2961,15 +2961,16 @@
          var entryData = getEntryData(this.$li);
          entryData.sitemap = newValue;
          setEntryData(this.$li, entryData);
+         this.addSitemapLink(newValue);
          
-         var $link = $('<a/>').addClass(classSubSitemapLink);
-         $link.text(M.GUI_SITEMAP_LINK_GO_TO_SUBSITEMAP_0);
-         $link.attr('href', cms.data.CONTEXT + newValue);
-         $link.appendTo(this.$item.find('.' + classAdditionalInfo));
+//         var $link = $('<a/>').addClass(classSubSitemapLink);
+//         $link.text(M.GUI_SITEMAP_LINK_GO_TO_SUBSITEMAP_0);
+//         $link.attr('href', cms.data.CONTEXT + newValue);
+//         $link.appendTo(this.$item.find('.' + classAdditionalInfo));
          this.$li.droppable('destroy');
       },
       
-      //            /**
+      //      /**
       //       * Sets the sub-sitemap id
       //       * @param {Object} newValue the new value of the sub-sitemap id
       //       */
@@ -2995,6 +2996,14 @@
        */
       isRootOfRootSitemap: function() {
          return this.$li.hasClass('cms-root-sitemap');
+      },
+      
+      
+      /**
+       * Returns true if this entry is the root of a sub-sitemap.
+       */
+      isRootOfSubSitemap: function() {
+         return this.$li.hasClass('cms-subsitemap-root');
       },
       
       /**
@@ -3073,11 +3082,60 @@
          setSitemapChanged(true);
       },
       
+      addLink: function(label, uri) {
+         var self = this;
+         var $item = self.$item;
+         var fullUri = removeDuplicateSlashes(cms.data.CONTEXT + '/' + uri);
+         var $additionalItem = $('<div class="cms-additional-item/>');
+         var $title = $('<span class="cms-additional-item-title"/>').text(label);
+         var $value = $('<a class="cms-additional-item-value"/>').text(uri).attr('alt', uri).attr('title', uri).attr('href', fullUri);
+         $value.css({
+            'text-decoration': 'underline'
+         });
+         $additionalItem.append($title).append($value).appendTo($item.find('.cms-additional'));
+      },
+      
+      addSitemapLink: function(uri) {
+         var self = this;
+         var $item = self.$item;
+         var fullUri = removeDuplicateSlashes(cms.data.CONTEXT + '/' + uri);
+         var $additionalItem = $('<div class="cms-additional-item/>');
+         
+         var $title = $('<span class="cms-additional-item-title"/>').text(M.GUI_SITEMAP_ADDINFO_SUBSITEMAP_0);
+         var abbrevUri = genericAbbreviate(uri, getDivWidth, 220);
+         var $value = $('<span class="cms-additional-item-value"/>').text(abbrevUri).attr('alt', uri).attr('title', uri);
+         
+         var $navButton = $('<div class="cms-sitemapnav"/>').css({
+             'width': '20px',
+             'height': '20px',
+             'float': 'right',
+             'margin-top': '-18px'
+         });
+         $navButton.click(function() {
+             window.location.href = fullUri;
+         });
+         $additionalItem.css('margin-top', '5px');
+         $additionalItem.append($title).append($value).append($navButton).appendTo($item.find('.cms-additional'));
+      },
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       /**
        * Makes a sitemap entry editable.
        */
       makeEditable: function() {
+         
          var self = this;
+         if (self.isRootOfSubSitemap()) {
+             return;
+         }
          var $item = self.$item;
          var $li = self.$li;
          if (!$li.hasClass('cms-editable-entry')) {
@@ -3881,6 +3939,18 @@
       }
       return text;
    }
+   
+   /**
+    * Does the same thing as genericAbbreviate, but cuts off characters from the front of the text instead of the back.
+    * @param {Object} text the text to abbreviate
+    * @param {Object} getWidth the function to measure the width of a text
+    * @param {Object} maxWidth the maximum width
+    * @return the original text if it's shorter than maxWidth, or an abbreviated string which consists of a prefix of the original text combined with '...'
+    */
+   var reverseAbbreviate = function(text, getWidth, maxWidth) {
+       return cms.util.reverseString(genericAbbreviate(cms.util.reverseString(text), getWidth, maxWidth));
+   }
+   
    
    /** 
     * Removes duplicate slashes from a string (which may occur after concatenating paths).

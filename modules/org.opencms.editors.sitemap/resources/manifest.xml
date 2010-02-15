@@ -2422,6 +2422,57 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        
+   		<file>
+			<source>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_sitemapnav_a.png</source>
+			<destination>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_sitemapnav_a.png</destination>
+			<type>image</type>
+			<uuidstructure>586a2140-1a20-11df-aff0-5d59278449f1</uuidstructure>
+			<uuidresource>586a2141-1a20-11df-aff0-5d59278449f1</uuidresource>
+			<datelastmodified>Mon, 15 Feb 2010 10:53:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Feb 2010 10:53:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ocms_de_sitemapnav_a]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        
+		<file>
+			<source>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_sitemapnav_i.png</source>
+			<destination>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_sitemapnav_i.png</destination>
+			<type>image</type>
+			<uuidstructure>6166d9a6-1a20-11df-aff0-5d59278449f1</uuidstructure>
+			<uuidresource>6166d9a7-1a20-11df-aff0-5d59278449f1</uuidresource>
+			<datelastmodified>Mon, 15 Feb 2010 10:53:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Feb 2010 10:53:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ocms_de_sitemapnav_i]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        
 		<file>
 			<source>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_subsitemap_a.png</source>
 			<destination>system/workplace/resources/editors/sitemap/css/images/16x16/ocms_de_subsitemap_a.png</destination>

@@ -306,6 +306,16 @@
 	background: transparent url(images/16x16/ocms_de_gotopage_a.png) no-repeat scroll 50% 50%;
 }
 
+
+.cms-sitemapnav {
+	background: transparent url(images/16x16/ocms_de_sitemapnav_i.png) no-repeat scroll 50% 50%;
+}
+
+.cms-sitemapnav:hover {
+	background: transparent url(images/16x16/ocms_de_sitemapnav_i.png) no-repeat scroll 50% 50%;
+}
+
+
 .ui-state-default .cms-icon-subsitemap {
 	background-image: url(images/24x24/ade_subsitemap_sw.png) !important;
 	width: 24px;
@@ -398,14 +408,14 @@ div.ui-widget-header a.cms-subsitemap {
 	background-color:  orange;
 }	
 
-.cms-sub-sitemap-ref > .cms-sitemap-item .cms-additional-item[rel=path], .cms-sub-sitemap-ref > .cms-sitemap-item .cms-additional-item[rel=url] {
+/*.cms-sub-sitemap-ref > .cms-sitemap-item .cms-additional-item[rel=path], .cms-sub-sitemap-ref > .cms-sitemap-item .cms-additional-item[rel=url] {
 	display: none;
 }
+*/
 
-
-.cms-sub-sitemap-ref > .cms-sitemap-item h3 {
+/*.cms-sub-sitemap-ref > .cms-sitemap-item h3 {
 	color: #888888;
-}
+}*/
 
 #cms-new-list .cms-icon-triangle {
 	display: none;
