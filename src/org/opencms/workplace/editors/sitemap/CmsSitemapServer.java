@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/09 11:28:49 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2010/02/15 09:08:59 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.A_CmsAjaxServer;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
@@ -84,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 7.6
  */
@@ -705,14 +706,18 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         JSONObject result = new JSONObject();
         CmsObject cms = getCmsObject();
+        // find current site templates
         List<CmsResource> templates = cms.readResources(
             "/",
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(CmsResourceTypeJsp.getContainerPageTemplateTypeId()),
             true);
-        templates.addAll(cms.readResources(
-            "/system/",
-            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(CmsResourceTypeJsp.getContainerPageTemplateTypeId()),
-            true));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot())) {
+            // if not in the root site, also add template under /system/
+            templates.addAll(cms.readResources(
+                CmsWorkplace.VFS_PATH_SYSTEM,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(CmsResourceTypeJsp.getContainerPageTemplateTypeId()),
+                true));
+        }
         Iterator<CmsResource> templateIt = templates.iterator();
         while (templateIt.hasNext()) {
             CmsResource template = templateIt.next();
@@ -848,10 +853,9 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 if (currentPropertyConf != null) {
                     propType = currentPropertyConf.getPropertyType();
                 }
-                properties.put(key, CmsXmlContentPropertyHelper.getPropValueIds(
-                    cms,
-                    propType,
-                    jsonProps.optString(key)));
+                properties.put(
+                    key,
+                    CmsXmlContentPropertyHelper.getPropValueIds(cms, propType, jsonProps.optString(key)));
             }
             JSONArray jsonSub = json.optJSONArray(JsonSiteEntry.subentries.name());
             CmsSitemapEntry entry = new CmsSitemapEntry(id, null, linkId, name, title, properties, recursive
