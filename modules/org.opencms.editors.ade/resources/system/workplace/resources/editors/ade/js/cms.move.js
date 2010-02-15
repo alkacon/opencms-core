@@ -24,14 +24,14 @@
       this.isLoading = false;
       this.runningRequest = null;
       this.loadingResourceId = null;
-      this.hasStoped = false;
+      this.hasStopped = false;
       this.origPlaceholder = null;
       this.startId = null;
       this.over = null;
       this.overflowElem = null;
       this.preparing = true;
       this.movingSubcontainer = false;
-      this.sortingData={};
+      this.sortingData = {};
       
       this.isMoveFromFavorites = function() {
          return this.startId == cms.html.favoriteListId;
@@ -53,9 +53,55 @@
          return this.currentContainerId == cms.html.favoriteDropListId;
       }
       
+      
       this.shouldAddToRecent = function() {
          return !(this.isMoveToFavorites() || this.isMoveFromNew());
       }
+      
+      /**
+       * Loads a new element for drag-and-drop
+       *
+       * @param {Object} tempId Id of the element that should be displayed while the new element is loaded
+       * @param {Object} loadId Id of the element to load
+       * @param {Object} ui the sortable object
+       */
+      this.loadElement = function(tempId, loadId, ui) {
+         var self = this;
+         self.isLoading = true;
+         self.loadingResourceId = loadId;
+         self.currentResourceId = tempId;
+         self.runningRequest = cms.data.loadElements([self.loadingResourceId], function() {
+         
+            if (self.hasStopped) {
+               self.currentResourceId = self.loadingResourceId;
+               self.element = cms.data.elements[self.loadingResourceId];
+               $('#' + self.currentContainerId + ' .cms-element[rel="' + self.loadingResourceId + '"]').replaceWith(self.element.getContent(self.currentContainerId))
+               moveState = null;
+            } else {
+               self.currentResourceId = self.loadingResourceId;
+               self.element = cms.data.elements[self.loadingResourceId];
+               self.movingSubcontainer = self.element != null && self.element.subItems != null;
+               if (cms.toolbar.editingSubcontainerId != null) {
+                  initContainerForDrag(ui.self, cms.data.containers[cms.toolbar.editingSubcontainerId]);
+               } else {
+                  for (var container_name in cms.data.containers) {
+                     initContainerForDrag(ui.self, cms.data.containers[container_name]);
+                  }
+               }
+               self.over = false;
+               
+               // container highlighting needs to be refreshed *before* helper positions
+               refreshContainerHighlighting(self.hoverList, 2);
+               refreshHelperPositions(ui.self);
+               
+            }
+            self.isLoading = false;
+            self.runningRequest = null;
+            
+         });
+         self.element = cms.data.elements[tempId];
+      }
+      
    }
    
    
@@ -248,6 +294,9 @@
    }
    
    
+   
+   
+   
    /**
     * Initializing the move/drag-process.<p>
     *
@@ -256,7 +305,9 @@
     */
    var onStartDrag = cms.move.onStartDrag = function(event, ui) {
    
+   
       $('.' + cms.move.HOVER_NEW).remove();
+      
       moveState = new MoveState();
       moveState.startId = ui.self.currentItem.parent().attr('id');
       moveState.hoverList = '';
@@ -270,6 +321,7 @@
             moveState.currentResourceId = newItem.id;
          }
       } else {
+         // the element may be undefined 
          moveState.element = cms.data.elements[moveState.currentResourceId];
       }
       moveState.movingSubcontainer = moveState.element != null && moveState.element.subItems != null;
@@ -278,8 +330,6 @@
          top: ui.self.offset.top,
          left: ui.self.offset.left
       };
-      
-      
       
       moveState.helpers = {};
       
@@ -297,26 +347,26 @@
          startDragFromNormalContainer(ui.self);
       }
       
-      var sortingData={};
+      var sortingData = {};
       sortingData['helperCss'] = {
-               'width': ui.self.currentItem.width() + 'px',
-               'height': ''
-            };
+         'width': ui.self.currentItem.width() + 'px',
+         'height': ''
+      };
       if (moveState.movingSubcontainer && !moveState.isMoveFromNew()) {
-          var backgroundData = ui.self.currentItem.data('backgroundData');
-          sortingData['placeholderCss'] = {
-               'margin-top': backgroundData.dimension.top + 'px',
-               'margin-left': backgroundData.dimension.left + 'px',
-               'margin-right': (backgroundData.parentDimension.width - backgroundData.dimension.width - backgroundData.dimension.left) + 'px',
-               'margin-bottom': (backgroundData.parentDimension.height - backgroundData.dimension.height - backgroundData.dimension.top) + 'px',
-               'height': backgroundData.dimension.height + 'px',
-               'width': ''
-            };
+         var backgroundData = ui.self.currentItem.data('backgroundData');
+         sortingData['placeholderCss'] = {
+            'margin-top': backgroundData.dimension.top + 'px',
+            'margin-left': backgroundData.dimension.left + 'px',
+            'margin-right': (backgroundData.parentDimension.width - backgroundData.dimension.width - backgroundData.dimension.left) + 'px',
+            'margin-bottom': (backgroundData.parentDimension.height - backgroundData.dimension.height - backgroundData.dimension.top) + 'px',
+            'height': backgroundData.dimension.height + 'px',
+            'width': ''
+         };
       } else {
-          sortingData['placeholderCss'] = {
-              'height': ui.self.currentItem.height() + 'px'
-          }
-          
+         sortingData['placeholderCss'] = {
+            'height': ui.self.currentItem.height() + 'px'
+         }
+         
       }
       ui.self.placeholder.css(sortingData['placeholderCss']);
       moveState.origPlaceholder.css(sortingData['placeholderCss']);
@@ -326,41 +376,17 @@
          'background-color': 'blue',
          'border': 'solid 2px black'
       });
-      moveState.sortingData[moveState.currentContainerId]=sortingData;
+      moveState.sortingData[moveState.currentContainerId] = sortingData;
       ui.self.currentItem.data('sortingData', sortingData);
       
       if (!moveState.element) {
          if (moveState.isMoveFromResultList()) {
             var resourceType = ui.self.currentItem.data('type');
-            moveState.isLoading = true;
-            moveState.loadingResourceId = moveState.currentResourceId;
-            moveState.currentResourceId = resourceType;
-            moveState.runningRequest = cms.data.loadElements([moveState.loadingResourceId], function() {
-               if (moveState.hasStoped) {
-                  moveState.currentResourceId = moveState.loadingResourceId;
-                  moveState.element = cms.data.elements[moveState.loadingResourceId];
-                  $('#' + moveState.currentContainerId + ' .cms-element[rel="' + moveState.loadingResourceId + '"]').replaceWith(moveState.element.getContent(moveState.currentContainerId))
-                  moveState=null;
-               } else {
-                  moveState.currentResourceId = moveState.loadingResourceId;
-                  moveState.element = cms.data.elements[moveState.loadingResourceId];
-                  moveState.movingSubcontainer = moveState.element != null && moveState.element.subItems != null;
-                  if (cms.toolbar.editingSubcontainerId != null) {
-                     initContainerForDrag(ui.self, cms.data.containers[cms.toolbar.editingSubcontainerId]);
-                  } else {
-                     for (var container_name in cms.data.containers) {
-                        initContainerForDrag(ui.self, cms.data.containers[container_name]);
-                     }
-                  }
-                  refreshHelperPositions(ui.self);
-                  refreshCotnainerHighlighting(moveState.hoverList, 2);
-               }
-               moveState.isLoading = false;
-               moveState.runningRequest = null;
-               
-            });
-            moveState.element = cms.data.elements[resourceType];
+            moveState.loadElement(resourceType, moveState.currentResourceId, ui);
          }
+         refreshHelperPositions(ui.self);
+      } else if (moveState.element.partial) {
+         moveState.loadElement(moveState.currentResourceId, moveState.currentResourceId, ui);
          refreshHelperPositions(ui.self);
       } else {
          if (cms.toolbar.editingSubcontainerId != null) {
@@ -370,12 +396,12 @@
                initContainerForDrag(ui.self, cms.data.containers[container_name]);
             }
          }
-         refreshCotnainerHighlighting(moveState.hoverList, 2);
+         refreshContainerHighlighting(moveState.hoverList, 2);
          refreshHelperPositions(ui.self);
       }
-      
-      
    }
+   
+   
    
    /**
     * Sets the cancel-flag if dragging stops outside the containers.<p>
@@ -441,32 +467,38 @@
    }
    
    
-   var addSubcontainerBackground = cms.move.addSubcontainerBackground = function(elem){
-       var dimension = cms.util.getInnerDimensions(elem);
-       var elemPos = cms.util.getElementPosition(elem);
-       var hWidth = 2;
-       var inner = {
+   var addSubcontainerBackground = cms.move.addSubcontainerBackground = function(elem) {
+      var dimension = cms.util.getInnerDimensions(elem);
+      var elemPos = cms.util.getElementPosition(elem);
+      var hWidth = 2;
+      var inner = {
          top: dimension.top - (elemPos.top + hWidth),
          left: dimension.left - (elemPos.left + hWidth),
          height: dimension.height + 2 * hWidth,
          width: dimension.width + 2 * hWidth
       };
       var backgroundDiv = addBackgroundDiv(elem, inner, 'cms-subcontainer-background');
-      var backData ={"dimension": inner, "parentDimension": {"width": elem.width(), "height": elem.height()}};
+      var backData = {
+         "dimension": inner,
+         "parentDimension": {
+            "width": elem.width(),
+            "height": elem.height()
+         }
+      };
       elem.data('backgroundData', backData);
       return backData;
    }
    
    var addBackgroundDiv = cms.move.addBackgroundDiv = function(elem, dimension, classAttr) {
       return $('<div class="' + classAttr + '" style="position: absolute; z-index:0; top: ' +
-          dimension.top +
-          'px; left: ' +
-          dimension.left +
-          'px; height: ' +
-          dimension.height +
-          'px; width: ' +
-          dimension.width +
-          'px;"></div>').prependTo(elem);
+      dimension.top +
+      'px; left: ' +
+      dimension.left +
+      'px; height: ' +
+      dimension.height +
+      'px; width: ' +
+      dimension.width +
+      'px;"></div>').prependTo(elem);
    }
    
    
@@ -590,16 +622,16 @@
          updateContainer(endContainer);
          if (moveState.isMoveFromNew()) {
             $('button[name="edit"]').trigger('click');
-            removeBorder(currentItem, '.' + HOVER_NEW, $('#'+endContainer));
-            drawBorder(currentItem, 2, HOVER_NEW, $('#'+endContainer));
+            removeBorder(currentItem, '.' + HOVER_NEW, $('#' + endContainer));
+            drawBorder(currentItem, 2, HOVER_NEW, $('#' + endContainer));
          }
       }
       
       if (moveState.isLoading) {
-         moveState.hasStoped = true;
+         moveState.hasStopped = true;
          currentItem.attr('rel', moveState.loadingResourceId)
-      }else{
-          moveState=null;
+      } else {
+         moveState = null;
       }
       if (cms.toolbar.editingSubcontainerId == null) {
          refreshNewElementHighlighting();
@@ -654,7 +686,7 @@
          ui.placeholder.appendTo(elem);
       }
       if (reDoHover && moveState.hoverList != '') {
-         refreshCotnainerHighlighting(moveState.hoverList, 2);
+         refreshContainerHighlighting(moveState.hoverList, 2);
       }
       
    }
@@ -668,6 +700,7 @@
    var onDragOutOfContainer = cms.move.onDragOutOfContainer = function(event, ui) {
       var elem = event.target ? event.target : event.srcElement;
       var containerId = $(elem).attr('id');
+      
       if (moveState.over && ui.self.helper && containerId == moveState.currentContainerId) {
          if (moveState.startId != moveState.currentContainerId) {
             moveState.currentContainerId = moveState.startId;
@@ -686,7 +719,7 @@
          
          moveState.over = false;
          if (moveState.hoverList != '') {
-            refreshCotnainerHighlighting(moveState.hoverList, 2);
+            refreshContainerHighlighting(moveState.hoverList, 2);
             refreshHelperPositions(ui.self);
          }
       }
@@ -707,28 +740,28 @@
       }
    }
    
-   var refreshNewElementHighlighting = cms.move.refreshNewElementHighlighting = function(){
-       $('.'+HOVER_NEW).remove();
-       $('.cms-new-element').each(function(){
-           var elem = $(this);
-           highlightNewElement(elem);
-       });
+   var refreshNewElementHighlighting = cms.move.refreshNewElementHighlighting = function() {
+      $('.' + HOVER_NEW).remove();
+      $('.cms-new-element').each(function() {
+         var elem = $(this);
+         highlightNewElement(elem);
+      });
    }
    
-   var highlightNewElement = cms.move.highlightNewElement = function(elem){
-       drawBorder(elem, 2, HOVER_NEW+' cms-highlight-'+elem.attr('rel'), elem.parent());
+   var highlightNewElement = cms.move.highlightNewElement = function(elem) {
+      drawBorder(elem, 2, HOVER_NEW + ' cms-highlight-' + elem.attr('rel'), elem.parent());
    }
    
-   var removeNewElementHighlighting = cms.move.removeNewElementHighlighting = function(elem){
-       if (elem){
-           $('.cms-highlight-'+elem.attr('rel')).remove();
-       }else{
-           $('.'+HOVER_NEW).remove();
-       }
+   var removeNewElementHighlighting = cms.move.removeNewElementHighlighting = function(elem) {
+      if (elem) {
+         $('.cms-highlight-' + elem.attr('rel')).remove();
+      } else {
+         $('.' + HOVER_NEW).remove();
+      }
    }
    
-   var removeElementHighlighting = cms.move.removeElementHighlighting = function(){
-       $('.'+HOVER_NORMAL).remove();
+   var removeElementHighlighting = cms.move.removeElementHighlighting = function() {
+      $('.' + HOVER_NORMAL).remove();
    }
    
    
@@ -741,7 +774,7 @@
     * @param {Object} elem the element for which a border should be displayed
     * @param {Object} hOff the offset of the border
     * @param {Object} additionalClass the class which should be given to the elements of the border
-    * @param {Object} appendToElem the element the border div's will be appended to, if <code>null</code> the body element will be used 
+    * @param {Object} appendToElem the element the border div's will be appended to, if <code>null</code> the body element will be used
     */
    var drawBorder = cms.move.drawBorder = function(elem, hOff, additionalClass, appendToElem) {
       var tHeight = elem.outerHeight();
@@ -752,12 +785,12 @@
       if (!additionalClass) {
          additionalClass = '';
       }
-      if (appendToElem==null){
-          appendToElem==$(document.body);
+      if (appendToElem == null) {
+         appendToElem == $(document.body);
       }
       
       // if (elem.css('position') == 'relative') {
-      if (elem==appendToElem) {
+      if (elem == appendToElem) {
          // if position relative highlighting div's are appended to the element itself
          var tlrTop = -(hOff + hWidth);
          var tblLeft = -(hOff + hWidth);
@@ -772,9 +805,9 @@
          $('<div class="cms-hovering cms-hovering-bottom"></div>').addClass(additionalClass).height(hWidth).width(btWidth).css('top', tHeight + hOff).css('left', tblLeft).appendTo(elem);
       } else {
          // if position not relative highlighting div's are appended to the body element
-         var cssPosition=appendToElem.css('position');
-         if (cssPosition!='relative' || cssPosition!='absolute' || cssPosition!='fixed'){
-             appendToElem.css('position', 'relative');
+         var cssPosition = appendToElem.css('position');
+         if (cssPosition != 'relative' || cssPosition != 'absolute' || cssPosition != 'fixed') {
+            appendToElem.css('position', 'relative');
          }
          var elemOffset = elem.offset();
          var appendOffset = appendToElem.offset();
@@ -828,7 +861,7 @@
          elem.css('min-height', inner.height);
       }
       var cssPosition = elem.css('position');
-      if (cssPosition=='relative' || cssPosition=='absolute' || cssPosition=='fixed' ) {
+      if (cssPosition == 'relative' || cssPosition == 'absolute' || cssPosition == 'fixed') {
          // top
          $('<div class="cms-hovering cms-hovering-top"></div>').addClass(additionalClass).height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
          // right
@@ -904,13 +937,13 @@
       
    }
    
-    /**
+   /**
     * Drawing a border around all visible elements and placing a background behind them inside the elements matching the selector.<p>
     *
     * @param {String} selector the selector
     * @param {Object} highlightingOffset the border offset
     */
-   var refreshCotnainerHighlighting = cms.move.refreshCotnainerHighlighting = function(selector, highlightingOffset) {
+   var refreshContainerHighlighting = cms.move.refreshContainerHighlighting = function(selector, highlightingOffset) {
       $(selector).each(function() {
          var elem = $(this);
          var elemId = elem.attr('id');
@@ -967,7 +1000,7 @@
          }
       }
       if (reDoHover) {
-         refreshCotnainerHighlighting(moveState.hoverList, 2);
+         refreshContainerHighlighting(moveState.hoverList, 2);
       }
    }
    
@@ -995,7 +1028,7 @@
    };
    
    var setSortableSizes = function(helper, placeholder) {
-      var sortingData =  moveState.sortingData[moveState.currentContainerId];//  helper.data('sortingData');
+      var sortingData = moveState.sortingData[moveState.currentContainerId];//  helper.data('sortingData');
       if (sortingData != null) {
          // helper.css(sortingData['helperCss']);
          placeholder.css(sortingData['placeholderCss']);
@@ -1019,7 +1052,7 @@
                helper.css(sortingData['helperCss']);
                backgroundData = addSubcontainerBackground(helper);
                var rightPos = backgroundData['parentDimension']['width'] - backgroundData['dimension']['left'] - backgroundData['dimension']['width'];
-               helper.children('.cms-handle').css('right', rightPos+'px');
+               helper.children('.cms-handle').css('right', rightPos + 'px');
             } else {
                sortingData['helperCss'] = {
                   'width': backgroundData['parentDimension']['width'] + 'px',
@@ -1047,7 +1080,7 @@
             }
             placeholder.css(sortingData['placeholderCss']);
          }
-         moveState.sortingData[moveState.currentContainerId]= sortingData;// helper.data('sortingData', sortingData);
+         moveState.sortingData[moveState.currentContainerId] = sortingData;// helper.data('sortingData', sortingData);
       }
    }
    

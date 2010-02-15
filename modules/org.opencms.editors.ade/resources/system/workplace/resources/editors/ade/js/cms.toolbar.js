@@ -119,16 +119,16 @@
             'subItems': subElements
          };
          if (isNew) {
+            var parentContainerType = parentContainer.type;
             cms.data.postJSON('newsub', {
+               'types' : [parentContainerType],
                'elem': postElement
             }, function(ok, data) {
                var newId = data['id'];
                var oldId = containerElement['id'];
                delete cms.data.elements[oldId];
-               containerElement['id'] = newId;
-               containerElement['status'] = cms.data.STATUS_CREATED;
-               containerElement['file'] = data['uri'];
-               cms.data.elements[newId] = containerElement;
+               var element = data.elements[newId];
+               cms.data.elements[newId] = element;
                container.attr('rel', newId);
                container.removeClass('cms-new-element');
                cms.util.replaceNewElement(oldId, newId);
@@ -794,7 +794,7 @@
             var helperParent = ui.helper.parent();
             var parentId = helperParent.attr('id');
             if (parentId != cms.html.favoriteDropListId) {
-               cms.move.refreshCotnainerHighlighting('#' + parentId, 2);
+               cms.move.refreshContainerHighlighting('#' + parentId, 2);
             }
          },
          tolerance: 'pointer',

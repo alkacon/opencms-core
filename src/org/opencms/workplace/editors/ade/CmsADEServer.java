@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/02/02 15:36:04 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/02/15 08:23:27 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.editors.ade.CmsElementUtil.JsonElement;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -69,6 +70,7 @@ import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -89,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 7.6
  */
@@ -274,6 +276,25 @@ public class CmsADEServer extends A_CmsAjaxServer {
             m_sessionCache = new CmsADESessionCache(getCmsObject());
             req.getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, m_sessionCache);
         }
+    }
+
+    /**
+     * Helper method for treating a Map<X, Set<Y>> as a multimap from Xs to Ys which adds a new Y for a given X.<p>
+     * 
+     * If there is no entry in the map with the given key, an empty Set is created before the value is inserted.  
+     * 
+     * @param <X> the key type 
+     * @param <Y> the value type 
+     * @param multimap the map to add a new value to 
+     * @param key the key for which the new value should be inserted 
+     * @param value the new value 
+     */
+    private static <X, Y> void addToMultiMap(Map<X, Set<Y>> multimap, X key, Y value) {
+
+        if (!multimap.containsKey(key)) {
+            multimap.put(key, new HashSet<Y>());
+        }
+        multimap.get(key).add(value);
     }
 
     /**
@@ -558,14 +579,29 @@ public class CmsADEServer extends A_CmsAjaxServer {
             }
         } else if (action.equals(Action.NEWSUB)) {
             // save sub container
-            if (!checkParameters(data, result, JsonRequest.elem.name())) {
+            if (!checkParameters(data, result, JsonRequest.elem.name(), JsonElement.types.name())) {
                 return result;
             }
             try {
+                JSONArray typesJson = data.getJSONArray(JsonElement.types.name());
+                List<String> types = new ArrayList<String>();
+                for (int i = 0; i < typesJson.length(); i++) {
+                    types.add(typesJson.optString(i));
+                }
                 CmsResource newSub = createNewSubContainer(cntPageParam, request);
                 JSONObject subcontainer = data.getJSONObject(JsonRequest.elem.name());
                 subcontainer.put(CmsElementUtil.JsonElement.file.name(), cms.getSitePath(newSub));
                 setSubContainer(subcontainer);
+                CmsContainerElementBean subcontainerElement = new CmsContainerElementBean(
+                    newSub.getStructureId(),
+                    null,
+                    null);
+                CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, request, getResponse());
+                JSONObject subcontainerData = elemUtil.getElementData(subcontainerElement, types);
+
+                JSONObject elementsObj = new JSONObject();
+                elementsObj.put(subcontainerElement.getClientId(), subcontainerData);
+                result.put(JsonResponse.elements.name(), elementsObj);
                 result.put(JsonNewRes.id.name(), newSub.getStructureId().toString());
                 result.put(JsonNewRes.uri.name(), cms.getSitePath(newSub));
             } catch (Exception e) {
@@ -600,6 +636,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         Set<String> types) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
+        Map<CmsUUID, Set<String>> elementContainerTypes = getElementContainerTypes(cms, cntPage);
 
         // create empty result object
         JSONObject result = new JSONObject();
@@ -628,7 +665,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
             // check if the element already exists
             String id = element.getClientId();
             // get the element data
-            JSONObject resElement = elemUtil.getElementData(element, types);
+            JSONObject resElement = elemUtil.getElementData(element, elementContainerTypes.get(element.getElementId()));
             // store element data
             ids.add(id);
             resElements.put(id, resElement);
@@ -658,7 +695,9 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 }
                 m_sessionCache.setCacheContainerElement(element.getClientId(), element);
                 // get the element data
-                JSONObject resElement = elemUtil.getElementData(element, types);
+                JSONObject resElement = elemUtil.getElementData(
+                    element,
+                    elementContainerTypes.get(element.getElementId()));
 
                 // get subcontainer elements
                 if (resElement.has(CmsElementUtil.JsonElement.subItems.name())) {
@@ -680,7 +719,9 @@ public class CmsADEServer extends A_CmsAjaxServer {
                             if (ids.contains(subId)) {
                                 continue;
                             }
-                            JSONObject subItemData = elemUtil.getElementData(subElement, types);
+                            JSONObject subItemData = elemUtil.getElementData(
+                                subElement,
+                                elementContainerTypes.get(subElement.getElementId()));
                             ids.add(subId);
                             resElements.put(subId, subItemData);
                         }
@@ -692,13 +733,53 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 resElements.put(id, resElement);
             }
         }
+        // It's the client's responsibility to load contents for favorites/recent list
+        // items when the user starts dragging them, so we don't load them here.
+        Set<String> noTypes = Collections.<String> emptySet();
         // collect the favorites
-        JSONArray resFavorites = getFavoriteList(resElements, types);
+        JSONArray resFavorites = getFavoriteList(resElements, noTypes);
         result.put(JsonCntPage.favorites.name(), resFavorites);
         // collect the recent list
-        JSONArray resRecent = getRecentList(resElements, types);
+        JSONArray resRecent = getRecentList(resElements, noTypes);
         result.put(JsonCntPage.recent.name(), resRecent);
 
+        return result;
+    }
+
+    /**
+     * Helper method which computes a map from element ids to the types of containers in which they occur in a container page.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations 
+     * @param cntPage the container page bean
+     *  
+     * @return a map from uuids to sets of container types
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public Map<CmsUUID, Set<String>> getElementContainerTypes(CmsObject cms, CmsContainerPageBean cntPage)
+    throws CmsException {
+
+        Map<CmsUUID, Set<String>> result = new HashMap<CmsUUID, Set<String>>();
+        for (CmsContainerBean container : cntPage.getContainers().values()) {
+            for (CmsContainerElementBean element : container.getElements()) {
+                addToMultiMap(result, element.getElementId(), container.getType());
+                if (element.isSubcontainer(cms)) {
+                    CmsResource elementRes = cms.readResource(element.getElementId());
+                    // the unmarshalled subcontainer is cached in the request
+                    CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(
+                        cms,
+                        elementRes,
+                        getRequest());
+                    CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
+                        cms,
+                        cms.getRequestContext().getLocale());
+
+                    for (CmsContainerElementBean subElement : subContainer.getElements()) {
+                        addToMultiMap(result, subElement.getElementId(), container.getType());
+                    }
+                }
+            }
+        }
         return result;
     }
 

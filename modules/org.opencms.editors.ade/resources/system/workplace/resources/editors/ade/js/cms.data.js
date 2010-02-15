@@ -112,6 +112,9 @@
    /** Container type names. */
    var cntTypes = [];
    
+   /** Regex for OpenCms uuids */ 
+   var uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+   
    /**
     * Initial load function that loads all data needed for ADE to start.
     *
@@ -119,17 +122,19 @@
     */
    var loadAllData = cms.data.loadAllData = /** void */ function(/** void Function(boolean) */afterLoad) {
    
-     // containers data is embedded in the html
-     containers = cms.data.containers = {};
-     $('div.cms-ade-cnt-data').each(function() {
-       var $this = $(this);
-       var cntData = $this.metadata();
-       cntData.objtype = 'Container';
-       containers[cntData.name] = cntData;
-       cntTypes.push(cntData.type);
-     });        
-         
-      postJSON(ACTION_ALL, { containers: cntTypes }, function(ok, jsonData) {
+      // containers data is embedded in the html
+      containers = cms.data.containers = {};
+      $('div.cms-ade-cnt-data').each(function() {
+         var $this = $(this);
+         var cntData = $this.metadata();
+         cntData.objtype = 'Container';
+         containers[cntData.name] = cntData;
+         cntTypes.push(cntData.type);
+      });
+      
+      postJSON(ACTION_ALL, {
+         containers: cntTypes
+      }, function(ok, jsonData) {
       
          if (jsonData.favorites) {
             cms.toolbar.favorites = jsonData.favorites;
@@ -137,21 +142,31 @@
          if (jsonData.recent) {
             cms.toolbar.recent = jsonData.recent;
          }
-         if (jsonData.elements) {
          
+         
+         
+         if (jsonData.elements) {
             elements = cms.data.elements = jsonData.elements;
-            
+             
             cms.data.newTypes = cms.data.elements.newOrder;
             delete cms.data.elements.newOrder;
-            
             cms.data.searchTypes = cms.data.elements.searchOrder;
             cms.galleries.configContentTypes = [];
             $.each(cms.data.searchTypes, function() {
                cms.galleries.configContentTypes.push(cms.data.elements[this].typeid);
             });
             
+            
             delete cms.data.elements.searchOrder;
             
+            
+            elements = cms.data.elements = jsonData.elements;
+            for (var key in elements) {
+               var elem = elements[key];
+               if (elem.id.match(uuidPattern)) {
+                  elements[key].partial = true;
+               }
+            }
             _initNewCounter(elements);
             
          }
@@ -339,12 +354,12 @@
       
    }
    
-   var loadStorage  = cms.data.loadStorage = function(afterLoad){
-       postJSON(ACTION_GET, {
+   var loadStorage = cms.data.loadStorage = function(afterLoad) {
+      postJSON(ACTION_GET, {
          'rec': true,
          'fav': true
       }, function(ok, data) {
-          if (ok) {
+         if (ok) {
             cms.toolbar.recent = data.recent;
             cms.toolbar.favorites = data.favorites;
             
@@ -425,7 +440,7 @@
             var elem = {
                'id': this,
                'uri': cms.data.elements[this].file,
-               'formatter': cms.data.elements[this].formatters[cntType]
+               'formatter': cms.data.elements[this].getFormatter(cntType)
             };
             cnts[key].elements.push(elem);
          });
@@ -530,7 +545,7 @@
    var getElementsToLoad = /*Array*/ function(/*Array*/ids) {
    
       var result = $.grep(ids, function(id) {
-         return !(cms.data.elements[id]) && id.match(/^ade_/);
+         return !(cms.data.elements[id]) && id.match(uuidPattern);
       });
       return result;
    }
@@ -635,7 +650,18 @@
          result.id = "new_" + (newCounter++);
          elements[result.id] = result;
          return result;
+      },
+      
+      getFormatter: function(containerType) {
+          var formatters = this.formatters;
+          if (formatters[containerType]) {
+              return formatters[containerType];
+          } else {
+              return formatters['_DEFAULT_'];
+          }
       }
+      
+      
    }
    
    /**

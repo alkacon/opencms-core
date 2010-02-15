@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2010/01/26 14:48:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/02/15 08:23:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,10 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -42,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -153,6 +157,20 @@ public class CmsContainerElementBean {
     public int hashCode() {
 
         return m_clientId.hashCode();
+    }
+
+    /**
+     * Tests whether this container element refers to a subcontainer.<p>
+     * 
+     * @param cms the CmsObject used for VFS operations
+     *  
+     * @return true if the container element refers to a subcontainer
+     * @throws CmsException if something goes wrong 
+     */
+    public boolean isSubcontainer(CmsObject cms) throws CmsException {
+
+        CmsResource resource = cms.readResource(m_elementId);
+        return resource.getTypeId() == CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID;
     }
 
     /**
