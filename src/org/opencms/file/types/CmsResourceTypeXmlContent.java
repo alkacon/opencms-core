@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2010/02/11 10:22:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/02/15 08:50:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -317,21 +317,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         Set<CmsLink> links = new HashSet<CmsLink>();
 
         // add XSD link
-        String schema = xmlContent.getContentDefinition().getSchemaLocation();
-        if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
-            schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
-        }
-        try {
-            CmsResource schemaRes = cms.readResource(cms.getRequestContext().removeSiteRoot(schema));
-            CmsLink xsdLink = new CmsLink(
-                null,
-                CmsRelationType.XSD,
-                schemaRes.getStructureId(),
-                schemaRes.getRootPath(),
-                true);
+        CmsLink xsdLink = getXsdLink(cms, xmlContent);
+        if (xsdLink != null) {
             links.add(xsdLink);
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
         }
 
         // iterate over all languages
@@ -409,5 +397,34 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     protected String getSchema() {
 
         return m_schema;
+    }
+
+    /**
+     * Creates a new link object for the schema definition.<p>
+     * 
+     * @param cms the current CMS context
+     * @param xmlContent the xml content to crete the link for
+     * 
+     * @return the generated link
+     */
+    protected CmsLink getXsdLink(CmsObject cms, CmsXmlContent xmlContent) {
+
+        String schema = xmlContent.getContentDefinition().getSchemaLocation();
+        if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
+            schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
+        }
+        try {
+            CmsResource schemaRes = cms.readResource(cms.getRequestContext().removeSiteRoot(schema));
+            CmsLink xsdLink = new CmsLink(
+                null,
+                CmsRelationType.XSD,
+                schemaRes.getStructureId(),
+                schemaRes.getRootPath(),
+                true);
+            return xsdLink;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return null;
     }
 }

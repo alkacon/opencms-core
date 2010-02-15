@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeXmlSitemap.java,v $
- * Date   : $Date: 2010/02/03 14:50:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/02/15 08:50:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,14 +48,10 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
-import org.opencms.xml.types.CmsXmlHtmlValue;
-import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -76,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
@@ -291,13 +287,10 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
         Set<CmsLink> links = new HashSet<CmsLink>();
 
         // add XSD link
-        String schema = xmlContent.getContentDefinition().getSchemaLocation();
-        if (schema.startsWith(CmsXmlEntityResolver.OPENCMS_SCHEME)) {
-            schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
+        CmsLink xsdLink = getXsdLink(cms, xmlContent);
+        if (xsdLink != null) {
+            links.add(xsdLink);
         }
-        CmsLink xsdLink = new CmsLink(null, CmsRelationType.XSD, schema, true);
-        xsdLink.checkConsistency(cms);
-        links.add(xsdLink);
 
         // iterate over all languages
         List<Locale> locales = xmlContent.getLocales();
@@ -310,43 +303,25 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
             Iterator<I_CmsXmlContentValue> j = values.iterator();
             while (j.hasNext()) {
                 I_CmsXmlContentValue value = j.next();
-                if (value instanceof CmsXmlHtmlValue) {
-                    CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)value;
-                    CmsLinkTable linkTable = htmlValue.getLinkTable();
-
-                    // iterate over all links inside a body element
-                    Iterator<CmsLink> k = linkTable.iterator();
-                    while (k.hasNext()) {
-                        CmsLink link = k.next();
-
-                        // external links are omitted
-                        if (link.isInternal()) {
-                            link.checkConsistency(cms);
-                            links.add(link);
-                        }
-                    }
-                } else if (value instanceof CmsXmlVfsFileValue) {
-                    CmsXmlVfsFileValue refValue = (CmsXmlVfsFileValue)value;
-                    CmsLink link = refValue.getLink(cms);
-                    if (link != null) {
-                        if (CmsXmlUtils.removeXpathIndex(value.getPath()).equals(
-                            CmsXmlSitemap.XmlNode.EntryPoint.name())) {
-                            link = new CmsLink(
-                                link.getName(),
-                                CmsRelationType.ENTRY_POINT,
-                                link.getStructureId(),
-                                link.getUri(),
-                                true);
-                        }
-                        links.add(link);
-                    }
-                } else if (value instanceof CmsXmlVarLinkValue) {
-                    CmsXmlVarLinkValue refValue = (CmsXmlVarLinkValue)value;
-                    CmsLink link = refValue.getLink(cms);
-                    if ((link != null) && link.isInternal()) {
-                        links.add(link);
-                    }
+                if (!(value instanceof CmsXmlVfsFileValue)) {
+                    // filter only relations relevant fields
+                    // sitemaps do not have XmlHtml nor VarFiles
+                    continue;
                 }
+                CmsXmlVfsFileValue refValue = (CmsXmlVfsFileValue)value;
+                CmsLink link = refValue.getLink(cms);
+                if (link == null) {
+                    continue;
+                }
+                if (CmsXmlUtils.removeXpathIndex(value.getPath()).equals(CmsXmlSitemap.XmlNode.EntryPoint.name())) {
+                    link = new CmsLink(
+                        link.getName(),
+                        CmsRelationType.ENTRY_POINT,
+                        link.getStructureId(),
+                        link.getUri(),
+                        true);
+                }
+                links.add(link);
             }
         }
         return new ArrayList<CmsLink>(links);
@@ -376,10 +351,11 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
         I_CmsResourceType type = getResourceType(file);
         // update the relations after writing!!
         List<CmsLink> links = null;
-        if (type instanceof I_CmsLinkParseable) {
+        if (type instanceof I_CmsLinkParseable) { // this check is needed because of type change
             // if the new type is link parseable
             links = ((I_CmsLinkParseable)type).parseLinks(cms, file);
         }
+        // this has to be always executed, even if not link parseable to remove old links
         securityManager.updateRelationsForResource(cms.getRequestContext(), file, links);
         return file;
     }
