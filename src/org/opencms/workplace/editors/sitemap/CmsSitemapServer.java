@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/15 13:21:56 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2010/02/15 13:58:05 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 7.6
  */
@@ -645,8 +645,11 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             sitemap.getJSONArray(JsonResponse.sitemap.name()),
             getPropertyConfig(sitemapRes),
             true);
-        CmsXmlSitemap superSitemap = OpenCms.getSitemapManager().getParentSitemap(cms, xmlSitemap);
-        if (superSitemap != null) {
+
+        String entryPoint = xmlSitemap.getSitemap(cms, cms.getRequestContext().getLocale()).getEntryPoint();
+        entryPoint = cms.getRequestContext().removeSiteRoot(entryPoint);
+        CmsSitemapEntry entryPointEntry = OpenCms.getSitemapManager().getEntryForUri(cms, entryPoint);
+        if (entryPointEntry.isSitemap()) {
             // sub-sitemap: remove parent entry, see #getSitemap
             sitemapEntries = sitemapEntries.get(0).getSubEntries();
         }
