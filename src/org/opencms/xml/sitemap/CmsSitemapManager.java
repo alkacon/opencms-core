@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/11 13:56:59 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/02/15 09:59:17 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 7.9.2
  */
@@ -522,12 +522,6 @@ public class CmsSitemapManager {
         String startUri = rootUri;
         while (!startUri.equals("/") && (startEntry == null)) {
             startUri = CmsResource.getParentFolder(startUri);
-            // check the missed cache
-            if (m_cache.getMissingUri(startUri, online) != null) {
-                // already marked as not found
-                LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_ENTRY_MISSING_2, logId, startUri).key());
-                return null;
-            }
             startEntry = m_cache.getUri(startUri, online);
         }
 
@@ -585,6 +579,12 @@ public class CmsSitemapManager {
         while (!finished) {
             String name = entryPaths.removeFirst();
             uriPath += name + "/";
+            // check the missed cache
+            if (m_cache.getMissingUri(uriPath, online) != null) {
+                // already marked as not found
+                LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_ENTRY_MISSING_2, logId, startUri).key());
+                return null;
+            }
             LOG.debug(Messages.get().container(Messages.LOG_DEBUG_SITEMAP_ENTRY_CHECK_2, logId, uriPath).key());
             int position = 0;
             int size = subEntries.size();
