@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/15 09:08:59 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2010/02/15 10:47:52 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 7.6
  */
@@ -367,6 +367,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes, request);
             result = getSitemap(xmlSitemap);
 
+            // models and types
             CmsSitemapManager manager = OpenCms.getSitemapManager();
             List<CmsResource> creatableElements = manager.getCreatableElements(cms, sitemapParam, request);
             JSONArray creatableTypes = new JSONArray();
@@ -382,6 +383,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             addContents(models, getPropertyConfig(sitemapRes));
             result.put(JsonResponse.types.name(), creatableTypes);
             result.put(JsonResponse.models.name(), models);
+
+            // templates
             result.put(JsonTemplate.template.name(), getTemplates());
             CmsResource defaultTemplate = OpenCms.getSitemapManager().getDefaultTemplate(cms, sitemapParam, request);
             if (defaultTemplate != null) {
@@ -574,11 +577,29 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 siteEntries.put(siteEntry);
             }
         }
-        result.put(JsonResponse.sitemap.name(), siteEntries);
 
         CmsXmlSitemap superSitemap = OpenCms.getSitemapManager().getParentSitemap(cms, xmlSitemap);
-        String superSitemapPath = superSitemap == null ? "" : cms.getSitePath(superSitemap.getFile());
-        result.put(JsonResponse.superSitemap.name(), superSitemapPath);
+        if (superSitemap == null) {
+            // root sitemap
+            result.put(JsonResponse.superSitemap.name(), "");
+            result.put(JsonResponse.sitemap.name(), siteEntries);
+        } else {
+            // sub-sitemap
+            result.put(JsonResponse.superSitemap.name(), cms.getSitePath(superSitemap.getFile()));
+            // deliver parent entry
+            CmsSitemapEntry parentEntry = OpenCms.getSitemapManager().getEntryForUri(cms, sitemap.getEntryPoint());
+            JSONObject jsonParentEntry = jsonifyEntry(new CmsSitemapEntry(
+                parentEntry.getId(),
+                parentEntry.getOriginalUri(),
+                parentEntry.getResourceId(),
+                parentEntry.getName(),
+                parentEntry.getTitle(),
+                parentEntry.getInheritedProperties(),
+                null), propertiesConf);
+            jsonParentEntry.put(JsonSiteEntry.subentries.name(), siteEntries);
+            result.put(JsonResponse.sitemap.name(), jsonParentEntry);
+        }
+
         result.put(JsonResponse.referencePath.name(), cms.getRequestContext().removeSiteRoot(sitemap.getEntryPoint()));
 
         // collect the properties
@@ -618,10 +639,16 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         CmsObject cms = getCmsObject();
 
         CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, cms.readFile(sitemapRes), getRequest());
-        xmlSitemap.save(cms, jsonToEntryList(
+        List<CmsSitemapEntry> sitemapEntries = jsonToEntryList(
             sitemap.getJSONArray(JsonResponse.sitemap.name()),
             getPropertyConfig(sitemapRes),
-            true));
+            true);
+        CmsXmlSitemap superSitemap = OpenCms.getSitemapManager().getParentSitemap(cms, xmlSitemap);
+        if (superSitemap != null) {
+            // sub-sitemap: remove parent entry, see #getSitemap
+            sitemapEntries = sitemapEntries.get(0).getSubEntries();
+        }
+        xmlSitemap.save(cms, sitemapEntries);
     }
 
     /**
