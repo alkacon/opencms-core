@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2010/01/07 14:14:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/15 08:53:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -673,6 +673,44 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             I_CmsXmlContentValue value = getBookmark(key);
             visitor.visit(value);
         }
+    }
+
+    /**
+     * Creates a new bookmark for the given element.<p>
+     * 
+     * @param element the element to create the bookmark for 
+     * @param locale the locale
+     * @param parent the parent node of the element
+     * @param parentPath the parent's path
+     * @param parentDef the parent's content definition
+     */
+    protected void addBookmarkForElement(
+        Element element,
+        Locale locale,
+        Element parent,
+        String parentPath,
+        CmsXmlContentDefinition parentDef) {
+
+        int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(parent));
+        String elemPath = CmsXmlUtils.concatXpath(parentPath, CmsXmlUtils.createXpathElement(
+            element.getName(),
+            elemIndex));
+        I_CmsXmlSchemaType elemSchemaType = parentDef.getSchemaType(element.getName());
+        I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
+        addBookmark(elemPath, locale, true, elemValue);
+    }
+
+    /**
+     * Adds a bookmark for the given value.<p>
+     * 
+     * @param value the value to bookmark
+     * @param path the lookup path to use for the bookmark
+     * @param locale the locale to use for the bookmark
+     * @param enabled if true, the value is enabled, if false it is disabled
+     */
+    protected void addBookmarkForValue(I_CmsXmlContentValue value, String path, Locale locale, boolean enabled) {
+
+        addBookmark(path, locale, enabled, value);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2010/01/26 11:00:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/02/15 08:53:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -80,7 +81,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.9.1
  */
@@ -282,31 +283,6 @@ public class CmsXmlSubContainer extends CmsXmlContent {
     }
 
     /**
-     * Creates a new bookmark for the given element.<p>
-     * 
-     * @param element the element to create the bookmark for 
-     * @param locale the locale
-     * @param parent the parent node of the element
-     * @param parentPath the parent's path
-     * @param parentDef the parent's content definition
-     */
-    protected void createBookmark(
-        Element element,
-        Locale locale,
-        Element parent,
-        String parentPath,
-        CmsXmlContentDefinition parentDef) {
-
-        int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(parent));
-        String elemPath = CmsXmlUtils.concatXpath(parentPath, CmsXmlUtils.createXpathElement(
-            element.getName(),
-            elemIndex));
-        I_CmsXmlSchemaType elemSchemaType = parentDef.getSchemaType(element.getName());
-        I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
-        addBookmark(elemPath, locale, true, elemValue);
-    }
-
-    /**
      * Fills a {@link CmsXmlVfsFileValue} with the resource identified by the given id.<p>
      * 
      * @param cms the current CMS context
@@ -363,17 +339,17 @@ public class CmsXmlSubContainer extends CmsXmlContent {
 
                 //title
                 Element title = subContainer.element(XmlNode.Title.name());
-                createBookmark(title, locale, subContainer, cntPath, cntDef);
+                addBookmarkForElement(title, locale, subContainer, cntPath, cntDef);
 
                 //description
                 Element description = subContainer.element(XmlNode.Description.name());
-                createBookmark(description, locale, subContainer, cntPath, cntDef);
+                addBookmarkForElement(description, locale, subContainer, cntPath, cntDef);
 
                 // types
                 List<String> types = new ArrayList<String>();
                 for (Iterator<Element> itTypes = CmsXmlGenericWrapper.elementIterator(subContainer, XmlNode.Type.name()); itTypes.hasNext();) {
                     Element type = itTypes.next();
-                    createBookmark(type, locale, subContainer, cntPath, cntDef);
+                    addBookmarkForElement(type, locale, subContainer, cntPath, cntDef);
                     String typeName = type.getTextTrim();
                     if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeName)) {
                         types.add(typeName);
@@ -399,7 +375,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
 
                     // uri
                     Element uri = element.element(XmlNode.Uri.name());
-                    createBookmark(uri, locale, element, elemPath, elemDef);
+                    addBookmarkForElement(uri, locale, element, elemPath, elemDef);
                     Element uriLink = uri.element(CmsXmlPage.NODE_LINK);
                     CmsUUID elementId = null;
                     if (uriLink == null) {
@@ -409,92 +385,14 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                         elementId = new CmsLink(uriLink).getStructureId();
                     }
 
-                    Map<String, String> propertiesMap = new HashMap<String, String>();
-
-                    // Properties
-                    for (Iterator<Element> itProps = CmsXmlGenericWrapper.elementIterator(
+                    // propeties
+                    Map<String, String> propertiesMap = CmsXmlContentPropertyHelper.readProperties(
+                        this,
+                        locale,
                         element,
-                        CmsXmlContentProperty.XmlNode.Properties.name()); itProps.hasNext();) {
-                        Element property = itProps.next();
+                        elemPath,
+                        elemDef);
 
-                        // property itself
-                        int propIndex = CmsXmlUtils.getXpathIndexInt(property.getUniquePath(element));
-                        String propPath = CmsXmlUtils.concatXpath(elemPath, CmsXmlUtils.createXpathElement(
-                            property.getName(),
-                            propIndex));
-                        I_CmsXmlSchemaType propSchemaType = elemDef.getSchemaType(property.getName());
-                        I_CmsXmlContentValue propValue = propSchemaType.createValue(this, property, locale);
-                        addBookmark(propPath, locale, true, propValue);
-                        CmsXmlContentDefinition propDef = ((CmsXmlNestedContentDefinition)propSchemaType).getNestedContentDefinition();
-
-                        // name
-                        Element propName = property.element(CmsXmlContentProperty.XmlNode.Name.name());
-                        createBookmark(propName, locale, property, propPath, propDef);
-
-                        // choice value 
-                        Element value = property.element(CmsXmlContentProperty.XmlNode.Value.name());
-                        if (value == null) {
-                            // this can happen when adding the elements node to the xml content
-                            continue;
-                        }
-                        int valueIndex = CmsXmlUtils.getXpathIndexInt(value.getUniquePath(property));
-                        String valuePath = CmsXmlUtils.concatXpath(propPath, CmsXmlUtils.createXpathElement(
-                            value.getName(),
-                            valueIndex));
-                        I_CmsXmlSchemaType valueSchemaType = propDef.getSchemaType(value.getName());
-                        I_CmsXmlContentValue valueValue = valueSchemaType.createValue(this, value, locale);
-                        addBookmark(valuePath, locale, true, valueValue);
-                        CmsXmlContentDefinition valueDef = ((CmsXmlNestedContentDefinition)valueSchemaType).getNestedContentDefinition();
-
-                        String val = null;
-                        Element string = value.element(CmsXmlContentProperty.XmlNode.String.name());
-                        if (string != null) {
-                            // string value
-                            createBookmark(string, locale, value, valuePath, valueDef);
-                            val = string.getTextTrim();
-                        } else {
-                            // file list value
-                            Element valueFileList = value.element(CmsXmlContentProperty.XmlNode.FileList.name());
-                            if (valueFileList == null) {
-                                // this can happen when adding the elements node to the xml content
-                                continue;
-                            }
-                            int valueFileListIndex = CmsXmlUtils.getXpathIndexInt(valueFileList.getUniquePath(value));
-                            String valueFileListPath = CmsXmlUtils.concatXpath(
-                                valuePath,
-                                CmsXmlUtils.createXpathElement(valueFileList.getName(), valueFileListIndex));
-                            I_CmsXmlSchemaType valueFileListSchemaType = valueDef.getSchemaType(valueFileList.getName());
-                            I_CmsXmlContentValue valueFileListValue = valueFileListSchemaType.createValue(
-                                this,
-                                valueFileList,
-                                locale);
-                            addBookmark(valueFileListPath, locale, true, valueFileListValue);
-                            CmsXmlContentDefinition valueFileListDef = ((CmsXmlNestedContentDefinition)valueFileListSchemaType).getNestedContentDefinition();
-
-                            List<CmsUUID> idList = new ArrayList<CmsUUID>();
-                            // files
-                            for (Iterator<Element> itFiles = CmsXmlGenericWrapper.elementIterator(
-                                valueFileList,
-                                XmlNode.Uri.name()); itFiles.hasNext();) {
-
-                                Element valueUri = itFiles.next();
-                                createBookmark(valueUri, locale, valueFileList, valueFileListPath, valueFileListDef);
-                                Element valueUriLink = valueUri.element(CmsXmlPage.NODE_LINK);
-                                CmsUUID fileId = null;
-                                if (valueUriLink == null) {
-                                    // this can happen when adding the elements node to the xml content
-                                    // it is not dangerous since the link has to be set before saving 
-                                } else {
-                                    fileId = new CmsLink(valueUriLink).getStructureId();
-                                }
-                                idList.add(fileId);
-                            }
-                            // comma separated list of UUIDs
-                            val = CmsStringUtil.listAsString(idList, CmsXmlContentProperty.PROP_SEPARATOR);
-                        }
-
-                        propertiesMap.put(propName.getTextTrim(), val);
-                    }
                     if (elementId != null) {
                         elements.add(new CmsContainerElementBean(elementId, null, propertiesMap));
                     }
@@ -546,42 +444,8 @@ public class CmsXmlSubContainer extends CmsXmlContent {
             fillResource(cms, uriElem, element.getElementId());
 
             // the properties
-            Element propElement = null;
-
             Map<String, String> properties = element.getProperties();
-            for (Map.Entry<String, String> property : properties.entrySet()) {
-                String propName = property.getKey();
-                String propValue = property.getValue();
-                if (!propertiesConf.containsKey(propName) || (propValue == null)) {
-                    continue;
-                }
-                // only if the property is configured in the schema we will save it
-                if (propElement == null) {
-                    propElement = elemElement.addElement(CmsXmlContentProperty.XmlNode.Properties.name());
-                }
-
-                // the property name
-                propElement.addElement(CmsXmlContentProperty.XmlNode.Name.name()).addCDATA(propName);
-                Element valueElement = propElement.addElement(CmsXmlContentProperty.XmlNode.Value.name());
-
-                // the property value
-                if (!CmsXmlContentProperty.PropType.isVfsList(propertiesConf.get(propName).getPropertyType())) {
-                    // string value
-                    valueElement.addElement(CmsXmlContentProperty.XmlNode.String.name()).addCDATA(propValue);
-                } else {
-                    // resource list value
-                    Element filelistElem = valueElement.addElement(CmsXmlContentProperty.XmlNode.FileList.name());
-                    for (String strId : CmsStringUtil.splitAsList(propValue, CmsXmlContentProperty.PROP_SEPARATOR)) {
-                        try {
-                            Element fileValueElem = filelistElem.addElement(CmsXmlContentProperty.XmlNode.Uri.name());
-                            fillResource(cms, fileValueElem, new CmsUUID(strId));
-                        } catch (CmsException e) {
-                            // should never happen
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                    }
-                }
-            }
+            CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, propertiesConf, properties);
         }
     }
 
