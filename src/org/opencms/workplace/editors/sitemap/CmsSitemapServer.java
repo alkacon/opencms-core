@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/15 10:47:52 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2010/02/15 13:21:56 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 7.6
  */
@@ -457,7 +457,10 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             CmsProperty titleProp = cms.readPropertyObject(newResource, CmsPropertyDefinition.PROPERTY_TITLE, false);
             String title = titleProp.getValue();
             String name = newResource.getName();
-            CmsSitemapEntry entryBean = new CmsSitemapEntry(new CmsUUID(), null, // this is not needed since it will be correctly set while saving
+            // empty info will be correctly set while saving
+            CmsSitemapEntry entryBean = new CmsSitemapEntry(
+                new CmsUUID(),
+                null,
                 newResource.getStructureId(),
                 name,
                 title,
@@ -476,7 +479,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 sitemapParam,
                 request);
             saveSitemap(newSitemapRes, data);
-            //String sitemapId = newSitemapRes.getStructureId().toString();
             result.put(JsonResponse.path.name(), cms.getSitePath(newSitemapRes));
         } else {
             error(result, Messages.get().getBundle(getWorkplaceLocale()).key(
