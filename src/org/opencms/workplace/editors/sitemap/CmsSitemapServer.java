@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/15 13:58:05 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2010/02/16 07:59:12 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,36 +85,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 7.6
  */
 public class CmsSitemapServer extends A_CmsAjaxServer {
-
-    /** Element Property json property constants. */
-    public enum JsonProperty {
-
-        /** Property's default value. */
-        defaultValue,
-        /** Property's description. */
-        description,
-        /** Property's error message. */
-        error,
-        /** Property's nice name. */
-        niceName,
-        /** Property's validation regular expression. */
-        ruleRegex,
-        /** Property's validation rule type. */
-        ruleType,
-        /** Property's type. */
-        type,
-        /** Property's value. */
-        value,
-        /** Property's widget. */
-        widget,
-        /** Property's widget configuration. */
-        widgetConf;
-    }
 
     /** Request parameter action value constants. */
     protected enum Action {
@@ -589,17 +564,23 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             // sub-sitemap
             result.put(JsonResponse.superSitemap.name(), cms.getSitePath(superSitemap.getFile()));
             // deliver parent entry
-            CmsSitemapEntry parentEntry = OpenCms.getSitemapManager().getEntryForUri(cms, sitemap.getEntryPoint());
+            CmsSitemapEntry parentEntry = OpenCms.getSitemapManager().getEntryForUri(
+                cms,
+                cms.getRequestContext().removeSiteRoot(sitemap.getEntryPoint()));
+            Map<String, String> properties = new HashMap<String, String>(parentEntry.getInheritedProperties());
+            properties.remove(CmsSitemapManager.Property.sitemap.getName());
             JSONObject jsonParentEntry = jsonifyEntry(new CmsSitemapEntry(
                 parentEntry.getId(),
                 parentEntry.getOriginalUri(),
                 parentEntry.getResourceId(),
                 parentEntry.getName(),
                 parentEntry.getTitle(),
-                parentEntry.getInheritedProperties(),
+                properties,
                 null), propertiesConf);
             jsonParentEntry.put(JsonSiteEntry.subentries.name(), siteEntries);
-            result.put(JsonResponse.sitemap.name(), jsonParentEntry);
+            siteEntries = new JSONArray();
+            siteEntries.put(jsonParentEntry);
+            result.put(JsonResponse.sitemap.name(), siteEntries);
         }
 
         result.put(JsonResponse.referencePath.name(), cms.getRequestContext().removeSiteRoot(sitemap.getEntryPoint()));
@@ -646,14 +627,14 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             getPropertyConfig(sitemapRes),
             true);
 
-        String entryPoint = xmlSitemap.getSitemap(cms, cms.getRequestContext().getLocale()).getEntryPoint();
-        entryPoint = cms.getRequestContext().removeSiteRoot(entryPoint);
+        String entryPoint = sitemap.getString(JsonResponse.referencePath.name());
         CmsSitemapEntry entryPointEntry = OpenCms.getSitemapManager().getEntryForUri(cms, entryPoint);
-        if (entryPointEntry.isSitemap()) {
+        // TODO: this might be incorrect if a sub-sitemap entry point is a valid VFS path...
+        if (entryPointEntry.isSitemap() && !cms.existsResource(entryPoint)) {
             // sub-sitemap: remove parent entry, see #getSitemap
             sitemapEntries = sitemapEntries.get(0).getSubEntries();
         }
-        xmlSitemap.save(cms, sitemapEntries);
+        xmlSitemap.save(cms, entryPoint, sitemapEntries);
     }
 
     /**
