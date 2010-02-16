@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/02/15 08:53:23 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/02/16 08:00:44 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 7.5.2
  * 
@@ -392,11 +392,12 @@ public class CmsXmlSitemap extends CmsXmlContent {
      * Saves given sitemap in the current locale, and not only in memory but also to VFS.<p>
      * 
      * @param cms the current cms context
+     * @param entryPoint the entry point
      * @param entries the sitemap to save
      * 
      * @throws CmsException if something goes wrong
      */
-    public void save(CmsObject cms, List<CmsSitemapEntry> entries) throws CmsException {
+    public void save(CmsObject cms, String entryPoint, List<CmsSitemapEntry> entries) throws CmsException {
 
         CmsFile file = getFile();
 
@@ -404,8 +405,6 @@ public class CmsXmlSitemap extends CmsXmlContent {
         cms.lockResourceTemporary(cms.getSitePath(file));
 
         Locale locale = cms.getRequestContext().getLocale();
-        // save the entry point
-        Element entryPoint = getLocaleNode(locale).element(XmlNode.EntryPoint.name());
 
         // wipe the locale
         if (hasLocale(locale)) {
@@ -421,9 +420,13 @@ public class CmsXmlSitemap extends CmsXmlContent {
         // store the entry point
         Element parent = getLocaleNode(locale);
         parent.clearContent();
-        if (entryPoint != null) {
-            parent.add(entryPoint.detach());
-        }
+
+        // the entry point
+        Element entryPointEntry = parent.addElement(XmlNode.EntryPoint.name());
+        CmsRelationType type = CmsRelationType.ENTRY_POINT;
+        CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, entryPoint);
+        CmsXmlVfsFileValue.fillSitemapEntry(entryPointEntry, sitemapEntry, type);
+
         // recursively add the nodes to the raw XML structure
         for (CmsSitemapEntry entry : entries) {
             saveEntry(cms, parent, entry, propertiesConf);
