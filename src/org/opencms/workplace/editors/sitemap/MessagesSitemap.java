@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/MessagesSitemap.java,v $
- * Date   : $Date: 2010/02/09 10:17:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/16 13:04:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6.0 
  */
@@ -80,6 +80,9 @@ public final class MessagesSitemap extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SITEMAP_URL_NAME_ALREADY_EXISTS_TITLE_0 = "ERR_SITEMAP_URL_NAME_ALREADY_EXISTS_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_ADDINFO_SUBSITEMAP_0 = "GUI_SITEMAP_ADDINFO_SUBSITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_BUTTON_CHANGE_URLNAME_CANCEL_0 = "GUI_SITEMAP_BUTTON_CHANGE_URLNAME_CANCEL_0";
@@ -193,7 +196,16 @@ public final class MessagesSitemap extends A_CmsMessageBundle {
     public static final String GUI_SITEMAP_EDIT_FAVORITES_TITLE_0 = "GUI_SITEMAP_EDIT_FAVORITES_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_EDIT_PATH_TOOLTIP_0 = "GUI_SITEMAP_EDIT_PATH_TOOLTIP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_ENTRY_NO_TITLE_0 = "GUI_SITEMAP_ENTRY_NO_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_GO_TO_PATH_TOOLTIP_0 = "GUI_SITEMAP_GO_TO_PATH_TOOLTIP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_GO_TO_SITEMAP_0 = "GUI_SITEMAP_GO_TO_SITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_LABEL_EDIT_DIALOG_PATH_0 = "GUI_SITEMAP_LABEL_EDIT_DIALOG_PATH_0";

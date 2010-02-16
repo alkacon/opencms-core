@@ -143,7 +143,7 @@
           padding: 10px 0px 60px 0px;
           background: #ffffff;
       }
-      .cms-root-sitemap > .cms-sitemap-item > .cms-sitemap-entry-header {
+      .cms-sitemap-root > .cms-sitemap-item > .cms-sitemap-entry-header {
 	background: #E6E6E6 url(images/ui-bg_glass_100_green_1x400.png) repeat-x scroll 50% 50% !important;
 }
       
@@ -312,7 +312,7 @@
 }
 
 .cms-sitemapnav:hover {
-	background: transparent url(images/16x16/ocms_de_sitemapnav_i.png) no-repeat scroll 50% 50%;
+	background: transparent url(images/16x16/ocms_de_sitemapnav_a.png) no-repeat scroll 50% 50%;
 }
 
 
@@ -343,7 +343,7 @@ div.ui-widget-header a.cms-subsitemap {
 	background-image: url(images/16x16/ocms_de_subsitemap_a.png);
 }
 
-.cms-root-sitemap > .cms-hovered > .cms-sitemap-entry-header {
+.cms-sitemap-root > .cms-hovered > .cms-sitemap-entry-header {
 	background-image: none !important;
 }
 /*
