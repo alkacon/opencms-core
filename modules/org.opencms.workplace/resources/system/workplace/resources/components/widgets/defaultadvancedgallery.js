@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/02/12 13:56:27 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/02/16 14:37:41 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,15 +108,18 @@ var ade = {};
          requestData['querydata']['galleries'] = [];
          requestData['querydata']['categories'] = [];
          requestData['querydata']['matchesperpage'] = 8;
-         requestData['querydata']['query'] = '';
-         requestData['querydata']['tabid'] = startupTabId;
+         requestData['querydata']['query'] = '';         
          requestData['querydata']['page'] = 1;
          requestData['querydata']['locale'] = locale;
          // check the startup parameter
          if (startupFolder != null) {
             requestData['querydata'][searchKeys[startupType]] = [startupFolder];
+            requestData['querydata']['tabid'] = 'cms_tab_results';
          } else if (startupFolders != null) {
             requestData['querydata'][searchKeys[startupType]] = startupFolders;
+            requestData['querydata']['tabid'] = 'cms_tab_results';
+         } else {
+             requestData['querydata']['tabid'] = startupTabId;
          }
       }
       

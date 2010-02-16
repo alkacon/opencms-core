@@ -107,7 +107,7 @@
     * 'matchesperpage': the number of items pro result page
     * 'sortorder': the sort oder parameter, if null title_desc is used on server
     * 'locale': optinal parameter, is should not be null
-    * 'isChanged': map of flags indicating if one of the search criteria is changed and should be taken into account. It is used internally.
+    * 'isChanged': map of flags indicating if one of the search criteria is changed and should be taken into account. It is used internally. 
     */
    var searchObject = cms.galleries.searchObject = {
       types: [],
@@ -522,7 +522,7 @@
     * 
     * @param {Object} requestData the request parameter
     */
-   var initAddDialog = cms.galleries.initAddDialog = function(tabsContent, requestData) {       
+   var initAddDialog = cms.galleries.initAddDialog = function(tabsContent, requestData) {          
       // handle the request parameter:
       
       // set the indices for the tabs
@@ -801,8 +801,18 @@
        // if the criteria for types are empty
        if (cms.galleries.searchObject['types'].length == 0) {
            // no galleries is selected
-           if (cms.galleries.searchObject['galleries'].length == 0) {               
-               return $.extend(preparedSearchObject, cms.galleries.searchObject, {'types':cms.galleries.configContentTypes});
+           if (cms.galleries.searchObject['galleries'].length == 0) {
+               if (cms.galleries.initValues['dialogMode'] == 'widget' || cms.galleries.initValues['dialogMode'] == 'editor' ) {
+                   // get all available galleries
+                   var galleriesInfos = cms.galleries.searchCriteriaListsAsJSON['galleries'];
+                   var galleryPaths = [];
+                   for (var i = 0; i < galleriesInfos.length; i++) {
+                       galleryPaths.push(galleriesInfos[i]['path']);
+                   }                   
+                   return $.extend(preparedSearchObject, cms.galleries.searchObject, {'types': cms.galleries.configContentTypes, 'galleries': galleryPaths});
+               } else {
+                   return $.extend(preparedSearchObject, cms.galleries.searchObject, {'types':cms.galleries.configContentTypes});    
+               }                             
            // at least one gallery is selected                              
            } else if (cms.galleries.searchObject['galleries'].length > 0) {               
                 var selectedGalleries = cms.galleries.searchObject['galleries'];                
@@ -1057,7 +1067,7 @@
         }
             
         
-    }
+    }      
    
    /**
     * Refresh the list for given criteria after sorting.
@@ -1451,15 +1461,33 @@
                var selectedLis = cms.galleries.searchObject[searchCriteria];
                // if any search criteria is selected
                if (selectedLis) {
-                   if (selectedLis.length == 1) {                       
-                       titles = singleSelect.concat($('li[alt=' + selectedLis[0] + ']').find('.cms-list-title').text());
+                   if (selectedLis.length == 1) {
+                       // use the title in normal case
+                       var content = $('li[alt=' + selectedLis[0] + ']').find('.cms-list-title').text();
+                       // use the sitepath for a gallery without title
+                       if (searchCriteria == 'galleries' && content.length == 0) {
+                           content = $('li[alt=' + selectedLis[0] + ']').find('div[rel="path"]').text();
+                       }
+                       titles = singleSelect.concat(content);
                        cms.galleries.addCreteriaToTab(titles, searchCriteria);
                    } else if (selectedLis.length > 1) {
                       $.each(selectedLis, function() {
                           if (titles.length == 0) {
-                              titles = multipleSelect.concat($('li[alt=' + this + ']').find('.cms-list-title').text());
+                             // use the title in normal case
+                             var content1 = $('li[alt="' + selectedLis[0] + '"]').find('.cms-list-title').text();
+                             // use the sitepath for a gallery without title
+                             if (searchCriteria == 'galleries' && content1.length == 0) {
+                                 content1 = $('li[alt="' + selectedLis[0] + '"]').find('div[rel="path"]').text();
+                             }
+                             titles = multipleSelect.concat(content1);
                           } else {
-                              titles = titles.concat(", ").concat($('li[alt=' + this + ']').find('.cms-list-title').text());
+                              // use the title in normal case
+                             var content = $('li[alt="' + this + '"]').find('.cms-list-title').text();
+                             // use the sitepath for a gallery without title
+                             if (searchCriteria == 'galleries' && content.length == 0) {
+                                 content = $('li[alt="' + this + '"]').find('div[rel="path"]').text();
+                             }
+                             titles = titles.concat(", ").concat(content);
                           }
                       });
                       cms.galleries.addCreteriaToTab(titles, searchCriteria);

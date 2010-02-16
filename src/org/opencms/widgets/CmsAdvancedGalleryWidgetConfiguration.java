@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsAdvancedGalleryWidgetConfiguration.java,v $
- * Date   : $Date: 2010/02/12 13:56:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/02/16 14:37:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,12 +98,13 @@ import org.apache.commons.logging.Log;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.5.0 
  */
 public class CmsAdvancedGalleryWidgetConfiguration {
 
+    /** Gallery keys for different gallery types. */
     public enum CmsGalleryConfigKeys {
         /** Configuration key name for the container pages. */
         container,
@@ -124,7 +125,6 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         public static final CmsGalleryConfigKeys DEFAULT = defaultgallery;
     }
 
-    //TODO: declare enumaration instaed of the constants for json keys
     /** Configuration key names constants. */
     public enum CmsGalleryConfigParam {
 
@@ -201,7 +201,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         /** The resource type array for the containerpage gallery. */
         RESOURCETYPE_CONTAINERPAGEGALLERY("[13]"),
 
-        /** The resource type array for the containerpage gallery. */
+        /** The resource type array for all available resources. */
         RESOURCETYPE_DEFAULTGALLERY("[]"),
 
         /** The resource type array for the downloadgallery. */
@@ -250,8 +250,6 @@ public class CmsAdvancedGalleryWidgetConfiguration {
             return m_name;
         }
     }
-
-    //TODO: add getter and setter for all config parameters
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAdvancedGalleryWidgetConfiguration.class);
@@ -570,7 +568,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 // set the prefix for the imagegallery button
                 setButtonPrefix(CmsGalleryConfigValues.IMAGE.getName());
                 // set start tab
-                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_results.toString());
+                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_galleries.toString());
 
                 // set the parameter from the configuration
                 gConfigJsonObj = configJsonObj.optJSONObject(CmsGalleryConfigKeys.imagegallery.toString());
@@ -639,13 +637,14 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 // set the prefix for the download button
                 setButtonPrefix(CmsGalleryConfigValues.DOWNLOAD.getName());
                 // set start tab
-                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_results.toString());
+                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_galleries.toString());
 
                 // set the parameter from the configuration
                 gConfigJsonObj = configJsonObj.optJSONObject(CmsGalleryConfigKeys.downloadgallery.toString());
                 setDefaultgalleryConfigPart(cms, widgetDialog, param, gConfigJsonObj);
                 break;
             case defaultgallery:
+            default:
                 // set the preselected resource types available for this advanced gallery
                 // set the preselected gallery tabs to be displayed
                 try {
@@ -660,7 +659,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 setTabs(tabs);
                 setImagegallery(false);
                 // set start tab
-                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_results.toString());
+                setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_galleries.toString());
                 // set the prefix for the download button
                 setButtonPrefix(CmsGalleryConfigValues.DEFAULT.getName());
         }
