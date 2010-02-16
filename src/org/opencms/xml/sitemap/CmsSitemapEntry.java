@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/02/10 14:28:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/02/16 10:16:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,17 +47,11 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
 public class CmsSitemapEntry {
-
-    /** Name for the template property. */
-    public static final String PROPERTY_TEMPLATE = "template";
-
-    /** Name for the inherited template property. */
-    public static final String PROPERTY_TEMPLATE_INHERIT = "template-inherit";
 
     /** The content id, for detail pages. */
     private CmsUUID m_contentId;
@@ -284,12 +278,12 @@ public class CmsSitemapEntry {
     public String getTemplate(String defaultValue) {
 
         Map<String, String> ownProperties = getProperties(false);
-        Map<String, String> allProperties = getInheritedProperties();
+        Map<String, String> allProperties = getProperties(true);
 
-        if (ownProperties.containsKey(PROPERTY_TEMPLATE)) {
-            return ownProperties.get(PROPERTY_TEMPLATE);
-        } else if (allProperties.containsKey(PROPERTY_TEMPLATE_INHERIT)) {
-            return allProperties.get(PROPERTY_TEMPLATE_INHERIT);
+        if (ownProperties.containsKey(CmsSitemapManager.Property.template.getName())) {
+            return ownProperties.get(CmsSitemapManager.Property.template.getName());
+        } else if (allProperties.containsKey(CmsSitemapManager.Property.templateInherited.getName())) {
+            return allProperties.get(CmsSitemapManager.Property.templateInherited.getName());
         } else {
             return defaultValue;
         }
