@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/02/15 08:53:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/02/16 16:26:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.2
  */
@@ -395,8 +395,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         Map<String, CmsXmlContentProperty> propertiesConf,
         Map<String, String> properties) {
 
-        Element propElement = null;
-
         for (Map.Entry<String, String> property : properties.entrySet()) {
             String propName = property.getKey();
             String propValue = property.getValue();
@@ -404,9 +402,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 continue;
             }
             // only if the property is configured in the schema we will save it
-            if (propElement == null) {
-                propElement = parentElement.addElement(CmsXmlContentProperty.XmlNode.Properties.name());
-            }
+            Element propElement = parentElement.addElement(CmsXmlContentProperty.XmlNode.Properties.name());
 
             // the property name
             propElement.addElement(CmsXmlContentProperty.XmlNode.Name.name()).addCDATA(propName);
