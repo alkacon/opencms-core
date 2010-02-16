@@ -1960,7 +1960,7 @@
                return;
             }
             var sitemap = [entryObj.serialize(false)];
-            cms.data.createSitemap(sitemap, entryObj.getTitle(), function(ok, data) {
+            cms.data.createSitemap(sitemap, entryObj.getTitle(), removeDuplicateSlashes('/' + cms.sitemap.referencePath + '/' + entryObj.getUrl()), function(ok, data) {
                if (!ok) {
                   return;
                }

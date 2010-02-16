@@ -165,15 +165,17 @@
     */
    var saveSitemap = cms.data.saveSitemap = function(sitemap, callback) {
       cms.data.sitemapPostJSON(ACTION_SAVE, {
-         'sitemap': sitemap
+         'sitemap': sitemap,
+         'referencePath': cms.sitemap.referencePath
       }, callback);
    }
    
    
-   var createSitemap = cms.data.createSitemap = function(sitemap, title, callback) {
+   var createSitemap = cms.data.createSitemap = function(sitemap, title, referencePath, callback) {
        cms.data.sitemapPostJSON(ACTION_NEWSITEMAP, {
            'sitemap': sitemap,
-           'title':   title
+           'title':   title,
+           'referencePath': referencePath
        }, callback);
    }
    
