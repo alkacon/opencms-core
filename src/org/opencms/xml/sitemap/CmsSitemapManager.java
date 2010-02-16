@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/15 09:59:17 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/02/16 08:00:29 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 7.9.2
  */
@@ -532,18 +532,22 @@ public class CmsSitemapManager {
         // if no match found from the cache
         if (startEntry == null) {
             // find the root sitemap for this site
-            CmsXmlSitemap sitemapXml = null;
+            CmsRelation sitemapRelation = null;
             for (CmsRelation relation : cms.readRelations(CmsRelationFilter.TARGETS.filterType(CmsRelationType.ENTRY_POINT))) {
-                if (rootUri.startsWith(relation.getTargetPath())) {
-                    sitemapXml = CmsXmlSitemapFactory.unmarshal(cms, cms.readResource(relation.getSourceId()));
-                    break;
+                if (rootUri.startsWith(relation.getTargetPath())
+                    && ((sitemapRelation == null) || sitemapRelation.getTargetPath().startsWith(
+                        relation.getTargetPath()))) {
+                    sitemapRelation = relation;
                 }
             }
             // validate sitemap
-            if (sitemapXml == null) {
+            if (sitemapRelation == null) {
                 // sitemap not found
                 return null;
             }
+            CmsXmlSitemap sitemapXml = CmsXmlSitemapFactory.unmarshal(
+                cms,
+                cms.readResource(sitemapRelation.getSourceId()));
             CmsSitemapBean sitemap = sitemapXml.getSitemap(cms, cms.getRequestContext().getLocale());
             if ((sitemap == null) || sitemap.getSiteEntries().isEmpty()) {
                 // sitemap is empty
