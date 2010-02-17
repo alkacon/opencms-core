@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/17 08:06:37 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/02/17 08:45:58 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 7.9.2
  */
@@ -85,7 +85,7 @@ public class CmsSitemapManager {
         /** <code>template</code> property name. */
         template("template"),
         /** <code>template-inhertited</code> property name. */
-        templateInherited("template-inhertited"),
+        templateInherited("template-inherited"),
         /** <code>navigation</code> property name. */
         navigation("navigation"),
         /** <code>sitemap</code> property name. */

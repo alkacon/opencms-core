@@ -828,6 +828,20 @@
       }
    }
    
+   /**
+    * Returns true if the two objects passed as parameters have any keys in common.
+    * @param {Object} obj1 the first object
+    * @param {Object} obj2 the second object 
+    */
+   var checkCommonKeys = function(obj1, obj2) {
+       for (var key in obj1) {
+           if (obj2[key]) {
+               return true;
+           }
+       }
+       return false;
+   };
+   
    
    
    
@@ -929,7 +943,6 @@
             }, function() {
             
                $dropzone.removeClass(classHovered);
-               
                _resetMenu();
                return;
             });
@@ -2737,6 +2750,13 @@
       return cms.data.CONTEXT + '/permalink/' + id;
    }
    
+   /**
+    * Gets the SitemapEntry wrapper for the root entry in the sitemap.
+    */
+   var getRootEntryObj = function() {
+       return new SitemapEntry($('#cms-sitemap > .cms-sitemap-entry:first').get(0));
+   }
+   
    
    /**
     * Constructor function for sitemap entries.
@@ -2999,33 +3019,26 @@
          setEntryData(this.$li, entryData);
          this.addSitemapLink(M.GUI_SITEMAP_ADDINFO_SUBSITEMAP_0, newValue);
          
-         //         var $link = $('<a/>').addClass(classSubSitemapLink);
-         //         $link.text(M.GUI_SITEMAP_LINK_GO_TO_SUBSITEMAP_0);
-         //         $link.attr('href', cms.data.CONTEXT + newValue);
-         //         $link.appendTo(this.$item.find('.' + classAdditionalInfo));
          this.$li.droppable('destroy');
       },
       
-      //      /**
-      //       * Sets the sub-sitemap id
-      //       * @param {Object} newValue the new value of the sub-sitemap id
-      //       */
-      //      setSitemap: function(newValue) {
-      //         this.$li.find('.' + classSubSitemapLink).remove();
-      //         
-      //         var entryData = getEntryData(this.$li);
-      //         entryData.sitemap = newValue;
-      //         setEntryData(this.$li, entryData);
-      //         if (newValue || true) {
-      //            var $link = $('<a/>').addClass(classSubSitemapLink);
-      //            $link.text(M.SITEMAP_LINK_GO_TO_SUBSITEMAP);
-      //            $link.attr('href', makePermalink(newValue));
-      //            $link.appendTo(this.$item.find('.' + classAdditionalInfo));
-      //            this.$li.droppable('destroy');
-      //         }
-      //         
-      //      },
-      
+      /**
+       * Collects the ids from this sitemap entries and its descendants
+       * 
+       * @param {Object} obj optional parameter used to collect the ids 
+       */
+      getIds: function(obj) {
+          var self = this;
+          if (!obj) {
+              obj = {};
+          }
+          obj[self.getId()] = true;
+          var children = self.getChildren();
+          for (var i = 0; i < children.length; i++) {
+              children[i].getIds(obj);
+          }
+          return obj;
+      },
       
       /**
        * Returns true if this entry is the root entry of a root sitemap.
@@ -3311,7 +3324,7 @@
       
       getDefaultTemplate: function(includeSelf) {
          var self = this;
-         var templateValue = includeSelf ? self.searchProperty('template-inherit') : self.getInheritedProperty('template-inherit');
+         var templateValue = includeSelf ? self.searchProperty('template-inherited') : self.getInheritedProperty('template-inherited');
          var templateObj = null;
          if (templateValue == null) {
             templateObj = cms.sitemap.defaultTemplate;
@@ -3640,7 +3653,7 @@
    
    TemplateSelector.prototype = {
       /**
-       * Sets the state of the input fields according to the template and template-inherit properties.
+       * Sets the state of the input fields according to the template and template-inherited properties.
        * @param {Object} template
        * @param {Object} templateInherit
        */
@@ -3662,7 +3675,7 @@
       
       
       /**
-       * Returns an object with the template and template-inherit properties set.
+       * Returns an object with the template and template-inherited properties set.
        */
       getProperties: function() {
          var self = this;
@@ -3671,7 +3684,7 @@
          if (value != 'none') {
             result['template'] = value;
             if (self.$checkbox.get(0).checked) {
-               result['template-inherit'] = value;
+               result['template-inherited'] = value;
             }
          }
          return result;
@@ -3699,9 +3712,9 @@
       var widgets = {};
       var newProps = {};
       var template = properties['template'].value || null;
-      var templateInherit = properties['template-inherit'].value || null;
+      var templateInherit = properties['template-inherited'].value || null;
       delete properties['template'];
-      delete properties['template-inherit'];
+      delete properties['template-inherited'];
       
       var $table = cms.property.buildPropertyTable(properties, widgets);
       var $dlg = makeDialogDiv('cms-property-dialog');

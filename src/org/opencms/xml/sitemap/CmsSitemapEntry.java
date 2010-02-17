@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/02/16 10:16:03 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/17 08:45:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -267,7 +267,7 @@ public class CmsSitemapEntry {
     /**
      * Returns the template that should be used for this sitemap entry.<p>
      * 
-     * The template is normally determined by the template-inherit property (which may have
+     * The template is normally determined by the template-inherited property (which may have
      * been inherited from another sitemap entry), but can be overridden by setting an entry's 
      * template property. Inherited values of the template property will be ignored. If a template
      * can't be found by inspecting those properties, the default value passed as a parameter is returned. 

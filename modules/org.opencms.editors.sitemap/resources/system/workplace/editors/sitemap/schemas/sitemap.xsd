@@ -32,7 +32,7 @@
 				<property name="sitemap" type="vfslist"  widget="string"/>
 				
 				<property name="template" type="string" widget="string" />
-				<property name="template-inherit" type="string" widget="string" />
+				<property name="template-inherited" type="string" widget="string" />
 				
 				
 			</properties>
