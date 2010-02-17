@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/16 08:00:29 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/02/17 08:06:37 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 7.9.2
  */
@@ -405,11 +405,22 @@ public class CmsSitemapManager {
         CmsXmlSitemap superSitemap = null;
         CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_WEAK);
         for (CmsRelation relation : cms.getRelationsForResource(xmlSitemap.getFile(), filter)) {
-            CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
-            if (CmsResourceTypeXmlSitemap.isSitemap(source)) {
-                superSitemap = CmsXmlSitemapFactory.unmarshal(cms, source);
-                break;
+            if (CmsResource.isTemporaryFileName(relation.getSourcePath())) {
+                // temp file
+                continue;
             }
+            CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
+            if (((source.getFlags() & CmsResource.FLAG_TEMPFILE) > 0)) {
+                // temp file
+                continue;
+            }
+            if (!CmsResourceTypeXmlSitemap.isSitemap(source)) {
+                // not sitemap
+                continue;
+            }
+            // found
+            superSitemap = CmsXmlSitemapFactory.unmarshal(cms, source);
+            break;
         }
         return superSitemap;
     }
@@ -450,21 +461,32 @@ public class CmsSitemapManager {
      * 
      * @param cms the current CMS context
      * @param uri the sitemap URI to get the sitemap for
+     * @param findRoot if <code>true</code> it will find a root sitemap, a sub-sitemap
      * 
      * @return the sitemap for the given sitemap URI
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsXmlSitemap getSitemapForUri(CmsObject cms, String uri) throws CmsException {
+    public CmsXmlSitemap getSitemapForUri(CmsObject cms, String uri, boolean findRoot) throws CmsException {
 
         String rootUri = cms.getRequestContext().addSiteRoot(uri);
         CmsRelation bestMatch = null;
         // find the correct sitemap
         for (CmsRelation relation : cms.readRelations(CmsRelationFilter.TARGETS.filterType(CmsRelationType.ENTRY_POINT))) {
-            if (rootUri.startsWith(relation.getTargetPath())) {
-                if ((bestMatch == null) || relation.getTargetPath().startsWith(bestMatch.getTargetPath())) {
-                    bestMatch = relation;
-                }
+            if (CmsResource.isTemporaryFileName(relation.getSourcePath())
+                || CmsResource.isTemporaryFileName(relation.getTargetPath())) {
+                // temp file
+                continue;
+            }
+            if (!rootUri.startsWith(relation.getTargetPath())) {
+                // not relevant
+                continue;
+            }
+            if ((bestMatch == null)
+                || (!findRoot && relation.getTargetPath().startsWith(bestMatch.getTargetPath()))
+                || (findRoot && bestMatch.getTargetPath().startsWith(relation.getTargetPath()))) {
+                // a better match found
+                bestMatch = relation;
             }
         }
         if (bestMatch == null) {
@@ -532,22 +554,13 @@ public class CmsSitemapManager {
         // if no match found from the cache
         if (startEntry == null) {
             // find the root sitemap for this site
-            CmsRelation sitemapRelation = null;
-            for (CmsRelation relation : cms.readRelations(CmsRelationFilter.TARGETS.filterType(CmsRelationType.ENTRY_POINT))) {
-                if (rootUri.startsWith(relation.getTargetPath())
-                    && ((sitemapRelation == null) || sitemapRelation.getTargetPath().startsWith(
-                        relation.getTargetPath()))) {
-                    sitemapRelation = relation;
-                }
-            }
+            CmsXmlSitemap sitemapXml = getSitemapForUri(cms, uri, true);
             // validate sitemap
-            if (sitemapRelation == null) {
+            if (sitemapXml == null) {
                 // sitemap not found
                 return null;
             }
-            CmsXmlSitemap sitemapXml = CmsXmlSitemapFactory.unmarshal(
-                cms,
-                cms.readResource(sitemapRelation.getSourceId()));
+
             CmsSitemapBean sitemap = sitemapXml.getSitemap(cms, cms.getRequestContext().getLocale());
             if ((sitemap == null) || sitemap.getSiteEntries().isEmpty()) {
                 // sitemap is empty
