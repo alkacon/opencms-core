@@ -2709,7 +2709,6 @@
             'background-color': '#000000',
             'opacity': '0.5'
          });
-         $('<img></img>').attr('src', cms.data.SKIN_URL + 'commons/wait.gif').appendTo($layer);
       }
    }
    
