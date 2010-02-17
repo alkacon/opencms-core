@@ -117,6 +117,16 @@
                       <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_FORMAT_LINK_0+'</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_INFO_LINK_0+'</a></li>\
                   </ul>',
+        'view': '<ul>\
+                      <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_PROPERTIES_LINK_0+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_FORMAT_LINK_0+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_INFO_LINK_0+'</a></li>\
+                  </ul>',
+        'ade': '<ul>\
+                      <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_PROPERTIES_LINK_0+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_FORMAT_LINK_0+'</a></li>\
+                      <li><a href="#' + cms.imagepreviewhandler.keys['imageInfosTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_INFO_LINK_0+'</a></li>\
+                  </ul>',
         'editor' : '<ul>\
                       <li><a href="#' + cms.previewhandler.keys['propertiesTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_PROPERTIES_LINK_0+'</a></li>\
                       <li><a href="#' + cms.imagepreviewhandler.keys['formatTabId'] + '">'+M.GUI_IMAGEPREVIEW_TABS_IMAGE_FORMAT_LINK_0+'</a></li>\

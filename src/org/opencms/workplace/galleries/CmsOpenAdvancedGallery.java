@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2010/02/12 13:57:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/02/17 10:56:01 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.6
  */
@@ -135,6 +135,9 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 JSONObject queryObj = new JSONObject();
                 JSONArray galleriesArr = new JSONArray();
                 try {
+                    // add 'types' param to the data object
+                    jsonObj.put(CmsGallerySearchServer.QueryKey.types.toString(), new JSONArray());
+                    // create 'querydata' for the initial search
                     galleriesArr.put(galleryPath);
                     queryObj.put(CmsGallerySearchServer.ResponseKey.types.toString(), new JSONArray());
                     queryObj.put(CmsGallerySearchServer.ResponseKey.galleries.toString(), galleriesArr);

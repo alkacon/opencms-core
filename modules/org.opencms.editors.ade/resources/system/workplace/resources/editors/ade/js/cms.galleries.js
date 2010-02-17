@@ -14,10 +14,9 @@
    
    /** html-id for tabs. */
    var idGalleriesMain = cms.galleries.idGalleriesMain = 'cms-gallery-main';   
-   
-   //TODO: must be more generic, so at the beginning the indeces can be changed on the fly
-   /** A Map of tab ids. */
-   var arrayTabIndexes = cms.galleries.arrayTabIndexes =  {};
+      
+   /** A Map of tab ids. It will be generated on gallery load. */
+   cms.galleries.arrayTabIndexes =  {};
    
    /** A Map of tab ids. */
    var arrayTabIds = cms.galleries.arrayTabIds =  {
@@ -767,13 +766,27 @@
       if (cms.galleries.searchCriteriaListsAsJSON.types) {
           cms.galleries.configContentTypes = cms.galleries.searchCriteriaListsAsJSON.typeids;      
       }
-               
-      if (initSearchResult && initSearchResult.searchresult) {
-          cms.galleries.fillResultTab(initSearchResult);         
+      
+      // Do not fill the result tab if
+      // 1. no search results are given or
+      // 2. gallery is opened in another tab
+      if (cms.galleries.searchObject['tabid'] == cms.galleries.arrayTabIndexes['cms_tab_results']) {
+          if (initSearchResult && initSearchResult.searchresult) {
+              cms.galleries.fillResultTab(initSearchResult);    
+          } else {
+              // open the preselected tab
+              $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);
+          }
       } else {
-          // open the preselected tab
-          $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);    
-      }       
+          if (cms.galleries.arrayTabIndexes['cms_tab_sitemap'] != null 
+              && cms.galleries.searchObject['tabid'] == cms.galleries.arrayTabIndexes['cms_tab_sitemap']
+              && initSearchResult && initSearchResult.searchresult) {
+                   cms.galleries.fillResultTab(initSearchResult);                                                         
+          } else {
+                  // open the preselected tab
+                  $('#' + cms.galleries.idTabs).tabs('select', cms.galleries.searchObject.tabid);
+          }   
+      }             
    }
    
    /**
@@ -1436,8 +1449,11 @@
    var fillResultTab = cms.galleries.fillResultTab = function(initSearchResult) {      
       var searchEnables = false;
       // display the search criteria
-      $.each(cms.galleries.keysSearchObject, function() {         
-         var searchCriteria = this;
+      
+      //$.each(cms.galleries.keysSearchObject, function() {
+      for (var i = 0; i < cms.galleries.keysSearchObject.length; i++) {         
+         //var searchCriteria = this;
+         var searchCriteria = cms.galleries.keysSearchObject[i];
          
          if (cms.galleries.searchObject.isChanged[searchCriteria]) {            
             // is true, if at least one criteria isChanged
@@ -1496,7 +1512,8 @@
                }              
             }
          }
-      });
+      }
+      //});
          
       // display the search results
       if (searchEnables) {

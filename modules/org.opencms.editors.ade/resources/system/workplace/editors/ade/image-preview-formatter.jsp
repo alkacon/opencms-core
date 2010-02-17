@@ -46,6 +46,10 @@
 		width:200px;
 	}
 	
+	.cms-width-180 {
+		width:180px;
+	}
+	
 	.cms-width-600 {
 		width:600px;
 	}
@@ -56,6 +60,10 @@
 	
 	.cms-width-95 {
 		width:95px;
+	}
+	
+	.cms-width-120 {
+		width: 120px;
 	}
 	
 	.cms-width-50 {
@@ -70,12 +78,12 @@
 	<div class="cms-image-info">
 			<div class="cms-field cms-left cms-width-600"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_PATH_0" /></span><span class="cms-value cms-width-500">${cms.path}</span></div>			
 			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_NAME_0" /></span><span class="cms-value cms-width-200">${cms.title}</span></div>
-			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_FORMAT_0" /></span><span class="cms-value cms-width-200">${cms.format}</span></div>
+			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-120"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_FORMAT_0" /></span><span class="cms-value cms-width-180">${cms.format}</span></div>
 			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_TITLE_0" /></span><span class="cms-value cms-width-200">${cms.propertyTitle}</span></div>
 			<c:set var="dateModified" value="<%=new Date(cms.getResource().getDateLastModified()) %>" />
-			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_LAST_MODIFIED_0" /></span><span class="cms-value cms-width-200"><fmt:formatDate value="${dateModified}" dateStyle="MEDIUM" type="both" /></span></div>
+			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-120"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_LAST_MODIFIED_0" /></span><span class="cms-value cms-width-180"><fmt:formatDate value="${dateModified}" dateStyle="MEDIUM" type="both" /></span></div>
 			<div class="cms-field cms-left cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_TYPE_0" /></span><span class="cms-value cms-width-200">${cms.ending}</span></div>						
-			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-95"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_SIZE_0" /></span><span class="cms-value cms-width-50">${cms.size}</span></div>
+			<div class="cms-field cms-right cms-width-300"><span class="cms-item-title cms-width-120"><fmt:message key="GUI_IMAGEPREVIEW_FORMATTER_SIZE_0" /></span><span class="cms-value cms-width-50">${cms.size}</span></div>
     </div>	
 	<input type="hidden" value='${cms.jsonForActiveImage}'>
 </fmt:bundle>
