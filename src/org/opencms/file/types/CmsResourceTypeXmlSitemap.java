@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeXmlSitemap.java,v $
- * Date   : $Date: 2010/02/15 08:50:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/02/17 08:05:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6 
  */
@@ -311,9 +311,11 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
                 CmsXmlVfsFileValue refValue = (CmsXmlVfsFileValue)value;
                 CmsLink link = refValue.getLink(cms);
                 if (link == null) {
+                    // empty node
                     continue;
                 }
                 if (CmsXmlUtils.removeXpathIndex(value.getPath()).equals(CmsXmlSitemap.XmlNode.EntryPoint.name())) {
+                    // entry points have an own relation type
                     link = new CmsLink(
                         link.getName(),
                         CmsRelationType.ENTRY_POINT,
