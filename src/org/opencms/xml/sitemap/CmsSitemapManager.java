@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/17 08:45:58 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/02/17 10:49:27 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 7.9.2
  */
@@ -483,7 +483,7 @@ public class CmsSitemapManager {
                 continue;
             }
             if ((bestMatch == null)
-                || (!findRoot && relation.getTargetPath().startsWith(bestMatch.getTargetPath()))
+                || (!findRoot && relation.getTargetPath().startsWith(bestMatch.getTargetPath()) && (relation.getTargetPath().length() != bestMatch.getTargetPath().length()))
                 || (findRoot && bestMatch.getTargetPath().startsWith(relation.getTargetPath()))) {
                 // a better match found
                 bestMatch = relation;
