@@ -64,8 +64,9 @@
        * @param {Object} tempId Id of the element that should be displayed while the new element is loaded
        * @param {Object} loadId Id of the element to load
        * @param {Object} ui the sortable object
+       * @param {Function} callback optional function to call after the element has been loaded
        */
-      this.loadElement = function(tempId, loadId, ui) {
+      this.loadElement = function(tempId, loadId, ui, callback) {
          var self = this;
          self.isLoading = true;
          self.loadingResourceId = loadId;
@@ -89,11 +90,12 @@
                   }
                }
                self.over = false;
-               
+               if (callback) {
+                  callback();
+               }
                // container highlighting needs to be refreshed *before* helper positions
                refreshContainerHighlighting(self.hoverList, 2);
                refreshHelperPositions(ui.self);
-               
             }
             self.isLoading = false;
             self.runningRequest = null;
@@ -290,7 +292,6 @@
          'zIndex': sortable.options.zIndex
       }).addClass('ui-sortable-helper');
       //#
-      $('#' + cms.html.favoriteDropMenuId).show();
    }
    
    
@@ -341,7 +342,8 @@
       
       cms.move.zIndexMap = {};
       
-      if (!cms.toolbar.getCurrentMode().isEdit || isMenuContainer(moveState.startId)) {
+      var dragFromMenu = !cms.toolbar.getCurrentMode().isEdit || isMenuContainer(moveState.startId);
+      if (dragFromMenu) {
          startDragFromMenu(ui.self);
       } else {
          startDragFromNormalContainer(ui.self);
@@ -386,7 +388,11 @@
          }
          refreshHelperPositions(ui.self);
       } else if (moveState.element.partial) {
-         moveState.loadElement(moveState.currentResourceId, moveState.currentResourceId, ui);
+         moveState.loadElement(moveState.currentResourceId, moveState.currentResourceId, ui, function() {
+            if (!dragFromMenu) {
+               $('#' + cms.html.favoriteDropMenuId).show();
+            }
+         });
          refreshHelperPositions(ui.self);
       } else {
          if (cms.toolbar.editingSubcontainerId != null) {
@@ -398,6 +404,9 @@
          }
          refreshContainerHighlighting(moveState.hoverList, 2);
          refreshHelperPositions(ui.self);
+         if (!dragFromMenu) {
+            $('#' + cms.html.favoriteDropMenuId).show();
+         }
       }
    }
    
