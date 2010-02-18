@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/02/16 14:37:41 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/02/18 16:22:36 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,10 @@ var ade = {};
          'top': top + 'px',
          'position': 'fixed'
       });
+     $dlgWindow.closest('.ui-dialog').siblings('.ui-widget-overlay').css({
+         'position': 'fixed',
+         'width': '100%',
+         'height': '100%'});
    }
    
    
@@ -92,7 +96,7 @@ var ade = {};
          'category': 'categories',
          'gallery': 'galleries'
       };
-
+      
       // Json object as request parameter for standard gallery
       // if input field is not empty
       if (selectedPath) {
@@ -108,7 +112,7 @@ var ade = {};
          requestData['querydata']['galleries'] = [];
          requestData['querydata']['categories'] = [];
          requestData['querydata']['matchesperpage'] = 8;
-         requestData['querydata']['query'] = '';         
+         requestData['querydata']['query'] = '';
          requestData['querydata']['page'] = 1;
          requestData['querydata']['locale'] = locale;
          // check the startup parameter
@@ -207,7 +211,10 @@ var ade = {};
             height: 517 + ($.browser.msie ? 11 : 0)
          
          });
-        // fixDialogPosition($iframeBox);
+        if (dialogMode == 'property') {
+           // this doesn't work for the other modes 
+           fixDialogPosition($iframeBox);
+        }
       }
    }
    
