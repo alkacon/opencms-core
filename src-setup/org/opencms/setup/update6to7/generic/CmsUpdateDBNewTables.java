@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/generic/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2009/06/04 14:31:35 $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBNewTables.java,v $
+ * Date   : $Date: 2010/02/18 13:54:46 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -41,14 +41,27 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This class creates the new tables for the database version of OpenCms 7.<p>
+ * This class creates the new tables for the database of OpenCms.<p>
  * 
- * The new tables are
- * CMS_OFFLINE_RESOURCE_RELATIONS
- * CMS_ONLINE_RESOURCE_RELATOINS
- * CMS_PUBLISH_JOBS
- * CMS_RESOURCE_LOCKS
- * CMS_CONTENTS 
+ * The new tables in OpenCms 8 are:
+ * <ul>
+ * <li><code>CMS_LOG</code></li>
+ * </ul>
+ * 
+ * The new tables in OpenCms 7 are:
+ * <ul>
+ * <li><code>CMS_OFFLINE_RESOURCE_RELATIONS</code></li>
+ * <li><code>CMS_ONLINE_RESOURCE_RELATOINS</code></li>
+ * <li><code>CMS_PUBLISH_JOBS</code></li>
+ * <li><code>CMS_RESOURCE_LOCKS</code></li>
+ * <li><code>CMS_CONTENTS</code></li>
+ * <li><code>CMS_HISTORY_STRUCTURE</code></li>
+ * <li><code>CMS_HISTORY_RESOURCES</code></li>
+ * <li><code>CMS_HISTORY_PROPERTIES</code></li>
+ * <li><code>CMS_HISTORY_PROPERTYDEF</code></li>
+ * <li><code>CMS_HISTORY_PROJECTRESOURCES</code></li>
+ * </ul>
+ * 
  * 
  * @author Roland Metzler
  * 
@@ -76,11 +89,15 @@ public class CmsUpdateDBNewTables extends A_CmsUpdateDBPart {
     /**
      * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
+    @Override
     protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
 
-        List elements = new ArrayList();
+        List<String> elements = new ArrayList<String>();
+        // v8
+        elements.add("CMS_LOG");
+        // v7
         elements.add("CMS_OFFLINE_RESOURCE_RELATIONS");
         elements.add("CMS_ONLINE_RESOURCE_RELATIONS");
         elements.add("CMS_PUBLISH_JOBS");
@@ -92,8 +109,8 @@ public class CmsUpdateDBNewTables extends A_CmsUpdateDBPart {
         elements.add("CMS_HISTORY_RESOURCES");
         elements.add("CMS_HISTORY_STRUCTURE");
 
-        for (Iterator it = elements.iterator(); it.hasNext();) {
-            String table = (String)it.next();
+        for (Iterator<String> it = elements.iterator(); it.hasNext();) {
+            String table = it.next();
             if (!dbCon.hasTableOrColumn(table, null)) {
                 String query = readQuery(table);
                 dbCon.updateSqlStatement(query, null, null);
