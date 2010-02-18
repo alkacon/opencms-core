@@ -1338,7 +1338,7 @@
                right: 15,
                top: 10
             },
-            handle: 'a.cms-move',
+            handle: '.cms-move',
             items: cms.data.sortitems + ', li.cms-item',
             revert: 100,
             deactivate: function(event, ui) {

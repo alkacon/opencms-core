@@ -253,7 +253,9 @@ button.cms-deactivated span.cms-icon-save {
 	background-image: url(images/24x24/ade_publish.png)
 }
 
-
+.cms-element{
+    position: relative;
+}
 /** Subcontainer handling **/
 .cms-subcontainer.cms-new-element, .cms-subcontainer.cms-editing-subcontainer, .cms-subcontainer .cms-subcontainer-background{
 	background: #ffffff url(images/bg_striped.png) repeat;
