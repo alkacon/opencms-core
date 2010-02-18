@@ -1890,9 +1890,6 @@
       setCloseHandler: function(handler) {
          this.closeHandler = handler;
       }
-      
-      
-      
    }
    
    
@@ -2529,6 +2526,17 @@
          // TODO: better display an red-square-icon in the toolbar with a tooltip
          cms.util.dialogAlert(cms.data.NO_EDIT_REASON, M.GUI_SITEMAP_CANT_EDIT_DIALOG_TITLE_0);
       }
+      if (cms.data.SHOW_ID) {
+          var entriesWithId = getRootEntryObj().findEntries(function(entry) {
+              return entry.getId() == cms.data.SHOW_ID;
+          });
+          if (entriesWithId.length > 0) {
+              var entry = entriesWithId[0];
+              entry.openParents();
+              entry.highlight();
+          }
+      }
+      
    }
    
    
@@ -2753,7 +2761,7 @@
    /**
     * Gets the SitemapEntry wrapper for the root entry in the sitemap.
     */
-   var getRootEntryObj = function() {
+   var getRootEntryObj = cms.sitemap.getRootEntryObj = function() {
        return new SitemapEntry($('#cms-sitemap > .cms-sitemap-entry:first').get(0));
    }
    
@@ -3020,6 +3028,46 @@
          this.addSitemapLink(M.GUI_SITEMAP_ADDINFO_SUBSITEMAP_0, newValue);
          
          this.$li.droppable('destroy');
+      },
+      
+      openParents: function() {
+          var self = this;
+          var parent = self.getParent();
+          while (parent != null) {
+              parent.setOpen(true);
+              parent = parent.getParent();
+          }
+          
+      },
+      
+      highlight: function() {
+          var self = this;
+          self.$item.addClass('cms-highlight-entry');
+          self.$item.bind('mousedown.highlight', function() {
+              self.$item.removeClass('cms-highlight-entry');
+              self.$item.unbind('mousedown.highlight');
+          })
+      },
+      
+      
+      /**
+       * Returns an array of all of this item's descendants which satisfy a check function.<p>
+       * 
+       * The check function receives a SitemapEntry instance as an argument and returns a boolean.
+       * 
+       * @param {Object} check the check function 
+       */
+      findEntries: function(check) {
+          var self = this;
+          var result = [];
+          if (check(self)) {
+              result.push(self);
+          }
+          var children = self.getChildren();
+          for (var i = 0; i < children.length; i++) {
+              result = result.concat(children[i].findEntries(check));
+          }
+          return result;
       },
       
       /**
@@ -3459,7 +3507,9 @@
        */
       setTitle: function(newValue) {
          var self = this;
-         self.$titleRow.find('input').val(newValue);
+         if (self.getTitle() != newValue) {
+             self.$titleRow.find('input').val(newValue);
+         }
       },
       
       getPath: function() {
@@ -3486,6 +3536,7 @@
          var self = this;
          return self.$urlNameRow.find('input').val();
       },
+      
       /**
        * Sets the URL name and displays it.
        *
@@ -3493,7 +3544,11 @@
        */
       setUrlName: function(newValue) {
          var self = this;
-         self.$urlNameRow.find('input').val(newValue);
+         // setting the value of the input field resets the cursor position in IE,
+         // so we only do it when necessary 
+         if (newValue != self.getUrlName()) {
+             self.$urlNameRow.find('input').val(newValue);
+         }
       },
       
       /**
@@ -3802,6 +3857,7 @@
       var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text(M.GUI_SITEMAP_BUTTON_EDIT_DIALOG_OK_0);
       
       var _validateAll = function(validationCallback) {
+          
          var result = true;
          cms.property.setDialogButtonEnabled($ok, false);
          var urlName = topPanel.getUrlName();
