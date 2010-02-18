@@ -576,8 +576,8 @@
             var currentMode = getCurrentMode();
             if (currentMode != NullMode) {
                // to reset the mode we turn it off and on again
-               currentMode.disable();
-               currentMode.enable();
+               currentMode.button.trigger('click');
+               currentMode.button.trigger('click');
             }
             
          } else {
