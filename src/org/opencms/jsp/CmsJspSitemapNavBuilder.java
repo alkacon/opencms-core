@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2010/02/11 13:56:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/02/18 09:47:39 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,8 +37,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
+import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.9.2 
  * 
@@ -142,6 +145,19 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         }
 
         List<CmsSitemapEntry> entries = folderEntry.getSubEntries();
+        if (entries.isEmpty()) {
+            String subsitemap = folderEntry.getProperties().get(CmsSitemapManager.Property.sitemap.getName());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subsitemap)) {
+                try {
+                    entries = CmsXmlSitemapFactory.unmarshal(m_cms, m_cms.readResource(new CmsUUID(subsitemap))).getSitemap(
+                        m_cms,
+                        m_cms.getRequestContext().getLocale()).getSiteEntries();
+                } catch (CmsException e) {
+                    // should never happen
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
         for (CmsSitemapEntry entry : entries) {
             try {
                 // check permissions

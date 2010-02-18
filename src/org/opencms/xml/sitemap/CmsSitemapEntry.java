@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/02/17 08:45:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/02/18 09:47:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -63,10 +63,10 @@ public class CmsSitemapEntry {
     private Map<String, String> m_inheritedProperties;
 
     /** The entry name. */
-    private final String m_name;
+    private String m_name;
 
     /** The original uri, without content ID. */
-    private final String m_originalUri;
+    private String m_originalUri;
 
     /** The configured properties. */
     private final Map<String, String> m_properties;
@@ -99,8 +99,9 @@ public class CmsSitemapEntry {
         m_resourceId = res.getStructureId();
         m_name = res.getName();
         m_title = null;
-        m_subEntries = Collections.<CmsSitemapEntry> emptyList();
-        m_properties = null;
+        m_subEntries = Collections.emptyList();
+        // do not freeze the properties
+        m_properties = new HashMap<String, String>();
         m_originalUri = res.getRootPath();
         m_sitemap = false;
     }
@@ -115,6 +116,7 @@ public class CmsSitemapEntry {
      * @param title the entry's title
      * @param properties the properties as a map of name/value pairs
      * @param subEntries the list of sub-entries
+     * @param contentId optional content id
      **/
     public CmsSitemapEntry(
         CmsUUID id,
@@ -123,7 +125,8 @@ public class CmsSitemapEntry {
         String name,
         String title,
         Map<String, String> properties,
-        List<CmsSitemapEntry> subEntries) {
+        List<CmsSitemapEntry> subEntries,
+        CmsUUID contentId) {
 
         m_id = id;
         m_resourceId = resourceId;
@@ -139,6 +142,7 @@ public class CmsSitemapEntry {
         }
         m_originalUri = originalUri;
         m_sitemap = true;
+        m_contentId = contentId;
     }
 
     /**
@@ -320,13 +324,34 @@ public class CmsSitemapEntry {
     }
 
     /**
+     * Flexcache will use this as variation key.<p>
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return getRootPath();
+    }
+
+    /**
+     * Root entries of root sitemaps HAVE to have an empty name,
+     * but we can not enforce that while editing the xml, so 
+     * we have to enforce it here. 
+     */
+    protected void removeName() {
+
+        fixPath(m_name);
+        m_name = "";
+    }
+
+    /**
      * Sets the runtime information.<p>
      * 
      * @param inheritedProperties the inherited properties to set
      * @param position the position to set
-     * @param contentId the contentId to set
      */
-    public void setRuntimeInfo(Map<String, String> inheritedProperties, int position, CmsUUID contentId) {
+    protected void setRuntimeInfo(Map<String, String> inheritedProperties, int position) {
 
         // set the inhereted properties
         m_inheritedProperties = new HashMap<String, String>();
@@ -338,18 +363,22 @@ public class CmsSitemapEntry {
         // set the position
         m_properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
         m_inheritedProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
-        // set the content id
-        m_contentId = contentId;
     }
 
     /**
-     * Flexcache will use this as variation key.<p>
+     * Fixes the path.<p>
      * 
-     * @see java.lang.Object#toString()
+     * @param name the name to remove from the path
      */
-    @Override
-    public String toString() {
+    private void fixPath(String name) {
 
-        return getRootPath();
+        int pos = m_originalUri.indexOf(name + "/");
+        if (pos < 0) {
+            return;
+        }
+        m_originalUri = m_originalUri.substring(0, pos) + m_originalUri.substring(pos + 1 + name.length());
+        for (CmsSitemapEntry entry : m_subEntries) {
+            entry.fixPath(name);
+        }
     }
 }

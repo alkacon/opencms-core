@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/16 07:59:12 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2010/02/18 09:47:39 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 7.6
  */
@@ -440,7 +440,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 name,
                 title,
                 new HashMap<String, String>(),
-                new ArrayList<CmsSitemapEntry>());
+                new ArrayList<CmsSitemapEntry>(),
+                null);
             Map<String, CmsXmlContentProperty> propertyConf = getPropertyConfig(sitemapRes);
             JSONObject jsonEntry = jsonifyEntry(entryBean, propertyConf);
             JSONArray entries = new JSONArray();
@@ -576,6 +577,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 parentEntry.getName(),
                 parentEntry.getTitle(),
                 properties,
+                null,
                 null), propertiesConf);
             jsonParentEntry.put(JsonSiteEntry.subentries.name(), siteEntries);
             siteEntries = new JSONArray();
@@ -873,7 +875,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             JSONArray jsonSub = json.optJSONArray(JsonSiteEntry.subentries.name());
             CmsSitemapEntry entry = new CmsSitemapEntry(id, null, linkId, name, title, properties, recursive
             ? jsonToEntryList(jsonSub, propertyConf, true)
-            : Collections.<CmsSitemapEntry> emptyList());
+            : null, null);
             result.add(entry);
         }
         return result;
@@ -907,7 +909,8 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
             name,
             title,
             new HashMap<String, String>(),
-            new ArrayList<CmsSitemapEntry>());
+            new ArrayList<CmsSitemapEntry>(),
+            null);
 
         return entryBean;
     }

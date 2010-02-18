@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/02/15 08:23:27 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/02/18 09:47:39 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 7.6
  */
@@ -636,7 +636,12 @@ public class CmsADEServer extends A_CmsAjaxServer {
         Set<String> types) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
-        Map<CmsUUID, Set<String>> elementContainerTypes = getElementContainerTypes(cms, cntPage);
+        CmsContainerElementBean detailViewElement = null;
+        if (elemUri != null) {
+            CmsResource elemRes = cms.readResource(elemUri);
+            detailViewElement = new CmsContainerElementBean(elemRes.getStructureId(), null, null);
+        }
+        Map<CmsUUID, Set<String>> elementContainerTypes = getElementContainerTypes(cms, cntPage, detailViewElement);
 
         // create empty result object
         JSONObject result = new JSONObject();
@@ -658,14 +663,14 @@ public class CmsADEServer extends A_CmsAjaxServer {
         Set<String> ids = new HashSet<String>();
 
         // add the detail view element
-        if (elemUri != null) {
-            CmsResource elemRes = cms.readResource(elemUri);
-            CmsContainerElementBean element = new CmsContainerElementBean(elemRes.getStructureId(), null, null);
-            m_sessionCache.setCacheContainerElement(element.getClientId(), element);
+        if (detailViewElement != null) {
+            m_sessionCache.setCacheContainerElement(detailViewElement.getClientId(), detailViewElement);
             // check if the element already exists
-            String id = element.getClientId();
+            String id = detailViewElement.getClientId();
             // get the element data
-            JSONObject resElement = elemUtil.getElementData(element, elementContainerTypes.get(element.getElementId()));
+            JSONObject resElement = elemUtil.getElementData(
+                detailViewElement,
+                elementContainerTypes.get(detailViewElement.getElementId()));
             // store element data
             ids.add(id);
             resElements.put(id, resElement);
@@ -751,16 +756,22 @@ public class CmsADEServer extends A_CmsAjaxServer {
      * 
      * @param cms the CmsObject to use for VFS operations 
      * @param cntPage the container page bean
+     * @param detailViewElement optional detail view element
      *  
      * @return a map from uuids to sets of container types
      *  
      * @throws CmsException if something goes wrong 
      */
-    public Map<CmsUUID, Set<String>> getElementContainerTypes(CmsObject cms, CmsContainerPageBean cntPage)
-    throws CmsException {
+    public Map<CmsUUID, Set<String>> getElementContainerTypes(
+        CmsObject cms,
+        CmsContainerPageBean cntPage,
+        CmsContainerElementBean detailViewElement) throws CmsException {
 
         Map<CmsUUID, Set<String>> result = new HashMap<CmsUUID, Set<String>>();
         for (CmsContainerBean container : cntPage.getContainers().values()) {
+            if (detailViewElement != null) {
+                addToMultiMap(result, detailViewElement.getElementId(), container.getType());
+            }
             for (CmsContainerElementBean element : container.getElements()) {
                 addToMultiMap(result, element.getElementId(), container.getType());
                 if (element.isSubcontainer(cms)) {
