@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2009/06/04 14:31:36 $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
+ * Date   : $Date: 2010/02/18 13:52:37 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -210,8 +210,8 @@ public class CmsUpdateDBManager {
 
         String pool = "default";
 
-        int currentVersion = 7;
-        int detectedVersion = 7;
+        int currentVersion = 8;
+        int detectedVersion = 8;
 
         CmsSetupDb setupDb = new CmsSetupDb(null);
 
@@ -225,6 +225,8 @@ public class CmsUpdateDBManager {
 
             if (!setupDb.hasTableOrColumn("CMS_USERS", "USER_OU")) {
                 detectedVersion = 6;
+            } else if (!setupDb.hasTableOrColumn("CMS_LOG", null)) {
+                detectedVersion = 7;
             }
         } finally {
             setupDb.closeConnection();
