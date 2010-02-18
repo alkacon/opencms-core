@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2009/09/09 15:54:50 $
- * Version: $Revision: 1.50.2.2 $
+ * Date   : $Date: 2010/02/18 13:50:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,11 @@
 package org.opencms.configuration;
 
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.collectors.I_CmsResourceCollector;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsMimeType;
 import org.opencms.loader.CmsResourceManager;
@@ -49,6 +53,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +67,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -360,20 +365,26 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                     }
                 }
                 // add default properties
-                List properties = resType.getConfiguredDefaultProperties();
-                if ((properties != null) && (properties.size() > 0)) {
-                    Element propertiesNode = resourceType.addElement(N_PROPERTIES);
-                    Iterator p = properties.iterator();
-                    while (p.hasNext()) {
-                        CmsProperty property = (CmsProperty)p.next();
-                        Element propertyNode = propertiesNode.addElement(N_PROPERTY);
-                        propertyNode.addElement(N_NAME).addText(property.getName());
-                        if (property.getStructureValue() != null) {
-                            propertyNode.addElement(N_VALUE).addCDATA(property.getStructureValue());
-                        }
-                        if (property.getResourceValue() != null) {
-                            propertyNode.addElement(N_VALUE).addAttribute(A_TYPE, CmsProperty.TYPE_SHARED).addCDATA(
-                                property.getResourceValue());
+                List<CmsProperty> properties = resType.getConfiguredDefaultProperties();
+                if (properties != null) {
+                    if (resType instanceof CmsResourceTypeXmlSitemap) {
+                        properties = new ArrayList<CmsProperty>(properties);
+                        properties.remove(new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, null, null));
+                    }
+                    if (properties.size() > 0) {
+                        Element propertiesNode = resourceType.addElement(N_PROPERTIES);
+                        Iterator<CmsProperty> p = properties.iterator();
+                        while (p.hasNext()) {
+                            CmsProperty property = p.next();
+                            Element propertyNode = propertiesNode.addElement(N_PROPERTY);
+                            propertyNode.addElement(N_NAME).addText(property.getName());
+                            if (property.getStructureValue() != null) {
+                                propertyNode.addElement(N_VALUE).addCDATA(property.getStructureValue());
+                            }
+                            if (property.getResourceValue() != null) {
+                                propertyNode.addElement(N_VALUE).addAttribute(A_TYPE, CmsProperty.TYPE_SHARED).addCDATA(
+                                    property.getResourceValue());
+                            }
                         }
                     }
                 }
@@ -395,13 +406,18 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                     }
                 }
                 // add optional parameters
-                Map prop = resType.getConfiguration();
+                Map<String, String> prop = resType.getConfiguration();
                 if (prop != null) {
-                    List sortedRuntimeProperties = new ArrayList(prop.keySet());
+                    if ((resType instanceof CmsResourceTypeXmlContainerPage)
+                        || (resType instanceof CmsResourceTypeXmlSitemap)) {
+                        prop = new HashMap<String, String>(prop);
+                        prop.remove(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
+                    }
+                    List<String> sortedRuntimeProperties = new ArrayList<String>(prop.keySet());
                     Collections.sort(sortedRuntimeProperties);
-                    Iterator it = sortedRuntimeProperties.iterator();
+                    Iterator<String> it = sortedRuntimeProperties.iterator();
                     while (it.hasNext()) {
-                        String key = (String)it.next();
+                        String key = it.next();
                         // create <param name="">value</param> subnodes
                         Object val = prop.get(key);
                         resourceType.addElement(N_PARAM).addAttribute(A_NAME, key).addText(String.valueOf(val));
