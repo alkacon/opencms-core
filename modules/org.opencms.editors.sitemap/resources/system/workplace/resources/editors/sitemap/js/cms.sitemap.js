@@ -363,7 +363,7 @@
       }
       
       $(itemsAndChildrenSelector).live('mouseover', function() {
-      
+       
       
          var $item = $(this).closest('.' + itemClass);
          if ($item.find('input[name=directInput]').size() > 0) {
@@ -2138,8 +2138,10 @@
             },
       disable: function() {
             },
-      createHandle: function() {
-         return $('<a class="cms-move"></a>').attr('title', this.title);
+      createHandle: function(elem) {
+         var $entry = $(elem).closest('.' + classSitemapEntry);
+         var entryObj = new SitemapEntry($entry);
+         return entryObj.isRootEntry() ? $([]) : $('<a class="cms-move"></a>').attr('title', this.title);
       },
       init: function() {
             }
