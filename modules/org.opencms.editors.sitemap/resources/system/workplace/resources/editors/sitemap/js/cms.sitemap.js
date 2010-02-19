@@ -1,5 +1,4 @@
-﻿
-(function(cms) {
+﻿(function(cms) {
    var M = cms.messages;
    /** html-class for additional info. */
    var classAdditionalInfo = 'cms-additional';
@@ -365,7 +364,12 @@
       
       $(itemsAndChildrenSelector).live('mouseover', function() {
       
+      
          var $item = $(this).closest('.' + itemClass);
+         if ($item.find('input[name=directInput]').size() > 0) {
+            // do not allow manipulation of items for which direct input is active 
+            return;
+         }
          // the mouseout event for the previous item may not have been fired due to 
          // a bugfix needed to prevent flickering in Firefox (see below), so we make
          // sure it's not highlighted anymore 
@@ -1186,7 +1190,6 @@
                }
                elem.css('display', '');
                input.remove();
-               
             },
             formatInput: function($elem, $input) {
                if ($.browser.msie) {
@@ -1294,7 +1297,7 @@
     */
    var initDraggable = cms.sitemap.initDraggable = function() {
       $(dropSelector + ', #favorite-drop-list').droppable(cms.sitemap.dropOptions);
-      $('#' + sitemapId + ' li').draggable(cms.sitemap.dragOptions);
+      $('#' + sitemapId + ' li:not(.cms-sitemap-root)').draggable(cms.sitemap.dragOptions);
    }
    
    /**
