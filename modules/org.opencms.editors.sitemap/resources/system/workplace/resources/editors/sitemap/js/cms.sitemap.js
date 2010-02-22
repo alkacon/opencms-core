@@ -2456,14 +2456,15 @@
          
          click: function() {
             var $sitemapElement = _buildSitemapElement(modelEntry);
+            $sitemapElement.addClass('cms-sitemap-root');
             var entryObj = new SitemapEntry($sitemapElement.get(0));
             entryObj.setPath('');
+            
             var okCallback = function(newTitle, newUrlName, newPath, newProperties) {
                entryObj.setTitle(newTitle);
                entryObj.setUrlName(newUrlName);
                entryObj.setProperties(newProperties);
                $sitemapElement.find(cms.util.format('.{0}, .{1}', dropzoneClass, itemClass)).droppable(cms.sitemap.dropOptions);
-               $sitemapElement.addClass('cms-sitemap-root');
                entryObj.setUrls('');
                entryObj.makeEditableRecursively();
                $sitemapElement.draggable(cms.sitemap.dragOptions);
