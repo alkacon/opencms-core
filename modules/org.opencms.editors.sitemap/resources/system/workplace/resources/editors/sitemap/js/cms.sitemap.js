@@ -847,9 +847,6 @@
       return false;
    };
    
-   
-   
-   
    /**
     * Event handler for droppable drop-event dragging from menu into tree.
     *
@@ -967,12 +964,10 @@
       });
    }
    
-   
    var cutLastPathSegment = function(path) {
       path = path.replace(/\/$/, '');
       path = path.replace(/\/[^\/]*$/, '');
    }
-   
    
    /**
     * Click-handler to edit the item title and properties for this handler.
@@ -1063,8 +1058,6 @@
       $overlay.appendTo('#toolbar_content');
    }
    
-   
-   
    /**
     * Initializes the sitemap editor.<p>
     */
@@ -1116,9 +1109,6 @@
       cms.sitemap.dragOptionsType = $.extend({}, cms.sitemap.dragOptionsMenu, {
          start: cms.sitemap.startDragGallery
       });
-      
-      
-      
       
       cms.sitemap.dropOptionsMenu = $.extend({}, cms.sitemap.dropOptions, {
          drop: cms.sitemap.dropItemMenu
@@ -1927,7 +1917,7 @@
                setWaitOverlayVisible(false);
                if (ok) {
                   setSitemapChanged(false);
-                  cms.sitemap.pathMap = getRootEntryObj().getPahMap();
+                  cms.sitemap.pathMap = getRootEntryObj().getPathMap();
                } else {
                   alert("error")
                   //display error message ? 
@@ -2037,7 +2027,7 @@
                      cms.data.saveSitemap(currentSitemap, function() {
                         setWaitOverlayVisible(false);
                         setSitemapChanged(false);
-                        cms.sitemap.pathMap = getRootEntryObj().getPahMap();
+                        cms.sitemap.pathMap = getRootEntryObj().getPathMap();
                      });
                   });
                });
