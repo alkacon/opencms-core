@@ -3261,7 +3261,7 @@
          var self = this;
          var $item = self.$item;
          var fullUri = removeDuplicateSlashes(cms.data.CONTEXT + '/' + uri);
-         var $additionalItem = $('<div class="cms-additional-item/>');
+         var $additionalItem = $('<div class="cms-additional-item" />');
          
          var $title = $('<span class="cms-additional-item-title"/>').text(label);
          var abbrevUri = genericAbbreviate(uri, getDivWidth, 220);
@@ -3279,9 +3279,11 @@
          });
          $navButton.click(function() {
             window.location.href = fullUri;
-         });
+         }); 
          $additionalItem.css('margin-top', '5px');
-         $additionalItem.append($title).append($value).append($navButton).appendTo($item.find('.cms-additional'));
+         $additionalItem.append($title).append($value).append($navButton);
+         var $appendPoint = $item.find('.cms-additional');
+         $appendPoint.append($additionalItem);
       },
       
       
