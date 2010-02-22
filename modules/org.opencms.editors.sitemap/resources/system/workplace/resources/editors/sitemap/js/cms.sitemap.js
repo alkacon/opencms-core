@@ -363,7 +363,7 @@
       }
       
       $(itemsAndChildrenSelector).live('mouseover', function() {
-       
+      
       
          var $item = $(this).closest('.' + itemClass);
          if ($item.find('input[name=directInput]').size() > 0) {
@@ -1996,23 +1996,34 @@
          var self = this;
          
          var convertToSubsitemap = function($element) {
+            setWaitOverlayVisible(true);
             var entryObj = new SitemapEntry($element.clone());
-            var sitemap = [entryObj.serialize(false)];
-            cms.data.createSitemap(sitemap, entryObj.getTitle(), removeDuplicateSlashes('/' + cms.sitemap.referencePath + '/' + entryObj.getUrl()), function(ok, data) {
+            var newSitemap = [entryObj.serialize(false)];
+            var currentSitemap = serializeSitemap($('#' + sitemapId));
+            cms.data.saveSitemap(currentSitemap, function(ok, data) {
                if (!ok) {
+                  setWaitOverlayVisible(false);
                   return;
                }
-               var path = data.path;
-               $element.children('ul').remove();
-               $element.addClass(classClosed);
-               $element.addClass('cms-sub-sitemap-ref');
-               $element.children('.' + classOpener).remove();
-               var entryObj = new SitemapEntry($element);
-               entryObj.setSitemap(path);
-               setSitemapChanged(true, function() {
-                  var sitemap = serializeSitemap($('#' + sitemapId));
-                  cms.data.saveSitemap(sitemap, function() {
-                     setSitemapChanged(false);
+               setSitemapChanged(false);
+               cms.data.createSitemap(newSitemap, entryObj.getTitle(), removeDuplicateSlashes('/' + cms.sitemap.referencePath + '/' + entryObj.getUrl()), function(ok, data) {
+                  if (!ok) {
+                     setWaitOverlayVisible(false);
+                     return;
+                  }
+                  var path = data.path;
+                  $element.children('ul').remove();
+                  $element.addClass(classClosed);
+                  $element.addClass('cms-sub-sitemap-ref');
+                  $element.children('.' + classOpener).remove();
+                  var entryObj = new SitemapEntry($element);
+                  entryObj.setSitemap(path);
+                  setSitemapChanged(true, function() {
+                     var currentSitemap = serializeSitemap($('#' + sitemapId));
+                     cms.data.saveSitemap(currentSitemap, function() {
+                        setWaitOverlayVisible(false);
+                        setSitemapChanged(false);
+                     });
                   });
                });
             });
@@ -2736,9 +2747,16 @@
     */
    var setWaitOverlayVisible = cms.sitemap.setWaitOverlayVisible = function(visible) {
       $('#cms-waiting-layer').remove();
+      var imgUrl = removeDuplicateSlashes(cms.data.SKIN_URI + '/editors/sitemap/css/images/load.gif');
+      var $img = $('<img/>').attr('src', imgUrl).css({
+         'position': 'absolute',
+         'left': '50%',
+         'top': '50%'
+      });
       if (visible) {
          var $layer = $('<div id="cms-waiting-layer"></div>');
          $layer.appendTo('body');
+         $img.appendTo($layer);
          $layer.css({
             position: 'fixed',
             top: '0px',
