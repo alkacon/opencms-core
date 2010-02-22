@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/02/12 13:56:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/02/22 16:27:46 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6.0 
  */
@@ -616,6 +616,18 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CROP_SCALE_0 = "GUI_CROP_SCALE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_TITLE_IMAGEGALLERY_0 = "GUI_EDITOR_TITLE_IMAGEGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_TOOLTIP_IMAGEGALLERY_0 = "GUI_EDITOR_TOOLTIP_IMAGEGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_TITLE_DOWNLOADGALLERY_0 = "GUI_EDITOR_TITLE_DOWNLOADGALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_TOOLTIP_DOWNLOADGALLERY_0 = "GUI_EDITOR_TOOLTIP_DOWNLOADGALLERY_0";
 
     // bundle name
     /** Name of the used resource bundle. */

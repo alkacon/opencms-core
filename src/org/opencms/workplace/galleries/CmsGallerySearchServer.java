@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/02/10 14:21:53 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2010/02/22 16:27:46 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  * 
  * @since 7.6
  */
@@ -520,9 +520,6 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     /** The excerpt field constant. */
     public static final String EXCERPT_FIELD_NAME = "excerpt";
 
-    //TODO: remove
-    /** The result tab id. */
-    //public static final String RESULT_TAB_ID = "#cms_tab_results";
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchServer.class);
 
@@ -723,14 +720,17 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     public JSONObject findResourceInGallery(String resourceName) throws JSONException {
 
         CmsResource resource = null;
+        CmsProperty locale = CmsProperty.getNullProperty();
         try {
             resource = getCmsObject().readResource(resourceName);
+            locale = getCmsObject().readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_LOCALE, true);
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
         }
         if (resource == null) {
             return new JSONObject();
         }
+
         String rootPath = resource.getRootPath();
         JSONObject queryData = new JSONObject();
         JSONArray types = new JSONArray();
@@ -743,6 +743,9 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         queryData.put(QueryKey.matchesperpage.toString(), MATCHES_PER_PAGE);
         queryData.put(QueryKey.query.toString(), "");
         queryData.put(QueryKey.sortorder.toString(), CmsGallerySearchParameters.CmsGallerySortParam.DEFAULT.toString());
+        if (!locale.isNullProperty()) {
+            queryData.put(QueryKey.locale.toString(), locale.getValue());
+        }
         int currentPage = 1;
         boolean found = false;
         queryData.put(QueryKey.page.toString(), currentPage);
@@ -879,6 +882,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         if (tabs.containsString(TabId.cms_tab_containerpage.toString())) {
             // TODO: implement
         }
+        // set current locale
         result.put(ResponseKey.locale.toString(), getCmsObject().getRequestContext().getLocale());
 
         result.put(ResponseKey.locales.toString(), buildJSONForLocales());

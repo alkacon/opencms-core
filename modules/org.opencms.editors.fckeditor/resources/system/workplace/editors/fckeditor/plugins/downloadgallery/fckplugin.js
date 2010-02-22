@@ -1,13 +1,20 @@
-<%@ page import="org.opencms.jsp.*" %><%
-CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+<%@ page import="org.opencms.jsp.*,org.opencms.workplace.*" %><%
+%><%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %><% 
+    CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);	
+	pageContext.setAttribute("cms", cms);
+	CmsDialog dialog = new CmsDialog(pageContext, request, response);
+	pageContext.setAttribute("locale", dialog.getLocale().toString());
 %>
+
+<fmt:setLocale value="${locale}" />
+<fmt:bundle basename="org.opencms.workplace.editors.ade.messagesADE">
 
 // register the related commands
 FCKCommands.RegisterCommand(
 	"OcmsDownloadGallery",
 	new FCKDialogCommand(
 		"OcmsDownloadGallery",
-		"TODO_Title",
+		"<fmt:message key="GUI_EDITOR_TITLE_DOWNLOADGALLERY_0" />",
 		downloadGalleryDialogUrl(),
         685,
 		566
@@ -52,8 +59,10 @@ function downloadGalleryDialogUrl() {
 
 // create the "OcmsDownloadGallery" toolbar button
 // syntax: FCKToolbarButton(commandName, label, tooltip, style, sourceView, contextSensitive) 
-var opencmsDownloadGalleryItem = new FCKToolbarButton("OcmsDownloadGallery", "TODO_Title", "TODO_Tooltip", null, false, true);
+var opencmsDownloadGalleryItem = new FCKToolbarButton("OcmsDownloadGallery", "<fmt:message key="GUI_EDITOR_TITLE_DOWNLOADGALLERY_0" />", "<fmt:message key="GUI_EDITOR_TOOLTIP_DOWNLOADGALLERY_0" />", null, false, true);
 opencmsDownloadGalleryItem.IconPath = FCKConfig.SkinPath + "toolbar/oc-downloadgallery.gif";
 
 // "OcmsDownloadGallery" is the name that is used in the toolbar configuration
 FCKToolbarItems.RegisterItem("OcmsDownloadGallery", opencmsDownloadGalleryItem);
+
+</fmt:bundle>

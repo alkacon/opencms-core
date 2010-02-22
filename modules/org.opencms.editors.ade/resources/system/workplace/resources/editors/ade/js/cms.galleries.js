@@ -113,7 +113,7 @@
       galleries: [],
       categories: [],
       query: '',
-      tabid: cms.galleries.arrayTabIndexes['cms_tab_types'],
+      tabid: 1,
       page: 1,
       searchfields: '',
       matchesperpage: 8,
@@ -133,7 +133,7 @@
            addTabToList: function () {
                $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_results'] + '">Search Results</a></li>');
            },
-           addTabHtml: function(localesArray){
+           addTabHtml: function(){
                       var resultTab = $(cms.galleries.htmlTabResultSceleton);
                       resultTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
                           values:[
@@ -171,31 +171,37 @@
                               // send new search for given sort oder and refresh the result list
                               // display the first pagination page for sorted results    
                               //TODO implement function on selection          
-                          }}));  */                       
-                             
-                      // display the locale select box, if more then one locale is available
-                      if (localesArray.length > 1) {
-                          resultTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
-                                                                    <label>Locale:</label>\
-                                                              </span>');
-                      resultTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
-                          values:localesArray,
-                          width: 150,
-                          /* TODO: bind sort functionality */
-                          select: function($this, self, value){
-                              var tab = $(self).closest('div.cms-list-options').attr('id');
-                              cms.galleries.searchObject['locale'] = value;
-                              // send new search for given sort oder and refresh the result list
-                              // display the first pagination page for sorted results    
-                              cms.galleries.loadSearchResults();          
-                          }}));
-                       // TODO: set the preselected locales from search object
-                     
-                      }
+                          }}));  */                                                                         
                       // add tabs html to tabs
                       $('#' + cms.galleries.idTabs).append(resultTab);
                },
-           fillTab: function () {}            
+           fillTab: function () {
+               if (cms.galleries.searchCriteriaListsAsJSON.locales && cms.galleries.searchCriteriaListsAsJSON.locale) {
+                      var localesArray = cms.galleries.searchCriteriaListsAsJSON.locales;
+                      //TODO: remove
+                     // cms.galleries.searchObject['locale'] = cms.galleries.searchCriteriaListsAsJSON.locale;
+                      // display the locale select box, if more then one locale is available
+                      if (localesArray.length > 1) {
+                          var resultTab = $('#' + cms.galleries.arrayTabIds['cms_tab_results']);
+                          resultTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
+                                                                    <label>Locale:</label>\
+                                                              </span>');
+                          resultTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
+                              values:localesArray,
+                              width: 150,
+                              /* TODO: bind sort functionality */
+                              select: function($this, self, value){
+                                  var tab = $(self).closest('div.cms-list-options').attr('id');
+                                  cms.galleries.searchObject['locale'] = value;
+                                  // send new search for given sort oder and refresh the result list
+                                  // display the first pagination page for sorted results    
+                                  cms.galleries.loadSearchResults();          
+                              }}));
+                           // set the preselected locales from search object
+                           resultTab.find('span[alt="locale"]').find('.cms-selectbox').selectBox('setValue',cms.galleries.searchObject['locale']);                                            
+                      }    
+               }
+           }            
        },
        'cms_tab_types': {
            addTabToList: function () {
@@ -329,25 +335,8 @@
           addTabToList: function () {
                $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_sitemap'] + '">Sitemap</a></li>');
            },
-          addTabHtml: function(localesArray) {
-                      var sitemapTab = $(cms.galleries.htmlTabSitemapSceleton);
- 
-                      // display the locale select box, if more then one locale is available
-                      if (localesArray.length > 1) {
-                          sitemapTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
-                                                                    <label>Locale:</label>\
-                                                              </span>');
-                          sitemapTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
-                              values:localesArray,
-                              width: 150,
-                              select: function($this, self, value){
-                                  var sitemapUri = cms.galleries.searchCriteriaListsAsJSON.sitemap.rootEntry.sitemapUri;
-                                  var siteRoot = $( '#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:first')
-                                      .selectBox('getValue');
-                                  cms.galleries.loadSitemap(sitemapUri, siteRoot, value);         
-                          }
-                          }));                     
-                      }
+          addTabHtml: function() {
+                      var sitemapTab = $(cms.galleries.htmlTabSitemapSceleton);                     
                       // add tabs html to tabs
                       $('#' + cms.galleries.idTabs).append(sitemapTab);
 
@@ -369,8 +358,27 @@
                           }                          
                        });                        
                      },
-          fillTab: function () {
-              //if ()
+          fillTab: function () {              
+               // display the locale select box, if more then one locale is available
+               if (cms.galleries.searchCriteriaListsAsJSON.locales) {
+                   var localesArray = cms.galleries.searchCriteriaListsAsJSON.locales;
+                   if (localesArray.length > 1) {
+                   var sitemapTab = $('#' + cms.galleries.arrayTabIds['cms_tab_sitemap']);
+                   sitemapTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
+                                                                    <label>Locale:</label>\
+                                                              </span>');                
+                   sitemapTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
+                              values:localesArray,
+                              width: 150,
+                              select: function($this, self, value){
+                                  var sitemapUri = cms.galleries.searchCriteriaListsAsJSON.sitemap.rootEntry.sitemapUri;
+                                  var siteRoot = $( '#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:first')
+                                      .selectBox('getValue');
+                                  cms.galleries.loadSitemap(sitemapUri, siteRoot, value);         
+                          }
+                               }));                     
+                   }
+              }             
               if (cms.galleries.searchCriteriaListsAsJSON.sitemap) {
                   // TODO: extend the siteRoot selectbox with the given list of the siteroots    
                   var siteRoot = cms.galleries.searchCriteriaListsAsJSON.sitemap.siteRoot;
@@ -533,6 +541,8 @@
           cms.galleries.arrayTabIndexes[this] = tabIndex;
           tabIndex = tabIndex + 1; 
       });
+      // set types as start type for default configuration
+      cms.galleries.searchObject['tabid'] = cms.galleries.arrayTabIndexes['cms_tab_types'];
       
       // initialize the search object and the initial search 
       var initSearchResult = null;          
@@ -542,24 +552,17 @@
           if (requestData['searchresult'] || requestData['sitemap']) {
               initSearchResult = requestData;
           }
-      }
-            
-      // read the standard locale and the available locales
-      var localesArray = [];      
-      if (tabsContent) {
-          cms.galleries.searchObject['locale'] = tabsContent['locale'];
-          localesArray = tabsContent['locales'];
-      }
+      }            
       
       // always add the result tab
       tabs[cms.galleries.arrayTabIds['cms_tab_results']].addTabToList();
-      tabs[cms.galleries.arrayTabIds['cms_tab_results']].addTabHtml(localesArray);
+      tabs[cms.galleries.arrayTabIds['cms_tab_results']].addTabHtml();
       
       // add another tabs accoding to configuration                 
       $.each(cms.galleries.initValues['tabs'], function () {
           var tabId = this;
           tabs[tabId].addTabToList();
-          tabs[tabId].addTabHtml(localesArray);
+          tabs[tabId].addTabHtml();
       });
         
       // add preview to the galleries html
@@ -756,6 +759,7 @@
       if (initSearchResult.sitemap) {
           cms.galleries.searchCriteriaListsAsJSON.sitemap = initSearchResult.sitemap;
       }
+      tabs['cms_tab_results'].fillTab();
       $.each(cms.galleries.initValues['tabs'], function () {
           var tabId = this;
           tabs[tabId].fillTab();
@@ -1054,6 +1058,9 @@
                 if (requestData.querydata.tabid) {
                     cms.galleries.searchObject['tabid'] = cms.galleries.arrayTabIndexes[requestData.querydata.tabid];
                 }
+                if (requestData.querydata.locale) {
+                    cms.galleries.searchObject['locale'] = requestData.querydata.locale;
+                }
             }
             
             // set the sitemap tab, if sitemap entry was preselected
@@ -1283,8 +1290,6 @@
                   }                	                            
           }                    
       }
-      // TODO do something to perfrom the search
-      /* cms.galleries.searchObject.isChanged.categories = true;*/
    }
    
    
@@ -1415,7 +1420,6 @@
               var subEntries = data.sitemap.rootEntry.subEntries;
               for (var i = 0; i < subEntries.length; i++) {
                   var subEntry = $(subEntries[i].itemhtml);
-                  // TODO: the order of the entries
                   rootEntry.after(subEntry);                  
                   var subLevel = rootLevel + 1;                
                   //TODO: bind click event to close the subtree                  

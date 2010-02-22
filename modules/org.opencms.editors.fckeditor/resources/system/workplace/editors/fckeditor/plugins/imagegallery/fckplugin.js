@@ -1,13 +1,20 @@
-<%@ page import="org.opencms.jsp.*" %><%
-CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+<%@ page import="org.opencms.jsp.*,org.opencms.workplace.*" %><%
+%><%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %><% 
+    CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);	
+	pageContext.setAttribute("cms", cms);
+	CmsDialog dialog = new CmsDialog(pageContext, request, response);
+	pageContext.setAttribute("locale", dialog.getLocale().toString());
 %>
+
+<fmt:setLocale value="${locale}" />
+<fmt:bundle basename="org.opencms.workplace.editors.ade.messagesADE">
 
 // register the related commands
 FCKCommands.RegisterCommand(
 	"OcmsImageGallery",
 	new FCKDialogCommand(
 		"OcmsImageGallery",
-		"TODO_Title",
+		"<fmt:message key="GUI_EDITOR_TITLE_IMAGEGALLERY_0" />",
 		imageGalleryDialogUrl(),
 		685,
 		566
@@ -54,8 +61,11 @@ function imageGalleryDialogUrl() {
 
 // create the "OcmsImageGallery" toolbar button
 // syntax: FCKToolbarButton(commandName, label, tooltip, style, sourceView, contextSensitive) 
-var opencmsImageGalleryItem = new FCKToolbarButton("OcmsImageGallery", "TODO_Title", "TODO_Tooltip", null, false, true);
+var opencmsImageGalleryItem = new FCKToolbarButton("OcmsImageGallery", "<fmt:message key="GUI_EDITOR_TITLE_IMAGEGALLERY_0" />", "<fmt:message key="GUI_EDITOR_TOOLTIP_IMAGEGALLERY_0" />", null, false, true);
 opencmsImageGalleryItem.IconPath = FCKConfig.SkinPath + "toolbar/oc-imagegallery.gif";;
+
+
+
 
 // "OcmsImageGallery" is the name that is used in the toolbar configuration
 FCKToolbarItems.RegisterItem("OcmsImageGallery", opencmsImageGalleryItem);
@@ -78,8 +88,9 @@ FCK.ContextMenu.RegisterListener(
                         // add a separator
                         menu.AddSeparator() ;
                         // the command needs the registered command name, the title for the context menu, and the icon path
-                        menu.AddItem("OcmsImageGallery", "TODO_title", 37);
+                        menu.AddItem("OcmsImageGallery", "<fmt:message key="GUI_EDITOR_TITLE_IMAGEGALLERY_0" />", 37);
                 }
         }
     }
 );
+</fmt:bundle>
