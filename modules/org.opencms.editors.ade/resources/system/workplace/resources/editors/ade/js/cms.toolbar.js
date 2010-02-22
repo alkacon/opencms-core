@@ -26,6 +26,10 @@
    /** integer */
    cms.toolbar.recentSize = 10;
    
+   /** Regex for OpenCms uuids */ 
+   var uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+   
    /** flag to indicate all necessary data has been loaded */
    var /** boolean */ toolbarReady = cms.toolbar.toolbarReady = false;
    
@@ -1574,7 +1578,7 @@
       },
       
       isCompatibleWith: function(elemId) {
-         return !(cms.data.NO_EDIT_REASON);
+         return !(cms.data.NO_EDIT_REASON) && elemId.match(uuidPattern);
       },
       
       createHandle: function(elemId, elem) {
