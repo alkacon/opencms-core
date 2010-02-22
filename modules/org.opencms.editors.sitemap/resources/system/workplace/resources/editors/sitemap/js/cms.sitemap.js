@@ -1925,6 +1925,7 @@
             cms.data.saveSitemap(sitemap, function(ok, data) {
                if (ok) {
                   setSitemapChanged(false);
+                  cms.sitemap.pathMap = getRootEntryObj().getPahMap();
                } else {
                   alert("error")
                   //display error message ? 
@@ -1996,11 +1997,22 @@
          var self = this;
          
          var convertToSubsitemap = function($element) {
+            var oldPathMap = cms.sitemap.pathMap;
             setWaitOverlayVisible(true);
             var entryObj = new SitemapEntry($element.clone());
             var newSitemap = [entryObj.serialize(false)];
             var currentSitemap = serializeSitemap($('#' + sitemapId));
-            cms.data.saveSitemap(currentSitemap, function(ok, data) {
+            var dummySaveSitemap = function(sitemap, callback) {
+               callback(true, null)
+            }
+            
+            /* If the path to the sitemap entry which we want to convert into a subsitemap 
+             * doesn't already exist, or refers to a different sitemap item, we need to save
+             * the current sitemap first.
+             */
+            var pathChanged = (entryObj.getId() != oldPathMap[entryObj.getUrl()]);
+            var _saveSitemap = pathChanged ? cms.data.saveSitemap : dummySaveSitemap;
+            _saveSitemap(currentSitemap, function(ok, data) {
                if (!ok) {
                   setWaitOverlayVisible(false);
                   return;
@@ -2023,6 +2035,7 @@
                      cms.data.saveSitemap(currentSitemap, function() {
                         setWaitOverlayVisible(false);
                         setSitemapChanged(false);
+                        cms.sitemap.pathMap = getRootEntryObj().getPahMap();
                      });
                   });
                });
@@ -2566,7 +2579,7 @@
             entry.highlight();
          }
       }
-      
+      cms.sitemap.pathMap = getRootEntryObj().getPathMap();
    }
    
    
@@ -2869,6 +2882,24 @@
                children[i].openRecursively(open, depth - 1);
             }
          }
+      },
+      
+      /**
+       * Returns an object that maps the urls of entries to their ids.
+       *
+       * @param {Object} partialMap an optional parameter that is used to collect the result
+       */
+      getPathMap: function(partialMap) {
+         var self = this;
+         if (!partialMap) {
+            partialMap = {};
+         }
+         partialMap[self.getUrl()] = self.getId();
+         var children = self.getChildren();
+         for (var i = 0; i < children.length; i++) {
+            children[i].getPathMap(partialMap);
+         }
+         return partialMap;
       },
       
       /**
@@ -3880,16 +3911,6 @@
       $dlg.append('<div class="cms-property-dialog-bottom"/>');
       $dlg.dialog(options);
       cms.util.fixDialogPosition($dlg);
-      
-      // align middle columns of both tables
-      //      var colOffset1 = $table.find('td:eq(1)').position().left;
-      //      var colOffset2 = topPanel.$dom.find('td:eq(1)').position().left;
-      //      if (colOffset1 > colOffset2) {
-      //         topPanel.$dom.css('margin-left', (colOffset1 - colOffset2) + 'px');
-      //      } else {
-      //         $table.css('margin-left', (colOffset2 - colOffset1) + 'px');
-      //      }
-      
       
       var $ok = $('<button></button>').addClass('ui-corner-all').addClass('ui-state-default').text(M.GUI_SITEMAP_BUTTON_EDIT_DIALOG_OK_0);
       
