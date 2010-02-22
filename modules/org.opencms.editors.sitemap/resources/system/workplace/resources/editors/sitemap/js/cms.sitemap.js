@@ -1491,7 +1491,7 @@
     */
    var startDrag = cms.sitemap.startDrag = function(e, ui) {
       var $favButton = $('button[name=favorites]');
-      $reactivateButton = $('#toolbar_content > button.ui-state-active');
+      $reactivateButton = $('#toolbar_content > button.ui-state-active:not(button[name=save])');
       $reactivateButton.trigger('click');
       
       //$('input', this).blur();
@@ -1922,7 +1922,9 @@
             this.button.addClass('ui-state-active');
             var $sitemapElem = $('#' + sitemapId);
             var sitemap = serializeSitemap($sitemapElem);
+            setWaitOverlayVisible(true);
             cms.data.saveSitemap(sitemap, function(ok, data) {
+               setWaitOverlayVisible(false);
                if (ok) {
                   setSitemapChanged(false);
                   cms.sitemap.pathMap = getRootEntryObj().getPahMap();
