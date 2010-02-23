@@ -401,7 +401,7 @@ div.cms-highlight-container {
 
 /** Icons and handles **/
 div.cms-move {
-	background: transparent url(images/16x16/ocms_de_move_i.png) repeat
+	background: transparent url(images/16x16/ocms_de_move_i.png) no-repeat
 		scroll 0 50%;
 }
 
@@ -415,10 +415,8 @@ div.cms-move {
 }
 
 
-#results div.cms-handle-button,
-#results div.cms-handle-button div,
-#types div.cms-handle-button,
-#types div.cms-handle-button div {
+.cms-list-item div.cms-handle-button,
+div.cms-handle-button div {
     height: 32px;
 }
 
@@ -433,8 +431,7 @@ div.cms-move {
 	overflow: hidden;        
 }
 
-#results div.cms-handle-button,
-#types div.cms-handle-button {
+div.cms-handle-button {
     position: absolute;
     margin: 0 !important;
 	padding: 0 !important;
@@ -467,11 +464,8 @@ div.cms-preview-item:hover{
 		scroll 0 50%;
 }
 
-#results div.cms-move,
-#types div.cms-move {
-	background: transparent url(images/16x16/ocms_de_move_i.png) no-repeat
-		scroll 0 50%;
-    float:right;
+div.cms-handle-button div.cms-move {
+	float:right;
     width:22px;
 }
 
