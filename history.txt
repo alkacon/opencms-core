@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/01/21 09:54:12 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/02/24 13:04:07 $
+ * Version: $Revision: 1.22 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.9.1 - xxxx, 2009
+OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
 ! Added new feature: Advanced Direct Edit
 ! Added request attributes support for flex cache
