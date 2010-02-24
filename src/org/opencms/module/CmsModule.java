@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2009/09/10 16:26:22 $
- * Version: $Revision: 1.34.2.1 $
+ * Date   : $Date: 2010/02/24 07:18:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.module;
 
+import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -40,6 +41,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,14 +61,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.module.I_CmsModuleAction
  * @see org.opencms.module.A_CmsModuleAction
  */
-public class CmsModule implements Comparable {
+public class CmsModule implements Comparable<CmsModule> {
 
     /** The default date for module created / installed if not provided. */
     public static final long DEFAULT_DATE = 0L;
@@ -120,16 +122,16 @@ public class CmsModule implements Comparable {
     private long m_dateInstalled;
 
     /** List of dependencies of this module. */
-    private List m_dependencies;
+    private List<CmsModuleDependency> m_dependencies;
 
     /** The description of this module. */
     private String m_description;
 
     /** The explorer type settings. */
-    private List m_explorerTypeSettings;
+    private List<CmsExplorerTypeSettings> m_explorerTypeSettings;
 
     /** List of export points added by this module. */
-    private List m_exportPoints;
+    private List<CmsExportPoint> m_exportPoints;
 
     /** Indicates if this modules configuration has already been frozen. */
     private boolean m_frozen;
@@ -144,10 +146,10 @@ public class CmsModule implements Comparable {
     private String m_niceName;
 
     /** The additional configuration parameters of this module. */
-    private SortedMap m_parameters;
+    private SortedMap<String, String> m_parameters;
 
     /** List of VFS resources that belong to this module. */
-    private List m_resources;
+    private List<String> m_resources;
 
     /** The list of additional resource types. */
     private List<I_CmsResourceType> m_resourceTypes;
@@ -164,9 +166,9 @@ public class CmsModule implements Comparable {
     public CmsModule() {
 
         m_version = new CmsModuleVersion(CmsModuleVersion.DEFAULT_VERSION);
-        m_resources = Collections.EMPTY_LIST;
-        m_exportPoints = Collections.EMPTY_LIST;
-        m_dependencies = Collections.EMPTY_LIST;
+        m_resources = Collections.emptyList();
+        m_exportPoints = Collections.emptyList();
+        m_dependencies = Collections.emptyList();
     }
 
     /**
@@ -200,10 +202,10 @@ public class CmsModule implements Comparable {
         long dateCreated,
         String userInstalled,
         long dateInstalled,
-        List dependencies,
-        List exportPoints,
-        List resources,
-        Map parameters) {
+        List<CmsModuleDependency> dependencies,
+        List<CmsExportPoint> exportPoints,
+        List<String> resources,
+        Map<String, String> parameters) {
 
         super();
         m_name = name;
@@ -236,25 +238,24 @@ public class CmsModule implements Comparable {
         }
         m_dateInstalled = (dateInstalled / 1000L) * 1000L;
         if (dependencies == null) {
-            m_dependencies = Collections.EMPTY_LIST;
+            m_dependencies = Collections.emptyList();
         } else {
             m_dependencies = Collections.unmodifiableList(dependencies);
         }
         if (exportPoints == null) {
-            m_exportPoints = Collections.EMPTY_LIST;
+            m_exportPoints = Collections.emptyList();
         } else {
             m_exportPoints = Collections.unmodifiableList(exportPoints);
         }
         if (resources == null) {
-            m_resources = Collections.EMPTY_LIST;
+            m_resources = Collections.emptyList();
         } else {
             m_resources = Collections.unmodifiableList(resources);
         }
         if (parameters == null) {
-            //m_parameters = Collections.EMPTY_MAP;
-            m_parameters = new TreeMap();
+            m_parameters = new TreeMap<String, String>();
         } else {
-            m_parameters = new TreeMap(parameters);
+            m_parameters = new TreeMap<String, String>(parameters);
         }
 
         initOldAdditionalResources();
@@ -262,8 +263,8 @@ public class CmsModule implements Comparable {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_MODULE_INSTANCE_CREATED_1, m_name));
         }
-        m_resourceTypes = Collections.EMPTY_LIST;
-        m_explorerTypeSettings = Collections.EMPTY_LIST;
+        m_resourceTypes = Collections.emptyList();
+        m_explorerTypeSettings = Collections.emptyList();
     }
 
     /**
@@ -279,7 +280,7 @@ public class CmsModule implements Comparable {
 
         // loop through all the dependencies
         for (int i = 0; i < m_dependencies.size(); i++) {
-            CmsModuleDependency dependency = (CmsModuleDependency)m_dependencies.get(i);
+            CmsModuleDependency dependency = m_dependencies.get(i);
             if (dependency.dependesOn(otherDepdendency)) {
                 // short circuit here
                 return dependency;
@@ -308,6 +309,7 @@ public class CmsModule implements Comparable {
      * 
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         // create a copy of the module
@@ -331,14 +333,13 @@ public class CmsModule implements Comparable {
         result.m_frozen = false;
 
         if (getExplorerTypes() != null) {
-            result.setExplorerTypes(new ArrayList(getExplorerTypes()));
+            result.setExplorerTypes(new ArrayList<CmsExplorerTypeSettings>(getExplorerTypes()));
         }
         if (getResourceTypes() != null) {
-            result.setResourceTypes(new ArrayList(getResourceTypes()));
+            result.setResourceTypes(new ArrayList<I_CmsResourceType>(getResourceTypes()));
         }
-
         if (getDependencies() != null) {
-            result.setDependencies(new ArrayList(getDependencies()));
+            result.setDependencies(new ArrayList<CmsModuleDependency>(getDependencies()));
         }
 
         result.setCreateClassesFolder(m_createClassesFolder);
@@ -348,23 +349,20 @@ public class CmsModule implements Comparable {
         result.setCreateResourcesFolder(m_createResourcesFolder);
         result.setCreateTemplateFolder(m_createTemplateFolder);
 
-        result.setResources(new ArrayList(m_resources));
-        result.setExportPoints(new ArrayList(m_exportPoints));
+        result.setResources(new ArrayList<String>(m_resources));
+        result.setExportPoints(new ArrayList<CmsExportPoint>(m_exportPoints));
         return result;
     }
 
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsModule obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsModule) {
-            return m_name.compareTo(((CmsModule)obj).m_name);
-        }
-        return 0;
+        return m_name.compareTo(obj.m_name);
     }
 
     /**
@@ -377,6 +375,7 @@ public class CmsModule implements Comparable {
      * @see java.lang.Object#equals(java.lang.Object)
      * @see #isIdentical(CmsModule)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -457,7 +456,7 @@ public class CmsModule implements Comparable {
      *
      * @return the list of dependencies of this module
      */
-    public List getDependencies() {
+    public List<CmsModuleDependency> getDependencies() {
 
         return m_dependencies;
     }
@@ -477,7 +476,7 @@ public class CmsModule implements Comparable {
      *
      * @return the list of explorer resource types that belong to this module
      */
-    public List getExplorerTypes() {
+    public List<CmsExplorerTypeSettings> getExplorerTypes() {
 
         return m_explorerTypeSettings;
     }
@@ -487,7 +486,7 @@ public class CmsModule implements Comparable {
      *
      * @return the list of export point added by this module
      */
-    public List getExportPoints() {
+    public List<CmsExportPoint> getExportPoints() {
 
         return m_exportPoints;
     }
@@ -532,7 +531,7 @@ public class CmsModule implements Comparable {
      */
     public String getParameter(String key) {
 
-        return (String)m_parameters.get(key);
+        return m_parameters.get(key);
     }
 
     /**
@@ -545,7 +544,7 @@ public class CmsModule implements Comparable {
      */
     public String getParameter(String key, String defaultValue) {
 
-        String value = (String)m_parameters.get(key);
+        String value = m_parameters.get(key);
         return (value != null) ? value : defaultValue;
     }
 
@@ -554,7 +553,7 @@ public class CmsModule implements Comparable {
      * 
      * @return the configured (immutable) module parameters
      */
-    public SortedMap getParameters() {
+    public SortedMap<String, String> getParameters() {
 
         return m_parameters;
     }
@@ -564,7 +563,7 @@ public class CmsModule implements Comparable {
      *
      * @return the list of VFS resources that belong to this module
      */
-    public List getResources() {
+    public List<String> getResources() {
 
         return m_resources;
     }
@@ -602,6 +601,7 @@ public class CmsModule implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_name.hashCode();
@@ -863,7 +863,7 @@ public class CmsModule implements Comparable {
      *
      * @param dependencies list of module dependencies
      */
-    public void setDependencies(List dependencies) {
+    public void setDependencies(List<CmsModuleDependency> dependencies) {
 
         checkFrozen();
         m_dependencies = dependencies;
@@ -889,17 +889,17 @@ public class CmsModule implements Comparable {
      *
      * @param explorerTypeSettings the explorer type settings.
      */
-    public void setExplorerTypes(List explorerTypeSettings) {
+    public void setExplorerTypes(List<CmsExplorerTypeSettings> explorerTypeSettings) {
 
         m_explorerTypeSettings = explorerTypeSettings;
     }
 
     /**
-     * Sets the exportpoints of  this module.<p>
+     * Sets the export points of this module.<p>
      *
-     * @param exportPoints the exportpoints of this module.
+     * @param exportPoints the export points of this module.
      */
-    public void setExportPoints(List exportPoints) {
+    public void setExportPoints(List<CmsExportPoint> exportPoints) {
 
         m_exportPoints = exportPoints;
     }
@@ -965,7 +965,7 @@ public class CmsModule implements Comparable {
      * 
      * @param value the module parameters to set
      */
-    public void setParameters(SortedMap value) {
+    public void setParameters(SortedMap<String, String> value) {
 
         checkFrozen();
         m_parameters = value;
@@ -980,7 +980,7 @@ public class CmsModule implements Comparable {
      * 
      * @param value the module resources to set
      */
-    public void setResources(List value) {
+    public void setResources(List<String> value) {
 
         checkFrozen();
         m_resources = value;
@@ -991,7 +991,7 @@ public class CmsModule implements Comparable {
      *
      * @param resourceTypes list of additional resource types that belong to this module
      */
-    public void setResourceTypes(List resourceTypes) {
+    public void setResourceTypes(List<I_CmsResourceType> resourceTypes) {
 
         m_resourceTypes = Collections.unmodifiableList(resourceTypes);
     }
@@ -1062,11 +1062,11 @@ public class CmsModule implements Comparable {
      */
     private void initOldAdditionalResources() {
 
-        SortedMap parameters = new TreeMap(m_parameters);
-        List resources = new ArrayList(m_resources);
+        SortedMap<String, String> parameters = new TreeMap<String, String>(m_parameters);
+        List<String> resources = new ArrayList<String>(m_resources);
 
         String additionalResources;
-        additionalResources = (String)parameters.get(MODULE_PROPERTY_ADDITIONAL_RESOURCES);
+        additionalResources = parameters.get(MODULE_PROPERTY_ADDITIONAL_RESOURCES);
         if (additionalResources != null) {
             StringTokenizer tok = new StringTokenizer(
                 additionalResources,

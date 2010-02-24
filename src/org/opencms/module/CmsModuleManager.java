@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2009/09/09 14:26:36 $
- * Version: $Revision: 1.44.2.1 $
+ * Date   : $Date: 2010/02/24 07:18:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.44.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,22 +95,22 @@ public class CmsModuleManager {
     private Set<CmsExportPoint> m_moduleExportPoints;
 
     /** The map of configured modules. */
-    private Map m_modules;
+    private Map<String, CmsModule> m_modules;
 
     /**
      * Basic constructor.<p>
      * 
      * @param configuredModules the list of configured modules 
      */
-    public CmsModuleManager(List configuredModules) {
+    public CmsModuleManager(List<CmsModule> configuredModules) {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MOD_MANAGER_CREATED_0));
         }
 
-        m_modules = new Hashtable();
+        m_modules = new Hashtable<String, CmsModule>();
         for (int i = 0; i < configuredModules.size(); i++) {
-            CmsModule module = (CmsModule)configuredModules.get(i);
+            CmsModule module = configuredModules.get(i);
             m_modules.put(module.getName(), module);
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MOD_CONFIGURED_1, module.getName()));
@@ -122,7 +122,7 @@ public class CmsModuleManager {
                 Messages.INIT_NUM_MODS_CONFIGURED_1,
                 new Integer(m_modules.size())));
         }
-        m_moduleExportPoints = Collections.EMPTY_SET;
+        m_moduleExportPoints = Collections.emptySet();
     }
 
     /**
@@ -144,42 +144,43 @@ public class CmsModuleManager {
      * 
      * @throws CmsConfigurationException if something goes wrong
      */
-    public static Map buildDepsForAllModules(String rfsAbsPath, boolean mode) throws CmsConfigurationException {
+    public static Map<String, List<String>> buildDepsForAllModules(String rfsAbsPath, boolean mode)
+    throws CmsConfigurationException {
 
-        Map ret = new HashMap();
-        List modules;
+        Map<String, List<String>> ret = new HashMap<String, List<String>>();
+        List<CmsModule> modules;
         if (rfsAbsPath == null) {
             modules = OpenCms.getModuleManager().getAllInstalledModules();
         } else {
-            modules = new ArrayList(getAllModulesFromPath(rfsAbsPath).keySet());
+            modules = new ArrayList<CmsModule>(getAllModulesFromPath(rfsAbsPath).keySet());
         }
-        Iterator itMods = modules.iterator();
+        Iterator<CmsModule> itMods = modules.iterator();
         while (itMods.hasNext()) {
-            CmsModule module = (CmsModule)itMods.next();
+            CmsModule module = itMods.next();
 
             // if module a depends on module b, and module c depends also on module b:
             // build a map with a list containing "a" and "c" keyed by "b" to get a 
             // list of modules depending on module "b"...
-            Iterator itDeps = module.getDependencies().iterator();
+            Iterator<CmsModuleDependency> itDeps = module.getDependencies().iterator();
             while (itDeps.hasNext()) {
-                CmsModuleDependency dependency = (CmsModuleDependency)itDeps.next();
+                CmsModuleDependency dependency = itDeps.next();
                 // module dependency package name
                 String moduleDependencyName = dependency.getName();
 
                 if (mode) {
                     // get the list of dependent modules
-                    List moduleDependencies = (List)ret.get(moduleDependencyName);
+                    List<String> moduleDependencies = ret.get(moduleDependencyName);
                     if (moduleDependencies == null) {
                         // build a new list if "b" has no dependent modules yet
-                        moduleDependencies = new ArrayList();
+                        moduleDependencies = new ArrayList<String>();
                         ret.put(moduleDependencyName, moduleDependencies);
                     }
                     // add "a" as a module depending on "b"
                     moduleDependencies.add(module.getName());
                 } else {
-                    List moduleDependencies = (List)ret.get(module.getName());
+                    List<String> moduleDependencies = ret.get(module.getName());
                     if (moduleDependencies == null) {
-                        moduleDependencies = new ArrayList();
+                        moduleDependencies = new ArrayList<String>();
                         ret.put(module.getName(), moduleDependencies);
                     }
                     moduleDependencies.add(dependency.getName());
@@ -188,9 +189,9 @@ public class CmsModuleManager {
         }
         itMods = modules.iterator();
         while (itMods.hasNext()) {
-            CmsModule module = (CmsModule)itMods.next();
+            CmsModule module = itMods.next();
             if (ret.get(module.getName()) == null) {
-                ret.put(module.getName(), new ArrayList());
+                ret.put(module.getName(), new ArrayList<String>());
             }
         }
         return ret;
@@ -216,22 +217,24 @@ public class CmsModuleManager {
      * 
      * @throws CmsConfigurationException if something goes wrong
      */
-    public static Map buildDepsForModulelist(List moduleNames, String rfsAbsPath, boolean mode)
-    throws CmsConfigurationException {
+    public static Map<String, List<String>> buildDepsForModulelist(
+        List<String> moduleNames,
+        String rfsAbsPath,
+        boolean mode) throws CmsConfigurationException {
 
-        Map ret = buildDepsForAllModules(rfsAbsPath, mode);
-        Iterator itMods;
+        Map<String, List<String>> ret = buildDepsForAllModules(rfsAbsPath, mode);
+        Iterator<CmsModule> itMods;
         if (rfsAbsPath == null) {
             itMods = OpenCms.getModuleManager().getAllInstalledModules().iterator();
         } else {
             itMods = getAllModulesFromPath(rfsAbsPath).keySet().iterator();
         }
         while (itMods.hasNext()) {
-            CmsModule module = (CmsModule)itMods.next();
+            CmsModule module = itMods.next();
             if (!moduleNames.contains(module.getName())) {
-                Iterator itDeps = ret.values().iterator();
+                Iterator<List<String>> itDeps = ret.values().iterator();
                 while (itDeps.hasNext()) {
-                    List dependencies = (List)itDeps.next();
+                    List<String> dependencies = itDeps.next();
                     dependencies.remove(module.getName());
                 }
                 ret.remove(module.getName());
@@ -249,9 +252,9 @@ public class CmsModuleManager {
      * 
      * @throws CmsConfigurationException if something goes wrong
      */
-    public static Map getAllModulesFromPath(String rfsAbsPath) throws CmsConfigurationException {
+    public static Map<CmsModule, String> getAllModulesFromPath(String rfsAbsPath) throws CmsConfigurationException {
 
-        Map modules = new HashMap();
+        Map<CmsModule, String> modules = new HashMap<CmsModule, String>();
         if (rfsAbsPath == null) {
             return modules;
         }
@@ -297,23 +300,24 @@ public class CmsModuleManager {
      * 
      * @throws CmsConfigurationException if something goes wrong
      */
-    public static List topologicalSort(List moduleNames, String rfsAbsPath) throws CmsConfigurationException {
+    public static List<String> topologicalSort(List<String> moduleNames, String rfsAbsPath)
+    throws CmsConfigurationException {
 
-        List modules = new ArrayList(moduleNames);
-        List retList = new ArrayList();
-        Map moduleDependencies = buildDepsForModulelist(moduleNames, rfsAbsPath, true);
+        List<String> modules = new ArrayList<String>(moduleNames);
+        List<String> retList = new ArrayList<String>();
+        Map<String, List<String>> moduleDependencies = buildDepsForModulelist(moduleNames, rfsAbsPath, true);
         boolean finished = false;
         while (!finished) {
             finished = true;
-            Iterator itMods = modules.iterator();
+            Iterator<String> itMods = modules.iterator();
             while (itMods.hasNext()) {
-                String moduleName = (String)itMods.next();
-                List deps = (List)moduleDependencies.get(moduleName);
+                String moduleName = itMods.next();
+                List<String> deps = moduleDependencies.get(moduleName);
                 if ((deps == null) || deps.isEmpty()) {
                     retList.add(moduleName);
-                    Iterator itDeps = moduleDependencies.values().iterator();
+                    Iterator<List<String>> itDeps = moduleDependencies.values().iterator();
                     while (itDeps.hasNext()) {
-                        List dependencies = (List)itDeps.next();
+                        List<String> dependencies = itDeps.next();
                         dependencies.remove(moduleName);
                     }
                     finished = false;
@@ -394,15 +398,15 @@ public class CmsModuleManager {
      * @param mode the dependency check mode
      * @return a list of dependencies that are not fulfilled, if empty all dependencies are fulfilled
      */
-    public List checkDependencies(CmsModule module, int mode) {
+    public List<CmsModuleDependency> checkDependencies(CmsModule module, int mode) {
 
-        List result = new ArrayList();
+        List<CmsModuleDependency> result = new ArrayList<CmsModuleDependency>();
 
         if (mode == DEPENDENCY_MODE_DELETE) {
             // delete mode, check if other modules depend on this module
-            Iterator i = m_modules.values().iterator();
+            Iterator<CmsModule> i = m_modules.values().iterator();
             while (i.hasNext()) {
-                CmsModule otherModule = (CmsModule)i.next();
+                CmsModule otherModule = i.next();
                 CmsModuleDependency dependency = otherModule.checkDependency(module);
                 if (dependency != null) {
                     // dependency found, add to list
@@ -412,11 +416,11 @@ public class CmsModuleManager {
 
         } else if (mode == DEPENDENCY_MODE_IMPORT) {
             // import mode, check if all module dependencies are fulfilled            
-            Iterator i = m_modules.values().iterator();
+            Iterator<CmsModule> i = m_modules.values().iterator();
             // add all dependencies that must be found
             result.addAll(module.getDependencies());
             while (i.hasNext() && (result.size() > 0)) {
-                CmsModule otherModule = (CmsModule)i.next();
+                CmsModule otherModule = i.next();
                 CmsModuleDependency dependency = module.checkDependency(otherModule);
                 if (dependency != null) {
                     // dependency found, remove from list
@@ -447,16 +451,16 @@ public class CmsModuleManager {
      * @throws CmsIllegalArgumentException if the module list is not consistent
      * @throws CmsConfigurationException if something goes wrong
      */
-    public void checkModuleSelectionList(List moduleNames, String rfsAbsPath, boolean forDeletion)
+    public void checkModuleSelectionList(List<String> moduleNames, String rfsAbsPath, boolean forDeletion)
     throws CmsIllegalArgumentException, CmsConfigurationException {
 
-        Map moduleDependencies = buildDepsForAllModules(rfsAbsPath, forDeletion);
-        Iterator itMods = moduleNames.iterator();
+        Map<String, List<String>> moduleDependencies = buildDepsForAllModules(rfsAbsPath, forDeletion);
+        Iterator<String> itMods = moduleNames.iterator();
         while (itMods.hasNext()) {
-            String moduleName = (String)itMods.next();
-            List dependencies = (List)moduleDependencies.get(moduleName);
+            String moduleName = itMods.next();
+            List<String> dependencies = moduleDependencies.get(moduleName);
             if (dependencies != null) {
-                List depModules = new ArrayList(dependencies);
+                List<String> depModules = new ArrayList<String>(dependencies);
                 depModules.removeAll(moduleNames);
                 if (!depModules.isEmpty()) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
@@ -497,18 +501,18 @@ public class CmsModuleManager {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_1, moduleName));
         }
 
-        CmsModule module = (CmsModule)m_modules.get(moduleName);
+        CmsModule module = m_modules.get(moduleName);
 
         if (!replace) {
             // module is deleted, not replaced
 
             // perform dependency check
-            List dependencies = checkDependencies(module, DEPENDENCY_MODE_DELETE);
+            List<CmsModuleDependency> dependencies = checkDependencies(module, DEPENDENCY_MODE_DELETE);
             if (!dependencies.isEmpty()) {
                 StringBuffer message = new StringBuffer();
-                Iterator it = dependencies.iterator();
+                Iterator<CmsModuleDependency> it = dependencies.iterator();
                 while (it.hasNext()) {
-                    message.append("  ").append(((CmsModuleDependency)it.next()).getName()).append("\r\n");
+                    message.append("  ").append(it.next().getName()).append("\r\n");
                 }
                 throw new CmsConfigurationException(Messages.get().container(
                     Messages.ERR_MOD_DEPENDENCIES_2,
@@ -565,12 +569,12 @@ public class CmsModuleManager {
             cms.getRequestContext().setCurrentProject(deleteProject);
 
             // check locks
-            List lockedResources = new ArrayList();
+            List<String> lockedResources = new ArrayList<String>();
             CmsLockFilter filter1 = CmsLockFilter.FILTER_ALL.filterNotLockableByUser(cms.getRequestContext().currentUser());
             CmsLockFilter filter2 = CmsLockFilter.FILTER_INHERITED;
-            List moduleResources = module.getResources();
+            List<String> moduleResources = module.getResources();
             for (int iLock = 0; iLock < moduleResources.size(); iLock++) {
-                String resourceName = (String)moduleResources.get(iLock);
+                String resourceName = moduleResources.get(iLock);
                 try {
                     lockedResources.addAll(cms.getLockedResources(resourceName, filter1));
                     lockedResources.addAll(cms.getLockedResources(resourceName, filter2));
@@ -602,15 +606,15 @@ public class CmsModuleManager {
         }
 
         // now remove the module
-        module = (CmsModule)m_modules.remove(moduleName);
+        module = m_modules.remove(moduleName);
 
         try {
             cms.getRequestContext().setCurrentProject(deleteProject);
 
             // copy the module resources to the project
-            List projectFiles = module.getResources();
+            List<String> projectFiles = module.getResources();
             for (int i = 0; i < projectFiles.size(); i++) {
-                String resourceName = (String)projectFiles.get(i);
+                String resourceName = projectFiles.get(i);
                 if (cms.existsResource(resourceName, CmsResourceFilter.ALL)) {
                     try {
                         cms.copyResourceToProject(resourceName);
@@ -633,7 +637,7 @@ public class CmsModuleManager {
             for (int i = 0; i < module.getResources().size(); i++) {
                 String currentResource = null;
                 try {
-                    currentResource = (String)module.getResources().get(i);
+                    currentResource = module.getResources().get(i);
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
                     }
@@ -705,9 +709,9 @@ public class CmsModuleManager {
      * 
      * @return a list of <code>{@link CmsModule}</code> objects
      */
-    public List getAllInstalledModules() {
+    public List<CmsModule> getAllInstalledModules() {
 
-        return new ArrayList(m_modules.values());
+        return new ArrayList<CmsModule>(m_modules.values());
     }
 
     /**
@@ -730,7 +734,7 @@ public class CmsModuleManager {
      */
     public CmsModule getModule(String name) {
 
-        return (CmsModule)m_modules.get(name);
+        return m_modules.get(name);
     }
 
     /**
@@ -741,7 +745,7 @@ public class CmsModuleManager {
     public Set<String> getModuleNames() {
 
         synchronized (m_modules) {
-            return new HashSet(m_modules.keySet());
+            return new HashSet<String>(m_modules.keySet());
         }
     }
 
@@ -772,12 +776,12 @@ public class CmsModuleManager {
             OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
         }
 
-        Iterator it;
+        Iterator<String> it;
         int count = 0;
         it = m_modules.keySet().iterator();
         while (it.hasNext()) {
             // get the module description
-            CmsModule module = (CmsModule)m_modules.get(it.next());
+            CmsModule module = m_modules.get(it.next());
 
             if (module.getActionClass() != null) {
                 // create module instance class
@@ -828,11 +832,11 @@ public class CmsModuleManager {
     public synchronized void shutDown() {
 
         int count = 0;
-        Iterator it = getModuleNames().iterator();
+        Iterator<String> it = getModuleNames().iterator();
         while (it.hasNext()) {
-            String moduleName = (String)it.next();
+            String moduleName = it.next();
             // get the module
-            CmsModule module = (CmsModule)m_modules.get(moduleName);
+            CmsModule module = m_modules.get(moduleName);
             if (module == null) {
                 continue;
             }
@@ -884,7 +888,7 @@ public class CmsModuleManager {
         // check for module manager role permissions
         OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
-        CmsModule oldModule = (CmsModule)m_modules.get(module.getName());
+        CmsModule oldModule = m_modules.get(module.getName());
 
         if (oldModule == null) {
             // module is not currently configured, no update possible
@@ -933,13 +937,13 @@ public class CmsModuleManager {
      */
     private synchronized void initModuleExportPoints() {
 
-        Set exportPoints = new HashSet();
-        Iterator i = m_modules.values().iterator();
+        Set<CmsExportPoint> exportPoints = new HashSet<CmsExportPoint>();
+        Iterator<CmsModule> i = m_modules.values().iterator();
         while (i.hasNext()) {
-            CmsModule module = (CmsModule)i.next();
-            List moduleExportPoints = module.getExportPoints();
+            CmsModule module = i.next();
+            List<CmsExportPoint> moduleExportPoints = module.getExportPoints();
             for (int j = 0; j < moduleExportPoints.size(); j++) {
-                CmsExportPoint point = (CmsExportPoint)moduleExportPoints.get(j);
+                CmsExportPoint point = moduleExportPoints.get(j);
                 if (exportPoints.contains(point)) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().getBundle().key(
