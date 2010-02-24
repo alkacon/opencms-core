@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPoint.java,v $
- * Date   : $Date: 2009/09/09 14:26:33 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2010/02/24 12:41:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
  *  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -74,7 +74,7 @@ public class CmsExportPoint {
 
         m_uri = uri;
         m_configuredDestination = destination;
-        m_destinationPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(destination);
+        m_destinationPath = null;
     }
 
     /**
@@ -114,6 +114,10 @@ public class CmsExportPoint {
      */
     public String getDestinationPath() {
 
+        if (m_destinationPath == null) {
+            m_destinationPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
+                m_configuredDestination);
+        }
         return m_destinationPath;
     }
 
@@ -150,8 +154,7 @@ public class CmsExportPoint {
     public void setConfiguredDestination(String value) {
 
         m_configuredDestination = value;
-        m_destinationPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(m_configuredDestination);
-
+        m_destinationPath = null;
     }
 
     /**
@@ -188,6 +191,6 @@ public class CmsExportPoint {
     @Override
     public String toString() {
 
-        return "[" + getClass().getName() + ", uri: " + m_uri + ", destination: " + m_destinationPath + "]";
+        return "[" + getClass().getName() + ", uri: " + m_uri + ", destination: " + getDestinationPath() + "]";
     }
 }

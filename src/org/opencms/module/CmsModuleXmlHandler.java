@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2010/01/25 09:43:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/02/24 12:41:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -320,21 +320,21 @@ public class CmsModuleXmlHandler {
         }
         Element dependenciesElement = moduleElement.addElement(N_DEPENDENCIES);
         for (int i = 0; i < module.getDependencies().size(); i++) {
-            CmsModuleDependency dependency = (CmsModuleDependency)module.getDependencies().get(i);
+            CmsModuleDependency dependency = module.getDependencies().get(i);
             dependenciesElement.addElement(N_DEPENDENCY).addAttribute(
                 I_CmsXmlConfiguration.A_NAME,
                 dependency.getName()).addAttribute(A_VERSION, dependency.getVersion().toString());
         }
         Element exportpointsElement = moduleElement.addElement(I_CmsXmlConfiguration.N_EXPORTPOINTS);
         for (int i = 0; i < module.getExportPoints().size(); i++) {
-            CmsExportPoint point = (CmsExportPoint)module.getExportPoints().get(i);
+            CmsExportPoint point = module.getExportPoints().get(i);
             exportpointsElement.addElement(I_CmsXmlConfiguration.N_EXPORTPOINT).addAttribute(
                 I_CmsXmlConfiguration.A_URI,
                 point.getUri()).addAttribute(I_CmsXmlConfiguration.A_DESTINATION, point.getConfiguredDestination());
         }
         Element resourcesElement = moduleElement.addElement(N_RESOURCES);
         for (int i = 0; i < module.getResources().size(); i++) {
-            String resource = (String)module.getResources().get(i);
+            String resource = module.getResources().get(i);
             resourcesElement.addElement(I_CmsXmlConfiguration.N_RESOURCE).addAttribute(
                 I_CmsXmlConfiguration.A_URI,
                 resource);
@@ -485,11 +485,11 @@ public class CmsModuleXmlHandler {
 
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
-        if (CmsLog.INIT.isInfoEnabled() && (point.getDestinationPath() != null)) {
+        if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_EXPORT_POINT_2,
                 point.getUri(),
-                point.getDestinationPath()));
+                point.getConfiguredDestination()));
         }
     }
 
