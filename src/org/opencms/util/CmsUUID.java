@@ -1,7 +1,7 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/02/24 12:46:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,11 +65,11 @@ import org.safehaus.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable, Externalizable {
+public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable<CmsUUID>, Externalizable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUUID.class);
@@ -258,6 +258,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * 
      * @return a clone of this CmsUUID
      */
+    @Override
     public Object clone() {
 
         if (this == NULL_UUID) {
@@ -267,19 +268,17 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     }
 
     /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     * @see java.lang.Comparable#compareTo(Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsUUID obj) {
 
-        if (obj instanceof CmsUUID) {
-            return m_uuid.compareTo(((CmsUUID)obj).m_uuid);
-        }
-        return 0;
+        return m_uuid.compareTo(obj.m_uuid);
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -308,6 +307,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_uuid.hashCode();
@@ -378,6 +378,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_uuid.toString();
