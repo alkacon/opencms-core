@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlHelper.java,v $
- * Date   : $Date: 2009/10/12 08:11:54 $
- * Version: $Revision: 1.4.2.1 $
+ * Date   : $Date: 2010/02/24 12:44:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.setup.xml;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -69,7 +70,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -187,7 +188,7 @@ public class CmsSetupXmlHelper {
 
         int changes = 0;
         // be naive and try to find the node
-        Iterator<Node> itNodes = document.selectNodes(xPath).iterator();
+        Iterator<Node> itNodes = CmsCollectionsGenericWrapper.<Node> list(document.selectNodes(xPath)).iterator();
 
         // if not found
         if (!itNodes.hasNext()) {
@@ -214,32 +215,7 @@ public class CmsSetupXmlHelper {
                 } else if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element elem = (Element)currentNode;
                     if (!nodeName.startsWith("@")) {
-                        // if node is no attribute, create a new node
-                        String childName = null;
-                        String childValue = "";
-                        int pos = nodeName.indexOf("[");
-                        if (pos > 0) {
-                            // handle child node
-                            int pos2 = nodeName.indexOf("=\'", pos);
-                            if (pos2 > 0) {
-                                childName = nodeName.substring(pos + 1, pos2);
-                                childValue = nodeName.substring(pos2 + 2, nodeName.indexOf('\'', pos2 + 2));
-                            }
-                            nodeName = nodeName.substring(0, pos);
-                        }
-                        // create node
-                        elem = elem.addElement(nodeName);
-                        if (childName != null) {
-                            // create child node
-                            if (childName.startsWith("@")) {
-                                elem.addAttribute(childName.substring(1), childValue);
-                            } else {
-                                Element child = elem.addElement(childName);
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(childValue)) {
-                                    child.addText(childValue);
-                                }
-                            }
-                        }
+                        elem = handleNode(elem, nodeName);
                         if (!it.hasNext()) {
                             elem.setText(value);
                         }
@@ -261,7 +237,7 @@ public class CmsSetupXmlHelper {
                 return 1;
             }
             // if inserting, we just created the insertion point, so continue
-            itNodes = document.selectNodes(xPath).iterator();
+            itNodes = CmsCollectionsGenericWrapper.<Node> list(document.selectNodes(xPath)).iterator();
         }
 
         // if found 
@@ -279,48 +255,69 @@ public class CmsSetupXmlHelper {
             } else {
                 // first create the node to insert
                 Element parent = node.getParent();
-
-                String childName = null;
-                String childValue = "";
-                String nodeName = nodeToInsert;
-                int pos = nodeName.indexOf("[");
-                if (pos > 0) {
-                    // handle child node
-                    int pos2 = nodeName.indexOf("=\'", pos);
-                    if (pos2 > 0) {
-                        childName = nodeName.substring(pos + 1, pos2);
-                        childValue = nodeName.substring(pos2 + 2, nodeName.indexOf('\'', pos2 + 2));
-                    }
-                    nodeName = nodeName.substring(0, pos);
-                }
-                // create node
-                Element elem = parent.addElement(nodeName);
-                if (childName != null) {
-                    // create child node
-                    if (childName.startsWith("@")) {
-                        elem.addAttribute(childName.substring(1), childValue);
-                    } else {
-                        Element child = elem.addElement(childName);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(childValue)) {
-                            child.addText(childValue);
-                        }
-                    }
-                }
+                Element elem = handleNode(parent, nodeToInsert);
                 if (value != null) {
                     elem.setText(value);
                 }
-
                 // get the parent element list
-                List<Node> list = parent.content();
+                List<Node> list = CmsCollectionsGenericWrapper.<Node> list(parent.content());
                 // remove the just created element
                 list.remove(list.size() - 1);
                 // insert it back to the right position
-                pos = list.indexOf(node);
+                int pos = list.indexOf(node);
                 list.add(pos + 1, elem); // insert after
             }
             changes++;
         }
         return changes;
+    }
+
+    /**
+     * Handles the xpath name, by creating the given node and its children.<p>
+     * 
+     * @param parent the parent node to use
+     * @param xpathName the xpathName, ie <code>a[@b='c'][d='e'][text()='f']</code>
+     * 
+     * @return the new created element
+     */
+    private static Element handleNode(Element parent, String xpathName) {
+
+        // if node is no attribute, create a new node
+        Map<String, String> children = null;
+        String nodeName;
+        int pos = xpathName.indexOf("[");
+        if (pos > 0) {
+            children = CmsStringUtil.splitAsMap(xpathName.substring(pos + 1, xpathName.length() - 1), "][", "=");
+            nodeName = xpathName.substring(0, pos);
+        } else {
+            nodeName = xpathName;
+        }
+        // create node
+        Element elem = parent.addElement(nodeName);
+        if (children != null) {
+            // handle child nodes
+            for (Map.Entry<String, String> child : children.entrySet()) {
+                String childName = child.getKey();
+                String childValue = child.getValue();
+                if (childValue.startsWith("'")) {
+                    childValue = childValue.substring(1);
+                }
+                if (childValue.endsWith("'")) {
+                    childValue = childValue.substring(0, childValue.length() - 1);
+                }
+                if (childName.startsWith("@")) {
+                    elem.addAttribute(childName.substring(1), childValue);
+                } else if (childName.equals("text()")) {
+                    elem.setText(childValue);
+                } else if (!childName.contains("(")) {
+                    Element childElem = elem.addElement(childName);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(childValue)) {
+                        childElem.addText(childValue);
+                    }
+                }
+            }
+        }
+        return elem;
     }
 
     /**

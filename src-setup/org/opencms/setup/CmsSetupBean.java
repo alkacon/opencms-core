@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/02/24 12:44:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,7 @@ import org.opencms.setup.comptest.CmsSetupTestResult;
 import org.opencms.setup.comptest.CmsSetupTestSimapi;
 import org.opencms.setup.comptest.I_CmsSetupTest;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
@@ -86,9 +87,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -117,7 +118,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -211,13 +212,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private static Properties m_htmlProps;
 
     /** A map with all available modules. */
-    protected Map m_availableModules;
+    protected Map<String, CmsModule> m_availableModules;
 
     /** A CmsObject to execute shell commands. */
     protected CmsObject m_cms;
 
     /** A list with the package names of the modules to be installed .*/
-    protected List m_installModules;
+    protected List<String> m_installModules;
 
     /** Location for log file.  */
     protected String m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "setup.log";
@@ -226,10 +227,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
     protected String m_logsFolder = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS;
 
     /** A map with lists of dependent module package names keyed by module package names. */
-    protected Map m_moduleDependencies;
+    protected Map<String, List<String>> m_moduleDependencies;
 
     /** A map with all available modules filenames. */
-    protected Map m_moduleFilenames;
+    protected Map<String, String> m_moduleFilenames;
 
     /** Location for module archives relative to the webapp folder.  */
     protected String m_modulesFolder = CmsSystemInfo.FOLDER_WEBINF
@@ -255,10 +256,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private String m_databaseKey;
 
     /** List of keys of all available database server setups (e.g. "mysql", "generic" or "oracle") */
-    private List m_databaseKeys;
+    private List<String> m_databaseKeys;
 
     /** Map of database setup properties of all available database server setups keyed by their database keys. */
-    private Map m_databaseProperties;
+    private Map<String, Properties> m_databaseProperties;
 
     /** Password used for the JDBC connection when the OpenCms database is created. */
     private String m_dbCreatePwd;
@@ -267,7 +268,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private String m_defaultWebApplication;
 
     /** Contains the error messages to be displayed in the setup wizard. */
-    private List m_errors;
+    private List<String> m_errors;
 
     /** Contains the properties of "opencms.properties". */
     private ExtendedProperties m_extProperties;
@@ -276,7 +277,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private String m_provider;
 
     /** A map with tokens ${...} to be replaced in SQL scripts. */
-    private Map m_replacer;
+    private Map<String, String> m_replacer;
 
     /** The initial servlet configuration. */
     private ServletConfig m_servletConfig;
@@ -285,7 +286,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private String m_servletMapping;
 
     /** List of sorted keys by ranking of all available database server setups (e.g. "mysql", "generic" or "oracle") */
-    private List m_sortedDatabaseKeys;
+    private List<String> m_sortedDatabaseKeys;
 
     /** The workplace import thread. */
     private CmsSetupWorkplaceImportThread m_workplaceImportThread;
@@ -334,37 +335,38 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return a Map of component ids as keys and a list of dependency names as values
      */
-    public Map buildDepsForAllComponents() {
+    public Map<String, List<String>> buildDepsForAllComponents() {
 
-        Map ret = new HashMap();
+        Map<String, List<String>> ret = new HashMap<String, List<String>>();
 
-        Iterator itComponents = m_components.elementList().iterator();
+        Iterator<CmsSetupComponent> itComponents = CmsCollectionsGenericWrapper.<CmsSetupComponent> list(
+            m_components.elementList()).iterator();
         while (itComponents.hasNext()) {
-            CmsSetupComponent component = (CmsSetupComponent)itComponents.next();
+            CmsSetupComponent component = itComponents.next();
 
             // if component a depends on component b, and component c depends also on component b:
             // build a map with a list containing "a" and "c" keyed by "b" to get a 
             // list of components depending on component "b"...
-            Iterator itDeps = component.getDependencies().iterator();
+            Iterator<String> itDeps = component.getDependencies().iterator();
             while (itDeps.hasNext()) {
-                String dependency = (String)itDeps.next();
+                String dependency = itDeps.next();
 
                 // get the list of dependent modules
-                List componentDependencies = (List)ret.get(dependency);
+                List<String> componentDependencies = ret.get(dependency);
                 if (componentDependencies == null) {
                     // build a new list if "b" has no dependent modules yet
-                    componentDependencies = new ArrayList();
+                    componentDependencies = new ArrayList<String>();
                     ret.put(dependency, componentDependencies);
                 }
                 // add "a" as a module depending on "b"
                 componentDependencies.add(component.getId());
             }
         }
-        itComponents = m_components.elementList().iterator();
+        itComponents = CmsCollectionsGenericWrapper.<CmsSetupComponent> list(m_components.elementList()).iterator();
         while (itComponents.hasNext()) {
-            CmsSetupComponent component = (CmsSetupComponent)itComponents.next();
+            CmsSetupComponent component = itComponents.next();
             if (ret.get(component.getId()) == null) {
-                ret.put(component.getId(), new ArrayList());
+                ret.put(component.getId(), new ArrayList<String>());
             }
         }
         return ret;
@@ -455,9 +457,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         html.append("\t\t\t\t\t<td>&nbsp;&nbsp;</td>");
         html.append("\t\t\t\t\t<td style='width: 100%;'>");
 
-        Iterator iter = getErrors().iterator();
+        Iterator<String> iter = getErrors().iterator();
         while (iter.hasNext()) {
-            String msg = (String)iter.next();
+            String msg = iter.next();
             html.append("\t\t\t\t\t\t");
             html.append(msg);
             html.append("<br/>");
@@ -483,21 +485,21 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return a map with all available modules
      */
-    public Map getAvailableModules() {
+    public Map<String, CmsModule> getAvailableModules() {
 
         if ((m_availableModules == null) || m_availableModules.isEmpty()) {
-            m_availableModules = new HashMap();
-            m_moduleDependencies = new HashMap();
-            m_moduleFilenames = new HashMap();
+            m_availableModules = new HashMap<String, CmsModule>();
+            m_moduleDependencies = new HashMap<String, List<String>>();
+            m_moduleFilenames = new HashMap<String, String>();
             m_components = new CmsIdentifiableObjectContainer(true, true);
 
             try {
                 addComponentsFromPath(m_webAppRfsPath + FOLDER_SETUP);
-                Map modules = CmsModuleManager.getAllModulesFromPath(getModuleFolder());
-                Iterator itMods = modules.entrySet().iterator();
+                Map<CmsModule, String> modules = CmsModuleManager.getAllModulesFromPath(getModuleFolder());
+                Iterator<Map.Entry<CmsModule, String>> itMods = modules.entrySet().iterator();
                 while (itMods.hasNext()) {
-                    Map.Entry entry = (Map.Entry)itMods.next();
-                    CmsModule module = (CmsModule)entry.getKey();
+                    Map.Entry<CmsModule, String> entry = itMods.next();
+                    CmsModule module = entry.getKey();
                     // put the module information into a map keyed by the module packages names
                     m_availableModules.put(module.getName(), module);
                     m_moduleFilenames.put(module.getName(), entry.getValue());
@@ -506,7 +508,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             } catch (CmsConfigurationException e) {
                 throw new CmsRuntimeException(e.getMessageContainer());
             }
-            initializeComponents(new HashSet(m_availableModules.keySet()));
+            initializeComponents(new HashSet<String>(m_availableModules.keySet()));
         }
         return m_availableModules;
     }
@@ -533,7 +535,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
 
         if (CmsStringUtil.isEmpty(m_databaseKey)) {
-            m_databaseKey = (String)getSortedDatabases().get(0);
+            m_databaseKey = getSortedDatabases().get(0);
         }
 
         return m_databaseKey;
@@ -559,10 +561,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return a list of needed jar filenames
      */
-    public List getDatabaseLibs(String databaseKey) {
+    public List<String> getDatabaseLibs(String databaseKey) {
 
-        return CmsStringUtil.splitAsList((String)((Map)getDatabaseProperties().get(databaseKey)).get(databaseKey
-            + ".libs"), ',', true);
+        return CmsStringUtil.splitAsList(
+            getDatabaseProperties().get(databaseKey).getProperty(databaseKey + ".libs"),
+            ',',
+            true);
     }
 
     /**
@@ -573,7 +577,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String getDatabaseName(String databaseKey) {
 
-        return (String)((Map)getDatabaseProperties().get(databaseKey)).get(databaseKey + PROPKEY_NAME);
+        return getDatabaseProperties().get(databaseKey).getProperty(databaseKey + PROPKEY_NAME);
     }
 
     /** 
@@ -582,7 +586,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return a map with the database properties of *all* available database configurations
      */
-    public Map getDatabaseProperties() {
+    public Map<String, Properties> getDatabaseProperties() {
 
         if (m_databaseProperties != null) {
             return m_databaseProperties;
@@ -598,7 +602,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return a list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
      */
-    public List getDatabases() {
+    public List<String> getDatabases() {
 
         File databaseSetupFolder = null;
         File[] childResources = null;
@@ -611,7 +615,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
 
         try {
-            m_databaseKeys = new ArrayList();
+            m_databaseKeys = new ArrayList<String>();
             databaseSetupFolder = new File(m_webAppRfsPath + FOLDER_SETUP + FOLDER_DATABASE);
 
             if (databaseSetupFolder.exists()) {
@@ -724,10 +728,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
         // extract the database key out of the entire key
         String databaseKey = key.substring(0, key.indexOf('.'));
-        Map databaseProperties = (Map)getDatabaseProperties().get(databaseKey);
+        Properties databaseProperties = getDatabaseProperties().get(databaseKey);
 
-        Object value = databaseProperties.get(key);
-        return (value != null) ? (String)value : "";
+        return databaseProperties.getProperty(key, "");
     }
 
     /** 
@@ -827,7 +830,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return a vector of error messages 
      */
-    public List getErrors() {
+    public List<String> getErrors() {
 
         return m_errors;
     }
@@ -913,7 +916,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return a map with lists of dependent module package names keyed by module package names
      */
-    public Map getModuleDependencies() {
+    public Map<String, List<String>> getModuleDependencies() {
 
         if ((m_moduleDependencies == null) || m_moduleDependencies.isEmpty()) {
             try {
@@ -941,10 +944,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
      *
      * @return A list with the package names of the modules to be installed
      */
-    public List getModulesToInstall() {
+    public List<String> getModulesToInstall() {
 
         if ((m_installModules == null) || m_installModules.isEmpty()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return Collections.unmodifiableList(m_installModules);
     }
@@ -974,7 +977,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return the replacer
      */
-    public Map getReplacer() {
+    public Map<String, String> getReplacer() {
 
         return m_replacer;
     }
@@ -1017,14 +1020,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
      *
      * @return a sorted list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
      */
-    public List getSortedDatabases() {
+    public List<String> getSortedDatabases() {
 
         if (m_sortedDatabaseKeys == null) {
-            List databases = m_databaseKeys;
-            List sortedDatabases = new ArrayList(databases.size());
-            SortedMap mappedDatabases = new TreeMap();
+            List<String> databases = m_databaseKeys;
+            List<String> sortedDatabases = new ArrayList<String>(databases.size());
+            SortedMap<Integer, String> mappedDatabases = new TreeMap<Integer, String>();
             for (int i = 0; i < databases.size(); i++) {
-                String key = (String)databases.get(i);
+                String key = databases.get(i);
                 Integer ranking = new Integer(0);
                 try {
                     ranking = Integer.valueOf(getDbProperty(key + ".ranking"));
@@ -1036,8 +1039,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
             while (mappedDatabases.size() > 0) {
                 // get database with highest ranking 
-                Integer key = (Integer)mappedDatabases.lastKey();
-                String database = (String)mappedDatabases.get(key);
+                Integer key = mappedDatabases.lastKey();
+                String database = mappedDatabases.get(key);
                 sortedDatabases.add(database);
                 mappedDatabases.remove(key);
             }
@@ -1108,9 +1111,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public String htmlComponents() {
 
         StringBuffer html = new StringBuffer(1024);
-        Iterator itComponents = m_components.elementList().iterator();
+        Iterator<CmsSetupComponent> itComponents = CmsCollectionsGenericWrapper.<CmsSetupComponent> list(
+            m_components.elementList()).iterator();
         while (itComponents.hasNext()) {
-            CmsSetupComponent component = (CmsSetupComponent)itComponents.next();
+            CmsSetupComponent component = itComponents.next();
             html.append(htmlComponent(component));
         }
         return html.toString();
@@ -1124,10 +1128,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public String htmlModuleHelpDescriptions() {
 
         StringBuffer html = new StringBuffer(1024);
-        Iterator itModules = sortModules(getAvailableModules().values()).iterator();
+        Iterator<String> itModules = sortModules(getAvailableModules().values()).iterator();
         for (int i = 0; itModules.hasNext(); i++) {
-            String moduleName = (String)itModules.next();
-            CmsModule module = (CmsModule)getAvailableModules().get(moduleName);
+            String moduleName = itModules.next();
+            CmsModule module = getAvailableModules().get(moduleName);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(module.getDescription())) {
                 html.append(getHtmlPart("C_HELP_START", "" + i));
                 html.append(module.getDescription());
@@ -1147,10 +1151,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public String htmlModules() {
 
         StringBuffer html = new StringBuffer(1024);
-        Iterator itModules = sortModules(getAvailableModules().values()).iterator();
+        Iterator<String> itModules = sortModules(getAvailableModules().values()).iterator();
         for (int i = 0; itModules.hasNext(); i++) {
-            String moduleName = (String)itModules.next();
-            CmsModule module = (CmsModule)getAvailableModules().get(moduleName);
+            String moduleName = itModules.next();
+            CmsModule module = getAvailableModules().get(moduleName);
             html.append(htmlModule(module, i));
         }
         return html.toString();
@@ -1176,7 +1180,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
         if ((m_cms != null) && (m_installModules != null)) {
             for (int i = 0; i < m_installModules.size(); i++) {
-                String filename = (String)m_moduleFilenames.get(m_installModules.get(i));
+                String filename = m_moduleFilenames.get(m_installModules.get(i));
                 try {
                     importModuleFromDefault(filename);
                 } catch (Exception e) {
@@ -1242,7 +1246,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             m_defaultWebApplication = defaultWebApplication;
 
             setWebAppRfsPath(webAppRfsPath);
-            m_errors = new ArrayList();
+            m_errors = new ArrayList<String>();
 
             if (CmsStringUtil.isNotEmpty(webAppRfsPath)) {
                 // workaround for JUnit test cases, this must not be executed in a test case
@@ -1328,8 +1332,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String jsComponentDependencies() {
 
-        List components = m_components.elementList();
-        Map componentDependencies = buildDepsForAllComponents();
+        List<CmsSetupComponent> components = CmsCollectionsGenericWrapper.list(m_components.elementList());
+        Map<String, List<String>> componentDependencies = buildDepsForAllComponents();
 
         StringBuffer jsCode = new StringBuffer(1024);
         jsCode.append("\t// an array holding the dependent components for the n-th component\n");
@@ -1337,8 +1341,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
         jsCode.append(components.size());
         jsCode.append(");\n");
         for (int i = 0; i < components.size(); i++) {
-            CmsSetupComponent component = (CmsSetupComponent)components.get(i);
-            List dependencies = (List)componentDependencies.get(component.getId());
+            CmsSetupComponent component = components.get(i);
+            List<String> dependencies = componentDependencies.get(component.getId());
             jsCode.append("\tcomponentDependencies[" + i + "] = new Array(");
             if (dependencies != null) {
                 for (int j = 0; j < dependencies.size(); j++) {
@@ -1361,7 +1365,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String jsComponentModules() {
 
-        List components = m_components.elementList();
+        List<CmsSetupComponent> components = CmsCollectionsGenericWrapper.list(m_components.elementList());
 
         StringBuffer jsCode = new StringBuffer(1024);
         jsCode.append("\t// an array holding the components modules\n");
@@ -1369,9 +1373,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         jsCode.append(components.size());
         jsCode.append(");\n");
         for (int i = 0; i < components.size(); i++) {
-            CmsSetupComponent component = (CmsSetupComponent)components.get(i);
+            CmsSetupComponent component = components.get(i);
             jsCode.append("\tcomponentModules[" + i + "] = \"");
-            List modules = getComponentModules(component);
+            List<String> modules = getComponentModules(component);
             for (int j = 0; j < modules.size(); j++) {
                 jsCode.append(modules.get(j));
                 if (j < modules.size() - 1) {
@@ -1411,7 +1415,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String jsModuleDependencies() {
 
-        List moduleNames = sortModules(getAvailableModules().values());
+        List<String> moduleNames = sortModules(getAvailableModules().values());
 
         StringBuffer jsCode = new StringBuffer(1024);
         jsCode.append("\t// an array holding the dependent modules for the n-th module\n");
@@ -1419,8 +1423,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
         jsCode.append(moduleNames.size());
         jsCode.append(");\n");
         for (int i = 0; i < moduleNames.size(); i++) {
-            String moduleName = (String)moduleNames.get(i);
-            List dependencies = (List)getModuleDependencies().get(moduleName);
+            String moduleName = moduleNames.get(i);
+            List<String> dependencies = getModuleDependencies().get(moduleName);
             jsCode.append("\tmoduleDependencies[" + i + "] = new Array(");
             if (dependencies != null) {
                 for (int j = 0; j < dependencies.size(); j++) {
@@ -1443,14 +1447,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String jsModuleNames() {
 
-        List moduleNames = sortModules(getAvailableModules().values());
+        List<String> moduleNames = sortModules(getAvailableModules().values());
         StringBuffer jsCode = new StringBuffer(1024);
         jsCode.append("\t// an array from 1...n holding the module package names\n");
         jsCode.append("\tvar modulePackageNames = new Array(");
         jsCode.append(moduleNames.size());
         jsCode.append(");\n");
         for (int i = 0; i < moduleNames.size(); i++) {
-            String moduleName = (String)moduleNames.get(i);
+            String moduleName = moduleNames.get(i);
             jsCode.append("\tmodulePackageNames[" + i + "] = \"" + moduleName + "\";\n");
         }
         jsCode.append("\n\n");
@@ -1879,7 +1883,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     setDbProperty(getDatabase() + ".temporaryTablespace", dbTemporaryTablespace);
                     setDbProperty(getDatabase() + ".indexTablespace", dbIndexTablespace);
                 }
-                Map replacer = new HashMap();
+                Map<String, String> replacer = new HashMap<String, String>();
                 if (!provider.equals(MYSQL_PROVIDER) || provider.equals(MSSQL_PROVIDER)) {
                     replacer.put("${user}", dbWorkUser);
                     replacer.put("${password}", dbWorkPwd);
@@ -1932,7 +1936,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
         // extract the database key out of the entire key
         String databaseKey = key.substring(0, key.indexOf('.'));
-        Map databaseProperties = (Map)getDatabaseProperties().get(databaseKey);
+        Properties databaseProperties = getDatabaseProperties().get(databaseKey);
         databaseProperties.put(key, value);
     }
 
@@ -2002,7 +2006,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @param map the replacer to set
      */
-    public void setReplacer(Map map) {
+    public void setReplacer(Map<String, String> map) {
 
         m_replacer = map;
     }
@@ -2067,22 +2071,20 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return a sorted list of module names
      */
-    public List sortModules(Collection modules) {
+    public List<String> sortModules(Collection<CmsModule> modules) {
 
-        List aux = new ArrayList(modules);
-        Collections.sort(aux, new Comparator() {
+        List<CmsModule> aux = new ArrayList<CmsModule>(modules);
+        Collections.sort(aux, new Comparator<CmsModule>() {
 
-            public int compare(Object o1, Object o2) {
+            public int compare(CmsModule module1, CmsModule module2) {
 
-                CmsModule module1 = (CmsModule)o1;
-                CmsModule module2 = (CmsModule)o2;
                 return getDisplayForModule(module1).compareTo(getDisplayForModule(module2));
             }
         });
 
-        List ret = new ArrayList(aux.size());
-        for (Iterator it = aux.iterator(); it.hasNext();) {
-            CmsModule module = (CmsModule)it.next();
+        List<String> ret = new ArrayList<String>(aux.size());
+        for (Iterator<CmsModule> it = aux.iterator(); it.hasNext();) {
+            CmsModule module = it.next();
             ret.add(module.getName());
         }
         return ret;
@@ -2097,9 +2099,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
         boolean result = false;
         String libFolder = getLibFolder();
-        Iterator it = getDatabaseLibs(getDatabase()).iterator();
+        Iterator<String> it = getDatabaseLibs(getDatabase()).iterator();
         while (it.hasNext()) {
-            String libName = (String)it.next();
+            String libName = it.next();
             File libFile = new File(libFolder, libName);
             if (libFile.exists()) {
                 result = true;
@@ -2127,9 +2129,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
             return;
         }
 
-        Iterator it = Arrays.asList(configuration.getStringArray(PROPKEY_COMPONENTS)).iterator();
+        Iterator<String> it = Arrays.asList(configuration.getStringArray(PROPKEY_COMPONENTS)).iterator();
         while (it.hasNext()) {
-            String componentId = (String)it.next();
+            String componentId = it.next();
             CmsSetupComponent componentBean = new CmsSetupComponent();
             componentBean.setId(componentId);
             componentBean.setName(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_NAME));
@@ -2323,11 +2325,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @param modules a modifiable list of the modules to be imported
      */
-    protected void initializeComponents(Collection modules) {
+    protected void initializeComponents(Collection<String> modules) {
 
-        Iterator itGroups = new ArrayList(m_components.elementList()).iterator();
+        Iterator<CmsSetupComponent> itGroups = new ArrayList<CmsSetupComponent>(
+            CmsCollectionsGenericWrapper.<CmsSetupComponent> list(m_components.elementList())).iterator();
         while (itGroups.hasNext()) {
-            CmsSetupComponent component = (CmsSetupComponent)itGroups.next();
+            CmsSetupComponent component = itGroups.next();
             String errMsg = "";
             String warnMsg = "";
             // check name
@@ -2346,9 +2349,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 warnMsg += "\n";
             }
             // check dependencies
-            Iterator itDeps = component.getDependencies().iterator();
+            Iterator<String> itDeps = component.getDependencies().iterator();
             while (itDeps.hasNext()) {
-                String dependency = (String)itDeps.next();
+                String dependency = itDeps.next();
                 if (m_components.getObject(dependency) == null) {
                     errMsg += Messages.get().container(
                         Messages.LOG_WARN_COMPONENT_DEPENDENCY_BROKEN_2,
@@ -2359,9 +2362,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
             }
             // check modules match
             boolean match = false;
-            Iterator itModules = modules.iterator();
+            Iterator<String> itModules = modules.iterator();
             while (itModules.hasNext()) {
-                String module = (String)itModules.next();
+                String module = itModules.next();
                 if (component.match(module)) {
                     match = true;
                     itModules.remove();
@@ -2407,8 +2410,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
         File setupFile = null;
         boolean hasMissingSetupFiles = false;
 
-        m_databaseKeys = new ArrayList();
-        m_databaseProperties = new HashMap();
+        m_databaseKeys = new ArrayList<String>();
+        m_databaseProperties = new HashMap<String, Properties>();
 
         try {
             databaseSetupFolder = new File(m_webAppRfsPath + FOLDER_SETUP + FOLDER_DATABASE);
@@ -2445,7 +2448,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 }
 
                 for (int i = 0; i < m_databaseKeys.size(); i++) {
-                    databaseKey = (String)m_databaseKeys.get(i);
+                    databaseKey = m_databaseKeys.get(i);
                     configPath = m_webAppRfsPath
                         + "setup"
                         + File.separatorChar
@@ -2488,7 +2491,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     protected void setExtProperty(String key, String value) {
 
-        m_extProperties.put(key, value);
+        CmsCollectionsGenericWrapper.map(m_extProperties).put(key, value);
     }
 
     /**
@@ -2520,12 +2523,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return a list of matching module names
      */
-    private List getComponentModules(CmsSetupComponent component) {
+    private List<String> getComponentModules(CmsSetupComponent component) {
 
-        List modules = new ArrayList();
-        Iterator itModules = m_availableModules.keySet().iterator();
+        List<String> modules = new ArrayList<String>();
+        Iterator<String> itModules = m_availableModules.keySet().iterator();
         while (itModules.hasNext()) {
-            String moduleName = (String)itModules.next();
+            String moduleName = itModules.next();
             if (component.match(moduleName)) {
                 modules.add(moduleName);
             }
@@ -2543,7 +2546,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     private void save(ExtendedProperties properties, String source, String target) {
 
         try {
-            HashSet alreadyWritten = new HashSet();
+            Set<String> alreadyWritten = new HashSet<String>();
 
             LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configRfsPath + source)));
 
@@ -2580,29 +2583,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
                             String value = "";
 
                             if (obj != null) {
-                                if (obj instanceof Vector) {
+                                if (obj instanceof List<?>) {
                                     String[] values = {};
-                                    values = (String[])((Vector)obj).toArray(values);
-
+                                    values = CmsCollectionsGenericWrapper.list(obj).toArray(values);
                                     // write it
                                     fw.write("\\\n" + createValueString(values));
-
-                                } else if (obj instanceof List) {
-
-                                    String[] values = {};
-                                    values = (String[])((List)obj).toArray(values);
-
-                                    // write it
-                                    fw.write("\\\n" + createValueString(values));
-
                                 } else {
-
                                     value = ((String)obj).trim();
-
                                     // escape commas and equals in value
                                     value = CmsStringUtil.substitute(value, ",", "\\,");
                                     value = CmsStringUtil.substitute(value, "=", "\\=");
-
                                     // write it
                                     fw.write(value);
                                 }

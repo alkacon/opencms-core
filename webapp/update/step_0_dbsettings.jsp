@@ -1,6 +1,6 @@
 d<%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
---%><jsp:useBean id="dbBean" class="org.opencms.setup.update6to7.CmsUpdateDBManager" scope="page" /><%--
+--%><jsp:useBean id="dbBean" class="org.opencms.setup.db.CmsUpdateDBManager" scope="page" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 	
 	// previous page
@@ -15,7 +15,7 @@ d<%@ page session="true" %><%--
 		response.sendRedirect(nextPage);
 		return;
 	}
-    Bean.setNeedDbUpdate(dbBean.needUpdate());
+    Bean.setDetectedVersion(dbBean.getDetectedVersion());
 	if (!Bean.isNeedDbUpdate()) {
 		response.sendRedirect("step_2_settings.jsp");
 		return;
@@ -73,22 +73,22 @@ OpenCms Update Wizard - Database upgrade
 		<hr>
 		<b>Please be sure to have created a backup and exactly check all information stated below before continuing, and be also aware that this process may take several hours depending on your data.</b><br>
 		<hr>
+<% if (dbBean.getDetectedVersion() < 7) { %>		
 		<table border=0>
 		<tr><td><input type="checkbox" name="keepHistory" value="true"> </td><td>Keep and convert historical versions of resources? </td></tr>
 		<tr><td>&nbsp;</td><td><b>doing so is not recommended since the converted data will not work 100% and may prolong the update process for several hours.</b></td></tr>
-		<tr><td colspan='2'><hr></td></tr>
-		<tr><td colspan='2'>Following db pool(s) will be upgraded:</td></tr>		
+		</table>
+		<hr>
+<% } %>
+		<p>Following db pool(s) will be upgraded:</p>
 <% 
-	java.util.Iterator it = dbBean.getPools().iterator(); 
+	java.util.Iterator<String> it = dbBean.getPools().iterator(); 
     while (it.hasNext()) {
-        String pool = (String)it.next(); %>
-        <tr><td></td><td>
+        String pool = it.next(); %>
 <%		out.println(dbBean.htmlPool(pool)); %>
-        </td></tr>
 <%
     }
 %>
-		</table>
 	</div>
 
 <%= Bean.getHtmlPart("C_BLOCK_END") %>

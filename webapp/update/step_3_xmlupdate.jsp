@@ -1,7 +1,7 @@
 <%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:useBean id="xmlBean" class="org.opencms.setup.xml.CmsSetupXmlManager" scope="page" /><%
-    xmlBean.initialize(Bean.isNeedDbUpdate());
+    xmlBean.initialize(Bean.getDetectedVersion());
 %><jsp:setProperty name="xmlBean" property="*" /><%
 	
 	// next page

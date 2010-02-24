@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupDb.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
+ * Date   : $Date: 2010/02/24 12:44:23 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -48,11 +48,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 /**
  * Helper class to call database setup scripts.<p>
@@ -75,7 +75,7 @@ public class CmsSetupDb extends Object {
     private String m_basePath;
     private Connection m_con;
     private boolean m_errorLogging;
-    private Vector m_errors;
+    private List<String> m_errors;
 
     /**
      * Creates a new CmsSetupDb object.<p>
@@ -84,7 +84,7 @@ public class CmsSetupDb extends Object {
      */
     public CmsSetupDb(String basePath) {
 
-        m_errors = new Vector();
+        m_errors = new ArrayList<String>();
         m_basePath = basePath;
         m_errorLogging = true;
     }
@@ -133,7 +133,7 @@ public class CmsSetupDb extends Object {
                 }
                 html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
                 if (map < 15 * 1024 * 1024) {
-                    m_errors.addElement("<b>Your <code>'max_allowed_packet'</code> variable is set to less than 16Mb ("
+                    m_errors.add("<b>Your <code>'max_allowed_packet'</code> variable is set to less than 16Mb ("
                         + map
                         + ").</b>\n"
                         + "The recommended value for running OpenCms is 16Mb."
@@ -184,7 +184,7 @@ public class CmsSetupDb extends Object {
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
-    public void createDatabase(String database, Map replacer) {
+    public void createDatabase(String database, Map<String, String> replacer) {
 
         m_errorLogging = true;
         executeSql(database, "create_db.sql", replacer, true);
@@ -197,7 +197,7 @@ public class CmsSetupDb extends Object {
      * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void createDatabase(String database, Map replacer, boolean abortOnError) {
+    public void createDatabase(String database, Map<String, String> replacer, boolean abortOnError) {
 
         m_errorLogging = true;
         executeSql(database, "create_db.sql", replacer, abortOnError);
@@ -209,7 +209,7 @@ public class CmsSetupDb extends Object {
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
-    public void createTables(String database, Map replacer) {
+    public void createTables(String database, Map<String, String> replacer) {
 
         m_errorLogging = true;
         executeSql(database, "create_tables.sql", replacer, true);
@@ -222,7 +222,7 @@ public class CmsSetupDb extends Object {
      * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void createTables(String database, Map replacer, boolean abortOnError) {
+    public void createTables(String database, Map<String, String> replacer, boolean abortOnError) {
 
         m_errorLogging = true;
         executeSql(database, "create_tables.sql", replacer, abortOnError);
@@ -234,7 +234,7 @@ public class CmsSetupDb extends Object {
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
-    public void dropDatabase(String database, Map replacer) {
+    public void dropDatabase(String database, Map<String, String> replacer) {
 
         m_errorLogging = true;
         executeSql(database, "drop_db.sql", replacer, false);
@@ -247,7 +247,7 @@ public class CmsSetupDb extends Object {
      * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void dropDatabase(String database, Map replacer, boolean abortOnError) {
+    public void dropDatabase(String database, Map<String, String> replacer, boolean abortOnError) {
 
         m_errorLogging = true;
         executeSql(database, "drop_db.sql", replacer, abortOnError);
@@ -270,7 +270,7 @@ public class CmsSetupDb extends Object {
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
-    public void dropTables(String database, Map replacer) {
+    public void dropTables(String database, Map<String, String> replacer) {
 
         m_errorLogging = true;
         executeSql(database, "drop_tables.sql", replacer, false);
@@ -283,14 +283,14 @@ public class CmsSetupDb extends Object {
      * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void dropTables(String database, Map replacer, boolean abortOnError) {
+    public void dropTables(String database, Map<String, String> replacer, boolean abortOnError) {
 
         m_errorLogging = true;
         executeSql(database, "drop_tables.sql", replacer, abortOnError);
     }
 
     /**
-     * Creates and executes a database statment from a String returning the result set.<p>
+     * Creates and executes a database statement from a String returning the result set.<p>
      * 
      * @param query the query to execute
      * @param replacer the replacements to perform in the script
@@ -299,7 +299,7 @@ public class CmsSetupDb extends Object {
      * 
      * @throws SQLException if something goes wrong
      */
-    public CmsSetupDBWrapper executeSqlStatement(String query, Map replacer) throws SQLException {
+    public CmsSetupDBWrapper executeSqlStatement(String query, Map<String, String> replacer) throws SQLException {
 
         CmsSetupDBWrapper dbwrapper = new CmsSetupDBWrapper(m_con);
         dbwrapper.createStatement();
@@ -318,7 +318,7 @@ public class CmsSetupDb extends Object {
 
     }
 
-    /** Creates and executes a database statment from a String returning the result set.<p>
+    /** Creates and executes a database statement from a String returning the result set.<p>
      * 
      * @param query the query to execute
      * @param replacer the replacements to perform in the script
@@ -328,7 +328,8 @@ public class CmsSetupDb extends Object {
      * 
      * @throws SQLException if something goes wrong
      */
-    public CmsSetupDBWrapper executeSqlStatement(String query, Map replacer, List params) throws SQLException {
+    public CmsSetupDBWrapper executeSqlStatement(String query, Map<String, String> replacer, List<Object> params)
+    throws SQLException {
 
         CmsSetupDBWrapper dbwrapper = new CmsSetupDBWrapper(m_con);
 
@@ -361,7 +362,7 @@ public class CmsSetupDb extends Object {
      * 
      * @return all error messages collected internally
      */
-    public Vector getErrors() {
+    public List<String> getErrors() {
 
         return m_errors;
     }
@@ -484,12 +485,12 @@ public class CmsSetupDb extends Object {
 
         } catch (ClassNotFoundException e) {
             System.out.println("Class not found exception: " + e);
-            m_errors.addElement(Messages.get().getBundle().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));
-            m_errors.addElement(CmsException.getStackTraceAsString(e));
+            m_errors.add(Messages.get().getBundle().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));
+            m_errors.add(CmsException.getStackTraceAsString(e));
         } catch (Exception e) {
             System.out.println("Exception: " + e);
-            m_errors.addElement(Messages.get().getBundle().key(Messages.ERR_DB_CONNECT_1, DbConStr));
-            m_errors.addElement(CmsException.getStackTraceAsString(e));
+            m_errors.add(Messages.get().getBundle().key(Messages.ERR_DB_CONNECT_1, DbConStr));
+            m_errors.add(CmsException.getStackTraceAsString(e));
         }
     }
 
@@ -499,7 +500,7 @@ public class CmsSetupDb extends Object {
      * @param updateScript the update script code
      * @param replacers the replacers to use in the script code
      */
-    public void updateDatabase(String updateScript, Map replacers) {
+    public void updateDatabase(String updateScript, Map<String, String> replacers) {
 
         StringReader reader = new StringReader(updateScript);
         executeSql(reader, replacers, true);
@@ -512,7 +513,7 @@ public class CmsSetupDb extends Object {
      * @param replacers the replacers to use in the script code
      * @param abortOnError indicates if the script is aborted if an error occurs
      */
-    public void updateDatabase(String updateScript, Map replacers, boolean abortOnError) {
+    public void updateDatabase(String updateScript, Map<String, String> replacers, boolean abortOnError) {
 
         StringReader reader = new StringReader(updateScript);
         executeSql(reader, replacers, abortOnError);
@@ -529,7 +530,7 @@ public class CmsSetupDb extends Object {
      * 
      * @throws SQLException if something goes wrong
      */
-    public int updateSqlStatement(String query, Map replacer, List params) throws SQLException {
+    public int updateSqlStatement(String query, Map<String, String> replacer, List<Object> params) throws SQLException {
 
         String queryToExecute = query;
         // Check if a map of replacements is given
@@ -588,6 +589,7 @@ public class CmsSetupDb extends Object {
     /**
      * @see java.lang.Object#finalize()
      */
+    @Override
     protected void finalize() throws Throwable {
 
         try {
@@ -605,7 +607,7 @@ public class CmsSetupDb extends Object {
      * @param replacers the replacements to perform in the script
      * @param abortOnError if a error occurs this flag indicates if to continue or to abort
      */
-    private void executeSql(Reader inputReader, Map replacers, boolean abortOnError) {
+    private void executeSql(Reader inputReader, Map<String, String> replacers, boolean abortOnError) {
 
         String statement = "";
         LineNumberReader reader = null;
@@ -654,8 +656,8 @@ public class CmsSetupDb extends Object {
                         } catch (SQLException e) {
                             if (!abortOnError) {
                                 if (m_errorLogging) {
-                                    m_errors.addElement("Error executing SQL statement: " + statement);
-                                    m_errors.addElement(CmsException.getStackTraceAsString(e));
+                                    m_errors.add("Error executing SQL statement: " + statement);
+                                    m_errors.add(CmsException.getStackTraceAsString(e));
                                 }
                             } else {
                                 throw e;
@@ -671,13 +673,13 @@ public class CmsSetupDb extends Object {
             }
         } catch (SQLException e) {
             if (m_errorLogging) {
-                m_errors.addElement("Error executing SQL statement: " + statement);
-                m_errors.addElement(CmsException.getStackTraceAsString(e));
+                m_errors.add("Error executing SQL statement: " + statement);
+                m_errors.add(CmsException.getStackTraceAsString(e));
             }
         } catch (Exception e) {
             if (m_errorLogging) {
-                m_errors.addElement("Error parsing database setup SQL script in line: " + line);
-                m_errors.addElement(CmsException.getStackTraceAsString(e));
+                m_errors.add("Error parsing database setup SQL script in line: " + line);
+                m_errors.add(CmsException.getStackTraceAsString(e));
             }
         } finally {
             try {
@@ -698,7 +700,7 @@ public class CmsSetupDb extends Object {
      * @param replacers the replacements to perform in the script
      * @param abortOnError if a error occurs this flag indicates if to continue or to abort
      */
-    private void executeSql(String databaseKey, String sqlScript, Map replacers, boolean abortOnError) {
+    private void executeSql(String databaseKey, String sqlScript, Map<String, String> replacers, boolean abortOnError) {
 
         String filename = null;
         try {
@@ -713,14 +715,14 @@ public class CmsSetupDb extends Object {
             executeSql(new FileReader(filename), replacers, abortOnError);
         } catch (FileNotFoundException e) {
             if (m_errorLogging) {
-                m_errors.addElement("Database setup SQL script not found: " + filename);
-                m_errors.addElement(CmsException.getStackTraceAsString(e));
+                m_errors.add("Database setup SQL script not found: " + filename);
+                m_errors.add(CmsException.getStackTraceAsString(e));
             }
         }
     }
 
     /**
-     * Creates and executes a database statment from a String.<p>
+     * Creates and executes a database statement from a String.<p>
      * 
      * @param statement the database statement
      * 
@@ -747,14 +749,14 @@ public class CmsSetupDb extends Object {
      * @param replacers a Map with values keyed by "${xxx}" tokens
      * @return the SQl query with all "${xxx}" tokens replaced
      */
-    private String replaceTokens(String sql, Map replacers) {
+    private String replaceTokens(String sql, Map<String, String> replacers) {
 
-        Iterator keys = replacers.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> keys = replacers.entrySet().iterator();
         while (keys.hasNext()) {
-            Map.Entry entry = (Map.Entry)keys.next();
+            Map.Entry<String, String> entry = keys.next();
 
-            String key = (String)entry.getKey();
-            String value = (String)entry.getValue();
+            String key = entry.getKey();
+            String value = entry.getValue();
 
             sql = CmsStringUtil.substitute(sql, key, value);
         }

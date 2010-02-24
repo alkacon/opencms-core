@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/comptest/CmsSetupTests.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/02/24 12:44:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,7 +57,7 @@ public class CmsSetupTests {
 
     private boolean m_green;
     private boolean m_red;
-    private List m_testResults;
+    private List<CmsSetupTestResult> m_testResults;
     private boolean m_yellow;
 
     /**
@@ -73,9 +73,9 @@ public class CmsSetupTests {
      * 
      * @return a list of all available tests
      */
-    public List getAllTests() {
+    public List<I_CmsSetupTest> getAllTests() {
 
-        List tests = new ArrayList();
+        List<I_CmsSetupTest> tests = new ArrayList<I_CmsSetupTest>();
         tests.add(new CmsSetupTestFolderPermissions());
         tests.add(new CmsSetupTestJdkVersion());
         tests.add(new CmsSetupTestJavaTempDir());
@@ -93,7 +93,7 @@ public class CmsSetupTests {
      * 
      * @return the test results
      */
-    public List getTestResults() {
+    public List<CmsSetupTestResult> getTestResults() {
 
         return m_testResults;
     }
@@ -141,12 +141,12 @@ public class CmsSetupTests {
         boolean hasYellow = false;
 
         // reset everything back to an initial state
-        m_testResults = new ArrayList();
+        m_testResults = new ArrayList<CmsSetupTestResult>();
         setGreen();
 
-        Iterator it = getAllTests().iterator();
+        Iterator<I_CmsSetupTest> it = getAllTests().iterator();
         while (it.hasNext()) {
-            I_CmsSetupTest test = (I_CmsSetupTest)it.next();
+            I_CmsSetupTest test = it.next();
             CmsSetupTestResult testResult = null;
             try {
                 testResult = test.execute(setupBean);
@@ -162,7 +162,7 @@ public class CmsSetupTests {
 
         // check whether a test found violated or questionable conditions
         for (int i = 0; i < m_testResults.size(); i++) {
-            CmsSetupTestResult testResult = (CmsSetupTestResult)m_testResults.get(i);
+            CmsSetupTestResult testResult = m_testResults.get(i);
             if (testResult.isRed()) {
                 hasRed = true;
             } else if (testResult.isYellow()) {

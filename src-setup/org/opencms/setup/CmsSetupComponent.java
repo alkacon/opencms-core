@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupComponent.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/24 12:44:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,14 +40,14 @@ import java.util.regex.Pattern;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.4
  */
 public class CmsSetupComponent {
 
     private boolean m_checked;
-    private List m_dependencies;
+    private List<String> m_dependencies;
     private String m_description;
     private String m_id;
     private Pattern m_modulesRegex;
@@ -59,7 +59,7 @@ public class CmsSetupComponent {
      *
      * @return the dependencies
      */
-    public List getDependencies() {
+    public List<String> getDependencies() {
 
         return m_dependencies;
     }
@@ -151,9 +151,9 @@ public class CmsSetupComponent {
      *
      * @param dependencies the dependencies to set
      */
-    public void setDependencies(List dependencies) {
+    public void setDependencies(List<String> dependencies) {
 
-        m_dependencies = new ArrayList(dependencies);
+        m_dependencies = new ArrayList<String>(dependencies);
     }
 
     /**
@@ -209,6 +209,7 @@ public class CmsSetupComponent {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer ret = new StringBuffer();

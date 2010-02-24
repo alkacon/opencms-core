@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/comptest/CmsSetupTestSimapi.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
+ * Date   : $Date: 2010/02/24 12:44:24 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -44,6 +44,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageWriter;
 
 /**
  * Tests the image processing capabilities.<p>
@@ -81,11 +83,11 @@ public class CmsSetupTestSimapi implements I_CmsSetupTest {
             Simapi simapi = new Simapi(settings);
 
             ImageIO.scanForPlugins();
-            Iterator pngReaders = ImageIO.getImageReadersByFormatName(Simapi.TYPE_PNG);
+            Iterator<ImageReader> pngReaders = ImageIO.getImageReadersByFormatName(Simapi.TYPE_PNG);
             if (!pngReaders.hasNext()) {
                 throw (new Exception("No Java ImageIO readers for the PNG format are available."));
             }
-            Iterator pngWriters = ImageIO.getImageWritersByFormatName(Simapi.TYPE_PNG);
+            Iterator<ImageWriter> pngWriters = ImageIO.getImageWritersByFormatName(Simapi.TYPE_PNG);
             if (!pngWriters.hasNext()) {
                 throw (new Exception("No Java ImageIO writers for the PNG format are available."));
             }

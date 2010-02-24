@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/02/24 12:44:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.opencms.module.CmsModuleXmlHandler;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.setup.update6to7.CmsUpdateDBThread;
+import org.opencms.setup.db.CmsUpdateDBThread;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.threads.CmsXmlContentRepairSettings;
 import org.opencms.workplace.threads.CmsXmlContentRepairThread;
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,10 +127,10 @@ public class CmsUpdateBean extends CmsSetupBean {
     private boolean m_keepHistory;
 
     /** List of module to be updated. */
-    private List m_modulesToUpdate;
+    private List<String> m_modulesToUpdate;
 
-    /** Signalizes if a DB update is needed. */
-    private boolean m_needDbUpdate;
+    /** The detected mayor version, based on DB structure. */
+    private int m_detectedVersion;
 
     /** the update project. */
     private String m_updateProject = "_tmpUpdateProject" + (System.currentTimeMillis() % 1000);
@@ -139,7 +139,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     private String m_updateSite = CmsResource.VFS_FOLDER_SITES + "/default/";
 
     /** Cache for the up-to-date module names. */
-    private List m_uptodateModules;
+    private List<String> m_uptodateModules;
 
     /** The workplace import thread. */
     private CmsUpdateThread m_workplaceUpdateThread;
@@ -161,6 +161,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @return html code
      */
+    @Override
     public String displayError(String pathPrefix) {
 
         if (pathPrefix == null) {
@@ -216,13 +217,13 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @see org.opencms.module.CmsModuleManager#getAllInstalledModules()
      */
-    public Map getInstalledModules() {
+    public Map<String, CmsModuleVersion> getInstalledModules() {
 
         String file = CmsModuleConfiguration.DEFAULT_XML_FILE_NAME;
         // /opencms/modules/module[?]
         String basePath = new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
             CmsModuleConfiguration.N_MODULES).append("/").append(CmsModuleXmlHandler.N_MODULE).append("[?]/").toString();
-        Map modules = new HashMap();
+        Map<String, CmsModuleVersion> modules = new HashMap<String, CmsModuleVersion>();
         String name = "";
         for (int i = 1; name != null; i++) {
             if (i > 1) {
@@ -252,7 +253,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @return a list of module names
      */
-    public List getModulesToUpdate() {
+    public List<String> getModulesToUpdate() {
 
         if (m_modulesToUpdate == null) {
             getUptodateModules();
@@ -295,19 +296,19 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @return a list of module names
      */
-    public List getUptodateModules() {
+    public List<String> getUptodateModules() {
 
         if (m_uptodateModules == null) {
-            m_uptodateModules = new ArrayList();
-            m_modulesToUpdate = new ArrayList();
-            Map installedModules = getInstalledModules();
-            Map availableModules = getAvailableModules();
-            Iterator itMods = availableModules.entrySet().iterator();
+            m_uptodateModules = new ArrayList<String>();
+            m_modulesToUpdate = new ArrayList<String>();
+            Map<String, CmsModuleVersion> installedModules = getInstalledModules();
+            Map<String, CmsModule> availableModules = getAvailableModules();
+            Iterator<Map.Entry<String, CmsModule>> itMods = availableModules.entrySet().iterator();
             while (itMods.hasNext()) {
-                Map.Entry entry = (Map.Entry)itMods.next();
-                String name = (String)entry.getKey();
-                CmsModuleVersion instVer = (CmsModuleVersion)installedModules.get(name);
-                CmsModuleVersion availVer = ((CmsModule)entry.getValue()).getVersion();
+                Map.Entry<String, CmsModule> entry = itMods.next();
+                String name = entry.getKey();
+                CmsModuleVersion instVer = installedModules.get(name);
+                CmsModuleVersion availVer = entry.getValue().getVersion();
                 boolean uptodate = (!UPDATE_ALL_MODULES) && ((instVer != null) && (instVer.compareTo(availVer) >= 0));
                 if (uptodate) {
                     m_uptodateModules.add(name);
@@ -341,15 +342,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * @see org.opencms.setup.CmsSetupBean#htmlModules()
      */
+    @Override
     public String htmlModules() {
 
         StringBuffer html = new StringBuffer(1024);
-        Set uptodate = new HashSet(getUptodateModules());
-        Iterator itModules = sortModules(getAvailableModules().values()).iterator();
+        Set<String> uptodate = new HashSet<String>(getUptodateModules());
+        Iterator<String> itModules = sortModules(getAvailableModules().values()).iterator();
         boolean hasModules = false;
         for (int i = 0; itModules.hasNext(); i++) {
-            String moduleName = (String)itModules.next();
-            CmsModule module = (CmsModule)getAvailableModules().get(moduleName);
+            String moduleName = itModules.next();
+            CmsModule module = getAvailableModules().get(moduleName);
             if (UPDATE_ALL_MODULES || !uptodate.contains(moduleName)) {
                 html.append(htmlModule(module, i));
                 hasModules = true;
@@ -376,6 +378,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * @param servletMapping the OpenCms servlet mapping
      * @param defaultWebApplication the name of the default web application
      */
+    @Override
     public void init(String webAppRfsPath, String servletMapping, String defaultWebApplication) {
 
         try {
@@ -418,7 +421,17 @@ public class CmsUpdateBean extends CmsSetupBean {
      */
     public boolean isNeedDbUpdate() {
 
-        return m_needDbUpdate;
+        return m_detectedVersion != 8;
+    }
+
+    /**
+     * Returns the detected mayor version, based on DB structure.<p>
+     * 
+     * @return the detected mayor version
+     */
+    public int getDetectedVersion() {
+
+        return m_detectedVersion;
     }
 
     /**
@@ -635,13 +648,13 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
-     * Sets the DB update flag.<p>
+     * Sets the detected mayor version.<p>
      *
-     * @param needDbUpdate the value to set
+     * @param detectedVersion the value to set
      */
-    public void setNeedDbUpdate(boolean needDbUpdate) {
+    public void setDetectedVersion(int detectedVersion) {
 
-        m_needDbUpdate = needDbUpdate;
+        m_detectedVersion = detectedVersion;
     }
 
     /**
@@ -667,6 +680,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * @see org.opencms.main.I_CmsShellCommands#shellExit()
      */
+    @Override
     public void shellExit() {
 
         System.out.println();
@@ -677,6 +691,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * @see org.opencms.main.I_CmsShellCommands#shellStart()
      */
+    @Override
     public void shellStart() {
 
         System.out.println();
@@ -712,11 +727,11 @@ public class CmsUpdateBean extends CmsSetupBean {
         if ((m_cms != null) && (m_installModules != null)) {
             I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
 
-            Set utdModules = new HashSet(getUptodateModules());
+            Set<String> utdModules = new HashSet<String>(getUptodateModules());
             for (int i = 0; i < m_installModules.size(); i++) {
-                String name = (String)m_installModules.get(i);
+                String name = m_installModules.get(i);
                 if (!utdModules.contains(name)) {
-                    String filename = (String)m_moduleFilenames.get(name);
+                    String filename = m_moduleFilenames.get(name);
                     try {
                         updateModule(name, filename, report);
                     } catch (Exception e) {
@@ -739,7 +754,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      */
     public void updateRelations() throws Exception {
 
-        if (!m_needDbUpdate) {
+        if (m_detectedVersion > 6) {
             // skip if not updating from 6.x
             return;
         }
@@ -767,12 +782,12 @@ public class CmsUpdateBean extends CmsSetupBean {
             m_cms.getRequestContext().setSiteRoot(""); // change to the root site
             m_cms.getRequestContext().setCurrentProject(project);
 
-            List types = OpenCms.getResourceManager().getResourceTypes();
+            List<I_CmsResourceType> types = OpenCms.getResourceManager().getResourceTypes();
             int n = types.size();
             int m = 0;
-            Iterator itTypes = types.iterator();
+            Iterator<I_CmsResourceType> itTypes = types.iterator();
             while (itTypes.hasNext()) {
-                I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
+                I_CmsResourceType type = itTypes.next();
                 m++;
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_2,

@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupWorkplaceImportThread.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
+ * Date   : $Date: 2010/02/24 12:44:23 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -137,6 +137,7 @@ public class CmsSetupWorkplaceImportThread extends Thread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         // save the original out and err stream 

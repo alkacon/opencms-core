@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/02/24 12:47:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Vector;
 
 import junit.framework.TestCase;
 
@@ -101,7 +100,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -883,12 +882,12 @@ public class OpenCmsTestCase extends TestCase {
     protected static void checkErrors(CmsSetupDb setupDb) {
 
         if (!setupDb.noErrors()) {
-            Vector errors = setupDb.getErrors();
+            List<String> errors = setupDb.getErrors();
             for (Iterator i = errors.iterator(); i.hasNext();) {
                 String error = (String)i.next();
                 System.out.println(error);
             }
-            fail((String)setupDb.getErrors().get(0));
+            fail(setupDb.getErrors().get(0));
         }
     }
 

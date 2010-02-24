@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupLoggingThread.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
+ * Date   : $Date: 2010/02/24 12:44:23 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -57,7 +57,7 @@ public class CmsSetupLoggingThread extends Thread {
 
     private LineNumberReader m_lineReader;
     private FileWriter m_logWriter;
-    private List m_messages;
+    private List<String> m_messages;
     private PipedInputStream m_pipedIn;
     private PipedOutputStream m_pipedOut;
     private boolean m_stopThread;
@@ -73,7 +73,7 @@ public class CmsSetupLoggingThread extends Thread {
         super("OpenCms: Setup logging");
 
         m_pipedOut = pipedOut;
-        m_messages = new ArrayList();
+        m_messages = new ArrayList<String>();
         m_stopThread = false;
 
         if (log != null) {
@@ -104,7 +104,7 @@ public class CmsSetupLoggingThread extends Thread {
      * 
      * @return a Vector with the last collected log messages
      */
-    public List getMessages() {
+    public List<String> getMessages() {
 
         return m_messages;
     }
@@ -122,6 +122,7 @@ public class CmsSetupLoggingThread extends Thread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         int lineNr = 0;

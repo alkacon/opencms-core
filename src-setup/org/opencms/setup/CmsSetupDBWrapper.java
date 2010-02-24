@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupDBWrapper.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
+ * Date   : $Date: 2010/02/24 12:44:23 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -120,7 +120,7 @@ public class CmsSetupDBWrapper {
      * 
      * @throws SQLException if statement cannot be created
      */
-    public void createPreparedStatement(String query, List params) throws SQLException {
+    public void createPreparedStatement(String query, List<Object> params) throws SQLException {
 
         m_preparedStatement = m_connection.prepareStatement(query);
 
