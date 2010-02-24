@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2010/01/20 09:16:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/02/24 07:18:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,17 +66,20 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
 
-    /** The type id of the JSP resource type. */
-    private static final int JSP_RESOURCE_TYPE_ID = 4;
-
     /** The type id of the containerpage_template resource type. */
     private static final int CONTAINERPAGE_TEMPLATE_TYPE_ID = 21;
+
+    /** The type name of the containerpage_template resource type. */
+    private static final String CONTAINERPAGE_TEMPLATE_TYPE_NAME = "containerpage_template";
+
+    /** The type id of the JSP resource type. */
+    private static final int JSP_RESOURCE_TYPE_ID = 4;
 
     /** The registered JSP resource type id's.    */
     private static List<Integer> m_jspResourceTypeIds = new ArrayList<Integer>();
@@ -90,15 +93,25 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /** JSP Loader instance. */
     protected CmsJspLoader m_jspLoader;
 
-    //    /**
-    //     * Default constructor, used to initialize member variables.<p>
-    //     */
-    //    public CmsResourceTypeJsp() {
-    //
-    //        super();
-    //        m_typeId = RESOURCE_TYPE_ID;
-    //        m_typeName = RESOURCE_TYPE_NAME;
-    //    }
+    /**
+     * Returns the type id of the containerpage_template resource type.<p>
+     * 
+     * @return the type id of the containerpage_template resource type
+     */
+    public static int getContainerPageTemplateTypeId() {
+
+        return CONTAINERPAGE_TEMPLATE_TYPE_ID;
+    }
+
+    /**
+     * Returns the type name of the containerpage_template resource type.<p>
+     * 
+     * @return the type name of the containerpage_template resource type
+     */
+    public static String getContainerPageTemplateTypeName() {
+
+        return CONTAINERPAGE_TEMPLATE_TYPE_NAME;
+    }
 
     /**
      * Returns the registered JSP resource type id's.<p>
@@ -108,16 +121,6 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     public static List<Integer> getJspResourceTypeIds() {
 
         return m_jspResourceTypeIds;
-    }
-
-    /**
-     * Returns the type id of the containerpage_template resource type.<p>
-     * 
-     * @return the type id of the containerpage_template resource type
-     */
-    public static int getContainerPageTemplateTypeId() {
-
-        return CONTAINERPAGE_TEMPLATE_TYPE_ID;
     }
 
     /**
