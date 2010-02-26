@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2010/02/26 10:56:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/02/26 13:17:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.6
  */
@@ -294,7 +294,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
             if (scaler.isValid()) {
                 height = scaler.getHeight();
             }
-            result = String.valueOf(width + "x" + height + "  " + (getResource().getLength() / 1024)) + "kb";
+            result = getTitle() + "  " + width + "x" + height + "  " + (getResource().getLength() / 1024) + "kb";
         }
         return result;
     }
