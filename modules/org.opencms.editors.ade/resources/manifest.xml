@@ -265,6 +265,30 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/image-list-formatter.jsp</source>
+			<destination>system/workplace/editors/ade/image-list-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>95469c45-22b2-11df-979b-d796962db2d3</uuidstructure>
+			<uuidresource>95469c46-22b2-11df-979b-d796962db2d3</uuidresource>
+			<datelastmodified>Fri, 26 Feb 2010 10:53:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 26 Feb 2010 08:40:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/image-preview-formatter.jsp</source>
 			<destination>system/workplace/editors/ade/image-preview-formatter.jsp</destination>

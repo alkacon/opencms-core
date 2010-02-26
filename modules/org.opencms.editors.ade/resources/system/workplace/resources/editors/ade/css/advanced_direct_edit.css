@@ -789,12 +789,24 @@ div.cms-dialog {
     
 /** Unified list items: END **/
 
+.cms-item-tile{
+    display: none;
+}
 
+.cms-tile-view .cms-item-tile{
+    display: inline-block;
+}
 
+.cms-tile-view .cms-item-flexview .cms-list-itemcontent{
+    display: none;
+}
+.cms-tile-view .cms-item-flexview .cms-list-item{
+    display: inline-block;
+}
 
-
-
-
+.cms-tile-view li.cms-item-flexview{
+    display: inline-block;
+}
 
 
 

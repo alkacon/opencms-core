@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/02/26 10:56:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,9 @@ package org.opencms.workplace.editors.ade;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
@@ -56,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.6
  */
@@ -269,6 +271,32 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
         CmsObject cms = getCmsObject();
         List<CmsResource> elems = getManager().getCreatableElements(cms, cms.getRequestContext().getUri(), getRequest());
         return elems.contains(getResource());
+    }
+
+    /**
+     * Generates an image info string containing dimensions and file size, returns an empty string if the resource type is not "image".<p>
+     * 
+     * @return the info string
+     * @throws CmsException if something goes wrong reading the resource
+     */
+    public String getImageInfo() throws CmsException {
+
+        String result = "";
+        if (getTypeName().equals(CmsResourceTypeImage.getStaticTypeName())) {
+            CmsImageScaler scaler = new CmsImageScaler(getCmsObject(), getResource());
+            int width = -1;
+            int height = -1;
+            // 1: image width
+            if (scaler.isValid()) {
+                width = scaler.getWidth();
+            }
+            // 2: image height
+            if (scaler.isValid()) {
+                height = scaler.getHeight();
+            }
+            result = String.valueOf(width + "x" + height + "  " + (getResource().getLength() / 1024)) + "kb";
+        }
+        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/02/22 16:27:46 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2010/02/26 10:56:30 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * 
  * @since 7.6
  */
@@ -1184,7 +1184,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                     ItemKey.type.toString(),
                     CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
                 formatterInfo.setIcon(iconPath);
-
+                formatterInfo.setSitePath(path);
                 // only add excerpt if not empty
                 if (!CmsStringUtil.isEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
                     formatterInfo.addAdditionalInfo(EXCERPT_FIELD_NAME, OpenCms.getWorkplaceManager().getMessages(
