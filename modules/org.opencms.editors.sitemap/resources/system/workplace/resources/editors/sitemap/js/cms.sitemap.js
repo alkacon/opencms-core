@@ -3336,7 +3336,7 @@
                   window.startupType_path = 'gallery';
                   window.startupTabId_path = 'cms_tab_results';
                   window.locale_path = cms.data.LOCALE;
-                  window.resourceTypes_path = [13];
+                  window.resourceTypes_path = [cms.data.TYPE_CONTAINERPAGE];
                   window.defaultAdvancedGalleryPath = (cms.data.GALLERY_PATH || cms.data.GALLERY_SERVER_URL) + '?';
                   window.galleryTabs_path = ['cms_tab_categories', 'cms_tab_galleries', 'cms_tab_search']
                   openDefaultAdvancedGallery("property", fieldId, '_path');
@@ -3534,7 +3534,7 @@
                window.startupTabId_path = 'cms_tab_results';
                window.locale_path = cms.data.LOCALE;
                window.startupType_path = 'gallery';
-               window.resourceTypes_path = [13];
+               window.resourceTypes_path = [cms.data.TYPE_CONTAINERPAGE];
                window.defaultAdvancedGalleryPath = (cms.data.GALLERY_PATH || cms.data.GALLERY_SERVER_URL) + '?';
                window.galleryTabs_path = ['cms_tab_categories', 'cms_tab_galleries', 'cms_tab_search']
                openDefaultAdvancedGallery("property", fieldId, '_path');

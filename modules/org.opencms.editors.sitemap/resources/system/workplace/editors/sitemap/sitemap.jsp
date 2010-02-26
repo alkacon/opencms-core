@@ -1,11 +1,16 @@
 <%@ page session="false" import="org.opencms.workplace.editors.sitemap.CmsSitemapActionElement, org.opencms.workplace.CmsWorkplace" %>
 <%@ page import="org.opencms.main.*" %>
 <%@ page import="org.opencms.workplace.galleries.*" %>
+<%@ page import="org.opencms.util.*"  %>
+<%@ page import="org.opencms.file.types.*" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
   CmsSitemapActionElement jsp = new CmsSitemapActionElement(pageContext, request, response);
   pageContext.setAttribute("cms", jsp);
+  String showId = request.getParameter("showId");
+  pageContext.setAttribute("showId", CmsStringUtil.escapeJavaScript(showId));
+  
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -27,7 +32,9 @@
             "NO_EDIT_REASON" : "${cms.noEditReason}",
             "DISPLAY_TOOLBAR": "${cms.displayToolbar}",
             "GALLERY_SERVER_URL" : "${cms.galleryServerUri}",
-            "GALLERY_PATH": "<%=CmsGallerySearchServer.ADVANCED_GALLERY_PATH%>"
+            "GALLERY_PATH": "<%=CmsGallerySearchServer.ADVANCED_GALLERY_PATH%>",
+            "SHOW_ID": "${showId}",
+            "TYPE_CONTAINERPAGE": <%=OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId()%>
          },
          publish: {
             "SERVER_URL": "<cms:link>%(link.weak:/system/workplace/editors/ade/publish-server.jsp:dd962f3e-abcd-11de-97fc-dd9f629b113b)</cms:link>"

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/02/17 08:06:37 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/02/26 12:43:34 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONObject;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 7.6 
  */
@@ -112,7 +113,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         /** Macro name constant for the current XML sitemap URI. */
         sitemapUri,
         /** Macro name constant for the skin URI. */
-        skinUri;
+        skinUri,
+        /** Macro name constant for the container page type. */
+        typeContainerPage
     }
 
     /** URI constants. */
@@ -325,6 +328,14 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             LOG.debug(e.getLocalizedMessage(), e);
         }
         resolver.addMacro(Macro.currentLocale.name(), cms.getRequestContext().getLocale().toString());
+        try {
+            resolver.addMacro(
+                Macro.typeContainerPage.name(),
+                ""
+                    + OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId());
+        } catch (CmsLoaderException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
 
         headerInclude = resolver.resolveMacros(headerInclude);
 

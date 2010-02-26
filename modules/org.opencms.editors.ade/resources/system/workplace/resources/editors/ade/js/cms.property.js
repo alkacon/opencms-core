@@ -263,7 +263,7 @@
          
          window.startupFolders_prop = getConfigValue(configuration.startupFolders, null);
          window.startupType_prop = getConfigValue(configuration.startupType, 'gallery');
-         window.resourceTypes_prop = getConfigValue(configuration.resourceTypes, [13]);
+         window.resourceTypes_prop = getConfigValue(configuration.resourceTypes, [cms.data.TYPE_CONTAINERPAGE]);
          window.galleryTabs_prop = getConfigValue(configuration.galleryTabs, ['cms_tab_categories', 'cms_tab_galleries', 'cms_tab_search']);
          window.useFmts_prop = getConfigValue(configuration.useFmts, false);
          window.defaultAdvancedGalleryPath = (cms.data.GALLERY_PATH || cms.data.GALLERY_SERVER_URL) + '?';
