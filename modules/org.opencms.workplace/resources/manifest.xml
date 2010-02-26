@@ -101,6 +101,7 @@
 			<resource uri="/system/workplace/resources/components/widgets/userselector.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/vfsimage.js"/>
             <resource uri="/system/workplace/resources/components/widgets/defaultadvancedgallery.js"/>
+            <resource uri="/system/workplace/resources/components/widgets/advancedvfsimage.js"/>
 			<resource uri="/system/workplace/resources/filetypes/binary.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/folder.gif"/>
@@ -5740,6 +5741,21 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+        <file>
+			<source>system/workplace/resources/components/widgets/advancedvfsimage.js</source>
+			<destination>system/workplace/resources/components/widgets/advancedvfsimage.js</destination>
+			<type>plain</type>
+			<uuidstructure>7df4ca04-206e-11df-9200-9db16379cf8b</uuidstructure>
+			<uuidresource>7df4ca05-206e-11df-9200-9db16379cf8b</uuidresource>
+			<datelastmodified>Fri, 26 Feb 2010 09:46:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 23 Feb 2010 11:27:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

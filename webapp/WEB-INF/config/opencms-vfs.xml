@@ -694,6 +694,7 @@
 				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
 				<widget class="org.opencms.widgets.CmsVfsImageWidget" alias="VfsImageWidget"/>
                 <widget class="org.opencms.widgets.CmsAdvancedGalleryWidget" alias="AdvancedGalleryWidget"/>
+                <widget class="org.opencms.widgets.CmsAdvancedVfsImageWidget" alias="AdvancedVfsImageWidget"/>
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />

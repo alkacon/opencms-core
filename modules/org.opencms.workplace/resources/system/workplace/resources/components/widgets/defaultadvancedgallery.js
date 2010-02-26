@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/02/22 16:27:46 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/02/26 10:38:31 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -128,7 +128,7 @@ var ade = {};
       }
       
       
-      var paramString = "dialogmode=" + dialogMode;
+      var paramString = "?dialogmode=" + dialogMode;
       paramString += "&fieldid=" + fieldId;
       paramString += "&tabs=" + JSON.stringify(galleryTabs);
       paramString += "&path=" + removeParamFromPath(selectedPath);
@@ -158,6 +158,7 @@ var ade = {};
          // additional infos for image gallery
          initialImageInfos = {
             "widgetmode": "simple",
+            "hashid": idHash,
             "useformats": useFormats,
             "showformats": showFormats,
             "scale": scaleParam,

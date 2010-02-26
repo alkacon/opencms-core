@@ -421,8 +421,8 @@
     */
    cms.previewhandler.defaultContentTypeHandler = {
       'type': 'default',
-      'init': function() {
-            },
+      'init': function() {          
+          },
       'openPreview': showItemPreview,
       'showEditArea': getEditArea,
       'fillProperties': fillProperties,

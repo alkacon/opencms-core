@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsAdvancedGalleryWidgetConfiguration.java,v $
- * Date   : $Date: 2010/02/16 14:37:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/02/26 10:38:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,6 @@ import org.apache.commons.logging.Log;
  *            and with an 'x' as separator for width and height.
  *            Example: ['200x?', '800x600']</li>
  * <li><code>scaleparams</code>: default scale parameters (no width, height or crop information should be provided!)</li>
- * <li><code>usedescription</code>: indicates if the description input field for the image should be shown or not.</li>
  * <li><code>useformat</code>: indicates if the format select box for the image should be shown or not.</li>
  * </ul>
  * 
@@ -95,12 +94,13 @@ import org.apache.commons.logging.Log;
  * <code>{imagegallery:{startup:/demo_t3/images/,type:'gallery', useformat:true}}</code><p>
  * <code>{downloadgallery:{startup:['/demo_t3/documents/'],type:'gallery'}}</code><p>
  * <code>{downloadgallery:{}}</code><p>
+ *  <code>{sitemap:{}}</code><p>
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
- * @since 7.5.0 
+ * @since 
  */
 public class CmsAdvancedGalleryWidgetConfiguration {
 
@@ -139,8 +139,6 @@ public class CmsAdvancedGalleryWidgetConfiguration {
 
         /** Configuration key name for the formatvalues configuration. */
         CONFIG_KEY_FORMATVALUES("formatvalues"),
-
-        //TODO: remove this config param if not used any more        
 
         /** Configuration key name for the configuration of the resource types. */
         CONFIG_KEY_RESOURCETYPES("resourcetypes"),
@@ -198,18 +196,22 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         /** The button prefix for the imagegallery. */
         IMAGE("image"),
 
+        //TODO: remove
         /** The resource type array for the containerpage gallery. */
         RESOURCETYPE_CONTAINERPAGEGALLERY("[13]"),
 
         /** The resource type array for all available resources. */
         RESOURCETYPE_DEFAULTGALLERY("[]"),
 
+        //TODO: remove
         /** The resource type array for the downloadgallery. */
         RESOURCETYPE_DOWNLOADGALLERY("[2]"),
 
+        //TODO: remove
         /** The resource type array for the imagegallery. */
         RESOURCETYPE_IMAGEGALLERY("[3]"),
 
+        //TODO: remove
         /** The resource type array for the sitemap gallery. */
         RESOURCETYPE_SITEMAP("[13]"),
 
@@ -252,59 +254,56 @@ public class CmsAdvancedGalleryWidgetConfiguration {
     }
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsAdvancedGalleryWidgetConfiguration.class);
+    protected static final Log LOG = CmsLog.getLog(CmsAdvancedGalleryWidgetConfiguration.class);
 
     /** The prefix for the button for the advanced gallery. */
-    private String m_buttonPrefix;
+    protected String m_buttonPrefix;
 
     /** The optional class name for generating dynamic configurations, must implement {@link I_CmsGalleryWidgetDynamicConfiguration}. */
-    private String m_className;
+    protected String m_className;
 
     /** The list of image format values matching the options for the format select box. */
-    private List<String> m_formatValues;
+    protected List<String> m_formatValues;
 
     /** Flag to indicate imagegallery configuration. */
-    private boolean m_isImagegallery;
+    protected boolean m_isImagegallery;
 
     /** The resource types to be load in this advanced gallery widget. */
-    private JSONArray m_resourceTypes;
+    protected JSONArray m_resourceTypes;
 
     /** The scale parameters to apply to a scaled image (e.g. quality, type). */
-    private String m_scaleParams;
+    protected String m_scaleParams;
 
     /** The list of select options for the format select box, must contain {@link CmsSelectWidgetOption} objects. */
-    private List<String> m_selectFormat;
+    protected List<String> m_selectFormat;
 
     /** The select options for the format select box as String. */
-    private String m_selectFormatString;
-
-    /** The flag if the description field should be shown. */
-    private boolean m_showDescription;
+    protected String m_selectFormatString;
 
     /** The flag if the format select box should be shown. */
-    private boolean m_showFormat;
+    protected boolean m_showFormat;
 
     /** The required information for the initial item list to load. */
-    private String m_startup;
+    protected String m_startup;
 
     /** The initial loaded folders. */
-    private JSONArray m_startUpFolders;
+    protected JSONArray m_startUpFolders;
 
     /** The html id of the tab to open by gallery start. */
-    private String m_startupTabId;
+    protected String m_startupTabId;
 
     /** The tabs to be display for the gallery. */
-    private JSONArray m_tabs;
+    protected JSONArray m_tabs;
 
     /** The type of the initial item list to load, either gallery or category. */
-    private String m_type;
+    protected String m_type;
 
     /**
      * Default constructor.<p>
      */
     public CmsAdvancedGalleryWidgetConfiguration() {
 
-        // empty constructor is required for class registration
+        // empty constructor is required for class registration       
     }
 
     /**
@@ -461,16 +460,6 @@ public class CmsAdvancedGalleryWidgetConfiguration {
     }
 
     /**
-     * Returns if the description field should be shown.<p>
-     * 
-     * @return true if the description field should be shown, otherwise false
-     */
-    public boolean isShowDescription() {
-
-        return m_showDescription;
-    }
-
-    /**
      * Returns if the format select box should be shown.<p>
      * 
      * @return true if the format select box should be shown, otherwise false
@@ -506,7 +495,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * @param jsonObj the configuration of the gallery as json object 
      * @return the gallery name key name
      */
-    private CmsGalleryConfigKeys getGalleryType(JSONObject jsonObj) {
+    protected CmsGalleryConfigKeys getGalleryType(JSONObject jsonObj) {
 
         if (jsonObj.has(CmsGalleryConfigKeys.downloadgallery.toString())) {
             return CmsGalleryConfigKeys.downloadgallery;
@@ -529,8 +518,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * @param param the widget parameter to generate the widget for
      * @param configuration the widget configuration string
      */
-    //TODO: must be private?
-    private void init(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param, String configuration) {
+    protected void init(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param, String configuration) {
 
         // if configuration is set, generate JSON object
         JSONObject configJsonObj = new JSONObject();
@@ -570,9 +558,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 // set start tab
                 setStartupTabId(CmsGallerySearchServer.TabId.cms_tab_galleries.toString());
 
-                // set the parameter from the configuration
-                gConfigJsonObj = configJsonObj.optJSONObject(CmsGalleryConfigKeys.imagegallery.toString());
-                setImageGalleryConfigParams(cms, widgetDialog, param, gConfigJsonObj);
+                prepareAndSetImageGalleryConfigParams(cms, widgetDialog, param, configJsonObj);
                 break;
             case sitemap:
                 // set the preselected resource types available for this advanced gallery
@@ -670,7 +656,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      *
      * @param buttonPrefix the prefix for the button
      */
-    private void setButtonPrefix(String buttonPrefix) {
+    protected void setButtonPrefix(String buttonPrefix) {
 
         m_buttonPrefix = buttonPrefix;
     }
@@ -680,7 +666,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * 
      * @param className the optional class name for generating dynamic configurations
      */
-    private void setClassName(String className) {
+    protected void setClassName(String className) {
 
         m_className = className;
     }
@@ -691,9 +677,9 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
-     * @param json configuration as json obj
+     * @param jsonObj configuration as json obj
      */
-    private void setDefaultgalleryConfigPart(
+    protected void setDefaultgalleryConfigPart(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param,
@@ -737,7 +723,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * 
      * @param formatValues the list of image format values matching the options for the format select box
      */
-    private void setFormatValues(List formatValues) {
+    protected void setFormatValues(List formatValues) {
 
         m_formatValues = formatValues;
     }
@@ -747,20 +733,45 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      *
      * @param isImagegallery flag to set
      */
-    private void setImagegallery(boolean isImagegallery) {
+    protected void setImagegallery(boolean isImagegallery) {
 
         m_isImagegallery = isImagegallery;
     }
 
     /**
-     * Sets the common parameter for the gallery configuration. <p>
+     * Sets the specific parameter for the image gallery configuration. <p>
      * 
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
-     * @param json configuration as json obj
+     * @param jsonObj configuration as json obj
      */
-    private void setImageGalleryConfigParams(
+    protected void prepareAndSetImageGalleryConfigParams(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param,
+        JSONObject jsonObj) {
+
+        if (jsonObj == null) {
+            // no configuration
+            return;
+        }
+
+        JSONObject configJsonObj = jsonObj.optJSONObject(CmsGalleryConfigKeys.imagegallery.toString());
+
+        setImageGalleryConfigParams(cms, widgetDialog, param, configJsonObj);
+
+    }
+
+    /**
+     * Sets the specific parameter for the image gallery configuration. <p>
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param widgetDialog the dialog where the widget is used on
+     * @param param the widget parameter to generate the widget for
+     * @param jsonObj configuration as json obj
+     */
+    protected void setImageGalleryConfigParams(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param,
@@ -782,7 +793,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
             }
         }
         // determine if the description field should be shown
-        setShowDescription(jsonObj.optBoolean(CmsGalleryConfigParam.CONFIG_KEY_USEDESCRIPTION.getName()));
+        // setShowDescription(jsonObj.optBoolean(CmsGalleryConfigParam.CONFIG_KEY_USEDESCRIPTION.getName()));
         // determine if the format select box should be shown
         setShowFormat(jsonObj.optBoolean(CmsGalleryConfigParam.CONFIG_KEY_USEFORMAT.getName()));
         if (isShowFormat()) {
@@ -829,7 +840,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      *
      * @param array the resourceTypes to set
      */
-    private void setResourceTypes(JSONArray array) {
+    protected void setResourceTypes(JSONArray array) {
 
         m_resourceTypes = array;
     }
@@ -839,7 +850,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * 
      * @param scaleParams the scale parameters to apply to a scaled image
      */
-    private void setScaleParams(String scaleParams) {
+    protected void setScaleParams(String scaleParams) {
 
         m_scaleParams = scaleParams;
     }
@@ -849,7 +860,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * 
      * @param selectFormat the list of select options for the format select box
      */
-    private void setSelectFormat(List selectFormat) {
+    protected void setSelectFormat(List selectFormat) {
 
         m_selectFormat = selectFormat;
     }
@@ -859,19 +870,9 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * 
      * @param formatString the select options for the format select box as String
      */
-    private void setSelectFormatString(String formatString) {
+    protected void setSelectFormatString(String formatString) {
 
         m_selectFormatString = formatString;
-    }
-
-    /**
-     * Sets if the description field should be shown.<p>
-     * 
-     * @param showDescription true if the description field should be shown, otherwise false
-     */
-    private void setShowDescription(boolean showDescription) {
-
-        m_showDescription = showDescription;
     }
 
     /**
@@ -879,7 +880,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * 
      * @param showFormat true if the format select box should be shown, otherwise false
      */
-    private void setShowFormat(boolean showFormat) {
+    protected void setShowFormat(boolean showFormat) {
 
         m_showFormat = showFormat;
     }
@@ -892,7 +893,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      * 
      * @param startup the required information for the initial item list to load
      */
-    private void setStartup(String startup) {
+    protected void setStartup(String startup) {
 
         m_startup = startup;
     }
@@ -902,7 +903,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      *
      * @param startUpFolders the startUpFolders to set
      */
-    private void setStartUpFolders(JSONArray startUpFolders) {
+    protected void setStartUpFolders(JSONArray startUpFolders) {
 
         m_startUpFolders = startUpFolders;
     }
@@ -912,7 +913,7 @@ public class CmsAdvancedGalleryWidgetConfiguration {
      *
      * @param tabs the JSON array with the tabs to set
      */
-    private void setTabs(JSONArray tabs) {
+    protected void setTabs(JSONArray tabs) {
 
         m_tabs = tabs;
     }

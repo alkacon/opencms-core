@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/A_CmsAdvancedGalleryWidget.java,v $
- * Date   : $Date: 2010/02/09 11:05:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/02/26 10:38:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,15 @@ import org.opencms.workplace.galleries.CmsGallerySearchServer;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 /**
- * Base class for all advanced gallery widget implementations.<p>
+ * Class for all advanced gallery widgets.<p>
+ * 
+ * Possible configuration is described in the configuration class:
+ * 
+ * @see org.opencms.widgets.CmsAdvancedGalleryWidgetConfiguration 
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 
  */
@@ -109,7 +113,6 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
         result.append("AdvancedGalleryPath = '");
         // path to advanced gallery
         result.append(CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
-        result.append("?");
         result.append("';\n");
         result.append("}\n");
         return result.toString();

@@ -418,6 +418,9 @@
                changeFormat(index);
             }
          }));
+         if (cms.imagepreviewhandler.formatSelected != null) {
+             form.find('.cms-selectbox').selectBox('setValue', cms.imagepreviewhandler.formatSelected.optionvalue);
+         }                  
       }
    }
    
@@ -550,37 +553,40 @@
          }
          if (cms.galleries.initValues.useformats == true) {
             if (cms.galleries.initValues.imgwidth != "?") {
-               widthField.text(cms.galleries.initValues.imgwidth);
+               widthField.val(cms.galleries.initValues.imgwidth);
                if (cms.galleries.initValues.imgheight == "?") {
                   onSizeChanged("Width", cms.galleries.initValues.imgwidth, false, false);
                   if (cropIt == true) {
                      var newHeight = Math.round(cms.galleries.activeItem.croph / (cms.galleries.activeItem.cropw / cms.galleries.initValues.imgwidth));
-                     if (newHeight != parseInt(heightField.text())) {
+                     if (newHeight != parseInt(heightField.val())) {
                         setLockRatio(false);
-                        heightField.text(newHeight);
+                        heightField.val(newHeight);
                         onSizeChanged("Height", newHeight, false, false);
                      }
                   }
-               } else if (parseInt(heightField.text()) != cms.galleries.initValues.imgheight) {
+               } else if (parseInt(heightField.val()) != cms.galleries.initValues.imgheight) {
                   setLockRatio(false);
-                  heightField.text(cms.galleries.initValues.imgheight);
+                  heightField.val(cms.galleries.initValues.imgheight);
                   onSizeChanged("Height", cms.galleries.initValues.imgheight, false, false);
                }
             } else if (cms.galleries.initValues.imgheight != "?") {
-               heightField.text(cms.galleries.initValues.imgheight);
+               heightField.val(cms.galleries.initValues.imgheight);
                onSizeChanged("Height", cms.galleries.initValues.imgheight, false, false);
                if (cropIt == true) {
                   var newWidth = Math.round(cms.galleries.activeItem.cropw / (cms.galleries.activeItem.croph / cms.galleries.initValues.imgheight));
-                  if (newWidth != parseInt(widthField.text())) {
+                  if (newWidth != parseInt(widthField.val())) {
                      setLockRatio(false);
-                     widthField.text(newWidth);
-                     onSizeChanged("Width", newHeight, false, false);
+                     widthField.val(newWidth);
+                     onSizeChanged("Width", newWidth, false, false);
                   }
                }
             }
             if (cms.galleries.initValues.widgetmode == "simple" && cms.galleries.initValues.showformats == true) {
                // refresh the format select box
                refreshSelectBox(true);
+               //disable the width and height fields, after the values are set
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');               
             }
             setCropActive(cropIt);
          } else {
@@ -610,7 +616,7 @@
             
             if (cms.galleries.initValues.widgetmode != "simple" || cms.galleries.initValues.showformats == true) {
                // refresh the format select box
-               refreshSelectBox();
+               refreshSelectBox();               
             } else if (cms.galleries.initValues.showformats == false) {
                $('button[name="' + keys['cropShow'] + '"]').hide();
             }
@@ -627,8 +633,11 @@
          
             $('button[name="' + keys['cropShow'] + '"]').hide();
          }
-         if (cms.galleries.initValues.useformats == true && initValues.showformats == true && cms.galleries.isFullDisplayMode()) {
+         if (cms.galleries.initValues.useformats == true && cms.galleries.initValues.showformats == true && cms.galleries.isFullDisplayMode()) {
             $('button[name="' + keys['cropShow'] + '"]').show();
+            //disable the width and height fields, after the values are set
+            $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
+            $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');   
          }
       }
       if (cms.galleries.isEditorMode()) {
@@ -668,7 +677,10 @@
             // cropping has been disabled, enable input fields and refresh view
             if (cms.galleries.initValues.useformats == true && cms.galleries.initValues.showformats != true) {
                // using formats, calculate image for currently selected size
-               changeFormat();
+               changeFormat();          
+               // disable input fields and buttons for simple widget mode                        
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');
+               $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').attr('disabled', true).addClass('ui-state-disabled');                
             } else if (cms.galleries.initValues.useformats == false) {
                // only enable if not using formats
                $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').attr('disabled', false).removeClass('ui-state-disabled');
@@ -813,8 +825,7 @@
       } else {
          // not using formats, lock ratio and use original image size
          lockRatio = true;
-         
-         
+                  
          $('#' + keys['formatTabId']).find('div[alt="' + keys["previewWidth"] + '"]').find('input').val(cms.galleries.activeItem.width);
          $('#' + keys['formatTabId']).find('div[alt="' + keys["previewHeight"] + '"]').find('input').val(cms.galleries.activeItem.height);
          if (cms.galleries.isFullDisplayMode()) {
@@ -836,12 +847,14 @@
    var initFormatSelectBox = function() {
       var formatOptions, formatValues;
       if (cms.galleries.initValues.useformats == true) {
-            // using a preselected format, just display information that cannot be changed
-      
-         //$("#txtWidth").get(0).disabled = true;
-         //$("#txtHeight").get(0).disabled = true;
-         //formatOptions = unescape(eval('window.opener.imgFmtNames' + initValues.hashid));
-         //formatValues = eval('window.opener.imgFmts' + initValues.hashid);
+         if (cms.galleries.initValues['widgetmode'] == 'simple') {
+             formatOptions = unescape(eval('window.parent.imgFmtNames' + cms.galleries.initValues.hashid));
+             formatValues = eval('window.parent.imgFmts' + cms.galleries.initValues.hashid);    
+         } else {
+             // using a preselected format, just display information that cannot be changed       
+             formatOptions = unescape(eval('window.opener.imgFmtNames' + cms.galleries.initValues.hashid));
+             formatValues = eval('window.opener.imgFmts' + cms.galleries.initValues.hashid);    
+         }                   
       } else {
          // not using a format, image width and height can be adjusted
          formatOptions = defaultFormatOptions;
@@ -886,9 +899,9 @@
             cms.imagepreviewhandler.formatSelections[i].height = -1;
          }
          var selected = "";
-         if (cms.galleries.initValues.useformats == true && cms.galleries.initValues.formatname == cms.imagepreviewhandler.formatSelections[i].optionvalue) {
-            selected = " selected=\"selected\"";
-            cms.imagepreviewhandler.formatSelected = cms.imagepreviewhandler.formatSelections[i];
+         if (cms.galleries.initValues.useformats == true 
+             && cms.galleries.initValues.formatname == cms.imagepreviewhandler.formatSelections[i].optionvalue) {           
+                cms.imagepreviewhandler.formatSelected = cms.imagepreviewhandler.formatSelections[i];
          }
          var optionObject = {
             'value': cms.imagepreviewhandler.formatSelections[i].optionvalue,
@@ -903,6 +916,9 @@
     * @param {Object} selectedIndex the index of the selected value
     */ 
    var changeFormat = function(/**int*/selectedIndex) {
+      if (selectedIndex == null) {
+          selectedIndex = $('#' + cms.imagepreviewhandler.keys['formatTabId']).find('.cms-selectbox').selectBox('getIndex');
+      }        
       cms.imagepreviewhandler.formatSelected = cms.imagepreviewhandler.formatSelections[selectedIndex];
       
       if (cms.imagepreviewhandler.formatSelected.type == "original") {
@@ -1158,69 +1174,107 @@
          }
       } else {
             // widget mode: VFS image widget
-         /*if (initValues.editedresource != null && initValues.editedresource != "") {
-          var imgField = window.opener.document.getElementById("img." + initValues.fieldid);
-          imgField.value = activeItem.sitepath;
-          if (activeItem.isCropped) {
-          var newScale = "";
-          if (initValues.scale != null && initValues.scale != "" && initValues.scale.charAt(initValues.scale.length - 1) != ",") {
-          newScale += ",";
-          }
-          newScale += "cx:" + activeItem.cropx;
-          newScale += ",cy:" + activeItem.cropy;
-          newScale += ",cw:" + activeItem.cropw;
-          newScale += ",ch:" + activeItem.croph;
-          initValues.scale += newScale;
-          } else if (getScaleValue(initValues.scale, "cx") != "") {
-          initValues.scale = removeScaleValue(initValues.scale, "cx");
-          initValues.scale = removeScaleValue(initValues.scale, "cy");
-          initValues.scale = removeScaleValue(initValues.scale, "cw");
-          initValues.scale = removeScaleValue(initValues.scale, "ch");
-          }
-          if (initValues.useformats == true) {
-          var formatBox = window.opener.document.getElementById("format." + initValues.fieldid);
-          if (formatBox.selectedIndex != $("#formatselect").get(0).selectedIndex) {
-          formatBox.selectedIndex = $("#formatselect").get(0).selectedIndex;
-          window.opener.setImageFormat(initValues.fieldid, "imgFmts" + initValues.hashid);
-          }
-          }
-          initValues.scale = removeScaleValue(initValues.scale, "w");
-          initValues.scale = removeScaleValue(initValues.scale, "h");
-          if (initValues.useformats != true || activeItem.isCropped) {
-          var newScale = "";
-          var sizeChanged = false;
-          if (initValues.scale != null && initValues.scale != "" && initValues.scale.charAt(initValues.scale.length - 1) != ",") {
-          newScale += ",";
-          }
-          if (activeItem.newwidth > 0 && activeItem.width != activeItem.newwidth) {
-          sizeChanged = true;
-          newScale += "w:" + activeItem.newwidth;
-          }
-          if (activeItem.newheight > 0 && activeItem.height != activeItem.newheight) {
-          if (sizeChanged == true) {
-          newScale += ",";
-          }
-          sizeChanged = true;
-          newScale += "h:" + activeItem.newheight;
-          }
-          initValues.scale += newScale;
-          }
-          
-          var scaleField = window.opener.document.getElementById("scale." + initValues.fieldid);
-          scaleField.value = initValues.scale;
-          var ratioField = window.opener.document.getElementById("imgrat." + initValues.fieldid);
-          ratioField.value = activeItem.width / activeItem.height;
-          }*/
+            if (cms.galleries.initValues.editedresource != null && cms.galleries.initValues.editedresource != "" 
+                && fieldId != null && fieldId != "") {
+                  // image path
+                  var imgField = window.opener.document.getElementById("img." + fieldId);
+                  imgField.value =  itemId;
+                  if (cms.galleries.activeItem.isCropped) {
+                      var newScale = "";
+                      if (cms.galleries.initValues.scale != null && cms.galleries.initValues.scale != "" && cms.galleries.initValues.scale.charAt(cms.galleries.initValues.scale.length - 1) != ",") {
+                          newScale += ",";
+                      }
+                      newScale += "cx:" + cms.galleries.activeItem.cropx;
+                      newScale += ",cy:" + cms.galleries.activeItem.cropy;
+                      newScale += ",cw:" + cms.galleries.activeItem.cropw;
+                      newScale += ",ch:" + cms.galleries.activeItem.croph;
+                      cms.galleries.initValues.scale += newScale;
+                  } else if (getScaleValue(cms.galleries.initValues.scale, "cx") != "") {
+                      cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cx");
+                      cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cy");
+                      cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "cw");
+                      cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "ch");
+                  }
+                  if (cms.galleries.initValues.useformats == true) {
+                      var formatBox = window.opener.document.getElementById("format." + fieldId);
+                      // set the selectbox index
+                      var selectedIndex = $('#' + cms.imagepreviewhandler.keys['formatTabId']).find('.cms-selectbox').selectBox('getIndex');
+                      // reset the widget select box, if necassary
+                      if (selectedIndex != -1 && formatBox.selectedIndex != selectedIndex) {
+                          formatBox.selectedIndex = selectedIndex;
+                          window.opener.setAdvancedImageFormat(fieldId, "imgFmts" + cms.galleries.initValues.hashid);
+                      }
+                  }
+                  cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "w");
+                  cms.galleries.initValues.scale = removeScaleValue(cms.galleries.initValues.scale, "h");
+                  if (cms.galleries.initValues.useformats != true || cms.galleries.activeItem.isCropped) {
+                      var newScale = "";
+                      var sizeChanged = false;
+                      if (cms.galleries.initValues.scale != null && cms.galleries.initValues.scale != "" && cms.galleries.initValues.scale.charAt(cms.galleries.initValues.scale.length - 1) != ",") {
+                          newScale += ",";
+                      }
+                      if (cms.galleries.activeItem.newwidth > 0 && cms.galleries.activeItem.width != cms.galleries.activeItem.newwidth) {
+                          sizeChanged = true;
+                          newScale += "w:" + cms.galleries.activeItem.newwidth;
+                      }
+                      if (cms.galleries.activeItem.newheight > 0 && cms.galleries.activeItem.height != cms.galleries.activeItem.newheight) {
+                          if (sizeChanged == true) {
+                              newScale += ",";
+                          }
+                          sizeChanged = true;
+                          newScale += "h:" + cms.galleries.activeItem.newheight;
+                      }
+                      cms.galleries.initValues.scale += newScale;
+                  }
+                  // scale param
+                  var scaleField = window.opener.document.getElementById("scale." + fieldId);
+                  scaleField.value = cms.galleries.initValues.scale;
+                  // ratio fields
+                  var ratioField = window.opener.document.getElementById("imgrat." + fieldId);
+                  ratioField.value = cms.galleries.activeItem.width / cms.galleries.activeItem.height;
+             }
       }
       try {
          // toggle preview icon if possible
          if (cms.galleries.initValues.widgetmode == "simple") {
             window.parent.checkPreview(fieldId);
+            window.parent.closeGallery(window.parent, fieldId);  
          } else {
-            window.parent.checkVfsImagePreview(fieldId);
+            window.opener.checkAdvancedVfsImagePreview(fieldId);
+            window.close();
          }
       } catch (e) {}      
-      window.parent.closeGallery(window.parent, fieldId);      
+          
+   }
+   
+   /**
+    * Select button was pressed, stores the item path back in the editor field.    
+    */
+   var setResourcePath = function(itemId) {      
+      //the id of the input field in the xml content
+      var fieldId = cms.galleries.initValues['fieldId'];
+      if (cms.galleries.initValues.widgetmode == "simple") {
+          if (fieldId != null && fieldId != "") {
+              var imgField = window.parent.document.getElementById(fieldId);
+              imgField.value = itemId;
+              try {
+                 // toggle preview icon if possible
+                 window.parent.checkPreview(fieldId);
+               } catch (e) {}
+          }
+          window.parent.closeGallery(window.parent, fieldId);
+      } else {
+          if (cms.galleries.initValues.editedresource != null && cms.galleries.initValues.editedresource != "" 
+              && fieldId != null && fieldId != "") {
+                  var imgField = window.opener.document.getElementById("img." + fieldId);
+                  imgField.value = itemId;
+                  try {
+                     window.opener.checkAdvancedVfsImagePreview(fieldId);
+            
+                   } catch (e) {}
+          }
+          window.close();
+      }
    }
    
    /**

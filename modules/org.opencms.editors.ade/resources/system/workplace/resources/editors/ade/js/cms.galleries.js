@@ -178,8 +178,6 @@
            fillTab: function () {
                if (cms.galleries.searchCriteriaListsAsJSON.locales && cms.galleries.searchCriteriaListsAsJSON.locale) {
                       var localesArray = cms.galleries.searchCriteriaListsAsJSON.locales;
-                      //TODO: remove
-                     // cms.galleries.searchObject['locale'] = cms.galleries.searchCriteriaListsAsJSON.locale;
                       // display the locale select box, if more then one locale is available
                       if (localesArray.length > 1) {
                           var resultTab = $('#' + cms.galleries.arrayTabIds['cms_tab_results']);
@@ -189,7 +187,6 @@
                           resultTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
                               values:localesArray,
                               width: 150,
-                              /* TODO: bind sort functionality */
                               select: function($this, self, value){
                                   var tab = $(self).closest('div.cms-list-options').attr('id');
                                   cms.galleries.searchObject['locale'] = value;
@@ -380,7 +377,7 @@
                    }
               }             
               if (cms.galleries.searchCriteriaListsAsJSON.sitemap) {
-                  // TODO: extend the siteRoot selectbox with the given list of the siteroots    
+                  // extend the siteRoot selectbox with the given list of the siteroots    
                   var siteRoot = cms.galleries.searchCriteriaListsAsJSON.sitemap.siteRoot;
                   var sitemapUri = cms.galleries.searchCriteriaListsAsJSON.sitemap.rootEntry.sitemapUri;
                   $('#' + cms.galleries.arrayTabIds['cms_tab_sitemap'])
@@ -396,9 +393,7 @@
                               cms.galleries.loadSitemap(sitemapUri, value, locale);         
                           }                                               
                       }));
-                 // TODO implement
                  cms.galleries.fillSitemap(cms.galleries.searchCriteriaListsAsJSON);
-                 // TODO: mark selected resource
               }                                         
           }
       }
@@ -666,15 +661,17 @@
     }
    
    /**
-    * Callbacl function for selecting resource from the result list.
+    * Callback function for selecting resource from the result list.
     * @param {Object} event the click event
     */
    var clickResultSelect = function(event) {
           // avoid event propagation to the surround 'li'
           event.stopPropagation();
           var resType = $(this).closest('li').data('type');               
-          var itemId = $(this).closest('li').attr('alt');          
-          cms.galleries.getContentHandler()['setValuesFromList'][cms.galleries.initValues['dialogMode']](itemId);                            
+          var itemId = $(this).closest('li').attr('alt');
+          // reset the active item
+          cms.galleries.resetActiveItem();          
+          cms.galleries.getContentHandler(resType)['setValuesFromList'][cms.galleries.initValues['dialogMode']](itemId);                            
    }
    
    /**
@@ -861,7 +858,6 @@
    
    /**
     * Loads the lists with available resource types, galleries and categories via ajax call.
-    * TODO: generalize to make it possible to load some preselected
     */
    var loadSearchResults = cms.galleries.loadSearchResults = function(initSearchResult) {
       if (initSearchResult) {
@@ -965,9 +961,22 @@
    }
    
    /**
+    * Returns true, if the image should be selectable
+    */
+   var isSelectableImage = cms.galleries.isSelectableImage = function () {      // displaySelectButton
+      if (cms.galleries.initValues['dialogMode'] == 'widget' || cms.galleries.initValues['dialogMode'] == 'property' ){
+          if ( cms.galleries.initValues['useformats'] == true && cms.galleries.initValues['widgetmode'] == 'simple') {
+              return false;
+          }
+          return true;
+      }
+      return false;
+   }
+   
+   /**
     * Display all possible options for the gallery in the given mode.
     */
-   var isFullMode = cms.galleries.isFullDisplayMode = function () {
+   var isFullDisplayMode = cms.galleries.isFullDisplayMode = function () {
        if (cms.galleries.initValues['dialogMode'] == 'editor' || cms.galleries.initValues['dialogMode'] == 'widget') {
            return true;
        }
@@ -994,12 +1003,18 @@
               .append($('<div/>',{ 'class': "cms-handle-button"}));
           resultElement.find('.cms-handle-button')
               .append($('<div/>',{'class':'cms-preview-item'}));
-          if(isSelectableItem()) {
-              resultElement.find('.cms-handle-button').prepend($('<div/>',{'class':'cms-select-item'}));
-              
-              //.append(<div class="cms-select-item">&nbsp;</div><div class="cms-preview-item">&nbsp;</div></div>');
-                  //.append('<div class="cms-handle-button cms-select-item"></div>');
-          }
+          // for images
+          if (this.type == 'image') {
+              if(isSelectableImage()) {
+                  resultElement.find('.cms-handle-button').prepend($('<div/>',{'class':'cms-select-item'}));
+              }
+              // for other resources
+          } else {
+              if(isSelectableItem()) {
+                  resultElement.find('.cms-handle-button').prepend($('<div/>',{'class':'cms-select-item'}));
+              }    
+          }    
+          
           // if in ade container-page
          if ((cms.toolbar && cms.toolbar.toolbarReady) || cms.sitemap) {
              resultElement.attr('rel', this.clientid);             
@@ -1231,9 +1246,7 @@
    * @param {Object} siteRoot the selected siteroot
    * @param {Object} locale the selected locale
    */ 
-  var loadSitemap = cms.galleries.loadSitemap  = function (sitemapUri, siteRoot, locale) {       
-       // TODO: siteRoot!!!
-       // TODO: locale from selectbox              
+  var loadSitemap = cms.galleries.loadSitemap  = function (sitemapUri, siteRoot, locale) {                    
        
        $.ajax({
          'url': cms.data.GALLERY_SERVER_URL,
@@ -1385,8 +1398,7 @@
    * @param {Object} sitemapUri the sitemap uri of the selected entry
    */ 
   var loadSitemapEntry = cms.galleries.loadSitemapEntry  = function (/**String*/sitemapUri, siteRoot, locale) {       
-       // TODO: locale from selectbox              
-       
+                  
        $.ajax({
          'url': cms.data.GALLERY_SERVER_URL,
          'data': {
@@ -1421,8 +1433,7 @@
               for (var i = 0; i < subEntries.length; i++) {
                   var subEntry = $(subEntries[i].itemhtml);
                   rootEntry.after(subEntry);                  
-                  var subLevel = rootLevel + 1;                
-                  //TODO: bind click event to close the subtree                  
+                  var subLevel = rootLevel + 1;                              
                   subEntry.attr('alt', subEntries[i].sitemapUri)
                           .addClass(classLevelActive + ' ' + classConstLevel + subLevel)
                           .css('margin-left',getLevelMargin((subLevel < 12 ? subLevel : subLevel-5),cms.galleries.constSitemapMargin))
@@ -1435,7 +1446,6 @@
                       .append($('<div/>',{'class':'cms-preview-item'}));
                   if (subEntries[i].hasSubEntries) {                      
                       subEntry.addClass(classTreeWithSubtree);
-                      // TODO: bind click event
                   } else {
                       subEntry.addClass(classTreeWithoutSubtree);
                  }
@@ -1544,7 +1554,7 @@
              
              // set isChanged flag, so next search will be send to server
              cms.galleries.searchObject.isChanged[itemCriteria] = true;
-             // TODO: show galleries, which were hidden for disselected type
+             // show galleries, which were hidden for disselected type
              if (itemCriteria == 'types') {                 
                  switchGalleriesForType();                          
              }   
@@ -1782,6 +1792,9 @@
     
     var resetActiveItem = cms.galleries.resetActiveItem = function() {        
         cms.galleries.activeItem['isCropped'] = null;
+        cms.galleries.activeItem['newwidth'] = 0;
+        cms.galleries.activeItem['newheight'] = 0;
+        
     }
     
     /**
