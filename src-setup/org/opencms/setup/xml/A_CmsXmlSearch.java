@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/A_CmsXmlSearch.java,v $
- * Date   : $Date: 2010/02/24 12:44:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/01 08:54:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -99,6 +99,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
 
         CmsSetupXmlHelper.setValue(document, xpath + "/" + I_CmsXmlConfiguration.N_NAME, name);
         CmsSetupXmlHelper.setValue(document, xpath + "/" + CmsSearchConfiguration.N_CLASS, clazz.getName());
+        CmsSetupXmlHelper.setValue(document, xpath + "/" + CmsSearchConfiguration.N_MIMETYPES, "");
         for (String mimetype : mimetypes) {
             String mimetypePath = xpath
                 + "/"

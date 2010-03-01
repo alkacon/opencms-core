@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlHelper.java,v $
- * Date   : $Date: 2010/02/24 12:44:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/01 08:54:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.8 
  */
@@ -216,7 +216,7 @@ public class CmsSetupXmlHelper {
                     Element elem = (Element)currentNode;
                     if (!nodeName.startsWith("@")) {
                         elem = handleNode(elem, nodeName);
-                        if (!it.hasNext()) {
+                        if (!it.hasNext() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
                             elem.setText(value);
                         }
                     } else {
