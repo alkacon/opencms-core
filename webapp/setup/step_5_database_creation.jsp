@@ -153,9 +153,10 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 											<div style="width: 100%; height:70px; overflow: auto;">
 											<p style="margin-bottom: 4px;">Database could not be dropped!</p>
 											<%
-											Vector errors = db.getErrors();
-											for (int i = 0; i < errors.size(); i++)	{
-												out.println(errors.elementAt(i) + "<br>");
+											List<String> errors = db.getErrors();
+											Iterator<String> it = errors.iterator();
+											while (it.hasNext())	{
+												out.println(it.next() + "<br>");
 												out.println("-------------------------------------------" + "<br>");
 											}
 											db.clearErrors();
@@ -200,9 +201,10 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 											<div style="width: 100%; height:70px; overflow: auto;">
 											<p style="margin-bottom: 4px;">Database could not be created!</p>
 											<%
-											Vector errors = db.getErrors();
-											for (int i = 0; i < errors.size(); i++)	{
-												out.println(errors.elementAt(i) + "<br>");
+											List<String> errors = db.getErrors();
+											Iterator<String> it = errors.iterator();
+											while (it.hasNext())	{
+												out.println(it.next() + "<br>");
 												out.println("-------------------------------------------" + "<br>");
 											}
 											db.clearErrors();
@@ -259,9 +261,10 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 											<div style="width: 100%; height:70px; overflow: auto;">
 											<p style="margin-bottom: 4px;">Tables could not be created!</p>
 											<%
-											Vector errors = db.getErrors();
-											for (int i = 0; i < errors.size(); i++)	{
-												out.println(errors.elementAt(i) + "<br>");
+											List<String> errors = db.getErrors();
+											Iterator<String> it = errors.iterator();
+											while (it.hasNext())	{
+												out.println(it.next() + "<br>");
 												out.println("-------------------------------------------" + "<br>");
 											}
 											db.clearErrors();

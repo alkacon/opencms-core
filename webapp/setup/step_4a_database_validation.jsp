@@ -124,9 +124,10 @@ Alkacon OpenCms Setup Wizard - Validate database connection
 										<p style="margin-bottom: 4px;">Error while checking the server configuration!</p>
 										<%
 										out.println("-------------------------------------------" + "<br>");
-										Vector errors = db.getErrors();
-										for (int i = 0; i < errors.size(); i++)	{
-											out.println(errors.elementAt(i) + "<br>");
+										List<String> errors = db.getErrors();
+										Iterator<String> it = errors.iterator();
+										while (it.hasNext())	{
+											out.println(it.next() + "<br>");
 										}
 										db.clearErrors();
 										%>
