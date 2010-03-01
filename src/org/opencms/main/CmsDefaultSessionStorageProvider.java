@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsDefaultSessionStorageProvider.java,v $
- * Date   : $Date: 2009/07/01 15:43:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/01 10:50:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.collections.FastHashMap;
 
@@ -49,7 +49,7 @@ import org.apache.commons.collections.FastHashMap;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -69,26 +69,23 @@ public class CmsDefaultSessionStorageProvider implements I_CmsSessionStorageProv
     /**
      * @see org.opencms.main.I_CmsSessionStorageProvider#getAll()
      */
-    public List getAll() {
+    public List<CmsSessionInfo> getAll() {
 
-        try {
-            return getAllSelected(m_sessions, null);
-        } catch (ConcurrentModificationException e) {
-            // try again with a clone this time
-            return getAllSelected((Map)m_sessions.clone(), null);
-        }
+        return getAllOfUser(null);
     }
 
     /**
      * @see org.opencms.main.I_CmsSessionStorageProvider#getAllOfUser(org.opencms.util.CmsUUID)
      */
-    public List getAllOfUser(CmsUUID userId) {
+    public List<CmsSessionInfo> getAllOfUser(CmsUUID userId) {
 
         try {
-            return getAllSelected(m_sessions, userId);
+            return getAllSelected(CmsCollectionsGenericWrapper.<CmsUUID, CmsSessionInfo> map(m_sessions), userId);
         } catch (ConcurrentModificationException e) {
             // try again with a clone this time
-            return getAllSelected((Map)m_sessions.clone(), userId);
+            return getAllSelected(
+                CmsCollectionsGenericWrapper.<CmsUUID, CmsSessionInfo> map(m_sessions.clone()),
+                userId);
         }
     }
 
@@ -144,11 +141,12 @@ public class CmsDefaultSessionStorageProvider implements I_CmsSessionStorageProv
         try {
             // change session map to full synchronization or "slow" mode
             m_sessions.setFast(false);
-            Iterator sessions = m_sessions.entrySet().iterator();
+            Iterator<Map.Entry<CmsUUID, CmsSessionInfo>> sessions = CmsCollectionsGenericWrapper.<CmsUUID, CmsSessionInfo> map(
+                m_sessions).entrySet().iterator();
             while (sessions.hasNext()) {
-                Map.Entry entry = (Entry)sessions.next();
-                CmsUUID sessionId = (CmsUUID)entry.getKey();
-                CmsSessionInfo sessionInfo = (CmsSessionInfo)entry.getValue();
+                Map.Entry<CmsUUID, CmsSessionInfo> entry = sessions.next();
+                CmsUUID sessionId = entry.getKey();
+                CmsSessionInfo sessionInfo = entry.getValue();
                 if ((sessionInfo != null) && (m_sessions.get(sessionId) != null)) {
                     // may be the case in case of concurrent modification
                     if (sessionInfo.isExpired()) {
@@ -181,13 +179,13 @@ public class CmsDefaultSessionStorageProvider implements I_CmsSessionStorageProv
      * 
      * @return all sessions or all sessions matching the user id from the provided Map
      */
-    private List getAllSelected(Map allSessions, CmsUUID userId) {
+    private List<CmsSessionInfo> getAllSelected(Map<CmsUUID, CmsSessionInfo> allSessions, CmsUUID userId) {
 
-        List userSessions = new ArrayList();
-        Iterator i = allSessions.entrySet().iterator();
+        List<CmsSessionInfo> userSessions = new ArrayList<CmsSessionInfo>();
+        Iterator<Map.Entry<CmsUUID, CmsSessionInfo>> i = allSessions.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)entry.getValue();
+            Map.Entry<CmsUUID, CmsSessionInfo> entry = i.next();
+            CmsSessionInfo sessionInfo = entry.getValue();
             if ((sessionInfo != null) && ((userId == null) || userId.equals(sessionInfo.getUserId()))) {
                 // sessionInfo == null may be the case in case of concurrent modification
                 userSessions.add(sessionInfo);

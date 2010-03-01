@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsSessionStorageProvider.java,v $
- * Date   : $Date: 2009/06/04 14:29:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/01 10:50:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.List;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -50,7 +50,7 @@ public interface I_CmsSessionStorageProvider {
      * Validates all session info objects removing any session that have became invalidated.<p>
      */
     void validate();
-    
+
     /**
      * Returns the stored session info object with the given id.<p>
      * 
@@ -65,7 +65,7 @@ public interface I_CmsSessionStorageProvider {
      * 
      * @return all current stored session info objects
      */
-    List getAll();
+    List<CmsSessionInfo> getAll();
 
     /**
      * Returns all current stored session info objects for the given user.<p>
@@ -74,7 +74,7 @@ public interface I_CmsSessionStorageProvider {
      * 
      * @return all current stored session info objects for the given user
      */
-    List getAllOfUser(CmsUUID userId);
+    List<CmsSessionInfo> getAllOfUser(CmsUUID userId);
 
     /**
      * Returns the current number of stored session info objects.<p>
