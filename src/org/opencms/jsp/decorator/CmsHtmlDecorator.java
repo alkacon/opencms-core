@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2010/01/18 10:02:51 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/03/01 11:36:38 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.1.3 
  */
@@ -304,7 +304,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
             int wordCount = wordList.size();
             for (int i = 0; i < wordCount; i++) {
                 String word = (String)wordList.get(i);
-
+                boolean alreadyDecorated = false;
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_HTML_DECORATOR_PROCESS_WORD_2,
@@ -323,106 +323,110 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 // test if the word is no delimiter
                 // try to get a decoration if it is not
                 CmsDecorationObject decObj = null;
+                CmsDecorationObject wordDecObj = null;
                 if (!hasDelimiter(word, delimiters)) {
-                    decObj = (CmsDecorationObject)m_decorations.get(word);
+                    wordDecObj = (CmsDecorationObject)m_decorations.get(word);
                 }
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_2,
-                        decObj,
+                        wordDecObj,
                         word));
                 }
 
                 // if there is a decoration object for this word, we must do the decoration
                 // if not, we must test if the word itself consists of several parts divided by
                 // second level delimiters
-                if (decObj == null) {
-                    if (recursive && hasDelimiter(word, DELIMITERS_SECOND_LEVEL)) {
-                        // add the following symbol if possible to allow the second level decoration
-                        // test to make a forward lookup as well
-                        String secondLevel = word;
-                        if (i < wordCount - 1) {
-                            String nextWord = (String)wordList.get(i + 1);
-                            if (!nextWord.equals(" ")) {
-                                //don't allow HTML entities to be split in the middle during the recursion!
-                                String afterNextWord = "";
-                                if (i < wordCount - 2) {
-                                    afterNextWord = (String)wordList.get(i + 2);
-                                }
-                                if (nextWord.contains("&") && afterNextWord.equals(";")) {
-                                    secondLevel = word + nextWord + ";";
-                                    i += 2;
-                                } else {
-                                    secondLevel = word + nextWord;
-                                    i++;
-                                }
+                //if ((decObj == null)) {
+                if (recursive && hasDelimiter(word, DELIMITERS_SECOND_LEVEL)) {
+                    // add the following symbol if possible to allow the second level decoration
+                    // test to make a forward lookup as well
+                    String secondLevel = word;
+                    if (i < wordCount - 1) {
+                        String nextWord = (String)wordList.get(i + 1);
+                        if (!nextWord.equals(" ")) {
+                            //don't allow HTML entities to be split in the middle during the recursion!
+                            String afterNextWord = "";
+                            if (i < wordCount - 2) {
+                                afterNextWord = (String)wordList.get(i + 2);
                             }
-                        }
-                        appendText(secondLevel, DELIMITERS_SECOND_LEVEL, false);
-                    } else {
-                        // make a forward lookup to the next elements of the word list to check
-                        // if the combination of word and delimiter can be found as a decoration key
-                        // an example would be "Dr." wich must be decorated with "Doctor"
-                        StringBuffer decKey = new StringBuffer();
-                        decKey.append(word);
-                        // calculate how much forward looking must be made
-                        int forwardLookup = wordList.size() - i - 1;
-                        if (forwardLookup > FORWARD_LOOKUP) {
-                            forwardLookup = FORWARD_LOOKUP;
-                        }
-                        if (i < wordCount - forwardLookup) {
-                            for (int j = 1; j <= forwardLookup; j++) {
-                                decKey.append(wordList.get(i + j));
-                                decObj = (CmsDecorationObject)m_decorations.get(decKey.toString());
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug(Messages.get().getBundle().key(
-                                        Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3,
-                                        decObj,
-                                        word,
-                                        new Integer(j)));
-                                }
-                                if (decObj != null) {
-                                    if (LOG.isDebugEnabled()) {
-                                        LOG.debug(Messages.get().getBundle().key(
-                                            Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                                            decObj.getContentDecoration(
-                                                m_config,
-                                                decKey.toString(),
-                                                m_cms.getRequestContext().getLocale().toString())));
-                                    }
-                                    // decorate the current word with the following delimiter
-                                    m_result.append(decObj.getContentDecoration(
-                                        m_config,
-                                        decKey.toString(),
-                                        m_cms.getRequestContext().getLocale().toString()));
-                                    // important, we must skip the next element of the list
-                                    i += j;
-                                    break;
-                                }
+                            if (nextWord.contains("&") && afterNextWord.equals(";")) {
+                                secondLevel = word + nextWord + ";";
+                                i += 2;
+                            } else {
+                                secondLevel = word + nextWord;
+                                i++;
                             }
-                        }
-                        if (decObj == null) {
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().getBundle().key(
-                                    Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1,
-                                    word));
-                            }
-                            // no decoration was found, use the word alone
-                            m_result.append(word);
                         }
                     }
+                    appendText(secondLevel, DELIMITERS_SECOND_LEVEL, false);
                 } else {
+                    // make a forward lookup to the next elements of the word list to check
+                    // if the combination of word and delimiter can be found as a decoration key
+                    // an example would be "Dr." wich must be decorated with "Doctor"
+                    StringBuffer decKey = new StringBuffer();
+                    decKey.append(word);
+                    // calculate how much forward looking must be made
+                    int forwardLookup = wordList.size() - i - 1;
+                    if (forwardLookup > FORWARD_LOOKUP) {
+                        forwardLookup = FORWARD_LOOKUP;
+                    }
+                    if (i < wordCount - forwardLookup) {
+                        for (int j = 1; j <= forwardLookup; j++) {
+                            decKey.append(wordList.get(i + j));
+                            decObj = (CmsDecorationObject)m_decorations.get(decKey.toString());
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(Messages.get().getBundle().key(
+                                    Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3,
+                                    decObj,
+                                    word,
+                                    new Integer(j)));
+                            }
+                            if (decObj != null) {
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(Messages.get().getBundle().key(
+                                        Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
+                                        decObj.getContentDecoration(
+                                            m_config,
+                                            decKey.toString(),
+                                            m_cms.getRequestContext().getLocale().toString())));
+                                }
+                                // decorate the current word with the following delimiter
+                                m_result.append(decObj.getContentDecoration(
+                                    m_config,
+                                    decKey.toString(),
+                                    m_cms.getRequestContext().getLocale().toString()));
+                                // important, we must skip the next element of the list
+                                i += j;
+                                // reset the decObj
+                                alreadyDecorated = true;
+                                break;
+                            }
+                        }
+                    }
+                    if ((decObj == null) && (wordDecObj == null)) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().getBundle().key(
+                                Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1,
+                                word));
+                        }
+                        // no decoration was found, use the word alone
+                        m_result.append(word);
+                    }
+                }
+                //} else {
+                if ((wordDecObj != null) && !alreadyDecorated) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                            decObj.getContentDecoration(
+                            wordDecObj.getContentDecoration(
                                 m_config,
                                 word,
                                 m_cms.getRequestContext().getLocale().toString())));
                     }
                     // decorate the current word
-                    m_result.append(decObj.getContentDecoration(
+                    m_result.append(wordDecObj.getContentDecoration(
                         m_config,
                         word,
                         m_cms.getRequestContext().getLocale().toString()));
