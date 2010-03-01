@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsOpenAdvancedGallery.java,v $
- * Date   : $Date: 2010/02/17 10:56:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/03/01 14:21:41 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.6
  */
@@ -111,8 +111,8 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 StringBuffer galleryUri = new StringBuffer(256);
                 // path to the gallery dialog with the required request parameters
                 galleryUri.append(CmsGallerySearchServer.ADVANCED_GALLERY_PATH);
-                String width = "670";
-                String height = "540";
+                String width = "660";
+                String height = "510";
                 galleryUri.append("?");
                 galleryUri.append(CmsGallerySearchServer.ReqParam.dialogmode.toString());
                 galleryUri.append("=");
@@ -142,7 +142,7 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                     queryObj.put(CmsGallerySearchServer.ResponseKey.types.toString(), new JSONArray());
                     queryObj.put(CmsGallerySearchServer.ResponseKey.galleries.toString(), galleriesArr);
                     queryObj.put(CmsGallerySearchServer.ResponseKey.categories.toString(), new JSONArray());
-                    queryObj.put(CmsGallerySearchServer.QueryKey.matchesperpage.toString(), 8);
+                    queryObj.put(CmsGallerySearchServer.QueryKey.matchesperpage.toString(), 12);
                     queryObj.put(CmsGallerySearchServer.QueryKey.query.toString(), "");
                     queryObj.put(
                         CmsGallerySearchServer.QueryKey.tabid.toString(),
@@ -163,7 +163,7 @@ public class CmsOpenAdvancedGallery extends CmsDialog {
                 jsOpener.append(width);
                 jsOpener.append(", height=");
                 jsOpener.append(height);
-                jsOpener.append(", resizable=yes, top=100, left=270, status=yes, scrollbars=yes,toolbar=yes');");
+                jsOpener.append(", resizable=yes, top=100, left=270, status=yes');");
             }
         } catch (CmsException e) {
             // requested type is not configured

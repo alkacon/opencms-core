@@ -1,4 +1,6 @@
-<%@ page import="org.opencms.workplace.galleries.*" %>
+<%@ page import="org.opencms.workplace.galleries.*,
+				 org.opencms.main.*,
+				 org.opencms.file.types.CmsResourceTypeImage" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
 String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "editors/ade/";
 %>
@@ -6,7 +8,7 @@ String adeResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "edit
  <% gallery.init(pageContext, request, response); %>
  </jsp:useBean><%
  	if (request.getParameter(CmsGallerySearchServer.ReqParam.action.toString())!= null){
- 	    gallery.serve();
+ 	    gallery.serve(); 	
  	}else{ 
  	//    gallery.setLocale(request.getParameter(CmsGallerySearchServer.ReqParam.LOCALE.getName()));
 // this is the initial call to the gallery so build the html first
@@ -42,6 +44,7 @@ var cms = { data: { GALLERY_SERVER_URL: "${gallery.galleryUri}"}, html: {}, util
     cms.galleries.initValues['fieldId'] = "${(not empty param.fieldid) ? param.fieldid : 'null'}";
     cms.galleries.initValues['path'] = "${(not empty param.path) ? param.path : 'null'}";
     cms.galleries.initValues['tabs'] = ${(not empty param.tabs) ? param.tabs : '[]'};
+    cms.galleries.initValues['imageType'] = <%=OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId()%>;
 	// check if any there is a selected resource in editor
     if (cms.galleries.initValues['dialogMode'] == 'editor') {
     	prepareEditor();    	
@@ -79,6 +82,9 @@ div.cms-selectbox{
     zoom: 1;
     display: inline;
     }
+.cms-tile-view li.cms-item-flexview{
+    display: inline;    
+}
 </style>
 <![endif]-->
 	</head>

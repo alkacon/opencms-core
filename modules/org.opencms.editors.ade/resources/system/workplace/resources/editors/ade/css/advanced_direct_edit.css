@@ -415,36 +415,46 @@ div.cms-move {
 }
 
 
-.cms-list-item div.cms-handle-button,
-div.cms-handle-button div {
-    height: 32px;
-}
-
-
 #sitemap div.cms-handle-button {
     position: absolute;
     margin: 0 !important;
 	padding: 0 !important;
+	top: -2px;
+	right: 0px;		
+	overflow: visible;        
+}
+
+ul.cms-tile-view div.cms-handle-button {
+    position: absolute;
+    margin: 0 !important;
+	padding: 0 !important;
 	top: 0px;
-	right: 0px;	
-	height: 22px;
-	overflow: hidden;        
+	right: 0px;
+    width: 24px;
+	overflow: visible;
+}
+
+.cms-list-itemcontent div.cms-handle-button {
+    overflow:visible;
 }
 
 div.cms-handle-button {
     position: absolute;
     margin: 0 !important;
 	padding: 0 !important;
-	top: 0px;
+	top: 4px;
 	right: 0px;
-	overflow: hidden;        
+	overflow: visible;        
 }
 
 div.cms-select-item {
     background: transparent url(images/16x16/apply_in.png) no-repeat
 		scroll 0 50%;
     float:right;
-    width:22px;
+    width: 20px;
+    height: 20px;
+    margin: 2px;
+   
 }
 
 div.cms-select-item:hover{
@@ -456,7 +466,9 @@ div.cms-preview-item {
     background: transparent url(images/16x16/preview_in.png) no-repeat
 		scroll 0 50%;
     float:right;
-    width:22px;
+    width: 20px;
+    height: 20px;
+    margin: 2px;
 }
 
 div.cms-preview-item:hover{
@@ -466,25 +478,10 @@ div.cms-preview-item:hover{
 
 div.cms-handle-button div.cms-move {
 	float:right;
-    width:22px;
+    width: 20px;
+    height: 20px;
+    margin: 2px;
 }
-
-/*div.cms-handle-button.cms-select-item{
-    position: absolute;
-	top: 0px;
-	right: 0px;
-	width: 20px;
-	height: 20px;
-	overflow: hidden;
-    margin: 4px 2px 0px 0px;
-    background: transparent url(images/16x16/apply_in.png) no-repeat
-		scroll 0 50%;
-}*/
-
-/*div.cms-handle-button.cms-select-item:hover{
-    background: transparent url(images/16x16/apply.png) no-repeat
-		scroll 0 50%;
-}*/
 
 div.cms-handle {
 	margin: 0 !important;
@@ -802,10 +799,11 @@ div.cms-dialog {
 }
 .cms-tile-view .cms-item-flexview .cms-list-item{
     display: inline-block;
+    padding:2px;
 }
 
 .cms-tile-view li.cms-item-flexview{
-    display: inline-block;
+    display: inline-block;    
 }
 
 
@@ -846,7 +844,7 @@ ul.cms-item-list,ul.cms-publish-options {
 .cms-menu .ui-widget-content,.cms-item .ui-widget-content {
 	position: relative;
 	line-height: 16px;
-	margin-bottom: 2px;
+	/*margin-bottom: 2px;*/ 
 }
 
 .cms-item .ui-widget-content .cms-navtext {

@@ -116,7 +116,7 @@
       tabid: 1,
       page: 1,
       searchfields: '',
-      matchesperpage: 8,
+      matchesperpage: 12,
       sortorder: null,
       tabs: [],
       //locale: null,
@@ -992,14 +992,19 @@
       }
       return false;
    }
-     
+   
+   /**
+    * 
+    * @param {Object} pageData
+    */  
    var fillResultPage = cms.galleries.fillResultPage = function(pageData) {           
-      var target = $('#results > ul').empty().removeAttr('id').attr('id', cms.html.galleryResultListPrefix + pageData.searchresult.resultpage);
+      var target = $('#results > ul').empty().removeAttr('id').attr('id', cms.html.galleryResultListPrefix + pageData.searchresult.resultpage);      
+      swithImageTileVeiw();
       $.each(pageData.searchresult.resultlist, function() {
           var resultElement=$(this.itemhtml).appendTo(target);
           resultElement.attr('alt', this.path)          
               .data('type', this.type);
-          resultElement.find('.cms-list-itemcontent')
+          resultElement.find('.cms-list-item')
               .append($('<div/>',{ 'class': "cms-handle-button"}));
           resultElement.find('.cms-handle-button')
               .append($('<div/>',{'class':'cms-preview-item'}));
@@ -1036,6 +1041,22 @@
           }
               	          
       } 
+   }
+   
+   /**
+    * Swithes between tile view for images, if only image resource are in the list or back to list view.<p>
+    */
+   var swithImageTileVeiw = function() {
+       cms.galleries.searchObject.page = 1;
+       // ajust the search object to provide a consistent search
+       var preparedSearchObject = prepareSearchObject();       
+       if (($.inArray(cms.galleries.initValues['imageType'], cms.galleries.configContentTypes) != -1 
+            && $.inArray(cms.galleries.initValues['imageType'], preparedSearchObject['types']) != -1)
+            && preparedSearchObject['types'].length == 1)  {
+           $('#results > ul').toggleClass('cms-tile-view', true); 
+       } else {
+           $('#results > ul').toggleClass('cms-tile-view', false);
+       }       
    }
    
    /**

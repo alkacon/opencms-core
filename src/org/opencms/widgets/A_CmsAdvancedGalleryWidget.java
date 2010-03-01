@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/A_CmsAdvancedGalleryWidget.java,v $
- * Date   : $Date: 2010/02/26 10:38:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/03/01 14:21:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 
  */
@@ -250,6 +250,7 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
 
         // set the configuration parameter for imagegallery
         if (configuration.isImagegallery()) {
+            result.append("\nvar isImage").append(idHash).append(" = true;");
             if (configuration.isShowFormat()) {
                 // create hidden field to store the matching image format value
                 JSONArray formatsJson = new JSONArray(configuration.getFormatValues());
@@ -262,6 +263,8 @@ public abstract class A_CmsAdvancedGalleryWidget extends A_CmsWidget {
                 result.append("\nvar imgFmts").append(idHash).append(" = null;");
                 result.append("\nvar imgFmtNames").append(idHash).append(" = null;");
             }
+        } else {
+            result.append("\nvar isImage").append(idHash).append(" = false;");
         }
         result.append("\n</script>");
 

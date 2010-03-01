@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/advancedvfsimage.js,v $
- * Date   : $Date: 2010/02/26 10:38:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/01 14:21:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -153,8 +153,8 @@ function removeAdvancedScaleValue(scale, valueName) {
 /**
  * Returns additional parameter for the image resource type.
  * 
- * @param {Object} fieldId
- * @param {Object} idHash
+ * @param {Object} fieldId the unique id of the input field of the current widget 
+ * @param {Object} idHash unique id used for the name of js variables 
  */
 var getAdvancedVfsImageGalleryInfo = function(fieldId, idHash) {
     var initialImageInfos = {};
@@ -267,7 +267,7 @@ var getAdvancedRequestDataInfo = function(fieldId, idHash) {
         requestData['querydata']['types'] = resourceTypes;
         requestData['querydata']['galleries'] = [];
         requestData['querydata']['categories'] = [];
-        requestData['querydata']['matchesperpage'] = 8;
+        requestData['querydata']['matchesperpage'] = 12;
         requestData['querydata']['query'] = '';         
         requestData['querydata']['page'] = 1;
         requestData['querydata']['locale'] = locale;
@@ -299,8 +299,7 @@ ade.openAdvancedVfsImageGallery = function(dialogMode, fieldId, idHash) {
     paramString += "&path=" + requestData['resourcepath'];
     paramString += "&data=" + JSON.stringify(requestData);
     paramString += "&imagedata=" + JSON.stringify(initialImageInfos);
-        
-	treewin = window.open(contextPath + advancedVfsImageGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
+	treewin = window.open(contextPath + advancedVfsImageGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,resizable=yes,top=20,left=150,width=660,height=510');
 	
 }
 

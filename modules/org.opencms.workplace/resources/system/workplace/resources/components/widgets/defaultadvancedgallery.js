@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/defaultadvancedgallery.js,v $
- * Date   : $Date: 2010/02/26 10:38:31 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/03/01 14:21:41 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -111,7 +111,7 @@ var ade = {};
          requestData['querydata']['types'] = resourceTypes;
          requestData['querydata']['galleries'] = [];
          requestData['querydata']['categories'] = [];
-         requestData['querydata']['matchesperpage'] = 8;
+         requestData['querydata']['matchesperpage'] = 12;
          requestData['querydata']['query'] = '';         
          requestData['querydata']['page'] = 1;
          requestData['querydata']['locale'] = locale;
@@ -133,9 +133,13 @@ var ade = {};
       paramString += "&tabs=" + JSON.stringify(galleryTabs);
       paramString += "&path=" + removeParamFromPath(selectedPath);
       paramString += "&data=" + JSON.stringify(requestData);
-      // additional parameter for the image resource type
+      
+      
+      
+      // additional parameter for the image resource type          
+      var isImage = eval('isImage' + idHash);      
       var initialImageInfos = '';
-      if ($.inArray(3, resourceTypes) != -1) {
+      if(isImage && resourceTypes.length == 1) {
          // scale params
          var scaleParam = extractScaleParam(selectedPath);
          var imgWidth = "";

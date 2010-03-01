@@ -24,7 +24,7 @@ pageContext.setAttribute("cms", cms);
 		</div>
 	</c:if>
 	<div class="cms-item-tile">
-		<img src="<cms:link>${cms.sitePath}</cms:link>?__scale=w:120,h:90,t:1,c:transparent,r:2" title="${cms.imageInfo}"/>
+		<img src="<cms:link>${cms.sitePath}</cms:link>?__scale=w:140,h:100,t:1,c:transparent,r:2" title="${cms.imageInfo}"/>
 	</div>
 </div>
 </li>

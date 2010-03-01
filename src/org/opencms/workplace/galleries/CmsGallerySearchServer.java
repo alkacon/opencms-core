@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/02/26 10:56:30 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2010/03/01 14:21:41 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * 
  * @since 7.6
  */
@@ -524,7 +524,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchServer.class);
 
     /** The default matchers per search result page. */
-    private static final int MATCHES_PER_PAGE = 8;
+    private static final int MATCHES_PER_PAGE = 12;
 
     /** Html script tag end fragment. */
     private static final String SCRIPT_TAG_END = "\" ></script>\n";

@@ -1,9 +1,13 @@
-<%@ page import="org.opencms.jsp.*,org.opencms.workplace.*" %><%
+<%@ page import="org.opencms.jsp.*,
+                 org.opencms.workplace.*,
+				 org.opencms.main.*,
+				 org.opencms.file.types.CmsResourceTypeImage" %><%
 %><%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %><% 
     CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);	
 	pageContext.setAttribute("cms", cms);
 	CmsDialog dialog = new CmsDialog(pageContext, request, response);
 	pageContext.setAttribute("locale", dialog.getLocale().toString());
+    int imageResType = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
 %>
 
 <fmt:setLocale value="${locale}" />
@@ -49,7 +53,7 @@ function imageGalleryDialogUrl() {
 	}
 
 	var searchParam = "";
-	var jsonQueryData = "{'querydata':{'types':[3],'galleries':[],'categories':[],'matchesperpage':8,'query':'','tabid':'cms_tab_results','page':1},'types':[3]}";
+	var jsonQueryData = "{'querydata':{'types':[" + <%=imageResType %> + "],'galleries':[],'categories':[],'matchesperpage':12,'query':'','tabid':'cms_tab_results','page':1},'types':[" + <%=imageResType%> + "]}";
     var jsonTabsConfig = "['cms_tab_galleries','cms_tab_categories','cms_tab_search']";
 	var jsonImageData = "{'widgetmode': 'simple','imgwidth':'','scale':'','showformats':true,'imgheight':'','useformats':false}";
     searchParam += "&data=" + jsonQueryData;

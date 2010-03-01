@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsAdvancedGalleryWidgetConfiguration.java,v $
- * Date   : $Date: 2010/02/26 10:38:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/03/01 14:21:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,15 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.galleries.CmsGallerySearchServer;
@@ -98,7 +103,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 
  */
@@ -196,24 +201,8 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         /** The button prefix for the imagegallery. */
         IMAGE("image"),
 
-        //TODO: remove
-        /** The resource type array for the containerpage gallery. */
-        RESOURCETYPE_CONTAINERPAGEGALLERY("[13]"),
-
         /** The resource type array for all available resources. */
         RESOURCETYPE_DEFAULTGALLERY("[]"),
-
-        //TODO: remove
-        /** The resource type array for the downloadgallery. */
-        RESOURCETYPE_DOWNLOADGALLERY("[2]"),
-
-        //TODO: remove
-        /** The resource type array for the imagegallery. */
-        RESOURCETYPE_IMAGEGALLERY("[3]"),
-
-        //TODO: remove
-        /** The resource type array for the sitemap gallery. */
-        RESOURCETYPE_SITEMAP("[13]"),
 
         /** The button prefix for the sitemapgallery. */
         SITEMAP("html"),
@@ -537,19 +526,29 @@ public class CmsAdvancedGalleryWidgetConfiguration {
         // handle the given configuration 
         // or set default configuration for downloadgallery         
         JSONObject gConfigJsonObj = new JSONObject();
-        JSONArray resTypes, tabs;
+        JSONArray resTypes = new JSONArray();
+        JSONArray tabs = new JSONArray();
         switch (getGalleryType(configJsonObj)) {
             case imagegallery:
                 // set the preselected resource types available for this advanced gallery
                 // set the preselected gallery tabs to be displayed
+                resTypes = new JSONArray();
                 try {
-                    resTypes = new JSONArray(CmsGalleryConfigValues.RESOURCETYPE_IMAGEGALLERY.getName());
+                    resTypes.put(OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId());
                     tabs = new JSONArray(CmsGalleryConfigValues.TABS_IMAGEGALLERY.getName());
+                } catch (CmsLoaderException e) {
+                    if (LOG.isErrorEnabled()) {
+                        //TODO: improve error handling
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 } catch (JSONException e) {
                     // should not happen
-                    resTypes = new JSONArray();
-                    tabs = new JSONArray();
+                    if (LOG.isErrorEnabled()) {
+                        //TODO: improve error handling
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
+                setResourceTypes(resTypes);
                 setResourceTypes(resTypes);
                 setTabs(tabs);
                 setImagegallery(true);
@@ -564,8 +563,14 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 // set the preselected resource types available for this advanced gallery
                 // set the preselected gallery tabs to be displayed
                 try {
-                    resTypes = new JSONArray(CmsGalleryConfigValues.RESOURCETYPE_SITEMAP.getName());
+                    resTypes.put(OpenCms.getResourceManager().getResourceType(
+                        CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId());
                     tabs = new JSONArray(CmsGalleryConfigValues.TABS_SITEMAP.getName());
+                } catch (CmsLoaderException e) {
+                    if (LOG.isErrorEnabled()) {
+                        //TODO: improve error handling
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 } catch (JSONException e) {
                     // should not happen
                     resTypes = new JSONArray();
@@ -587,12 +592,20 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 // set the preselected resource types available for this advanced gallery
                 // set the preselected gallery tabs to be displayed
                 try {
-                    resTypes = new JSONArray(CmsGalleryConfigValues.RESOURCETYPE_CONTAINERPAGEGALLERY.getName());
+                    resTypes.put(OpenCms.getResourceManager().getResourceType(
+                        CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId());
                     tabs = new JSONArray(CmsGalleryConfigValues.TABS_CONTAINERPAGEGALLERY.getName());
+                } catch (CmsLoaderException e) {
+                    if (LOG.isErrorEnabled()) {
+                        //TODO: improve error handling
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 } catch (JSONException e) {
                     // should not happen
-                    resTypes = new JSONArray();
-                    tabs = new JSONArray();
+                    if (LOG.isErrorEnabled()) {
+                        //TODO: improve error handling
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
                 setResourceTypes(resTypes);
                 setTabs(tabs);
@@ -610,12 +623,19 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                 // set the preselected resource types available for this advanced gallery
                 // set the preselected gallery tabs to be displayed
                 try {
-                    resTypes = new JSONArray(CmsGalleryConfigValues.RESOURCETYPE_DOWNLOADGALLERY.getName());
+                    resTypes.put(OpenCms.getResourceManager().getResourceType(CmsResourceTypeBinary.getStaticTypeName()).getTypeId());
                     tabs = new JSONArray(CmsGalleryConfigValues.TABS_DOWNLOADGALLERY.getName());
                 } catch (JSONException e) {
                     // should not happen
-                    resTypes = new JSONArray();
-                    tabs = new JSONArray();
+                    if (LOG.isErrorEnabled()) {
+                        //TODO: improve error handling
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                } catch (CmsLoaderException e) {
+                    if (LOG.isErrorEnabled()) {
+                        //TODO: improve error handling
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
                 setResourceTypes(resTypes);
                 setTabs(tabs);
@@ -640,6 +660,10 @@ public class CmsAdvancedGalleryWidgetConfiguration {
                     // should not happen
                     resTypes = new JSONArray();
                     tabs = new JSONArray();
+                    if (LOG.isErrorEnabled()) {
+                        //TODO: improve error handling
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
                 setResourceTypes(resTypes);
                 setTabs(tabs);
