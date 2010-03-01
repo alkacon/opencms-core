@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsChangeElementLocaleThread.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
@@ -55,7 +56,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.1 
  */
@@ -126,7 +127,8 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
         boolean checkTemplate = CmsStringUtil.isNotEmpty(m_settings.getTemplate());
 
         // set the resource filter to filter xml pages        
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeXmlPage.getStaticTypeId());
+        int xmlPageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(xmlPageId);
         String path = CmsResource.getFolderPath(m_settings.getVfsFolder());
         // get the list of resources to change
         List resources = getCms().readResources(path, filter, m_settings.isIncludeSubFolders());

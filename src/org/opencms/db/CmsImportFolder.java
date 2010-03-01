@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2009/12/17 13:10:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -206,11 +206,8 @@ public class CmsImportFolder {
                     m_cms.createResource(importPath + currentFile.getName(), type, content, null);
                 } catch (CmsSecurityException e) {
                     // in case of not enough permissions, try to create a plain text file
-                    m_cms.createResource(
-                        importPath + currentFile.getName(),
-                        CmsResourceTypePlain.getStaticTypeId(),
-                        content,
-                        null);
+                    int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+                    m_cms.createResource(importPath + currentFile.getName(), plainId, content, null);
                 }
                 content = null;
             }
@@ -299,6 +296,7 @@ public class CmsImportFolder {
                     resourceExists = false;
                 }
 
+                int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
                 if (resourceExists) {
                     CmsResource res = m_cms.readResource(filename, CmsResourceFilter.ALL);
                     CmsFile file = m_cms.readFile(res);
@@ -307,11 +305,7 @@ public class CmsImportFolder {
                         m_cms.replaceResource(filename, res.getTypeId(), buffer, new ArrayList<CmsProperty>(0));
                     } catch (CmsSecurityException e) {
                         // in case of not enough permissions, try to create a plain text file
-                        m_cms.replaceResource(
-                            filename,
-                            CmsResourceTypePlain.getStaticTypeId(),
-                            buffer,
-                            new ArrayList<CmsProperty>(0));
+                        m_cms.replaceResource(filename, plainId, buffer, new ArrayList<CmsProperty>(0));
                     } catch (CmsDbSqlException sqlExc) {
                         // SQL error, probably the file is too large for the database settings, restore content
                         file.setContents(contents);
@@ -340,7 +334,7 @@ public class CmsImportFolder {
                         m_cms.createResource(newResName, type, buffer, properties);
                     } catch (CmsSecurityException e) {
                         // in case of not enough permissions, try to create a plain text file
-                        m_cms.createResource(newResName, CmsResourceTypePlain.getStaticTypeId(), buffer, properties);
+                        m_cms.createResource(newResName, plainId, buffer, properties);
                     } catch (CmsDbSqlException sqlExc) {
                         // SQL error, probably the file is too large for the database settings, delete file
                         m_cms.lockResource(newResName);

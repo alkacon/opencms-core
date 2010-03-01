@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -82,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -803,10 +804,15 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 // found a workplace resource parameter, try to get a mapping for it
                 String helpResource = null;
                 String wpResource = getParamWorkplaceresource();
+                int xmlPageId;
+                try {
+                    xmlPageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
+                } catch (CmsLoaderException e1) {
+                    xmlPageId = CmsResourceTypeXmlPage.getStaticTypeId();
+                }
                 if (getCms().existsResource(
-                // todo: get thsis too.
                     resolveMacros(getParamWorkplaceresource()),
-                    CmsResourceFilter.requireType(CmsResourceTypeXmlPage.getStaticTypeId()))) {
+                    CmsResourceFilter.requireType(xmlPageId))) {
                     // given workplace resource is a page in VFS, use it as start point
                     helpResource = resolveMacros(getParamWorkplaceresource());
                     setParamHomelink(getJsp().link(helpResource));

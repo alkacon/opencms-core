@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2009/11/16 16:19:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -73,7 +74,7 @@ import java.util.Locale;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.6
  */
@@ -119,6 +120,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                     ret.add(getResourceForLocale(xmlPage, locale));
                 }
 
+                int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
                 // check temp file table to add virtual file
                 Iterator<String> iter2 = getVirtualFiles().iterator();
                 while (iter2.hasNext()) {
@@ -133,7 +135,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                             CmsWrappedResource wrap = new CmsWrappedResource(xmlPage);
                             wrap.setRootPath(xmlPage.getRootPath() + "/" + NAME_ELEMENT_CONTROLCODE);
-                            wrap.setTypeId(CmsResourceTypePlain.getStaticTypeId());
+                            wrap.setTypeId(plainId);
 
                             CmsFile tmpFile = wrap.getFile();
                             tmpFile.setContents(file.getContents());
@@ -141,9 +143,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                         }
                     }
                 }
-
             } else {
-
                 // sub path is a locale -> return all elements for this locale
                 Locale locale = new Locale(path);
                 List<String> names = xml.getNames(locale);
@@ -257,7 +257,8 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         }
 
         // creating new xml pages if type is a folder and the name ends with .html
-        if ((type == CmsResourceTypeFolder.getStaticTypeId()) && resourcename.endsWith(".html")) {
+        if (resourcename.endsWith(".html")
+            && (type == OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId())) {
 
             // mark in temp file table that the visual files does not exist yet
             Iterator<String> iter = getVirtualFiles().iterator();
@@ -265,7 +266,8 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 TMP_FILE_TABLE.add(resourcename + "/" + iter.next());
             }
 
-            return cms.createResource(resourcename, CmsResourceTypeXmlPage.getStaticTypeId());
+            return cms.createResource(resourcename, OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId());
         }
 
         // find the xml page this is for
@@ -1007,7 +1009,14 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
         CmsWrappedResource wrap = new CmsWrappedResource(xmlPage);
         wrap.setRootPath(path);
-        wrap.setTypeId(CmsResourceTypePlain.getStaticTypeId());
+        int plainId;
+        try {
+            plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+        } catch (CmsLoaderException e) {
+            // this should really never happen
+            plainId = CmsResourceTypePlain.getStaticTypeId();
+        }
+        wrap.setTypeId(plainId);
         wrap.setFolder(false);
         wrap.setLength(length);
 
@@ -1028,7 +1037,14 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
         CmsWrappedResource wrap = new CmsWrappedResource(xmlPage);
         wrap.setRootPath(xmlPage.getRootPath() + "/" + locale.getLanguage() + "/");
-        wrap.setTypeId(CmsResourceTypePlain.getStaticTypeId());
+        int plainId;
+        try {
+            plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+        } catch (CmsLoaderException e) {
+            // this should really never happen
+            plainId = CmsResourceTypePlain.getStaticTypeId();
+        }
+        wrap.setTypeId(plainId);
         wrap.setFolder(true);
 
         return wrap.getResource();

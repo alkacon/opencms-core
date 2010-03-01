@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -349,7 +349,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // define the required colors.
         // these are configurable via set
         StringBuffer colors = new StringBuffer();
-        if (appletWindowColors == null || appletWindowColors.size() == 0) {
+        if ((appletWindowColors == null) || (appletWindowColors.size() == 0)) {
             appletWindowColors = DEFAULT_APPLET_WINDOW_COLORS;
         }
         Iterator it = appletWindowColors.entrySet().iterator();
@@ -701,17 +701,14 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     setParamResource(computeFullResourceName());
                     // determine the resource type id from the given information
                     int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
+                    int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
                     if (!getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
                         try {
                             // create the resource
                             getCms().createResource(getParamResource(), resTypeId, content, properties);
                         } catch (CmsSecurityException e) {
                             // in case of not enough permissions, try to create a plain text file
-                            getCms().createResource(
-                                getParamResource(),
-                                CmsResourceTypePlain.getStaticTypeId(),
-                                content,
-                                properties);
+                            getCms().createResource(getParamResource(), plainId, content, properties);
                         } catch (CmsDbSqlException sqlExc) {
                             // SQL error, probably the file is too large for the database settings, delete file
                             getCms().lockResource(getParamResource());
@@ -726,11 +723,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                             getCms().replaceResource(getParamResource(), resTypeId, content, null);
                         } catch (CmsSecurityException e) {
                             // in case of not enough permissions, try to create a plain text file
-                            getCms().replaceResource(
-                                getParamResource(),
-                                CmsResourceTypePlain.getStaticTypeId(),
-                                content,
-                                null);
+                            getCms().replaceResource(getParamResource(), plainId, content, null);
                         } catch (CmsDbSqlException sqlExc) {
                             // SQL error, probably the file is too large for the database settings, restore content
                             file.setContents(contents);

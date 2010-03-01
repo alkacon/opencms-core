@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCommentImages.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsImageScaler;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3
  */
@@ -250,7 +251,15 @@ public class CmsCommentImages extends CmsDialog {
     protected List getImages() {
 
         // get all image resources of the folder
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeImage.getStaticTypeId());
+        int imageId;
+        try {
+            imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+        } catch (CmsLoaderException e1) {
+            // should really never happen
+            LOG.warn(e1.getLocalizedMessage(), e1);
+            imageId = CmsResourceTypeImage.getStaticTypeId();
+        }
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(imageId);
         try {
             return getCms().readResources(getParamResource(), filter, false);
         } catch (CmsException e) {

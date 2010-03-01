@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxTableGallery.java,v $
- * Date   : $Date: 2009/10/13 07:54:21 $
- * Version: $Revision: 1.3.2.2 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina  
  * 
- * @version $Revision: 1.3.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0
  */
@@ -108,7 +108,14 @@ public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
     @Override
     public int getGalleryItemsTypeId() {
 
-        return CmsResourceTypePlain.getStaticTypeId();
+        int plainId;
+        try {
+            plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+        } catch (CmsLoaderException e) {
+            // this should really never happen
+            plainId = CmsResourceTypePlain.getStaticTypeId();
+        }
+        return plainId;
     }
 
     /**

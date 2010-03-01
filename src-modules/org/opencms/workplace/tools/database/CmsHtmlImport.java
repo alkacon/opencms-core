@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2009/06/04 14:33:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportException;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
@@ -97,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Peter Bonrad
  * @author Anja Roettgers
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -584,7 +585,7 @@ public class CmsHtmlImport {
             // finally create all the external links    
             createExternalLinks();
 
-            if (isStream && streamFolder != null) {
+            if (isStream && (streamFolder != null)) {
                 m_report.println(Messages.get().container(Messages.RPT_HTML_DELETE_0), I_CmsReport.FORMAT_NOTE);
                 // delete the files of the zip file
                 CmsFileUtil.purgeDirectory(streamFolder);
@@ -920,6 +921,7 @@ public class CmsHtmlImport {
             File folder = new File(startfolder);
             // get all subresources
             File[] subresources = folder.listFiles();
+            int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
             // now loop through all subresources 
             for (int i = 0; i < subresources.length; i++) {
                 // if the subresource is a folder, get all subresources of it as well          
@@ -934,7 +936,7 @@ public class CmsHtmlImport {
                     String vfsFileName = (String)m_fileIndex.get(subresources[i].getAbsolutePath().replace('\\', '/'));
                     // check if this is an HTML file, do only import and parse those
                     int type = getFileType(vfsFileName);
-                    if (CmsResourceTypePlain.getStaticTypeId() == type) {
+                    if (plainId == type) {
                         Hashtable properties = new Hashtable();
                         // the subresource is a file, so start the parsing process
                         String content = "";
@@ -966,6 +968,7 @@ public class CmsHtmlImport {
             File folder = new File(startfolder);
             // get all subresources
             File[] subresources = folder.listFiles();
+            int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
             // now loop through all subresources 
             for (int i = 0; i < subresources.length; i++) {
                 // if the subresource is a folder, get all subresources of it as well
@@ -980,10 +983,8 @@ public class CmsHtmlImport {
                             '/'));
                         // get the file type of the FS file
                         int type = getFileType(vfsFileName);
-                        if (CmsResourceTypePlain.getStaticTypeId() != type) {
-
+                        if (plainId != type) {
                             if (isExternal(vfsFileName)) {
-
                                 m_report.print(
                                     Messages.get().container(Messages.RPT_SKIP_EXTERNAL_0),
                                     I_CmsReport.FORMAT_NOTE);
@@ -1070,6 +1071,13 @@ public class CmsHtmlImport {
      */
     private void createExternalLinks() {
 
+        int pointerId;
+        try {
+            pointerId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePointer.getStaticTypeName()).getTypeId();
+        } catch (CmsLoaderException e) {
+            // should not never ever happen
+            pointerId = CmsResourceTypePointer.getStaticTypeId();
+        }
         // loop through all links
         Iterator i = m_externalLinks.iterator();
         while (i.hasNext()) {
@@ -1089,11 +1097,7 @@ public class CmsHtmlImport {
                 "Link to " + linkUrl);
             properties.add(property1);
             try {
-                m_cmsObject.createResource(
-                    m_linkGallery + filename,
-                    CmsResourceTypePointer.getStaticTypeId(),
-                    linkUrl.getBytes(),
-                    properties);
+                m_cmsObject.createResource(m_linkGallery + filename, pointerId, linkUrl.getBytes(), properties);
             } catch (CmsException e) {
                 // do nothing here, an exception will be thrown if this link already exists                
             }
@@ -1156,12 +1160,9 @@ public class CmsHtmlImport {
                 byte[] contentByteArray = page.marshal();
                 List oldProperties = new ArrayList();
 
+                int xmlPageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
                 if (!m_overwrite) {
-                    m_cmsObject.createResource(
-                        vfsFileName,
-                        CmsResourceTypeXmlPage.getStaticTypeId(),
-                        contentByteArray,
-                        new ArrayList());
+                    m_cmsObject.createResource(vfsFileName, xmlPageId, contentByteArray, new ArrayList());
                 } else {
                     try {
                         // try if the file is there
@@ -1178,11 +1179,7 @@ public class CmsHtmlImport {
                         m_report.print(Messages.get().container(Messages.RPT_OVERWRITE_0), I_CmsReport.FORMAT_NOTE);
                         m_report.print(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_DOTS_0));
-                        m_cmsObject.createResource(
-                            vfsFileName,
-                            CmsResourceTypeXmlPage.getStaticTypeId(),
-                            contentByteArray,
-                            new ArrayList());
+                        m_cmsObject.createResource(vfsFileName, xmlPageId, contentByteArray, new ArrayList());
                     }
                 }
                 // create all properties and put them in an ArrayList
@@ -1296,7 +1293,8 @@ public class CmsHtmlImport {
                     m_cmsObject.lockResource(path + folder);
                 } catch (CmsException e1) {
                     // the folder was not there, so create it
-                    m_cmsObject.createResource(path + folder, CmsResourceTypeFolder.getStaticTypeId());
+                    m_cmsObject.createResource(path + folder, OpenCms.getResourceManager().getResourceType(
+                        CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
                 }
                 // create all properties and put them in an ArrayList
                 Enumeration enu = properties.keys();
@@ -1469,12 +1467,14 @@ public class CmsHtmlImport {
             // other -> move into download gallery, if flag to leave at original location is off
             boolean leaveImages = CmsStringUtil.isEmptyOrWhitespaceOnly(m_imageGallery);
             boolean leaveDownload = CmsStringUtil.isEmptyOrWhitespaceOnly(m_downloadGallery);
-            if ((CmsResourceTypeImage.getStaticTypeId() == filetype) && (!leaveImages)) {
+            int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+            int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+            if ((imageId == filetype) && (!leaveImages)) {
                 // move to image gallery
                 // as the image gallery is "flat", we must use the file name and not the complete
                 // relative name
                 vfsName = m_imageGallery + name;
-            } else if ((CmsResourceTypePlain.getStaticTypeId() == filetype) || (leaveImages) || (leaveDownload)) {
+            } else if ((plainId == filetype) || (leaveImages) || (leaveDownload)) {
                 // move to destination folder
                 //vfsName=m_destinationDir+relativeName;
 
@@ -1597,9 +1597,9 @@ public class CmsHtmlImport {
             // we must substitute all occurrences of "&#", otherwise tidy would remove them
             contentString = CmsStringUtil.substitute(contentString, "&#", "{_subst1_}");
             // we must substitute all occurrences of &lt; and &gt;  otherwise tidy would replace them with < and >
-            contentString = CmsStringUtil.substitute(contentString, "&lt;", "{_subst2_}");            
+            contentString = CmsStringUtil.substitute(contentString, "&lt;", "{_subst2_}");
             contentString = CmsStringUtil.substitute(contentString, "&gt;", "{_subst3_}");
-            
+
             // parse the content                  
             parsedHtml = m_htmlConverter.convertHTML(
                 file.getAbsolutePath(),

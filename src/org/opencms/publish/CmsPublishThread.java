@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2010/01/20 09:16:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.5 
  */
@@ -163,11 +163,11 @@ final class CmsPublishThread extends A_CmsReportThread {
                 m_report.println(
                     Messages.get().container(Messages.RPT_JSPLOADER_UPDATE_CACHE_BEGIN_0),
                     I_CmsReport.FORMAT_HEADLINE);
+                int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
                 Iterator<CmsResource> it = m_publishJob.getPublishList().getFileList().iterator();
                 while (it.hasNext()) {
                     CmsResource resource = it.next();
-                    if ((CmsResourceTypeJsp.isJSP(resource))
-                        || (resource.getTypeId() == CmsResourceTypePlain.getStaticTypeId())) {
+                    if ((CmsResourceTypeJsp.isJSP(resource)) || (resource.getTypeId() == plainId)) {
                         m_report.print(
                             Messages.get().container(Messages.RPT_JSPLOADER_UPDATE_CACHE_0),
                             I_CmsReport.FORMAT_NOTE);

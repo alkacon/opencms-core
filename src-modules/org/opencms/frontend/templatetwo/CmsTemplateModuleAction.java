@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsTemplateModuleAction.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.A_CmsModuleAction;
@@ -109,7 +110,15 @@ public class CmsTemplateModuleAction extends A_CmsModuleAction {
                 } else {
                     // check if they have the right type
                     try {
-                        if (cms.readResource(RELEASE_CONFIG + "default").getTypeId() != CmsResourceTypePlain.getStaticTypeId()) {
+                        int plainId;
+                        try {
+                            plainId = OpenCms.getResourceManager().getResourceType(
+                                CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+                        } catch (CmsLoaderException e) {
+                            // this should really never happen
+                            plainId = CmsResourceTypePlain.getStaticTypeId();
+                        }
+                        if (cms.readResource(RELEASE_CONFIG + "default").getTypeId() != plainId) {
                             // it is not plain, so assume this resource has the right type and all others too
                             return;
                         }

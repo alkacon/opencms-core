@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2010/02/11 10:20:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.4
  */
@@ -2787,7 +2787,14 @@ public class CmsImportVersion7 implements I_CmsImport {
                 m_type = OpenCms.getResourceManager().getResourceType(typeName);
             } catch (CmsLoaderException e) {
                 // TODO: what happens if the resource type is a specialized folder and is not configured??
-                m_type = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeId());
+                int plainId;
+                try {
+                    plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+                } catch (CmsLoaderException e1) {
+                    // this should really never happen
+                    plainId = CmsResourceTypePlain.getStaticTypeId();
+                }
+                m_type = OpenCms.getResourceManager().getResourceType(plainId);
             }
             if (m_type.isFolder()) {
                 // ensure folders end with a "/"

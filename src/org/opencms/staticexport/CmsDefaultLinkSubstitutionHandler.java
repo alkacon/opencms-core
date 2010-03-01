@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2010/02/03 15:10:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.2
  * 
@@ -255,7 +256,15 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     }
 
                     // images are always referenced without a server prefix
-                    if (linkType != CmsResourceTypeImage.getStaticTypeId()) {
+                    int imageId;
+                    try {
+                        imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+                    } catch (CmsLoaderException e1) {
+                        // should really never happen
+                        LOG.warn(e1.getLocalizedMessage(), e1);
+                        imageId = CmsResourceTypeImage.getStaticTypeId();
+                    }
+                    if (linkType != imageId) {
                         // check the secure property of the link
                         boolean secureLink = exportManager.isSecureLink(cms, vfsName, targetSite.getSiteRoot());
                         boolean secureRequest = exportManager.isSecureLink(cms, cms.getRequestContext().getUri());

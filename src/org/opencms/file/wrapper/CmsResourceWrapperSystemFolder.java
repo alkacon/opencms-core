@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperSystemFolder.java,v $
- * Date   : $Date: 2009/09/14 11:45:31 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.file.wrapper;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -47,7 +46,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.6
  */
@@ -81,7 +80,7 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
      */
     public boolean isWrappedResource(CmsObject cms, CmsResource res) {
 
-        if (res.getTypeId() == CmsResourceTypeFolder.getStaticTypeId()) {
+        if (res.isFolder()) {
             if (!cms.getRequestContext().getSiteRoot().equals("/")) {
 
                 String resourcename = cms.getRequestContext().removeSiteRoot(res.getRootPath());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsRenameImages.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.PrintfFormat;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3
  */
@@ -160,7 +161,8 @@ public class CmsRenameImages extends CmsDialog {
         // count all image resources of the gallery folder
         int count = 0;
         try {
-            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeImage.getStaticTypeId());
+            int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(imageId);
             List images = getCms().readResources(getParamResource(), filter, false);
             count = images.size();
         } catch (CmsException e) {
@@ -347,7 +349,8 @@ public class CmsRenameImages extends CmsDialog {
         checkLock(getParamResource());
 
         // get all image resources of the folder
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeImage.getStaticTypeId());
+        int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(imageId);
         List images = getCms().readResources(getParamResource(), filter, false);
 
         // determine start count

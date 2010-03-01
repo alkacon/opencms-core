@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/02/18 09:47:39 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 7.6
  */
@@ -722,15 +722,17 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
         JSONObject result = new JSONObject();
         CmsObject cms = getCmsObject();
         // find current site templates
+        int templateId = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeJsp.getContainerPageTemplateTypeName()).getTypeId();
         List<CmsResource> templates = cms.readResources(
             "/",
-            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(CmsResourceTypeJsp.getContainerPageTemplateTypeId()),
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(templateId),
             true);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot())) {
             // if not in the root site, also add template under /system/
             templates.addAll(cms.readResources(
                 CmsWorkplace.VFS_PATH_SYSTEM,
-                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(CmsResourceTypeJsp.getContainerPageTemplateTypeId()),
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(templateId),
                 true));
         }
         Iterator<CmsResource> templateIt = templates.iterator();

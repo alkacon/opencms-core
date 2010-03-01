@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/CmsPhotoAlbumBean.java,v $
- * Date   : $Date: 2009/06/04 14:33:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,10 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -57,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -176,7 +178,15 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
     public List getAlbumPhotos() {
 
         if (m_albumPhotos == null) {
-            CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(CmsResourceTypeImage.getStaticTypeId());
+            int imageId;
+            try {
+                imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+            } catch (CmsLoaderException e1) {
+                // should really never happen
+                LOG.warn(e1.getLocalizedMessage(), e1);
+                imageId = CmsResourceTypeImage.getStaticTypeId();
+            }
+            CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(imageId);
             try {
                 m_albumPhotos = getCmsObject().readResources(getConfiguration().getVfsPathGallery(), filter, false);
             } catch (CmsException e) {
@@ -357,7 +367,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
      */
     protected void buildHtmlConfigurationErrors() throws IOException {
 
-        if (!getRequestContext().currentProject().isOnlineProject() && getConfigErrors().size() > 0) {
+        if (!getRequestContext().currentProject().isOnlineProject() && (getConfigErrors().size() > 0)) {
             // configuration error(s) found, show them in offline projects
             getJspContext().getOut().print("<h1>");
             getJspContext().getOut().print(m_messages.key(Messages.GUI_CONFIG_ERRORS_HEADLINE_0));
@@ -487,7 +497,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
 
         StringBuffer result = new StringBuffer(1024);
 
-        if (getConfiguration().showPageNavigation() && getPageCount() > 1) {
+        if (getConfiguration().showPageNavigation() && (getPageCount() > 1)) {
             // show navigation and number of pages greater than 1
             result.append("<tr>\n\t<td colspan=\"");
             result.append(getConfiguration().getThumbCols());
@@ -809,7 +819,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
             setPageCount(pageCount);
             // determine page to show
             String page = getRequest().getParameter(PARAM_PAGE);
-            if (CmsStringUtil.isNotEmpty(page) && getPageCount() > 1) {
+            if (CmsStringUtil.isNotEmpty(page) && (getPageCount() > 1)) {
                 int currentPage = Integer.parseInt(page);
                 if (currentPage > getPageCount()) {
                     currentPage = getPageCount();
@@ -846,7 +856,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
     protected String fillNavSpaces(String replaceValue) {
 
         int centerIndex = getConfiguration().getAlignNavigation().indexOf("center");
-        if (centerIndex > -1 && CmsStringUtil.isNotEmpty(replaceValue)) {
+        if ((centerIndex > -1) && CmsStringUtil.isNotEmpty(replaceValue)) {
             int length = replaceValue.length();
             StringBuffer result = new StringBuffer(6 * length);
             for (int i = 0; i < length; i++) {

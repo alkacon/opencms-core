@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2009/09/23 14:03:20 $
- * Version: $Revision: 1.92.2.1 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.92.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -501,7 +501,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                                 key));
                         }
                     } else {
-                        m_cms.createResource(key, CmsResourceTypePointer.getStaticTypeId(), link.getBytes(), properties);
+                        int pointerId = OpenCms.getResourceManager().getResourceType(
+                            CmsResourceTypePointer.getStaticTypeName()).getTypeId();
+                        m_cms.createResource(key, pointerId, link.getBytes(), properties);
                         m_report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
 
@@ -627,11 +629,10 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         if (localeName != null) {
             // locale was already set on the files properties
-            return (Locale)OpenCms.getLocaleManager().getAvailableLocales(localeName).get(0);
+            return OpenCms.getLocaleManager().getAvailableLocales(localeName).get(0);
         }
         // locale not set in properties, read default locales
-        return (Locale)OpenCms.getLocaleManager().getDefaultLocales(m_cms, CmsResource.getParentFolder(destination)).get(
-            0);
+        return OpenCms.getLocaleManager().getDefaultLocales(m_cms, CmsResource.getParentFolder(destination)).get(0);
     }
 
     /**

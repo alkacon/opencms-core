@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADECache.java,v $
- * Date   : $Date: 2009/12/14 12:52:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,9 @@ package org.opencms.xml.containerpage;
 import org.opencms.cache.CmsVfsCache;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
@@ -49,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -57,6 +59,9 @@ public final class CmsADECache extends CmsVfsCache {
 
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsADECache.class);
+
+    /** Container page type id. */
+    private static int m_cntPageId;
 
     /** Cache for offline container pages. */
     private Map<String, CmsXmlContainerPage> m_containerPagesOffline;
@@ -82,6 +87,25 @@ public final class CmsADECache extends CmsVfsCache {
 
         initialize(memMonitor, cacheSettings);
         registerEventListener();
+    }
+
+    /**
+     * Returns the Container page type id.<p>
+     * 
+     * @return the Container page type id
+     */
+    private static int getCntPageId() {
+
+        if (m_cntPageId == 0) {
+            try {
+                m_cntPageId = OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId();
+            } catch (CmsLoaderException e) {
+                // should not never ever happen
+                m_cntPageId = CmsResourceTypeXmlContainerPage.getStaticTypeId();
+            }
+        }
+        return m_cntPageId;
     }
 
     /**
@@ -317,7 +341,7 @@ public final class CmsADECache extends CmsVfsCache {
             LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
             return;
         }
-        if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.getStaticTypeId()) {
+        if (resource.getTypeId() == getCntPageId()) {
             // remove the resource cached by it's structure ID
             uncacheContainerPage(resource.getStructureId(), false);
         } else {

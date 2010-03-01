@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationDefintion.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -423,13 +424,18 @@ public class CmsDecorationDefintion {
         String basename = baseFilename.toString();
 
         // get all config files which belong to this basename
-
+        int plainId;
+        try {
+            plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+        } catch (CmsLoaderException e) {
+            // this should really never happen
+            plainId = CmsResourceTypePlain.getStaticTypeId();
+        }
         List resources = cms.readResources(CmsResource.getParentFolder(m_configurationFile), CmsResourceFilter.DEFAULT);
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            if (cms.getSitePath(res).startsWith(basename)
-                && (res.getTypeId() == CmsResourceTypePlain.getStaticTypeId())) {
+            if (cms.getSitePath(res).startsWith(basename) && (res.getTypeId() == plainId)) {
                 files.add(res);
             }
         }

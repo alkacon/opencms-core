@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsContentNotification.java,v $
- * Date   : $Date: 2010/01/20 09:16:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -115,9 +116,16 @@ public class CmsContentNotification extends A_CmsNotification {
      */
     public static boolean existsEditor(CmsResource resource) {
 
+        int plainId;
+        try {
+            plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+        } catch (CmsLoaderException e) {
+            // this should really never happen
+            plainId = CmsResourceTypePlain.getStaticTypeId();
+        }
         if ((CmsResourceTypeJsp.isJSP(resource))
-            || (resource.getTypeId() == CmsResourceTypePlain.getStaticTypeId())
-            || (resource.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId())) {
+            || (resource.getTypeId() == plainId)
+            || CmsResourceTypeXmlPage.isXmlPage(resource)) {
             return true;
         }
         return false;

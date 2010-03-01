@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2009/09/23 14:03:20 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.3.0 
  * 
@@ -134,7 +134,8 @@ public class CmsImportVersion5 extends A_CmsImport {
         ZipFile importZip,
         Document docXml) throws CmsImportExportException {
 
-        CmsImportParameters params = new CmsImportParameters(importResource != null ? importResource.getAbsolutePath()
+        CmsImportParameters params = new CmsImportParameters(importResource != null
+        ? importResource.getAbsolutePath()
         : importZip.getName(), importPath, false);
 
         try {
@@ -540,7 +541,14 @@ public class CmsImportVersion5 extends A_CmsImport {
                 try {
                     type = OpenCms.getResourceManager().getResourceType(typeName);
                 } catch (CmsLoaderException e) {
-                    type = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeId());
+                    int plainId;
+                    try {
+                        plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+                    } catch (CmsLoaderException e1) {
+                        // this should really never happen
+                        plainId = CmsResourceTypePlain.getStaticTypeId();
+                    }
+                    type = OpenCms.getResourceManager().getResourceType(plainId);
                 }
 
                 // <uuidstructure>

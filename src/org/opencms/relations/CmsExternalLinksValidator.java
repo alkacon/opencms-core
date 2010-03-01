@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsExternalLinksValidator.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import java.util.Map;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,9 +149,8 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
             I_CmsReport.FORMAT_HEADLINE);
 
         // get all links
-        List links = cms.readResources(
-            "/",
-            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(CmsResourceTypePointer.getStaticTypeId()));
+        int pointerId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePointer.getStaticTypeName()).getTypeId();
+        List links = cms.readResources("/", CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(pointerId));
         Iterator iterator = links.iterator();
         Map brokenLinks = new HashMap();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2009/09/10 16:26:20 $
- * Version: $Revision: 1.50.2.2 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -796,14 +796,14 @@ public class CmsResourceManager {
                 if (m_restypeUnknownFolder != null) {
                     result = m_restypeUnknownFolder;
                 } else {
-                    result = m_configuration.getResourceTypeById(CmsResourceTypeFolder.getStaticTypeId());
+                    result = m_configuration.getResourceTypeByName(CmsResourceTypeFolder.getStaticTypeName());
                 }
             } else {
                 // resource is a file
                 if (m_restypeUnknownFile != null) {
                     result = m_restypeUnknownFile;
                 } else {
-                    result = m_configuration.getResourceTypeById(CmsResourceTypeBinary.getStaticTypeId());
+                    result = m_configuration.getResourceTypeByName(CmsResourceTypeBinary.getStaticTypeName());
                 }
             }
         }

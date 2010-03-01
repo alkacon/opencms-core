@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -310,11 +310,8 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
                 fullResourceName,
                 CmsResourceTypeXmlPage.getStaticTypeName(),
                 title));
-            getCms().createResource(
-                fullResourceName,
-                CmsResourceTypeXmlPage.getStaticTypeId(),
-                bodyFileBytes,
-                properties);
+            int xmlPageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
+            getCms().createResource(fullResourceName, xmlPageId, bodyFileBytes, properties);
 
             // set the resource parameter to full path for property dialog 
             setParamResource(fullResourceName);

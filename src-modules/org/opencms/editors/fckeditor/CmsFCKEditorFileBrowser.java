@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorFileBrowser.java,v $
- * Date   : $Date: 2009/06/04 14:33:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.7
  */
@@ -504,6 +504,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
         }
 
         try {
+            int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
             List resources = getCms().readResources(getParamCurrentFolder(), filter, false);
             Iterator i = resources.iterator();
             while (i.hasNext()) {
@@ -519,7 +520,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
                     boolean showFile = true;
                     // check if required file type is an image and filter found resources if set
                     if (TYPE_IMAGE.equals(getParamType())) {
-                        showFile = (res.getTypeId() == CmsResourceTypeImage.getStaticTypeId());
+                        showFile = (imageId == res.getTypeId());
                     }
                     if ((showFile) && (files != null)) {
                         // create file node

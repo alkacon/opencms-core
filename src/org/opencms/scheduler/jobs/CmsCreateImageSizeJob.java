@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsCreateImageSizeJob.java,v $
- * Date   : $Date: 2009/09/08 12:52:22 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.loader.CmsImageLoader;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
@@ -66,7 +67,7 @@ import java.util.Map;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.2 
  */
@@ -104,7 +105,8 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
             // get all image resources
             resources = cms.readResources(
                 "/",
-                CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeImage.getStaticTypeId()));
+                CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeImage.getStaticTypeName()).getTypeId()));
         } catch (CmsException e) {
             report.println(e);
         }

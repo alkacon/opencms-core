@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxImageGallery.java,v $
- * Date   : $Date: 2009/10/12 08:11:58 $
- * Version: $Revision: 1.4.2.1 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0 
  */
@@ -154,7 +154,15 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
     @Override
     public int getGalleryItemsTypeId() {
 
-        return CmsResourceTypeImage.getStaticTypeId();
+        int imageId;
+        try {
+            imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+        } catch (CmsLoaderException e1) {
+            // should really never happen
+            LOG.warn(e1.getLocalizedMessage(), e1);
+            imageId = CmsResourceTypeImage.getStaticTypeId();
+        }
+        return imageId;
     }
 
     /**

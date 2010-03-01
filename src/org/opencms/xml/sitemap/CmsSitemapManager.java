@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/02/18 09:47:39 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 7.9.2
  */
@@ -248,10 +248,8 @@ public class CmsSitemapManager {
         // so get the first sitemap we can find
         List<CmsResource> sitemaps = new ArrayList<CmsResource>();
         try {
-            sitemaps = cms.readResources(
-                "/",
-                CmsResourceFilter.requireType(CmsResourceTypeXmlSitemap.getStaticTypeId()),
-                true);
+            int sitemapId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlSitemap.getStaticTypeName()).getTypeId();
+            sitemaps = cms.readResources("/", CmsResourceFilter.requireType(sitemapId), true);
         } catch (CmsException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);

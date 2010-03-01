@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2009/06/04 14:33:45 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -416,17 +416,19 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom {
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
             String template = jsp.getCmsObject().readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
                 "");
-            if (!res.isFolder()
-                && (res.getTypeId() != CmsResourceTypeBinary.getStaticTypeId())
-                && (res.getTypeId() != CmsResourceTypePlain.getStaticTypeId())
-                && (res.getTypeId() != CmsResourceTypeImage.getStaticTypeId())) {
-                // file is no plain text, binary or image type, check "template" property
-                if (dialogPresent && TEMPLATE_ONE.equals(template)) {
-                    // display special property dialog for files with "template one" as template
-                    return templateOneDialog;
-                } else if (CmsResourceTypeXmlPage.isXmlPage(res)) {
-                    // show xmlpage property dialog for xmlpages not using "template one" as template
-                    return PATH_WORKPLACE + "editors/dialogs/property.jsp";
+            if (!res.isFolder()) {
+                int binaryId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeBinary.getStaticTypeName()).getTypeId();
+                int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+                int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+                if ((res.getTypeId() != binaryId) && (res.getTypeId() != plainId) && (res.getTypeId() != imageId)) {
+                    // file is no plain text, binary or image type, check "template" property
+                    if (dialogPresent && TEMPLATE_ONE.equals(template)) {
+                        // display special property dialog for files with "template one" as template
+                        return templateOneDialog;
+                    } else if (CmsResourceTypeXmlPage.isXmlPage(res)) {
+                        // show xmlpage property dialog for xmlpages not using "template one" as template
+                        return PATH_WORKPLACE + "editors/dialogs/property.jsp";
+                    }
                 }
             }
             if (dialogPresent

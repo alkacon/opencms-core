@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperUtils.java,v $
- * Date   : $Date: 2009/09/14 11:45:31 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
@@ -64,7 +65,7 @@ import java.util.regex.Pattern;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.6.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.4
  */
@@ -233,7 +234,8 @@ public final class CmsResourceWrapperUtils {
 
         CmsWrappedResource wrap = new CmsWrappedResource(res);
         wrap.setRootPath(addFileExtension(cms, path, EXTENSION_PROPERTIES));
-        wrap.setTypeId(CmsResourceTypePlain.getStaticTypeId());
+        int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+        wrap.setTypeId(plainId);
         wrap.setFolder(false);
 
         CmsFile ret = wrap.getFile();
@@ -241,7 +243,6 @@ public final class CmsResourceWrapperUtils {
 
             ret.setContents(content.toString().getBytes(CmsEncoder.ENCODING_UTF_8));
         } catch (UnsupportedEncodingException e) {
-
             // this will never happen since UTF-8 is always supported
             ret.setContents(content.toString().getBytes());
         }

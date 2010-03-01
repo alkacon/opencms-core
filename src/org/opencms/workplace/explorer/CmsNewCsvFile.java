@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/03/01 10:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -390,9 +390,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         List result = new ArrayList();
         try {
             // find all files of generic xmlcontent in the modules folder
+            int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
             Iterator xmlFiles = getCms().readResources(
                 CmsWorkplace.VFS_PATH_MODULES,
-                CmsResourceFilter.DEFAULT_FILES.addRequireType(CmsResourceTypePlain.getStaticTypeId()),
+                CmsResourceFilter.DEFAULT_FILES.addRequireType(plainId),
                 true).iterator();
             while (xmlFiles.hasNext()) {
                 CmsResource xmlFile = (CmsResource)xmlFiles.next();
