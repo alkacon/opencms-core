@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/I_CmsForm.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/I_CmsHasFormHandler.java,v $
  * Date   : $Date: 2010/03/01 10:04:33 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,55 +31,28 @@
 
 package org.opencms.gwt.client;
 
-import java.util.List;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
 
 /**
- * Defines a ui form object.<p>
+ * Interface to indicate that the implementing widget may have form event handlers.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
+ * 
  */
-public interface I_CmsForm extends I_CmsHasFormHandler {
+public interface I_CmsHasFormHandler extends HasHandlers {
 
     /**
-     * Adds a field to the form.<p>
+     * Registers the form event handler.<p> 
      * 
-     * @param field the field to add
-     */
-    void addField(I_CmsFormField field);
-
-    /**
-     * Disables the whole form.<p>
-     */
-    void disable();
-
-    /** 
-     * Returns all form fields.<p>
+     * @param handler the event handler
      * 
-     * @return the form fields
+     * @return the handler registration of this widget, may be used to remove the event handler
      */
-    List<I_CmsFormField> getFields();
-
-    /**
-     * Removes a given field from the form.<p>
-     * 
-     * @param field the field to remove
-     */
-    void removeField(I_CmsFormField field);
-
-    /**
-     * Submits the form.<p>
-     */
-    void submit();
-
-    /**
-     * Validates all fields of the form.<p>
-     * 
-     * @return <code>true</code> if valid
-     */
-    boolean validate();
+    HandlerRegistration addFormHandler(I_CmsFormHandler handler);
 
 }

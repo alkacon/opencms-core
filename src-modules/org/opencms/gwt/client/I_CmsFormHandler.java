@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/I_CmsForm.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/I_CmsFormHandler.java,v $
  * Date   : $Date: 2010/03/01 10:04:33 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,55 +31,23 @@
 
 package org.opencms.gwt.client;
 
-import java.util.List;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Defines a ui form object.<p>
+ * Form event handler to handle all form related events.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsForm extends I_CmsHasFormHandler {
+public interface I_CmsFormHandler extends EventHandler {
 
     /**
-     * Adds a field to the form.<p>
+     * Handle the form event.<p>
      * 
-     * @param field the field to add
+     * @param event the event
      */
-    void addField(I_CmsFormField field);
-
-    /**
-     * Disables the whole form.<p>
-     */
-    void disable();
-
-    /** 
-     * Returns all form fields.<p>
-     * 
-     * @return the form fields
-     */
-    List<I_CmsFormField> getFields();
-
-    /**
-     * Removes a given field from the form.<p>
-     * 
-     * @param field the field to remove
-     */
-    void removeField(I_CmsFormField field);
-
-    /**
-     * Submits the form.<p>
-     */
-    void submit();
-
-    /**
-     * Validates all fields of the form.<p>
-     * 
-     * @return <code>true</code> if valid
-     */
-    boolean validate();
-
+    void onFormEvent(CmsFormEvent event);
 }
