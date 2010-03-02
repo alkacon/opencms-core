@@ -360,7 +360,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri]]></value>
+					<value><![CDATA[sitemap-entry]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -474,7 +474,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
+					<value><![CDATA[sitemap-entry;user]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -502,7 +502,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
+					<value><![CDATA[sitemap-entry;user]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -530,7 +530,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
+					<value><![CDATA[sitemap-entry;user]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -558,7 +558,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
+					<value><![CDATA[sitemap-entry;user]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -586,7 +586,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
+					<value><![CDATA[sitemap-entry;user]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -1653,7 +1653,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[container-element;uri;params=(id)]]></value>
+					<value><![CDATA[sitemap-entry]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
