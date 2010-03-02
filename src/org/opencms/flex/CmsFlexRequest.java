@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2009/12/17 13:10:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/02 14:36:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -250,11 +250,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
             while (it.hasNext()) {
                 Map.Entry<String, Object> entry = it.next();
                 String key = entry.getKey();
-                // Check if the attribute name (key) exists
-                if (!attributes.containsKey(key)) {
-                    // No: Add new value
-                    attributes.put(key, entry.getValue());
+                // prevent flexcache controller to be overwritten
+                if (CmsFlexController.ATTRIBUTE_NAME.equals(key)) {
+                    continue;
                 }
+                attributes.put(key, entry.getValue());
             }
             m_attributes = new HashMap<String, Object>(attributes);
         }
