@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2010/03/01 09:34:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/02 14:35:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,8 +218,6 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
 
         // save old parameters from request
         Map<String, String[]> oldParameterMap = CmsCollectionsGenericWrapper.map(req.getParameterMap());
-        // save old attributes from request
-        Map<String, Object> oldAttributeMap = CmsRequestUtil.getAtrributeMap(req);
         try {
             // each include will have it's unique map of parameters
             Map<String, String[]> parameterMap = (paramMap == null)
