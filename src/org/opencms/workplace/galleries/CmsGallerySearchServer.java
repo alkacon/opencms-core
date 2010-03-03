@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/03/03 09:58:01 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2010/03/03 10:23:25 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  * 
  * @since 7.6
  */
@@ -1855,11 +1855,16 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
     private List<CmsCategory> readCategories(List<CmsResource> galleries) {
 
         CmsCategoryService catService = CmsCategoryService.getInstance();
-        Iterator<CmsResource> iGalleries = galleries.iterator();
         List<String> repositories = new ArrayList<String>();
-        while (iGalleries.hasNext()) {
-            CmsResource res = iGalleries.next();
-            repositories.addAll(catService.getCategoryRepositories(getCmsObject(), getCmsObject().getSitePath(res)));
+        if ((galleries != null) && !galleries.isEmpty()) {
+            Iterator<CmsResource> iGalleries = galleries.iterator();
+
+            while (iGalleries.hasNext()) {
+                CmsResource res = iGalleries.next();
+                repositories.addAll(catService.getCategoryRepositories(getCmsObject(), getCmsObject().getSitePath(res)));
+            }
+        } else {
+            repositories.add("/");
         }
         List<CmsCategory> categories = null;
         try {
