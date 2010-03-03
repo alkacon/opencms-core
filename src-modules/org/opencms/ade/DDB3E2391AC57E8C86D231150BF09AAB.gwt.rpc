@@ -1,0 +1,17 @@
+com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException, true, true, true, true, com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException/3936916533, 3936916533
+java.lang.Exception, true, false, true, false, java.lang.Exception/1920171873, 1920171873
+java.lang.RuntimeException, true, false, true, false, java.lang.RuntimeException/515124647, 515124647
+java.lang.String, true, true, true, true, java.lang.String/2004016611, 2004016611
+java.lang.Throwable, true, false, true, false, java.lang.Throwable/2953622131, 2953622131
+java.util.ArrayList, true, true, false, false, java.util.ArrayList/3821976829, 3821976829
+java.util.Arrays$ArrayList, true, true, false, false, java.util.Arrays$ArrayList/1243019747, 1243019747
+java.util.HashMap, true, true, false, false, java.util.HashMap/962170901, 962170901
+java.util.IdentityHashMap, true, true, false, false, java.util.IdentityHashMap/3881143367, 3881143367
+java.util.LinkedHashMap, true, true, false, false, java.util.LinkedHashMap/1551059846, 1551059846
+java.util.LinkedList, true, true, false, false, java.util.LinkedList/1060625595, 1060625595
+java.util.Stack, true, true, false, false, java.util.Stack/1031431137, 1031431137
+java.util.TreeMap, true, true, false, false, java.util.TreeMap/1575826026, 1575826026
+java.util.Vector, true, true, false, false, java.util.Vector/3125574444, 3125574444
+org.opencms.ade.client.CmsClientSitemapEntry, true, true, false, false, org.opencms.ade.client.CmsClientSitemapEntry/3028618748, 3028618748
+[Lorg.opencms.ade.client.CmsClientSitemapEntry;, true, true, false, false, [Lorg.opencms.ade.client.CmsClientSitemapEntry;/701856787, 701856787
+org.opencms.ade.client.I_CmsSitemapService, false, false, false, false, _, 1598891886
