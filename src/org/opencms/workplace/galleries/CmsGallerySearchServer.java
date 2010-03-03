@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/03/01 14:21:41 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2010/03/03 09:58:01 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * 
  * @since 7.6
  */
@@ -1132,7 +1132,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         while (it.hasNext()) {
             Locale locale = it.next();
             JSONObject jLocale = new JSONObject();
-            jLocale.put(ItemKey.title.toString(), locale.getDisplayName(getCmsObject().getRequestContext().getLocale()));
+            jLocale.put(ItemKey.title.toString(), locale.getDisplayName(getWorkplaceLocale()));
             jLocale.put(ItemKey.value.toString(), locale.toString());
             result.put(jLocale);
         }
