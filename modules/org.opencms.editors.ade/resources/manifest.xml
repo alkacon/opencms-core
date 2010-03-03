@@ -133,6 +133,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+			<source>system/workplace/editors/ade/binary-preview-formatter.jsp</source>
+			<destination>system/workplace/editors/ade/binary-preview-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>a7618594-26b0-11df-abd4-f3c1cc0b56be</uuidstructure>
+			<uuidresource>a7618595-26b0-11df-abd4-f3c1cc0b56be</uuidresource>
+			<datelastmodified>Wed, 03 Mar 2010 10:36:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 03 Mar 2010 10:36:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/editors/ade/container-preview-formatter.jsp</source>
 			<destination>system/workplace/editors/ade/container-preview-formatter.jsp</destination>
