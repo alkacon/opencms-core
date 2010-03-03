@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlHelper.java,v $
- * Date   : $Date: 2010/03/01 08:54:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/03 15:33:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.8 
  */
@@ -283,18 +283,24 @@ public class CmsSetupXmlHelper {
     private static Element handleNode(Element parent, String xpathName) {
 
         // if node is no attribute, create a new node
-        Map<String, String> children = null;
+        String childrenPart = null;
         String nodeName;
         int pos = xpathName.indexOf("[");
         if (pos > 0) {
-            children = CmsStringUtil.splitAsMap(xpathName.substring(pos + 1, xpathName.length() - 1), "][", "=");
+            childrenPart = xpathName.substring(pos + 1, xpathName.length() - 1);
             nodeName = xpathName.substring(0, pos);
         } else {
             nodeName = xpathName;
         }
         // create node
         Element elem = parent.addElement(nodeName);
-        if (children != null) {
+        if (childrenPart != null) {
+            pos = childrenPart.indexOf("[");
+            if ((pos > 0) && (childrenPart.indexOf("]") > pos)) {
+                handleNode(elem, childrenPart);
+                return elem;
+            }
+            Map<String, String> children = CmsStringUtil.splitAsMap(childrenPart, "][", "=");
             // handle child nodes
             for (Map.Entry<String, String> child : children.entrySet()) {
                 String childName = child.getKey();
