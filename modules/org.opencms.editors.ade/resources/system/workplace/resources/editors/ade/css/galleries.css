@@ -335,6 +335,10 @@
 		width:390px;
 	}
     
+    .cms-width-380 {
+		width:380px;
+	}
+    
     .cms-width-400 {
 		width:400px;
 	}
@@ -364,7 +368,7 @@
 	}
 	
 	.cms-width-95 {
-		width:150px;
+		width:95px;
 	}
     
     .cms-width-100 {

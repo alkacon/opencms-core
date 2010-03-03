@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/02/22 16:27:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/03/03 08:06:59 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.6.0 
  */
@@ -299,6 +299,117 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_DROP_DOWN_LABEL_LOCALE_0 = "GUI_GALLERIES_DROP_DOWN_LABEL_LOCALE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_LABEL_SORTBY_0 = "GUI_GALLERIES_DROP_DOWN_LABEL_SORTBY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TABS_LABEL_RESULTS_0 = "GUI_GALLERIES_TABS_LABEL_RESULTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TABS_LABEL_TYPES_0 = "GUI_GALLERIES_TABS_LABEL_TYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TABS_LABEL_GALLERIES_0 = "GUI_GALLERIES_TABS_LABEL_GALLERIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TABS_LABEL_CATEGORIES_0 = "GUI_GALLERIES_TABS_LABEL_CATEGORIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TABS_LABEL_FULLTEXTSEARCH_0 = "GUI_GALLERIES_TABS_LABEL_FULLTEXTSEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TABS_LABEL_CONTAINERTYPES_0 = "GUI_GALLERIES_TABS_LABEL_CONTAINERTYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TABS_LABEL_VFSTREE_0 = "GUI_GALLERIES_TABS_LABEL_VFSTREE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TABS_LABEL_SITEMAP_0 = "GUI_GALLERIES_TABS_LABEL_SITEMAP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_TITLE_ASC_0 = "GUI_GALLERIES_DROP_DOWN_TITLE_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_TITLE_DESC_0 = "GUI_GALLERIES_DROP_DOWN_TITLE_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_TYPE_ASC_0 = "GUI_GALLERIES_DROP_DOWN_TYPE_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_TYPE_DESC_0 = "GUI_GALLERIES_DROP_DOWN_TYPE_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_LASTMOD_ASC_0 = "GUI_GALLERIES_DROP_DOWN_LASTMOD_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_LASTMOD_DESC_0 = "GUI_GALLERIES_DROP_DOWN_LASTMOD_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_PATH_ASC_0 = "GUI_GALLERIES_DROP_DOWN_PATH_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_PATH_DESC_0 = "GUI_GALLERIES_DROP_DOWN_PATH_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_DROP_DOWN_HIERARCHIC_0 = "GUI_GALLERIES_DROP_DOWN_HIERARCHIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_TYPE_0 = "GUI_GALLERIES_LABEL_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_TYPES_0 = "GUI_GALLERIES_LABEL_TYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_GALLERY_0 = "GUI_GALLERIES_LABEL_GALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_GALLERIES_0 = "GUI_GALLERIES_LABEL_GALLERIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_CATEGORY_0 = "GUI_GALLERIES_LABEL_CATEGORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_CATEGORIES_0 = "GUI_GALLERIES_LABEL_CATEGORIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_QUERY_0 = "GUI_GALLERIES_LABEL_QUERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_QUERIES_0 = "GUI_GALLERIES_LABEL_QUERIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_SEARCH_0 = "GUI_GALLERIES_LABEL_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_SEARCH_OFFLINE_INDEX_0 = "GUI_GALLERIES_LABEL_SEARCH_OFFLINE_INDEX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_SEARCH_FOR_0 = "GUI_GALLERIES_LABEL_SEARCH_FOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_SEARCH_IN_0 = "GUI_GALLERIES_LABEL_SEARCH_IN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_TITLE_0 = "GUI_GALLERIES_LABEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_CONTENT_0 = "GUI_GALLERIES_LABEL_CONTENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_CHANGED_BEFORE_0 = "GUI_GALLERIES_LABEL_CHANGED_BEFORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_CHANGED_AFTER_0 = "GUI_GALLERIES_LABEL_CHANGED_AFTER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_CREATED_BEFORE_0 = "GUI_GALLERIES_LABEL_CREATED_BEFORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_CREATED_AFTER_0 = "GUI_GALLERIES_LABEL_CREATED_AFTER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_BUTTON_LABEL_SEARCH_0 = "GUI_GALLERIES_BUTTON_LABEL_SEARCH_0";
 
     // cms.imagepreviewhandler.js
     /** Message constant for key in the resource bundle. */

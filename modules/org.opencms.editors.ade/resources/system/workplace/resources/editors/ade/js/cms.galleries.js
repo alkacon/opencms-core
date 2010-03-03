@@ -131,22 +131,22 @@
    var tabs = {
        'cms_tab_results': {
            addTabToList: function () {
-               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_results'] + '">Search Results</a></li>');
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_results'] + '">' + M.GUI_GALLERIES_TABS_LABEL_RESULTS_0 + '</a></li>');
            },
            addTabHtml: function(){
                       var resultTab = $(cms.galleries.htmlTabResultSceleton);
                       resultTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
                           values:[
-                              {value: 'title_asc',title: 'Title Ascending'}, 
-                              {value: 'title_desc',title: 'Title Descending'}, 
-                              {value: 'type_asc',title: 'Type Ascending'}, 
-                              {value: 'type_desc',title: 'Type Descending'}, 
-                              {value: 'dateLastModified_asc',title: 'Date Ascending'},
-                              {value: 'dateLastModified_desc',title: 'Date Descending'},
-                              {value: 'path_asc',title: 'Path Ascending'},
-                              {value: 'path_desc',title: 'Path Descending'}
+                              {value: 'title_asc',title: M.GUI_GALLERIES_DROP_DOWN_TITLE_ASC_0}, 
+                              {value: 'title_desc',title: M.GUI_GALLERIES_DROP_DOWN_TITLE_DESC_0}, 
+                              {value: 'type_asc',title: M.GUI_GALLERIES_DROP_DOWN_TYPE_ASC_0}, 
+                              {value: 'type_desc',title: M.GUI_GALLERIES_DROP_DOWN_TYPE_DESC_0}, 
+                              {value: 'dateLastModified_asc',title: M.GUI_GALLERIES_DROP_DOWN_LASTMOD_ASC_0},
+                              {value: 'dateLastModified_desc',title: M.GUI_GALLERIES_DROP_DOWN_LASTMOD_DESC_0},
+                              {value: 'path_asc',title: M.GUI_GALLERIES_DROP_DOWN_PATH_ASC_0},
+                              {value: 'path_desc',title: M.GUI_GALLERIES_DROP_DOWN_PATH_DESC_0}
                           ],
-                          width: 150,
+                          width: 327,
                           /* TODO: bind sort functionality */
                           select: function($this, self, value){              
                               cms.galleries.searchObject['sortorder'] = value;
@@ -182,11 +182,11 @@
                       if (localesArray.length > 1) {
                           var resultTab = $('#' + cms.galleries.arrayTabIds['cms_tab_results']);
                           resultTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
-                                                                    <label>Locale:</label>\
+                                                                    <label>' + M.GUI_GALLERIES_DROP_DOWN_LABEL_LOCALE_0 + '</label>\
                                                               </span>');
                           resultTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
                               values:localesArray,
-                              width: 150,
+                              width: 85,
                               select: function($this, self, value){
                                   var tab = $(self).closest('div.cms-list-options').attr('id');
                                   cms.galleries.searchObject['locale'] = value;
@@ -202,16 +202,16 @@
        },
        'cms_tab_types': {
            addTabToList: function () {
-                $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_types'] + '">Types</a></li>');
+                $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_types'] + '">' + M.GUI_GALLERIES_TABS_LABEL_TYPES_0 + '</a></li>');
            },
            addTabHtml: function (param) { 
                           var typesTab = $(cms.galleries.htmlTabTypesSceleton);
                           typesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
                               values:[
-                                  {value: 'title,asc',title: 'Title Ascending'}, 
-                                  {value: 'title,desc',title: 'Title Descending'}         
+                                  {value: 'title,asc',title: M.GUI_GALLERIES_DROP_DOWN_TITLE_ASC_0}, 
+                                  {value: 'title,desc',title: M.GUI_GALLERIES_DROP_DOWN_TITLE_DESC_0}         
                               ],
-                              width: 150,
+                              width: 200,
                               /* bind sort functionality to selectbox */
                               select: function($this, self, value){
                                       var criteria = $(self).closest('div.cms-list-options').attr('id');
@@ -234,18 +234,18 @@
       },
       'cms_tab_galleries': {
           addTabToList: function () {
-               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_galleries'] + '">Galleries</a></li>');
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_galleries'] + '">' + M.GUI_GALLERIES_TABS_LABEL_GALLERIES_0 + '</a></li>');
            },
           addTabHtml : function (param) {
                               var galleriesTab = $(cms.galleries.htmlTabGalleriesSceleton);
                               galleriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
                                   values:[
-                                      {value: 'title,asc',title: 'Title Ascending'}, 
-                                      {value: 'title,desc',title: 'Title Descending'},
-                                      {value: 'gallerytypeid,asc',title: 'Type Ascending'}, 
-                                      {value: 'gallerytypeid,desc',title: 'Type Descending'}          
+                                      {value: 'title,asc',title: M.GUI_GALLERIES_DROP_DOWN_TITLE_ASC_0}, 
+                                      {value: 'title,desc',title: M.GUI_GALLERIES_DROP_DOWN_TITLE_DESC_0},
+                                      {value: 'gallerytypeid,asc',title: M.GUI_GALLERIES_DROP_DOWN_TYPE_ASC_0}, 
+                                      {value: 'gallerytypeid,desc',title: M.GUI_GALLERIES_DROP_DOWN_TYPE_DESC_0}          
                                   ],
-                                  width: 150,
+                                  width: 200,
                                   /* bind sort functionality to selectbox */
                                   select: function($this, self, value){
                                           var criteria = $(self).closest('div.cms-list-options').attr('id');
@@ -267,17 +267,17 @@
       },
       'cms_tab_categories':{
           addTabToList: function () {
-               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_categories'] + '">Categories</a></li>');
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_categories'] + '">' + M.GUI_GALLERIES_TABS_LABEL_CATEGORIES_0 + '</a></li>');
            }, 
           addTabHtml: function (param) {
                               var categoriesTab = $(cms.galleries.htmlTabCategoriesSceleton);
                               categoriesTab.find('.cms-drop-down label').after($.fn.selectBox('generate',{
                                   values:[
-                                      {value: 'path,asc',title: 'Hierarchy'},
-                                      {value: 'title,asc',title: 'Title Ascending'}, 
-                                      {value: 'title,desc',title: 'Title Descending'}         
+                                      {value: 'path,asc',title: M.GUI_GALLERIES_DROP_DOWN_HIERARCHIC_0},
+                                      {value: 'title,asc',title: M.GUI_GALLERIES_DROP_DOWN_TITLE_ASC_0}, 
+                                      {value: 'title,desc',title: M.GUI_GALLERIES_DROP_DOWN_TITLE_DESC_0}         
                                   ],
-                                  width: 150,
+                                  width: 200,
                                   /* bind sort functionality to selectbox */
                                   select: function($this, self, value){
                                           var criteria = $(self).closest('div.cms-list-options').attr('id');
@@ -300,7 +300,7 @@
       },
       'cms_tab_search': {
           addTabToList: function () {
-               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_search'] + '">Full Text Search</a></li>');
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_search'] + '">' + M.GUI_GALLERIES_TABS_LABEL_FULLTEXTSEARCH_0 + '</a></li>');
            },
           addTabHtml: function(param) {
                           // add tabs html to tabs
@@ -310,7 +310,7 @@
       },
       'cms_tab_vfs': {
           addTabToList: function () {
-               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_vfs'] + '">Vfs Tree</a></li>');
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_vfs'] + '">'+M.GUI_GALLERIES_TABS_LABEL_VFSTREE_0+'</a></li>');
            },
           addTabHtml: function(param) {
                           // add tabs html to tabs
@@ -320,7 +320,7 @@
       },
       'cms_tab_containertypes' :{
           addTabToList: function () {
-               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_containertypes'] + '">Full Text Search</a></li>');
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_containertypes'] + '">'+M.GUI_GALLERIES_TABS_LABEL_CONTAINERTYPES_0+'</a></li>');
            },
           addTabHtml: function(param) {
                           // add tabs html to tabs
@@ -330,7 +330,7 @@
       },
       'cms_tab_sitemap' :{
           addTabToList: function () {
-               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_sitemap'] + '">Sitemap</a></li>');
+               $('#' + cms.galleries.idTabs + ' > ul').append('<li><a href="#' + cms.galleries.arrayTabIds['cms_tab_sitemap'] + '">'+M.GUI_GALLERIES_TABS_LABEL_SITEMAP_0+'</a></li>');
            },
           addTabHtml: function() {
                       var sitemapTab = $(cms.galleries.htmlTabSitemapSceleton);                     
@@ -362,11 +362,11 @@
                    if (localesArray.length > 1) {
                    var sitemapTab = $('#' + cms.galleries.arrayTabIds['cms_tab_sitemap']);
                    sitemapTab.find('.cms-drop-down').after('<span alt="locale" class="cms-drop-down">\
-                                                                    <label>Locale:</label>\
+                                                                    <label>' + M.GUI_GALLERIES_DROP_DOWN_LABEL_LOCALE_0 + '</label>\
                                                               </span>');                
                    sitemapTab.find('span[alt="locale"]').find('label').after($.fn.selectBox('generate',{
                               values:localesArray,
-                              width: 150,
+                              width: 200,
                               select: function($this, self, value){
                                   var sitemapUri = cms.galleries.searchCriteriaListsAsJSON.sitemap.rootEntry.sitemapUri;
                                   var siteRoot = $( '#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:first')
@@ -386,7 +386,7 @@
                           values:[
                               {value: siteRoot ,title: siteRoot}                             
                           ],
-                          width: 150,
+                          width: 200,
                           select: function($this, self, value){
                               var locale = $('#' + cms.galleries.arrayTabIds['cms_tab_sitemap']).find('.cms-selectbox:last')
                                   .selectBox('getValue');
@@ -410,10 +410,10 @@
    
    /** Map of key words for the criteria buttons on the result tab. */
    var criteriaStr = cms.galleries.criteriaStr = {
-      types: ['<b>Type:&nbsp;</b>', '<b>Types:&nbsp;</b>'],
-      galleries: ['<b>Gallery:&nbsp;</b>', '<b>Galleries:&nbsp;</b>'],
-      categories: ['<b>Category:&nbsp;</b>', '<b>Categories:&nbsp;</b>'],
-      query: ['<b>Search query:&nbsp;</b>', 'Seach queries:&nbsp;</b>']
+      types: ['<b>'+M.GUI_GALLERIES_LABEL_TYPE_0+'&nbsp;</b>', '<b>'+M.GUI_GALLERIES_LABEL_TYPES_0+'&nbsp;</b>'],
+      galleries: ['<b>'+M.GUI_GALLERIES_LABEL_GALLERY_0+'&nbsp;</b>', '<b>'+M.GUI_GALLERIES_LABEL_GALLERIES_0+'&nbsp;</b>'],
+      categories: ['<b>'+M.GUI_GALLERIES_LABEL_CATEGORY_0+'&nbsp;</b>', '<b>'+M.GUI_GALLERIES_LABEL_CATEGORIES_0+'&nbsp;</b>'],
+      query: ['<b>'+M.GUI_GALLERIES_LABEL_QUERY_0+'&nbsp;</b>', '<b>'+M.GUI_GALLERIES_LABEL_QUERIES_0+'&nbsp;</b>']
    
    };      
         
@@ -424,7 +424,7 @@
    cms.galleries.classListOptions +
    '">\
                         <span class="cms-drop-down">\
-                            <label>Sort by:</label>\
+                            <label>'+M.GUI_GALLERIES_DROP_DOWN_LABEL_SORTBY_0+'</label>\
                         </span>\
              </div>\
              <div id="results" class="cms-list-scrolling ui-corner-all result-tab-scrolling">\
@@ -437,9 +437,9 @@
    var htmlTabTypesSceleton = cms.galleries.htmlTabTypesSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_types'] + '">\
                 <div id="typesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
-                        <label>Sort by:</label>\
+                        <label>'+M.GUI_GALLERIES_DROP_DOWN_LABEL_SORTBY_0+'</label>\
                     </span>\
-                    <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                    <span class="cms-ft-search"><label>'+M.GUI_GALLERIES_LABEL_SEARCH_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="types" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
                     <ul id="'+cms.html.galleryTypeListId+'" class="'+classScrollingInner+' cms-item-list"></ul>\
@@ -450,9 +450,9 @@
    var htmlTabGalleriesSceleton = cms.galleries.htmlTabGalleriesSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_galleries'] + '">\
                 <div id="galleriesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
-                        <label>Sort by:</label>\
+                        <label>'+M.GUI_GALLERIES_DROP_DOWN_LABEL_SORTBY_0+'</label>\
                     </span>\
-                    <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                    <span class="cms-ft-search"><label>'+M.GUI_GALLERIES_LABEL_SEARCH_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="galleries" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
                     <ul class="'+classScrollingInner+'"></ul>\
@@ -463,9 +463,9 @@
    var htmlTabCategoriesSceleton = cms.galleries.htmlTabCategoriesSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_categories'] + '">\
                 <div id="categoriesoptions" class="ui-widget ' + cms.galleries.classListOptions + '">\
                     <span class="cms-drop-down">\
-                        <label>Sort by:</label>\
+                        <label>'+M.GUI_GALLERIES_DROP_DOWN_LABEL_SORTBY_0+'</label>\
                     </span>\
-                    <span class="cms-ft-search"><label>Search:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                    <span class="cms-ft-search"><label>'+M.GUI_GALLERIES_LABEL_SEARCH_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                 </div>\
                 <div id="categories" class="cms-list-scrolling ui-corner-all criteria-tab-scrolling">\
                     <ul class="'+classScrollingInner+'"></ul>\
@@ -475,38 +475,38 @@
    /** html fragment for the tab with the full text search. */
    var htmlTabFTSeachSceleton = cms.galleries.htmlTabFTSeachSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_search'] + '">\
              <div class="cms-search-panel ui-corner-all">\
-                    <div class="cms-search-options"><b>Search the offline-index:</b></div>\
+                    <div class="cms-search-options"><b>'+M.GUI_GALLERIES_LABEL_SEARCH_OFFLINE_INDEX_0+'</b></div>\
                     <div class="cms-search-options">\
-                        <span id="searchQuery" class="cms-item-left"><label>Search for:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                        <span id="searchQuery" class="cms-item-left"><label>'+M.GUI_GALLERIES_LABEL_SEARCH_FOR_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
                     <!-- <div class="cms-search-options">\
-                        <div class="cms-item-left">Search in:</div>\
+                        <div class="cms-item-left">'+M.GUI_GALLERIES_LABEL_SEARCH_IN_0+'</div>\
                         <div id="searchInTitle" class="cms-list-checkbox"></div>\
-                        <div class="cms-checkbox-label">Title</div>\
+                        <div class="cms-checkbox-label">'+M.GUI_GALLERIES_LABEL_TITLE_0+'</div>\
                         <div id="searchInContent" class="cms-list-checkbox"></div>\
-                        <div class="cms-checkbox-label">Content</div>\
+                        <div class="cms-checkbox-label">'+M.GUI_GALLERIES_LABEL_CONTENT_0+'</div>\
                     </div> -->\
                     <div class="cms-search-options">\
-                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed after:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
-                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Changed before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>'+M.GUI_GALLERIES_LABEL_CHANGED_AFTER_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>'+M.GUI_GALLERIES_LABEL_CHANGED_BEFORE_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                    </div>\
                    <div class="cms-search-options">\
-                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Created after:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
-                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>Created before:</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>'+M.GUI_GALLERIES_LABEL_CREATED_AFTER_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
+                        <span id="searchBefore" class="cms-item-left cms-input-date"><label>'+M.GUI_GALLERIES_LABEL_CREATED_BEFORE_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                     </div>\
                     <div class="cms-search-options">\
-                        <button class="ui-state-default ui-corner-all cms-item-left-bottom">Search</button>\
+                        <button class="ui-state-default ui-corner-all cms-item-left-bottom">'+M.GUI_GALLERIES_BUTTON_LABEL_SEARCH_0+'</button>\
                     </div>\
              </div>\
           </div>'; 
    
    /** html fragment for the tab with vfs tree. */
    var htmlTabVfsTreeSceleton = cms.galleries.htmlTabVfsTreeSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_vfs'] + '">\
-             <div class="cms-search-panel ui-corner-all">Vfs tree</div></div>'; 
+             <div class="cms-search-panel ui-corner-all">'+M.GUI_GALLERIES_TABS_LABEL_VFSTREE_0+'</div></div>'; 
              
    /** html fragment for the tab with container types. */
    var htmlTabContainerTypesSceleton = cms.galleries.htmlTabContainerTypesSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_containertypes'] + '">\
-             <div class="cms-search-panel ui-corner-all">Container types</div></div>';
+             <div class="cms-search-panel ui-corner-all">'+M.GUI_GALLERIES_TABS_LABEL_CONTAINERTYPES_0+'</div></div>';
              
    /** html fragment for the tab with sitemap. */
    var htmlTabSitemapSceleton = cms.galleries.htmlTabSitemapSceleton = '<div id="' + cms.galleries.arrayTabIds['cms_tab_sitemap'] + '">\
@@ -1485,7 +1485,6 @@
       var searchEnables = false;
       // display the search criteria
       
-      //$.each(cms.galleries.keysSearchObject, function() {
       for (var i = 0; i < cms.galleries.keysSearchObject.length; i++) {         
          //var searchCriteria = this;
          var searchCriteria = cms.galleries.keysSearchObject[i];
@@ -1548,7 +1547,6 @@
             }
          }
       }
-      //});
          
       // display the search results
       if (searchEnables) {

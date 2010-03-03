@@ -212,9 +212,9 @@
                               
    /** Html for the advenced tab in editor mode. */                              
    var advancedTabHtml = '<div class="cms-header-small cms-clear-right">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LINK_LABEL_0+'</div>\
-                     <div class="cms-editable-field cms-left cms-width-500" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
+                     <div class="cms-editable-field cms-left" alt="' + cms.imagepreviewhandler.editorKeys['fckAlt'] + '">\
                           <span class="cms-item-title cms-width-95">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_URL_LABEL_0+'</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advLinkUrl'] + '" class="cms-item-edit cms-width-390 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LINK_TITLE_0+' ' + '' + '" value="" />\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLinkUrl'] + '" class="cms-item-edit cms-width-380 ui-corner-all" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LINK_TITLE_0+' ' + '' + '" value="" />\
                      </div>\
                      <button id="' + cms.imagepreviewhandler.editorKeys['advBrowseServer'] + '" class="cms-right ui-state-default ui-corner-all">\
                           <span class="cms-galleries-button">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_BROWSE_SERVER_0+'</span>\
@@ -225,30 +225,30 @@
                      <div class="cms-header-small cms-clear-left">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ATTRIBUTES_LABEL_0+'</div>\
                      <div class="cms-editable-field cms-left cms-width-620 cms-clear-right" alt="' + cms.imagepreviewhandler.editorKeys['advId'] + '">\
                           <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ID_LABEL_0+'</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advId'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ID_TITLE_0+'" value="" />\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advId'] + '" class="cms-item-edit cms-width-450 ui-corner-all" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ID_TITLE_0+'" value="" />\
                      </div>\
                      <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '">\
                           <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLESHEET_LABEL_0+'</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLESHEET_TITLE_0+'" value="" />\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advClasses'] + '" class="cms-item-edit cms-width-450 ui-corner-all" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLESHEET_TITLE_0+'" value="" />\
                      </div>\
                      <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '">\
                           <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLE_LABEL_0+'</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLE_TITLE_0+'" value="" />\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advStyle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_STYLE_TITLE_0+'" value="" />\
                      </div>\
                      <div class="cms-editable-field cms-left cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '">\
                           <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_DESCRIPTION_LABEL_0+'</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_DESCRIPTION_TITLE_0+'" value="" />\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLongDesc'] + '" class="cms-item-edit cms-width-450 ui-corner-all" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_DESCRIPTION_TITLE_0+'" value="" />\
                      </div>\
                      <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '">\
                           <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ADVISORY_TITLE_LABEL_0+'</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ADVISORY_TITLE_TITLE_0+'" value="" />\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advAdvTitle'] + '" class="cms-item-edit cms-width-450 ui-corner-all" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_ADVISORY_TITLE_TITLE_0+'" value="" />\
                      </div>\
                      <div class="cms-drop-down cms-format-line cms-left cms-width-620" id="' + editorKeys['advLangDir'] + '">\
                          <label class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_LABEL_0+'</label>\
                      </div>\
                      <div class="cms-editable-field cms-left  cms-width-620" alt="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '">\
                           <span class="cms-item-title cms-width-150">'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_CODE_LABEL_0+'</span>\
-                          <input id="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '" class="cms-item-edit cms-width-450 ui-corner-all" name="TODO" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_CODE_TITLE_0+'" value="" />\
+                          <input id="' + cms.imagepreviewhandler.editorKeys['advLangCode'] + '" class="cms-item-edit cms-width-450 ui-corner-all" title="'+M.GUI_IMAGEPREVIEW_HTML_ADVANCED_LANGUAGE_CODE_TITLE_0+'" value="" />\
                      </div>';                              
                                                                 
    /**
