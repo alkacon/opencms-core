@@ -8,7 +8,7 @@
     <property name="opencms.input.libs.runtime"			location="${opencms.input}/lib/runtime" />
     <property name="opencms.input.libs.compile"			location="${opencms.input}/lib/compile" />
 	<property name="opencms.build" 						location="${opencms.output}/build" />
-	<property name="opencms.core.lib" 					location="${opencms.build}/jars-core" />
+	<property name="opencms.output.jars" 					location="${opencms.build}/jars-core" />
     <property name="java.target.version"                value="1.5" />
 
 	<property environment="env" />
@@ -22,11 +22,11 @@
 
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
-			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.0.jar" />
+			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.2.jar" />
+			<fileset dir="${opencms.input.libs.runtime}">
+			    <include name="**/*.jar"/>
+	        </fileset>
+			<pathelement location="${opencms.input}/bin" />
 		</classpath>
 	</taskdef>
 
@@ -41,10 +41,10 @@
 
 	<property name="app.name" 					value="opencms" />
 
-	<property name="jar.excludes" 				value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
+	<property name="jar.excludes" 				value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath,*.gwt.xml" />
 	<property name="zip.excludes" 				value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
-	<property name="jar.includes.single" 		value="**/*.properties,**/*.txt,**/*.dtd,**/*.xml,**/*.sql" />
-	<property name="jar.includes.shared" 		value="*.properties,*.txt,*.dtd,*.xml,*.sql" />
+	<property name="jar.includes.single" 		value="**/*.properties,**/*.txt,**/*.dtd,**/*.xml,**/*.sql,**/*.gwt.rpc" />
+	<property name="jar.includes.shared" 		value="*.properties,*.txt,*.dtd,*.xml,*.sql,*.gwt.rpc" />
 
 	<target name="clean" description="Deletes outputs">
 		<delete dir="${module.output.classes}" />
@@ -120,7 +120,7 @@
 			<available file="${module.input.src.single}" />
 			<then>
 				<property name="src.mode" value="single" />
-				<property name="module.input.src" value="${module.input.src.single}" />
+				<property name="module.input.src" location="${module.input.src.single}" />
 			</then>
 			<else>
 				<var name="module.input.src.test" value="${module.input.src.shared}" />
@@ -136,7 +136,7 @@
 					<then>
 						<!--echo message="module.packages is set to ${module.packages}"/-->
 						<property name="src.mode" value="multishared" />
-						<property name="module.input.src" value="${module.input.src.shared}" />
+						<property name="module.input.src" location="${module.input.src.shared}" />
 					</then>
 					<else>
 						<if>
@@ -156,7 +156,7 @@
 							<isset property="notempty" />
 							<then>
 								<property name="src.mode" value="shared" />
-								<property name="module.input.src" value="${module.input.src.test}" />
+								<property name="module.input.src" location="${module.input.src.test}" />
 							</then>
 							<else>
 								<property name="src.mode" value="none" />
@@ -190,9 +190,43 @@
 			</then>
 		</if>
 
+		<if>
+			<isset property="module.gwt" />
+			<then>
+				<if>
+					<equals arg1="${src.mode}" arg2="multishared" />
+					<then>
+						<propertyregex property="module.gwt.package"
+				              input="${module.packages}"
+				              regexp="([^,]*)"
+				              select="\1" />
+						<propertyregex property="module.gwt.package"
+					          override="true"
+							  global="true"
+				              input="${module.gwt.package}"
+				              regexp="\."
+				              replace="/" />
+						<property name="module.gwt.policies" location="${module.input.src}/${module.gwt.package}" />
+					</then>
+					<else>
+						<property name="module.gwt.policies" location="${module.input.src}" />
+					</else>
+				</if>
+				<if>
+					<isset property="module.gwt.rename" />
+					<then>
+						<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt.rename}" />
+					</then>
+					<else>
+						<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt}" />
+					</else>
+				</if>
+			</then>
+		</if>
+
 		<echo message="Building OpenCms Common Module ${module.name} ${module.version} for OpenCms ${version.number}" />
 		<echo message=" " />
-		<echo message="OpenCms core lib directory is: ${opencms.core.lib}" />
+		<echo message="OpenCms core lib directory is: ${opencms.output.jars}" />
 		<echo message="OpenCms runtime lib directory is: ${opencms.input.libs.runtime}" />
 		<echo message="OpenCms compile lib directory is: ${opencms.input.libs.compile}" />
 		<echo message="OpenCms output directory is: ${opencms.output}" />
@@ -214,6 +248,14 @@
 		<echo message=" " />
 		<echo message="Module dependencies: ${module.dependencies}" />
 		<echo message="Additional lib folder: ${module.input.lib}" />
+		<if>
+			<isset property="module.gwt" />
+			<then>
+				<echo message="GWT module: ${module.gwt}" />
+				<echo message="GWT output: ${module.gwt.output}" />
+				<echo message="GWT RPC serialization policies path: ${module.gwt.policies}"/>
+			</then>
+		</if>
 	</target>
 
 	<target name="builddeps" description="Generates all the modules dependencies">
@@ -280,6 +322,83 @@
 				<!--echo message="${module.libs.path}" /-->
 
 				<if>
+					<isset property="module.gwt" />
+					<then>
+					    <outofdate verbose="true">
+					        <sourcefiles>
+					            <fileset dir="${module.input.src.single}" erroronmissingdir="false">
+					            	<include name="**/*.gwt.xml" />
+					            	<include name="**/client/**" />
+						        </fileset>
+					            <fileset dir="${module.input.src.shared}" erroronmissingdir="false" >
+					            	<include name="**/*.gwt.xml" />
+					            	<include name="**/client/**" />
+						        </fileset>
+								<fileset dir="${opencms.input.libs.runtime}" />
+								<fileset dir="${opencms.input.libs.compile}" />
+						    </sourcefiles>
+					        <targetfiles path="${module.gwt.output}/${module.gwt}.nocache.js" />
+					        <sequential>
+								<!--echo message="Deleting GWT output folder"/-->
+						    	<delete dir="${module.gwt.output}" failonerror="false" />
+								<if>
+								    <isset property="module.gwt.rename" />
+									<then>
+								    	<delete dir="${module.input.res}/system/modules/${module.name}/${module.gwt}" failonerror="false" />
+									</then>
+								</if>
+	
+								<!--echo message="Deleting old RPC serialization policies on: ${module.gwt.policies}"/-->
+					        	<delete>
+								    <fileset dir="${module.gwt.policies}" includes="*.gwt.rpc"/>
+							    </delete>
+
+					        	<!-- GWT compiling --> 
+						  		<java dir="${basedir}" 
+									  classname="com.google.gwt.dev.Compiler" 
+									  fork="yes" 
+									  failonerror="true"
+									  maxmemory="512m">
+						            <arg value="-localWorkers" />
+						            <arg value="2" />
+						            <arg value="-war" />
+						            <arg file="${module.input.res}/system/modules/${module.name}" />
+						            <arg value="${module.gwt}" />
+									<classpath>
+										<fileset dir="${opencms.input.libs.runtime}">
+											<include name="**/*.jar" />
+										</fileset>
+										<fileset dir="${opencms.input.libs.compile}">
+											<include name="**/*.jar" />
+										</fileset>
+										<fileset dir="${opencms.output.jars}">
+											<include name="**/*.jar" />
+										</fileset>
+										<pathelement path="${module.input.src.single}" />
+										<pathelement path="${module.input.src.shared}" />
+										<pathelement path="${module.dependencies.path}" />
+										<pathelement path="${module.libs.path}" />
+									</classpath>
+					            </java>
+								
+								<!--echo message="Renaming GWT output folder" /-->
+								<if>
+									<isset property="module.gwt.rename" />
+									<then>
+										<move file="${module.input.res}/system/modules/${module.name}/${module.gwt}" tofile="${module.gwt.output}"/>
+									</then>
+								</if>
+								
+						    	<!--echo message="RPC serialization policies:"/-->
+								<move todir="${module.gwt.policies}">
+									<fileset dir="${module.gwt.output}" includes="*.gwt.rpc" />
+								</move>
+					        </sequential>
+					    </outofdate>
+					</then>
+				</if>
+
+				<if>
 					<equals arg1="${src.mode}" arg2="shared" />
 					<then>
 						<javac 
@@ -289,6 +408,7 @@
 							optimize="on" 
 							deprecation="on" 
 							includes="${module.package}/*.java" 
+							excludes="${module.package}/client/**.java"
 							source="1.5" 
 							target="${java.target.version}">
 						
@@ -299,7 +419,7 @@
 								<fileset dir="${opencms.input.libs.compile}">
 									<include name="**/*.jar" />
 								</fileset>
-								<fileset dir="${opencms.core.lib}">
+								<fileset dir="${opencms.output.jars}">
 									<include name="**/*.jar" />
 								</fileset>
 								<pathelement path="${module.dependencies.path}" />
@@ -330,6 +450,7 @@
 											optimize="on" 
 											deprecation="on" 
 											includes="${package.dir}/*.java" 
+											excludes="${module.package}/client/**.java"
 											source="1.5" 
 											target="${java.target.version}">
 											
@@ -340,7 +461,7 @@
 												<fileset dir="${opencms.input.libs.compile}">
 													<include name="**/*.jar" />
 												</fileset>
-												<fileset dir="${opencms.core.lib}">
+												<fileset dir="${opencms.output.jars}">
 													<include name="**/*.jar" />
 												</fileset>
 												<pathelement path="${module.dependencies.path}" />
@@ -364,6 +485,7 @@
 									target="${java.target.version}">
 									
 									<exclude name="**/test/**/*.java" />
+									<exclude name="${module.package}/client/**.java" />
 									<classpath>
 										<fileset dir="${opencms.input.libs.runtime}">
 											<include name="**/*.jar" />
@@ -371,7 +493,7 @@
 										<fileset dir="${opencms.input.libs.compile}">
 											<include name="**/*.jar" />
 										</fileset>
-										<fileset dir="${opencms.core.lib}">
+										<fileset dir="${opencms.output.jars}">
 											<include name="**/*.jar" />
 										</fileset>
 										<pathelement path="${module.dependencies.path}" />
@@ -419,6 +541,12 @@
 
 	<target name="dist" depends="jar" description="Builds the distribution .zip file">
 
+		<if>
+			<isset property="module.gwt" />
+			<then>
+				<ensuredirmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}"  />
+			</then>
+		</if>
 		<mkdir dir="${module.output.zip}" />
 		<if>
 			<available file="${module.output.jar}" />

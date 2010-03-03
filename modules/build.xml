@@ -27,11 +27,11 @@
 	
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
-			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.0.jar" />
+			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.2.jar" />
+			<fileset dir="${opencms.input.libs.runtime}">
+			    <include name="**/*.jar"/>
+	        </fileset>
+			<pathelement location="${opencms.input}/bin" />
 		</classpath>
 	</taskdef>
 	
@@ -129,7 +129,7 @@
     <target name="compile" 
     	depends="init" description="Compile the given modules">
     	
-		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="jar"/>
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="setup-jar"/>
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     	  	<ant antfile="${basedir}/build-single.xml" target="compile" inheritAll="false" >
