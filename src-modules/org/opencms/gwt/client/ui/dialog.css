@@ -1,0 +1,94 @@
+@external popupContent, Caption;
+.popup{
+    z-index: 20000;
+}
+
+.popup .popupContent{
+    margin: 3px;
+    position: relative;
+    background: #ffffff;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    border: solid 1px value("constantsCss.borderColor");
+    font-family: value("constantsCss.fontFamily");
+}
+.popupOverlay{
+    background: #dddddd;
+    z-index: 19000;
+}
+.popupShadow{
+    height: literal("expression(this.parentNode.offsetHeight)");
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+    top: 0px;
+    left: 0px;
+    background: #aaaaaa;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.popupMainContent{
+    font-size: value("constantsCss.fontSize");
+    width: 100%;
+    padding: 5px;
+}
+
+@sprite .popupHead, .Caption{
+    font-size: value("constantsCss.fontSizeBig");
+    font-weight: bold;
+    cursor: move;
+    padding:5px;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -webkit-border-radius-topleft: 4px;
+    -webkit-border-radius-topright: 4px;
+    border-radius-topleft: 4px;
+    border-radius-topright: 4px;
+    gwt-image: "backgroundDefault"; 
+    background-position: 50% 50%; 
+    height: auto; 
+}
+.popupButtonPanel{
+    margin-top: 5px;
+}
+.popupButtonPanel td{
+    padding-left: 4px;
+}
+
+.popup.menuPopup .popupShadow{
+    -moz-border-radius-topleft: 0px;
+    -moz-border-radius-topright: 0px;
+    -webkit-border-radius-topleft: 0px;
+    -webkit-border-radius-topright: 0px;
+    border-radius-topleft: 0px;
+    border-radius-topright: 0px;
+}
+
+.popup.menuPopup .popupContent{
+    margin-top: 0px;
+    -moz-border-radius-topleft: 0px;
+    -webkit-border-radius-topleft: 0px;
+    -webkit-border-radius-topright: 0px;
+    border-radius-topright: 0px;
+    background: #CFCFCF;
+    border-top: none;
+}
+
+@if user.agent ie6 {
+    .popupShadow, .popupOverlay{
+        filter: literal("alpha(opacity = 30)");
+    }
+    .popupShadow{
+        height: literal("expression(this.parentNode.offsetHeight)");
+    }
+} @else {
+    .popupShadow, .popupOverlay{
+        opacity: 0.3;
+    }
+    .popupShadow{
+        height: 100%;
+    }
+}

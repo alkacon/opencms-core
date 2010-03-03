@@ -1,0 +1,24 @@
+@external html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
+
+/**  */
+@sprite .magnifierIconActive, .cmsState-up-hovering .magnifierIcon, .cmsState-down-hovering .magnifierIcon, .cmsState-down .magnifierIcon{
+    gwt-image: "magnifierIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .magnifierIconInactive, .cmsState-up .magnifierIcon, .cmsState-up-disabled .magnifierIcon, .cmsState-down-disabled .magnifierIcon{
+    gwt-image: "magnifierIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .closeIconActive, .cmsState-up-hovering .closeIcon, .cmsState-down-hovering .closeIcon, .cmsState-down .closeIcon{
+    gwt-image: "closeIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .closeIconInactive, .cmsState-up .closeIcon, .cmsState-up-disabled .closeIcon, .cmsState-down-disabled .closeIcon{
+    gwt-image: "closeIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}

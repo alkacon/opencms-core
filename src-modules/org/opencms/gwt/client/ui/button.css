@@ -1,0 +1,73 @@
+@external html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
+
+.cmsState{}
+.cmsState-down-disabled{}
+.cmsTextButton,.cmsImageButton { 
+    font-family: value("constantsCss.fontFamily");
+    
+    -moz-border-radius: 4px;
+    
+    -webkit-border-radius: 4px;
+    
+    border-radius: 4px;
+    
+    border:1px solid value("constantsCss.borderColor");
+    color: value("constantsCss.color");
+    padding: .18em .28em;
+    line-height: 16px;
+    font-size: value("constantsCss.fontSize");
+    display: inline-block;
+    vertical-align: middle;
+    outline: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.cmsImageButtonTransparent{
+    display: inline-block;
+    vertical-align: middle;
+    outline: none;
+    cursor: pointer;
+}
+
+@if user.agent ie6 {
+    .cmsTextButton, .cmsTextButton div.html-face{
+        white-space: nowrap;
+        display: inline;
+    }
+    .cmsMinWidth{
+        width: 6em;
+        overflow: visible !important;
+    }
+} @else {
+    .cmsTextButton div.html-face{
+        display: inline-block;
+        white-space: nowrap;
+    }
+    .cmsMinWidth{
+        min-width: 6em;
+    }
+}
+
+.cmsButtonBig{
+    font-size: value("constantsCss.fontSizeBig");;
+}
+
+.cmsButtonSmall{
+    font-size: value("constantsCss.fontSizeSmall");;
+}
+
+.cmsButtonMedium{}
+
+.cmsTextButton.cmsState-up-disabled,.cmsImageButton.cmsState-up-disabled{
+    color: value("constantsCss.colorDisabled");
+    background: #bbbbbb;
+}
+
+
+
+
+@sprite .cmsTextButton.cmsState-up, .cmsImageButton.cmsState-up{gwt-image: "backgroundDefault"; background-position: 50% 50%; height: auto;} 
+@sprite .cmsTextButton.cmsState-down-hovering, .cmsTextButton.cmsState-up-hovering, 
+    .cmsImageButton.cmsState-down-hovering, .cmsImageButton.cmsState-up-hovering{gwt-image: "backgroundHover"; background-position: 50% 50%; height: auto;}
+@sprite .cmsTextButton.cmsState-down, .cmsImageButton.cmsState-down{gwt-image: "backgroundActive"; background-position: 50% 50%;height: auto;}      

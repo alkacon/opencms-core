@@ -1,0 +1,9 @@
+@def fontFamily literal("Verdana,Helvetica,Arial,sans-serif");
+@def fontSize 12px;
+@def fontSizeSmall 10px;;
+@def fontSizeBig 14px;
+@def color #222222;
+@def colorDisabled #999999;
+@def borderColor #999999;
+@def borderColorInactive #aaaaaa;
+@def borderColorActive #666666;

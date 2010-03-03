@@ -1,0 +1,235 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
+ * Date   : $Date: 2010/03/03 15:32:37 $
+ * Version: $Revision: 1.1 $
+ * 
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.gwt.client.rpc;
+
+import org.opencms.ade.client.Messages;
+import org.opencms.gwt.client.ui.CmsPopupDialog;
+
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
+
+/**
+ * Consistently manages RPCs errors and 'loading' state.<p>
+ * 
+ * @param <T> The type of the expected return value
+ * 
+ * @author Michael Moossen 
+ * 
+ * @version $Revision: 1.1 $ 
+ * 
+ * @since 8.0
+ */
+public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
+
+    /** Nice overlay showing the 'loading' message. */
+    private CmsPopupDialog m_loadingDialog;
+
+    /** The timer to control the display of the 'loading' state, if the action takes too long. */
+    private Timer m_timer;
+
+    /**
+     * Executes the current RPC call.<p>
+     * 
+     * Initializes client-server communication and will
+     */
+    public abstract void execute();
+
+    /**
+     * Handle errors.<p>
+     * 
+     * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+     */
+    public void onFailure(Throwable t) {
+
+        stop();
+        int ticket = (int)(Math.random() * 10000000);
+        boolean stopper = (t instanceof IncompatibleRemoteServiceException);
+        stopper |= (t instanceof SerializationException);
+        String title = "Error";
+        if (stopper) {
+            String text = "A fatal error occurred, you should contact Technical Support."
+                + "\n"
+                + "Provided ticket '"
+                + ticket
+                + "'";
+            CmsPopupDialog dialog = getDialog(title, text);
+            dialog.setStyleName("stopper");
+            dialog.setAutoHideEnabled(false);
+        } else {
+            String message = t.getLocalizedMessage();
+            if (message == null) {
+                message = t.getMessage();
+            }
+            if (message == null) {
+                message = t.getClass().getName();
+            }
+            String text = "An error occured:\n"
+                + message
+                + "\n"
+                + "Provided ticket '"
+                + ticket
+                + "'"
+                + "\n"
+                + "You may retry this operation by clicking 'OK'.\n"
+                + "However if the error persists, contact Technical Support.";
+            CmsPopupDialog dialog = getDialog(title, text);
+            dialog.setStyleName("error");
+            dialog.setAutoHideEnabled(false);
+            dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                public void onClose(CloseEvent<PopupPanel> event) {
+
+                    execute();
+                }
+            });
+        }
+        // TODO: log ticket on server if possible
+    }
+
+    /**
+     * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+     */
+    public void onSuccess(T value) {
+
+        try {
+            onResponse(value);
+        } catch (RuntimeException error) {
+            onFailure(error);
+        }
+    }
+
+    /**
+     * Starts the timer for showing the 'loading' state.<p>
+     * 
+     * Note: Has to be called manually before calling the RPC service.<p>
+     * 
+     * @param delay the delay in milliseconds
+     */
+    public void start(int delay) {
+
+        if (delay <= 0) {
+            show();
+            return;
+        }
+        m_timer = new Timer() {
+
+            /**
+             * @see com.google.gwt.user.client.Timer#run()
+             */
+            @Override
+            public void run() {
+
+                show();
+            }
+        };
+        m_timer.schedule(delay);
+    }
+
+    /**
+     * Stops the timer.<p>
+     * 
+     * Note: Has to be called manually on success.<p>
+     */
+    public void stop() {
+
+        if (m_timer != null) {
+            m_timer.cancel();
+            m_timer = null;
+        }
+        hide();
+    }
+
+    /**
+     * Creates a new dialog with the given title and text.<p>
+     * 
+     * @param title the dialog title
+     * @param text the dialog text
+     * 
+     * @return a new dialog, already visible
+     */
+    protected CmsPopupDialog getDialog(String title, String text) {
+
+        CmsPopupDialog dialog = new CmsPopupDialog(title, new Label(text));
+        dialog.setAnimationEnabled(true);
+        dialog.setGlassEnabled(false);
+        dialog.setAutoHideEnabled(true);
+        dialog.setModal(true);
+        dialog.center();
+        return dialog;
+    }
+
+    /**
+     * Hides the 'loading message'.<p>
+     */
+    protected void hide() {
+
+        if ((m_loadingDialog == null) || !m_loadingDialog.isVisible()) {
+            return;
+        }
+        // remove nice overlay
+        m_loadingDialog.hide();
+    }
+
+    /**
+     * Handles the result when received from server.<p>
+     * 
+     * @param result the result from server
+     * 
+     * @see AsyncCallback#onSuccess(Object)
+     */
+    protected abstract void onResponse(T result);
+
+    /**
+     * Shows the 'loading message'.<p>
+     */
+    protected void show() {
+
+        if ((m_loadingDialog != null) && m_loadingDialog.isVisible()) {
+            return;
+        }
+        // show nice overlay
+        if (m_loadingDialog == null) {
+            m_loadingDialog = getDialog(Messages.get().key(Messages.GUI_LOADING_0), Messages.get().key(
+                Messages.GUI_PLEASE_WAIT_0));
+            m_loadingDialog.setAutoHideEnabled(false);
+            m_loadingDialog.setStyleName("loading");
+        } else {
+            m_loadingDialog.show();
+        }
+    }
+}
