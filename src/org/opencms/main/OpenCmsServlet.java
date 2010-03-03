@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2010/01/07 14:14:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/03 15:32:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.main;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.staticexport.CmsStaticExportData;
@@ -76,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -97,6 +98,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
     /** Name of the <code>WebApplicationContext</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_WEB_APPLICATION_CONTEXT = "WebApplicationContext";
+
+    /** GWT RPC services suffix. */
+    private static final String HANDLE_GWT = ".gwt";
 
     /** Handler prefix. */
     private static final String HANDLE_PATH = "/handle";
@@ -148,6 +152,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         if (path.startsWith(HANDLE_PATH)) {
             // this is a request to an OpenCms handler URI
             invokeHandler(req, res);
+        } else if (path.endsWith(HANDLE_GWT)) {
+            // handle GWT rpc services  
+            String serviceName = CmsResource.getName(path);
+            serviceName = serviceName.substring(0, serviceName.length() - HANDLE_GWT.length());
+            OpenCmsCore.getInstance().invokeGwtService(serviceName, req, res, getServletConfig());
         } else {
             // standard request to a URI in the OpenCms VFS 
             OpenCmsCore.getInstance().showResource(req, res);
@@ -192,7 +201,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 CmsObject cms = null;
                 CmsStaticExportData exportData = null;
                 try {
-                	// this will be set in the root site
+                    // this will be set in the root site
                     cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
                     exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
                 } catch (CmsException e) {

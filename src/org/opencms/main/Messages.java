@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2010/01/18 08:48:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/03 15:32:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -367,6 +367,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_GENERIC_0 = "LOG_ERROR_GENERIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_GWTSERVICE_SHUTDOWN_2 = "LOG_ERROR_GWTSERVICE_SHUTDOWN_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_MEMORY_MONITOR_SHUTDOWN_1 = "LOG_ERROR_MEMORY_MONITOR_SHUTDOWN_1";

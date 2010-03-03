@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2009/09/07 12:41:53 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2010/03/03 15:32:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.i18n;
 
+import org.opencms.gwt.I_CmsClientMessageBundle;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -41,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.20.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -58,6 +60,15 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
         bundles.add(org.opencms.workplace.demos.list.Messages.get());
         bundles.add(org.opencms.workplace.demos.widget.Messages.get());
         return bundles;
+    }
+
+    /**
+     * @see org.opencms.i18n.TestCmsMessageBundles#getTestClientMessageBundles()
+     */
+    @Override
+    protected I_CmsClientMessageBundle[] getTestClientMessageBundles() throws Exception {
+
+        return new I_CmsClientMessageBundle[] {org.opencms.ade.Messages.get()};
     }
 
     /**
@@ -78,7 +89,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.workplace.tools.cache.Messages.get(),
             org.opencms.workplace.tools.content.Messages.get(),
             org.opencms.workplace.tools.content.check.Messages.get(),
-            // org.opencms.workplace.tools.content.propertyviewer.Messages.get(),
+            org.opencms.workplace.tools.content.propertyviewer.Messages.get(),
             org.opencms.workplace.tools.database.Messages.get(),
             org.opencms.workplace.tools.galleryoverview.Messages.get(),
             org.opencms.workplace.tools.history.Messages.get(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/01/26 11:00:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/03/03 15:32:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.CmsGwtService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
@@ -111,6 +112,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -143,7 +145,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,9 +166,6 @@ public final class OpenCmsCore {
     /** The ade manager. */
     private CmsADEManager m_adeManager;
 
-    /** The sitemap manager. */
-    private CmsSitemapManager m_sitemapManager;
-
     /** The configured authorization handler. */
     private I_CmsAuthorizationHandler m_authorizationHandler;
 
@@ -184,6 +183,9 @@ public final class OpenCmsCore {
 
     /** The set of configured export points. */
     private Set<CmsExportPoint> m_exportPoints;
+
+    /** Instantiated GWT RPC services. */
+    private Map<String, CmsGwtService> m_gwtServices;
 
     /** The site manager contains information about the Cms import/export. */
     private CmsImportExportManager m_importExportManager;
@@ -250,6 +252,9 @@ public final class OpenCmsCore {
 
     /** The site manager contains information about all configured sites. */
     private CmsSiteManagerImpl m_siteManager;
+
+    /** The sitemap manager. */
+    private CmsSitemapManager m_sitemapManager;
 
     /** The static export manager. */
     private CmsStaticExportManager m_staticExportManager;
@@ -1249,6 +1254,8 @@ public final class OpenCmsCore {
      */
     protected synchronized void initContext(ServletContext context) throws CmsInitException {
 
+        m_gwtServices = new HashMap<String, CmsGwtService>();
+
         // automatic servlet container recognition and specific behavior:
         CmsServletContainerSettings servletContainerSettings = new CmsServletContainerSettings(context);
         getSystemInfo().init(servletContainerSettings);
@@ -1496,6 +1503,50 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Invokes the GWT servlet from within OpenCms.<p>
+     * 
+     * @param serviceName the GWT PRC service class name 
+     * @param req the current servlet request
+     * @param res the current servlet response
+     * @param servletConfig the servlet configuration
+     */
+    protected void invokeGwtService(
+        String serviceName,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        ServletConfig servletConfig) {
+
+        CmsObject cms = null;
+        try {
+            // instantiate CMS context
+            cms = initCmsObject(req, res);
+            // instantiate GWT RPC service
+            CmsGwtService rpcService = getGwtService(serviceName, servletConfig);
+            // check permissions
+            rpcService.checkPermissions(cms);
+            // set runtime variables
+            rpcService.setCms(cms);
+            try {
+                rpcService.service(req, res);
+            } finally {
+                // be sure to clear the cms context
+                rpcService.setCms(null);
+            }
+        } catch (Throwable t) {
+            // error code not set - set "internal server error" (500)
+            LOG.error(t.getLocalizedMessage(), t);
+            int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            res.setStatus(status);
+            try {
+                res.sendError(status, t.toString());
+            } catch (IOException e) {
+                // can be ignored
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+    }
+
+    /**
      * This method adds an Object to the OpenCms runtime properties.
      * The runtime properties can be used to store Objects that are shared
      * in the whole system.<p>
@@ -1566,6 +1617,21 @@ public final class OpenCmsCore {
                     // log exception to see which method did call the shutdown
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
+
+                // Shutdown GWT RPC services
+                if (m_gwtServices != null) {
+                    for (CmsGwtService gwtService : m_gwtServices.values()) {
+                        try {
+                            gwtService.destroy();
+                        } catch (Throwable e) {
+                            CmsLog.INIT.error(Messages.get().getBundle().key(
+                                Messages.LOG_ERROR_GWTSERVICE_SHUTDOWN_2,
+                                gwtService.getClass().getName(),
+                                e.getMessage()), e);
+                        }
+                    }
+                }
+
                 try {
                     // the first thing we have to do is to wait until the current publish process finishes
                     m_publishEngine.shutDown();
@@ -1952,6 +2018,28 @@ public final class OpenCmsCore {
                 }
             }
         }
+    }
+
+    /**
+     * 
+     * 
+     * @param serviceName the GWT PRC service class name 
+     * @param servletConfig the servlet configuration
+     * 
+     * @return the GWT service instance
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    private CmsGwtService getGwtService(String serviceName, ServletConfig servletConfig) throws Throwable {
+
+        CmsGwtService gwtService = m_gwtServices.get(serviceName);
+        if (gwtService != null) {
+            return gwtService;
+        }
+        gwtService = (CmsGwtService)Class.forName(serviceName).newInstance();
+        gwtService.init(servletConfig);
+
+        return gwtService;
     }
 
     /**

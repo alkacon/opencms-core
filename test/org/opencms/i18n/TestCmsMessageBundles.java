@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2010/01/27 14:35:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/03 15:32:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,14 @@
 
 package org.opencms.i18n;
 
+import org.opencms.gwt.I_CmsClientMessageBundle;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -54,7 +56,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -123,29 +125,29 @@ public abstract class TestCmsMessageBundles extends TestCase {
     /**
      * Performs some key and language independent tests.<p>
      * 
-     * @param bundle the bundle to test
+     * @param className the bundle implementing class name
+     * @param bundleName the bundle name to test
      * @param locale the locale to test
      * 
      * @return a description of all errors found
      */
-    protected String doPreTestBundle(I_CmsMessageBundle bundle, Locale locale) {
+    protected String doPreTestBundle(String className, String bundleName, Locale locale) {
 
-        String className = bundle.getClass().getName();
         int indexOfMessages = className.lastIndexOf(".Messages");
         if (indexOfMessages < 0) {
             return "Bundle '" + className + "' is not a 'Messages' class.\n";
         }
-        if (!className.toLowerCase().equals(bundle.getBundleName().toLowerCase())) {
-            return "Bundle '" + bundle.getBundleName() + "' has not the form: packagename.messages.\n";
+        if (!className.toLowerCase().equals(bundleName.toLowerCase())) {
+            return "Bundle '" + bundleName + "' has not the form: packagename.messages.\n";
         }
-        indexOfMessages = bundle.getBundleName().lastIndexOf(".messages");
+        indexOfMessages = bundleName.lastIndexOf(".messages");
         if (indexOfMessages < 0) {
             return "The Message bundle '"
-                + bundle.getBundleName()
+                + bundleName
                 + "' does not ends with: '.messages'. \n "
                 + "Change the constant literal ('private static final String BUNDLE_NAME')\n";
         }
-        String fileName = getMessageBundleSourceName(bundle, locale);
+        String fileName = getMessageBundleSourceName(bundleName, locale);
         if (!Locale.ENGLISH.equals(locale)) {
             if (!(new File(fileName)).canRead()) {
                 return "Bundle '" + className + "' has no input for locale '" + locale + "'.\n";
@@ -158,111 +160,113 @@ public abstract class TestCmsMessageBundles extends TestCase {
     /**
      * Tests an individual message bundle.<p>
      * 
-     * @param bundle the bundle to test
+     * @param clazz the  bundle class
+     * @param bundleName the bundle class name
      * @param locale the locale to test
      * 
      * @return a description of all errors found
      * 
      * @throws Exception if the test fails
      */
-    protected String doTestBundle(I_CmsMessageBundle bundle, Locale locale) throws Exception {
+    protected String doTestBundle(Class<?> clazz, String bundleName, Locale locale) throws Exception {
 
         List keys = new ArrayList();
 
-        System.out.println("\nValidating all keys in bundle " + bundle.getBundleName() + " for locale " + locale + ":");
+        System.out.println("\nValidating all keys in bundle " + bundleName + " for locale " + locale + ":");
 
-        CmsMessages messages = getMessageBundle(bundle, locale);
+        CmsMessages messages = getMessageBundle(bundleName, locale);
 
         List errorMessages = new ArrayList();
         // use reflection on all member constants
-        Field[] fields = bundle.getClass().getDeclaredFields();
+        Field[] fields = clazz.getDeclaredFields();
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
-            if (field.getType().equals(String.class)) {
-                // check all String fields
-                String key = field.getName();
-
-                String value;
-                try {
-                    value = (String)field.get(bundle);
-                } catch (IllegalAccessException e) {
-                    continue;
-                }
-
-                System.out.println("Validating key '" + key + "': '" + messages.key(key) + "'");
-
-                // ensure the name id identical to the value
-                if (!key.equals(value)) {
-                    errorMessages.add("Key '" + key + "' has bad value '" + value + "'.");
-                }
-                // check if key exists in bundle for constant
-                String message = messages.key(key);
-                boolean isPresent = !CmsMessages.isUnknownKey(message);
-                boolean testKeyValue = false;
-                if (Locale.ENGLISH.equals(locale)) {
-                    testKeyValue = true;
-                } else {
-                    boolean isAdditionalKey = !key.toUpperCase().equals(key);
-                    testKeyValue = (isAdditionalKey || key.startsWith(KEY_PREFIX_ERR) || key.startsWith(KEY_PREFIX_GUI) || key.startsWith(KEY_PREFIX_RPT));
-                }
-                if (testKeyValue && !isPresent) {
-                    errorMessages.add("No message for '" + key + "' in bundle.");
-                }
-
-                // ensure key has the form
-                // "{ERR|LOG|INIT|GUI|RPT}_KEYNAME_{0-9}";
-                if (key.length() < 7) {
-                    errorMessages.add("Key '" + key + "' is too short (length must be at least 7).");
-                }
-                if (!key.equals(key.toUpperCase())) {
-                    errorMessages.add("Key '" + key + "' must be all upper case.");
-                }
-                if ((key.charAt(key.length() - 2) != '_')
-                    || (!key.startsWith(KEY_PREFIX_ERR)
-                        && !key.startsWith(KEY_PREFIX_GUI)
-                        && !key.startsWith(KEY_PREFIX_INIT)
-                        && !key.startsWith(KEY_PREFIX_LOG) && !key.startsWith(KEY_PREFIX_RPT))) {
-                    errorMessages.add("Key '" + key + "' must have the form {ERR|LOG|INIT|GUI|RPT}_KEYNAME_{0-9}.");
-                    continue;
-                }
-                int argCount = 0;
-                try {
-                    argCount = Integer.valueOf(key.substring(key.length() - 1)).intValue();
-                } catch (Throwable e) {
-                    errorMessages.add("Key '" + key + "' must end in the number of parameters.");
-                    continue;
-                }
-                if (testKeyValue && isPresent) {
-                    for (int j = 0; j < argCount; j++) {
-                        String arg = "{" + j;
-                        int pos = message.indexOf(arg);
-                        if (pos < 0) {
-                            errorMessages.add("Message '"
-                                + message
-                                + "' for key '"
-                                + key
-                                + "' misses argument {"
-                                + j
-                                + "}.");
-                        }
-                    }
-                    for (int j = argCount; j < 10; j++) {
-                        String arg = "{" + j;
-                        int pos = message.indexOf(arg);
-                        if (pos >= 0) {
-                            errorMessages.add("Message '"
-                                + message
-                                + "' for key '"
-                                + key
-                                + "' contains unused argument {"
-                                + j
-                                + "}.");
-                        }
-                    }
-                }
-                // store this key for later check against all properties in the bundle
-                keys.add(key);
+            if (!field.getType().equals(String.class) || !Modifier.isStatic(field.getModifiers())) {
+                continue;
             }
+            // check all String fields
+            String key = field.getName();
+
+            String value;
+            try {
+                value = (String)field.get(null);
+            } catch (IllegalAccessException e) {
+                continue;
+            }
+
+            System.out.println("Validating key '" + key + "': '" + messages.key(key) + "'");
+
+            // ensure the name id identical to the value
+            if (!key.equals(value)) {
+                errorMessages.add("Key '" + key + "' has bad value '" + value + "'.");
+            }
+            // check if key exists in bundle for constant
+            String message = messages.key(key);
+            boolean isPresent = !CmsMessages.isUnknownKey(message);
+            boolean testKeyValue = false;
+            if (Locale.ENGLISH.equals(locale)) {
+                testKeyValue = true;
+            } else {
+                boolean isAdditionalKey = !key.toUpperCase().equals(key);
+                testKeyValue = (isAdditionalKey || key.startsWith(KEY_PREFIX_ERR) || key.startsWith(KEY_PREFIX_GUI) || key.startsWith(KEY_PREFIX_RPT));
+            }
+            if (testKeyValue && !isPresent) {
+                errorMessages.add("No message for '" + key + "' in bundle.");
+            }
+
+            // ensure key has the form
+            // "{ERR|LOG|INIT|GUI|RPT}_KEYNAME_{0-9}";
+            if (key.length() < 7) {
+                errorMessages.add("Key '" + key + "' is too short (length must be at least 7).");
+            }
+            if (!key.equals(key.toUpperCase())) {
+                errorMessages.add("Key '" + key + "' must be all upper case.");
+            }
+            if ((key.charAt(key.length() - 2) != '_')
+                || (!key.startsWith(KEY_PREFIX_ERR)
+                    && !key.startsWith(KEY_PREFIX_GUI)
+                    && !key.startsWith(KEY_PREFIX_INIT)
+                    && !key.startsWith(KEY_PREFIX_LOG) && !key.startsWith(KEY_PREFIX_RPT))) {
+                errorMessages.add("Key '" + key + "' must have the form {ERR|LOG|INIT|GUI|RPT}_KEYNAME_{0-9}.");
+                continue;
+            }
+            int argCount = 0;
+            try {
+                argCount = Integer.valueOf(key.substring(key.length() - 1)).intValue();
+            } catch (Throwable e) {
+                errorMessages.add("Key '" + key + "' must end in the number of parameters.");
+                continue;
+            }
+            if (testKeyValue && isPresent) {
+                for (int j = 0; j < argCount; j++) {
+                    String arg = "{" + j;
+                    int pos = message.indexOf(arg);
+                    if (pos < 0) {
+                        errorMessages.add("Message '"
+                            + message
+                            + "' for key '"
+                            + key
+                            + "' misses argument {"
+                            + j
+                            + "}.");
+                    }
+                }
+                for (int j = argCount; j < 10; j++) {
+                    String arg = "{" + j;
+                    int pos = message.indexOf(arg);
+                    if (pos >= 0) {
+                        errorMessages.add("Message '"
+                            + message
+                            + "' for key '"
+                            + key
+                            + "' contains unused argument {"
+                            + j
+                            + "}.");
+                    }
+                }
+            }
+            // store this key for later check against all properties in the bundle
+            keys.add(key);
         }
 
         Enumeration bundleKeys = messages.getResourceBundle().getKeys();
@@ -278,11 +282,12 @@ public abstract class TestCmsMessageBundles extends TestCase {
             }
         }
 
+        Locale defLocale = Locale.ENGLISH;
         // for locales other than ENGLISH
-        if (!Locale.ENGLISH.equals(locale)) {
+        if (!defLocale.equals(locale)) {
             // compare the additional key names and params with the ENGLISH ones
             ResourceBundle resBundle = messages.getResourceBundle();
-            ResourceBundle enResBundle = bundle.getBundle().getResourceBundle();
+            ResourceBundle enResBundle = getMessageBundle(bundleName, defLocale).getResourceBundle();
             bundleKeys = enResBundle.getKeys();
             while (bundleKeys.hasMoreElements()) {
                 String bundleKey = (String)bundleKeys.nextElement();
@@ -331,7 +336,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
         }
 
         if (!errorMessages.isEmpty()) {
-            String msg = "Errors for bundle '" + bundle.getBundleName() + "' and Locale '" + locale + "':";
+            String msg = "Errors for bundle '" + bundleName + "' and Locale '" + locale + "':";
             Iterator it = errorMessages.iterator();
             while (it.hasNext()) {
                 msg += "\n     - ";
@@ -410,45 +415,39 @@ public abstract class TestCmsMessageBundles extends TestCase {
      * Prepares the test for the given bundle and locale and
      * returns a message bundle that DOES NOT include the default keys.<p>
      * 
-     * @param bundle the resource bundle to prepare
+     * @param bundleName the resource bundle to prepare
      * @param locale the locale to prepare the resource bundle for
      * 
      * @return a message bundle that DOES NOT include the default keys
      * 
      * @throws IOException if something goes wrong
      */
-    protected CmsMessages getMessageBundle(I_CmsMessageBundle bundle, Locale locale) throws IOException {
+    protected CmsMessages getMessageBundle(String bundleName, Locale locale) throws IOException {
 
         if (Locale.ENGLISH.equals(locale)) {
-            return bundle.getBundle(locale);
+            return new CmsMessages(bundleName, locale);
         }
-        String source = getMessageBundleSourceName(bundle, locale);
-        String fileName = CmsStringUtil.substitute(bundle.getBundleName(), ".", "/")
-            + "_"
-            + locale.toString()
-            + ".properties";
+        String source = getMessageBundleSourceName(bundleName, locale);
+        String fileName = CmsStringUtil.substitute(bundleName, ".", "/") + "_" + locale.toString() + ".properties";
         String target = TARGET_FOLDER + fileName;
         CmsFileUtil.copy(source, target);
-        return new CmsMessages(bundle.getBundleName() + "_" + locale.toString(), locale);
+        return new CmsMessages(bundleName + "_" + locale.toString(), locale);
     }
 
     /**
      * Returns the file name of the source message bundle.<p>
      * 
-     * @param bundle the resource bundle to get the file name for
+     * @param bundleName the resource bundle to get the file name for
      * @param locale the locale to get the file name for
      * 
      * @return the file name of the source message bundle
      */
-    protected String getMessageBundleSourceName(I_CmsMessageBundle bundle, Locale locale) {
+    protected String getMessageBundleSourceName(String bundleName, Locale locale) {
 
         if (Locale.ENGLISH.equals(locale)) {
-            return bundle.getBundleName();
+            return bundleName;
         }
-        String fileName = CmsStringUtil.substitute(bundle.getBundleName(), ".", "/")
-            + "_"
-            + locale.toString()
-            + ".properties";
+        String fileName = CmsStringUtil.substitute(bundleName, ".", "/") + "_" + locale.toString() + ".properties";
         String source = SOURCE_FOLDER_PREFIX
             + locale.toString()
             + SOURCE_FOLDER_INFIX
@@ -458,7 +457,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
         // if file from the localized folder is not readable take the file from the original module
         if (!new File(source).canRead()) {
-            source = getModuleMessagesBundleSourceName(bundle, locale);
+            source = getModuleMessagesBundleSourceName(bundleName, locale);
         }
         return source;
     }
@@ -466,25 +465,25 @@ public abstract class TestCmsMessageBundles extends TestCase {
     /**
      * Returns the file name of the source message bundle from the module.<p>
      * 
-     * @param bundle the resource bundle to get the file name for
+     * @param bundleName the resource bundle to get the file name for
      * @param locale the locale to get the file name for
      * 
      * @return the file name of the source message bundle of the module
      */
-    protected String getModuleMessagesBundleSourceName(I_CmsMessageBundle bundle, Locale locale) {
+    protected String getModuleMessagesBundleSourceName(String bundleName, Locale locale) {
 
         if (Locale.ENGLISH.equals(locale)) {
-            return bundle.getBundleName();
+            return bundleName;
         }
         // substitute the last occurring "." of the bundle name with "/" to build the correct filename
-        String packageName = bundle.getBundleName().substring(0, bundle.getBundleName().lastIndexOf('.'));
+        String packageName = bundleName.substring(0, bundleName.lastIndexOf('.'));
         packageName += "/";
         String source = "modules/"
             + packageName
             + "resources/system/modules/"
             + packageName
             + "classes/"
-            + CmsStringUtil.substitute(bundle.getBundleName(), ".", "/")
+            + CmsStringUtil.substitute(bundleName, ".", "/")
             + "_"
             + locale.toString()
             + ".properties";
@@ -499,6 +498,15 @@ public abstract class TestCmsMessageBundles extends TestCase {
      * @return a list of bundles not to be localized
      */
     protected abstract List getNotLocalizedBundles(Locale locale);
+
+    /**
+     * Template method that has to be overwritten to return the client class that will be tested.<p> 
+     * 
+     * @return the classes to test 
+     * 
+     * @throws Exception if the test fails
+     */
+    protected abstract I_CmsClientMessageBundle[] getTestClientMessageBundles() throws Exception;
 
     /**
      * Template method that has to be overwritten to return the <code>I_CmsMessageBundle</code> 
@@ -526,12 +534,21 @@ public abstract class TestCmsMessageBundles extends TestCase {
         for (int i = 0; i < bundles.length; i++) {
             I_CmsMessageBundle bundle = bundles[i];
             String tmp = bundle.getBundleName();
-            tmp = doPreTestBundle(bundle, locale);
+            tmp = doPreTestBundle(bundle.getClass().getName(), bundle.getBundleName(), locale);
             errors.append(tmp);
             if (CmsStringUtil.isEmpty(tmp)) {
                 if (!getExcludedLocalizedBundles(locale).contains(bundle)) {
-                    errors.append(doTestBundle(bundle, locale));
+                    errors.append(doTestBundle(bundle.getClass(), bundle.getBundleName(), locale));
                 }
+            }
+        }
+        I_CmsClientMessageBundle[] clientBundles = getTestClientMessageBundles();
+        for (I_CmsClientMessageBundle clientBundle : clientBundles) {
+            String tmp = clientBundle.getBundleName();
+            tmp = doPreTestBundle(clientBundle.getClass().getName(), clientBundle.getBundleName(), locale);
+            errors.append(tmp);
+            if (CmsStringUtil.isEmpty(tmp)) {
+                errors.append(doTestBundle(clientBundle.getClientImpl(), clientBundle.getBundleName(), locale));
             }
         }
         if (errors.length() > 0) {
