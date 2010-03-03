@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/MessagesADE.java,v $
- * Date   : $Date: 2010/03/03 08:06:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/03/03 10:15:56 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.6.0 
  */
@@ -410,6 +410,12 @@ public class MessagesADE extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_BUTTON_LABEL_SEARCH_0 = "GUI_GALLERIES_BUTTON_LABEL_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_PAGINATION_LABEL_PREV_0 = "GUI_GALLERIES_PAGINATION_LABEL_PREV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_PAGINATION_LABEL_NEXT_0 = "GUI_GALLERIES_PAGINATION_LABEL_NEXT_0";
 
     // cms.imagepreviewhandler.js
     /** Message constant for key in the resource bundle. */

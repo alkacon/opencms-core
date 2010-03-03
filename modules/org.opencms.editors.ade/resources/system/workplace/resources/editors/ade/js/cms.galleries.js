@@ -146,7 +146,7 @@
                               {value: 'path_asc',title: M.GUI_GALLERIES_DROP_DOWN_PATH_ASC_0},
                               {value: 'path_desc',title: M.GUI_GALLERIES_DROP_DOWN_PATH_DESC_0}
                           ],
-                          width: 327,
+                          width: 290,
                           /* TODO: bind sort functionality */
                           select: function($this, self, value){              
                               cms.galleries.searchObject['sortorder'] = value;
@@ -486,14 +486,14 @@
                         <div id="searchInContent" class="cms-list-checkbox"></div>\
                         <div class="cms-checkbox-label">'+M.GUI_GALLERIES_LABEL_CONTENT_0+'</div>\
                     </div> -->\
-                    <div class="cms-search-options">\
+                    <!--<div class="cms-search-options">\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>'+M.GUI_GALLERIES_LABEL_CHANGED_AFTER_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>'+M.GUI_GALLERIES_LABEL_CHANGED_BEFORE_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                    </div>\
                    <div class="cms-search-options">\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>'+M.GUI_GALLERIES_LABEL_CREATED_AFTER_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
                         <span id="searchBefore" class="cms-item-left cms-input-date"><label>'+M.GUI_GALLERIES_LABEL_CREATED_BEFORE_0+'</label><input type="text" class="ui-corner-all ui-widget-content" /></span>\
-                    </div>\
+                    </div>-->\
                     <div class="cms-search-options">\
                         <button class="ui-state-default ui-corner-all cms-item-left-bottom">'+M.GUI_GALLERIES_BUTTON_LABEL_SEARCH_0+'</button>\
                     </div>\
@@ -734,7 +734,7 @@
                 'data': JSON.stringify({
                    'types': cms.galleries.configContentTypes
                 }),
-                'tabs':JSON.stringify(cms.galleries.initValues['tabs'])     
+                'tabs':JSON.stringify(cms.galleries.initValues['tabs'])
              },
              'type': 'POST',
              'dataType': 'json',
@@ -937,8 +937,8 @@
                      firsttime = false;
                   }
                },
-               prev_text: 'Prev',
-               next_text: 'Next',
+               prev_text: M.GUI_GALLERIES_PAGINATION_LABEL_PREV_0,
+               next_text: M.GUI_GALLERIES_PAGINATION_LABEL_NEXT_0,
                prev_show_always: false,
                next_show_always: false,
                num_edge_entries: 1
