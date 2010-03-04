@@ -8,7 +8,7 @@
     <property name="opencms.input.libs.runtime"			location="${opencms.input}/lib/runtime" />
     <property name="opencms.input.libs.compile"			location="${opencms.input}/lib/compile" />
 	<property name="opencms.build" 						location="${opencms.output}/build" />
-	<property name="opencms.output.jars" 					location="${opencms.build}/jars-core" />
+	<property name="opencms.output.jars" 				location="${opencms.build}/jars-core" />
     <property name="java.target.version"                value="1.5" />
 
 	<property environment="env" />
@@ -90,6 +90,10 @@
 				<readxmlproperty property="module.version" xmlfile="${module.input.res}/manifest.xml" element="export/module/version" />
 				<readxmlproperty property="module.dependencies" xmlfile="${module.input.res}/manifest.xml" element="export/module/dependencies/dependency" attribute="name" />
 			</then>
+			<else>
+				<property name="module.version" value="${version.number}" />
+				<property name="module.dependencies" value="" />
+			</else>
 		</if>
 		<property file="${module.input}/module.properties" />
 
@@ -182,9 +186,14 @@
 		</condition>
 
 		<if>
-			<not>
-				<isset property="resources.available" />
-			</not>
+			<and>
+				<not>
+					<isset property="resources.available" />
+				</not>
+				<not>
+					<isset property="module.headless" />
+				</not>
+			</and>
 			<then>
 				<mkdir dir="${module.input.res}" />
 			</then>
@@ -212,13 +221,21 @@
 						<property name="module.gwt.policies" location="${module.input.src}" />
 					</else>
 				</if>
+				<propertyregex property="module.gwt.name"
+				              input="${module.gwt}"
+				              regexp="\.([^\.]*)$"
+				              select="\1" />
+				
+				<echo message="xml: ${module.gwt.policies}/${module.gwt.name}.gwt.xml" />
+				<readxmlproperty property="module.gwt.rename" xmlfile="${module.gwt.policies}/${module.gwt.name}.gwt.xml" element="module" attribute="rename-to" />
+				<echo message="rename: ${module.gwt.rename}" />
 				<if>
-					<isset property="module.gwt.rename" />
+					<equals arg1="${module.gwt.rename}" arg2=""/>
 					<then>
-						<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt.rename}" />
+						<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt}" />
 					</then>
 					<else>
-						<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt}" />
+						<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt.rename}" />
 					</else>
 				</if>
 			</then>
@@ -324,7 +341,7 @@
 				<if>
 					<isset property="module.gwt" />
 					<then>
-					    <outofdate verbose="true">
+					    <outofdate verbose="false">
 					        <sourcefiles>
 					            <fileset dir="${module.input.src.single}" erroronmissingdir="false">
 					            	<include name="**/*.gwt.xml" />
@@ -341,12 +358,6 @@
 					        <sequential>
 								<!--echo message="Deleting GWT output folder"/-->
 						    	<delete dir="${module.gwt.output}" failonerror="false" />
-								<if>
-								    <isset property="module.gwt.rename" />
-									<then>
-								    	<delete dir="${module.input.res}/system/modules/${module.name}/${module.gwt}" failonerror="false" />
-									</then>
-								</if>
 	
 								<!--echo message="Deleting old RPC serialization policies on: ${module.gwt.policies}"/-->
 					        	<delete>
@@ -380,14 +391,6 @@
 										<pathelement path="${module.libs.path}" />
 									</classpath>
 					            </java>
-								
-								<!--echo message="Renaming GWT output folder" /-->
-								<if>
-									<isset property="module.gwt.rename" />
-									<then>
-										<move file="${module.input.res}/system/modules/${module.name}/${module.gwt}" tofile="${module.gwt.output}"/>
-									</then>
-								</if>
 								
 						    	<!--echo message="RPC serialization policies:"/-->
 								<move todir="${module.gwt.policies}">
@@ -541,28 +544,34 @@
 
 	<target name="dist" depends="jar" description="Builds the distribution .zip file">
 
-		<if>
-			<isset property="module.gwt" />
-			<then>
-				<ensuredirmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}"  />
-			</then>
-		</if>
 		<mkdir dir="${module.output.zip}" />
 		<if>
-			<available file="${module.output.jar}" />
+			<not>
+				<isset property="module.headless" />
+			</not>
 			<then>
-				<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
-					<zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="${module.name}.jar" />
-					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
-				</zip>
+				<if>
+					<isset property="module.gwt" />
+					<then>
+						<ensuredirmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}"  />
+					</then>
+				</if>
+				<if>
+					<available file="${module.output.jar}" />
+					<then>
+						<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
+							<zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="${module.name}.jar" />
+							<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+						</zip>
+					</then>
+					<else>
+						<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
+							<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+						</zip>
+					</else>
+				</if>
 			</then>
-			<else>
-				<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
-					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
-				</zip>
-			</else>
 		</if>
-
 	</target>
 
 	<target name="tomcat.copy" depends="dist" description="Copies module resources to Tomcat directory">
@@ -575,7 +584,12 @@
 				</copy>
 			</then>
 		</if>
-		<copy file="${module.output.zip}/${module.name}_${module.version}.zip" todir="${tomcat.home}/webapps/${app.name}/WEB-INF/packages/modules" />
+		<if>
+			<available file="${module.output.zip}/${module.name}_${module.version}.zip" />
+			<then>
+				<copy file="${module.output.zip}/${module.name}_${module.version}.zip" todir="${tomcat.home}/webapps/${app.name}/WEB-INF/packages/modules" />
+			</then>
+		</if>
 	</target>
 
 	<target name="tomcat.update" depends="tomcat.copy" description="Recompile changes and installs them in Tomcat webapps directory" />
@@ -592,7 +606,12 @@
 				</copy>
 			</then>
 		</if>
-		<copy file="${module.output.zip}/${module.name}_${module.version}.zip" todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/packages/modules" />
+		<if>
+			<available file="${module.output.zip}/${module.name}_${module.version}.zip" />
+			<then>
+				<copy file="${module.output.zip}/${module.name}_${module.version}.zip" todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/packages/modules" />
+			</then>
+		</if>
 	</target>
 
 	<target name="jboss.update" depends="jboss.copy" description="Recompile changes and installs them in JBoss deploy directory" />
