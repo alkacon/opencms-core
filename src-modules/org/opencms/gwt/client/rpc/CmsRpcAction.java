@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/03/03 15:32:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/04 14:00:18 $
+ * Version: $Revision: 1.2 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,14 @@
 
 package org.opencms.gwt.client.rpc;
 
-import org.opencms.ade.client.Messages;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
+import org.opencms.gwt.client.util.CmsStringUtil;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
-import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0
  */
@@ -76,49 +75,47 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      */
     public void onFailure(Throwable t) {
 
+        // send the ticket to the server
+        String message = CmsStringUtil.getMessage(t);
+        String ticket = CmsLog.log(message);
+
+        // remove the nice overlay
         stop();
-        int ticket = (int)(Math.random() * 10000000);
-        boolean stopper = (t instanceof IncompatibleRemoteServiceException);
-        stopper |= (t instanceof SerializationException);
+
+        // give feedback
+        provideFeedback(ticket, message);
+    }
+
+    /**
+     * Provides some feedback to the user in case of failure.<p>
+     * 
+     * @param ticket the generated ticket
+     * @param message the error message
+     */
+    protected void provideFeedback(String ticket, String message) {
+
         String title = "Error";
-        if (stopper) {
-            String text = "A fatal error occurred, you should contact Technical Support."
-                + "\n"
-                + "Provided ticket '"
-                + ticket
-                + "'";
-            CmsPopupDialog dialog = getDialog(title, text);
-            dialog.setStyleName("stopper");
-            dialog.setAutoHideEnabled(false);
-        } else {
-            String message = t.getLocalizedMessage();
-            if (message == null) {
-                message = t.getMessage();
-            }
-            if (message == null) {
-                message = t.getClass().getName();
-            }
-            String text = "An error occured:\n"
-                + message
-                + "\n"
-                + "Provided ticket '"
-                + ticket
-                + "'"
-                + "\n"
-                + "You may retry this operation by clicking 'OK'.\n"
-                + "However if the error persists, contact Technical Support.";
-            CmsPopupDialog dialog = getDialog(title, text);
-            dialog.setStyleName("error");
-            dialog.setAutoHideEnabled(false);
-            dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+        String text = "An error occured:\n"
+            + message
+            + "\n"
+            + "Provided ticket '"
+            + ticket
+            + "'"
+            + "\n"
+            + "You may retry this operation by clicking 'OK'.\n"
+            + "Or retry later by clicking 'Cancel'.\n"
+            + "However if the error persists, contact Technical Support.";
 
-                public void onClose(CloseEvent<PopupPanel> event) {
+        CmsPopupDialog dialog = getDialog(title, text);
+        dialog.setStyleName("error");
+        dialog.setAutoHideEnabled(false);
+        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
-                    execute();
-                }
-            });
-        }
-        // TODO: log ticket on server if possible
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                execute();
+            }
+        });
     }
 
     /**

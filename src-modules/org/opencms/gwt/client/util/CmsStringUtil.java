@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsStringUtil.java,v $
- * Date   : $Date: 2010/03/03 15:32:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/04 14:00:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ package org.opencms.gwt.client.util;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -51,6 +51,25 @@ public final class CmsStringUtil {
     private CmsStringUtil() {
 
         // empty
+    }
+
+    /**
+     * Returns the exception message.<p>
+     * 
+     * @param t the exception to get the message for
+     * 
+     * @return the exception message
+     */
+    public static String getMessage(Throwable t) {
+
+        String message = t.getLocalizedMessage();
+        if (message == null) {
+            message = t.getMessage();
+        }
+        if (message == null) {
+            message = t.getClass().getName();
+        }
+        return message;
     }
 
     /**
