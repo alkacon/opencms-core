@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddResourceTypeParams.java,v $
- * Date   : $Date: 2010/02/24 12:44:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/04 07:14:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -133,6 +133,16 @@ public class CmsXmlAddResourceTypeParams extends A_CmsXmlVfs {
                     A_CmsResourceType.CONFIGURATION_GALLERY_TYPE_NAMES);
                 CmsSetupXmlHelper.setValue(document, xpath, CmsAjaxDownloadGallery.GALLERYTYPE_NAME);
                 return true;
+            } else if (xpath.equals(getXPathsToUpdate().get(8))) {
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath + "/@" + I_CmsXmlConfiguration.A_NAME,
+                    "formatter_gallery_preview");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath,
+                    "/system/workplace/editors/ade/binary-preview-formatter.jsp");
+                return true;
             }
         }
         return false;
@@ -195,6 +205,20 @@ public class CmsXmlAddResourceTypeParams extends A_CmsXmlVfs {
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypePointer.class.getName()));
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypeXmlPage.class.getName()));
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypeXmlContent.class.getName()));
+            // "/opencms/vfs/resources/resourcetypes/type[@class='org.opencms.file.types.CmsResourceTypeBinary']/param[@name='{0}']";
+            xp = new StringBuffer(256);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsVfsConfiguration.N_VFS);
+            xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
+            xp.append("/").append(CmsVfsConfiguration.N_RESOURCETYPES);
+            xp.append("/").append(CmsVfsConfiguration.N_TYPE);
+            xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
+            xp.append("='").append(org.opencms.file.types.CmsResourceTypeBinary.class.getName());
+            xp.append("']/").append(I_CmsXmlConfiguration.N_PARAM);
+            xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
+            xp.append("='").append("{0}");
+            xp.append("']");
+            m_xpaths.add(xp.toString().replace("{0}", "formatter_gallery_preview"));
         }
         return m_xpaths;
     }
