@@ -1,7 +1,7 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskReadXMLProperty.java,v $
+ * Date   : $Date: 2010/03/04 13:59:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.xml.sax.SAXParseException;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision$
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -86,7 +86,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
      */
     public void execute() throws BuildException {
 
-        boolean isAttr = (m_attribute != null && m_attribute.trim().length() > 0);
+        boolean isAttr = ((m_attribute != null) && (m_attribute.trim().length() > 0));
 
         // instantiate Digester and enable XML validation
         Digester digester = new Digester();
@@ -240,5 +240,19 @@ public class CmsAntTaskReadXMLProperty extends Task {
     public void setXmlFile(String xmlFile) {
 
         m_xmlFile = xmlFile;
+    }
+
+    /**
+     * Test case.<p>
+     * 
+     * @param args not used
+     */
+    public static void main(String[] args) {
+
+        CmsAntTaskReadXMLProperty task = new CmsAntTaskReadXMLProperty();
+        task.setXmlFile("C:\\dev\\workspace\\OpenCms\\src-modules\\org\\opencms\\ade/ADEBase.gwt.xml");
+        task.setElement("module");
+        task.setAttribute("rename-to");
+        task.execute();
     }
 }
