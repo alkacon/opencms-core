@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopupDialog.java,v $
- * Date   : $Date: 2010/03/03 15:32:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/04 15:17:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -43,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -82,10 +84,6 @@ public class CmsPopupDialog extends DialogBox {
 
         m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
         this.getElement().insertFirst(shadowDiv);
-        CmsImageButton closeButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.style().closeIcon(), false);
-        closeButton.setTopRight(-8, -8);
-        this.addButton(closeButton);
-
         this.setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
     }
 
@@ -173,6 +171,9 @@ public class CmsPopupDialog extends DialogBox {
         return m_content;
     }
 
+    /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#getContainerElement()
+     */
     @Override
     protected com.google.gwt.user.client.Element getContainerElement() {
 

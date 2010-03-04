@@ -1,0 +1,36 @@
+.listItem{
+	list-style: none;
+	display: block;
+	margin: 0 5px;
+	color: #222222;
+	line-height: 16px;
+	font-size: value("constantsCss.fontSize");
+	font-family: value("constantsCss.fontFamily");
+}
+.listItem .itemAdditional{
+	display: none;
+}
+.listItem.open .itemAdditional{
+	display: block;
+}
+.itemContainer{
+	margin: 2px;
+	border: 1px solid #aaaaaa;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	background: #ffffff;
+}
+@sprite .itemContent{
+    gwt-image: "backgroundDefault";
+    background-position: 50% 50%;
+    height: auto;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+}
+.itemTitle{
+	font-weight: bold;
+    display: inline;
+}
+.itemAdditional{}

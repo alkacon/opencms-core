@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsConfirmDialog.java,v $
- * Date   : $Date: 2010/03/03 15:32:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/04 15:17:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -58,8 +58,10 @@ public class CmsConfirmDialog extends CmsPopupDialog {
 
         super();
         m_okButton = new CmsTextButton("Ok");
+        m_okButton.useMinWidth(true);
         addButton(m_okButton);
         m_cancelButton = new CmsTextButton("Cancel");
+        m_cancelButton.useMinWidth(true);
         addButton(m_cancelButton);
     }
 

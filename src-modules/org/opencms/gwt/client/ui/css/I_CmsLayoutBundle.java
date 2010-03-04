@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/03 15:32:37 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
+ * Date   : $Date: 2010/03/04 15:18:06 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.css;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -54,7 +54,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
     /** Button CSS. */
-    interface I_ButtonCss extends CssResource, I_CmsStateCss {
+    interface I_CmsButtonCss extends CssResource, I_CmsStateCss {
 
         /** Access method.<p>
          * 
@@ -155,6 +155,58 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String borderColorActive();
+    }
+
+    /** Icons CSS, making available a fixed set of icons. */
+    interface I_CmsIconsCss extends CssResource, I_CmsStateCss {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("ui_icon")
+        String uiIcon();
+
+    }
+
+    /** List item CSS. */
+    interface I_CmsListItemCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listItem();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemContainer();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemContent();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemTitle();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemAdditional();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String open();
     }
 
     /** General CSS. */
@@ -286,7 +338,24 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * @return the button CSS
      */
     @Source("button.css")
-    I_ButtonCss buttonCss();
+    I_CmsButtonCss buttonCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the icons CSS
+     */
+    @Source("buttonIcons.css")
+    @CssResource.NotStrict
+    I_CmsIconsCss iconsCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the list item CSS
+     */
+    @Source("listItem.css")
+    I_CmsListItemCss listItemCss();
 
     /**
      * Access method.<p>
@@ -314,5 +383,21 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("images/ui-bg_glass_75_cccccc_1x400.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource backgroundDefault();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-icons_444444_256x240.png")
+    ImageResource iconDefault();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-icons_222222_256x240.png")
+    ImageResource iconActive();
 
 }

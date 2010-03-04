@@ -25,7 +25,7 @@
 
 .cmsImageButtonTransparent{
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
     outline: none;
     cursor: pointer;
 }

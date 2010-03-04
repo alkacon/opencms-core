@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTextButton.java,v $
- * Date   : $Date: 2010/03/03 15:32:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/04 15:17:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,20 +31,20 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.PushButton;
 
 /**
- * Provides a text button.
+ * Provides a text button.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
- * 
  */
-public class CmsTextButton extends PushButton {
+public class CmsTextButton extends CmsButton {
 
     /** CSS style variants. */
     public static enum BUTTON_STYLE {
@@ -91,7 +91,7 @@ public class CmsTextButton extends PushButton {
     public CmsTextButton() {
 
         super();
-        this.setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
+        I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
         this.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton());
         m_buttonStyle = BUTTON_STYLE.cmsButtonMedium;
 
@@ -174,12 +174,16 @@ public class CmsTextButton extends PushButton {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.CustomButton#setDown(boolean)
+     * Enables/disables minimum width on button. By default no minimum width is set.<p>
+     * 
+     * @param hasMinWidth if <code>true</code> the minimum width is set to 6em
      */
-    @Override
-    public void setDown(boolean down) {
+    public void useMinWidth(boolean hasMinWidth) {
 
-        super.setDown(down);
+        if (hasMinWidth) {
+            this.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMinWidth());
+        } else {
+            this.removeStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMinWidth());
+        }
     }
-
 }
