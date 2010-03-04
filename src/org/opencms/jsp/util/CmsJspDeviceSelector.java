@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspDeviceSelector.java,v $
- * Date   : $Date: 2009/12/16 13:22:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/04 09:44:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -474,22 +474,22 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
         if (detectWapWml()) {
             return true;
         }
-        if (detectBrewDevice()) {
-            // Updated by AHand
-            if (detectOperaMobile()) {
-                return true;
-            }
+        // if (detectBrewDevice()) {
+        // Updated by AHand
+        if (detectOperaMobile()) {
+            return true;
         }
+        // }
         if (m_userAgent.indexOf(ENGINE_UP_BROWSER) != -1) {
             if (m_userAgent.indexOf(ENGINE_OPEN_WEB) != -1) {
                 return true;
             }
         }
-        if (m_userAgent.indexOf(DEVICE_MIDP) != -1) {
-            if (detectSmartphone()) {
-                return true;
-            }
+        // if (m_userAgent.indexOf(DEVICE_MIDP) != -1) {
+        if (detectSmartphone()) {
+            return true;
         }
+        // }
         if (detectDangerHiptop()) {
             if (detectMidpCapable()) {
                 return true;
