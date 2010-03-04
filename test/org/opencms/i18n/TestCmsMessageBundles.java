@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2010/03/03 15:32:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/04 14:06:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -128,23 +128,25 @@ public abstract class TestCmsMessageBundles extends TestCase {
      * @param className the bundle implementing class name
      * @param bundleName the bundle name to test
      * @param locale the locale to test
+     * @param client if the bundle to test is a client bundle
      * 
      * @return a description of all errors found
      */
-    protected String doPreTestBundle(String className, String bundleName, Locale locale) {
+    protected String doPreTestBundle(String className, String bundleName, Locale locale, boolean client) {
 
-        int indexOfMessages = className.lastIndexOf(".Messages");
+        String expectedClass = client ? ".ClientMessages" : ".Messages";
+        int indexOfMessages = className.lastIndexOf(expectedClass);
         if (indexOfMessages < 0) {
             return "Bundle '" + className + "' is not a 'Messages' class.\n";
         }
         if (!className.toLowerCase().equals(bundleName.toLowerCase())) {
-            return "Bundle '" + bundleName + "' has not the form: packagename.messages.\n";
+            return "Bundle '" + bundleName + "' has not the form: packagename" + expectedClass.toLowerCase() + ".\n";
         }
-        indexOfMessages = bundleName.lastIndexOf(".messages");
+        indexOfMessages = bundleName.lastIndexOf(expectedClass.toLowerCase());
         if (indexOfMessages < 0) {
             return "The Message bundle '"
                 + bundleName
-                + "' does not ends with: '.messages'. \n "
+                + "' does not ends with: '\"+expectedClass.toLowerCase()+\"'. \n "
                 + "Change the constant literal ('private static final String BUNDLE_NAME')\n";
         }
         String fileName = getMessageBundleSourceName(bundleName, locale);
@@ -534,7 +536,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
         for (int i = 0; i < bundles.length; i++) {
             I_CmsMessageBundle bundle = bundles[i];
             String tmp = bundle.getBundleName();
-            tmp = doPreTestBundle(bundle.getClass().getName(), bundle.getBundleName(), locale);
+            tmp = doPreTestBundle(bundle.getClass().getName(), bundle.getBundleName(), locale, false);
             errors.append(tmp);
             if (CmsStringUtil.isEmpty(tmp)) {
                 if (!getExcludedLocalizedBundles(locale).contains(bundle)) {
@@ -545,7 +547,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
         I_CmsClientMessageBundle[] clientBundles = getTestClientMessageBundles();
         for (I_CmsClientMessageBundle clientBundle : clientBundles) {
             String tmp = clientBundle.getBundleName();
-            tmp = doPreTestBundle(clientBundle.getClass().getName(), clientBundle.getBundleName(), locale);
+            tmp = doPreTestBundle(clientBundle.getClass().getName(), clientBundle.getBundleName(), locale, true);
             errors.append(tmp);
             if (CmsStringUtil.isEmpty(tmp)) {
                 errors.append(doTestBundle(clientBundle.getClientImpl(), clientBundle.getBundleName(), locale));
