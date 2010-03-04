@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/03/03 15:33:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/04 14:07:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.ade;
 
-import org.opencms.ade.client.CmsClientSitemapEntry;
-import org.opencms.ade.client.I_CmsSitemapService;
+import org.opencms.ade.shared.CmsClientSitemapEntry;
+import org.opencms.ade.shared.I_CmsSitemapService;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -50,13 +50,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.ade.CmsSitemapService
- * @see org.opencms.ade.client.I_CmsSitemapService
- * @see org.opencms.ade.client.I_CmsSitemapServiceAsync
+ * @see org.opencms.ade.shared.I_CmsSitemapService
+ * @see org.opencms.ade.shared.I_CmsSitemapServiceAsync
  */
 public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapService {
 
@@ -67,7 +67,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     private static final Log LOG = CmsLog.getLog(CmsSitemapService.class);
 
     /**
-     * @see org.opencms.ade.client.I_CmsSitemapService#getSitemap()
+     * @see org.opencms.ade.shared.I_CmsSitemapService#getSitemap()
      */
     public CmsClientSitemapEntry getSitemap() {
 

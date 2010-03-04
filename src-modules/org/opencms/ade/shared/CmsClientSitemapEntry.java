@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/client/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/03/03 15:33:13 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/shared/Attic/CmsClientSitemapEntry.java,v $
+ * Date   : $Date: 2010/03/04 14:07:34 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.client;
+package org.opencms.ade.shared;
 
 import java.util.List;
 import java.util.Map;

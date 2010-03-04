@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/Attic/Messages.java,v $
- * Date   : $Date: 2010/03/03 15:33:13 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/Attic/ClientMessages.java,v $
+ * Date   : $Date: 2010/03/04 14:07:34 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -45,21 +45,21 @@ import org.opencms.gwt.I_CmsClientMessageBundle;
  * 
  * @since 8.0.0
  */
-public final class Messages extends A_CmsClientMessageBundle {
+public final class ClientMessages extends A_CmsClientMessageBundle {
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.ade.messages";
+    private static final String BUNDLE_NAME = "org.opencms.ade.clientmessages";
 
     /** Name of the corresponding client class. */
     private static final String CLIENT_INSTANCE = "org.opencms.ade.client.Messages";
 
     /** Internal instance. */
-    private static Messages INSTANCE;
+    private static ClientMessages INSTANCE;
 
     /**
      * Hides the public constructor for this utility class.<p>
      */
-    private Messages() {
+    private ClientMessages() {
 
         // hide the constructor
     }
@@ -72,7 +72,7 @@ public final class Messages extends A_CmsClientMessageBundle {
     public static I_CmsClientMessageBundle get() {
 
         if (INSTANCE == null) {
-            INSTANCE = new Messages();
+            INSTANCE = new ClientMessages();
         }
         return INSTANCE;
     }

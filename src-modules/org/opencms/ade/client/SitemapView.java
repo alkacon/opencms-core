@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/client/Attic/Test.java,v $
- * Date   : $Date: 2010/03/03 15:33:13 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/client/Attic/SitemapView.java,v $
+ * Date   : $Date: 2010/03/04 14:07:34 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,9 +31,12 @@
 
 package org.opencms.ade.client;
 
+import org.opencms.ade.shared.CmsClientSitemapEntry;
+import org.opencms.ade.shared.I_CmsSitemapService;
+import org.opencms.ade.shared.I_CmsSitemapServiceAsync;
+import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -41,15 +44,17 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 /**
- *
+ * Testing the sitemap.<p>
  */
-public class Test implements EntryPoint {
+public class SitemapView extends A_CmsEntryPoint {
 
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
      */
+    @Override
     public void onModuleLoad() {
 
+        super.onModuleLoad();
         RootPanel.get().add(new Label(Messages.get().key(Messages.GUI_LOADING_0)));
 
         // Set up the callback object.
