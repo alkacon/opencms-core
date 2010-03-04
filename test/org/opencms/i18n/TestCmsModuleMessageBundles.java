@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2010/03/04 14:06:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/04 14:15:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -68,7 +68,9 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     @Override
     protected I_CmsClientMessageBundle[] getTestClientMessageBundles() throws Exception {
 
-        return new I_CmsClientMessageBundle[] {org.opencms.ade.ClientMessages.get()};
+        return new I_CmsClientMessageBundle[] {
+            org.opencms.ade.ClientMessages.get(),
+            org.opencms.gwt.ClientMessages.get()};
     }
 
     /**
