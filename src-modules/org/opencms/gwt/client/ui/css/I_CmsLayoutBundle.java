@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/08 11:36:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/08 16:36:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -285,6 +285,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String cmsHovering();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String cmsState();
 
         /** Access method.<p>
@@ -329,12 +335,52 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         @ClassName("cmsState-up-hovering")
         String cmsStateUpHovering();
 
+    }
+
+    /** Tabbed panel css. */
+    interface I_CmsTabbedPanelCss extends CssResource {
+
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String cmsHovering();
+        @ClassName("gwt-TabLayoutPanel")
+        public String cmsTabLayoutPanel();
 
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("gwt-TabLayoutPanelContent")
+        public String cmsTabLayoutPanelContent();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("gwt-TabLayoutPanelTab")
+        public String cmsTabLayoutPanelTab();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("gwt-TabLayoutPanelTabBar")
+        public String cmsTabLayoutPanelTabBar();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("gwt-TabLayoutPanelTabs")
+        public String cmsTabLayoutPanelTabs();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("gwt-TabLayoutPanelTab-selected")
+        public String cmsTabLayoutPanelTabSelected();
     }
 
     /** Toolbar CSS. */
@@ -379,6 +425,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
+
+    /**
+     * Access method.<p>
+     *  
+     * @return tabbed panel CSS
+     */
+    @Source("tabbedPanel.css")
+    public I_CmsTabbedPanelCss tabbedPanelCss();
 
     /**
      * Access method.<p>
