@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/04 15:18:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/08 11:36:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,14 +44,11 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends ClientBundle {
-
-    /** The bundle instance. */
-    I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
     /** Button CSS. */
     interface I_CmsButtonCss extends CssResource, I_CmsStateCss {
@@ -60,7 +57,19 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String cmsTextButton();
+        String cmsButtonBig();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsButtonMedium();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsButtonSmall();
 
         /** Access method.<p>
          * 
@@ -78,25 +87,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String cmsButtonBig();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String cmsButtonSmall();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String cmsButtonMedium();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String cmsMinWidth();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsTextButton();
     }
 
     /** Constants CSS. */
@@ -106,25 +103,19 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String fontFamily();
+        String borderColor();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String fontSize();
+        String borderColorActive();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String fontSizeSmall();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String fontSizeBig();
+        String borderColorInactive();
 
         /** Access method.<p>
          * 
@@ -142,19 +133,78 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String borderColor();
+        String fontFamily();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String borderColorInactive();
+        String fontSize();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String borderColorActive();
+        String fontSizeBig();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fontSizeSmall();
+    }
+
+    /** Dialog CSS. */
+    @Shared
+    interface I_CmsDialogCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String menuPopup();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String popup();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String popupButtonPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String popupContent();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String popupHead();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String popupMainContent();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String popupOverlay();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String popupShadow();
     }
 
     /** Icons CSS, making available a fixed set of icons. */
@@ -170,13 +220,31 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** List item CSS. */
-    interface I_CmsListItemCss extends CssResource {
+    interface I_CmsListItemCss extends I_CmsStateCss {
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String listItem();
+        String buttonPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemAdditional();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemAdditionalTitle();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemAdditionalValue();
 
         /** Access method.<p>
          * 
@@ -200,7 +268,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String itemAdditional();
+        String listItem();
 
         /** Access method.<p>
          * 
@@ -223,29 +291,15 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        @ClassName("cmsState-up")
-        String cmsStateup();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        @ClassName("cmsState-up-hovering")
-        String cmsStateUpHovering();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        @ClassName("cmsState-up-disabled")
-        String cmsStateUpDisabled();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         @ClassName("cmsState-down")
         String cmsStateDown();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("cmsState-down-disabled")
+        String cmsStateDownDisabled();
 
         /** Access method.<p>
          * 
@@ -258,63 +312,117 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        @ClassName("cmsState-down-disabled")
-        String cmsStateDownDisabled();
+        @ClassName("cmsState-up")
+        String cmsStateup();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("cmsState-up-disabled")
+        String cmsStateUpDisabled();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("cmsState-up-hovering")
+        String cmsStateUpHovering();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsHovering();
 
     }
 
-    /** Dialog CSS. */
-    @Shared
-    interface I_CmsDialogCss extends CssResource {
+    /** Toolbar CSS. */
+    interface I_CmsToolbarCss extends CssResource {
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String popup();
+        String toolbar();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String popupContent();
+        String toolbarBackground();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String popupMainContent();
+        String toolbarButtonsLeft();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String popupHead();
+        String toolbarButtonsRight();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String popupShadow();
+        String toolbarContent();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String popupOverlay();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String popupButtonPanel();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String menuPopup();
+        String toolbarShadow();
     }
+
+    /** The bundle instance. */
+    I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-bg_glass_65_ffffff_1x400.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-bg_glass_75_cccccc_1x400.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundDefault();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-bg_glass_75_e6e6e6_1x400.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundHover();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-bg_highlight-soft_75_aaaaaa_1x100.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundSoft();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the button CSS
+     */
+    @Source("button.css")
+    I_CmsButtonCss buttonCss();
 
     /**
      * Access method.<p>
@@ -335,10 +443,18 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the button CSS
+     * @return the image resource
      */
-    @Source("button.css")
-    I_CmsButtonCss buttonCss();
+    @Source("images/ui-icons_222222_256x240.png")
+    ImageResource iconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-icons_444444_256x240.png")
+    ImageResource iconDefault();
 
     /**
      * Access method.<p>
@@ -358,46 +474,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     I_CmsListItemCss listItemCss();
 
     /**
-     * Access method.<p>
+     * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.
+     * Do not inject this CSS, as it contains no style information.<p>
      * 
-     * @return the image resource
+     * @return the state CSS
      */
-    @Source("images/ui-bg_glass_65_ffffff_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundActive();
+    @Source("state.css")
+    I_CmsStateCss stateCss();
 
     /**
      * Access method.<p>
      * 
-     * @return the image resource
+     * @return the toolbar CSS
      */
-    @Source("images/ui-bg_glass_75_e6e6e6_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundHover();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-bg_glass_75_cccccc_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundDefault();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-icons_444444_256x240.png")
-    ImageResource iconDefault();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-icons_222222_256x240.png")
-    ImageResource iconActive();
+    @Source("toolbar.css")
+    I_CmsToolbarCss toolbarCss();
 
 }

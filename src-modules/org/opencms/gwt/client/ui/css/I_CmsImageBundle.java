@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/03/04 15:18:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/08 11:36:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -78,19 +78,122 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String closeIcon();
+        String deleteIcon();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String closeIconActive();
+        String deleteIconActive();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String closeIconInactive();
+        String deleteIconInactive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String deleteIconDeactivated();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editorIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editorIconActive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editorIconInactive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editorIconDeactivated();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String moveIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String moveIconActive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String moveIconInactive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String moveIconDeactivated();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String newIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String newIconActive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String newIconInactive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String newIconDeactivated();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String propertyIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String propertyIconActive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String propertyIconInactive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String propertyIconDeactivated();
+
     }
 
     /**
@@ -123,14 +226,118 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/close16x16.png")
-    ImageResource closeIconActive();
+    @Source("images/ocms_de_delete_a.png")
+    ImageResource deleteIconActive();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/close16x16_light.png")
-    ImageResource closeIconInactive();
+    @Source("images/ocms_de_delete_i.png")
+    ImageResource deleteIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_delete_sw.png")
+    ImageResource deleteIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_editor_a.png")
+    ImageResource editorIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_editor_i.png")
+    ImageResource editorIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_editor_sw.png")
+    ImageResource editorIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_move_a.png")
+    ImageResource moveIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_move_i.png")
+    ImageResource moveIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_move_sw.png")
+    ImageResource moveIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_new_a.png")
+    ImageResource newIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_new_i.png")
+    ImageResource newIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_new_sw.png")
+    ImageResource newIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_prop_a.png")
+    ImageResource propertyIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_prop_i.png")
+    ImageResource propertyIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_prop_sw.png")
+    ImageResource propertyIconDeactivated();
 }

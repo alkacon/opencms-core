@@ -1,0 +1,58 @@
+.toolbar{
+	background-color:transparent;
+	left: 0px;
+	top: 0px;
+	position: fixed;
+	width: 100%;
+	z-index: 10000;
+	padding: 0px;
+	margin: 0px;
+	font-family: Verdana,Helvetica,Arial,sans-serif;
+	font-size: 12px;
+}
+@if (org.opencms.gwt.client.ui.CmsToolbar.useQuirksCss()) {
+		div.toolbar{
+			position: absolute;
+		}
+	
+}
+.toolbarShadow{
+	height:39px;
+	margin:0;
+	padding:0;
+	position:absolute;
+	width:100%;
+	background:#AAAAAA;
+	opacity:0.3;	
+}
+@sprite .toolbarBackground{
+	gwt-image: "backgroundSoft";
+	background-position: 50% 50%;
+	overflow: visible;
+	border-top:medium none;
+	font-weight:normal;
+	height:35px;
+	position:absolute;
+	width:100%;
+	border-bottom:1px solid #999999;
+	color:#222222;
+	padding:0px;
+	margin:0px;
+}
+.toolbarContent{
+	padding:0px;
+	position:relative;
+	width:930px;
+	margin:2px auto;
+}
+
+.toolbarButtonsLeft>div{
+	margin-right: 5px;
+}
+.toolbarButtonsRight{
+	text-align: right;
+}
+.toolbarButtonsRight>div{
+	margin-left: 5px;
+}
+

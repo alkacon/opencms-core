@@ -2,6 +2,8 @@
 
 .cmsState{}
 .cmsState-down-disabled{}
+.cmsHovering{}
+
 .cmsTextButton,.cmsImageButton { 
     font-family: value("constantsCss.fontFamily");
     

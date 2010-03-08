@@ -12,13 +12,87 @@
     vertical-align: middle;
 }
 
-@sprite .closeIconActive, .cmsState-up-hovering .closeIcon, .cmsState-down-hovering .closeIcon, .cmsState-down .closeIcon{
-    gwt-image: "closeIconActive";
+@sprite .deleteIconActive, .cmsState-up-hovering .deleteIcon, .cmsState-down-hovering .deleteIcon, .cmsState-down .deleteIcon{
+    gwt-image: "deleteIconActive";
     display: inline-block;
     vertical-align: middle;
 }
-@sprite .closeIconInactive, .cmsState-up .closeIcon, .cmsState-up-disabled .closeIcon, .cmsState-down-disabled .closeIcon{
-    gwt-image: "closeIconInactive";
+@sprite .deleteIconInactive, .cmsState-up .deleteIcon{
+    gwt-image: "deleteIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .deleteIconDeactivated, .cmsState-up-disabled .deleteIcon, .cmsState-down-disabled .deleteIcon{
+    gwt-image: "deleteIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .editorIconActive, .cmsState-up-hovering .editorIcon, .cmsState-down-hovering .editorIcon, .cmsState-down .editorIcon{
+    gwt-image: "editorIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .editorIconInactive, .cmsState-up .editorIcon{
+    gwt-image: "editorIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .editorIconDeactivated, .cmsState-up-disabled .editorIcon, .cmsState-down-disabled .editorIcon{
+    gwt-image: "editorIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .moveIconActive, .cmsState-up-hovering .moveIcon, .cmsState-down-hovering .moveIcon, .cmsState-down .moveIcon{
+    gwt-image: "moveIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .moveIconInactive, .cmsState-up .moveIcon{
+    gwt-image: "moveIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .moveIconDeactivated, .cmsState-up-disabled .moveIcon, .cmsState-down-disabled .moveIcon{
+    gwt-image: "moveIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .newIconActive, .cmsState-up-hovering .newIcon, .cmsState-down-hovering .newIcon, .cmsState-down .newIcon{
+    gwt-image: "newIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .newIconInactive, .cmsState-up .newIcon{
+    gwt-image: "newIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .newIconDeactivated, .cmsState-up-disabled .newIcon, .cmsState-down-disabled .newIcon{
+    gwt-image: "newIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .propertyIconActive, .cmsState-up-hovering .propertyIcon, .cmsState-down-hovering .propertyIcon, .cmsState-down .propertyIcon{
+    gwt-image: "propertyIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .propertyIconInactive, .cmsState-up .propertyIcon{
+    gwt-image: "propertyIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .propertyIconDeactivated, .cmsState-up-disabled .propertyIcon, .cmsState-down-disabled .propertyIcon{
+    gwt-image: "propertyIconDeactivated";
     display: inline-block;
     vertical-align: middle;
 }

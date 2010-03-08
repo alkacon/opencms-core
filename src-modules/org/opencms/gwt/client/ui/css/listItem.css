@@ -2,7 +2,7 @@
 	list-style: none;
 	display: block;
 	margin: 0 5px;
-	color: #222222;
+	color: value("constantsCss.color");
 	line-height: 16px;
 	font-size: value("constantsCss.fontSize");
 	font-family: value("constantsCss.fontFamily");
@@ -15,7 +15,7 @@
 }
 .itemContainer{
 	margin: 2px;
-	border: 1px solid #aaaaaa;
+	border: 1px solid value("constantsCss.borderColor");
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
@@ -28,9 +28,47 @@
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
+	position: relative;
+}
+.cmsHovering .itemContent{
+	color: red;
 }
 .itemTitle{
 	font-weight: bold;
     display: inline;
 }
-.itemAdditional{}
+.buttonPanel{
+	position: absolute;
+	top: 7px;
+	right: 5px;
+}
+.buttonPanel>div{
+	float: right;
+	margin-left: 2px;
+}
+.itemAdditional{
+	padding: 5px 0px 0px 4px;
+}
+.itemAdditionalTitle{
+	display:block;
+	float:left;
+	height:16px;
+	margin-right:5px;
+	overflow:hidden;
+	vertical-align:top;
+	width:90px;
+}
+.itemAdditionalValue{
+	display:block;
+	margin-left:95px;
+	vertical-align:top;
+}
+
+/** following classes have to be implemented but are not used within this CSS **/
+.cmsState{}
+.cmsState-up{}
+.cmsState-up-hovering{}
+.cmsState-up-disabled{}
+.cmsState-down{}
+.cmsState-down-hovering{}
+.cmsState-down-disabled{}

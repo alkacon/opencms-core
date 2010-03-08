@@ -20,6 +20,8 @@
 @sprite .cmsState-up-disabled .ui_icon, .cmsState-down-disabled .ui_icon{gwt-image: "iconDefault"; width: 16px; height:16px; opacity: 0.6;}
 @sprite .cmsState-up-hovering .ui_icon, .cmsState-down-hovering .ui_icon, .cmsState-down .ui_icon {gwt-image: "iconActive"; width: 16px; height:16px;}
 
+.cmsHovering{}
+
 .cmsState{}
 
 /** Icon sprite positioning **/
