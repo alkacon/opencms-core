@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsStringUtil.java,v $
- * Date   : $Date: 2010/03/04 14:00:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/08 15:03:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,11 @@
 package org.opencms.gwt.client.util;
 
 /**
- * Reads localized resource Strings from a <code>java.util.ResourceBundle</code> 
- * and provides convenience methods to access the Strings from a template.<p>
+ * Client side implementation for {@link org.opencms.util.CmsStringUtil}.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 

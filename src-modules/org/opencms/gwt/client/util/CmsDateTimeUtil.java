@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDateTimeUtil.java,v $
- * Date   : $Date: 2010/03/03 15:32:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/08 15:03:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,12 +36,11 @@ import java.util.Date;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
- * 
- * Utilities to get and set formated dates in OpenCms.<p>
+ * Client side implementation for {@link org.opencms.util.CmsDateUtil}.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  * 
