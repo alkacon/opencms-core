@@ -126,6 +126,19 @@
     	</for>
     </target>        
 	
+    <target name="compile-gwt" 
+    	depends="init" description="GWT Compile the given modules">
+    	
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="setup-jar"/>
+    	<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="compile-gwt" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>        
+	
     <target name="compile" 
     	depends="init" description="Compile the given modules">
     	

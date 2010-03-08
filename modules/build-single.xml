@@ -96,6 +96,14 @@
 			</else>
 		</if>
 		<property file="${module.input}/module.properties" />
+		<if>
+			<not>
+				<isset property="module.headless.dependencies" />
+			</not>
+			<then>
+				<property name="module.headless.dependencies" value=""/>
+			</then>
+		</if>
 
 		<for list="${module.dependencies}" param="dependency" trim="true">
 			<sequential>
@@ -115,6 +123,20 @@
 				<condition property="@{dependency}.available">
 					<and>
 						<available file="${@{dependency}.output.zip}" />
+					</and>
+				</condition>
+			</sequential>
+		</for>
+		<for list="${module.headless.dependencies}" param="dependency" trim="true">
+			<sequential>
+				<property name="@{dependency}.input" value="${basedir}/@{dependency}" />
+				<property name="@{dependency}.output.classes" location="${opencms.build}/classes-@{dependency}" />
+				<property name="@{dependency}.output.jar" location="${opencms.build}/jars-@{dependency}" />
+				<property file="${@{dependency}.input}/module.properties" prefix="@{dependency}" />
+
+				<condition property="@{dependency}.available">
+					<and>
+						<available file="${@{dependency}.output.jar}" />
 					</and>
 				</condition>
 			</sequential>
@@ -215,10 +237,10 @@
 				              input="${module.gwt.package}"
 				              regexp="\."
 				              replace="/" />
-						<property name="module.gwt.policies" location="${module.input.src}/${module.gwt.package}" />
+						<property name="module.gwt.src" location="${module.input.src}/${module.gwt.package}" />
 					</then>
 					<else>
-						<property name="module.gwt.policies" location="${module.input.src}" />
+						<property name="module.gwt.src" location="${module.input.src}" />
 					</else>
 				</if>
 				<propertyregex property="module.gwt.name"
@@ -226,18 +248,17 @@
 				              regexp="\.([^\.]*)$"
 				              select="\1" />
 				
-				<echo message="xml: ${module.gwt.policies}/${module.gwt.name}.gwt.xml" />
-				<readxmlproperty property="module.gwt.rename" xmlfile="${module.gwt.policies}/${module.gwt.name}.gwt.xml" element="module" attribute="rename-to" />
-				<echo message="rename: ${module.gwt.rename}" />
+				<readxmlproperty property="module.gwt.rename" xmlfile="${module.gwt.src}/${module.gwt.name}.gwt.xml" element="module" attribute="rename-to" />
 				<if>
 					<equals arg1="${module.gwt.rename}" arg2=""/>
 					<then>
-						<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt}" />
+						<property name="module.gwt.bootstrap" value="${module.gwt}" />
 					</then>
 					<else>
-						<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt.rename}" />
+						<property name="module.gwt.bootstrap" value="${module.gwt.rename}" />
 					</else>
 				</if>
+				<property name="module.gwt.output" location="${module.input.res}/system/modules/${module.name}/${module.gwt.bootstrap}" />
 			</then>
 		</if>
 
@@ -270,7 +291,7 @@
 			<then>
 				<echo message="GWT module: ${module.gwt}" />
 				<echo message="GWT output: ${module.gwt.output}" />
-				<echo message="GWT RPC serialization policies path: ${module.gwt.policies}"/>
+				<echo message="GWT source: ${module.gwt.src}"/>
 			</then>
 		</if>
 	</target>
@@ -291,17 +312,31 @@
 				</if>
 			</sequential>
 		</for>
+		<for list="${module.headless.dependencies}" param="dependency" trim="true">
+			<sequential>
+				<if>
+					<not>
+						<istrue value="${@{dependency}.available}" />
+					</not>
+					<then>
+						<echo message="Module dependency @{dependency} is missing, building it" />
+						<ant antfile="${basedir}/build.xml" target="dependencies" inheritAll="false">
+							<property name="module.name" value="@{dependency}" />
+						</ant>
+					</then>
+				</if>
+			</sequential>
+		</for>
+		
 	</target>
-
-	<target name="compile" depends="init, builddeps" description="Compiles ${module.name} module classes">
-
+	
+	<target name="compile-gwt" depends="init, builddeps" description="Compiles GWT ${module.gwt} module">
+		
 		<if>
 			<not>
 				<equals arg1="${src.mode}" arg2="none" />
 			</not>
 			<then>
-				<mkdir dir="${module.output.classes}" />
-
 				<var name="module.dependencies.path" value="." />
 				<for list="${module.dependencies}" param="dependency" trim="true">
 					<sequential>
@@ -320,6 +355,24 @@
 						</if>
 					</sequential>
 				</for>
+				<for list="${module.headless.dependencies}" param="dependency" trim="true">
+					<sequential>
+						<if>
+							<available file="${@{dependency}.output.jar}" />
+							<then>
+								<for param="archive">
+									<fileset dir="${@{dependency}.output.jar}">
+										<include name="**/*.jar" />
+									</fileset>
+									<sequential>
+										<var name="module.dependencies.path" value="${module.dependencies.path}:@{archive}" />
+									</sequential>
+								</for>
+							</then>
+						</if>
+					</sequential>
+				</for>
+
 				<!--echo message="${module.dependencies.path}" /-->
 
 				<var name="module.libs.path" value="." />
@@ -346,24 +399,21 @@
 					            <fileset dir="${module.input.src.single}" erroronmissingdir="false">
 					            	<include name="**/*.gwt.xml" />
 					            	<include name="**/client/**" />
+					            	<include name="**/super_src/**" />
 						        </fileset>
 					            <fileset dir="${module.input.src.shared}" erroronmissingdir="false" >
 					            	<include name="**/*.gwt.xml" />
 					            	<include name="**/client/**" />
+					            	<include name="**/super_src/**" />
 						        </fileset>
 								<fileset dir="${opencms.input.libs.runtime}" />
 								<fileset dir="${opencms.input.libs.compile}" />
 						    </sourcefiles>
-					        <targetfiles path="${module.gwt.output}/${module.gwt}.nocache.js" />
+					        <targetfiles path="${module.gwt.output}/${module.gwt.bootstrap}.nocache.js" />
 					        <sequential>
 								<!--echo message="Deleting GWT output folder"/-->
 						    	<delete dir="${module.gwt.output}" failonerror="false" />
 	
-								<!--echo message="Deleting old RPC serialization policies on: ${module.gwt.policies}"/-->
-					        	<delete>
-								    <fileset dir="${module.gwt.policies}" includes="*.gwt.rpc"/>
-							    </delete>
-
 					        	<!-- GWT compiling --> 
 						  		<java dir="${basedir}" 
 									  classname="com.google.gwt.dev.Compiler" 
@@ -391,16 +441,25 @@
 										<pathelement path="${module.libs.path}" />
 									</classpath>
 					            </java>
-								
-						    	<!--echo message="RPC serialization policies:"/-->
-								<move todir="${module.gwt.policies}">
-									<fileset dir="${module.gwt.output}" includes="*.gwt.rpc" />
-								</move>
 					        </sequential>
 					    </outofdate>
+						<!--eclipse.refreshLocal resource="OpenCms/modules/${module.name}" depth="infinite"/>
+						<eclipse.refreshLocal resource="OpenCms/src-modules" depth="infinite"/-->
 					</then>
 				</if>
+			</then>
+		</if>
 
+	</target>
+
+	<target name="compile" depends="compile-gwt" description="Compiles ${module.name} module classes">
+
+		<if>
+			<not>
+				<equals arg1="${src.mode}" arg2="none" />
+			</not>
+			<then>
+				<mkdir dir="${module.output.classes}" />
 				<if>
 					<equals arg1="${src.mode}" arg2="shared" />
 					<then>
@@ -527,6 +586,18 @@
 				<jar jarfile="${module.output.jar}/${module.name}.jar" basedir="${module.output.classes}" />
 
 				<for list="${module.dependencies}" param="dependency" trim="true">
+					<sequential>
+						<if>
+							<available file="${@{dependency}.output.jar}" />
+							<then>
+								<copy todir="${module.output.jar}">
+									<fileset dir="${@{dependency}.output.jar}" includes="*.jar" />
+								</copy>
+							</then>
+						</if>
+					</sequential>
+				</for>
+				<for list="${module.headless.dependencies}" param="dependency" trim="true">
 					<sequential>
 						<if>
 							<available file="${@{dependency}.output.jar}" />
