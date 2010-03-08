@@ -33,7 +33,7 @@
 }
 
 @if user.agent ie6 {
-    .cmsTextButton, .cmsTextButton div.html-face{
+    .cmsTextButton, .cmsTextButton div.html-face, .cmsImageButton, .cmsImageButton div.html-face, .cmsImageButtonTransparent, .cmsImageButtonTransparent div.html-face{
         white-space: nowrap;
         display: inline;
     }
@@ -42,7 +42,7 @@
         overflow: visible !important;
     }
 } @else {
-    .cmsTextButton div.html-face{
+    .cmsTextButton div.html-face, .cmsImageButton, .cmsImageButton div.html-face{
         display: inline-block;
         white-space: nowrap;
     }

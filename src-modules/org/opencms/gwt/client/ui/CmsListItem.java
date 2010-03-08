@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/03/04 15:17:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/08 16:34:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -57,47 +56,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsListItem extends Composite {
-
-    /** The ui-binder instance for this class. */
-    private static I_CmsListItemUiBinder uiBinder = GWT.create(I_CmsListItemUiBinder.class);
-
-    /** The CSS class to set the additional info open. */
-    static final String OPENCLASS = I_CmsLayoutBundle.INSTANCE.listItemCss().open();
-
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    interface I_CmsListItemUiBinder extends UiBinder<HTMLPanel, CmsListItem> {
-        // GWT interface, nothing to do here
-    }
-
-    /** The DIV showing the list icon. */
-    @UiField
-    DivElement m_iconDiv;
-
-    /** Title label. */
-    @UiField
-    Label m_titleDiv;
-
-    /** Sub title label. */
-    @UiField
-    Label m_subTitleDiv;
-
-    /** DIV for additional item info. */
-    @UiField
-    DivElement m_additionalDiv;
-
-    /** The title row, holding the title and the open-close button for the additional info. */
-    @UiField
-    FlowPanel m_titleRow;
-
-    /** The open-close button for the additional info. */
-    private CmsImageButton m_openClose;
 
     /** Additional info item HTML. */
     protected static class AdditionalInfoItem extends HTML {
@@ -112,9 +75,11 @@ public class CmsListItem extends Composite {
 
             super(DOM.createDiv());
             Element titleSpan = DOM.createSpan();
-            titleSpan.setInnerText(title);
+            titleSpan.setInnerText(title + ":");
+            titleSpan.addClassName(I_CmsLayoutBundle.INSTANCE.listItemCss().itemAdditionalTitle());
             Element valueSpan = DOM.createSpan();
             valueSpan.setInnerText(value);
+            valueSpan.addClassName(I_CmsLayoutBundle.INSTANCE.listItemCss().itemAdditionalValue());
             getElement().appendChild(titleSpan);
             getElement().appendChild(valueSpan);
         }
@@ -125,11 +90,11 @@ public class CmsListItem extends Composite {
      */
     protected class OpenCloseHandler implements ClickHandler {
 
-        /** The owner widget. */
-        private Widget m_owner;
-
         /** The button. */
         private CmsImageButton m_button;
+
+        /** The owner widget. */
+        private Widget m_owner;
 
         /**
          * @param owner
@@ -160,6 +125,46 @@ public class CmsListItem extends Composite {
     }
 
     /**
+     * @see com.google.gwt.uibinder.client.UiBinder
+     */
+    interface I_CmsListItemUiBinder extends UiBinder<CmsHTMLHoverPanel, CmsListItem> {
+        // GWT interface, nothing to do here
+    }
+
+    /** The CSS class to set the additional info open. */
+    static final String OPENCLASS = I_CmsLayoutBundle.INSTANCE.listItemCss().open();
+
+    /** The ui-binder instance for this class. */
+    private static I_CmsListItemUiBinder uiBinder = GWT.create(I_CmsListItemUiBinder.class);
+
+    /** DIV for additional item info. */
+    @UiField
+    DivElement m_additionalDiv;
+
+    /** Panel to hold buttons.*/
+    @UiField
+    FlowPanel m_buttonPanel;
+
+    /** The DIV showing the list icon. */
+    @UiField
+    DivElement m_iconDiv;
+
+    /** Sub title label. */
+    @UiField
+    Label m_subTitleDiv;
+
+    /** Title label. */
+    @UiField
+    Label m_titleDiv;
+
+    /** The title row, holding the title and the open-close button for the additional info. */
+    @UiField
+    FlowPanel m_titleRow;
+
+    /** The open-close button for the additional info. */
+    private CmsImageButton m_openClose;
+
+    /**
      * Constructor.<p>
      * 
      * @param infoBean bean holding the item information
@@ -182,6 +187,26 @@ public class CmsListItem extends Composite {
             }
         }
 
+    }
+
+    /**
+     * Adds a widget to the button panel.<p>
+     * 
+     * @param w the widget to add
+     */
+    public void addButton(Widget w) {
+
+        m_buttonPanel.add(w);
+    }
+
+    /**
+     * Removes a widget from the button panel.<p>
+     * 
+     * @param w the widget to remove
+     */
+    public void removeButton(Widget w) {
+
+        m_buttonPanel.remove(w);
     }
 
 }

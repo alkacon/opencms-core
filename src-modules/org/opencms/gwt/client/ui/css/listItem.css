@@ -28,19 +28,23 @@
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
-	position: relative;
+	
 }
-.cmsHovering .itemContent{
-	color: red;
-}
+
 .itemTitle{
 	font-weight: bold;
     display: inline;
 }
+.cmsHovering .buttonPanel{
+	display: block;
+}
 .buttonPanel{
-	position: absolute;
-	top: 7px;
-	right: 5px;
+	display:none;
+	float: right;
+	margin: 7px 5px 0px 0px;
+	width: 60px;
+	height: 20px;
+	overflow: visible;
 }
 .buttonPanel>div{
 	float: right;

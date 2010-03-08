@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/03/04 15:17:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/08 16:34:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,29 @@ package org.opencms.gwt.client.ui;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 
+/**
+ * A very basic list implementation to hold CmsListItems.<p>
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.0
+ * 
+ */
 public class CmsList extends Composite {
 
-    private HTMLPanel m_list;
+    // TODO: add sorting functions
+
+    /** The list panel. */
+    protected HTMLPanel m_list;
+
+    /** The list panel root element id. */
     private String m_elementId;
 
+    /**
+     * Constructor.<p>
+     */
     public CmsList() {
 
         m_list = new HTMLPanel("ul", "");
@@ -47,8 +65,31 @@ public class CmsList extends Composite {
         initWidget(m_list);
     }
 
+    /**
+     * Adds an item to the list.<p>
+     * 
+     * @param item the item to add
+     */
     public void addItem(CmsListItem item) {
 
         m_list.add(item, m_elementId);
+    }
+
+    /**
+     * Clears the list.<p>
+     */
+    public void clearList() {
+
+        m_list.clear();
+    }
+
+    /**
+     * Removes an item from the list.<p>
+     * 
+     * @param item the item to remove
+     */
+    public void removeItem(CmsListItem item) {
+
+        m_list.remove(item);
     }
 }
