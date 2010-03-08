@@ -10,12 +10,14 @@
 	font-family: Verdana,Helvetica,Arial,sans-serif;
 	font-size: 12px;
 }
+
+/**
 @if (org.opencms.gwt.client.ui.CmsToolbar.useQuirksCss()) {
 		div.toolbar{
 			position: absolute;
 		}
 	
-}
+} **/
 .toolbarShadow{
 	height:39px;
 	margin:0;
