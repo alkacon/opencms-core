@@ -32,7 +32,6 @@
 
 .popupMainContent{
     font-size: value("constantsCss.fontSize");
-    width: 100%;
     padding: 5px;
 }
 
@@ -53,9 +52,10 @@
 }
 .popupButtonPanel{
     margin-top: 5px;
+    text-align: right;
 }
-.popupButtonPanel td{
-    padding-left: 4px;
+.popupButtonPanel>div{
+	margin-left: 4px;
 }
 
 .popup.menuPopup .popupShadow{

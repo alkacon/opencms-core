@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsConfirmDialog.java,v $
- * Date   : $Date: 2010/03/04 15:17:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/09 15:59:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,21 +35,23 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Provides a pop up dialog.<p>
+ * Provides a confirmation dialog with ok and cancel button.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsConfirmDialog extends CmsPopupDialog {
 
     /** The 'Ok' button. */
-    CmsTextButton m_okButton;
+    private CmsTextButton m_okButton;
 
     /** The 'Cancel' button. */
-    CmsTextButton m_cancelButton;
+    private CmsTextButton m_cancelButton;
+
+    private Label m_content;
 
     /** 
      * Constructor.<p>
@@ -57,6 +59,7 @@ public class CmsConfirmDialog extends CmsPopupDialog {
     public CmsConfirmDialog() {
 
         super();
+        // TODO: add localized messages 
         m_okButton = new CmsTextButton("Ok");
         m_okButton.useMinWidth(true);
         addButton(m_okButton);
@@ -74,12 +77,73 @@ public class CmsConfirmDialog extends CmsPopupDialog {
     public CmsConfirmDialog(String title, String content) {
 
         this();
-        setTitle(title);
-        setContent(new Label(content));
+        m_content = new Label(content);
+        this.setContent(m_content);
+        getDialog().setText(title);
     }
 
     /**
-     * Adds an 'ok' click handler.
+     * Adds a secondary style name to the content widget.<p>
+     * 
+     * @param style the style name to add
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#addStyleName(java.lang.String)
+     */
+    public void addContentStyleName(String style) {
+
+        m_content.addStyleName(style);
+    }
+
+    /**
+     * Gets all of the content's style names, as a space-separated list.<p>
+     * 
+     * @return the style names
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#getStyleName()
+     */
+    public String getContentStyleName() {
+
+        return m_content.getStyleName();
+    }
+
+    /**
+     * Gets all of the content's primary style name.<p>
+     * 
+     * @return the primary style name
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#getStylePrimaryName()
+     */
+    public String getContentStylePrimaryName() {
+
+        return m_content.getStylePrimaryName();
+    }
+
+    /**
+     * Clears all of the content's style names and sets it to the given style.<p>
+     * 
+     * @param style the style name to set
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#setStyleName(java.lang.String)
+     */
+    public void setContentStyleName(String style) {
+
+        m_content.setStyleName(style);
+    }
+
+    /**
+     * Sets the primary style name of the content widget.<p>
+     * 
+     * @param style the style name to set
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#setStylePrimaryName(java.lang.String)
+     */
+    public void setContentStylePrimaryName(String style) {
+
+        m_content.setStylePrimaryName(style);
+    }
+
+    /**
+     * Adds an 'ok' click handler.<p>
      * 
      * @param handler the click handler
      */
@@ -89,7 +153,7 @@ public class CmsConfirmDialog extends CmsPopupDialog {
     }
 
     /**
-     * Adds a 'cancel' click handler.
+     * Adds a 'cancel' click handler.<p>
      * 
      * @param handler the click handler
      */
@@ -97,4 +161,5 @@ public class CmsConfirmDialog extends CmsPopupDialog {
 
         m_cancelButton.addClickHandler(handler);
     }
+
 }

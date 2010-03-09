@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopupDialog.java,v $
- * Date   : $Date: 2010/03/04 15:17:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/09 15:59:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,58 +33,33 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Provides a pop up dialog.
+ * Provides a pop up dialog, including convenience methods to add and remove buttons.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
  */
-public class CmsPopupDialog extends DialogBox {
+public class CmsPopupDialog extends CmsPopup {
 
     /** The content widget. */
     private Widget m_content;
 
     /** The panel holding the dialog's buttons. */
-    private HorizontalPanel m_buttonPanel;
-
-    /** The main widget of this dialog containing all others. */
-    protected VerticalPanel m_main;
-
-    private com.google.gwt.user.client.Element m_containerElement;
-
-    /** The default width of this dialog. */
-    private static final String DEFAULT_WIDTH = "300px";
+    private FlowPanel m_buttonPanel;
 
     /**
      * The Constructor.<p>
      */
     public CmsPopupDialog() {
 
-        super(false);
-        m_containerElement = super.getContainerElement();
-        this.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
-        this.setWidth(DEFAULT_WIDTH);
-        Element shadowDiv = DOM.createDiv();
-        shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow());
-        I_CmsLayoutBundle.INSTANCE.dialogCss().ensureInjected();
-        m_main = new VerticalPanel();
-        setWidget(m_main);
-        m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
-
-        m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
-        this.getElement().insertFirst(shadowDiv);
-        this.setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
+        super();
     }
 
     /**
@@ -95,34 +70,21 @@ public class CmsPopupDialog extends DialogBox {
      */
     public CmsPopupDialog(String title, Widget content) {
 
-        this();
-        this.setTitle(title);
+        super(title);
         this.setContent(content);
     }
 
     /**
-     * Sets the title and caption of this dialog.<p>
-     * 
-     * @param title the title
-     */
-    @Override
-    public void setTitle(String title) {
-
-        super.setTitle(title);
-        this.setText(title);
-    }
-
-    /**
-     * Sets the content for this dialog replacing any former content.
+     * Sets the content for this dialog replacing any former content.<p>
      * 
      * @param widget the content widget
      */
     public void setContent(Widget widget) {
 
         if (m_content != null) {
-            m_main.remove(m_content);
+            getDialog().remove(m_content);
         }
-        m_main.insert(widget, 0);
+        getDialog().insert(widget, 0);
         m_content = widget;
     }
 
@@ -134,10 +96,10 @@ public class CmsPopupDialog extends DialogBox {
     public void addButton(Widget button) {
 
         if (m_buttonPanel == null) {
-            m_buttonPanel = new HorizontalPanel();
-            m_main.add(m_buttonPanel);
+            m_buttonPanel = new FlowPanel();
+            getDialog().add(m_buttonPanel);
             m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
-            m_buttonPanel.getElement().getParentElement().setAttribute("align", "right");
+            getDialog().getWidget().setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
 
         }
         //        button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMinWidth());
@@ -156,31 +118,19 @@ public class CmsPopupDialog extends DialogBox {
         }
         m_buttonPanel.remove(button);
         if (m_buttonPanel.getWidgetCount() == 0) {
-            m_main.remove(m_buttonPanel);
+            getDialog().remove(m_buttonPanel);
             m_buttonPanel = null;
         }
     }
 
     /**
-     * Returns the content widget.
+     * Returns the content widget.<p>
      * 
      * @return the content widget
      */
     public Widget getContent() {
 
         return m_content;
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.PopupPanel#getContainerElement()
-     */
-    @Override
-    protected com.google.gwt.user.client.Element getContainerElement() {
-
-        if (m_containerElement == null) {
-            m_containerElement = super.getContainerElement();
-        }
-        return m_containerElement;
     }
 
 }
