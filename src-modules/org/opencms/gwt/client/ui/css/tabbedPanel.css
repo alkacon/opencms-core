@@ -1,22 +1,26 @@
 @external gwt-TabLayoutPanel gwt-TabLayoutPanelTab gwt-TabLayoutPanelTabBar gwt-TabLayoutPanelTabs gwt-TabLayoutPanelContent gwt-TabLayoutPanelTab-selected gwt-TabLayoutPanelTabInner; 
 
 .gwt-TabLayoutPanel {	
-    background:#F9F9F9 none repeat scroll 0 0;   	
+	display:block;
+    background:value("constantsCss.backgroundColorLight") none repeat scroll 0 0;   
+    border:1px solid value("constantsCss.borderColor");
+    -moz-border-radius-topleft:4px;
+	-moz-border-radius-topright:4px;	
+	-moz-border-radius-bottomleft:4px;
+	-moz-border-radius-bottomright:4px;
 	height: 100%;
-	width: 100%;
 	margin:0;
 	padding:0;
-    font-size: value("constantsCss.fontSize");
-	font-family: value("constantsCss.fontFamily");
-	
+	font-size:value("constantsCss.fontSize");
+	font-family: value("constantsCss.fontFamily");   	
 }
 
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
-	background:#AAAAAA none repeat-x scroll 50% 50%;
-	border:1px solid #AAAAAA;
-	border-bottom-width:0px !important;
-	-moz-border-radius-topleft:4px;
-	-moz-border-radius-topright:4px;
+@sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
+	gwt-image: "backgroundSoft";
+	background-position: 50% 50%;
+	height: auto;
+	background-color: value("constantsCss.backgroundColorBar");
+	display: block;	
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
@@ -24,33 +28,33 @@
 
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {	
-    overflow: hidden;
-	padding: 10px;
-	-moz-border-radius-bottomleft:4px;
-	-moz-border-radius-bottomright:4px;
-	/*background:transparent none repeat scroll 0 0;*/	
-	border-bottom:1px solid #AAAAAA;
-	border-left:1px solid #AAAAAA;
-	border-right:1px solid #AAAAAA;
+    overflow: hidden;		
+	background:transparent none repeat scroll 0 0;		
 	display:block;
-	color:#222222;
+	color:value("constantsCss.color");
+	padding: 10px;
 }
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
+@sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
+	gwt-image: "backgroundDefault";
+	background-position: 50% 50%;
+	height: auto;
 	margin:0 0 -1px 2px;
 	padding:0;		
 	-moz-border-radius-topleft:4px;
 	-moz-border-radius-topright:4px;	
-	background:#CCCCCC repeat-x scroll 50% 50%;
-	border:1px solid #999999;	
-	color:#222222;
+	border:1px solid value("constantsCss.borderColor");	
+	color:value("constantsCss.color");
 	position:relative;
 }
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {    
-    background: #F9F9F9 none repeat scroll 0 0;
+    background: value("constantsCss.backgroundColorLight") none repeat scroll 0 0;
 	cursor: default;
+	font-size:value("constantsCss.fontSize");
+	font-family: value("constantsCss.fontFamily");
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab .gwt-TabLayoutPanelTabInner {
 	padding: 3px 5px 4px;
+	font-size:value("constantsCss.fontSize");
+	font-family: value("constantsCss.fontFamily");
 }
-
