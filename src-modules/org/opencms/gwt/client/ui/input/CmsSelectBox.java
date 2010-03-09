@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,6 +69,12 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Widget for selecting one of multiple items from a drop-down list which opens
  * after the user clicks on the widget.<p>
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0
  * 
  */
 public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValueChangeHandlers {
@@ -158,42 +164,28 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
     private static I_CmsSelectBoxUiBinder uiBinder = GWT.create(I_CmsSelectBoxUiBinder.class);
 
-    /**
-     * The arrow shown in the opener.
-     */
+    /** The arrow shown in the opener. */
     @UiField
     HTML m_arrow;
 
-    /**
-     * Error widget.<p>
-     */
+    /** Error widget. */
     @UiField
     CmsErrorWidget m_error;
 
-    /**
-     * Handler manager for this widget's events.<p>
-     */
+    /** Handler manager for this widget's events. */
     final HandlerManager m_handlerManager = new HandlerManager(this);
 
-    /**
-     * Flag indicating whether the next click on the opener should be ignored.
-     */
+    /** Flag indicating whether the next click on the opener should be ignored. */
     boolean m_ignoreNextToggle;
 
-    /** 
-     * The mode of the select box (text or HTML).<p>
-     */
+    /** The mode of the select box (text or HTML). */
     Mode m_mode;
 
-    /**
-     * Opener widget.<p>
-     */
+    /** The opener widget. */
     @UiField
     FocusPanel m_opener;
 
-    /**
-     * The field in the opener which contains the currently selected option.
-     */
+    /** The field in the opener which contains the currently selected option. */
     @UiField
     HTML m_openerHtml;
 
@@ -204,26 +196,29 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      */
     boolean m_overOpener;
 
-    /**
-     * Container for the opener and error widget.<p>
-     */
+    /**  Container for the opener and error widget. */
     @UiField
     Panel m_panel = new FlowPanel();
 
-    /**
-     * The popup panel inside which the selector will be shown.<p>
-     *  
-     */
+    /** The popup panel inside which the selector will be shown.<p> */
     PopupPanel m_popup = new PopupPanel(true);
 
+    /** Flag indicating whether this widget is enabled. */
     private boolean m_enabled = true;
+
+    /** The text of the first select option. */
     private String m_firstText;
+
+    /** The value of the first select option. */
     private String m_firstValue;
 
+    /** The value of the currently selected option. */
     private String m_selectedValue;
 
+    /** The selector which contains the select options. */
     private Panel m_selector = new VerticalPanel();
 
+    /** The labels for each of the select options. */
     private final Map<String, String> m_valueLabels = new HashMap<String, String>();
 
     /**
@@ -334,7 +329,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
-     * 
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     public HandlerRegistration addValueChangeHandler(final ValueChangeHandler handler) {
@@ -350,7 +344,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -359,7 +352,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
      */
     public Object getFormValue() {
@@ -369,7 +361,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -379,7 +370,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
      */
     public void setEnabled(boolean enabled) {
@@ -389,7 +379,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
      */
     public void setErrorMessage(String errorMessage) {
@@ -398,7 +387,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
      */
     public void setFormValue(Object value) {

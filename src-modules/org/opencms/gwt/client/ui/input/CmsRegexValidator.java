@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRegexValidator.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,19 @@ package org.opencms.gwt.client.ui.input;
 
 /**
  * Basic regular expression validator for widgets of field type string.<p>
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0
  */
 public class CmsRegexValidator implements I_CmsValidator {
 
+    /** The message to be displayed when the validation fails. */
     private String m_message;
+
+    /** The regex used for validation. */
     private String m_regex;
 
     /**
@@ -56,6 +65,14 @@ public class CmsRegexValidator implements I_CmsValidator {
         m_message = message;
     }
 
+    /**
+     * Matches a string against a regex, and inverts the match if the regex starts with a '!'.<p>
+     * 
+     * @param regex the regular expression
+     * @param value the string to be matched
+     * 
+     * @return true if the validation succeeded 
+     */
     private static boolean matchRuleRegex(String regex, String value) {
 
         if (regex == null) {
@@ -69,7 +86,6 @@ public class CmsRegexValidator implements I_CmsValidator {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsValidator#validate(org.opencms.gwt.client.ui.input.I_CmsFormWidget, org.opencms.gwt.client.ui.input.I_CmsValidationHandler)
      */
     public void validate(I_CmsFormWidget widget, I_CmsValidationHandler handler) {

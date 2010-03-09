@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsMultiCheckBox.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,20 @@ import com.google.gwt.user.client.ui.Grid;
 
 /**
  * A form widget consisting of a group of checkboxes.<p>
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0
  *  
  */
 public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
 
+    /** The list of items as (key, label) pairs. */
     private List<CmsPair<String, String>> m_items;
+
+    /** The table containing the checkboxes and labels. */
     private Grid m_table;
 
     /**
@@ -73,7 +82,6 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -82,7 +90,6 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
      */
     public Object getFormValue() {
@@ -111,7 +118,6 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -123,7 +129,6 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
      */
     public void setEnabled(boolean enabled) {
@@ -135,7 +140,6 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
      */
     public void setErrorMessage(String errorMessage) {
@@ -146,12 +150,11 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
      */
     public void setFormValue(Object value) {
 
-        if (value instanceof List) {
+        if (value instanceof List<?>) {
             List<String> keys = (List<String>)value;
             Set<String> keySet = new HashSet<String>(keys);
             int i = 0;
@@ -164,6 +167,12 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
         }
     }
 
+    /**
+     * Internal function for getting a checkbox from the table used by this widget.<p>
+     * 
+     * @param row the row index in the table
+     * @return a checkbox
+     */
     private CmsCheckBox getCheckBox(int row) {
 
         return (CmsCheckBox)m_table.getWidget(row, 0);

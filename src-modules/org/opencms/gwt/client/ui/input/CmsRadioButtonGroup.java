@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButtonGroup.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,18 +53,31 @@ import com.google.gwt.user.client.ui.Panel;
 /**
  * Widget class consisting of a group of radio buttons, of which at most one may be active.<p>
  * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0
+ * 
  */
 public class CmsRadioButtonGroup extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String> {
 
-    /**
-     * A collection of event handlers for this widget.<p>
-     */
+    /** A collection of event handlers for this widget. */
     HandlerManager m_handlers = new HandlerManager(null);
+
+    /** The error display used by this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
+
+    /** The root panel containing all other components of this widget. */
     private Panel m_panel = new FlowPanel();
+
+    /** A map which stores all radio buttons using their value as keys. */
     private Map<String, CmsRadioButton> m_radioButtons;
+
+    /** The value of the selected radio button, or null. */
     private String m_selected;
 
+    /** The table containing the radio buttons and labels. */
     private FlexTable m_table = new FlexTable();
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsErrorWidget.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,11 +37,18 @@ import com.google.gwt.user.client.ui.Label;
 /**
  * Helper class for displaying errors.<p>
  * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0
  */
 public class CmsErrorWidget extends Composite {
 
+    /** The CSS bundle for this widget. */
     private static I_CmsInputCss CSS = I_CmsLayoutBundle.INSTANCE.inputCss();
 
+    /** The internal label that displays the error message. */
     private Label m_label;
 
     /**
@@ -54,6 +61,11 @@ public class CmsErrorWidget extends Composite {
         setText(null);
     }
 
+    /**
+     * Creates the a new error label.<p>
+     * 
+     * @return a label with the appropriate style for  an error label
+     */
     private static Label createErrorLabel() {
 
         Label label = new Label();

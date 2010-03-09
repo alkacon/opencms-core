@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,14 +48,30 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * It can be checked/unchecked and enabled/disabled, which means 4 combinations in total.
  * So you need to supply 4 images, one for each of the combinations.
  * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0
  */
 public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFormWidget {
 
+    /** CSS bundle for this widget. */
     private static final I_CmsInputCss CSS = I_CmsLayoutBundle.INSTANCE.inputCss();
+
+    /** Image bundle for this widget. */
     private static final I_CmsImageBundle IMAGES = I_CmsImageBundle.INSTANCE;
+
+    /** Toggle button which actually displays the checkbox. */
     private final ToggleButton m_button = new ToggleButton();
+
+    /** The error display for this widget. */
     private final CmsErrorWidget m_error = new CmsErrorWidget();
+
+    /** Internal root widget to which all other components of this widget are attached. */
     private final FlowPanel m_root = new FlowPanel();
+
+    /** A row containing the checkbox and a label (only used if the checkbox has a label). */
     private final HorizontalPanel m_row = new HorizontalPanel();
 
     /**
@@ -109,7 +125,6 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -118,7 +133,6 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
      */
     public Boolean getFormValue() {
@@ -147,7 +161,6 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -176,7 +189,6 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
      */
     public void setErrorMessage(String errorMessage) {
@@ -185,7 +197,6 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
      */
     public void setFormValue(Object value) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/demo/client/Attic/CmsInputDemo.java,v $
- * Date   : $Date: 2010/03/09 07:39:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,9 +53,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * Demonstration class for the input package.<p> 
+ * Demonstration class for the input package.<p>
+ * 
+ *  @author Georg Westenberger
+ *  
+ *  @version $Revision: 1.2 $
+ *  
+ *  @since 8.0.0
  */
-public class CmsInputDemo extends Composite { 
+public class CmsInputDemo extends Composite {
 
     /**
      * Constructs a new instance.<p>

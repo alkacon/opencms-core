@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextArea.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,13 +39,25 @@ import com.google.gwt.user.client.ui.TextArea;
 /**
  * Basic text area widget for forms.<p>
  * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0
+ * 
  */
 public class CmsTextArea extends Composite implements I_CmsFormWidget {
 
+    /** The CSS bundle for this widget. */
     private static I_CmsInputCss CSS = I_CmsLayoutBundle.INSTANCE.inputCss();
 
+    /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
+
+    /** The root panel containing the other components of this widget. */
     private Panel m_panel = new FlowPanel();
+
+    /** The internal text area widet used by this widget. */
     private TextArea m_textArea = new TextArea();
 
     /**
@@ -61,7 +73,6 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -70,7 +81,6 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
      */
     public Object getFormValue() {
@@ -89,7 +99,6 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -98,7 +107,6 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
      */
     public void setEnabled(boolean enabled) {
@@ -107,7 +115,6 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
      */
     public void setErrorMessage(String errorMessage) {
@@ -116,7 +123,6 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
      */
     public void setFormValue(Object value) {

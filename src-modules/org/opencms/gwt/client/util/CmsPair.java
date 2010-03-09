@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsPair.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,10 +36,19 @@ package org.opencms.gwt.client.util;
  * 
  * @param <A> type of the first component of the pair
  * @param <B> type of the second component of the pair
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.0
  */
 public class CmsPair<A, B> {
 
+    /** First component of the pair. */
     private A m_first;
+
+    /** Second component of the pair. */
     private B m_second;
 
     /**

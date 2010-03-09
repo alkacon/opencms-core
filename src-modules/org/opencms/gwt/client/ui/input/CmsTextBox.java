@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,12 +36,24 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
- * A basic text box class. 
+ * A basic text box class. <p>
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0
+ * 
  */
 public class CmsTextBox extends Composite implements I_CmsFormWidget {
 
+    /** The CSS bundle used by this class. */
     private static final I_CmsInputCss CSS = I_CmsLayoutBundle.INSTANCE.inputCss();
+
+    /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
+
+    /** The text box widget used internally by this widget. */
     private TextBox m_textBox = new TextBox();
 
     /**
@@ -59,7 +71,6 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -85,7 +96,6 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -94,7 +104,6 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
      */
     public void setEnabled(boolean enabled) {
@@ -103,7 +112,6 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
      */
     public void setErrorMessage(String message) {

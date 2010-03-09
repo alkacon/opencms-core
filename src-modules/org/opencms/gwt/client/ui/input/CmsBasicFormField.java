@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsBasicFormField.java,v $
- * Date   : $Date: 2010/03/08 16:47:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 09:03:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,17 +33,31 @@ package org.opencms.gwt.client.ui.input;
 
 /**
  * Basic implementation of the I_CmsFormField class.<p>
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0 
  */
 public class CmsBasicFormField implements I_CmsFormField {
 
+    /** Description for the form field. */
     private String m_description;
 
+    /** Id of the form field.*/
     private String m_id;
+
+    /** Label of the form field. */
     private String m_label;
+
+    /** Validator of the form field. */
     private I_CmsValidator m_validator;
+
+    /** Widget of the form field. */
     private I_CmsFormWidget m_widget;
 
-    /**
+    /** 
      * Constructs a new form field.<p>
      * 
      * @param id the id of the form field
@@ -93,7 +107,6 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setId(java.lang.String)
      */
     public void setId(String id) {
@@ -102,7 +115,6 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setValidator(org.opencms.gwt.client.ui.input.I_CmsValidator)
      */
     public void setValidator(I_CmsValidator validator) {
@@ -111,7 +123,6 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
-     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormField#validate(org.opencms.gwt.client.ui.input.I_CmsValidationHandler)
      */
     public void validate(I_CmsValidationHandler handler) {
