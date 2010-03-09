@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2010/02/24 07:18:05 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/03/09 10:14:05 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6 
  */
@@ -238,15 +238,6 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             // default resource type MUST have default name
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
-                this.getClass().getName(),
-                RESOURCE_TYPE_NAME,
-                name));
-        }
-
-        if (!id.equals("" + RESOURCE_TYPE_ID)) {
-            // default resource type MUST have id equals RESOURCE_TYPE_ID
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_INVALID_RESTYPE_CONFIG_ID_3,
                 this.getClass().getName(),
                 RESOURCE_TYPE_NAME,
                 name));
