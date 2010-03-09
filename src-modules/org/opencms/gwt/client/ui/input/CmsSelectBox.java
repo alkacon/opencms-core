@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/09 14:19:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -212,6 +213,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /** The value of the first select option. */
     private String m_firstValue;
 
+    /** Style of the select box widget. */
+    private final CmsStyleVariable m_selectBoxState;
+
     /** The value of the currently selected option. */
     private String m_selectedValue;
 
@@ -231,15 +235,19 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_mode = mode;
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_selectBoxState = new CmsStyleVariable(m_opener, m_selector);
+        m_selectBoxState.setValue(CSS.selectBoxClosed());
+
         m_opener.addStyleName(CSS.selectBoxSelected());
-        m_arrow.setStyleName(CSS.arrowRight());
+        m_arrow.setStyleName(CSS.selectClosedIcon());
         m_popup.setWidget(m_selector);
         m_selector.setStyleName(CSS.selectBoxSelector());
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> e) {
 
-                m_arrow.setStyleName(CSS.arrowRight());
+                m_arrow.setStyleName(CSS.selectClosedIcon());
+                m_selectBoxState.setValue(CSS.selectBoxClosed());
 
                 if (e.isAutoClosed() && m_overOpener) {
                     // user clicked on the opener, so we have to ignore the click event for the opener which will
@@ -290,6 +298,10 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_firstValue = firstValue;
         m_firstText = firstText;
 
+    }
+
+    static {
+        CSS.ensureInjected();
     }
 
     /**
@@ -436,7 +448,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
             return;
         }
         m_popup.hide();
-        m_arrow.setStyleName(CSS.arrowRight());
+        m_arrow.setStyleName(CSS.selectClosedIcon());
+        m_selectBoxState.setValue(CSS.selectBoxClosed());
     }
 
     /**
@@ -450,7 +463,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_popup.setWidth(2 /* left/right border */+ m_opener.getElement().getClientWidth() + "px");
         m_popup.show();
         positionElement(m_popup.getElement(), m_panel.getElement(), 0, m_panel.getElement().getClientHeight());
-        m_arrow.setStyleName(CSS.arrowDown());
+        m_arrow.setStyleName(CSS.selectOpenIcon());
+        m_selectBoxState.setValue(CSS.selectBoxOpen());
     }
 
     /**

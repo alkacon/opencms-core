@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/09 14:19:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -68,6 +68,10 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
         panel.add(m_textBox);
         panel.add(m_error);
         initWidget(panel);
+    }
+
+    static {
+        CSS.ensureInjected();
     }
 
     /**

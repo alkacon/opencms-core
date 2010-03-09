@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/09 14:19:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,23 +38,11 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
 public interface I_CmsInputCss extends CssResource {
-
-    /**
-     * Css class reader.<p>
-     * @return the css class
-     */
-    String arrowDown();
-
-    /**
-     * Css class reader.<p>
-     * @return the css class
-     */
-    String arrowRight();
 
     /** 
      * Css class reader.<p>
@@ -90,6 +78,18 @@ public interface I_CmsInputCss extends CssResource {
      * Css class reader.<p>
      * @return the css class
      */
+    String selectBoxClosed();
+
+    /**
+     * Css class reader.<p>
+     * @return the css class
+     */
+    String selectBoxOpen();
+
+    /**
+     * Css class reader.<p>
+     * @return the css class
+     */
     String selectBoxRoot();
 
     /**
@@ -108,7 +108,19 @@ public interface I_CmsInputCss extends CssResource {
      * Css class reader.<p>
      * @return the css class
      */
+    String selectClosedIcon();
+
+    /**
+     * Css class reader.<p>
+     * @return the css class
+     */
     String selectHover();
+
+    /**
+     * Css class reader.<p>
+     * @return the css class
+     */
+    String selectOpenIcon();
 
     /** 
      * Css class reader.<p>
