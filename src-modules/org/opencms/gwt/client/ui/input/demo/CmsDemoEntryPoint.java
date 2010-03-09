@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/demo/Attic/CmsDemoEntryPoint.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/09 10:25:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -50,7 +50,6 @@ public class CmsDemoEntryPoint implements EntryPoint {
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
      */
-    @Override
     public void onModuleLoad() {
 
         RootPanel.get().add(new CmsInputDemo());
