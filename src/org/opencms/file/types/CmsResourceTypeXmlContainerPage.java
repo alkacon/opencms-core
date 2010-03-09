@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2010/03/09 10:14:05 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/03/09 10:22:51 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.6 
  */
@@ -246,7 +246,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         // freeze the configuration
         m_staticFrozen = true;
 
-        super.initConfiguration(RESOURCE_TYPE_NAME, "" + RESOURCE_TYPE_ID, className);
+        super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
     }
 
     /**
