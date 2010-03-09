@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2010/03/04 14:00:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 10:30:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client;
 
 import org.opencms.gwt.client.rpc.CmsLog;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsStringUtil;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -42,13 +43,13 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.CmsLogService
- * @see org.opencms.gwt.shared.I_CmsLogService
- * @see org.opencms.gwt.shared.I_CmsLogServiceAsync
+ * @see org.opencms.gwt.shared.rpc.I_CmsLogService
+ * @see org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync
  */
 public abstract class A_CmsEntryPoint implements EntryPoint {
 
@@ -66,6 +67,9 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
     public void onModuleLoad() {
 
         enableRemoteExceptionHandler();
+
+        I_CmsLayoutBundle.INSTANCE.dialogCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
     }
 
     /**
