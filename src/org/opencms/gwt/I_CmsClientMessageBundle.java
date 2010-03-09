@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/I_CmsClientMessageBundle.java,v $
- * Date   : $Date: 2010/03/03 15:32:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 10:25:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -38,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -63,6 +65,13 @@ public interface I_CmsClientMessageBundle {
      * @return the JSON code
      */
     String export(String localeName);
+
+    /**
+     * Returns a set of additional bundles.<p>
+     * 
+     * @return a set of additional bundles
+     */
+    Set<I_CmsClientMessageBundle> getAdditionalMessages();
 
     /**
      * Returns the bundle name for this OpenCms package.<p>

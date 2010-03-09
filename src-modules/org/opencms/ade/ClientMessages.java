@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/Attic/ClientMessages.java,v $
- * Date   : $Date: 2010/03/04 14:07:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 10:25:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,11 +37,9 @@ import org.opencms.gwt.I_CmsClientMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * Intended only for test cases.<p>
- * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -61,7 +59,7 @@ public final class ClientMessages extends A_CmsClientMessageBundle {
      */
     private ClientMessages() {
 
-        // hide the constructor
+        addMessage(org.opencms.gwt.ClientMessages.get());
     }
 
     /**
