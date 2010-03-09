@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/I_CmsLogService.java,v $
- * Date   : $Date: 2010/03/04 14:00:18 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
+ * Date   : $Date: 2010/03/09 10:32:32 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,13 +29,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.shared;
+package org.opencms.ade.shared.rpc;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+
+import org.opencms.ade.shared.CmsClientSitemapEntry;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Handles client side logging.<p>
+ * Handles all RPC services related to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
@@ -43,18 +45,16 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.gwt.CmsLogService
- * @see org.opencms.gwt.shared.I_CmsLogService
- * @see org.opencms.gwt.shared.I_CmsLogServiceAsync
+ * @see org.opencms.ade.CmsSitemapService
+ * @see org.opencms.ade.shared.rpc.I_CmsSitemapService
+ * @see org.opencms.ade.shared.rpc.I_CmsSitemapServiceAsync
  */
-@RemoteServiceRelativePath("org.opencms.gwt.CmsLogService.gwt")
-public interface I_CmsLogService extends RemoteService {
+public interface I_CmsSitemapServiceAsync {
 
     /**
-     * Logs client messages on the server.<p>
+     * Returns the whole sitemap.<p>
      * 
-     * @param ticket the optional client-side generated ticket
-     * @param message the message to log
+     * @param callback the async callback
      */
-    void log(String ticket, String message);
+    void getSitemap(AsyncCallback<CmsClientSitemapEntry> callback);
 }

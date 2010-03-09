@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsLog.java,v $
- * Date   : $Date: 2010/03/04 14:00:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 10:32:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.gwt.client.rpc;
 
-import org.opencms.gwt.shared.I_CmsLogService;
-import org.opencms.gwt.shared.I_CmsLogServiceAsync;
+import org.opencms.gwt.shared.rpc.I_CmsLogService;
+import org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync;
 
 import java.util.Date;
 
@@ -47,13 +47,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.CmsLogService
- * @see org.opencms.gwt.shared.I_CmsLogService
- * @see org.opencms.gwt.shared.I_CmsLogServiceAsync
+ * @see org.opencms.gwt.shared.rpc.I_CmsLogService
+ * @see org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync
  */
 public final class CmsLog {
 

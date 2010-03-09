@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsLogService.java,v $
- * Date   : $Date: 2010/03/04 14:00:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 10:32:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.gwt;
 
-import org.opencms.gwt.shared.I_CmsLogService;
+import org.opencms.gwt.shared.rpc.I_CmsLogService;
 import org.opencms.main.CmsLog;
 
 import org.apache.commons.logging.Log;
@@ -41,13 +41,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.CmsLogService
- * @see org.opencms.gwt.shared.I_CmsLogService
- * @see org.opencms.gwt.shared.I_CmsLogServiceAsync
+ * @see org.opencms.gwt.shared.rpc.I_CmsLogService
+ * @see org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync
  */
 public class CmsLogService extends CmsGwtService implements I_CmsLogService {
 
@@ -58,7 +58,7 @@ public class CmsLogService extends CmsGwtService implements I_CmsLogService {
     private static final Log LOG = CmsLog.getLog(CmsLogService.class);
 
     /**
-     * @see org.opencms.gwt.shared.I_CmsLogService#log(java.lang.String, java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsLogService#log(java.lang.String, java.lang.String)
      */
     public void log(String ticket, String message) {
 
