@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/09 10:25:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/09 13:47:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -357,42 +357,42 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanel")
-        public String cmsTabLayoutPanel();
+        String cmsTabLayoutPanel();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelContent")
-        public String cmsTabLayoutPanelContent();
+        String cmsTabLayoutPanelContent();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTab")
-        public String cmsTabLayoutPanelTab();
+        String cmsTabLayoutPanelTab();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTabBar")
-        public String cmsTabLayoutPanelTabBar();
+        String cmsTabLayoutPanelTabBar();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTabs")
-        public String cmsTabLayoutPanelTabs();
+        String cmsTabLayoutPanelTabs();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTab-selected")
-        public String cmsTabLayoutPanelTabSelected();
+        String cmsTabLayoutPanelTabSelected();
     }
 
     /** Toolbar CSS. */
@@ -444,7 +444,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * @return tabbed panel CSS
      */
     @Source("tabbedPanel.css")
-    public I_CmsTabbedPanelCss tabbedPanelCss();
+    I_CmsTabbedPanelCss tabbedPanelCss();
 
     /**
      * Access method.<p>
