@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/03/04 14:07:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 10:33:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,17 +41,31 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapEntry implements IsSerializable {
 
+    /** The entry id. */
     private String m_id;
+
+    /** The entry name. */
     private String m_name;
+
+    /** The property map. */
     private Map<String, String> m_properties;
+
+    /** The VFS resource id. */
     private String m_resourceId;
+
+    /** The site path. */
+    private String m_sitePath;
+
+    /** The list of subentries. */
     private List<CmsClientSitemapEntry> m_subEntries;
+
+    /** The title. */
     private String m_title;
 
     /**
@@ -102,6 +116,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public String getResourceId() {
 
         return m_resourceId;
+    }
+
+    /**
+     * Returns the site path.<p>
+     *
+     * @return the site path
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
     }
 
     /**
@@ -162,6 +186,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setResourceId(String resoureId) {
 
         m_resourceId = resoureId;
+    }
+
+    /**
+     * Sets the site path.<p>
+     *
+     * @param sitePath the site path to set
+     */
+    public void setSitePath(String sitePath) {
+
+        m_sitePath = sitePath;
     }
 
     /**

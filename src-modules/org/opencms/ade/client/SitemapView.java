@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/client/Attic/SitemapView.java,v $
- * Date   : $Date: 2010/03/04 14:07:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/09 10:33:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,14 @@
 package org.opencms.ade.client;
 
 import org.opencms.ade.shared.CmsClientSitemapEntry;
-import org.opencms.ade.shared.I_CmsSitemapService;
-import org.opencms.ade.shared.I_CmsSitemapServiceAsync;
+import org.opencms.ade.shared.rpc.I_CmsSitemapService;
+import org.opencms.ade.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.util.CmsCoreProvider;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Tree;
@@ -100,7 +102,8 @@ public class SitemapView extends A_CmsEntryPoint {
                 if (parent == null) {
                     treeItem = tree.addItem(Messages.get().key(Messages.GUI_SITEMAP_0));
                 } else {
-                    treeItem = parent.addItem(entry.getName());
+                    Anchor link = new Anchor(entry.getName(), CmsCoreProvider.get().link(entry.getSitePath()));
+                    treeItem = parent.addItem(link);
                 }
                 treeItem.setState(true);
                 for (CmsClientSitemapEntry entries : entry.getSubEntries()) {
