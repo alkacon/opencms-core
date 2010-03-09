@@ -31,7 +31,9 @@
 			<fileset dir="${opencms.input.libs.runtime}">
 			    <include name="**/*.jar"/>
 	        </fileset>
-			<pathelement location="${opencms.input}/bin" />
+			<fileset dir="${opencms.output}/build/jars-core" erroronmissingdir="false">
+			    <include name="**/*.jar"/>
+	        </fileset>
 		</classpath>
 	</taskdef>
 	
@@ -155,7 +157,7 @@
     <target name="jar" 
     	depends="init" description="Generates the given .jar files">
 	
-		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="jar"/>
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="setup-jar"/>
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     	  	<ant antfile="${basedir}/build-single.xml" target="jar" inheritAll="false" >
@@ -168,7 +170,7 @@
     <target name="dist" 
     	depends="init" description="Generates the given independent distros">
 	
-		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="jar"/>
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="setup-jar"/>
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     	  	<ant antfile="${basedir}/build-single.xml" target="dist" inheritAll="false" >

@@ -366,7 +366,7 @@
     
     
     <target name="tomcat.update" 
-    	depends="jar, tomcat.copy" description="Recompile changed classes and install in Tomcat webapps directory"/>      
+    	depends="setup-jar, tomcat.copy" description="Recompile changed classes and install in Tomcat webapps directory"/>      
 
     <target name="tomcat.all" 
     	depends="clean, tomcat.update" description="Do a complete recompile of all classes and install in Tomcat webapps directory"/>              
@@ -389,7 +389,7 @@
     </target>     
        
     <target name="jboss.update" 
-    	depends="jar, jboss.copy" description="Recompile changed classes and install in JBoss deploy directory"/>      
+    	depends="setup-jar, jboss.copy" description="Recompile changed classes and install in JBoss deploy directory"/>      
     
     <target name="bindist" 
     	depends="clean" description="Creates a binary distribution ZIP, including the templateone demopages">
