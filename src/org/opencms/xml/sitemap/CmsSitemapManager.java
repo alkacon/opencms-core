@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/03/10 13:10:26 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,10 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.cache.CmsVfsCache;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -60,6 +62,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -73,11 +76,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 7.9.2
  */
-public class CmsSitemapManager {
+public class CmsSitemapManager extends CmsVfsCache {
 
     /** Property name constants. */
     public enum Property {
@@ -130,17 +133,35 @@ public class CmsSitemapManager {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapManager.class);
 
+    /** Cache for active offline sitemap. */
+    private Map<String, CmsXmlSitemap> m_activeOffline;
+
+    /** Cache for active online sitemap. */
+    private Map<String, CmsXmlSitemap> m_activeOnline;
+
+    /** The admin context. */
+    private CmsObject m_adminCms;
+
     /** The cache instance. */
     private CmsSitemapCache m_cache;
+
+    /** Lazy initialized sitemap type id. */
+    private int m_sitemapTypeId;
 
     /**
      * Creates a new sitemap manager.<p>
      * 
+     * @param adminCms The admin context
      * @param memoryMonitor the memory monitor instance
      * @param systemConfiguration the system configuration
      */
-    public CmsSitemapManager(CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
+    public CmsSitemapManager(
+        CmsObject adminCms,
+        CmsMemoryMonitor memoryMonitor,
+        CmsSystemConfiguration systemConfiguration) {
 
+        m_adminCms = adminCms;
+        m_adminCms.getRequestContext().setSiteRoot("");
         // initialize the sitemap cache
         CmsSitemapCacheSettings cacheSettings = systemConfiguration.getSitemapCacheSettings();
         if (cacheSettings == null) {
@@ -248,8 +269,7 @@ public class CmsSitemapManager {
         // so get the first sitemap we can find
         List<CmsResource> sitemaps = new ArrayList<CmsResource>();
         try {
-            int sitemapId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlSitemap.getStaticTypeName()).getTypeId();
-            sitemaps = cms.readResources("/", CmsResourceFilter.requireType(sitemapId), true);
+            sitemaps = cms.readResources("/", CmsResourceFilter.requireType(getSitemapTypeId()), true);
         } catch (CmsException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -467,31 +487,29 @@ public class CmsSitemapManager {
      */
     public CmsXmlSitemap getSitemapForUri(CmsObject cms, String uri, boolean findRoot) throws CmsException {
 
+        Map<String, CmsXmlSitemap> active = getActive(cms.getRequestContext().currentProject());
         String rootUri = cms.getRequestContext().addSiteRoot(uri);
-        CmsRelation bestMatch = null;
-        // find the correct sitemap
-        for (CmsRelation relation : cms.readRelations(CmsRelationFilter.TARGETS.filterType(CmsRelationType.ENTRY_POINT))) {
-            if (CmsResource.isTemporaryFileName(relation.getSourcePath())
-                || CmsResource.isTemporaryFileName(relation.getTargetPath())) {
-                // temp file
-                continue;
-            }
-            if (!rootUri.startsWith(relation.getTargetPath())) {
-                // not relevant
+        String localeUri = cms.getRequestContext().getLocale().toString() + rootUri;
+        Map.Entry<String, CmsXmlSitemap> bestMatch = null;
+        for (Map.Entry<String, CmsXmlSitemap> entry : active.entrySet()) {
+            String key = entry.getKey();
+            if (!key.startsWith(localeUri)) {
                 continue;
             }
             if ((bestMatch == null)
-                || (!findRoot && relation.getTargetPath().startsWith(bestMatch.getTargetPath()) && (relation.getTargetPath().length() != bestMatch.getTargetPath().length()))
-                || (findRoot && bestMatch.getTargetPath().startsWith(relation.getTargetPath()))) {
-                // a better match found
-                bestMatch = relation;
+                || (!findRoot && key.startsWith(bestMatch.getKey()) && (key.length() != bestMatch.getKey().length()))
+                || (findRoot && bestMatch.getKey().startsWith(key))) {
+                // security check
+                if (cms.existsResource(entry.getValue().getFile().getStructureId())) {
+                    // a better match found
+                    bestMatch = entry;
+                }
             }
         }
         if (bestMatch == null) {
             return null;
         }
-        return CmsXmlSitemapFactory.unmarshal(cms, cms.readResource(bestMatch.getSourceId()));
-
+        return bestMatch.getValue();
     }
 
     /**
@@ -499,9 +517,26 @@ public class CmsSitemapManager {
      * 
      * @see org.opencms.main.OpenCmsCore#shutDown
      */
+    @Override
     public void shutdown() {
 
+        super.shutdown();
         m_cache.shutdown();
+    }
+
+    /**
+     * @see org.opencms.cache.CmsVfsCache#flush(boolean)
+     */
+    @Override
+    protected void flush(boolean online) {
+
+        if (online) {
+            m_activeOnline.clear();
+            m_activeOnline = null;
+        } else {
+            m_activeOffline.clear();
+            m_activeOffline = null;
+        }
     }
 
     /**
@@ -763,6 +798,22 @@ public class CmsSitemapManager {
     }
 
     /**
+     * @see org.opencms.cache.CmsVfsCache#uncacheResource(org.opencms.file.CmsResource)
+     */
+    @Override
+    protected void uncacheResource(CmsResource resource) {
+
+        if (resource == null) {
+            LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
+            return;
+        }
+        if (CmsResourceTypeXmlSitemap.isSitemap(resource)) {
+            m_activeOffline.clear();
+            m_activeOffline = null;
+        }
+    }
+
+    /**
      * Recursively visits the sitemap entries to find a match for the given id.<p>
      * 
      * @param cms the CMS context, should be in the root site
@@ -802,5 +853,64 @@ public class CmsSitemapManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Initializes the active sitemap lookup table.<p>
+     * 
+     * This method is synchronized since the cms object is not thread safe,
+     * and it does not make any sense anyhow to concurrently initialize the 
+     * look up table.<p>
+     * 
+     * @param online if online or offline
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private synchronized Map<String, CmsXmlSitemap> getActive(CmsProject project) throws CmsException {
+
+        Map<String, CmsXmlSitemap> active;
+        if (project.isOnlineProject()) {
+            m_activeOnline = Collections.synchronizedMap(new HashMap<String, CmsXmlSitemap>());
+            OpenCms.getMemoryMonitor().register(
+                CmsSitemapCache.class.getName() + ".sitemapActiveOnline",
+                m_activeOnline);
+            active = m_activeOnline;
+        } else {
+            m_activeOffline = Collections.synchronizedMap(new HashMap<String, CmsXmlSitemap>());
+            OpenCms.getMemoryMonitor().register(
+                CmsSitemapCache.class.getName() + ".sitemapActiveOffline",
+                m_activeOffline);
+            active = m_activeOffline;
+        }
+        m_adminCms.getRequestContext().setCurrentProject(project);
+        // iterate the sitemaps
+        List<CmsResource> sitemaps = m_adminCms.readResources("/", CmsResourceFilter.DEFAULT_FILES.addRequireType(
+            getSitemapTypeId()).addExcludeFlags(CmsResource.FLAG_TEMPFILE));
+        for (CmsResource resource : sitemaps) {
+            if (CmsResource.isTemporaryFileName(resource.getName())) {
+                continue;
+            }
+            CmsXmlSitemap sitemap = CmsXmlSitemapFactory.unmarshal(m_adminCms, resource);
+            for (Locale locale : sitemap.getLocales()) {
+                active.put(locale.toString() + sitemap.getSitemap(m_adminCms, locale).getEntryPoint(), sitemap);
+            }
+        }
+        return active;
+    }
+
+    /**
+     * Returns the sitemap type id.<p>
+     * 
+     * @return the sitemap type id
+     * 
+     * @throws CmsLoaderException if the type is not configured
+     */
+    private int getSitemapTypeId() throws CmsLoaderException {
+
+        if (m_sitemapTypeId == 0) {
+            m_sitemapTypeId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeXmlSitemap.getStaticTypeName()).getTypeId();
+        }
+        return m_sitemapTypeId;
     }
 }
