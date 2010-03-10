@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/09 13:47:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/10 08:38:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -393,6 +393,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         @ClassName("gwt-TabLayoutPanelTab-selected")
         String cmsTabLayoutPanelTabSelected();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        @ClassName("internal-tabbed")
+        String cmsInternalTab();
     }
 
     /** Toolbar CSS. */

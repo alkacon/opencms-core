@@ -1,4 +1,4 @@
-@external gwt-TabLayoutPanel gwt-TabLayoutPanelTab gwt-TabLayoutPanelTabBar gwt-TabLayoutPanelTabs gwt-TabLayoutPanelContent gwt-TabLayoutPanelTab-selected gwt-TabLayoutPanelTabInner; 
+@external gwt-TabLayoutPanel gwt-TabLayoutPanelTab gwt-TabLayoutPanelTabBar gwt-TabLayoutPanelTabs gwt-TabLayoutPanelContent gwt-TabLayoutPanelTab-selected gwt-TabLayoutPanelTabInner internal-tabbed; 
 
 .gwt-TabLayoutPanel {	
 	display:block;
@@ -13,6 +13,10 @@
 	padding:0;
 	font-size:value("constantsCss.fontSize");
 	font-family: value("constantsCss.fontFamily");   	
+}
+
+.internal-tabbed {
+	margin:1px;
 }
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
@@ -32,7 +36,6 @@
 	background:transparent none repeat scroll 0 0;		
 	display:block;
 	color:value("constantsCss.color");
-	padding: 10px;
 }
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
 	gwt-image: "backgroundDefault";
@@ -45,8 +48,16 @@
 	border:1px solid value("constantsCss.borderColor");	
 	color:value("constantsCss.color");
 	position:relative;
+	cursor:pointer;
 }
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {    
+
+@sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
+	gwt-image: "backgroundHover";
+	background-position: 50% 50%;
+	height: auto;	
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected,.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected:hover {    
     background: value("constantsCss.backgroundColorLight") none repeat scroll 0 0;
 	cursor: default;
 	font-size:value("constantsCss.fontSize");

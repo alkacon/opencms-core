@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/03/09 10:25:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/10 08:38:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,20 +32,30 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
+
+import java.util.List;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Wrapper class for @see com.google.user.client.ui.TabLayoutPanel
+ * Wrapper class for @see com.google.user.client.ui.TabLayoutPanel.<p>
+ * 
+ * Layout class for a panel with several tabs. The tabbed panel should be set inside a widget with given width and height.
+ * For table based layouts the height of the parent cell should be set explicitly.
+ * 
+ * As layout options two height for the tabbar are provided: 32px("standard") and 25px("small").
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -58,7 +68,7 @@ public class CmsTabbedPanel extends Composite {
     /** Enumeration with layout keys. */
     public enum CmsTabLayout {
         /** Standard layout size. */
-        standard("30"),
+        standard("32"),
 
         /** Small layout size. */
         small("25");
@@ -82,15 +92,40 @@ public class CmsTabbedPanel extends Composite {
             return m_name;
         }
 
-        /** The default configuration gallery key. */
+        /** The default tabbar height. */
         public static final CmsTabLayout DEFAULT = standard;
 
     }
 
     /**
+     * The default constructor for an empty tabbed panel. <p>
+     */
+    public CmsTabbedPanel() {
+
+        m_tabPanel = new TabLayoutPanel(Double.parseDouble(CmsTabLayout.DEFAULT.name()), Unit.PX);
+
+        // All composites must call initWidget() in their constructors.
+        initWidget(m_tabPanel);
+
+        List<Element> tabBarDivs = CmsDomUtil.getElementsByClass(
+            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabs(),
+            "div",
+            m_tabPanel.getElement());
+
+        // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
+        if (tabBarDivs.size() == 1) {
+            tabBarDivs.get(0).getParentElement().setClassName(
+                I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabBar());
+        }
+
+        I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().ensureInjected();
+        m_tabPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
+    }
+
+    /**
      * The constructor for an empty tabbed panel. <p>
      * 
-     * @param tabbarHeight the pre-defined height of the tabbar, can be "small" or "standard" 
+     * @param tabbarHeight the pre-defined height of the tabbar, can be "small" or "standard"      
      */
     public CmsTabbedPanel(CmsTabLayout tabbarHeight) {
 
@@ -99,21 +134,33 @@ public class CmsTabbedPanel extends Composite {
         // All composites must call initWidget() in their constructors.
         initWidget(m_tabPanel);
 
-        // TODO: USe util class aus OpenCms 
-        // get all div elements
-        NodeList<Element> divElements = m_tabPanel.getElement().getElementsByTagName("div");
-        // iterate over the div elements and get the node with the "class" attribute "gwt-TabLayoutPanelTabs"
-        for (int i = 0; i < divElements.getLength(); i++) {
-            Element divElement = divElements.getItem(i);
-            if (divElement.getClassName().contains(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabs())) {
-                divElement.getParentElement().setClassName(
-                    I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabBar());
-                break;
-            }
+        Element tabRootEl = m_tabPanel.getElement();
+        // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
+        List<Element> tabBarDivs = CmsDomUtil.getElementsByClass(
+            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabs(),
+            "div",
+            tabRootEl);
+        if (tabBarDivs.size() == 1) {
+            tabBarDivs.get(0).getParentElement().setClassName(
+                I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabBar());
         }
 
         I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().ensureInjected();
         m_tabPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
+    }
+
+    /**
+     * The constructor for an empty tabbed panel. <p>
+     * 
+     * @param tabbarHeight the pre-defined height of the tabbar, can be "small" or "standard" 
+     * @param isInside if true an additional padding will be added, so that the tabbed panel can be inside a widget with border
+     */
+    public CmsTabbedPanel(CmsTabLayout tabbarHeight, boolean isInside) {
+
+        this(tabbarHeight);
+        if (isInside) {
+            m_tabPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsInternalTab());
+        }
     }
 
     /**
@@ -127,8 +174,6 @@ public class CmsTabbedPanel extends Composite {
         m_tabPanel.add(tabContent, tabName);
 
     }
-
-    // TODO: extend the inteface. Add a function to add tab with picture and text as name.
 
     /**
      * Programmatically selects the specified tab. <p>
@@ -180,4 +225,29 @@ public class CmsTabbedPanel extends Composite {
         return m_tabPanel.getWidgetCount();
     }
 
+    /**
+     * Add the before selection handler to the tabbed panel.<p>
+     * 
+     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#addBeforeSelectionHandler(BeforeSelectionHandler)}
+     * 
+     * @param handler the before selection handler
+     * @return the registration for the event
+     */
+    public HandlerRegistration addBeforeSelectionHandler(BeforeSelectionHandler<Integer> handler) {
+
+        return m_tabPanel.addBeforeSelectionHandler(handler);
+    }
+
+    /**
+     * Adds a SelectionEvent handler to the tabbed panel.<p>
+     * 
+     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#addSelectionHandler(SelectionHandler)}
+     * 
+     * @param handler the selection handler
+     * @return the registration for the event
+     */
+    public HandlerRegistration addSelectionHandler(SelectionHandler<Integer> handler) {
+
+        return m_tabPanel.addSelectionHandler(handler);
+    }
 }
