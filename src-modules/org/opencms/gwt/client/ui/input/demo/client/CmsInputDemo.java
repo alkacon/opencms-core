@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/demo/client/Attic/CmsInputDemo.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/10 12:51:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,14 @@
 
 package org.opencms.gwt.client.ui.input.demo.client;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
-import org.opencms.gwt.client.ui.input.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.util.CmsPair;
 
 import java.util.ArrayList;
@@ -57,12 +59,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.2 $
+ *  @version $Revision: 1.3 $
  *  
  *  @since 8.0.0
  */
 public class CmsInputDemo extends Composite {
 
+    /** The CSS bundle for this widget. */
+    static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
     /**
      * Constructs a new instance.<p>
      */
@@ -73,10 +77,11 @@ public class CmsInputDemo extends Composite {
         FlowPanel panel = new FlowPanel();
         initWidget(panel);
 
-        I_CmsLayoutBundle.INSTANCE.inputCss().ensureInjected();
+        //I_CmsLayoutBundle.INSTANCE.inputCss().ensureInjected();
         Style style = panel.getElement().getStyle();
         style.setLeft(140, Unit.PX);
         style.setTop(140, Unit.PX);
+        style.setWidth(250, Unit.PX);
         style.setPosition(Position.ABSOLUTE);
 
         List<CmsPair<String, String>> items = new ArrayList<CmsPair<String, String>>();
@@ -135,7 +140,7 @@ public class CmsInputDemo extends Composite {
 
             public void onClick(ClickEvent e) {
 
-                Window.alert("value = " + text.getFormValue());
+                Window.alert("value = " + text.getText());
             }
         });
 
@@ -151,5 +156,21 @@ public class CmsInputDemo extends Composite {
             }
         });
 
+        Button button6 = new Button("show errors");
+        panel.add(button6);
+        button6.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent e) {
+
+                for (I_CmsFormWidget widget : new I_CmsFormWidget[] {selectbox, text, text2, multiBox, radioGroup}) {
+                    widget.setErrorMessage("error");
+                }
+            }
+        });
+
+    }
+
+    static {
+        CSS.ensureInjected();
     }
 }

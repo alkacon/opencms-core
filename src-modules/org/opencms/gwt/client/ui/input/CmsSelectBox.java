@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/03/09 14:19:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/10 12:51:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
@@ -73,7 +75,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -161,7 +163,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /**
      * The layout bundle.<p>
      */
-    static final I_CmsInputCss CSS = I_CmsLayoutBundle.INSTANCE.inputCss();
+    static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     private static I_CmsSelectBoxUiBinder uiBinder = GWT.create(I_CmsSelectBoxUiBinder.class);
 
@@ -204,6 +206,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /** The popup panel inside which the selector will be shown.<p> */
     PopupPanel m_popup = new PopupPanel(true);
 
+    /** Style of the select box widget. */
+    final CmsStyleVariable m_selectBoxState;
+
     /** Flag indicating whether this widget is enabled. */
     private boolean m_enabled = true;
 
@@ -212,9 +217,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
     /** The value of the first select option. */
     private String m_firstValue;
-
-    /** Style of the select box widget. */
-    private final CmsStyleVariable m_selectBoxState;
 
     /** The value of the currently selected option. */
     private String m_selectedValue;
@@ -462,7 +464,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         }
         m_popup.setWidth(2 /* left/right border */+ m_opener.getElement().getClientWidth() + "px");
         m_popup.show();
-        positionElement(m_popup.getElement(), m_panel.getElement(), 0, m_panel.getElement().getClientHeight());
+        positionElement(m_popup.getElement(), m_panel.getElement(), 0, m_opener.getElement().getClientHeight());
         m_arrow.setStyleName(CSS.selectOpenIcon());
         m_selectBoxState.setValue(CSS.selectBoxOpen());
     }

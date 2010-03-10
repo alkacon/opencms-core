@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/03/09 14:19:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/10 12:51:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,10 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -50,17 +54,17 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
 public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFormWidget {
 
     /** CSS bundle for this widget. */
-    private static final I_CmsInputCss CSS = I_CmsLayoutBundle.INSTANCE.inputCss();
+    private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** Image bundle for this widget. */
-    private static final I_CmsImageBundle IMAGES = I_CmsImageBundle.INSTANCE;
+    private static final I_CmsInputImageBundle IMAGES = I_CmsInputImageBundle.INSTANCE;
 
     /** Toggle button which actually displays the checkbox. */
     private final ToggleButton m_button = new ToggleButton();

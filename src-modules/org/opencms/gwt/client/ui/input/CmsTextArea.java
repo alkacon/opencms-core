@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextArea.java,v $
- * Date   : $Date: 2010/03/09 14:19:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/10 12:51:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -41,7 +44,7 @@ import com.google.gwt.user.client.ui.TextArea;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -49,7 +52,10 @@ import com.google.gwt.user.client.ui.TextArea;
 public class CmsTextArea extends Composite implements I_CmsFormWidget {
 
     /** The CSS bundle for this widget. */
-    private static I_CmsInputCss CSS = I_CmsLayoutBundle.INSTANCE.inputCss();
+    private static I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
+    /** Default padding for text areas. */
+    private static final int DEFAULT_PADDING = 4;
 
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
@@ -60,6 +66,8 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     /** The internal text area widet used by this widget. */
     private TextArea m_textArea = new TextArea();
 
+    private CmsPaddedPanel m_textAreaContainer = new CmsPaddedPanel(DEFAULT_PADDING);
+
     /**
      * Text area widgets for ADE forms.<p>
      */
@@ -67,9 +75,12 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
 
         super();
         initWidget(m_panel);
-        m_panel.add(m_textArea);
+        m_panel.add(m_textAreaContainer);
+        m_textAreaContainer.add(m_textArea);
         m_panel.add(m_error);
         m_textArea.addStyleName(CSS.textArea());
+        m_textAreaContainer.addStyleName(CSS.textAreaContainer());
+
     }
 
     static {

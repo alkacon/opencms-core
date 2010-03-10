@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/03/09 14:19:24 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
+ * Date   : $Date: 2010/03/10 12:51:58 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input;
+package org.opencms.gwt.client.ui.css;
 
 import com.google.gwt.resources.client.CssResource;
 
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
@@ -145,5 +145,31 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String textBoxWidget();
+
+    /**
+     * Css class reader.<p>
+     * @return the css class
+     */
+    String selectBoxOpener();
+
+    /**
+     * Css class reader.<p>
+     * @return the css class
+     */
+    String textBoxPanel();
+
+    /**
+     * Css class reader.<p>
+     * @return the css class
+     */
+    String textAreaContainer();
+
+    /**
+     * Css class reader.<p>
+     * @return the css class
+     */
+    String multiCheckBox();
+
+    String radioButtonGroup();
 
 }

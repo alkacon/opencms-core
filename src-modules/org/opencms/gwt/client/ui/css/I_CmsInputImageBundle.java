@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputImageBundle.java,v $
+ * Date   : $Date: 2010/03/10 12:51:58 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input;
+package org.opencms.gwt.client.ui.css;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -42,20 +42,20 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public interface I_CmsImageBundle extends ClientBundle {
+public interface I_CmsInputImageBundle extends ClientBundle {
 
     /** The bundle instance. */
-    I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
+    I_CmsInputImageBundle INSTANCE = GWT.create(I_CmsInputImageBundle.class);
 
     /** 
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("../css/images/ui-bg_glass_75_cccccc_1x400.png")
+    @Source("images/ui-bg_glass_75_cccccc_1x400.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource backgroundDark();
 
@@ -63,7 +63,7 @@ public interface I_CmsImageBundle extends ClientBundle {
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("../css/images/ui-bg_glass_75_e6e6e6_1x400.png")
+    @Source("images/ui-bg_glass_75_e6e6e6_1x400.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource backgroundLight();
 
@@ -71,56 +71,56 @@ public interface I_CmsImageBundle extends ClientBundle {
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("images/checked.png")
+    @Source("images/checkboxChecked.png")
     ImageResource checkboxChecked();
 
     /**
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("images/checked.png")
+    @Source("images/checkboxChecked.png")
     ImageResource checkboxCheckedBig();
 
     /**
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("images/checked-disabled.png")
+    @Source("images/checkboxCheckedDisabled.png")
     ImageResource checkboxCheckedDisabled();
 
     /**
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("images/checked-disabled.png")
+    @Source("images/checkboxCheckedDisabled.png")
     ImageResource checkboxCheckedDisabledBig();
 
     /**
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("images/unchecked.png")
+    @Source("images/checkboxUnchecked.png")
     ImageResource checkboxUnchecked();
 
     /**
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("images/unchecked.png")
+    @Source("images/checkboxUnchecked.png")
     ImageResource checkboxUncheckedBig();
 
     /**
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("images/unchecked-disabled.png")
+    @Source("images/checkboxUncheckedDisabled.png")
     ImageResource checkboxUncheckedDisabled();
 
     /**
      * Image resource accessor.<p>
      * @return an image resource
      */
-    @Source("images/unchecked-disabled.png")
+    @Source("images/checkboxUncheckedDisabled.png")
     ImageResource checkboxUncheckedDisabledBig();
 
     /** 
@@ -156,7 +156,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      * Image resource accessor.<p>
      * @return an image resource
      */
-
     @Source("images/triangleDown.png")
     ImageResource triangleDown();
 
@@ -164,7 +163,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      * Image resource accessor.<p>
      * @return an image resource
      */
-
     @Source("images/triangleRight.png")
     ImageResource triangleRight();
 

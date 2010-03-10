@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsMultiCheckBox.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/10 12:51:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.util.CmsPair;
 
 import java.util.ArrayList;
@@ -39,22 +41,33 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Panel;
 
 /**
  * A form widget consisting of a group of checkboxes.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  *  
  */
 public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
 
+    /** CSS bundle for this widget. */
+    private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
+    /** Error display for this widget. */
+    private CmsErrorWidget m_error = new CmsErrorWidget();
+
     /** The list of items as (key, label) pairs. */
     private List<CmsPair<String, String>> m_items;
+
+    /** Panel which contains all the components of the widget. */
+    private Panel m_panel = new FlowPanel();
 
     /** The table containing the checkboxes and labels. */
     private Grid m_table;
@@ -71,7 +84,10 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
         super();
         m_items = items;
         m_table = new Grid(items.size(), 2);
-        initWidget(m_table);
+        m_panel.add(m_table);
+        m_panel.add(m_error);
+        initWidget(m_panel);
+        m_panel.setStyleName(CSS.multiCheckBox());
         int i = 0;
         for (CmsPair<String, String> pair : items) {
             String value = pair.getSecond();
@@ -79,6 +95,10 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
             m_table.setText(i, 1, value);
             i += 1;
         }
+    }
+
+    static {
+        CSS.ensureInjected();
     }
 
     /**
@@ -144,9 +164,7 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
      */
     public void setErrorMessage(String errorMessage) {
 
-        int lastIndex = m_table.getRowCount() - 1;
-        CmsCheckBox checkBox = getCheckBox(lastIndex);
-        checkBox.setErrorMessage(errorMessage);
+        m_error.setText(errorMessage);
     }
 
     /**

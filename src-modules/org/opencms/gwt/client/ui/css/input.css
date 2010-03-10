@@ -1,10 +1,14 @@
 
+/* for debugging purposes */
+@external multiCheckBox, textBox, textBoxWidget, textAreaWidget, textArea, checkBox, checkBoxLabel, checkBoxImage, error, selectBoxSelected, selectBoxSelector, selectBoxOpen,  selectBoxCell, selectHover, selectClosedIcon, selectOpenIcon, selectBoxOpen, selectBoxClosed,  selectBoxRoot, selectBoxOpener, textBoxPanel;
+
+
 /* inner text box of the text box widget */
 .textBox {
 	
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	border: 1px solid;
+/*	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;*/
+	border: none;
 	width: 100%;
 }
 
@@ -12,23 +16,38 @@
 	
 }
 
+.textBoxPanel {
+	width: 100%;
+	border: 1px solid value("constants.borderColor");
+	
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+
 .textAreaWidget {
 	
 }	
 
 /* inner text area of the text area wigdet */
 .textArea {
-	
-    border: 1px solid;
+    border: none;
+}
+
+.textAreaContainer {
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+    border: 1px solid value("constants.borderColor");
     width: 100%;
-	
 }
+
+
 
 
 .checkBox {
 }
+
+
 
 .checkBoxLabel {
 	margin-left: 5px;
@@ -38,58 +57,60 @@
 
 }
 
+.radioButtonGroup *, .multiCheckBox *, .selectBoxRoot *, .selectBoxSelector *, .textBoxPanel *, .textAreaWidget * {
+	font-size: value("constants.fontSize");
+	font-family: value("constants.fontFamily");
+	color: value("constants.color");
+}
+
 .error {
 	color: red;
 }
 
 @sprite .selectBoxSelected {
-	width: 250px; 
-	height: 2em;
+	width: 100%; 
 	min-height: 0px;
-	border: 1px solid black;
+	border: 1px solid value("constants.borderColor");
 	
 	gwt-image: "images.backgroundLight";
 	background-position: 50% 50%;
-	padding-left: 5px;
+	margin-right: 40px;
+	
 }
 
 .selectBoxSelector {
-	border: 1px solid black;
+	border: 1px solid value("constants.borderColor");
 	background-color: white;
-	margin-top: -1px;
+	padding-bottom: 2px;
 }
 
 .selectBoxSelector.selectBoxOpen {
 	-moz-border-radius-bottomleft: 4px;
 	-moz-border-radius-bottomright: 4px;
-	
 	-webkit-border-bottom-left-radius: 4px;
 	-webkit-border-bottom-right-radius: 4px;
 }
 
 
 
- .selectBoxCell {
-	padding-left: 5px;
+.selectBoxCell {
 	background-color: white;
+	padding-left: 5px;
 }
 
 .selectHover {
 	background-color: #aaaaaa;
-
 }
 
 @sprite .selectClosedIcon { 
 	gwt-image: "images.triangleRight";
 	float: right;
-	margin-top: -12px;
 	margin-right: 4px;
 }
 
 @sprite .selectOpenIcon {
 	gwt-image: "images.triangleDown";
 	float: right;
-	margin-top: -12px;
 	margin-right: 4px;
 }
 
@@ -117,7 +138,23 @@
 .selectBoxRoot {
 	/* needed to enable hasLayout in IE (required for reading clientHeight) */
 	min-height: 0px;
+	width: 100%;
 }
+
+.selectBoxOpener {
+	margin-top: 3px;
+	margin-bottom: 3px;
+	margin-left: 5px;
+}
+
+.textBoxPanel {
+	width: 100%;
+	border: 1px solid value("constants.borderColor");
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+
 
 
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/03/09 14:19:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/10 12:51:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,43 +31,58 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
- * A basic text box class. <p>
+ * Basic text box class for forms.
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsTextBox extends Composite implements I_CmsFormWidget {
 
-    /** The CSS bundle used by this class. */
-    private static final I_CmsInputCss CSS = I_CmsLayoutBundle.INSTANCE.inputCss();
+    /** The CSS bundle used for this widget. */
+    public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
+    /** Default pseudo-padding for text boxes. */
+    private static final int DEFAULT_PADDING = 4;
 
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
-    /** The text box widget used internally by this widget. */
-    private TextBox m_textBox = new TextBox();
+    /** The container for the textbox container and error widget. */
+    private FlowPanel m_panel = new FlowPanel();
+
+    /** The text box used internally by this widget. */
+    private TextBox m_textbox = new TextBox();
+
+    //    /** The horizontal "padding" for the text box. */
+    //    private int m_paddingX;
+
+    /** The container for the text box. */
+    private CmsPaddedPanel m_textboxContainer = new CmsPaddedPanel(DEFAULT_PADDING);
 
     /**
-     * Default constructor.
+     * Constructs a new instance of this widget.
      */
     public CmsTextBox() {
 
-        super();
-        m_textBox.addStyleName(CSS.textBox());
-        FlowPanel panel = new FlowPanel();
-        panel.addStyleName(CSS.textBoxWidget());
-        panel.add(m_textBox);
-        panel.add(m_error);
-        initWidget(panel);
+        m_textbox.setStyleName(CSS.textBox());
+        m_textboxContainer.setStyleName(CSS.textBoxPanel());
+        m_panel.add(m_textboxContainer);
+        m_panel.add(m_error);
+        m_textboxContainer.add(m_textbox);
+        m_textboxContainer.setPaddingX(4);
+        initWidget(m_panel);
     }
 
     static {
@@ -85,18 +100,19 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
      */
-    public String getFormValue() {
+    public Object getFormValue() {
 
-        return m_textBox.getText();
+        return m_textbox.getText();
     }
 
     /**
-     * Returns the text box used internally by this class.<p>
-     * @return a text box 
+     * Returns the text in the text box.<p>
+     * 
+     * @return the text 
      */
-    public TextBox getInnerTextBox() {
+    public String getText() {
 
-        return m_textBox;
+        return m_textbox.getText();
     }
 
     /**
@@ -104,7 +120,7 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
      */
     public void reset() {
 
-        m_textBox.setText("");
+        m_textbox.setText("");
     }
 
     /**
@@ -112,15 +128,15 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
      */
     public void setEnabled(boolean enabled) {
 
-        m_textBox.setEnabled(enabled);
+        m_textbox.setEnabled(enabled);
     }
 
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
      */
-    public void setErrorMessage(String message) {
+    public void setErrorMessage(String errorMessage) {
 
-        m_error.setText(message);
+        m_error.setText(errorMessage);
     }
 
     /**
@@ -129,7 +145,18 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
     public void setFormValue(Object value) {
 
         if (value instanceof String) {
-            m_textBox.setText((String)value);
+            String strValue = (String)value;
+            setText(strValue);
         }
+    }
+
+    /**
+     * Sets the text in the text box.<p>
+     * 
+     * @param text the new text
+     */
+    public void setText(String text) {
+
+        m_textbox.setText(text);
     }
 }

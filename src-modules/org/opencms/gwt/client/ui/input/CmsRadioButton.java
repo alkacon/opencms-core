@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButton.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/10 12:51:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputImageBundle;
+
 import com.google.gwt.user.client.ui.CustomButton;
 import com.google.gwt.user.client.ui.Image;
 
@@ -41,7 +43,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -49,7 +51,7 @@ import com.google.gwt.user.client.ui.Image;
 public class CmsRadioButton extends CustomButton {
 
     /** The image bundle used by this widget. */
-    private static final I_CmsImageBundle IMAGES = I_CmsImageBundle.INSTANCE;
+    private static final I_CmsInputImageBundle IMAGES = I_CmsInputImageBundle.INSTANCE;
 
     /** The value associated with this radio button. */
     private String m_name;
