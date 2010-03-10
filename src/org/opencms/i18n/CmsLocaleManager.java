@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/10 13:05:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -441,20 +441,17 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * Returns an array of available locale names for the given resource.<p>
      * 
      * @param cms the current cms permission object
-     * @param resourceName the name of the resource
+     * @param resource the resource
      * 
      * @return an array of available locale names
      * 
      * @see #getAvailableLocales()
      */
-    public List<Locale> getAvailableLocales(CmsObject cms, String resourceName) {
+    public List<Locale> getAvailableLocales(CmsObject cms, CmsResource resource) {
 
         String availableNames = null;
         try {
-            availableNames = cms.readPropertyObject(
-                resourceName,
-                CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES,
-                true).getValue();
+            availableNames = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES, true).getValue();
         } catch (CmsException exc) {
             // noop
         }
@@ -474,17 +471,20 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * Returns an array of available locale names for the given resource.<p>
      * 
      * @param cms the current cms permission object
-     * @param resource the resource
+     * @param resourceName the name of the resource
      * 
      * @return an array of available locale names
      * 
      * @see #getAvailableLocales()
      */
-    public List<Locale> getAvailableLocales(CmsObject cms, CmsResource resource) {
+    public List<Locale> getAvailableLocales(CmsObject cms, String resourceName) {
 
         String availableNames = null;
         try {
-            availableNames = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES, true).getValue();
+            availableNames = cms.readPropertyObject(
+                resourceName,
+                CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES,
+                true).getValue();
         } catch (CmsException exc) {
             // noop
         }
@@ -561,6 +561,42 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         // no match found for the requested locale, return the first match from the default locales
         return getFirstMatchingLocale(defaults, available);
+    }
+
+    /**
+     * Returns the "the" default locale for the given resource.<p>
+     * 
+     * It's possible to override the system default (see {@link #getDefaultLocale()}) by setting the property 
+     * <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> to a comma separated list of locale names.
+     * This property is inherited from the parent folders.
+     * This method will return the first locale from that list.<p>
+     * 
+     * The default locale must be contained in the set of configured available locales, 
+     * see {@link #getAvailableLocales()}.
+     * In case an invalid locale has been set with the property, this locale is ignored and the 
+     * same result as {@link #getDefaultLocale()} is returned.<p>
+     * 
+     * In case the property <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> has not been set
+     * on the resource or a parent folder,
+     * this method returns the same result as {@link #getDefaultLocale()}.<p>
+     * 
+     * @param cms the current cms permission object
+     * @param resource the resource
+     * @return an array of default locale names
+     * 
+     * @see #getDefaultLocales()
+     * @see #getDefaultLocales(CmsObject, String)
+     */
+    public Locale getDefaultLocale(CmsObject cms, CmsResource resource) {
+
+        List<Locale> defaultLocales = getDefaultLocales(cms, resource);
+        Locale result;
+        if (defaultLocales.size() > 0) {
+            result = defaultLocales.get(0);
+        } else {
+            result = getDefaultLocale();
+        }
+        return result;
     }
 
     /**
