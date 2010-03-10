@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/02/18 09:47:39 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/03/10 13:09:55 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 7.5.2
  * 
@@ -361,22 +361,29 @@ public class CmsXmlSitemap extends CmsXmlContent {
     public CmsSitemapBean getSitemap(CmsObject cms, Locale locale) {
 
         Locale theLocale = locale;
-        if (!m_sitemaps.containsKey(theLocale)) {
-            LOG.warn(Messages.get().container(
-                Messages.LOG_SITEMAP_LOCALE_NOT_FOUND_2,
-                cms.getSitePath(getFile()),
-                theLocale.toString()).key());
-            theLocale = OpenCms.getLocaleManager().getDefaultLocales(cms, getFile()).get(0);
-            if (!m_sitemaps.containsKey(theLocale)) {
-                // locale not found!!
-                LOG.error(Messages.get().container(
-                    Messages.LOG_SITEMAP_LOCALE_NOT_FOUND_2,
-                    cms.getSitePath(getFile()),
-                    theLocale).key());
-                return null;
-            }
+        CmsSitemapBean result = m_sitemaps.get(theLocale);
+        if (result != null) {
+            return result;
         }
-        return m_sitemaps.get(theLocale);
+        LOG.warn(Messages.get().container(
+            Messages.LOG_SITEMAP_LOCALE_NOT_FOUND_2,
+            getFile().getRootPath(),
+            theLocale.toString()).key());
+        theLocale = OpenCms.getLocaleManager().getDefaultLocale(cms, getFile());
+        result = m_sitemaps.get(theLocale);
+        if (result != null) {
+            return result;
+        }
+        if (getLocales().isEmpty()) {
+            // no locale not found!!
+            LOG.error(Messages.get().container(
+                Messages.LOG_SITEMAP_LOCALE_NOT_FOUND_2,
+                getFile().getRootPath(),
+                theLocale).key());
+            return null;
+        }
+        // use first locale
+        return m_sitemaps.get(getLocales().get(0));
     }
 
     /**
