@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/03/09 15:59:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/10 08:16:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -127,6 +127,20 @@ public class CmsPopup {
         public Iterator<Widget> iterator() {
 
             return m_main.iterator();
+        }
+
+        /**
+         * Override to work around the glass overlay still showing after dialog hide.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onDetach()
+         */
+        @Override
+        protected void onDetach() {
+
+            super.onDetach();
+            if (this.getGlassElement() != null) {
+                this.getGlassElement().removeFromParent();
+            }
         }
 
         /**
