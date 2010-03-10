@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsCache.java,v $
- * Date   : $Date: 2009/12/14 12:52:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/10 10:19:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
@@ -130,7 +130,7 @@ public abstract class CmsVfsCache implements I_CmsEventListener {
      * 
      * @param online if to flush the online or offline caches
      */
-    abstract protected void flush(boolean online);
+    protected abstract void flush(boolean online);
 
     /**
      * Adds this instance as an event listener to the CMS event manager.<p>
@@ -154,7 +154,7 @@ public abstract class CmsVfsCache implements I_CmsEventListener {
      * 
      * @param resource the resource
      */
-    abstract protected void uncacheResource(CmsResource resource);
+    protected abstract void uncacheResource(CmsResource resource);
 
     /**
      * Removes a bunch of cached resources from the cache.<p>
