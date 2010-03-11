@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskEnsureDirManifest.java,v $
- * Date   : $Date: 2010/03/03 15:32:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/11 08:09:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -301,8 +301,13 @@ public class CmsAntTaskEnsureDirManifest extends Task {
             || extension.equalsIgnoreCase(".png")) {
             return "image";
         }
+        if (extension.equalsIgnoreCase(".jar")) {
+            return "binary";
+        }
         if (extension.equalsIgnoreCase(".html")
             || extension.equalsIgnoreCase(".js")
+            || extension.equalsIgnoreCase(".xml")
+            || extension.equalsIgnoreCase(".rpc")
             || extension.equalsIgnoreCase(".css")) {
             return "plain";
         }
