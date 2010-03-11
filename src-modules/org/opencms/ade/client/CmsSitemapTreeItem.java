@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/shared/rpc/Attic/I_CmsSitemapService.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/client/Attic/CmsSitemapTreeItem.java,v $
  * Date   : $Date: 2010/03/11 11:26:13 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,49 +29,61 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.shared.rpc;
+package org.opencms.ade.client;
 
 import org.opencms.ade.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.gwt.client.ui.lazytree.CmsLazyTreeItem;
+import org.opencms.gwt.client.util.CmsCoreProvider;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.user.client.ui.Anchor;
 
 /**
- * Handles all RPC services related to the sitemap.<p>
+ * Sitemap entry tree item implementation.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.ade.CmsSitemapService
- * @see org.opencms.ade.shared.rpc.I_CmsSitemapService
- * @see org.opencms.ade.shared.rpc.I_CmsSitemapServiceAsync
+ * @see org.opencms.gwt.client.ui.lazytree.CmsLazyTreeItem
+ * @see org.opencms.ade.shared.CmsClientSitemapEntry
  */
-@RemoteServiceRelativePath("org.opencms.ade.CmsSitemapService.gwt")
-public interface I_CmsSitemapService extends RemoteService {
+public class CmsSitemapTreeItem extends CmsLazyTreeItem {
+
+    /** Internal entry reference. */
+    private CmsClientSitemapEntry m_entry;
 
     /**
-     * Returns the sitemap entry for the given path.<p>
+     * Default constructor.<p>
      * 
-     * @param root the site relative root
-     *  
-     * @return the sitemap entry
-     * 
-     * @throws CmsRpcException if something goes wrong 
+     * @param entry the sitemap entry to use
      */
-    CmsClientSitemapEntry getSitemapEntry(String root) throws CmsRpcException;
+    public CmsSitemapTreeItem(CmsClientSitemapEntry entry) {
+
+        super();
+        m_entry = entry;
+        Anchor anchor = new Anchor(entry.getName(), CmsCoreProvider.get().link(entry.getSitePath()));
+        setWidget(anchor);
+    }
 
     /**
-     * Returns the sitemap children for the given path.<p>
+     * Adds a child for the given entry.<p>
      * 
-     * @param root the site relative root
-     *  
-     * @return the sitemap children
-     * 
-     * @throws CmsRpcException if something goes wrong 
+     * @param entry the child entry to add
      */
-    CmsClientSitemapEntry[] getSitemapChildren(String root) throws CmsRpcException;
+    public void addItem(CmsClientSitemapEntry entry) {
+
+        addItem(new CmsSitemapTreeItem(entry));
+    }
+
+    /**
+     * Returns the entry.<p>
+     *
+     * @return the entry
+     */
+    public CmsClientSitemapEntry getEntry() {
+
+        return m_entry;
+    }
 }

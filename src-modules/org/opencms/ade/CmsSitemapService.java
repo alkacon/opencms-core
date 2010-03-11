@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/03/09 10:33:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/11 11:26:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.ade;
 import org.opencms.ade.shared.CmsClientSitemapEntry;
 import org.opencms.ade.shared.rpc.I_CmsSitemapService;
 import org.opencms.gwt.CmsGwtService;
-import org.opencms.main.CmsException;
+import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -67,16 +67,35 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     private static final Log LOG = CmsLog.getLog(CmsSitemapService.class);
 
     /**
-     * @see org.opencms.ade.shared.rpc.I_CmsSitemapService#getSitemap()
+     * @see org.opencms.ade.shared.rpc.I_CmsSitemapService#getSitemapEntry(String)
      */
-    public CmsClientSitemapEntry getSitemap() {
+    public CmsClientSitemapEntry getSitemapEntry(String root) throws CmsRpcException {
 
         try {
-            return toGwtEntry(OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), "/demo_t3/"));
+            return toGwtEntry(OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root));
         } catch (Throwable e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new CmsRpcException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.shared.rpc.I_CmsSitemapService#getSitemapChildren(java.lang.String)
+     */
+    public CmsClientSitemapEntry[] getSitemapChildren(String root) throws CmsRpcException {
+
+        try {
+            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root);
+            List<CmsClientSitemapEntry> children = new ArrayList<CmsClientSitemapEntry>(entry.getSubEntries().size());
+            for (CmsSitemapEntry child : entry.getSubEntries()) {
+                children.add(toGwtEntry(child));
+            }
+            return children.toArray(new CmsClientSitemapEntry[0]);
+        } catch (Throwable e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsRpcException(e.getLocalizedMessage());
         }
     }
 
@@ -86,10 +105,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      * @param entry the entry to convert
      * 
      * @return the JSON representation, can be <code>null</code> in case of not enough permissions
-     * 
-     * @throws CmsException if something goes wrong
      */
-    protected CmsClientSitemapEntry toGwtEntry(CmsSitemapEntry entry) throws CmsException {
+    protected CmsClientSitemapEntry toGwtEntry(CmsSitemapEntry entry) {
 
         CmsClientSitemapEntry gwtEntry = new CmsClientSitemapEntry();
         gwtEntry.setId(entry.getId().toString());
@@ -98,12 +115,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         gwtEntry.setResourceId(entry.getResourceId().toString());
         gwtEntry.setProperties(new HashMap<String, String>(entry.getProperties()));
         gwtEntry.setSitePath(entry.getSitePath(getCmsObject()));
-        List<CmsClientSitemapEntry> subEntries = new ArrayList<CmsClientSitemapEntry>();
-        for (CmsSitemapEntry subentry : entry.getSubEntries()) {
-            CmsClientSitemapEntry gwtSubEntry = toGwtEntry(subentry);
-            subEntries.add(gwtSubEntry);
-        }
-        gwtEntry.setSubEntries(subEntries);
         return gwtEntry;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/03/09 10:32:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/11 11:26:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.shared.rpc;
 
-
 import org.opencms.ade.shared.CmsClientSitemapEntry;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -41,7 +40,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -52,9 +51,18 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsSitemapServiceAsync {
 
     /**
-     * Returns the whole sitemap.<p>
+     * Returns the sitemap entry for the given path.<p>
      * 
+     * @param root the site relative root
      * @param callback the async callback
      */
-    void getSitemap(AsyncCallback<CmsClientSitemapEntry> callback);
+    void getSitemapEntry(String root, AsyncCallback<CmsClientSitemapEntry> callback);
+
+    /**
+     * Returns the sitemap children for the given path.<p>
+     * 
+     * @param root the site relative root
+     * @param callback the async callback
+     */
+    void getSitemapChildren(String root, AsyncCallback<CmsClientSitemapEntry[]> callback);
 }

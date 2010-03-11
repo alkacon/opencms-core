@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/03/09 10:33:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/11 11:26:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.shared;
 
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -41,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -61,9 +60,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The site path. */
     private String m_sitePath;
-
-    /** The list of subentries. */
-    private List<CmsClientSitemapEntry> m_subEntries;
 
     /** The title. */
     private String m_title;
@@ -129,16 +125,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns the sub-entries.<p>
-     *
-     * @return the sub-entries
-     */
-    public List<CmsClientSitemapEntry> getSubEntries() {
-
-        return m_subEntries;
-    }
-
-    /**
      * Returns the title.<p>
      *
      * @return the title
@@ -196,16 +182,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setSitePath(String sitePath) {
 
         m_sitePath = sitePath;
-    }
-
-    /**
-     * Sets the subEntries.<p>
-     *
-     * @param subEntries the subEntries to set
-     */
-    public void setSubEntries(List<CmsClientSitemapEntry> subEntries) {
-
-        m_subEntries = subEntries;
     }
 
     /**
