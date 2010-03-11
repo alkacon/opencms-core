@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/03/08 16:34:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/11 08:07:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -55,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -158,14 +159,7 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
     public CmsMenuButton(String buttonText, String imageClass) {
 
         this();
-        String upFaceHtml = ((imageClass != null) && (imageClass.trim().length() > 0)) ? "<span class='"
-            + imageClass
-            + "'></span>" : "";
-        if ((buttonText != null) && (buttonText.trim().length() > 0)) {
-            upFaceHtml += (upFaceHtml.length() > 0) ? "&nbsp;" : "";
-            upFaceHtml += buttonText.trim();
-        }
-        m_button.getUpFace().setHTML(upFaceHtml);
+        m_button.setUpFace(buttonText, imageClass);
     }
 
     /**
@@ -218,7 +212,12 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
     public void openMenu() {
 
         if (!m_initialized) {
-            m_content.setPopupPosition(m_button.getAbsoluteLeft() - 4, m_button.getAbsoluteTop() + 34);
+            if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
+                // 
+                m_content.setPopupPosition(m_button.getAbsoluteLeft() - 5, m_button.getAbsoluteTop() + 34);
+            } else {
+                m_content.setPopupPosition(m_button.getAbsoluteLeft() - 4, m_button.getAbsoluteTop() + 34);
+            }
             m_menuConnect.getStyle().setWidth(m_button.getOffsetWidth() + 2, Style.Unit.PX);
             m_initialized = true;
         }

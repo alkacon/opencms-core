@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/03/10 08:16:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/11 08:07:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,14 +54,14 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsPopup {
 
     /**
-     * The pop up dialog wrapped by the public class.
+     * The pop up dialog wrapped by the public class.<p>
      */
     protected class PopupDialog extends DialogBox {
 
@@ -95,7 +95,7 @@ public class CmsPopup {
         @Override
         public void add(Widget w) {
 
-            m_main.add(w);
+            this.m_main.add(w);
         }
 
         /**

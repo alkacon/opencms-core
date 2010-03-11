@@ -15,7 +15,7 @@
     
     border:1px solid value("constantsCss.borderColor");
     color: value("constantsCss.color");
-    padding: .18em .28em;
+    padding: 2px 4px;
     line-height: 16px;
     font-size: value("constantsCss.fontSize");
     display: inline-block;
@@ -51,12 +51,14 @@
     }
 }
 
-.cmsButtonBig{
-    font-size: value("constantsCss.fontSizeBig");;
+.cmsTextButton.cmsButtonBig{
+    font-size: value("constantsCss.fontSizeBig");
+    padding: 3px 6px;
 }
 
-.cmsButtonSmall{
-    font-size: value("constantsCss.fontSizeSmall");;
+.cmsTextButton.cmsButtonSmall{
+    font-size: value("constantsCss.fontSizeSmall");
+    padding: 1px 2px;
 }
 
 .cmsButtonMedium{}

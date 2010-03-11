@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTextButton.java,v $
- * Date   : $Date: 2010/03/04 15:17:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/11 08:07:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -101,24 +101,27 @@ public class CmsTextButton extends CmsButton {
      * Constructor for <code>CmsTextButton</code>. The supplied text is used to
      * construct the default face of the button.
      * 
-     * @param upText the text for the default (up) face of the button.
+     * @param text the text for the default (up) face of the button, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
      */
-    public CmsTextButton(String upText) {
+    public CmsTextButton(String text, String imageClass) {
 
         this();
-        this.setText(upText);
+        this.setUpFace(text, imageClass);
+
     }
 
     /**
      * Constructor for <code>CmsTextButton</code>. The supplied text is used to
      * construct the default face of the button.
      * 
-     * @param upText the text for the default (up) face of the button
+     * @param text the text for the default (up) face of the button, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
      * @param handler the click handler
      */
-    public CmsTextButton(String upText, ClickHandler handler) {
+    public CmsTextButton(String text, String imageClass, ClickHandler handler) {
 
-        this(upText);
+        this(text, imageClass);
         this.addClickHandler(handler);
     }
 
@@ -126,12 +129,13 @@ public class CmsTextButton extends CmsButton {
      * Constructor for <code>CmsTextButton</code>. The supplied text is used to
      * construct the default face of the button.
      * 
-     * @param upText the text for the default (up) face of the button
+     * @param text the text for the default (up) face of the button, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
      * @param style the style for this button
      */
-    public CmsTextButton(String upText, BUTTON_STYLE style) {
+    public CmsTextButton(String text, String imageClass, BUTTON_STYLE style) {
 
-        this(upText);
+        this(text, imageClass);
         setButtonStyle(style);
     }
 
@@ -139,13 +143,14 @@ public class CmsTextButton extends CmsButton {
      * Constructor for <code>CmsTextButton</code>. The supplied text is used to
      * construct the default face of the button.
      * 
-     * @param upText the text for the default (up) face of the button
+     * @param text the text for the default (up) face of the button, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
      * @param handler the click handler
      * @param style the style for this button
      */
-    public CmsTextButton(String upText, ClickHandler handler, BUTTON_STYLE style) {
+    public CmsTextButton(String text, String imageClass, ClickHandler handler, BUTTON_STYLE style) {
 
-        this(upText, handler);
+        this(text, imageClass, handler);
         setButtonStyle(style);
     }
 
