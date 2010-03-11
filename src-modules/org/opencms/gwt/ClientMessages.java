@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/ClientMessages.java,v $
- * Date   : $Date: 2010/03/11 10:29:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/11 13:28:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,14 +36,11 @@ package org.opencms.gwt;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
 public final class ClientMessages extends A_CmsClientMessageBundle {
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
 
     /** Internal instance. */
     private static ClientMessages INSTANCE;
@@ -67,13 +64,5 @@ public final class ClientMessages extends A_CmsClientMessageBundle {
             INSTANCE = new ClientMessages();
         }
         return INSTANCE;
-    }
-
-    /**
-     * @see org.opencms.gwt.I_CmsClientMessageBundle#getBundleName()
-     */
-    public String getBundleName() {
-
-        return BUNDLE_NAME;
     }
 }

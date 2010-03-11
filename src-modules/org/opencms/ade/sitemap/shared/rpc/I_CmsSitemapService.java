@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/03/11 11:26:13 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
+ * Date   : $Date: 2010/03/11 13:28:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,40 +29,49 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.shared.rpc;
+package org.opencms.ade.sitemap.shared.rpc;
 
-import org.opencms.ade.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.shared.rpc.CmsRpcException;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * Handles all RPC services related to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.ade.CmsSitemapService
- * @see org.opencms.ade.shared.rpc.I_CmsSitemapService
- * @see org.opencms.ade.shared.rpc.I_CmsSitemapServiceAsync
+ * @see org.opencms.ade.sitemap.CmsSitemapService
+ * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService
+ * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
-public interface I_CmsSitemapServiceAsync {
+@RemoteServiceRelativePath("org.opencms.ade.sitemap.CmsSitemapService.gwt")
+public interface I_CmsSitemapService extends RemoteService {
 
     /**
      * Returns the sitemap entry for the given path.<p>
      * 
      * @param root the site relative root
-     * @param callback the async callback
+     *  
+     * @return the sitemap entry
+     * 
+     * @throws CmsRpcException if something goes wrong 
      */
-    void getSitemapEntry(String root, AsyncCallback<CmsClientSitemapEntry> callback);
+    CmsClientSitemapEntry getSitemapEntry(String root) throws CmsRpcException;
 
     /**
      * Returns the sitemap children for the given path.<p>
      * 
      * @param root the site relative root
-     * @param callback the async callback
+     *  
+     * @return the sitemap children
+     * 
+     * @throws CmsRpcException if something goes wrong 
      */
-    void getSitemapChildren(String root, AsyncCallback<CmsClientSitemapEntry[]> callback);
+    CmsClientSitemapEntry[] getSitemapChildren(String root) throws CmsRpcException;
 }

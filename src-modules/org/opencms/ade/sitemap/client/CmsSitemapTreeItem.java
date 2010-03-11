@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/03/11 11:26:13 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
+ * Date   : $Date: 2010/03/11 13:28:19 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,9 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.client;
+package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.lazytree.CmsLazyTreeItem;
 import org.opencms.gwt.client.util.CmsCoreProvider;
 
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Anchor;
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.client.ui.lazytree.CmsLazyTreeItem
- * @see org.opencms.ade.shared.CmsClientSitemapEntry
+ * @see org.opencms.ade.sitemap.shared.CmsClientSitemapEntry
  */
 public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 

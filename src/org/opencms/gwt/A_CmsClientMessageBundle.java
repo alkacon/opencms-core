@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/A_CmsClientMessageBundle.java,v $
- * Date   : $Date: 2010/03/11 10:29:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/11 13:28:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -121,6 +121,14 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
     public Set<I_CmsClientMessageBundle> getAdditionalMessages() {
 
         return m_additionalMessages;
+    }
+
+    /**
+     * @see org.opencms.gwt.I_CmsClientMessageBundle#getBundleName()
+     */
+    public String getBundleName() {
+
+        return getClass().getPackage().getName() + ".clientmessages";
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/03/11 11:26:12 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
+ * Date   : $Date: 2010/03/11 13:28:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,10 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade;
+package org.opencms.ade.sitemap;
 
-import org.opencms.ade.shared.CmsClientSitemapEntry;
-import org.opencms.ade.shared.rpc.I_CmsSitemapService;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.main.CmsLog;
@@ -50,13 +50,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.ade.CmsSitemapService
- * @see org.opencms.ade.shared.rpc.I_CmsSitemapService
- * @see org.opencms.ade.shared.rpc.I_CmsSitemapServiceAsync
+ * @see org.opencms.ade.sitemap.CmsSitemapService
+ * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService
+ * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
 public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapService {
 
@@ -67,7 +67,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     private static final Log LOG = CmsLog.getLog(CmsSitemapService.class);
 
     /**
-     * @see org.opencms.ade.shared.rpc.I_CmsSitemapService#getSitemapEntry(String)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getSitemapEntry(String)
      */
     public CmsClientSitemapEntry getSitemapEntry(String root) throws CmsRpcException {
 
@@ -81,7 +81,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.shared.rpc.I_CmsSitemapService#getSitemapChildren(java.lang.String)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getSitemapChildren(java.lang.String)
      */
     public CmsClientSitemapEntry[] getSitemapChildren(String root) throws CmsRpcException {
 

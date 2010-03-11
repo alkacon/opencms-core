@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/client/Attic/SitemapView.java,v $
- * Date   : $Date: 2010/03/11 11:26:12 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
+ * Date   : $Date: 2010/03/11 13:28:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,11 +29,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.client;
+package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.shared.CmsClientSitemapEntry;
-import org.opencms.ade.shared.rpc.I_CmsSitemapService;
-import org.opencms.ade.shared.rpc.I_CmsSitemapServiceAsync;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.lazytree.A_CmsLazyOpenHandler;
@@ -44,9 +44,15 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Testing the sitemap.<p>
+ * Sitemap view.<p>
+ * 
+ * @author Michael Moossen
+ * 
+ * @version $Revision: 1.1 $ 
+ * 
+ * @since 8.0.0
  */
-public class SitemapView extends A_CmsEntryPoint {
+public class CmsSitemapView extends A_CmsEntryPoint {
 
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_sitemapSvc;
@@ -82,7 +88,7 @@ public class SitemapView extends A_CmsEntryPoint {
             public void execute() {
 
                 // Make the call to the sitemap service
-                start(1000);
+                start(500);
                 getSitemapService().getSitemapEntry("/demo_t3/", this);
             }
 

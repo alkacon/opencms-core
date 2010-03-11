@@ -7,7 +7,7 @@ java.util.HashMap, true, true, false, false, java.util.HashMap/962170901, 962170
 java.util.IdentityHashMap, true, true, false, false, java.util.IdentityHashMap/3881143367, 3881143367
 java.util.LinkedHashMap, true, true, false, false, java.util.LinkedHashMap/1551059846, 1551059846
 java.util.TreeMap, true, true, false, false, java.util.TreeMap/1575826026, 1575826026
-org.opencms.ade.shared.CmsClientSitemapEntry, true, true, false, false, org.opencms.ade.shared.CmsClientSitemapEntry/575398445, 575398445
-[Lorg.opencms.ade.shared.CmsClientSitemapEntry;, true, true, false, false, [Lorg.opencms.ade.shared.CmsClientSitemapEntry;/3378210061, 3378210061
-org.opencms.ade.shared.rpc.I_CmsSitemapService, false, false, false, false, _, 3537730209
+org.opencms.ade.sitemap.shared.CmsClientSitemapEntry, true, true, false, false, org.opencms.ade.sitemap.shared.CmsClientSitemapEntry/656082857, 656082857
+[Lorg.opencms.ade.sitemap.shared.CmsClientSitemapEntry;, true, true, false, false, [Lorg.opencms.ade.sitemap.shared.CmsClientSitemapEntry;/3612073837, 3612073837
+org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService, false, false, false, false, _, 3371166248
 org.opencms.gwt.shared.rpc.CmsRpcException, true, true, false, false, org.opencms.gwt.shared.rpc.CmsRpcException/3510080600, 3510080600

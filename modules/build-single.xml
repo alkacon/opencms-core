@@ -333,12 +333,12 @@
 					            <fileset dir="${module.input.src.single}" erroronmissingdir="false">
 					            	<include name="**/*.gwt.xml" />
 					            	<include name="**/client/**" />
-					            	<include name="**/super_src/**" />
+					            	<include name="**/shared/**" />
 						        </fileset>
 					            <fileset dir="${module.input.src.shared}" erroronmissingdir="false" >
 					            	<include name="**/*.gwt.xml" />
 					            	<include name="**/client/**" />
-					            	<include name="**/super_src/**" />
+					            	<include name="**/shared/**" />
 						        </fileset>
 								<fileset dir="${opencms.input.libs.runtime}" />
 								<fileset dir="${opencms.input.libs.compile}" />
@@ -377,8 +377,6 @@
 					            </java>
 					        </sequential>
 					    </outofdate>
-						<!--eclipse.refreshLocal resource="OpenCms/modules/${module.name}" depth="infinite"/>
-						<eclipse.refreshLocal resource="OpenCms/src-modules" depth="infinite"/-->
 					</then>
 				</if>
 			</then>
@@ -388,8 +386,6 @@
 
 	<target name="compile" depends="compile-gwt" description="Compiles ${module.name} module classes">
 
-		<echo message="module package: ${module.package}" />
-		<echo message="module packages: ${module.packages}" />
 		<if>
 			<not>
 				<equals arg1="${src.mode}" arg2="none" />
@@ -521,7 +517,7 @@
 				<mkdir dir="${module.output.jar}" />
 				<jar jarfile="${module.output.jar}/${module.name}.jar" 
 					basedir="${module.output.classes}" 
-					includes="${module.package}/**/*.class" />
+					includes="${module.package}/**" />
 
 				<for list="${module.dependencies}" param="dependency" trim="true">
 					<sequential>

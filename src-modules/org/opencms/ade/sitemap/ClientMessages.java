@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/03/04 14:07:34 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/ClientMessages.java,v $
+ * Date   : $Date: 2010/03/11 13:28:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,61 +29,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.client;
+package org.opencms.ade.sitemap;
 
-import org.opencms.gwt.client.i18n.CmsMessages;
+import org.opencms.gwt.A_CmsClientMessageBundle;
+import org.opencms.gwt.I_CmsClientMessageBundle;
 
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public final class Messages {
+public final class ClientMessages extends A_CmsClientMessageBundle {
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOADING_0 = "GUI_LOADING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.ade.clientmessages";
-
-    /** Static instance member. */
-    private static CmsMessages INSTANCE;
+    /** Internal instance. */
+    private static ClientMessages INSTANCE;
 
     /**
      * Hides the public constructor for this utility class.<p>
      */
-    private Messages() {
+    private ClientMessages() {
 
-        // hide the constructor
+        addMessage(org.opencms.gwt.ClientMessages.get());
     }
 
     /**
-     * Returns an instance of this localized message accessor.<p>
+     * Returns the client message instance.<p>
      * 
-     * @return an instance of this localized message accessor
+     * @return the client message instance
      */
-    public static CmsMessages get() {
+    public static I_CmsClientMessageBundle get() {
 
         if (INSTANCE == null) {
-            INSTANCE = new CmsMessages(BUNDLE_NAME);
+            INSTANCE = new ClientMessages();
         }
         return INSTANCE;
-    }
-
-    /**
-     * Returns the bundle name for this OpenCms package.<p>
-     * 
-     * @return the bundle name for this OpenCms package
-     */
-    public String getBundleName() {
-
-        return BUNDLE_NAME;
     }
 }
