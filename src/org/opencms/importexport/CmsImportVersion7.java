@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/03/11 11:30:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
@@ -91,7 +92,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.4
  */
@@ -1464,21 +1465,24 @@ public class CmsImportVersion7 implements I_CmsImport {
 
             // get the resources that already exist for the organizational unit
             // if there are resources that does not exist jet, there will be a second try after importing resources       
-            List resources = new ArrayList();
+            List<CmsResource> resources = new ArrayList<CmsResource>();
             String site = getCms().getRequestContext().getSiteRoot();
             try {
                 getCms().getRequestContext().setSiteRoot("");
 
                 boolean remove = true;
-                Iterator itResNames = ((List)m_orgUnitResources.get(m_orgUnitName)).iterator();
-                while (itResNames.hasNext()) {
-                    String resName = (String)itResNames.next();
-                    try {
-                        resources.add(getCms().readResource(resName, CmsResourceFilter.ALL));
-                        itResNames.remove();
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // resource does not exist yet, skip it for now
-                        remove = false;
+                List<String> ouResources = CmsCollectionsGenericWrapper.list(m_orgUnitResources.get(m_orgUnitName));
+                if (ouResources != null) {
+                    Iterator<String> itResNames = ouResources.iterator();
+                    while (itResNames.hasNext()) {
+                        String resName = itResNames.next();
+                        try {
+                            resources.add(getCms().readResource(resName, CmsResourceFilter.ALL));
+                            itResNames.remove();
+                        } catch (CmsVfsResourceNotFoundException e) {
+                            // resource does not exist yet, skip it for now
+                            remove = false;
+                        }
                     }
                 }
 
@@ -1503,12 +1507,12 @@ public class CmsImportVersion7 implements I_CmsImport {
                 m_orgUnitName,
                 m_orgUnitDescription,
                 m_orgUnitFlags,
-                ((CmsResource)resources.get(0)).getRootPath());
+                resources.get(0).getRootPath());
             for (int i = 1; i < resources.size(); i++) {
                 OpenCms.getOrgUnitManager().addResourceToOrgUnit(
                     getCms(),
                     m_orgUnitName,
-                    ((CmsResource)resources.get(i)).getRootPath());
+                    resources.get(i).getRootPath());
             }
 
             getReport().println(
