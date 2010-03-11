@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2010/01/18 10:03:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/03/11 10:48:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.0.4
  */
@@ -1469,15 +1469,18 @@ public class CmsImportVersion7 implements I_CmsImport {
                 getCms().getRequestContext().setSiteRoot("");
 
                 boolean remove = true;
-                Iterator itResNames = ((List)m_orgUnitResources.get(m_orgUnitName)).iterator();
-                while (itResNames.hasNext()) {
-                    String resName = (String)itResNames.next();
-                    try {
-                        resources.add(getCms().readResource(resName, CmsResourceFilter.ALL));
-                        itResNames.remove();
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // resource does not exist yet, skip it for now
-                        remove = false;
+                List ouResources = (List)m_orgUnitResources.get(m_orgUnitName);
+                if (ouResources != null) {
+                    Iterator itResNames = ouResources.iterator();
+                    while (itResNames.hasNext()) {
+                        String resName = (String)itResNames.next();
+                        try {
+                            resources.add(getCms().readResource(resName, CmsResourceFilter.ALL));
+                            itResNames.remove();
+                        } catch (CmsVfsResourceNotFoundException e) {
+                            // resource does not exist yet, skip it for now
+                            remove = false;
+                        }
                     }
                 }
 
