@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbar.java,v $
- * Date   : $Date: 2010/03/11 08:12:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/11 14:23:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,9 +33,6 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -48,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -79,8 +76,6 @@ public class CmsToolbar extends Composite {
     /** A pop up dialog. */
     CmsPopupDialog m_popup;
 
-    Map<String, Widget> m_buttons;
-
     /**
      * Constructor.<p>
      */
@@ -88,8 +83,7 @@ public class CmsToolbar extends Composite {
 
         I_CmsLayoutBundle.INSTANCE.toolbarCss().ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
-        // Can access @UiField after calling createAndBindUi
-        m_buttons = new HashMap<String, Widget>();
+
     }
 
     /**
