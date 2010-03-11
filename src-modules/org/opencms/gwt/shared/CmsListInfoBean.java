@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2010/03/04 15:19:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/11 14:57:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,45 +35,83 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A bean holding all info to be displayed in CmsListItems.<p>
+ * A bean holding all info to be displayed in {@link org.opencms.gwt.client.ui.CmsListItem}s.<p>
  * 
  * @see org.opencms.gwt.client.ui.CmsListItem
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsListInfoBean {
 
-    /** The title. */
-    private String m_title;
+    /** The additional info. */
+    private Map<String, String> m_additionalInfo;
 
     /** The sub-title. */
     private String m_subTitle;
 
-    /** The additional info. */
-    private Map<String, String> m_additionalInfo;
+    /** The title. */
+    private String m_title;
 
     /**
-     * Returns the title.<p>
-     *
-     * @return the title
+     * Default constructor.<p> 
      */
-    public String getTitle() {
+    public CmsListInfoBean() {
 
-        return m_title;
+        // empty
     }
 
     /**
-     * Sets the title.<p>
-     *
-     * @param title the title to set
+     * Constructor.<p>
+     * 
+     * @param title the title
+     * @param subtitle the subtitle
+     * @param additionalInfo the additional info
      */
-    public void setTitle(String title) {
+    public CmsListInfoBean(String title, String subtitle, Map<String, String> additionalInfo) {
 
         m_title = title;
+        m_subTitle = subtitle;
+        m_additionalInfo = additionalInfo;
+    }
+
+    /**
+     * Sets a new additional info.<p> 
+     * 
+     * @param name the additional info name
+     * @param value the additional info value
+     */
+    public void addAdditionalInfo(String name, String value) {
+
+        getAdditionalInfo().put(name, value);
+    }
+
+    /**
+     * Returns the additional info.<p>
+     *
+     * @return the additional info
+     */
+    public Map<String, String> getAdditionalInfo() {
+
+        if (m_additionalInfo == null) {
+            m_additionalInfo = new HashMap<String, String>();
+        }
+        return m_additionalInfo;
+    }
+
+    /**
+     * Returns the additional info with the given name or <code>null</code> if not found.<p>
+     * 
+     * @param name the additional info name
+     * 
+     * @return the additional info value
+     */
+    public String getAdditionalInfo(String name) {
+
+        return getAdditionalInfo().get(name);
     }
 
     /**
@@ -87,23 +125,13 @@ public class CmsListInfoBean {
     }
 
     /**
-     * Sets the sub-title.<p>
+     * Returns the title.<p>
      *
-     * @param subTitle the sub-title to set
+     * @return the title
      */
-    public void setSubTitle(String subTitle) {
+    public String getTitle() {
 
-        m_subTitle = subTitle;
-    }
-
-    /**
-     * Returns the additional info.<p>
-     *
-     * @return the additional info
-     */
-    public Map<String, String> getAdditionalInfo() {
-
-        return m_additionalInfo;
+        return m_title;
     }
 
     /**
@@ -117,17 +145,22 @@ public class CmsListInfoBean {
     }
 
     /**
-     * Adds another info to the item.<p>
-     * 
-     * @param title the info title
-     * @param value the info value
+     * Sets the sub-title.<p>
+     *
+     * @param subTitle the sub-title to set
      */
-    public void addAdditionalInfo(String title, String value) {
+    public void setSubTitle(String subTitle) {
 
-        if (m_additionalInfo == null) {
-            m_additionalInfo = new HashMap<String, String>();
-        }
-        m_additionalInfo.put(title, value);
+        m_subTitle = subTitle;
     }
 
+    /**
+     * Sets the title.<p>
+     *
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+
+        m_title = title;
+    }
 }
