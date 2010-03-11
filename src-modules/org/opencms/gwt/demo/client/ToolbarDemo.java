@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/demo/client/Attic/ToolbarDemo.java,v $
- * Date   : $Date: 2010/03/11 08:08:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/11 08:26:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * Basic demo to show toolbar and buttons.<p>
+ */
 public class ToolbarDemo implements EntryPoint {
 
     /**
@@ -55,19 +58,26 @@ public class ToolbarDemo implements EntryPoint {
      */
     public void onModuleLoad() {
 
+        // generating toolbar
         CmsToolbar toolbar = new CmsToolbar();
+
+        // adding buttons to the left side of the toolbar
         CmsTextButton button1 = new CmsTextButton(
             "Test",
             I_CmsImageBundle.INSTANCE.style().magnifierIcon(),
             CmsTextButton.BUTTON_STYLE.cmsButtonBig);
         toolbar.addLeft(button1);
+
+        // generating a button to open a menu fly out
         CmsMenuButton button2 = new CmsMenuButton("Menu", I_CmsImageBundle.INSTANCE.style().magnifierIcon());
         button2.add(new Label("This is the menu content"));
         toolbar.addLeft(button2);
 
+        // adding buttons to the right side of the toolbar
         toolbar.addRight(new CmsImageButton(I_CmsImageBundle.INSTANCE.style().magnifierIcon(), true));
         I_CmsImageBundle.INSTANCE.style().ensureInjected();
 
+        // button style demo
         VerticalPanel buttonDemoPanel = new VerticalPanel();
         buttonDemoPanel.getElement().getStyle().setPadding(5, Unit.PX);
         buttonDemoPanel.setSpacing(10);
@@ -82,22 +92,29 @@ public class ToolbarDemo implements EntryPoint {
         CmsImageButton imageButtonIconBorder = new CmsImageButton(CmsImageButton.ICON.alert, true);
         CmsImageButton imageButtonIconTransparent = new CmsImageButton(CmsImageButton.ICON.alert, false);
 
+        // button with click handler to open a confirm dialog
         CmsTextButton clickMe1 = new CmsTextButton("show confirm dialog", null, new ClickHandler() {
 
-            @Override
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent event) {
 
                 CmsConfirmDialog dialog = new CmsConfirmDialog("Confirm dialog", "Please click a button.");
                 dialog.setHandler(new I_CmsConfirmDialogHandler() {
 
-                    @Override
+                    /**
+                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                     */
                     public void onOk() {
 
                         Window.alert("Thank you for confrming");
 
                     }
 
-                    @Override
+                    /**
+                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onCancel()
+                     */
                     public void onCancel() {
 
                         Window.alert("You canceled");
