@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/03/04 14:00:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/11 10:29:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -51,7 +51,10 @@ public final class Messages {
     public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";
+    public static final String GUI_OK_0 = "GUI_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
