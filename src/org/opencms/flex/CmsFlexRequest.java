@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2010/03/02 14:36:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/11 11:31:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -626,6 +626,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     public void removeAttribute(String name) {
 
         m_attributes.remove(name);
+        m_controller.getTopRequest().removeAttribute(name);
     }
 
     /**
@@ -635,6 +636,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     public void setAttribute(String name, Object value) {
 
         m_attributes.put(name, value);
+        m_controller.getTopRequest().setAttribute(name, value);
     }
 
     /**
