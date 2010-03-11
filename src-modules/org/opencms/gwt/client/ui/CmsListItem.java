@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/03/11 12:59:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/11 13:01:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,14 +57,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsListItem extends Composite {
 
     /** Tag names available. */
-    public enum TAGNAME {
+    public enum TagName {
         /** A 'div' tag. */
         DIV,
 
@@ -183,7 +183,7 @@ public class CmsListItem extends Composite {
      */
     public CmsListItem(CmsListInfoBean infoBean) {
 
-        this(infoBean, TAGNAME.LI);
+        this(infoBean, TagName.LI);
     }
 
     /**
@@ -192,7 +192,7 @@ public class CmsListItem extends Composite {
      * @param infoBean bean holding the item information
      * @param tagName the tag name to use for the root element
      */
-    public CmsListItem(CmsListInfoBean infoBean, TAGNAME tagName) {
+    public CmsListItem(CmsListInfoBean infoBean, TagName tagName) {
 
         HTMLPanel panel = new HTMLPanel(tagName.name().toLowerCase(), "");
         m_rootId = HTMLPanel.createUniqueId();

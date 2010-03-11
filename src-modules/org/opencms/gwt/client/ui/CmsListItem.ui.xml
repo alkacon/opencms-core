@@ -3,8 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<cms:CmsHTMLHoverPanel tag="li" styleName="{resources.listItemCss.listItem}">
-		<div class="{resources.listItemCss.itemContainer}">
+	<cms:CmsHTMLHoverPanel styleName="{resources.listItemCss.itemContainer}">
 			<div class="{resources.listItemCss.itemContent}">
 				<g:FlowPanel ui:field="m_buttonPanel" styleName="{resources.listItemCss.buttonPanel}"></g:FlowPanel>
 				<div ui:field="m_iconDiv"></div>
@@ -12,6 +11,5 @@
 				<g:Label ui:field="m_subTitleDiv"></g:Label>
 			</div>
 			<div class="{resources.listItemCss.itemAdditional}" ui:field="m_additionalDiv"></div>
-		</div>
 	</cms:CmsHTMLHoverPanel>
 </ui:UiBinder> 
