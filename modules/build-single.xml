@@ -98,14 +98,6 @@
 			</else>
 		</if>
 		<property file="${module.input}/module.properties" />
-		<if>
-			<not>
-				<isset property="module.headless.dependencies" />
-			</not>
-			<then>
-				<property name="module.headless.dependencies" value=""/>
-			</then>
-		</if>
 
 		<for list="${module.dependencies}" param="dependency" trim="true">
 			<sequential>
@@ -125,20 +117,6 @@
 				<condition property="@{dependency}.available">
 					<and>
 						<available file="${@{dependency}.output.zip}" />
-					</and>
-				</condition>
-			</sequential>
-		</for>
-		<for list="${module.headless.dependencies}" param="dependency" trim="true">
-			<sequential>
-				<property name="@{dependency}.input" value="${basedir}/@{dependency}" />
-				<property name="@{dependency}.output.classes" location="${opencms.build}/classes-@{dependency}" />
-				<property name="@{dependency}.output.jar" location="${opencms.build}/jars-@{dependency}" />
-				<property file="${@{dependency}.input}/module.properties" prefix="@{dependency}" />
-
-				<condition property="@{dependency}.available">
-					<and>
-						<available file="${@{dependency}.output.jar}" />
 					</and>
 				</condition>
 			</sequential>
@@ -208,20 +186,6 @@
 				<available file="${module.input.res}" type="dir" />
 			</and>
 		</condition>
-
-		<if>
-			<and>
-				<not>
-					<isset property="resources.available" />
-				</not>
-				<not>
-					<isset property="module.headless" />
-				</not>
-			</and>
-			<then>
-				<mkdir dir="${module.input.res}" />
-			</then>
-		</if>
 
 		<if>
 			<isset property="module.gwt" />
@@ -314,21 +278,6 @@
 				</if>
 			</sequential>
 		</for>
-		<for list="${module.headless.dependencies}" param="dependency" trim="true">
-			<sequential>
-				<if>
-					<not>
-						<istrue value="${@{dependency}.available}" />
-					</not>
-					<then>
-						<echo message="Module dependency @{dependency} is missing, building it" />
-						<ant antfile="${basedir}/build.xml" target="dependencies" inheritAll="false">
-							<property name="module.name" value="@{dependency}" />
-						</ant>
-					</then>
-				</if>
-			</sequential>
-		</for>
 		
 	</target>
 	
@@ -341,23 +290,6 @@
 			<then>
 				<var name="module.dependencies.path" value="." />
 				<for list="${module.dependencies}" param="dependency" trim="true">
-					<sequential>
-						<if>
-							<available file="${@{dependency}.output.jar}" />
-							<then>
-								<for param="archive">
-									<fileset dir="${@{dependency}.output.jar}">
-										<include name="**/*.jar" />
-									</fileset>
-									<sequential>
-										<var name="module.dependencies.path" value="${module.dependencies.path}:@{archive}" />
-									</sequential>
-								</for>
-							</then>
-						</if>
-					</sequential>
-				</for>
-				<for list="${module.headless.dependencies}" param="dependency" trim="true">
 					<sequential>
 						<if>
 							<available file="${@{dependency}.output.jar}" />
@@ -456,6 +388,8 @@
 
 	<target name="compile" depends="compile-gwt" description="Compiles ${module.name} module classes">
 
+		<echo message="module package: ${module.package}" />
+		<echo message="module packages: ${module.packages}" />
 		<if>
 			<not>
 				<equals arg1="${src.mode}" arg2="none" />
@@ -585,21 +519,11 @@
 			</not>
 			<then>
 				<mkdir dir="${module.output.jar}" />
-				<jar jarfile="${module.output.jar}/${module.name}.jar" basedir="${module.output.classes}" />
+				<jar jarfile="${module.output.jar}/${module.name}.jar" 
+					basedir="${module.output.classes}" 
+					includes="${module.package}/**/*.class" />
 
 				<for list="${module.dependencies}" param="dependency" trim="true">
-					<sequential>
-						<if>
-							<available file="${@{dependency}.output.jar}" />
-							<then>
-								<copy todir="${module.output.jar}">
-									<fileset dir="${@{dependency}.output.jar}" includes="*.jar" />
-								</copy>
-							</then>
-						</if>
-					</sequential>
-				</for>
-				<for list="${module.headless.dependencies}" param="dependency" trim="true">
 					<sequential>
 						<if>
 							<available file="${@{dependency}.output.jar}" />
@@ -619,31 +543,24 @@
 
 		<mkdir dir="${module.output.zip}" />
 		<if>
-			<not>
-				<isset property="module.headless" />
-			</not>
+			<isset property="module.gwt" />
 			<then>
-				<if>
-					<isset property="module.gwt" />
-					<then>
-						<ensuredirmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}"  />
-					</then>
-				</if>
-				<if>
-					<available file="${module.output.jar}" />
-					<then>
-						<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
-							<zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="${module.name}.jar" />
-							<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
-						</zip>
-					</then>
-					<else>
-						<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
-							<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
-						</zip>
-					</else>
-				</if>
+				<ensuredirmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}"  />
 			</then>
+		</if>
+		<if>
+			<available file="${module.output.jar}" />
+			<then>
+				<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
+					<zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="${module.name}.jar" />
+					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+				</zip>
+			</then>
+			<else>
+				<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
+					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+				</zip>
+			</else>
 		</if>
 	</target>
 
