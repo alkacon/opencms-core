@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/03/10 08:12:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/11 11:24:51 $
+ * Version: $Revision: 1.5 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0
  */
@@ -182,7 +182,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
         CmsPopupDialog dialog = new CmsPopupDialog(title, new Label(text));
         dialog.setAnimationEnabled(true);
-        dialog.setGlassEnabled(false);
+        dialog.setGlassEnabled(true);
         dialog.setAutoHideEnabled(true);
         dialog.setModal(true);
         dialog.center();
