@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskEnsureDirManifest.java,v $
- * Date   : $Date: 2010/03/11 08:09:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/11 08:27:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -58,7 +57,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -90,7 +89,7 @@ public class CmsAntTaskEnsureDirManifest extends Task {
 
         CmsAntTaskEnsureDirManifest task = new CmsAntTaskEnsureDirManifest();
         task.setBase("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources");
-        task.setDirectory("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources\\system\\modules\\org.opencms.ade\\gwt");
+        task.setDirectory("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources\\system\\modules\\org.opencms.ade\\sitemap");
         task.setXmlFile("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources\\manifest.xml");
         task.execute();
     }
@@ -251,6 +250,9 @@ public class CmsAntTaskEnsureDirManifest extends Task {
 
         String xpath = getFileXpath(destination);
         String type = getType(destination);
+        if (type.equals("cvs")) {
+            return;
+        }
         if (!type.equals("folder")) {
             xpath = "export/files/file[source[text()='" + destination + "']]";
         }
@@ -295,21 +297,21 @@ public class CmsAntTaskEnsureDirManifest extends Task {
      */
     private String getType(String destination) {
 
-        String extension = CmsFileUtil.getExtension(destination);
-        if (extension.equalsIgnoreCase(".jpg")
-            || extension.equalsIgnoreCase(".gif")
-            || extension.equalsIgnoreCase(".png")) {
+        if (destination.endsWith(".jpg") || destination.endsWith(".gif") || destination.endsWith(".png")) {
             return "image";
         }
-        if (extension.equalsIgnoreCase(".jar")) {
+        if (destination.endsWith(".jar")) {
             return "binary";
         }
-        if (extension.equalsIgnoreCase(".html")
-            || extension.equalsIgnoreCase(".js")
-            || extension.equalsIgnoreCase(".xml")
-            || extension.equalsIgnoreCase(".rpc")
-            || extension.equalsIgnoreCase(".css")) {
+        if (destination.endsWith(".html")
+            || destination.endsWith(".js")
+            || destination.endsWith(".xml")
+            || destination.endsWith(".rpc")
+            || destination.endsWith(".css")) {
             return "plain";
+        }
+        if (destination.endsWith("/CVS") || destination.contains("/CVS/")) {
+            return "cvs";
         }
         return "folder";
     }
