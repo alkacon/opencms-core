@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/03/08 16:34:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/11 12:59:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -56,11 +57,20 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsListItem extends Composite {
+
+    /** Tag names available. */
+    public enum TAGNAME {
+        /** A 'div' tag. */
+        DIV,
+
+        /** A 'li' tag. */
+        LI
+    }
 
     /** Additional info item HTML. */
     protected static class AdditionalInfoItem extends HTML {
@@ -164,14 +174,33 @@ public class CmsListItem extends Composite {
     /** The open-close button for the additional info. */
     private CmsImageButton m_openClose;
 
+    private String m_rootId;
+
     /**
-     * Constructor.<p>
+     * Constructor. Using a 'li'-tag as default root element.<p>
      * 
      * @param infoBean bean holding the item information
      */
     public CmsListItem(CmsListInfoBean infoBean) {
 
-        initWidget(uiBinder.createAndBindUi(this));
+        this(infoBean, TAGNAME.LI);
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param infoBean bean holding the item information
+     * @param tagName the tag name to use for the root element
+     */
+    public CmsListItem(CmsListInfoBean infoBean, TAGNAME tagName) {
+
+        HTMLPanel panel = new HTMLPanel(tagName.name().toLowerCase(), "");
+        m_rootId = HTMLPanel.createUniqueId();
+        panel.getElement().setId(m_rootId);
+        panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemCss().listItem());
+        CmsHTMLHoverPanel itemContent = uiBinder.createAndBindUi(this);
+        panel.add(itemContent, m_rootId);
+        initWidget(panel);
         I_CmsLayoutBundle.INSTANCE.listItemCss().ensureInjected();
         m_titleDiv.setText(infoBean.getTitle());
         m_subTitleDiv.setText(infoBean.getSubTitle());
