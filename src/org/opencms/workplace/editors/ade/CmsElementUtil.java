@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/02/11 15:06:52 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/03/12 09:50:43 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -74,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 7.6
  */
@@ -196,7 +195,7 @@ public final class CmsElementUtil {
                 null,
                 m_cms.getRequestContext().getLocale(),
                 m_req,
-                m_res), CmsLocaleManager.getResourceEncoding(m_cms, elementRes));
+                m_res), m_res.getCharacterEncoding());
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }
