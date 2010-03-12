@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2010/01/18 10:02:23 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2010/03/12 10:06:30 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.96 $ 
+ * @version $Revision: 1.97 $ 
  * 
  * @since 6.0.0 
  */
@@ -684,6 +684,28 @@ class CmsShellCommands implements I_CmsShellCommands {
             OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importFile),
             importPath,
             true);
+
+        OpenCms.getImportExportManager().importData(
+            m_cms,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()),
+            params);
+    }
+
+    /**
+     * Imports a resource into the Cms.<p>
+     * 
+     * @param importFile the name (absolute Path) of the import resource (zip or folder)
+     * @param importPath the name (absolute Path) of folder in which should be imported
+     * @param keepPermissions if set, the permissions set on existing resources will not be modified
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void importResources(String importFile, String importPath, boolean keepPermissions) throws Exception {
+
+        CmsImportParameters params = new CmsImportParameters(
+            OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importFile),
+            importPath,
+            keepPermissions);
 
         OpenCms.getImportExportManager().importData(
             m_cms,
