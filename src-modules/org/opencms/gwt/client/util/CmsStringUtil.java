@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsStringUtil.java,v $
- * Date   : $Date: 2010/03/08 15:03:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/15 12:44:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.util;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -69,6 +69,32 @@ public final class CmsStringUtil {
             message = t.getClass().getName();
         }
         return message;
+    }
+
+    /**
+     * Returns <code>true</code> if the provided String is either <code>null</code>
+     * or the empty String <code>""</code>.<p> 
+     * 
+     * @param value the value to check
+     * 
+     * @return true, if the provided value is null or the empty String, false otherwise
+     */
+    public static boolean isEmpty(String value) {
+
+        return (value == null) || (value.length() == 0);
+    }
+
+    /**
+     * Returns <code>true</code> if the provided String is either <code>null</code>
+     * or contains only white spaces.<p> 
+     * 
+     * @param value the value to check
+     * 
+     * @return true, if the provided value is null or contains only white spaces, false otherwise
+     */
+    public static boolean isEmptyOrWhitespaceOnly(String value) {
+
+        return isEmpty(value) || (value.trim().length() == 0);
     }
 
     /**
