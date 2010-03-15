@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/03/15 09:07:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/15 12:45:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -95,6 +95,21 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
 
         CmsObject cms = CmsFlexController.getCmsObject(request);
 
+        StringBuffer sb = new StringBuffer();
+        sb.append(DICT_NAME.replace('.', '_')).append("=").append(getData(cms).toString()).append(";");
+        sb.append(message.export(request));
+        return sb.toString();
+    }
+
+    /**
+     * Returns the provided json data.<p>
+     * 
+     * @param cms the current cms object
+     * 
+     * @return the provided json data
+     */
+    public JSONObject getData(CmsObject cms) {
+
         JSONObject keys = new JSONObject();
         try {
             keys.put(KEY_CONTEXT, OpenCms.getSystemInfo().getOpenCmsContext());
@@ -111,9 +126,6 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
                 LOG.error(e1.getLocalizedMessage(), e1);
             }
         }
-        StringBuffer sb = new StringBuffer();
-        sb.append(DICT_NAME.replace('.', '_')).append("=").append(keys.toString()).append(";");
-        sb.append(message.export(request));
-        return sb.toString();
+        return keys;
     }
 }
