@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/i18n/Attic/CmsMessages.java,v $
- * Date   : $Date: 2010/03/03 15:32:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/15 12:43:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.i18n.client.Dictionary;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -277,54 +277,6 @@ public class CmsMessages {
     /**
      * Returns the selected localized message for the initialized resource bundle and locale.<p>
      * 
-     * Convenience method for messages with one argument.<p>
-     * 
-     * @param key the message key
-     * @param arg0 the message argument
-     * 
-     * @return the selected localized message for the initialized resource bundle and locale
-     */
-    public String key(String key, Object arg0) {
-
-        return key(key, new Object[] {arg0});
-    }
-
-    /**
-     * Returns the selected localized message for the initialized resource bundle and locale.<p>
-     * 
-     * Convenience method for messages with two arguments.<p>
-     * 
-     * @param key the message key
-     * @param arg0 the first message argument
-     * @param arg1 the second message argument
-     * 
-     * @return the selected localized message for the initialized resource bundle and locale
-     */
-    public String key(String key, Object arg0, Object arg1) {
-
-        return key(key, new Object[] {arg0, arg1});
-    }
-
-    /**
-     * Returns the selected localized message for the initialized resource bundle and locale.<p>
-     * 
-     * Convenience method for messages with three arguments.<p>
-     * 
-     * @param key the message key
-     * @param arg0 the first message argument
-     * @param arg1 the second message argument
-     * @param arg2 the third message argument
-     * 
-     * @return the selected localized message for the initialized resource bundle and locale
-     */
-    public String key(String key, Object arg0, Object arg1, Object arg2) {
-
-        return key(key, new Object[] {arg0, arg1, arg2});
-    }
-
-    /**
-     * Returns the selected localized message for the initialized resource bundle and locale.<p>
-     * 
      * If the key was found in the bundle, it will be formatted using
      * a <code>{@link java.text.MessageFormat}</code> using the provided parameters.<p>
      * 
@@ -337,7 +289,7 @@ public class CmsMessages {
      * 
      * @return the selected localized message for the initialized resource bundle and locale 
      */
-    public String key(String key, Object[] args) {
+    public String key(String key, Object... args) {
 
         if ((args == null) || (args.length == 0)) {
             // no parameters available, use simple key method
@@ -353,35 +305,41 @@ public class CmsMessages {
             for (int i = 0; i < args.length; i++) {
                 if (args[i] instanceof Date) {
                     Date date = (Date)args[i];
-                    result.replace(getRegEx(i), CmsDateTimeUtil.getDateTime(date, CmsDateTimeUtil.Format.MEDIUM));
-                    result.replace(getRegEx(i, "time"), CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.MEDIUM));
-                    result.replace(getRegEx(i, "time", "short"), CmsDateTimeUtil.getTime(
-                        date,
-                        CmsDateTimeUtil.Format.SHORT));
-                    result.replace(getRegEx(i, "time", "medium"), CmsDateTimeUtil.getTime(
+                    result = result.replace(getRegEx(i), CmsDateTimeUtil.getDateTime(
                         date,
                         CmsDateTimeUtil.Format.MEDIUM));
-                    result.replace(getRegEx(i, "time", "long"), CmsDateTimeUtil.getTime(
+                    result = result.replace(getRegEx(i, "time"), CmsDateTimeUtil.getTime(
+                        date,
+                        CmsDateTimeUtil.Format.MEDIUM));
+                    result = result.replace(getRegEx(i, "time", "short"), CmsDateTimeUtil.getTime(
+                        date,
+                        CmsDateTimeUtil.Format.SHORT));
+                    result = result.replace(getRegEx(i, "time", "medium"), CmsDateTimeUtil.getTime(
+                        date,
+                        CmsDateTimeUtil.Format.MEDIUM));
+                    result = result.replace(getRegEx(i, "time", "long"), CmsDateTimeUtil.getTime(
                         date,
                         CmsDateTimeUtil.Format.LONG));
-                    result.replace(getRegEx(i, "time", "full"), CmsDateTimeUtil.getTime(
+                    result = result.replace(getRegEx(i, "time", "full"), CmsDateTimeUtil.getTime(
                         date,
                         CmsDateTimeUtil.Format.FULL));
-                    result.replace(getRegEx(i, "date"), CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.MEDIUM));
-                    result.replace(getRegEx(i, "date", "short"), CmsDateTimeUtil.getDate(
-                        date,
-                        CmsDateTimeUtil.Format.SHORT));
-                    result.replace(getRegEx(i, "date", "medium"), CmsDateTimeUtil.getDate(
+                    result = result.replace(getRegEx(i, "date"), CmsDateTimeUtil.getDate(
                         date,
                         CmsDateTimeUtil.Format.MEDIUM));
-                    result.replace(getRegEx(i, "date", "long"), CmsDateTimeUtil.getDate(
+                    result = result.replace(getRegEx(i, "date", "short"), CmsDateTimeUtil.getDate(
+                        date,
+                        CmsDateTimeUtil.Format.SHORT));
+                    result = result.replace(getRegEx(i, "date", "medium"), CmsDateTimeUtil.getDate(
+                        date,
+                        CmsDateTimeUtil.Format.MEDIUM));
+                    result = result.replace(getRegEx(i, "date", "long"), CmsDateTimeUtil.getDate(
                         date,
                         CmsDateTimeUtil.Format.LONG));
-                    result.replace(getRegEx(i, "date", "full"), CmsDateTimeUtil.getDate(
+                    result = result.replace(getRegEx(i, "date", "full"), CmsDateTimeUtil.getDate(
                         date,
                         CmsDateTimeUtil.Format.FULL));
                 } else {
-                    result.replace(getRegEx(i), args[i].toString());
+                    result = result.replace(getRegEx(i), args[i].toString());
                 }
             }
         }
@@ -443,7 +401,7 @@ public class CmsMessages {
             String cutKeyName = values[0];
             String[] params = new String[values.length - 1];
             System.arraycopy(values, 1, params, 0, params.length);
-            return key(cutKeyName, params);
+            return key(cutKeyName, (Object[])params);
         }
     }
 
@@ -461,6 +419,6 @@ public class CmsMessages {
         for (int i = 0; i < options.length; i++) {
             value += "," + options[i];
         }
-        return "\\{" + value + "\\}";
+        return "{" + value + "}";
     }
 }
