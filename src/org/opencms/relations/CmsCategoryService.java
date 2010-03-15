@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2010/01/26 11:21:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/15 15:24:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.9.2
  * 
@@ -589,6 +589,29 @@ public class CmsCategoryService {
         boolean recursive,
         String referencePath) throws CmsException {
 
+        return readCategoryResources(cms, categoryPath, recursive, referencePath, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Reads the resources for a category identified by the given category path.<p>
+     * 
+     * @param cms the current cms context
+     * @param categoryPath the path of the category to read the resources for
+     * @param recursive <code>true</code> if including sub-categories
+     * @param referencePath the reference path to find all the category repositories
+     * @param resFilter the resource filter to use
+     * 
+     * @return a list of {@link CmsResource} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readCategoryResources(
+        CmsObject cms,
+        String categoryPath,
+        boolean recursive,
+        String referencePath,
+        CmsResourceFilter resFilter) throws CmsException {
+
         Set<CmsResource> resources = new HashSet<CmsResource>();
         CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.CATEGORY);
         if (recursive) {
@@ -601,10 +624,11 @@ public class CmsCategoryService {
         while (itRelations.hasNext()) {
             CmsRelation relation = itRelations.next();
             try {
-                resources.add(relation.getSource(cms, CmsResourceFilter.DEFAULT));
+                resources.add(relation.getSource(cms, resFilter));
             } catch (CmsException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
+                // source does not match the filter
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getLocalizedMessage(), e);
                 }
             }
         }
