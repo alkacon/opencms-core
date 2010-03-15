@@ -47,6 +47,9 @@
 	width:930px;
 	margin:2px auto;
 }
+.toolbarPlaceholder {
+	height: 50px;
+}
 
 .toolbarButtonsLeft>div{
 	margin-right: 5px;

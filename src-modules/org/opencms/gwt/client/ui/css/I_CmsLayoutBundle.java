@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/10 08:38:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/03/15 12:43:58 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -289,6 +289,16 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String open();
     }
 
+    /** Page CSS. */
+    interface I_CmsPageCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String page();
+    }
+
     /** General CSS. */
     @Shared
     interface I_CmsStateCss extends CssResource {
@@ -356,6 +366,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        @ClassName("internal-tabbed")
+        String cmsInternalTab();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         @ClassName("gwt-TabLayoutPanel")
         String cmsTabLayoutPanel();
 
@@ -393,13 +410,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         @ClassName("gwt-TabLayoutPanelTab-selected")
         String cmsTabLayoutPanelTabSelected();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        @ClassName("internal-tabbed")
-        String cmsInternalTab();
     }
 
     /** Toolbar CSS. */
@@ -439,19 +449,17 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String toolbarPlaceholder();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String toolbarShadow();
     }
 
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
-
-    /**
-     * Access method.<p>
-     *  
-     * @return tabbed panel CSS
-     */
-    @Source("tabbedPanel.css")
-    I_CmsTabbedPanelCss tabbedPanelCss();
 
     /**
      * Access method.<p>
@@ -554,6 +562,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("state.css")
     I_CmsStateCss stateCss();
+
+    /**
+     * Access method.<p>
+     *  
+     * @return tabbed panel CSS
+     */
+    @Source("tabbedPanel.css")
+    I_CmsTabbedPanelCss tabbedPanelCss();
 
     /**
      * Access method.<p>
