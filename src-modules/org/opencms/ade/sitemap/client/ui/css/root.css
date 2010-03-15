@@ -1,0 +1,11 @@
+.pageCenter {
+	padding: 0px;
+	position: relative;
+	width: value("constantsCss.pageWidth");
+	margin: 0 auto;
+}
+
+.root {
+	background-color: #E1E1E1;
+	font-family: Helvetica,Arial,sans-serif;
+}

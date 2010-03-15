@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/03/11 13:28:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/15 15:12:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,17 +32,24 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.client.ui.CmsImageButton;
+import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsListItem.TagName;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.lazytree.CmsLazyTreeItem;
 import org.opencms.gwt.client.util.CmsCoreProvider;
+import org.opencms.gwt.shared.CmsListInfoBean;
 
-import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 
 /**
  * Sitemap entry tree item implementation.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -59,12 +66,33 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      * 
      * @param entry the sitemap entry to use
      */
-    public CmsSitemapTreeItem(CmsClientSitemapEntry entry) {
+    public CmsSitemapTreeItem(final CmsClientSitemapEntry entry) {
 
         super();
         m_entry = entry;
-        Anchor anchor = new Anchor(entry.getName(), CmsCoreProvider.get().link(entry.getSitePath()));
-        setWidget(anchor);
+        CmsListInfoBean infoBean = new CmsListInfoBean();
+        infoBean.setTitle(m_entry.getTitle());
+        infoBean.setSubTitle("blah");
+        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), m_entry.getName());
+        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_URL_0), entry.getSitePath());
+        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getResourceId());
+        CmsListItem listItem = new CmsListItem(infoBean, TagName.DIV);
+        listItem.setWidth("500px");
+        CmsImageButton linkIcon = new CmsImageButton(I_CmsImageBundle.INSTANCE.style().magnifierIcon(), false);
+        linkIcon.setTitle("Go to page");
+        linkIcon.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                Window.Location.replace(CmsCoreProvider.get().link(entry.getSitePath()));
+            }
+        });
+        linkIcon.setAccessKey('G');
+        listItem.addButton(linkIcon);
+        setWidget(listItem);
     }
 
     /**

@@ -5,5 +5,5 @@
 	<set-property name="user.agent" value="gecko1_8" />
 	<source path="client" />
 	<source path="shared" />
-	<entry-point class="org.opencms.ade.sitemap.client.CmsSitemapView"></entry-point>
+	<entry-point class="org.opencms.ade.sitemap.client.CmsSitemapEditor"></entry-point>
 </module>

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/03/11 13:28:19 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEditor.java,v $
+ * Date   : $Date: 2010/03/15 15:12:54 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,11 +31,19 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.client.ui.CmsPage;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.client.util.CmsSitemapProvider;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsHeader;
+import org.opencms.gwt.client.ui.CmsImageButton;
+import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.lazytree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.lazytree.CmsLazyTree;
 
@@ -44,7 +52,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Sitemap view.<p>
+ * Sitemap editor.<p>
  * 
  * @author Michael Moossen
  * 
@@ -52,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @since 8.0.0
  */
-public class CmsSitemapView extends A_CmsEntryPoint {
+public class CmsSitemapEditor extends A_CmsEntryPoint {
 
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_sitemapSvc;
@@ -77,7 +85,29 @@ public class CmsSitemapView extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        RootPanel.get().add(new Label(Messages.get().key(Messages.GUI_LOADING_0)));
+
+        I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
+
+        RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
+
+        CmsToolbar toolBar = new CmsToolbar();
+        toolBar.addLeft(new CmsImageButton(I_CmsImageBundle.INSTANCE.style().editorIcon(), true));
+        toolBar.addRight(new CmsImageButton(I_CmsImageBundle.INSTANCE.style().deleteIcon(), true));
+        RootPanel.get().add(toolBar);
+
+        RootPanel.get().add(new CmsToolbarPlaceHolder());
+        CmsHeader title = new CmsHeader(Messages.get().key(
+            Messages.GUI_EDITOR_TITLE_1,
+            CmsSitemapProvider.get().getUri()));
+        title.addStyleName(I_CmsLayoutBundle.INSTANCE.rootCss().pageCenter());
+        RootPanel.get().add(title);
+
+        final CmsPage page = new CmsPage();
+        RootPanel.get().add(page);
+
+        final Label loadingLabel = new Label(Messages.get().key(Messages.GUI_LOADING_0));
+        page.add(loadingLabel);
 
         CmsRpcAction<CmsClientSitemapEntry> getRootAction = new CmsRpcAction<CmsClientSitemapEntry>() {
 
@@ -99,7 +129,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
             public void onResponse(CmsClientSitemapEntry root) {
 
                 root.setName("demo_t3");
-                RootPanel.get().clear();
+                page.remove(loadingLabel);
 
                 CmsLazyTree<CmsSitemapTreeItem> tree = new CmsLazyTree<CmsSitemapTreeItem>(
                     new A_CmsLazyOpenHandler<CmsSitemapTreeItem>() {
@@ -141,7 +171,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
 
                     });
                 tree.addItem(new CmsSitemapTreeItem(root));
-                RootPanel.get().add(tree);
+                page.add(tree);
                 stop();
             }
 

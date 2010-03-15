@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/Messages.java,v $
  * Date   : $Date: 2010/03/15 15:12:54 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,44 +29,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client;
+package org.opencms.ade.sitemap;
 
-import org.opencms.gwt.client.i18n.CmsMessages;
+import org.opencms.i18n.A_CmsMessageBundle;
+import org.opencms.i18n.I_CmsMessageBundle;
 
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $ 
  * 
- * @since 8.0.0
+ * @since 8.0.0 
  */
-public final class Messages {
+public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_1 = "GUI_EDITOR_TITLE_1";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOADING_0 = "GUI_LOADING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_NAME_0 = "GUI_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_URL_0 = "GUI_URL_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_VFS_PATH_0 = "GUI_VFS_PATH_0";
-
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
+    private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.messages";
 
     /** Static instance member. */
-    private static CmsMessages INSTANCE;
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>
@@ -81,11 +67,8 @@ public final class Messages {
      * 
      * @return an instance of this localized message accessor
      */
-    public static CmsMessages get() {
+    public static I_CmsMessageBundle get() {
 
-        if (INSTANCE == null) {
-            INSTANCE = new CmsMessages(BUNDLE_NAME);
-        }
         return INSTANCE;
     }
 
