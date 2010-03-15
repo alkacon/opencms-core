@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/15 12:43:58 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/15 14:52:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -164,6 +164,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String fontSizeSmall();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String pageWidth();
     }
 
     /** Dialog CSS. */
@@ -217,6 +223,46 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String popupShadow();
+    }
+
+    /** Header CSS. */
+    interface I_CmsHeaderCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String h1();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String h2();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String h3();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String h4();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String h5();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String h6();
     }
 
     /** Icons CSS, making available a fixed set of icons. */
@@ -522,6 +568,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     I_CmsDialogCss dialogCss();
 
     /**
+     * Access method.<p>
+     * 
+     * @return the header CSS
+     */
+    @Source("header.css")
+    I_CmsHeaderCss headerCss();
+
+    /** 
      * Access method.<p>
      * 
      * @return the image resource

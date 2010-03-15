@@ -44,7 +44,7 @@
 .toolbarContent{
 	padding:0px;
 	position:relative;
-	width:930px;
+	width:value("constantsCss.pageWidth");
 	margin:2px auto;
 }
 .toolbarPlaceholder {

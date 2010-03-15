@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTitle.java,v $
- * Date   : $Date: 2010/03/15 12:44:32 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHeader.java,v $
+ * Date   : $Date: 2010/03/15 14:52:25 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,35 +46,58 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.0
  */
-public class CmsTitle extends Widget implements HasText {
+public class CmsHeader extends Widget implements HasText {
 
     /**
      * The supported tags.<p>
      */
     public enum Tag {
         /** h1. */
-        H1,
+        H1(I_CmsLayoutBundle.INSTANCE.headerCss().h1()),
 
         /** h2. */
-        H2,
+        H2(I_CmsLayoutBundle.INSTANCE.headerCss().h2()),
 
         /** h3. */
-        H3,
+        H3(I_CmsLayoutBundle.INSTANCE.headerCss().h3()),
 
         /** h4. */
-        H4,
+        H4(I_CmsLayoutBundle.INSTANCE.headerCss().h4()),
 
         /** h5. */
-        H5,
+        H5(I_CmsLayoutBundle.INSTANCE.headerCss().h5()),
 
         /** h6. */
-        H6;
+        H6(I_CmsLayoutBundle.INSTANCE.headerCss().h6());
+
+        /** The class name. */
+        private final String m_className;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param className the class name
+         */
+        private Tag(String className) {
+
+            m_className = className;
+        }
+
+        /**
+         * Returns the class name.<p>
+         *
+         * @return the class name
+         */
+        public String className() {
+
+            return m_className;
+        }
     }
 
     /**
      * Constructor.<p>
      */
-    public CmsTitle() {
+    public CmsHeader() {
 
         this("");
     }
@@ -82,7 +107,7 @@ public class CmsTitle extends Widget implements HasText {
      * 
      * @param text the text to set
      */
-    public CmsTitle(String text) {
+    public CmsHeader(String text) {
 
         this(text, Tag.H1);
     }
@@ -93,9 +118,10 @@ public class CmsTitle extends Widget implements HasText {
      * @param text the text to set
      * @param tag the tag to use 
      */
-    public CmsTitle(String text, Tag tag) {
+    public CmsHeader(String text, Tag tag) {
 
         setElement(DOM.createElement(tag.name()));
+        getElement().addClassName(tag.className());
         setText(text);
     }
 
