@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/02/03 15:10:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/03/15 15:25:28 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -562,7 +562,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         // only export those resources where the export property is set
-        if (!isExportLink(exportCms, file)) {
+        if (!isExportLink(exportCms, exportCms.getSitePath(file))) {
             // the resource was not used for export, so return HttpServletResponse.SC_SEE_OTHER
             // as a signal for not exported resource
             return HttpServletResponse.SC_SEE_OTHER;
@@ -1614,16 +1614,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * OpenCms context.<p>
      * 
      * @param cms the current users OpenCms context
-     * @param resource the VFS resource to check
+     * @param vfsName the VFS resource name to check
      * 
      * @return <code>true</code> if static export is required for the given VFS resource
      */
-    public boolean isExportLink(CmsObject cms, CmsResource resource) {
+    public boolean isExportLink(CmsObject cms, String vfsName) {
 
         if (!isStaticExportEnabled()) {
             return false;
         }
-        String cacheKey = resource.getRootPath();
+        String cacheKey = getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
         Boolean exportResource = m_cacheExportLinks.get(cacheKey);
         if (exportResource != null) {
             return exportResource.booleanValue();
@@ -1636,7 +1636,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
             // let's look up export property in VFS
-            String exportValue = exportCms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
+            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(exportCms, vfsName);
+            String exportValue = exportCms.readPropertyObject(
+                exportCms.readResource(entry.getResourceId()),
+                CmsPropertyDefinition.PROPERTY_EXPORT,
+                true).getValue();
             if (exportValue == null) {
                 // no setting found for "export" property
                 if (getExportPropertyDefault()) {
@@ -1644,13 +1648,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     result = true;
                 } else {
                     // check if the resource is exportable by suffix
-                    result = isSuffixExportable(resource.getName());
+                    result = isSuffixExportable(vfsName);
                 }
             } else {
                 // "export" value found, if it was "true" we export
                 result = Boolean.valueOf(exportValue).booleanValue();
             }
-        } catch (Exception e) {
+        } catch (CmsException e) {
             // no export required (probably security issues, e.g. no access for export user)
             LOG.debug(e.getLocalizedMessage(), e);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/03/15 15:25:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.net.URI;
 
@@ -53,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.2
  * 
@@ -162,18 +161,11 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 uriBaseName = exportManager.getCachedOnlineLink(cacheKey);
                 if (uriBaseName == null) {
                     // base not cached, check if we must export it
-                    CmsResource resource = null;
-                    try {
-                        resource = cms.readResource(cms.getRequestContext().getUri());
-                    } catch (CmsException e) {
-                        // should never happen
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                    if ((resource != null) && exportManager.isExportLink(cms, resource)) {
+                    if (exportManager.isExportLink(cms, cms.getRequestContext().getUri())) {
                         // base URI must also be exported
                         uriBaseName = exportManager.getRfsName(cms, cms.getRequestContext().getUri());
                     } else {
-                        // base URI doesn't need to be exported
+                        // base URI dosn't need to be exported
                         uriBaseName = exportManager.getVfsPrefix() + cms.getRequestContext().getUri();
                     }
                     // cache export base URI
@@ -192,23 +184,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 try {
                     cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
                     // didn't find the link in the cache
-                    CmsResource resource = null;
-                    try {
-                        resource = cms.readResource(vfsName);
-                    } catch (CmsException e) {
-                        LOG.debug(e.getLocalizedMessage(), e);
-                        // sitemap case
-                        try {
-                            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
-                            if (entry != null) {
-                                resource = cms.readResource(entry.getResourceId());
-                            }
-                        } catch (CmsException e1) {
-                            // should never happen
-                            LOG.error(e1.getLocalizedMessage(), e1);
-                        }
-                    }
-                    if ((resource != null) && exportManager.isExportLink(cms, resource)) {
+                    if (exportManager.isExportLink(cms, vfsName)) {
                         // export required, get export name for target link
                         resultLink = exportManager.getRfsName(cms, vfsName, parameters);
                         // now set the parameters to null, we do not need them anymore
