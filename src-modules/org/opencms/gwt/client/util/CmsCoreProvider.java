@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/03/09 10:31:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/15 09:07:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,13 +40,16 @@ import com.google.gwt.i18n.client.Dictionary;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.CmsCoreProvider
  */
 public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
+
+    /** Path to the editor. */
+    public static final String VFS_PATH_EDITOR = "/system/workplace/editors/editor.jsp";
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
@@ -63,6 +66,9 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
     /** The current site root. */
     private String m_siteRoot;
 
+    /** The current URI. */
+    private String m_uri;
+
     /** The current workplace locale. */
     private String m_wpLocale;
 
@@ -76,6 +82,7 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
         m_wpLocale = dict.get(KEY_WP_LOCALE);
         m_context = dict.get(KEY_CONTEXT);
         m_siteRoot = dict.get(KEY_SITE_ROOT);
+        m_uri = dict.get(KEY_URI);
     }
 
     /**
@@ -166,6 +173,16 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
     public String getSiteRoot() {
 
         return m_siteRoot;
+    }
+
+    /**
+     * Returns the current uri.<p>
+     *
+     * @return the current uri
+     */
+    public String getUri() {
+
+        return m_uri;
     }
 
     /**

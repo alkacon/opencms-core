@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/I_CmsCoreProviderConstants.java,v $
- * Date   : $Date: 2010/03/09 10:31:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/15 09:07:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.shared;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -59,4 +59,7 @@ public interface I_CmsCoreProviderConstants {
 
     /** The current workplace locale, ie. <code>en</code>. */
     String KEY_WP_LOCALE = "wp-locale";
+
+    /** The current URI, ie. <code>/a/b/c.html</code>. */
+    String KEY_URI = "uri";
 }

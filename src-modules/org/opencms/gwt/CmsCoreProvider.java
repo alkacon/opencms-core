@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/03/09 10:31:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/15 09:07:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -101,6 +101,7 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
             keys.put(KEY_LOCALE, cms.getRequestContext().getLocale().toString());
             keys.put(KEY_SITE_ROOT, cms.getRequestContext().getSiteRoot());
             keys.put(KEY_WP_LOCALE, OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString());
+            keys.put(KEY_URI, cms.getRequestContext().getUri());
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             try {
