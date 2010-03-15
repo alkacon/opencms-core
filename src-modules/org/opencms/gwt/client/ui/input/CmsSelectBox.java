@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/03/10 12:51:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/15 09:29:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,12 +75,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
  */
-public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValueChangeHandlers {
+public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String> {
 
     /**
      * Mode constants for the select box options. 
@@ -212,6 +212,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /** Flag indicating whether this widget is enabled. */
     private boolean m_enabled = true;
 
+    private boolean m_first = true;
+
     /** The text of the first select option. */
     private String m_firstText;
 
@@ -275,9 +277,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
                 m_overOpener = false;
 
             }
-
         });
-
     }
 
     /**
@@ -291,15 +291,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
         this(mode);
         for (CmsPair<String, String> item : items) {
-            addCell(item.getFirst(), item.getSecond());
+            addOption(item.getFirst(), item.getSecond());
         }
-        String firstValue = items.get(0).getFirst();
-        String firstText = items.get(0).getSecond();
-
-        onValueSelect(firstValue, firstText);
-        m_firstValue = firstValue;
-        m_firstText = firstText;
-
     }
 
     static {
@@ -335,17 +328,24 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      * @param value the value of the select option 
      * @param text the text to be displayed for the select option 
      */
-    public void addCell(String value, String text) {
+    public void addOption(String value, String text) {
 
         CmsSelectCell cell = new CmsSelectCell(value, text);
         m_valueLabels.put(value, text);
         m_selector.add(cell);
+        if (m_first) {
+            onValueSelect(value, text);
+            m_firstValue = value;
+            m_firstText = text;
+        }
+        m_first = false;
+
     }
 
     /**
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
-    public HandlerRegistration addValueChangeHandler(final ValueChangeHandler handler) {
+    public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> handler) {
 
         m_handlerManager.addHandler(ValueChangeEvent.getType(), handler);
         return new HandlerRegistration() {
