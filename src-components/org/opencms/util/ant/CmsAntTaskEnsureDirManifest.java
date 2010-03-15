@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskEnsureDirManifest.java,v $
- * Date   : $Date: 2010/03/11 08:27:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/15 09:24:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,6 @@
 
 package org.opencms.util.ant;
 
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.setup.xml.CmsSetupXmlHelper;
-import org.opencms.util.CmsCollectionsGenericWrapper;
-import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsUUID;
-import org.opencms.xml.CmsXmlUtils;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -57,7 +50,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -104,6 +97,7 @@ public class CmsAntTaskEnsureDirManifest extends Task {
      * 
      * @see org.apache.tools.ant.Task#execute()
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void execute() throws BuildException {
 
@@ -142,9 +136,7 @@ public class CmsAntTaskEnsureDirManifest extends Task {
             String prefix = new File(directory).getAbsolutePath().substring(
                 new File(getBase()).getAbsolutePath().length() + 1).replace('\\', '/');
 
-            List<Node> xmlFiles = CmsCollectionsGenericWrapper.list(doc.selectNodes("export/files/file/destination[starts-with(.,'"
-                + prefix
-                + "/')]"));
+            List<Node> xmlFiles = doc.selectNodes("export/files/file/destination[starts-with(.,'" + prefix + "/')]");
             for (Node xmlFile : xmlFiles) {
                 String path = xmlFile.getText();
                 File file = new File(getBase() + "/" + path);
@@ -156,6 +148,10 @@ public class CmsAntTaskEnsureDirManifest extends Task {
             // create missing entries
             for (int i = 0; i < files.length; i++) {
                 String destination = prefix + '/' + files[i];
+                if (destination.endsWith("/CVS") || destination.contains("/CVS/")) {
+                    // ignore cvs data
+                    continue;
+                }
                 String xpath = getFileXpath(destination);
                 if (CmsSetupXmlHelper.getValue(doc, xpath) != null) {
                     // entry already present
@@ -169,7 +165,7 @@ public class CmsAntTaskEnsureDirManifest extends Task {
             // write xml
             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(getXmlFile()));
             try {
-                CmsXmlUtils.marshal(doc, out, CmsEncoder.ENCODING_UTF_8);
+                CmsXmlUtils.marshal(doc, out, "UTF-8");
             } finally {
                 out.close();
             }
@@ -250,9 +246,6 @@ public class CmsAntTaskEnsureDirManifest extends Task {
 
         String xpath = getFileXpath(destination);
         String type = getType(destination);
-        if (type.equals("cvs")) {
-            return;
-        }
         if (!type.equals("folder")) {
             xpath = "export/files/file[source[text()='" + destination + "']]";
         }
@@ -300,18 +293,22 @@ public class CmsAntTaskEnsureDirManifest extends Task {
         if (destination.endsWith(".jpg") || destination.endsWith(".gif") || destination.endsWith(".png")) {
             return "image";
         }
-        if (destination.endsWith(".jar")) {
+        if (destination.endsWith(".jar") || destination.endsWith(".class")) {
             return "binary";
         }
-        if (destination.endsWith(".html")
+        if (destination.endsWith(".jsp")) {
+            return "jsp";
+        }
+        if (destination.endsWith(".properties")
+            || destination.endsWith(".xsd")
+            || destination.endsWith(".txt")
+            || destination.endsWith(".java")
+            || destination.endsWith(".html")
             || destination.endsWith(".js")
             || destination.endsWith(".xml")
             || destination.endsWith(".rpc")
             || destination.endsWith(".css")) {
             return "plain";
-        }
-        if (destination.endsWith("/CVS") || destination.contains("/CVS/")) {
-            return "cvs";
         }
         return "folder";
     }
