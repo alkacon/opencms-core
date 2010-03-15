@@ -34,7 +34,7 @@
 			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.0.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/dom4j-1.6.1.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/jaxen-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/jug-lpgl-2.0.0.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
 		</classpath>
 	</taskdef>
 	
