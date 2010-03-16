@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/01/19 10:36:22 $
- * Version: $Revision: 1.251 $
+ * Date   : $Date: 2010/03/16 12:00:39 $
+ * Version: $Revision: 1.252 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.251 $ 
+ * @version $Revision: 1.252 $ 
  * 
  * @since 6.0.0 
  */
@@ -892,8 +892,11 @@ public final class OpenCmsCore {
             // if no dedicated workplace site is configured, 
             // or for the dedicated workplace site, use the site root from the session attribute
             siteroot = sessionInfo.getSiteRoot();
-        }
-        if (siteroot == null) {
+        } else if (site.hasSecureServer()
+            && getSiteManager().getWorkplaceSiteMatcher().getUrl().equals(site.getSecureUrl())) {
+            // if the workplace is using the secured site
+            siteroot = sessionInfo.getSiteRoot();
+        } else {
             siteroot = site.getSiteRoot();
         }
 
