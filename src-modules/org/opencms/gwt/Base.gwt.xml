@@ -2,6 +2,22 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.2//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.2/distro-source/core/src/gwt-module.dtd">
 <module>
 	<inherits name="com.google.gwt.user.User" />
+	
+	<replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImpl">
+        <when-type-assignable
+                class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
+    </replace-with>
+
+    <replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImplIE">
+        <when-type-assignable
+                class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
+        <any>
+        	<when-property-is name="user.agent" value="ie6"/>
+        	<when-property-is name="user.agent" value="ie8"/>
+        </any>
+        
+    </replace-with>
+    
 	<source path="client" />
 	<source path="shared" />
 </module>
