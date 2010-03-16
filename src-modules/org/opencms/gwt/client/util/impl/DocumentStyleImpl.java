@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImpl.java,v $
- * Date   : $Date: 2010/03/16 07:55:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/16 08:14:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,36 @@ package org.opencms.gwt.client.util.impl;
 
 import com.google.gwt.dom.client.Element;
 
+/**
+ * Helper class to retrieve the computed style of an element.<p>
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.0
+ */
 public class DocumentStyleImpl {
 
+    /**
+     * Transforms a CSS property name to its javascript property name (font-size >> fontSize).<p>
+     * 
+     * @param s the property name
+     * @return the javascript property name
+     */
+    protected static native String camelize(String s)/*-{
+        return s.replace(/\-(\w)/g, function(all, letter){
+        return letter.toUpperCase();
+        });
+    }-*/;
+
+    /**
+     * Returns the computed style of the given element.<p>
+     * 
+     * @param elem the element
+     * @param name the name of the CSS property 
+     * @return the currently computed style
+     */
     public String getCurrentStyle(Element elem, String name) {
 
         name = hyphenize(name);
@@ -45,6 +73,12 @@ public class DocumentStyleImpl {
         return propVal;
     }
 
+    /**
+     * Transforms the CSS style name to the name of the javascript style property.<p>
+     * 
+     * @param name the name of the CSS property
+     * @return the javascript property name
+     */
     public String getPropertyName(String name) {
 
         if ("float".equals(name)) {
@@ -57,19 +91,27 @@ public class DocumentStyleImpl {
         return camelize(name);
     }
 
+    /**
+     * Hyphenizes the given string.<p>
+     * 
+     * @param name the string to hyphenize
+     * @return the result
+     */
     protected native String hyphenize(String name) /*-{
         return name.replace( /([A-Z])/g, "-$1" ).toLowerCase();
     }-*/;
 
+    /**
+     * Returns the computed style from the DOM object.<p>
+     * 
+     * @param elem the element object
+     * @param name name of the CSS property
+     * @param pseudo the pseudo-element to match
+     * @return the property value
+     */
     private native String getComputedStyle(Element elem, String name, String pseudo) /*-{
         var cStyle = $doc.defaultView.getComputedStyle( elem, pseudo );
         return cStyle ? cStyle.getPropertyValue( name ) : null;
-    }-*/;
-
-    protected static native String camelize(String s)/*-{
-        return s.replace(/\-(\w)/g, function(all, letter){
-        return letter.toUpperCase();
-        });
     }-*/;
 
 }

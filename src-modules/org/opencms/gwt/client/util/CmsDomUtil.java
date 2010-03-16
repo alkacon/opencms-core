@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/03/16 07:55:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/16 08:14:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.dom.client.NodeList;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -54,12 +54,32 @@ public class CmsDomUtil {
 
     private static DocumentStyleImpl styleImpl;
 
+    /**
+     * Returns the computed style of the given element.<p>
+     * 
+     * @param element the element
+     * @param name the name of the CSS property 
+     * @return the currently computed style
+     */
     public static String getCurrentStyle(Element element, String name) {
 
         if (styleImpl == null) {
             styleImpl = GWT.create(DocumentStyleImpl.class);
         }
         return styleImpl.getCurrentStyle(element, name);
+    }
+
+    /**
+     * Returns all elements from the DOM with the given CSS class and tag name.<p>
+     * 
+     * @param className the class name to look for
+     * @param tagName the tag name
+     * 
+     * @return the matching elements
+     */
+    public static List<Element> getElementByClass(String className, String tagName) {
+
+        return getElementsByClass(className, tagName, Document.get().getBody());
     }
 
     /**
@@ -86,19 +106,6 @@ public class CmsDomUtil {
 
         return getElementsByClass(className, "*", rootElement);
 
-    }
-
-    /**
-     * Returns all elements from the DOM with the given CSS class and tag name.<p>
-     * 
-     * @param className the class name to look for
-     * @param tagName the tag name
-     * 
-     * @return the matching elements
-     */
-    public static List<Element> getElementByClass(String className, String tagName) {
-
-        return getElementsByClass(className, tagName, Document.get().getBody());
     }
 
     /**
