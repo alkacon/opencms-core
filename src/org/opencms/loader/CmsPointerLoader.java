@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2009/09/10 16:26:19 $
- * Version: $Revision: 1.55.2.1 $
+ * Date   : $Date: 2010/03/16 10:06:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,11 +37,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -53,14 +56,27 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.55.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsPointerLoader implements I_CmsResourceLoader {
+public class CmsPointerLoader extends CmsDumpLoader {
+
+    /**
+     * The configuration parameter for the OpenCms XML configuration to enable
+     * that the parameters in requests to pointer resources are appended to the
+     * pointer target link.
+     */
+    public static final String CONFIGURATION_REQUEST_PARAM_SUPPORT_ENABLED = "pointer.requestparamsupport.enabled";
 
     /** The id of this loader. */
     public static final int RESOURCE_LOADER_ID = 4;
+
+    /**
+     * Flag that controls if parameters in requests to pointer resources are
+     * appended to the target link when redirecting.
+     */
+    protected static boolean m_requestParamSupportEnabled;
 
     /** The html-code prefix for generating the export file for external links. */
     private static String EXPORT_PREFIX = "<html>\n<head>\n<meta http-equiv="
@@ -83,11 +99,61 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     }
 
     /**
+     * Returns <code>true</code> if parameters in requests to pointer resources
+     * are appended to the target link when redirecting.
+     * <p>
+     * This is controlled by the configuration of this loader in
+     * <code>opencms-system.xml</code>.
+     * <p>
+     * 
+     * @return <code>true</code> if parameters in requests to pointer resources
+     *         are appended to the target link when redirecting.
+     */
+    public static boolean isRequestParamSupportEnabled() {
+
+        return m_requestParamSupportEnabled;
+    }
+
+    /**
+     * Internal helper that is used by
+     * <code>{@link #load(CmsObject, CmsResource, HttpServletRequest, HttpServletResponse)}</code>
+     * and
+     * <code>{@link #export(CmsObject, CmsResource, HttpServletRequest, HttpServletResponse)}</code>
+     * to handle conditional request parameter support for links to pointer
+     * resources.
+     * <p>
+     * 
+     * @param pointerLink
+     *            the link to append request parameters to
+     * 
+     * @param req
+     *            the original request to the pointer
+     * 
+     * @return the pointer with the parameters (if {@link #
+     */
+    @SuppressWarnings("unchecked")
+    private static String appendLinkParams(String pointerLink, HttpServletRequest req) {
+
+        String result = pointerLink;
+        if (isRequestParamSupportEnabled()) {
+            Map<String, String[]> params = req.getParameterMap();
+            if (params.size() > 0) {
+                result = CmsRequestUtil.appendParameters(result, params, false);
+            }
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        // this resource loader requires no parameters     
+        if (CmsStringUtil.isNotEmpty(paramName) && CmsStringUtil.isNotEmpty(paramValue)) {
+            if (CONFIGURATION_REQUEST_PARAM_SUPPORT_ENABLED.equals(paramName)) {
+                m_requestParamSupportEnabled = Boolean.valueOf(paramValue).booleanValue();
+            }
+        }
     }
 
     /** 
@@ -121,6 +187,8 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         String pointer = new String(cms.readFile(resource).getContents());
         StringBuffer result = new StringBuffer(128);
         result.append(EXPORT_PREFIX);
+        // conditionally append parameters of the current request:
+        pointer = appendLinkParams(pointer, req);
         if (pointer.indexOf(':') < 0) {
             result.append(OpenCms.getLinkManager().substituteLink(cms, pointer));
         } else {
@@ -137,9 +205,17 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
+    @SuppressWarnings("unchecked")
+    @Override
     public Map<String, String> getConfiguration() {
 
-        return null;
+        Map<String, String> config = super.getConfiguration();
+        SortedMap<String, String> result = new TreeMap<String, String>();
+        if (config != null) {
+            result.putAll(config);
+        }
+        result.put(CONFIGURATION_REQUEST_PARAM_SUPPORT_ENABLED, String.valueOf(m_requestParamSupportEnabled));
+        return result;
     }
 
     /**
@@ -175,11 +251,16 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     }
 
     /**
+     * Returns true if request parameter support is disabled. <p>
+     *
+     * @return 
+     *      true if request parameter support is disabled
+     *
      * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportEnabled()
      */
     public boolean isStaticExportEnabled() {
 
-        return true;
+        return !m_requestParamSupportEnabled;
     }
 
     /**
@@ -227,6 +308,8 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
             pointer = OpenCms.getLinkManager().substituteLink(cms, pointer);
         }
 
+        // conditionally append parameters of the current request:
+        pointer = appendLinkParams(pointer, req);
         res.sendRedirect(pointer);
     }
 
