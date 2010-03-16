@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImplIE.java,v $
- * Date   : $Date: 2010/03/16 07:55:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/16 08:22:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,27 @@ package org.opencms.gwt.client.util.impl;
 
 import com.google.gwt.dom.client.Element;
 
+/**
+ * Helper class to retrieve the computed style of an element.<p>
+ * 
+ * This implementation is used for all MSIE browsers.<p>
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.0
+ */
 public class DocumentStyleImplIE extends DocumentStyleImpl {
 
+    /**
+     * Returns the computed style of the given element.<p>
+     * 
+     * @param elem the element
+     * @param name the name of the CSS property 
+     * @return the currently computed style
+     */
+    @Override
     public String getCurrentStyle(Element elem, String name) {
 
         name = hyphenize(name);
@@ -45,6 +64,13 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
         return propVal;
     }
 
+    /**
+     * Transforms the CSS style name to the name of the javascript style property.<p>
+     * 
+     * @param name the name of the CSS property
+     * @return the javascript property name
+     */
+    @Override
     public String getPropertyName(String name) {
 
         if ("float".equals(name)) {
@@ -57,7 +83,14 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
         return name;
     }
 
-    // code lifted from jQuery
+    /**
+     * Returns the computed style from the DOM object.<p>
+     * 
+     * @param elem the element object
+     * @param name name of the CSS property
+     * @param pseudo the pseudo-element to match
+     * @return the property value
+     */
     private native String getComputedStyle(Element elem, String name, String pseudo) /*-{
         function getComputed(elem, name){
         var style = elem.style;
@@ -96,11 +129,6 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
         }
         return Math.max(0, Math.round(val));
         }
-
-
-
-
-
         return getWH()+"px";
         }
 

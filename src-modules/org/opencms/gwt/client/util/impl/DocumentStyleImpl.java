@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImpl.java,v $
- * Date   : $Date: 2010/03/16 08:14:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/16 08:22:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,11 @@ import com.google.gwt.dom.client.Element;
 /**
  * Helper class to retrieve the computed style of an element.<p>
  * 
+ * This implementation is used for all none MSIE browsers.<p>
+ * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
