@@ -11,7 +11,9 @@
 					<param name="image.scaling.downscale">w:800,h:600,t:1,q:80</param>
 					<param name="image.scaling.enabled">true</param>
 				</loader>
-				<loader class="org.opencms.loader.CmsPointerLoader" />
+				<loader class="org.opencms.loader.CmsPointerLoader">
+					<param name="pointer.requestparamsupport.enabled">false</param>
+				</loader>
 				<loader class="org.opencms.loader.CmsJspLoader">
 					<param name="jsp.errorpage.committed">true</param>
 					<param name="jsp.folder">/WEB-INF/jsp/</param>
