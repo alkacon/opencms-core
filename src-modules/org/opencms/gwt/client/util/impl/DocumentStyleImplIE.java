@@ -1,0 +1,109 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImplIE.java,v $
+ * Date   : $Date: 2010/03/16 07:55:34 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.gwt.client.util.impl;
+
+import com.google.gwt.dom.client.Element;
+
+public class DocumentStyleImplIE extends DocumentStyleImpl {
+
+    public String getCurrentStyle(Element elem, String name) {
+
+        name = hyphenize(name);
+        String propVal = getComputedStyle(elem, name, null);
+        if ("opacity".equals(name) && ((propVal == null) || (propVal.trim().length() == 0))) {
+            propVal = "1";
+        }
+        return propVal;
+    }
+
+    public String getPropertyName(String name) {
+
+        if ("float".equals(name)) {
+            return "styleFloat";
+        } else if ("class".equals(name)) {
+            return "className";
+        } else if ("for".equals(name)) {
+            return "htmlFor";
+        }
+        return name;
+    }
+
+    // code lifted from jQuery
+    private native String getComputedStyle(Element elem, String name, String pseudo) /*-{
+        function getComputed(elem, name){
+        var style = elem.style;
+        var camelCase = name.replace(/\-(\w)/g, function(all, letter){
+        return letter.toUpperCase();
+        });
+        var ret = elem.currentStyle[ name ] || elem.currentStyle[ camelCase ];
+        // From the awesome hack by Dean Edwards
+        // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+        // If we're not dealing with a regular pixel number
+        // but a number that has a weird ending, we need to convert it to pixels
+        if ( !/^\d+(px)?$/i.test( ret ) && /^\d/.test( ret ) ) {
+        // Remember the original values
+        var left = style.left, rsLeft = elem.runtimeStyle.left;
+        // Put in the new values to get a computed value out
+        elem.runtimeStyle.left = elem.currentStyle.left;
+        style.left = ret || 0;
+        ret = style.pixelLeft + "px";
+        // Revert the changed values
+        style.left = left;
+        elem.runtimeStyle.left = rsLeft;
+        }
+        return ret;
+        }
+
+        if ( name === "width" || name === "height" ) {
+
+        var which = name === "width" ? ["Left", "Right"] : ["Top", "Bottom"];
+        function getWH() {
+        var val;
+        val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
+        for (var i=0; i<which.length; i++){
+        val -= parseFloat(getComputed( elem, "padding" + which[i])) || 0;
+        val -= parseFloat(getComputed( elem, "border" + which[i] + "Width")) || 0;
+
+        }
+        return Math.max(0, Math.round(val));
+        }
+
+
+
+
+
+        return getWH()+"px";
+        }
+
+        return getComputed(elem, name);
+    }-*/;
+}

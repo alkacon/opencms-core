@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/03/05 15:50:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/16 07:55:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,12 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.gwt.client.util.impl.DocumentStyleImpl;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
@@ -43,11 +46,21 @@ import com.google.gwt.dom.client.NodeList;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsDomUtil {
+
+    private static DocumentStyleImpl styleImpl;
+
+    public static String getCurrentStyle(Element element, String name) {
+
+        if (styleImpl == null) {
+            styleImpl = GWT.create(DocumentStyleImpl.class);
+        }
+        return styleImpl.getCurrentStyle(element, name);
+    }
 
     /**
      * Returns all elements from the DOM with the given CSS class.<p>
