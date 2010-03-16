@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/03/11 13:01:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/16 07:54:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -57,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -157,7 +159,7 @@ public class CmsListItem extends Composite {
 
     /** The DIV showing the list icon. */
     @UiField
-    DivElement m_iconDiv;
+    SimplePanel m_iconPanel;
 
     /** Sub title label. */
     @UiField
@@ -236,6 +238,16 @@ public class CmsListItem extends Composite {
     public void removeButton(Widget w) {
 
         m_buttonPanel.remove(w);
+    }
+
+    /**
+     * Sets the icon of this item.<p>
+     * 
+     * @param image the image to use as icon
+     */
+    public void setIcon(Image image) {
+
+        m_iconPanel.setWidget(image);
     }
 
 }

@@ -31,6 +31,13 @@
 	
 }
 
+.itemIcon{
+	height: 32px;
+	width: 32px;
+	float: left;
+	overflow: hidden;
+}
+
 .itemTitle{
 	font-weight: bold;
     display: inline;
