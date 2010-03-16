@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/03/16 07:54:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/16 13:20:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -82,8 +82,9 @@ public class CmsListItem extends Composite {
          * 
          * @param title info title
          * @param value info value
+         * @param valueStyle the style name for the info value, or null
          */
-        AdditionalInfoItem(String title, String value) {
+        AdditionalInfoItem(String title, String value, String valueStyle) {
 
             super(DOM.createDiv());
             Element titleSpan = DOM.createSpan();
@@ -92,6 +93,9 @@ public class CmsListItem extends Composite {
             Element valueSpan = DOM.createSpan();
             valueSpan.setInnerText(value);
             valueSpan.addClassName(I_CmsLayoutBundle.INSTANCE.listItemCss().itemAdditionalValue());
+            if (valueStyle != null) {
+                valueSpan.addClassName(valueStyle);
+            }
             getElement().appendChild(titleSpan);
             getElement().appendChild(valueSpan);
         }
@@ -213,7 +217,10 @@ public class CmsListItem extends Composite {
             Iterator<Entry<String, String>> it = infoBean.getAdditionalInfo().entrySet().iterator();
             while (it.hasNext()) {
                 Entry<String, String> entry = it.next();
-                AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), entry.getValue());
+                AdditionalInfoItem info = new AdditionalInfoItem(
+                    entry.getKey(),
+                    entry.getValue(),
+                    infoBean.getValueStyle(entry.getKey()));
                 m_additionalDiv.appendChild(info.getElement());
             }
         }

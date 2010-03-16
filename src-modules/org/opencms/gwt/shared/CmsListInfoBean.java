@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2010/03/11 14:57:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/16 13:20:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.Map;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -55,6 +55,9 @@ public class CmsListInfoBean {
 
     /** The title. */
     private String m_title;
+
+    /** Styles for the additional info values. */
+    private Map<String, String> m_valueStyles = new HashMap<String, String>();
 
     /**
      * Default constructor.<p> 
@@ -135,6 +138,18 @@ public class CmsListInfoBean {
     }
 
     /**
+     * Gets the value style for the given additional info item.<p>
+     * 
+     * @param key the additional info key
+     * 
+     * @return the style name
+     */
+    public String getValueStyle(String key) {
+
+        return m_valueStyles.get(key);
+    }
+
+    /**
      * Sets the additional info.<p>
      *
      * @param additionalInfo the additional info to set
@@ -162,5 +177,17 @@ public class CmsListInfoBean {
     public void setTitle(String title) {
 
         m_title = title;
+    }
+
+    /**
+     * Sets the value style for the given additional info item.<p>
+     * 
+     * @param key the additional info key
+     * 
+     * @param style the style name for this key
+     */
+    public void setValueStyle(String key, String style) {
+
+        m_valueStyles.put(key, style);
     }
 }
