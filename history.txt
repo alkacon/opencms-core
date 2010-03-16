@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/03/16 10:06:56 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/03/16 12:40:14 $
+ * Version: $Revision: 1.25 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ OpenCms 7.9.2 - February 24th, 2010
 * Fixed issue with resource type "xmlpage" for WebDAV in extended mode
 * Fixed issue with selected versions in the resource history
 * Fixed NPE during shutdown
+* Fixed issue with secured workplace site matching
 * Fixed issue with selected versions in the resource history
 * Fixed issue #1800: Still not released resources are indexed
 * Fixed issue #1803: Template Two Demo Article links with target="_blank"
