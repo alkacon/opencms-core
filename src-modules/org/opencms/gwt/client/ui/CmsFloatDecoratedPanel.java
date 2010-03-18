@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/03/18 09:31:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/18 09:37:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision 1.0$
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
