@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/03/15 15:12:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/18 09:41:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,7 @@ package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsImageButton;
-import org.opencms.gwt.client.ui.CmsListItem;
-import org.opencms.gwt.client.ui.CmsListItem.TagName;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.lazytree.CmsLazyTreeItem;
 import org.opencms.gwt.client.util.CmsCoreProvider;
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -76,7 +75,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), m_entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_URL_0), entry.getSitePath());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getResourceId());
-        CmsListItem listItem = new CmsListItem(infoBean, TagName.DIV);
+        CmsListItemWidget listItem = new CmsListItemWidget(infoBean);
         listItem.setWidth("500px");
         CmsImageButton linkIcon = new CmsImageButton(I_CmsImageBundle.INSTANCE.style().magnifierIcon(), false);
         linkIcon.setTitle("Go to page");
