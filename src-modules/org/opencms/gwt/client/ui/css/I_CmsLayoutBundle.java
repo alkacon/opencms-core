@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/18 09:31:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/03/18 13:28:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -704,5 +704,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("toolbar.css")
     I_CmsToolbarCss toolbarCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the toolbar CSS
+     */
+    @Source("floatDecoratedPanel.css")
+    I_CmsFloatDecoratedPanelCss floatDecoratedPanelCss();
 
 }

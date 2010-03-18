@@ -1,0 +1,22 @@
+/* for debugging purposes */
+/* @external primary, floatBox, floatDecoratedPanel */
+
+.primary {
+
+}
+
+.floatBox {
+}
+
+@if user.agent ie6 {
+	.floatBox * {
+		display: inline; 
+	}
+	
+} @else {
+}	
+
+
+
+.floatDecoratedPanel {
+}

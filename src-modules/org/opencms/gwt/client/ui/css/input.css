@@ -1,6 +1,6 @@
 
 /* for debugging purposes */
-/*@external multiCheckBox, textBox, textBoxWidget, textAreaWidget, textArea, checkBox, checkBoxLabel, checkBoxImage, error, selectBoxSelected, selectBoxSelector, selectBoxOpen,  selectBoxCell, selectHover, selectClosedIcon, selectOpenIcon, selectBoxOpen, selectBoxClosed,  selectBoxRoot, selectBoxOpener, textBoxPanel; */
+external multiCheckBox, textBox, textBoxWidget, textAreaWidget, textArea, checkBox, checkBoxLabel, checkBoxImage, error, selectBoxSelected, selectBoxSelector, selectBoxOpen,  selectBoxCell, selectHover, selectClosedIcon, selectOpenIcon, selectBoxOpen, selectBoxClosed,  selectBoxRoot, selectBoxOpener, textBoxPanel; 
 
 
 /* inner text box of the text box widget */

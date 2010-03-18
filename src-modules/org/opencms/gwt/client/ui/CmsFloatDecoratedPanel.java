@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/03/18 09:37:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/18 13:28:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsFloatDecoratedPanelCss;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;
@@ -51,11 +54,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsFloatDecoratedPanel extends Composite {
+
+    /** Css resource for this widget. */
+    static final I_CmsFloatDecoratedPanelCss CSS = I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss();
 
     /** The float panel. */
     private Panel m_floatBox = new FlowPanel();
@@ -71,10 +77,18 @@ public class CmsFloatDecoratedPanel extends Composite {
      */
     public CmsFloatDecoratedPanel() {
 
+        m_panel.setStyleName(CSS.floatDecoratedPanel());
+        m_floatBox.setStyleName(CSS.floatBox());
+        m_primary.setStyleName(CSS.primary());
+
         m_panel.add(m_floatBox);
         m_panel.add(m_primary);
         m_floatBox.getElement().getStyle().setFloat(Float.LEFT);
         initWidget(m_panel);
+    }
+
+    static {
+        CSS.ensureInjected();
     }
 
     /**
@@ -126,7 +140,5 @@ public class CmsFloatDecoratedPanel extends Composite {
                 updateLayout();
             }
         });
-
-        updateLayout();
     }
 }

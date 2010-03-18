@@ -7,15 +7,30 @@
 }
 
 .listTreeItemHandler {
-	display: inline-block;
 	margin-right: 4px;
 	margin-top: 4px;
 	
 }
 
+@if user.agent ie6 {
+	.listTreeItemHandler {
+		display: inline;
+	}
+} @else {
+	.listTreeItemHandler {
+		display: inline-block;
+	}
+}	
+
+
 .listTreeItemContent {
 	
 }
+
+
+
+
+
 
 .listTreeItemChildren {
 	list-style-type: none;
