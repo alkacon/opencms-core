@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/03/08 11:36:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/18 09:31:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,18 +43,63 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsImageBundle extends ClientBundle {
 
-    /** The bundle instance. */
-    I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
-
     /** Bundles the image sprite CSS classes. */
     @Shared
     interface I_CmsImageStyle extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String deleteIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String deleteIconActive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String deleteIconDeactivated();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String deleteIconInactive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editorIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editorIconActive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editorIconDeactivated();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editorIconInactive();
 
         /** Access method.<p>
          * 
@@ -78,54 +123,6 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String deleteIcon();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String deleteIconActive();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String deleteIconInactive();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String deleteIconDeactivated();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String editorIcon();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String editorIconActive();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String editorIconInactive();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String editorIconDeactivated();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String moveIcon();
 
         /** Access method.<p>
@@ -138,13 +135,13 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String moveIconInactive();
+        String moveIconDeactivated();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String moveIconDeactivated();
+        String moveIconInactive();
 
         /** Access method.<p>
          * 
@@ -162,13 +159,13 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String newIconInactive();
+        String newIconDeactivated();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String newIconDeactivated();
+        String newIconInactive();
 
         /** Access method.<p>
          * 
@@ -186,24 +183,66 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String propertyIconInactive();
+        String propertyIconDeactivated();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String propertyIconDeactivated();
+        String propertyIconInactive();
 
     }
+
+    /** The bundle instance. */
+    I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
 
     /**
      * Access method.<p>
      * 
-     * @return the button CSS
+     * @return the image resource
      */
-    @NotStrict
-    @Source("imageSprites.css")
-    I_CmsImageStyle style();
+    @Source("images/ocms_de_delete_a.png")
+    ImageResource deleteIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_delete_sw.png")
+    ImageResource deleteIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_delete_i.png")
+    ImageResource deleteIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_editor_a.png")
+    ImageResource editorIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_editor_sw.png")
+    ImageResource editorIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_editor_i.png")
+    ImageResource editorIconInactive();
 
     /**
      * Access method.<p>
@@ -226,48 +265,8 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/ocms_de_delete_a.png")
-    ImageResource deleteIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_delete_i.png")
-    ImageResource deleteIconInactive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_delete_sw.png")
-    ImageResource deleteIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_editor_a.png")
-    ImageResource editorIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_editor_i.png")
-    ImageResource editorIconInactive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_editor_sw.png")
-    ImageResource editorIconDeactivated();
+    @Source("images/minus.png")
+    ImageResource minus();
 
     /**
      * Access method.<p>
@@ -282,16 +281,16 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/ocms_de_move_i.png")
-    ImageResource moveIconInactive();
+    @Source("images/ocms_de_move_sw.png")
+    ImageResource moveIconDeactivated();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/ocms_de_move_sw.png")
-    ImageResource moveIconDeactivated();
+    @Source("images/ocms_de_move_i.png")
+    ImageResource moveIconInactive();
 
     /**
      * Access method.<p>
@@ -306,6 +305,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/ocms_de_new_sw.png")
+    ImageResource newIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/ocms_de_new_i.png")
     ImageResource newIconInactive();
 
@@ -314,8 +321,8 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/ocms_de_new_sw.png")
-    ImageResource newIconDeactivated();
+    @Source("images/plus.png")
+    ImageResource plus();
 
     /**
      * Access method.<p>
@@ -330,14 +337,24 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/ocms_de_prop_i.png")
-    ImageResource propertyIconInactive();
+    @Source("images/ocms_de_prop_sw.png")
+    ImageResource propertyIconDeactivated();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/ocms_de_prop_sw.png")
-    ImageResource propertyIconDeactivated();
+    @Source("images/ocms_de_prop_i.png")
+    ImageResource propertyIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the button CSS
+     */
+    @NotStrict
+    @Source("imageSprites.css")
+    I_CmsImageStyle style();
+
 }

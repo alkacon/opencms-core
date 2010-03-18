@@ -2,14 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
-	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<cms:CmsHTMLHoverPanel styleName="{resources.listItemCss.itemContainer}">
-			<div class="{resources.listItemCss.itemContent}">
-				<g:FlowPanel ui:field="m_buttonPanel" styleName="{resources.listItemCss.buttonPanel}"></g:FlowPanel>
-				<g:SimplePanel styleName="{resources.listItemCss.itemIcon}" ui:field="m_iconPanel"></g:SimplePanel>
-		    	<g:FlowPanel ui:field="m_titleRow"><g:Label ui:field="m_titleDiv" styleName="{resources.listItemCss.itemTitle}"></g:Label></g:FlowPanel>
-				<g:Label ui:field="m_subTitleDiv"></g:Label>
-			</div>
-			<div class="{resources.listItemCss.itemAdditional}" ui:field="m_additionalDiv"></div>
-	</cms:CmsHTMLHoverPanel>
+
+	<cms:CmsFlowPanel tag="li" />
+
 </ui:UiBinder> 

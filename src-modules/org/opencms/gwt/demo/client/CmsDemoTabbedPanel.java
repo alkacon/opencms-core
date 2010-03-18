@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/demo/client/Attic/CmsDemoTabbedPanel.java,v $
- * Date   : $Date: 2010/03/10 08:38:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/18 09:31:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.demo.client;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -71,22 +72,22 @@ public class CmsDemoTabbedPanel extends A_CmsEntryPoint {
         CmsListInfoBean bean1 = new CmsListInfoBean();
         bean1.setTitle("List1");
         bean1.setSubTitle("Subtitle1");
-        CmsListItem listItem1 = new CmsListItem(bean1);
+        CmsListItemWidget listItem1 = new CmsListItemWidget(bean1);
 
         CmsListInfoBean bean2 = new CmsListInfoBean();
         bean2.setTitle("List2");
         bean2.setSubTitle("Subtitle2");
-        CmsListItem listItem2 = new CmsListItem(bean2);
+        CmsListItemWidget listItem2 = new CmsListItemWidget(bean2);
 
         CmsListInfoBean bean3 = new CmsListInfoBean();
         bean3.setTitle("List3");
         bean3.setSubTitle("Subtitle3");
-        CmsListItem listItem3 = new CmsListItem(bean3);
+        CmsListItemWidget listItem3 = new CmsListItemWidget(bean3);
 
         CmsList tab1 = new CmsList();
-        tab1.addItem(listItem1);
-        tab1.addItem(listItem2);
-        tab1.addItem(listItem3);
+        tab1.addItem(new CmsListItem(listItem1));
+        tab1.addItem(new CmsListItem(listItem2));
+        tab1.addItem(new CmsListItem(listItem3));
 
         // Tab2: Flow panel with buttons
         final FlowPanel tab2 = new FlowPanel();

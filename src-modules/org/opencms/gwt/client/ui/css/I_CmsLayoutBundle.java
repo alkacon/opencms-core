@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/16 07:54:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/03/18 09:31:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -20,7 +20,7 @@
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
- *
+ * 
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
  * 
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -94,6 +94,64 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String cmsTextButton();
+    }
+
+    /** ListTree CSS. */
+    interface I_CmsListTreeCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItem();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemHandler();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemContent();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemChildren();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemOpen();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemClosed();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemLeaf();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemInternal();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemNoOpeners();
     }
 
     /** Constants CSS. */
@@ -278,7 +336,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** List item CSS. */
-    interface I_CmsListItemCss extends I_CmsStateCss {
+    interface I_CmsListItemWidgetCss extends I_CmsStateCss {
 
         /** Access method.<p>
          * 
@@ -576,6 +634,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
+     * @return the dialog CSS
+     */
+    @Source("listtree.css")
+    I_CmsListTreeCss listTreeCss();
+
+    /**
+     * Access method.<p>
+     * 
      * @return the header CSS
      */
     @Source("header.css")
@@ -611,8 +677,8 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * 
      * @return the list item CSS
      */
-    @Source("listItem.css")
-    I_CmsListItemCss listItemCss();
+    @Source("listItemWidget.css")
+    I_CmsListItemWidgetCss listItemWidgetCss();
 
     /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.

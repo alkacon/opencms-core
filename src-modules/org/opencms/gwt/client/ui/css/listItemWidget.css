@@ -7,12 +7,15 @@
 	font-size: value("constantsCss.fontSize");
 	font-family: value("constantsCss.fontFamily");
 }
+
 .listItem .itemAdditional{
 	display: none;
 }
+
 .listItem.open .itemAdditional{
 	display: block;
 }
+
 .itemContainer{
 	margin: 2px;
 	border: 1px solid value("constantsCss.borderColor");
@@ -21,6 +24,7 @@
 	border-radius: 4px;
 	background: #ffffff;
 }
+
 @sprite .itemContent{
     gwt-image: "backgroundDefault";
     background-position: 50% 50%;
@@ -45,6 +49,7 @@
 .cmsHovering .buttonPanel{
 	display: block;
 }
+
 .buttonPanel{
 	display:none;
 	float: right;
@@ -53,13 +58,16 @@
 	height: 20px;
 	overflow: visible;
 }
+
 .buttonPanel>div{
 	float: right;
 	margin-left: 2px;
 }
+
 .itemAdditional{
 	padding: 5px 0px 0px 4px;
 }
+
 .itemAdditionalTitle{
 	display:block;
 	float:left;
@@ -69,6 +77,7 @@
 	vertical-align:top;
 	width:90px;
 }
+
 .itemAdditionalValue{
 	display:block;
 	margin-left:95px;

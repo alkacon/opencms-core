@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTreeList.java,v $
- * Date   : $Date: 2010/03/08 16:34:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/18 09:31:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -95,7 +95,7 @@ public class CmsTreeList extends CmsList {
     public void toggleTreeLevels(boolean showLevels) {
 
         if (showLevels) {
-            Iterator<Widget> it = m_list.iterator();
+            Iterator<Widget> it = iterator();
             while (it.hasNext()) {
                 Widget w = it.next();
                 String levelString = w.getElement().getAttribute("level");
@@ -107,7 +107,7 @@ public class CmsTreeList extends CmsList {
                 }
             }
         } else {
-            Iterator<Widget> it = m_list.iterator();
+            Iterator<Widget> it = iterator();
             while (it.hasNext()) {
                 Widget w = it.next();
                 w.getElement().getStyle().clearPaddingLeft();

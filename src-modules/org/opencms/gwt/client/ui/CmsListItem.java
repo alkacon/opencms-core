@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/03/16 13:20:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/03/18 09:31:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,230 +31,82 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.shared.CmsListInfoBean;
-
-import java.util.Iterator;
-import java.util.Map.Entry;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a UI list item.<p>
  * 
- * @author Tobias Herrmann
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
+
 public class CmsListItem extends Composite {
-
-    /** Tag names available. */
-    public enum TagName {
-        /** A 'div' tag. */
-        DIV,
-
-        /** A 'li' tag. */
-        LI
-    }
-
-    /** Additional info item HTML. */
-    protected static class AdditionalInfoItem extends HTML {
-
-        /**
-         * Constructor.<p>
-         * 
-         * @param title info title
-         * @param value info value
-         * @param valueStyle the style name for the info value, or null
-         */
-        AdditionalInfoItem(String title, String value, String valueStyle) {
-
-            super(DOM.createDiv());
-            Element titleSpan = DOM.createSpan();
-            titleSpan.setInnerText(title + ":");
-            titleSpan.addClassName(I_CmsLayoutBundle.INSTANCE.listItemCss().itemAdditionalTitle());
-            Element valueSpan = DOM.createSpan();
-            valueSpan.setInnerText(value);
-            valueSpan.addClassName(I_CmsLayoutBundle.INSTANCE.listItemCss().itemAdditionalValue());
-            if (valueStyle != null) {
-                valueSpan.addClassName(valueStyle);
-            }
-            getElement().appendChild(titleSpan);
-            getElement().appendChild(valueSpan);
-        }
-    }
-
-    /**
-     * Click-handler to open/close the additional info.<p>
-     */
-    protected class OpenCloseHandler implements ClickHandler {
-
-        /** The button. */
-        private CmsImageButton m_button;
-
-        /** The owner widget. */
-        private Widget m_owner;
-
-        /**
-         * @param owner
-         * @param button
-         */
-        public OpenCloseHandler(Widget owner, CmsImageButton button) {
-
-            super();
-            m_owner = owner;
-            m_button = button;
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-         */
-        public void onClick(ClickEvent event) {
-
-            if (m_owner.getStyleName().contains(CmsListItem.OPENCLASS)) {
-                m_owner.removeStyleName(CmsListItem.OPENCLASS);
-                m_button.setDown(false);
-            } else {
-                m_owner.addStyleName(CmsListItem.OPENCLASS);
-                m_button.setDown(true);
-            }
-
-        }
-
-    }
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    interface I_CmsListItemUiBinder extends UiBinder<CmsHTMLHoverPanel, CmsListItem> {
+    /* default */interface I_CmsListItemUiBinder extends UiBinder<CmsFlowPanel, CmsListItem> {
         // GWT interface, nothing to do here
     }
-
-    /** The CSS class to set the additional info open. */
-    static final String OPENCLASS = I_CmsLayoutBundle.INSTANCE.listItemCss().open();
 
     /** The ui-binder instance for this class. */
     private static I_CmsListItemUiBinder uiBinder = GWT.create(I_CmsListItemUiBinder.class);
 
-    /** DIV for additional item info. */
-    @UiField
-    DivElement m_additionalDiv;
-
-    /** Panel to hold buttons.*/
-    @UiField
-    FlowPanel m_buttonPanel;
-
-    /** The DIV showing the list icon. */
-    @UiField
-    SimplePanel m_iconPanel;
-
-    /** Sub title label. */
-    @UiField
-    Label m_subTitleDiv;
-
-    /** Title label. */
-    @UiField
-    Label m_titleDiv;
-
-    /** The title row, holding the title and the open-close button for the additional info. */
-    @UiField
-    FlowPanel m_titleRow;
-
-    /** The open-close button for the additional info. */
-    private CmsImageButton m_openClose;
-
-    private String m_rootId;
+    /** The underlying panel. */
+    protected Panel m_panel;
 
     /**
-     * Constructor. Using a 'li'-tag as default root element.<p>
-     * 
-     * @param infoBean bean holding the item information
+     * Constructor.<p>
      */
-    public CmsListItem(CmsListInfoBean infoBean) {
+    public CmsListItem() {
 
-        this(infoBean, TagName.LI);
+        init();
     }
 
     /**
      * Constructor.<p>
      * 
-     * @param infoBean bean holding the item information
-     * @param tagName the tag name to use for the root element
+     * @param widget the widget to use
      */
-    public CmsListItem(CmsListInfoBean infoBean, TagName tagName) {
+    public CmsListItem(CmsListItemWidget widget) {
 
-        HTMLPanel panel = new HTMLPanel(tagName.name().toLowerCase(), "");
-        m_rootId = HTMLPanel.createUniqueId();
-        panel.getElement().setId(m_rootId);
-        panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemCss().listItem());
-        CmsHTMLHoverPanel itemContent = uiBinder.createAndBindUi(this);
-        panel.add(itemContent, m_rootId);
-        initWidget(panel);
-        I_CmsLayoutBundle.INSTANCE.listItemCss().ensureInjected();
-        m_titleDiv.setText(infoBean.getTitle());
-        m_subTitleDiv.setText(infoBean.getSubTitle());
-        if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
-            m_openClose = new CmsImageButton(CmsImageButton.ICON.triangle_1_e, CmsImageButton.ICON.triangle_1_s, false);
-            m_titleRow.insert(m_openClose, 0);
-            m_openClose.addClickHandler(new OpenCloseHandler(this, m_openClose));
-            Iterator<Entry<String, String>> it = infoBean.getAdditionalInfo().entrySet().iterator();
-            while (it.hasNext()) {
-                Entry<String, String> entry = it.next();
-                AdditionalInfoItem info = new AdditionalInfoItem(
-                    entry.getKey(),
-                    entry.getValue(),
-                    infoBean.getValueStyle(entry.getKey()));
-                m_additionalDiv.appendChild(info.getElement());
-            }
-        }
-
+        this();
+        add(widget);
     }
 
     /**
-     * Adds a widget to the button panel.<p>
+     * Adds a widget to this list item.<p>
      * 
      * @param w the widget to add
      */
-    public void addButton(Widget w) {
+    public void add(Widget w) {
 
-        m_buttonPanel.add(w);
+        m_panel.add(w);
     }
 
     /**
-     * Removes a widget from the button panel.<p>
+     * Method which should be called to update the layout of the item.<p>
      * 
-     * @param w the widget to remove
+     * This is only used by the CmsListTreeItem class.
      */
-    public void removeButton(Widget w) {
+    public void updateLayout() {
 
-        m_buttonPanel.remove(w);
     }
 
     /**
-     * Sets the icon of this item.<p>
-     * 
-     * @param image the image to use as icon
+     * Initializes this list item.<p>
      */
-    public void setIcon(Image image) {
+    protected void init() {
 
-        m_iconPanel.setWidget(image);
+        m_panel = uiBinder.createAndBindUi(this);
+        initWidget(m_panel);
     }
 
 }

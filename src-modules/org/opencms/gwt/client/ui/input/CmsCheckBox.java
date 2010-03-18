@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/03/10 12:51:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/18 09:31:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -115,6 +115,7 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
         m_root.add(m_error);
 
         addStyleName(CSS.checkBox());
+        addStyleName(CSS.inlineBlock());
 
     }
 

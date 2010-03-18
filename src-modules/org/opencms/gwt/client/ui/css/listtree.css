@@ -1,0 +1,58 @@
+
+/* for debugging purposes */
+/* @external listTreeItemLeaf, listTreeItemInternal, listTreeItemOpen, listTreeItemClosed, listTreeItemNoOpeners; */
+
+.listTreeItem {
+	
+}
+
+.listTreeItemHandler {
+	display: inline-block;
+	margin-right: 4px;
+	margin-top: 4px;
+	
+}
+
+.listTreeItemContent {
+	
+}
+
+.listTreeItemChildren {
+	list-style-type: none;
+}
+
+.listTreeItemOpen {
+	
+}
+
+.listTreeItemClosed {
+	
+}
+
+.listTreeItemClosed .listTreeItemChildren {
+	display: none;
+}
+
+.listTreeItemLeaf {
+	
+}
+
+.listTreeItemLeaf .listTreeItemHandler {
+	display: none;
+}
+
+.listTreeItemInternal {
+}
+
+.listTreeItemNoOpeners {
+	
+}
+
+.listTreeItemNoOpeners .listTreeItemHandler {
+	display: none;
+}
+
+.listTreeItemNoOpeners .listTreeItemChildren {
+	display: list-item ;
+}
+

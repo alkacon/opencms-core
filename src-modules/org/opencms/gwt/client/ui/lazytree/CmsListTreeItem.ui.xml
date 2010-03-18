@@ -1,0 +1,10 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<cms:CmsFlowPanel tag="li" styleName="{resources.listTreeCss.listTreeItem}">
+			<cms:CmsFloatDecoratedPanel ui:field="m_content"  styleName="{resources.listTreeCss.listTreeItemContent}"></cms:CmsFloatDecoratedPanel>
+			<cms:CmsList styleName="{resources.listTreeCss.listTreeItemChildren}" ui:field="m_children"></cms:CmsList>
+	</cms:CmsFlowPanel>
+</ui:UiBinder> 

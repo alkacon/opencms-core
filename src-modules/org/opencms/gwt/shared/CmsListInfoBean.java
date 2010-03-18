@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2010/03/16 13:20:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/18 09:31:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,13 +35,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A bean holding all info to be displayed in {@link org.opencms.gwt.client.ui.CmsListItem}s.<p>
+ * A bean holding all info to be displayed in {@link org.opencms.gwt.client.ui.CmsListItemWidget}s.<p>
  * 
- * @see org.opencms.gwt.client.ui.CmsListItem
+ * @see org.opencms.gwt.client.ui.CmsListItemWidget
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */

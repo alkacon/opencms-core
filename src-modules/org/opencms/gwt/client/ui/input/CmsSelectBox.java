@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/03/15 09:29:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/18 09:31:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -245,6 +245,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_opener.addStyleName(CSS.selectBoxSelected());
         m_arrow.setStyleName(CSS.selectClosedIcon());
         m_popup.setWidget(m_selector);
+        m_popup.addStyleName(CSS.selectorPopup());
+
         m_selector.setStyleName(CSS.selectBoxSelector());
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 
@@ -292,6 +294,22 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         this(mode);
         for (CmsPair<String, String> item : items) {
             addOption(item.getFirst(), item.getSecond());
+        }
+    }
+
+    /**
+     * Constructs a new select box from a map.
+     * 
+     * The keys of the  map are the select option values, the values are the texts to be displayed for the options.
+     *
+     * @param mode the mode
+     * @param items the map of options 
+     */
+    public CmsSelectBox(Mode mode, Map<String, String> items) {
+
+        this(mode);
+        for (Map.Entry<String, String> item : items.entrySet()) {
+            addOption(item.getKey(), item.getValue());
         }
     }
 

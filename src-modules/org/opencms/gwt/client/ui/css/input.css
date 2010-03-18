@@ -1,6 +1,6 @@
 
 /* for debugging purposes */
-@external multiCheckBox, textBox, textBoxWidget, textAreaWidget, textArea, checkBox, checkBoxLabel, checkBoxImage, error, selectBoxSelected, selectBoxSelector, selectBoxOpen,  selectBoxCell, selectHover, selectClosedIcon, selectOpenIcon, selectBoxOpen, selectBoxClosed,  selectBoxRoot, selectBoxOpener, textBoxPanel;
+/*@external multiCheckBox, textBox, textBoxWidget, textAreaWidget, textArea, checkBox, checkBoxLabel, checkBoxImage, error, selectBoxSelected, selectBoxSelector, selectBoxOpen,  selectBoxCell, selectHover, selectClosedIcon, selectOpenIcon, selectBoxOpen, selectBoxClosed,  selectBoxRoot, selectBoxOpener, textBoxPanel; */
 
 
 /* inner text box of the text box widget */
@@ -45,6 +45,7 @@
 
 
 .checkBox {
+
 }
 
 
@@ -82,6 +83,7 @@
 	border: 1px solid value("constants.borderColor");
 	background-color: white;
 	padding-bottom: 2px;
+	z-index: 99999;
 }
 
 .selectBoxSelector.selectBoxOpen {
@@ -91,7 +93,9 @@
 	-webkit-border-bottom-right-radius: 4px;
 }
 
-
+.selectorPopup {
+	z-index: 99999;
+}
 
 .selectBoxCell {
 	background-color: white;
@@ -154,7 +158,12 @@
 	-webkit-border-radius: 4px;
 }
 
-
-
-
-
+@if user.agent ie6 {
+	.inlineBlock {
+		display: inline;
+	}
+} @else {
+	.inlineBlock {
+		display: inline-block;
+	}
+}	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/03/09 15:59:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/18 09:31:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,37 +31,52 @@
 
 package org.opencms.gwt.client.ui;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A very basic list implementation to hold {@link CmsListItem}.<p>
+ * A very basic list implementation to hold {@link CmsListItemWidget}.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsList extends Composite {
+public class CmsList extends ComplexPanel {
 
     // TODO: add sorting functions
 
-    /** The list panel. */
-    protected HTMLPanel m_list;
+    /** The css bundle used for this widget. */
+    private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
 
-    /** The list panel root element id. */
-    private String m_elementId;
+    /** The list panel. */
+    //    protected HTMLPanel m_list;
 
     /**
      * Constructor.<p>
      */
     public CmsList() {
 
-        m_list = new HTMLPanel("ul", "");
-        m_elementId = HTMLPanel.createUniqueId();
-        m_list.getElement().setId(m_elementId);
-        initWidget(m_list);
+        setElement(DOM.createElement("ul"));
+        setStyleName(CSS.listTreeItemChildren());
+    }
+
+    static {
+        CSS.ensureInjected();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Panel#add(com.google.gwt.user.client.ui.Widget)
+     */
+    public void add(Widget widget) {
+
+        assert widget instanceof CmsListItem;
+        super.add(widget, this.getElement());
     }
 
     /**
@@ -71,7 +86,7 @@ public class CmsList extends Composite {
      */
     public void addItem(CmsListItem item) {
 
-        m_list.add(item, m_elementId);
+        add(item);
     }
 
     /**
@@ -79,7 +94,7 @@ public class CmsList extends Composite {
      */
     public void clearList() {
 
-        m_list.clear();
+        this.clear();
     }
 
     /**
@@ -89,6 +104,6 @@ public class CmsList extends Composite {
      */
     public void removeItem(CmsListItem item) {
 
-        m_list.remove(item);
+        this.remove(item);
     }
 }
