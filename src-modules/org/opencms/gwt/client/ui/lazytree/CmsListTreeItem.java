@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/CmsListTreeItem.java,v $
- * Date   : $Date: 2010/03/18 09:31:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/18 14:35:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -245,6 +245,7 @@ public class CmsListTreeItem extends CmsListItem {
             }
         });
         m_content.addToFloat(m_opener);
+        m_content.addStyleName(CSS.listTreeItemContent());
         onChangeChildren();
         setOpen(false);
     }

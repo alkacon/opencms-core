@@ -1,5 +1,5 @@
 /* for debugging purposes */
-/* @external primary, floatBox, floatDecoratedPanel */
+/* @external primary, floatBox, floatDecoratedPanel ; */
 
 .primary {
 
@@ -19,4 +19,5 @@
 
 
 .floatDecoratedPanel {
+	zoom: 1;
 }
