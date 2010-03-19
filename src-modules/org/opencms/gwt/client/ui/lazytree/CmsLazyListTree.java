@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/I_CmsLazyOpenHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/CmsLazyListTree.java,v $
  * Date   : $Date: 2010/03/19 15:28:29 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,33 +31,23 @@
 
 package org.opencms.gwt.client.ui.lazytree;
 
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-
 /**
- * Lazy tree open handler interface.<p>
+ * @author Georg Westenberger
  * 
- * @param <I> the specific lazy tree item implementation 
- * 
- * @author Michael Moossen
- * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
- * 
- * @see org.opencms.gwt.client.ui.lazytree.CmsLazyTreeItem
  */
-public interface I_CmsLazyOpenHandler<I> extends OpenHandler<I> {
+public class CmsLazyListTree extends CmsListTree {
 
-    /**
-     * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
-     */
-    void onOpen(OpenEvent<I> event);
-
-    /**
-     * Load the children of the given tree item.<p>
+    /** 
+     * Initializes the lazy tree.<p>
      * 
-     * @param target the tree item to be loaded
+     * @param openHandler the open handler which should be called when the user clicks on an opener in the tree.
      */
-    void load(I target);
+    public CmsLazyListTree(I_CmsLazyOpenHandler<CmsListTreeItem> openHandler) {
+
+        super();
+        addOpenHandler(openHandler);
+    }
 }

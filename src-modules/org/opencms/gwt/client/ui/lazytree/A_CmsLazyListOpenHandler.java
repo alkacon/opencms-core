@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/I_CmsLazyOpenHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/A_CmsLazyListOpenHandler.java,v $
  * Date   : $Date: 2010/03/19 15:28:29 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,32 +32,33 @@
 package org.opencms.gwt.client.ui.lazytree;
 
 import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
 
 /**
- * Lazy tree open handler interface.<p>
+ * Lazy list tree open handler abstract implementation.<p>
  * 
- * @param <I> the specific lazy tree item implementation 
+ * @author Georg Westenberger
  * 
- * @author Michael Moossen
- * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.gwt.client.ui.lazytree.CmsLazyTreeItem
  */
-public interface I_CmsLazyOpenHandler<I> extends OpenHandler<I> {
+public abstract class A_CmsLazyListOpenHandler implements I_CmsLazyOpenHandler<CmsListTreeItem> {
 
     /**
-     * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
+     * @see org.opencms.gwt.client.ui.lazytree.I_CmsLazyOpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
      */
-    void onOpen(OpenEvent<I> event);
+    public void onOpen(OpenEvent<CmsListTreeItem> event) {
 
-    /**
-     * Load the children of the given tree item.<p>
-     * 
-     * @param target the tree item to be loaded
-     */
-    void load(I target);
+        if (!(event.getTarget() instanceof CmsLazyListTreeItem)) {
+            return;
+        }
+        CmsLazyListTreeItem target = (CmsLazyListTreeItem)event.getTarget();
+        if (target.getLoadState() != CmsLazyListTreeItem.LoadState.UNLOADED) {
+            return;
+        }
+        target.onStartLoading();
+        target.setOpen(true);
+        load(target);
+    }
 }

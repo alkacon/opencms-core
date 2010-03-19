@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/03/18 09:31:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/19 15:28:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -73,6 +73,7 @@ public class CmsList extends ComplexPanel {
     /**
      * @see com.google.gwt.user.client.ui.Panel#add(com.google.gwt.user.client.ui.Widget)
      */
+    @Override
     public void add(Widget widget) {
 
         assert widget instanceof CmsListItem;

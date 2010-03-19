@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/CmsListTreeItem.java,v $
- * Date   : $Date: 2010/03/19 09:32:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/19 15:28:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -103,6 +103,36 @@ public class CmsListTreeItem extends CmsListItem {
 
     /** The style variable controlling this tree item's open/closed state. */
     private CmsStyleVariable m_styleVar;
+
+    private CmsListTree m_tree;
+
+    /**
+     * Gets the tree to which this tree item belongs, or null if it does not belong to a tree.<p>
+     * 
+     * @return a tree or null
+     */
+    public CmsListTree getTree() {
+
+        return m_tree;
+    }
+
+    /**
+     * Sets the tree to which this tree item belongs.<p>
+     * 
+     * This is automatically called when this tree item or one of its ancestors is inserted into a tree.
+     * 
+     * @param tree the tree into which the item has been inserted
+     * 
+     */
+    public void setTree(CmsListTree tree) {
+
+        m_tree = tree;
+        for (Widget widget : m_children) {
+            if (widget instanceof CmsListTreeItem) {
+                ((CmsListTreeItem)widget).setTree(tree);
+            }
+        }
+    }
 
     /** 
      * Default constructor.<p>
@@ -154,6 +184,9 @@ public class CmsListTreeItem extends CmsListItem {
     public void addChild(CmsListItem item) {
 
         m_children.addItem(item);
+        if (item instanceof CmsListTreeItem) {
+            ((CmsListTreeItem)item).setTree(m_tree);
+        }
         onChangeChildren();
 
     }
@@ -210,12 +243,22 @@ public class CmsListTreeItem extends CmsListItem {
             for (Widget widget : m_children) {
                 ((CmsListItem)widget).updateLayout();
             }
+            fireOpen();
+        }
+    }
+    
+    /** Fires the open event on the tree.<p> */
+    private void fireOpen() {
+
+        if (m_tree != null) {
+            m_tree.fireOpen(this);
         }
     }
 
     /**
      * @see org.opencms.gwt.client.ui.CmsListItem#updateLayout()
      */
+    @Override
     public void updateLayout() {
 
         m_content.updateLayout();
@@ -247,7 +290,7 @@ public class CmsListTreeItem extends CmsListItem {
         m_content.addToFloat(m_opener);
         m_content.addStyleName(CSS.listTreeItemContent());
         onChangeChildren();
-        setOpen(true);
+        setOpen(false);
     }
 
     /**
@@ -278,4 +321,5 @@ public class CmsListTreeItem extends CmsListItem {
         int count = getChildCount();
         m_leafStyleVar.setValue(count == 0 ? CSS.listTreeItemLeaf() : CSS.listTreeItemInternal());
     }
+
 }
