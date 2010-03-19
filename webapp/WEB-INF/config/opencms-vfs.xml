@@ -9,9 +9,7 @@
 				<loader class="org.opencms.loader.CmsImageLoader">
 					<param name="image.scaling.enabled">true</param>		
 				</loader>		
-				<loader class="org.opencms.loader.CmsPointerLoader">
-					<param name="pointer.requestparamsupport.enabled">false</param>
-				</loader>
+				<loader class="org.opencms.loader.CmsPointerLoader" />
 				<loader class="org.opencms.loader.CmsJspLoader" />
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
 				<loader class="org.opencms.loader.CmsXmlContentLoader" />
