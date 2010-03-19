@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2010/01/18 10:01:20 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2010/03/19 09:01:35 $
+ * Version: $Revision: 1.126 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -5587,14 +5587,24 @@ public final class CmsSecurityManager {
         try {
             CmsRole role = CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName()));
             checkRoleForUserModification(dbc, user.getName(), role);
-            // this is needed because 
-            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
-            // expects an offline project, if not data will become inconsistent
-            checkOfflineProject(dbc);
-            if (replacement == null) {
-                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), null);
+            // Check if the user has set any permissions for resources
+            // if there are any permission set for the user to delete 
+            // we have to delete the user in the Offline project otherwise 
+            // we can delete the user in the Online project immediately.
+            // This was required to allow self deletion in replication 
+            // scenario of web users in the online project.
+            if (!getResourcesForPrincipal(context, user.getId(), null, true).isEmpty()) {
+                // this is needed because 
+                // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
+                // expects an offline project, if not data will become inconsistent
+                checkOfflineProject(dbc);
+                if (replacement == null) {
+                    m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), null);
+                } else {
+                    m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), replacement.getName());
+                }
             } else {
-                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), replacement.getName());
+                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), null);
             }
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_USER_1, user.getName()), e);
