@@ -1,6 +1,6 @@
 
 /* for debugging purposes */
-/* @external listTreeItemLeaf, listTreeItemInternal, listTreeItemOpen, listTreeItemClosed, listTreeItemNoOpeners; */
+/* @external listTreeItemChildren, listTreeItemLeaf, listTreeItemInternal, listTreeItemOpen, listTreeItemClosed, listTreeItemNoOpeners ;  */
 
 .listTreeItem {
 	
@@ -28,10 +28,6 @@
 }
 
 
-
-
-
-
 .listTreeItemChildren {
 	list-style-type: none;
 }
@@ -53,7 +49,9 @@
 }
 
 .listTreeItemLeaf .listTreeItemHandler {
-	display: none;
+	/* we do not use display: none  because otherwise a leaf's first content widget
+	would line up with the handler icon of a non-leaf at the same level. */ 
+	visibility: hidden;
 }
 
 .listTreeItemInternal {
@@ -70,4 +68,5 @@
 .listTreeItemNoOpeners .listTreeItemChildren {
 	display: list-item ;
 }
+
 

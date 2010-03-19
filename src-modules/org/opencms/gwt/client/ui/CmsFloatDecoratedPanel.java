@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/03/18 13:28:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/19 09:32:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -85,6 +86,8 @@ public class CmsFloatDecoratedPanel extends Composite {
         m_panel.add(m_primary);
         m_floatBox.getElement().getStyle().setFloat(Float.LEFT);
         initWidget(m_panel);
+        // we only make the widget visible after the layout has been updated to prevent "flickering"
+        getElement().getStyle().setVisibility(Visibility.HIDDEN);
     }
 
     static {
@@ -99,7 +102,6 @@ public class CmsFloatDecoratedPanel extends Composite {
     public void add(Widget widget) {
 
         m_primary.add(widget);
-
     }
 
     /**
@@ -119,9 +121,19 @@ public class CmsFloatDecoratedPanel extends Composite {
     public void updateLayout() {
 
         if (isAttached()) {
-            int floatBoxWidth = m_floatBox.getElement().getClientWidth();
+            int floatBoxWidth = getFloatBoxWidth();
             m_primary.getElement().getStyle().setMarginLeft(floatBoxWidth, Unit.PX);
         }
+    }
+
+    /**
+     * Returns the width of the float box.<p>
+     * 
+     * @return a width
+     */
+    private int getFloatBoxWidth() {
+
+        return m_floatBox.getOffsetWidth();
     }
 
     /**
@@ -132,12 +144,14 @@ public class CmsFloatDecoratedPanel extends Composite {
     @Override
     protected void onLoad() {
 
-        /* defer until children have been (hopefully) layouted */
+        /* defer until children have been (hopefully) layouted. */
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 
             public void execute() {
 
                 updateLayout();
+                // layout update has finished, now it's OK to show the widget
+                getElement().getStyle().setVisibility(Visibility.VISIBLE);
             }
         });
     }

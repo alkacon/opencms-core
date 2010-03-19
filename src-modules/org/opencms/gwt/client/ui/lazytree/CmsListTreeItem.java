@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/CmsListTreeItem.java,v $
- * Date   : $Date: 2010/03/18 14:35:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/19 09:32:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -247,7 +247,7 @@ public class CmsListTreeItem extends CmsListItem {
         m_content.addToFloat(m_opener);
         m_content.addStyleName(CSS.listTreeItemContent());
         onChangeChildren();
-        setOpen(false);
+        setOpen(true);
     }
 
     /**
@@ -258,6 +258,16 @@ public class CmsListTreeItem extends CmsListItem {
     private int getChildCount() {
 
         return m_children.getWidgetCount();
+    }
+
+    /**
+     * Hides or shows the content.<p>
+     * 
+     * @param visible if true, shows the content, else hides it
+     */
+    public void setContentVisible(boolean visible) {
+
+        m_content.setVisible(visible);
     }
 
     /**

@@ -2,21 +2,18 @@
 /* @external primary, floatBox, floatDecoratedPanel ; */
 
 .primary {
-
 }
 
 .floatBox {
+	width: auto;
 }
 
 @if user.agent ie6 {
 	.floatBox * {
 		display: inline; 
 	}
-	
 } @else {
 }	
-
-
 
 .floatDecoratedPanel {
 	zoom: 1;
