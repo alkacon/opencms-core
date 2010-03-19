@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2010/03/18 09:31:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/19 10:11:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.gwt.shared;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * A bean holding all info to be displayed in {@link org.opencms.gwt.client.ui.CmsListItemWidget}s.<p>
  * 
@@ -41,11 +43,11 @@ import java.util.Map;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsListInfoBean {
+public class CmsListInfoBean implements IsSerializable {
 
     /** The additional info. */
     private Map<String, String> m_additionalInfo;

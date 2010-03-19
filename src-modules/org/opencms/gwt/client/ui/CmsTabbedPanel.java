@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/03/10 08:38:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/19 10:11:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -102,7 +102,7 @@ public class CmsTabbedPanel extends Composite {
      */
     public CmsTabbedPanel() {
 
-        m_tabPanel = new TabLayoutPanel(Double.parseDouble(CmsTabLayout.DEFAULT.name()), Unit.PX);
+        m_tabPanel = new TabLayoutPanel(Double.parseDouble(CmsTabLayout.DEFAULT.getName()), Unit.PX);
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_tabPanel);
@@ -164,7 +164,9 @@ public class CmsTabbedPanel extends Composite {
     }
 
     /**
-     * Add a new tab with the provided name and content. <p>
+     * Add a new tab with the provided name and content.<p>
+     * 
+     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#add(Widget, String)}
      * 
      * @param tabContent the widget to add as a tab 
      * @param tabName the name of the tab to display in the tabbar
@@ -176,7 +178,21 @@ public class CmsTabbedPanel extends Composite {
     }
 
     /**
-     * Programmatically selects the specified tab. <p>
+     * Inserts a widget into the panel. If the Widget is already attached, it will be moved to the requested index.<p>
+     * 
+     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#insert(Widget, String, int)}
+     * 
+     * @param tabContent the widget to be added
+     * @param tabName the text to be shown on its tab
+     * @param beforeIndex  the index before which it will be inserted
+     */
+    public void insert(Widget tabContent, String tabName, int beforeIndex) {
+
+        m_tabPanel.insert(tabContent, tabName, beforeIndex);
+    }
+
+    /**
+     * Programmatically selects the specified tab.<p>
      * 
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(int index)}
      * 

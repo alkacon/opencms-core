@@ -57,6 +57,8 @@
 			<resource uri="/system/workplace/commons/newresource_xmlcontent_modelfile.jsp"/>
 			<resource uri="/system/workplace/commons/newresource_xmlpage.jsp"/>
 			<resource uri="/system/workplace/commons/opengallery.jsp"/>
+			<resource uri="/system/workplace/commons/openadvancedgallery.jsp"/>
+			<resource uri="/system/workplace/commons/openvfsgallery.jsp"/>
 			<resource uri="/system/workplace/commons/orgunit_selection.jsp"/>
 			<resource uri="/system/workplace/commons/preferences.jsp"/>
 			<resource uri="/system/workplace/commons/principal_selection.jsp"/>
@@ -2388,6 +2390,26 @@
 					<name>Title</name>
 					<value><![CDATA[Dialog - Open gallery]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/openvfsgallery.jsp</source>
+			<destination>system/workplace/commons/openvfsgallery.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>2588f35c-2d2b-11df-b70c-43be96c33985</uuidstructure>
+			<uuidresource>2588f35d-2d2b-11df-b70c-43be96c33985</uuidresource>
+			<datelastmodified>Thu, 18 Mar 2010 14:50:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 11 Mar 2010 16:28:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>

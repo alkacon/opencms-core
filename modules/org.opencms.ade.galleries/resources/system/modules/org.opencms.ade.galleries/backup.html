@@ -1,0 +1,44 @@
+<%@page import="org.opencms.ade.galleries.CmsGalleryActionElement"%>
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
+  CmsGalleryActionElement jsp = new CmsGalleryActionElement(pageContext, request, response);
+%>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.3//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.1/distro-source/core/src/gwt-module.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>test</title>
+<script type="text/javascript">
+var galleries = {};
+(function(galleries) {
+ 	// read and handle the request params
+    galleries.gallerypath = "${(not empty param.gallerypath) ? param.gallerypath : 'null'}";
+    galleries.dialogmode = "${(not empty param.dialogmode) ? param.dialogmode : 'null'}";
+})(galleries);
+</script>
+    <script type="text/javascript" language="javascript" src="<cms:link>/system/modules/org.opencms.ade.galleries/resources/resources.nocache.js</cms:link>"></script>
+    <script><%= org.opencms.gwt.CmsCoreProvider.get().export(org.opencms.ade.sitemap.ClientMessages.get(), request) %></script>
+  </head>
+
+  <body>
+    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+
+  </body>
+</html>
+
+   /**
+     * The native interface method to retrieve js variable. <p>
+     * 
+     * @return the dialogmode of the gallery as string
+     */
+    public static native String getDialomode() /*-{
+        return $wnd.galleries.dialogmode;
+    }-*/;
+
+    /**
+     * The native interface method to retrieve js variable. <p>
+     * 
+     * @return the gallery path of the gallery to open as string
+     */
+    public static native String getGalleryPath() /*-{
+        return $wnd.galleries.gallerypath;
+    }-*/;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/demo/client/Attic/CmsDemoTabbedPanel.java,v $
- * Date   : $Date: 2010/03/18 09:31:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/19 10:11:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,13 +46,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 
 /**
  * The demo entry point class for the tabbed panel layout.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -111,10 +112,21 @@ public class CmsDemoTabbedPanel extends A_CmsEntryPoint {
         flow2.add(nestedTabbedPanel);
         tab3.add(flow2);
 
+        SplitLayoutPanel tab4 = new SplitLayoutPanel();
+        tab4.setHeight("264px");
+        FlowPanel flowTabbed = new FlowPanel();
+        CmsTabbedPanel spliTabbedPanel = new CmsTabbedPanel(CmsTabLayout.small, false);
+        spliTabbedPanel.add(new HTML("<div>"), "Infos");
+        spliTabbedPanel.add(new HTML("<div>"), "Properties");
+        flowTabbed.add(spliTabbedPanel);
+        tab4.addSouth(flowTabbed, 100);
+        tab4.add(new HTML("navigation"));
+
         // add tabs to tabbed panel
         tabbedPanel.add(tab3, "Nested");
         tabbedPanel.add(tab1, "List Example");
         tabbedPanel.add(tab2, "Buttons Example");
+        tabbedPanel.add(tab4, "Split Example");
 
         // Tabbed Panel inside a horizontal panel 
         HorizontalPanel html = new HorizontalPanel();
