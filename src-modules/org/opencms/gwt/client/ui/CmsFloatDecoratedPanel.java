@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/03/19 09:32:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/22 08:30:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -123,7 +123,20 @@ public class CmsFloatDecoratedPanel extends Composite {
         if (isAttached()) {
             int floatBoxWidth = getFloatBoxWidth();
             m_primary.getElement().getStyle().setMarginLeft(floatBoxWidth, Unit.PX);
+            updateVerticalMargin();
         }
+    }
+
+    /**
+     * Updates the vertical margin of the float box such that its vertical middle point coincides 
+     * with the vertical middle point of the primary panel.<p>
+     */
+    private void updateVerticalMargin() {
+
+        int floatHeight = m_floatBox.getOffsetHeight();
+        int primaryHeight = m_primary.getOffsetHeight();
+        int verticalOffset = (primaryHeight - floatHeight) / 2;
+        m_floatBox.getElement().getStyle().setMarginTop(verticalOffset, Unit.PX);
     }
 
     /**
