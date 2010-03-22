@@ -5,6 +5,5 @@
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<cms:CmsFlowPanel tag="li" styleName="{resources.listTreeCss.listTreeItem}">
 			<cms:CmsFloatDecoratedPanel ui:field="m_content" ></cms:CmsFloatDecoratedPanel>
-			<cms:CmsList styleName="{resources.listTreeCss.listTreeItemChildren}" ui:field="m_children"></cms:CmsList>
 	</cms:CmsFlowPanel>
 </ui:UiBinder> 

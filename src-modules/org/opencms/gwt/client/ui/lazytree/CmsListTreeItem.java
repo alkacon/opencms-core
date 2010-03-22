@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/CmsListTreeItem.java,v $
- * Date   : $Date: 2010/03/19 15:28:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/22 16:16:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,21 +31,17 @@
 
 package org.opencms.gwt.client.ui.lazytree;
 
-import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -67,33 +63,18 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
  */
-public class CmsListTreeItem extends CmsListItem {
-
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    interface I_CmsListTreeItemUiBinder extends UiBinder<Panel, CmsListTreeItem> {
-        // GWT interface, nothing to do here
-    }
+public class CmsListTreeItem extends CmsSimpleListItem {
 
     /** The CSS bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
 
-    /** The ui-binder instance for this class. */
-    private static I_CmsListTreeItemUiBinder uiBinder = GWT.create(I_CmsListTreeItemUiBinder.class);
-
     /** The children list. */
-    @UiField
     protected CmsList m_children;
-
-    /** The content area. */
-    @UiField
-    protected CmsFloatDecoratedPanel m_content;
 
     /** The element showing the open/close icon. */
     protected ToggleButton m_opener;
@@ -105,34 +86,6 @@ public class CmsListTreeItem extends CmsListItem {
     private CmsStyleVariable m_styleVar;
 
     private CmsListTree m_tree;
-
-    /**
-     * Gets the tree to which this tree item belongs, or null if it does not belong to a tree.<p>
-     * 
-     * @return a tree or null
-     */
-    public CmsListTree getTree() {
-
-        return m_tree;
-    }
-
-    /**
-     * Sets the tree to which this tree item belongs.<p>
-     * 
-     * This is automatically called when this tree item or one of its ancestors is inserted into a tree.
-     * 
-     * @param tree the tree into which the item has been inserted
-     * 
-     */
-    public void setTree(CmsListTree tree) {
-
-        m_tree = tree;
-        for (Widget widget : m_children) {
-            if (widget instanceof CmsListTreeItem) {
-                ((CmsListTreeItem)widget).setTree(tree);
-            }
-        }
-    }
 
     /** 
      * Default constructor.<p>
@@ -192,23 +145,22 @@ public class CmsListTreeItem extends CmsListItem {
     }
 
     /**
-     * Adds a widget to the tree item's floating section.<p>
-     * 
-     * @param w the widget to add
-     */
-    public void addLeft(Widget w) {
-
-        m_content.addToFloat(w);
-
-    }
-
-    /**
      * Removes all children.<p>
      */
     public void clearChildren() {
 
         m_children.clearList();
         onChangeChildren();
+    }
+
+    /**
+     * Gets the tree to which this tree item belongs, or null if it does not belong to a tree.<p>
+     * 
+     * @return a tree or null
+     */
+    public CmsListTree getTree() {
+
+        return m_tree;
     }
 
     /** 
@@ -246,22 +198,23 @@ public class CmsListTreeItem extends CmsListItem {
             fireOpen();
         }
     }
-    
-    /** Fires the open event on the tree.<p> */
-    private void fireOpen() {
-
-        if (m_tree != null) {
-            m_tree.fireOpen(this);
-        }
-    }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#updateLayout()
+     * Sets the tree to which this tree item belongs.<p>
+     * 
+     * This is automatically called when this tree item or one of its ancestors is inserted into a tree.
+     * 
+     * @param tree the tree into which the item has been inserted
+     * 
      */
-    @Override
-    public void updateLayout() {
+    public void setTree(CmsListTree tree) {
 
-        m_content.updateLayout();
+        m_tree = tree;
+        for (Widget widget : m_children) {
+            if (widget instanceof CmsListTreeItem) {
+                ((CmsListTreeItem)widget).setTree(tree);
+            }
+        }
     }
 
     /**
@@ -271,26 +224,45 @@ public class CmsListTreeItem extends CmsListItem {
     @Override
     protected void init() {
 
-        m_panel = uiBinder.createAndBindUi(this);
-        initWidget(m_panel);
+        super.init();
         m_styleVar = new CmsStyleVariable(this);
         m_leafStyleVar = new CmsStyleVariable(this);
-        m_opener = new ToggleButton();
-        m_opener.setStyleName(CSS.listTreeItemHandler());
-        m_opener.getUpFace().setImage(new Image(I_CmsImageBundle.INSTANCE.plus()));
-        m_opener.getDownFace().setImage(new Image(I_CmsImageBundle.INSTANCE.minus()));
-        m_opener.addClickHandler(new ClickHandler() {
+        m_opener = createOpener();
+        m_content.addToFloat(m_opener);
+        m_children = new CmsList();
+        m_children.setStyleName(CSS.listTreeItemChildren());
+        m_panel.add(m_children);
+        onChangeChildren();
+        setOpen(false);
+    }
+
+    /**
+     * Creates the button for opening/closing this item.<p>
+     * 
+     * @return a button
+     */
+    private ToggleButton createOpener() {
+
+        final ToggleButton opener = new ToggleButton();
+        opener.setStyleName(CSS.listTreeItemHandler());
+        opener.getUpFace().setImage(new Image(I_CmsImageBundle.INSTANCE.plus()));
+        opener.getDownFace().setImage(new Image(I_CmsImageBundle.INSTANCE.minus()));
+        opener.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent e) {
 
-                setOpen(m_opener.isDown());
-
+                setOpen(opener.isDown());
             }
         });
-        m_content.addToFloat(m_opener);
-        m_content.addStyleName(CSS.listTreeItemContent());
-        onChangeChildren();
-        setOpen(false);
+        return opener;
+    }
+
+    /** Fires the open event on the tree.<p> */
+    private void fireOpen() {
+
+        if (m_tree != null) {
+            m_tree.fireOpen(this);
+        }
     }
 
     /**
@@ -301,16 +273,6 @@ public class CmsListTreeItem extends CmsListItem {
     private int getChildCount() {
 
         return m_children.getWidgetCount();
-    }
-
-    /**
-     * Hides or shows the content.<p>
-     * 
-     * @param visible if true, shows the content, else hides it
-     */
-    public void setContentVisible(boolean visible) {
-
-        m_content.setVisible(visible);
     }
 
     /**
