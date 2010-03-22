@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/CmsLazyListTreeItem.java,v $
- * Date   : $Date: 2010/03/19 15:28:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/22 10:07:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -73,7 +73,7 @@ public class CmsLazyListTreeItem extends CmsListTreeItem {
             add(new Label(Messages.get().key(Messages.GUI_LOADING_0)));
         }
     }
-    
+
     /** The load state of this tree item. */
     private LoadState m_loadState = LoadState.UNLOADED;
 
@@ -99,7 +99,16 @@ public class CmsLazyListTreeItem extends CmsListTreeItem {
     }
 
     /**
-     * This method is called when the item's children have finished loading.<p>
+     * This method should be called when loading the item's children has failed.<p> 
+     */
+    public void onFailLoading() {
+
+        m_loadState = LoadState.UNLOADED;
+        this.setOpen(false);
+    }
+
+    /**
+     * This method should be called when the item's children have finished loading.<p>
      */
     public void onFinishLoading() {
 
