@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/03/22 08:30:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/22 08:32:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -128,28 +128,6 @@ public class CmsFloatDecoratedPanel extends Composite {
     }
 
     /**
-     * Updates the vertical margin of the float box such that its vertical middle point coincides 
-     * with the vertical middle point of the primary panel.<p>
-     */
-    private void updateVerticalMargin() {
-
-        int floatHeight = m_floatBox.getOffsetHeight();
-        int primaryHeight = m_primary.getOffsetHeight();
-        int verticalOffset = (primaryHeight - floatHeight) / 2;
-        m_floatBox.getElement().getStyle().setMarginTop(verticalOffset, Unit.PX);
-    }
-
-    /**
-     * Returns the width of the float box.<p>
-     * 
-     * @return a width
-     */
-    private int getFloatBoxWidth() {
-
-        return m_floatBox.getOffsetWidth();
-    }
-
-    /**
      * Automatically calls the updateLayout method after insertion into the DOM.<p>
      * 
      * @see com.google.gwt.user.client.ui.Widget#onLoad()
@@ -167,5 +145,27 @@ public class CmsFloatDecoratedPanel extends Composite {
                 getElement().getStyle().setVisibility(Visibility.VISIBLE);
             }
         });
+    }
+
+    /**
+     * Returns the width of the float box.<p>
+     * 
+     * @return a width
+     */
+    private int getFloatBoxWidth() {
+
+        return m_floatBox.getOffsetWidth();
+    }
+
+    /**
+     * Updates the vertical margin of the float box such that its vertical middle point coincides 
+     * with the vertical middle point of the primary panel.<p>
+     */
+    private void updateVerticalMargin() {
+
+        int floatHeight = m_floatBox.getOffsetHeight();
+        int primaryHeight = m_primary.getOffsetHeight();
+        int verticalOffset = (primaryHeight - floatHeight) / 2;
+        m_floatBox.getElement().getStyle().setMarginTop(verticalOffset, Unit.PX);
     }
 }
