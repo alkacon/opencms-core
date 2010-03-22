@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/03/15 15:25:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/03/22 15:47:34 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -485,7 +485,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @param req the current request
      * @param res the current response
-     * @param cms an initialized cms context (should be initialized with the "Guest" user only)
+     * @param cms an initialised cms context (should be initialised with the "Guest" user only)
      * @param data the static export data set
      * 
      * @return status code of the export operation, status codes are the same as http status codes (200,303,304)
