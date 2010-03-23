@@ -1,7 +1,6 @@
 .listItem{
 	list-style: none;
 	display: block;
-	margin: 0 5px;
 	color: value("constantsCss.color");
 	line-height: 16px;
 	font-size: value("constantsCss.fontSize");
