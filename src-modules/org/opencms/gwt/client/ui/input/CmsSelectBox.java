@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/03/18 09:31:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/03/23 10:34:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -75,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -169,45 +170,45 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
     /** The arrow shown in the opener. */
     @UiField
-    HTML m_arrow;
+    protected HTML m_arrow;
 
     /** Error widget. */
     @UiField
-    CmsErrorWidget m_error;
+    protected CmsErrorWidget m_error;
 
     /** Handler manager for this widget's events. */
-    final HandlerManager m_handlerManager = new HandlerManager(this);
+    protected final HandlerManager m_handlerManager = new HandlerManager(this);
 
     /** Flag indicating whether the next click on the opener should be ignored. */
-    boolean m_ignoreNextToggle;
+    protected boolean m_ignoreNextToggle;
 
     /** The mode of the select box (text or HTML). */
-    Mode m_mode;
+    protected Mode m_mode;
 
     /** The opener widget. */
     @UiField
-    FocusPanel m_opener;
+    protected FocusPanel m_opener;
 
     /** The field in the opener which contains the currently selected option. */
     @UiField
-    HTML m_openerHtml;
+    protected HTML m_openerHtml;
 
     /**
      * Flag indicating whether the mouse is over the opener.<p>
      * 
      *  This is used to prevent the auto-close feature of the PopupPanel with the other event handlers for the opener.
      */
-    boolean m_overOpener;
+    protected boolean m_overOpener;
 
     /**  Container for the opener and error widget. */
     @UiField
-    Panel m_panel = new FlowPanel();
+    protected Panel m_panel = new FlowPanel();
 
     /** The popup panel inside which the selector will be shown.<p> */
-    PopupPanel m_popup = new PopupPanel(true);
+    protected PopupPanel m_popup = new PopupPanel(true);
 
     /** Style of the select box widget. */
-    final CmsStyleVariable m_selectBoxState;
+    protected final CmsStyleVariable m_selectBoxState;
 
     /** Flag indicating whether this widget is enabled. */
     private boolean m_enabled = true;
@@ -352,7 +353,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_valueLabels.put(value, text);
         m_selector.add(cell);
         if (m_first) {
-            onValueSelect(value, text);
+            selectValueInternal(value, text);
             m_firstValue = value;
             m_firstText = text;
         }
@@ -373,6 +374,17 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
                 m_handlerManager.removeHandler(ValueChangeEvent.getType(), handler);
             }
         };
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#fireEvent(com.google.gwt.event.shared.GwtEvent)
+     */
+    @Override
+    public void fireEvent(GwtEvent<?> event) {
+
+        if (m_handlerManager != null) {
+            m_handlerManager.fireEvent(event);
+        }
     }
 
     /**
@@ -430,6 +442,23 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
+     * Internal helper method to set the current selected option.<p>
+     * 
+     * @param value the new value
+     * @param label the text corresponding to a new label
+     */
+    protected void selectValueInternal(String value, String label) {
+
+        if (m_mode == Mode.HTML) {
+            m_openerHtml.setHTML(label);
+        } else {
+            m_openerHtml.setText(label);
+        }
+        m_selectedValue = value;
+        close();
+    }
+
+    /**
      * Handle clicks on the opener.<p>
      * @param e the click event
      */
@@ -447,16 +476,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      */
     void onValueSelect(String value, String label) {
 
-        //m_openerHtml.setHTML("");
-        if (m_mode == Mode.HTML) {
-            m_openerHtml.setHTML(label);
-        } else {
-            m_openerHtml.setText(label);
-        }
-        m_selectedValue = value;
-        close();
-        ValueChangeEvent.fire(this, value);
-
+        selectValueInternal(value, label);
+        ValueChangeEvent.<String> fire(this, value);
     }
 
     /**
