@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/03/23 08:48:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/03/23 09:30:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -63,7 +63,7 @@ public class CmsList extends ComplexPanel {
     public CmsList() {
 
         setElement(DOM.createElement("ul"));
-        setStyleName(CSS.listTreeItemChildren());
+        setStyleName(CSS.list());
     }
 
     static {

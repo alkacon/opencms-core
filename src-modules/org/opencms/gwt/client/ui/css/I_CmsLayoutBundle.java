@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/18 13:28:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/03/23 09:30:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -94,64 +94,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String cmsTextButton();
-    }
-
-    /** ListTree CSS. */
-    interface I_CmsListTreeCss extends CssResource {
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listTreeItem();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listTreeItemHandler();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listTreeItemContent();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listTreeItemChildren();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listTreeItemOpen();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listTreeItemClosed();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listTreeItemLeaf();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listTreeItemInternal();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listTreeItemNoOpeners();
     }
 
     /** Constants CSS. */
@@ -399,6 +341,70 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String open();
     }
 
+    /** ListTree CSS. */
+    interface I_CmsListTreeCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String list();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItem();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemChildren();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemClosed();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemContent();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemHandler();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemInternal();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemLeaf();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemNoOpeners();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listTreeItemOpen();
+    }
+
     /** Page CSS. */
     interface I_CmsPageCss extends CssResource {
 
@@ -634,10 +640,10 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the dialog CSS
+     * @return the toolbar CSS
      */
-    @Source("listtree.css")
-    I_CmsListTreeCss listTreeCss();
+    @Source("floatDecoratedPanel.css")
+    I_CmsFloatDecoratedPanelCss floatDecoratedPanelCss();
 
     /**
      * Access method.<p>
@@ -681,6 +687,22 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     I_CmsListItemWidgetCss listItemWidgetCss();
 
     /**
+     * Access method.<p>
+     * 
+     * @return the dialog CSS
+     */
+    @Source("listtree.css")
+    I_CmsListTreeCss listTreeCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the measuring panel CSS
+     */
+    @Source("measuringPanel.css")
+    I_CmsMeasuringPanelCss measuringPanelCss();
+
+    /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.
      * Do not inject this CSS, as it contains no style information.<p>
      * 
@@ -704,13 +726,5 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("toolbar.css")
     I_CmsToolbarCss toolbarCss();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the toolbar CSS
-     */
-    @Source("floatDecoratedPanel.css")
-    I_CmsFloatDecoratedPanelCss floatDecoratedPanelCss();
 
 }

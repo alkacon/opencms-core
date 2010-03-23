@@ -32,6 +32,14 @@
 
 .listTreeItemChildren {
 	list-style-type: none;
+	margin-left: 40px;
+	padding-left: 0px;
+}
+
+.list {
+	list-style-type: none;
+	margin-left: 0px;
+	padding-left: 0px;
 }
 
 .listTreeItemOpen {
