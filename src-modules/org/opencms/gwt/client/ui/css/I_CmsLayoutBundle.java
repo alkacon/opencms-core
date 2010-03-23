@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/23 09:30:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/03/23 09:54:02 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -693,14 +693,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("listtree.css")
     I_CmsListTreeCss listTreeCss();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the measuring panel CSS
-     */
-    @Source("measuringPanel.css")
-    I_CmsMeasuringPanelCss measuringPanelCss();
 
     /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.
