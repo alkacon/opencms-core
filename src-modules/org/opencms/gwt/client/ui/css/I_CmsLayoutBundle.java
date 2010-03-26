@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/23 09:54:02 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/03/26 09:23:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -265,6 +265,52 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String h6();
     }
 
+    /** Highlighting CSS, used within the {@link org.opencms.gwt.client.ui.CmsHighlightingBorder} widget. */
+    interface I_CmsHighlightCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String borderBottom();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String borderLeft();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String borderRight();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String borderTop();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String colorBlue();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String colorRed();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String highlightBox();
+    }
+
     /** Icons CSS, making available a fixed set of icons. */
     interface I_CmsIconsCss extends CssResource, I_CmsStateCss {
 
@@ -343,7 +389,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** ListTree CSS. */
     interface I_CmsListTreeCss extends CssResource {
-
+    
         /** Access method.<p>
          * 
          * @return the CSS class name
@@ -653,6 +699,86 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("header.css")
     I_CmsHeaderCss headerCss();
 
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_b_blue.gif")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource highlightBorderBottomBlue();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_b.gif")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource highlightBorderBottomRed();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_l_blue.gif")
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    ImageResource highlightBorderLeftBlue();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_l.gif")
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    ImageResource highlightBorderLeftRed();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_r_blue.gif")
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    ImageResource highlightBorderRightBlue();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_r.gif")
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    ImageResource highlightBorderRightRed();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    @Source("images/ocms_de_t_blue.gif")
+    ImageResource highlightBorderTopBlue();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_t.gif")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource highlightBorderTopRed();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the highlight CSS
+     */
+    @Source("highlight.css")
+    I_CmsHighlightCss highlightCss();
+
     /** 
      * Access method.<p>
      * 
@@ -689,10 +815,19 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the dialog CSS
+     * @return the list tree CSS
      */
     @Source("listtree.css")
     I_CmsListTreeCss listTreeCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/placeholderOverlay_trans.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource overlayImage();
 
     /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.

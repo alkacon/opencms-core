@@ -1,0 +1,54 @@
+.highlightBox{
+	position: absolute;
+	z-index: 10;
+	background: transparent;
+}
+.borderLeft{
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+.borderTop{
+	width: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+.borderBottom{
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+}
+.borderRight{
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+@sprite .colorRed .borderLeft{
+	gwt-image: 'highlightBorderLeftRed';
+}
+@sprite .colorRed .borderTop{
+	gwt-image: 'highlightBorderTopRed';
+}
+@sprite .colorRed .borderBottom{
+	gwt-image: 'highlightBorderBottomRed';
+}
+@sprite .colorRed .borderRight{
+	gwt-image: 'highlightBorderRightRed';
+}
+
+@sprite .colorBlue .borderLeft{
+	gwt-image: 'highlightBorderLeftBlue';
+}
+@sprite .colorBlue .borderTop{
+	gwt-image: 'highlightBorderTopBlue';
+}
+@sprite .colorBlue .borderBottom{
+	gwt-image: 'highlightBorderBottomBlue';
+}
+@sprite .colorBlue .borderRight{
+	gwt-image: 'highlightBorderRightBlue';
+}
