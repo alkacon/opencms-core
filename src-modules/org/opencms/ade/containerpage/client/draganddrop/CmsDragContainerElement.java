@@ -1,0 +1,315 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
+ * Date   : $Date: 2010/03/26 13:13:11 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ade.containerpage.client.draganddrop;
+
+import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
+import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
+import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
+import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
+
+/**
+ * Implementation of a draggable element. To be used for content elements within a container-page.<p>
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @since 8.0.0
+ */
+public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragElement {
+
+    /** The current place holder element. */
+    protected Widget m_currentPlaceholder;
+
+    /** The start offset left of the element to its parent. */
+    protected int m_cursorOffsetLeft;
+
+    /** The start offset top of the element to its parent. */
+    protected int m_cursorOffsetTop;
+
+    /** The drag handle widget. */
+    protected Widget m_dragHandle;
+
+    /** The current place holder element. */
+    protected HTML m_placeholder;
+
+    /** The elements style. */
+    protected Style m_style;
+
+    /** The elements client id. */
+    private String m_clientId;
+
+    /** The current drag parent. */
+    private I_CmsDragTarget m_dragParent;
+
+    /** List of available drag targets. */
+    private Map<I_CmsDragTarget, I_CmsDragElement> m_dragTargets;
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param element the DOM element
+     * @param parent the drag parent
+     * @param clientId the client id
+     */
+    public CmsDragContainerElement(Element element, I_CmsDragTarget parent, String clientId) {
+
+        super(element);
+        m_clientId = clientId;
+        setDragParent(parent);
+        m_dragTargets = new HashMap<I_CmsDragTarget, I_CmsDragElement>();
+        m_dragTargets.put(parent, this);
+        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
+
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasContextMenuHandlers#addContextMenuHandler(com.google.gwt.event.dom.client.ContextMenuHandler)
+     */
+    public HandlerRegistration addContextMenuHandler(ContextMenuHandler handler) {
+
+        return addDomHandler(handler, ContextMenuEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseDownHandlers#addMouseDownHandler(com.google.gwt.event.dom.client.MouseDownHandler)
+     */
+    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
+
+        return addDomHandler(handler, MouseDownEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseMoveHandlers#addMouseMoveHandler(com.google.gwt.event.dom.client.MouseMoveHandler)
+     */
+    public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
+
+        return addDomHandler(handler, MouseMoveEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
+     */
+    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+
+        return addDomHandler(handler, MouseOutEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
+     */
+    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+
+        return addDomHandler(handler, MouseOverEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseUpHandlers#addMouseUpHandler(com.google.gwt.event.dom.client.MouseUpHandler)
+     */
+    public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) {
+
+        return addDomHandler(handler, MouseUpEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseWheelHandlers#addMouseWheelHandler(com.google.gwt.event.dom.client.MouseWheelHandler)
+     */
+    public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
+
+        return addDomHandler(handler, MouseWheelEvent.getType());
+    }
+
+    /**
+     * Returns the client id.<p>
+     *
+     * @return the client id
+     */
+    public String getClientId() {
+
+        return m_clientId;
+    }
+
+    /**
+     * Returns the cursor offset left.<p>
+     *
+     * @return the cursor offset left
+     */
+    public int getCursorOffsetLeft() {
+
+        return m_cursorOffsetLeft;
+    }
+
+    /**
+     * Returns the cursor offset top.<p>
+     *
+     * @return the cursor offset top
+     */
+    public int getCursorOffsetTop() {
+
+        return m_cursorOffsetTop;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#getDragParent()
+     */
+    public I_CmsDragTarget getDragParent() {
+
+        return m_dragParent;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#isHandleEvent(com.google.gwt.dom.client.NativeEvent)
+     */
+    public boolean isHandleEvent(NativeEvent event) {
+
+        if (m_dragHandle == null) {
+            return true;
+        }
+        EventTarget target = event.getEventTarget();
+        if (com.google.gwt.dom.client.Element.is(target)) {
+            return m_dragHandle.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
+        }
+        return false;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragCancel(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
+     */
+    public void onDragCancel(I_CmsDragHandler<?, ?> handler) {
+
+        // nothing to do here, everything is done by the drag handler
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragEnter(org.opencms.gwt.client.draganddrop.I_CmsDragHandler, org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
+     */
+    public void onDragEnter(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
+
+        // nothing to do here, everything is done by the drag handler
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragLeave(org.opencms.gwt.client.draganddrop.I_CmsDragHandler, org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
+     */
+    public void onDragLeave(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
+
+        // nothing to do here, everything is done by the drag handler
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragStart(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
+     */
+    public void onDragStart(I_CmsDragHandler<?, ?> handler) {
+
+        // nothing to do here, everything is done by the drag handler
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragStop(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
+     */
+    public void onDragStop(I_CmsDragHandler<?, ?> handler) {
+
+        // nothing to do here, everything is done by the drag handler
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDropTarget(org.opencms.gwt.client.draganddrop.I_CmsDragHandler, org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
+     */
+    public void onDropTarget(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
+
+        //        m_currentElement = m_dragTargets.get(target);
+        //        m_currentElement.addToTarget(target, target.getWidgetIndex(m_currentPlaceholder));
+
+    }
+
+    /**
+     * Sets the client id.<p>
+     *
+     * @param clientId the client id to set
+     */
+    public void setClientId(String clientId) {
+
+        m_clientId = clientId;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#setDragParent(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
+     */
+    public void setDragParent(I_CmsDragTarget target) {
+
+        m_dragParent = target;
+    }
+
+    /**
+     * Sets the drag handle of the element. If set, the element will only be draggable by the handle.<p>
+     * 
+     * @param handle the handle
+     * @throws UnsupportedOperationException thrown if the handle to set is not a child element of the draggable
+     */
+    protected void setDragHandle(Widget handle) throws UnsupportedOperationException {
+
+        if ((handle == null) || getElement().isOrHasChild(handle.getElement())) {
+            m_dragHandle = handle;
+        } else {
+            throw new UnsupportedOperationException("The drag handle has to be a child of the draggable element.");
+        }
+    }
+
+}
