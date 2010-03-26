@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/03/16 08:14:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/26 09:42:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,13 +46,21 @@ import com.google.gwt.dom.client.NodeList;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsDomUtil {
+public final class CmsDomUtil {
 
     private static DocumentStyleImpl styleImpl;
+
+    /**
+     * Hidden constructor.<p>
+     */
+    private CmsDomUtil() {
+
+        // doing nothing
+    }
 
     /**
      * Returns the computed style of the given element.<p>
@@ -138,6 +146,41 @@ public class CmsDomUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * Utility method to determine if the given element has a set background.<p>
+     * 
+     * @param element the element
+     * 
+     * @return true if the element has a background set
+     */
+    public static boolean hasBackground(Element element) {
+
+        String backgroundColor = CmsDomUtil.getCurrentStyle(element, "background-color");
+        String backgroundImage = CmsDomUtil.getCurrentStyle(element, "background-image");
+        if ((backgroundColor.equals("transparent"))
+            && ((backgroundImage == null) || (backgroundImage.trim().length() == 0) || backgroundImage.equals("none"))) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Utility method to determine if the given element has a set border.<p>
+     * 
+     * @param element the element
+     * 
+     * @return true if the element has a border
+     */
+    public static boolean hasBorder(Element element) {
+
+        String borderStyle = CmsDomUtil.getCurrentStyle(element, "border-style");
+        if ((borderStyle == null) || borderStyle.equals("none") || (borderStyle.length() == 0)) {
+            return false;
+        }
+        return true;
+
     }
 
     /**
