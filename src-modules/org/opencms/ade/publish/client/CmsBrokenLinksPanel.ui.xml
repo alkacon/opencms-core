@@ -1,0 +1,49 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cmsi = "urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms = "urn:import:org.opencms.gwt.client.ui" 
+	>
+	
+	
+	<ui:style>
+		.important {
+		
+		}
+		
+		.scrollPanel {
+			width: 600px;
+			max-height: 400px;
+		}
+		
+		.buttonBar {
+			float: right;
+		}
+		
+		.label {
+			margin-left:10px;
+			margin-bottom: 10px;
+			margin-top: 10px;
+		}
+		
+		.spacer {
+			height: 10px;
+			width: 10px;
+		}
+		
+		
+	</ui:style>
+	<ui:with field="res" type="org.opencms.ade.publish.client.I_CmsPublishLayoutBundle" />
+	<g:FlowPanel>
+		<g:Label ui:field="m_label" styleName="{style.label}" /> 
+		<g:ScrollPanel styleName="{res.publishCss.scrollPanel}" >
+			<cms:CmsList ui:field="m_list">
+			</cms:CmsList>
+		</g:ScrollPanel> 
+		<g:FlowPanel styleName="{style.spacer}" />
+		<!-- The buttons aren't actually displayed here, we just declare them in this file to simplify the code -->
+		<cms:CmsTextButton ui:field="m_cancelButton"></cms:CmsTextButton>
+		<cms:CmsTextButton ui:field="m_publishButton"></cms:CmsTextButton>
+		<cms:CmsTextButton ui:field="m_backButton"></cms:CmsTextButton>
+	</g:FlowPanel>
+</ui:UiBinder>

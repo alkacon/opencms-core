@@ -1,0 +1,68 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cmsi = "urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms = "urn:import:org.opencms.gwt.client.ui" 
+	>
+	
+	
+	<ui:style>
+		.important {
+		
+		}
+		.checkboxes {
+			margin-left: 10px;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+		
+		.selectorPanel {
+			float: right;
+			margin-right: 25px;
+		}
+		
+		.buttonPanel {
+			float: right;
+			margin-right: 25px;
+			margin-bottom: 20px;
+		}
+		
+		.selector {
+			display: inline-block;
+			width: 100px;
+		}
+		
+		.selectPanel * {
+			zoom: 1;
+		}
+		
+	</ui:style>
+	<ui:with field="res" type="org.opencms.ade.publish.client.I_CmsPublishLayoutBundle" />
+	<g:FlowPanel styleName="{style.selectPanel}">
+		<g:FlowPanel ui:field="m_selectorPanel" styleName="{style.selectorPanel}">
+			<g:InlineLabel ui:field = "m_selectorLabel" />
+		</g:FlowPanel>
+		<g:FlowPanel ui:field = "m_topBar">
+			<g:InlineLabel ui:field = "m_selectLabel" />
+		    <cms:CmsTextButton ui:field="m_selectAll" />
+		    <cms:CmsTextButton ui:field="m_selectNone" />
+		</g:FlowPanel>
+		<g:Label ui:field="m_noResources"  styleName="{res.publishCss.noResources}"/>
+		<g:ScrollPanel ui:field="m_scrollPanel">
+			<g:FlowPanel ui:field = "m_groupPanel"></g:FlowPanel>
+		</g:ScrollPanel>
+		<g:FlowPanel styleName="{style.checkboxes}">
+			<g:FlowPanel>
+				<cmsi:CmsCheckBox ui:field = "m_checkboxRelated"></cmsi:CmsCheckBox>
+				<g:InlineLabel styleName="{res.publishCss.text}" ui:field="m_relatedLabel"></g:InlineLabel>
+			</g:FlowPanel>
+			<g:FlowPanel>
+				<cmsi:CmsCheckBox ui:field = "m_checkboxSiblings"></cmsi:CmsCheckBox>
+				<g:InlineLabel styleName="{res.publishCss.text}" ui:field="m_siblingsLabel"></g:InlineLabel>
+			</g:FlowPanel>
+		</g:FlowPanel>
+		<g:FlowPanel ui:field = "m_problemsPanel" />
+		<cms:CmsTextButton ui:field="m_publishButton"></cms:CmsTextButton>
+		<cms:CmsTextButton ui:field="m_cancelButton"></cms:CmsTextButton> 
+	</g:FlowPanel>
+</ui:UiBinder> 

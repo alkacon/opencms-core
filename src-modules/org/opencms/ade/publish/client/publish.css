@@ -1,0 +1,114 @@
+@external relatedItem, groupHeader, publishRow, indentedPublishRow, publishListItem, selector, scrollPanel, selectPanel;
+
+.relatedItem {
+	margin-left: 60px;
+	width: 390px;
+}
+
+.groupHeader {
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.publishRow {
+
+}
+
+.publishListItem {
+	width: 450px;
+
+}
+
+.indentedPublishRow {
+	
+}
+
+@sprite .warning {
+	gwt-image: "warning";
+}
+
+.itemToKeep {
+}
+
+.itemToRemove {
+	background-image: none;
+	background-color: red;
+	border: 10px solid red;
+}
+
+.stateNew {
+	color: #0000ff;
+
+}
+
+.stateChanged {
+	color: #ff0000;
+}
+
+.stateDeleted {
+	text-decoration: line-through;
+}
+
+.groupPanel {
+	width: 600px;
+	zoom: 1;
+}
+
+.scrollPanel {
+	max-height: 400px;
+	width: 640px;
+	-moz-border-radius: 4px;
+	border: 1px solid value("constants.borderColor");
+	margin-left: 10px;
+	margin-right: 10px;
+	padding-left: 3px;
+	zoom: 1;
+}
+
+.noResources {
+	width: 640px;
+}
+
+.text {
+	font-size: value("constants.fontSize");
+	font-family: value("constants.fontFamily");
+	vertical-align: top;
+}
+
+	
+
+.selectButtons {
+	float: right;
+}
+
+.clear {
+	clear: both;
+}
+
+.selectPanel {
+	margin: 10px;
+}
+
+.topBar {
+	margin-left: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.selector {
+	display: inline-block;
+	width: 100px !important;
+	vertical-align: middle;
+}
+
+.invisible {
+	visibility: hidden;
+}
+
+
+.noState {}
+
+
+
+
+

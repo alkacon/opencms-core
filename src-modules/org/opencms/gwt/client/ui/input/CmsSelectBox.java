@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/03/23 10:34:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/29 08:47:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -107,8 +107,10 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      */
     private class CmsSelectCell extends HTML {
 
+        /** The text of the select option. */
         String m_text;
 
+        /** The value of the select option. */
         String m_value;
 
         /**
@@ -135,7 +137,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
                 public void onClick(ClickEvent e) {
 
-                    onValueSelect(m_value, m_text);
+                    onValueSelect(m_value);
                     self.removeStyleName(CSS.selectHover());
                 }
             });
@@ -166,6 +168,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      */
     static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
+    /** The UiBinder instance used for this widget. */
     private static I_CmsSelectBoxUiBinder uiBinder = GWT.create(I_CmsSelectBoxUiBinder.class);
 
     /** The arrow shown in the opener. */
@@ -213,10 +216,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /** Flag indicating whether this widget is enabled. */
     private boolean m_enabled = true;
 
+    /** Internal flag used to keep track of which select option was added first. */
     private boolean m_first = true;
-
-    /** The text of the first select option. */
-    private String m_firstText;
 
     /** The value of the first select option. */
     private String m_firstValue;
@@ -353,9 +354,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_valueLabels.put(value, text);
         m_selector.add(cell);
         if (m_first) {
-            selectValueInternal(value, text);
+            selectValue(value);
             m_firstValue = value;
-            m_firstText = text;
         }
         m_first = false;
 
@@ -410,7 +410,27 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     public void reset() {
 
         close();
-        onValueSelect(m_firstValue, m_firstText);
+        onValueSelect(m_firstValue);
+    }
+
+    /**
+     * Helper method to set the current selected option.<p>
+     * 
+     * This method does not trigger the "value changed" event.
+     * 
+     * @param value the new value
+     */
+    public void selectValue(String value) {
+
+        String label = m_valueLabels.get(value);
+
+        if (m_mode == Mode.HTML) {
+            m_openerHtml.setHTML(label);
+        } else {
+            m_openerHtml.setText(label);
+        }
+        m_selectedValue = value;
+        close();
     }
 
     /**
@@ -437,25 +457,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
         if (value instanceof String) {
             String strValue = (String)value;
-            this.onValueSelect(strValue, m_valueLabels.get(strValue));
+            this.onValueSelect(strValue);
         }
-    }
-
-    /**
-     * Internal helper method to set the current selected option.<p>
-     * 
-     * @param value the new value
-     * @param label the text corresponding to a new label
-     */
-    protected void selectValueInternal(String value, String label) {
-
-        if (m_mode == Mode.HTML) {
-            m_openerHtml.setHTML(label);
-        } else {
-            m_openerHtml.setText(label);
-        }
-        m_selectedValue = value;
-        close();
     }
 
     /**
@@ -472,11 +475,10 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      * Internal handler method which is called when a new value is selected.<p>
      * 
      * @param value the new value
-     * @param label the text corresponding to a new label
      */
-    void onValueSelect(String value, String label) {
+    void onValueSelect(String value) {
 
-        selectValueInternal(value, label);
+        selectValue(value);
         ValueChangeEvent.<String> fire(this, value);
     }
 
