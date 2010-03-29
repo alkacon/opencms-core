@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/26 09:14:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/29 05:58:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -48,61 +48,78 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     /** The drag and drop CSS. */
     interface I_CmsDragDropCss extends CssResource {
 
-        /** Access method.<p>
+        /**
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String currentTarget();
+
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String dragElement();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String dragElementBackground();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String dragElementBorder();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String dragging();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String dragListElement();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String dragPlaceholder();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String dragSubContainer();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String dragTarget();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String overlayShow();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */

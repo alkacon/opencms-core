@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/29 05:58:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -219,8 +219,11 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         // hide the current place-holder if it's not the one from the initial parent target
         if (m_current != m_startInfo) {
             m_current.getPlaceholder().setVisible(false);
-        }
 
+        }
+        this.getDragElement().getDragParent().getElement().removeClassName(
+            I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
+        m_currentTarget.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
         // if the element is dragged into a target that is not the initial parent target,
         // show the overlay on the initial place-holder and place it at the start position
         // otherwise remove the overlay
@@ -252,6 +255,11 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         if (m_currentTarget != m_dragElement.getDragParent()) {
             m_current.getDraggable().setVisible(false);
             m_current.getPlaceholder().setVisible(false);
+
+            m_currentTarget.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
+            m_dragElement.getDragParent().getElement().addClassName(
+                I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
+
             m_current = m_startInfo;
             positionElement();
             m_placeholder = m_current.getPlaceholder();
@@ -292,6 +300,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         prepareElement(m_current, m_currentTarget, false);
         m_targets = new ArrayList<I_CmsDragTargetContainer>();
         m_targets.add(m_currentTarget);
+        m_currentTarget.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
         m_currentTarget.highlightContainer();
         String clientId = ((CmsDragContainerElement)m_dragElement).getClientId();
         CmsContainerpageDataProvider.get().getElement(clientId, new I_CmsSimpleCallback<CmsContainerElement>() {
@@ -386,6 +395,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
                 entry.getValue().getPlaceholder().removeFromParent();
                 ((Widget)entry.getValue().getDraggable()).removeFromParent();
             }
+            entry.getKey().getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
             entry.getKey().removeHighlighting();
         }
 
