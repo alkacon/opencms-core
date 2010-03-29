@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/03/15 09:07:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/29 14:44:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,20 +33,20 @@ package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.shared.I_CmsCoreProviderConstants;
 
-import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Client side implementation for {@link org.opencms.gwt.CmsCoreProvider}.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.CmsCoreProvider
  */
-public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
+public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCoreProviderConstants {
 
     /** Path to the editor. */
     public static final String VFS_PATH_EDITOR = "/system/workplace/editors/editor.jsp";
@@ -57,32 +57,12 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
     /** Internal instance. */
     private static CmsCoreProvider INSTANCE;
 
-    /** The current context. */
-    private String m_context;
-
-    /** The current locale. */
-    private String m_locale;
-
-    /** The current site root. */
-    private String m_siteRoot;
-
-    /** The current URI. */
-    private String m_uri;
-
-    /** The current workplace locale. */
-    private String m_wpLocale;
-
     /**
      * Prevent instantiation.<p> 
      */
-    private CmsCoreProvider() {
+    protected CmsCoreProvider() {
 
-        Dictionary dict = Dictionary.getDictionary(DICT_NAME.replace('.', '_'));
-        m_locale = dict.get(KEY_LOCALE);
-        m_wpLocale = dict.get(KEY_WP_LOCALE);
-        m_context = dict.get(KEY_CONTEXT);
-        m_siteRoot = dict.get(KEY_SITE_ROOT);
-        m_uri = dict.get(KEY_URI);
+        // empty
     }
 
     /**
@@ -93,10 +73,29 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
     public static CmsCoreProvider get() {
 
         if (INSTANCE == null) {
-            INSTANCE = new CmsCoreProvider();
+            INSTANCE = init();
         }
         return INSTANCE;
     }
+
+    /**
+     * Returns the json object name.<p>
+     * 
+     * @return the json object name
+     */
+    // only used in native code
+    @SuppressWarnings("unused")
+    private static String getDictName() {
+
+        return DICT_NAME.replace('.', '_');
+    }
+
+    /**
+     * Initializes the data from the host page.<p>
+     */
+    private static native CmsCoreProvider init() /*-{
+        return $wnd[@org.opencms.gwt.client.util.CmsCoreProvider::getDictName()()];
+    }-*/;
 
     /**
      * Adds the current site root of this context to the given resource name.<p>
@@ -150,50 +149,45 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
      *
      * @return the current OpenCms context
      */
-    public String getContext() {
-
-        return m_context;
-    }
+    public native String getContext() /*-{
+        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_CONTEXT];
+    }-*/;
 
     /**
      * Returns the current locale.<p>
      *
      * @return the current locale
      */
-    public String getLocale() {
-
-        return m_locale;
-    }
+    public native String getLocale() /*-{
+        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_LOCALE];
+    }-*/;
 
     /**
      * Returns the current site root.<p>
      *
      * @return the current site root
      */
-    public String getSiteRoot() {
-
-        return m_siteRoot;
-    }
+    public native String getSiteRoot() /*-{
+        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_SITE_ROOT];
+    }-*/;
 
     /**
      * Returns the current uri.<p>
      *
      * @return the current uri
      */
-    public String getUri() {
-
-        return m_uri;
-    }
+    public native String getUri() /*-{
+        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_URI];
+    }-*/;
 
     /**
      * Returns the current workplace locale.<p>
      *
      * @return the current workplace locale
      */
-    public String getWpLocale() {
-
-        return m_wpLocale;
-    }
+    public native String getWpLocale() /*-{
+        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_WP_LOCALE];
+    }-*/;
 
     /**
      * Returns an absolute link given a site path.<p>
