@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/03/11 11:24:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/29 06:39:40 $
+ * Version: $Revision: 1.6 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0
  */
@@ -77,7 +77,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
         // send the ticket to the server
         String message = CmsStringUtil.getMessage(t);
-        String ticket = CmsLog.log(message);
+        String ticket = CmsLog.log(message + "\n" + CmsStringUtil.getStackTrace(t, "\n"));
 
         // remove the nice overlay
         stop();

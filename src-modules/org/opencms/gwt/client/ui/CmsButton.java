@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsButton.java,v $
- * Date   : $Date: 2010/03/11 08:07:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/29 06:39:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -60,15 +60,45 @@ public class CmsButton extends PushButton {
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
     }
 
-    /**
-     * Sets the up face text and image.<p>
-     * 
-     * @param text the up face text to set, set to <code>null</code> to not show any
-     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
-     */
-    public void setUpFace(String text, String imageClass) {
+    static {
+        I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
+    }
 
-        this.getUpFace().setHTML(getFaceHtml(text, imageClass));
+    /**
+     * Sets the button to an absolute position.<p>
+     * 
+     * @param bottom CSS bottom value
+     * @param left CSS left value
+     */
+    public void setBottomLeft(double bottom, double left) {
+
+        Style style = this.getElement().getStyle();
+        style.setPosition(Position.ABSOLUTE);
+        style.setBottom(bottom, Unit.PX);
+        style.setLeft(left, Unit.PX);
+    }
+
+    /**
+     * Sets the button to an absolute position.<p>
+     * 
+     * @param bottom CSS bottom value
+     * @param right CSS right value
+     */
+    public void setBottomRight(double bottom, double right) {
+
+        Style style = this.getElement().getStyle();
+        style.setPosition(Position.ABSOLUTE);
+        style.setBottom(bottom, Unit.PX);
+        style.setRight(right, Unit.PX);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.CustomButton#setDown(boolean)
+     */
+    @Override
+    public void setDown(boolean down) {
+
+        super.setDown(down);
     }
 
     /**
@@ -80,35 +110,6 @@ public class CmsButton extends PushButton {
     public void setDownFace(String text, String imageClass) {
 
         this.getDownFace().setHTML(getFaceHtml(text, imageClass));
-    }
-
-    /**
-     * Convenience method to assemble the HTML to use for a button face.<p>
-     * 
-     * @param text text the up face text to set, set to <code>null</code> to not show any
-     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
-     * 
-     * @return the HTML
-     */
-    protected String getFaceHtml(String text, String imageClass) {
-
-        String result = ((imageClass != null) && (imageClass.trim().length() > 0)) ? "<span class='"
-            + imageClass
-            + "'></span>" : "";
-        if ((text != null) && (text.trim().length() > 0)) {
-            result += (result.length() > 0) ? "&nbsp;" : "";
-            result += text.trim();
-        }
-        return result;
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.CustomButton#setDown(boolean)
-     */
-    @Override
-    public void setDown(boolean down) {
-
-        super.setDown(down);
     }
 
     /**
@@ -141,31 +142,34 @@ public class CmsButton extends PushButton {
     }
 
     /**
-     * Sets the button to an absolute position.<p>
+     * Sets the up face text and image.<p>
      * 
-     * @param bottom CSS bottom value
-     * @param left CSS left value
+     * @param text the up face text to set, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
      */
-    public void setBottomLeft(double bottom, double left) {
+    public void setUpFace(String text, String imageClass) {
 
-        Style style = this.getElement().getStyle();
-        style.setPosition(Position.ABSOLUTE);
-        style.setBottom(bottom, Unit.PX);
-        style.setLeft(left, Unit.PX);
+        this.getUpFace().setHTML(getFaceHtml(text, imageClass));
     }
 
     /**
-     * Sets the button to an absolute position.<p>
+     * Convenience method to assemble the HTML to use for a button face.<p>
      * 
-     * @param bottom CSS bottom value
-     * @param right CSS right value
+     * @param text text the up face text to set, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
+     * 
+     * @return the HTML
      */
-    public void setBottomRight(double bottom, double right) {
+    protected String getFaceHtml(String text, String imageClass) {
 
-        Style style = this.getElement().getStyle();
-        style.setPosition(Position.ABSOLUTE);
-        style.setBottom(bottom, Unit.PX);
-        style.setRight(right, Unit.PX);
+        String result = ((imageClass != null) && (imageClass.trim().length() > 0)) ? "<span class='"
+            + imageClass
+            + "'></span>" : "";
+        if ((text != null) && (text.trim().length() > 0)) {
+            result += (result.length() > 0) ? "&nbsp;" : "";
+            result += text.trim();
+        }
+        return result;
     }
 
 }

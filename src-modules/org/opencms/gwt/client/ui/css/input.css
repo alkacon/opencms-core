@@ -48,6 +48,12 @@
 
 }
 
+@if user.agent ie6 {
+	.checkBox * {
+		display: inline;
+	}
+}
+
 
 
 .checkBoxLabel {

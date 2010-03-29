@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsStringUtil.java,v $
- * Date   : $Date: 2010/03/15 12:44:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/29 06:39:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.util;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -69,6 +69,24 @@ public final class CmsStringUtil {
             message = t.getClass().getName();
         }
         return message;
+    }
+
+    /**
+     * Returns the stack trace of the Throwable as a string.<p>
+     * 
+     * @param t the Throwable for which the stack trace should be returned
+     * @param separator the separator between the lines of the stack trace 
+     * 
+     * @return a string representing a stack trace 
+     */
+    public static String getStackTrace(Throwable t, String separator) {
+
+        String result = "";
+        for (StackTraceElement elem : t.getStackTrace()) {
+            result += elem.toString();
+            result += separator;
+        }
+        return result;
     }
 
     /**

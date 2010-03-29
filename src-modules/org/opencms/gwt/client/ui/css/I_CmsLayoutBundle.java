@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/26 09:23:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/03/29 06:39:40 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -336,6 +336,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String disabledItem();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String itemAdditional();
 
         /** Access method.<p>
@@ -385,11 +391,18 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String open();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String permaVisible();
+
     }
 
     /** ListTree CSS. */
     interface I_CmsListTreeCss extends CssResource {
-    
+
         /** Access method.<p>
          * 
          * @return the CSS class name
@@ -699,7 +712,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("header.css")
     I_CmsHeaderCss headerCss();
 
-    /**
+    /** 
      * Access method.<p>
      * 
      * @return the image resource

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopupDialog.java,v $
- * Date   : $Date: 2010/03/09 15:59:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/29 06:39:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,18 +41,18 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsPopupDialog extends CmsPopup {
 
-    /** The content widget. */
-    private Widget m_content;
-
     /** The panel holding the dialog's buttons. */
     private FlowPanel m_buttonPanel;
+
+    /** The content widget. */
+    private Widget m_content;
 
     /**
      * The Constructor.<p>
@@ -75,20 +75,6 @@ public class CmsPopupDialog extends CmsPopup {
     }
 
     /**
-     * Sets the content for this dialog replacing any former content.<p>
-     * 
-     * @param widget the content widget
-     */
-    public void setContent(Widget widget) {
-
-        if (m_content != null) {
-            getDialog().remove(m_content);
-        }
-        getDialog().insert(widget, 0);
-        m_content = widget;
-    }
-
-    /**
      * Adds a button widget to the button panel.<p>
      * 
      * @param button the button widget
@@ -104,6 +90,27 @@ public class CmsPopupDialog extends CmsPopup {
         }
         //        button.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMinWidth());
         m_buttonPanel.add(button);
+    }
+
+    /**
+     * Returns the content widget.<p>
+     * 
+     * @return the content widget
+     */
+    public Widget getContent() {
+
+        return m_content;
+    }
+
+    /**
+     * Removes all buttons.<p>
+     */
+    public void removeAllButtons() {
+
+        if (m_buttonPanel == null) {
+            return;
+        }
+        m_buttonPanel.clear();
     }
 
     /**
@@ -124,13 +131,17 @@ public class CmsPopupDialog extends CmsPopup {
     }
 
     /**
-     * Returns the content widget.<p>
+     * Sets the content for this dialog replacing any former content.<p>
      * 
-     * @return the content widget
+     * @param widget the content widget
      */
-    public Widget getContent() {
+    public void setContent(Widget widget) {
 
-        return m_content;
+        if (m_content != null) {
+            getDialog().remove(m_content);
+        }
+        getDialog().insert(widget, 0);
+        m_content = widget;
     }
 
 }

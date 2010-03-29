@@ -34,6 +34,11 @@
 	
 }
 
+.disabledItem .itemContent {
+	background-image: none;
+	background-color: #aaaaaa;
+}
+
 .itemIcon{
 	height: 32px;
 	width: 32px;
@@ -50,7 +55,7 @@
 }
 
 .buttonPanel{
-	display:none;
+/*	display:none; */
 	float: right;
 	margin: 7px 5px 0px 0px;
 	width: 60px;
@@ -58,7 +63,15 @@
 	overflow: visible;
 }
 
-.buttonPanel>div{
+.buttonPanel > * {
+	visibility: hidden;
+}
+
+.buttonPanel > .permaVisible, .cmsHovering .buttonPanel > * {
+	visibility: visible;
+}
+
+.buttonPanel > * {
 	float: right;
 	margin-left: 2px;
 }

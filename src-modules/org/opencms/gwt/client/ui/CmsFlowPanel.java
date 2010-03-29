@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFlowPanel.java,v $
- * Date   : $Date: 2010/03/18 09:31:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/29 06:39:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -68,6 +68,17 @@ public class CmsFlowPanel extends ComplexPanel {
     public void add(Widget w) {
 
         super.add(w, getElement());
+    }
+
+    /**
+     * Inserts a widget at a given position.<p>
+     * 
+     * @param w the widget to insert
+     * @param beforeIndex the position before which the widget should be inserted 
+     */
+    public void insert(Widget w, int beforeIndex) {
+
+        insert(w, getElement(), beforeIndex, true);
     }
 
 }

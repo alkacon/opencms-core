@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/03/18 09:31:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/29 06:39:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -74,7 +74,7 @@ public class CmsListItemWidget extends Composite {
          * @param title info title
          * @param value info value
          */
-        AdditionalInfoItem(String title, String value) {
+        AdditionalInfoItem(String title, String value, String additionalStyle) {
 
             super(DOM.createDiv());
             Element titleSpan = DOM.createSpan();
@@ -83,6 +83,9 @@ public class CmsListItemWidget extends Composite {
             Element valueSpan = DOM.createSpan();
             valueSpan.setInnerText(value);
             valueSpan.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemAdditionalValue());
+            if (additionalStyle != null) {
+                valueSpan.addClassName(additionalStyle);
+            }
             getElement().appendChild(titleSpan);
             getElement().appendChild(valueSpan);
         }
@@ -190,6 +193,16 @@ public class CmsListItemWidget extends Composite {
     }
 
     /**
+     * Adds a widget to the front of the button panel.<p>
+     * 
+     * @param w the widget to add
+     */
+    public void addButtonToFront(Widget w) {
+
+        m_buttonPanel.insert(w, 0);
+    }
+
+    /**
      * Removes a widget from the button panel.<p>
      * 
      * @param w the widget to remove
@@ -233,11 +246,11 @@ public class CmsListItemWidget extends Composite {
             Iterator<Entry<String, String>> it = infoBean.getAdditionalInfo().entrySet().iterator();
             while (it.hasNext()) {
                 Entry<String, String> entry = it.next();
-                AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), entry.getValue());
+                String valueStyle = infoBean.getValueStyle(entry.getKey());
+                AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), entry.getValue(), valueStyle);
                 m_additionalDiv.appendChild(info.getElement());
             }
         }
 
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/03/22 08:32:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/03/29 06:39:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -65,7 +65,7 @@ public class CmsFloatDecoratedPanel extends Composite {
     static final I_CmsFloatDecoratedPanelCss CSS = I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss();
 
     /** The float panel. */
-    private Panel m_floatBox = new FlowPanel();
+    private FlowPanel m_floatBox = new FlowPanel();
 
     /** The panel containing both the main and float panel. */
     private Panel m_panel = new FlowPanel();
@@ -113,6 +113,16 @@ public class CmsFloatDecoratedPanel extends Composite {
 
         m_floatBox.add(widget);
         updateLayout();
+    }
+
+    /**
+     * Adds a widget to the front of the float panel.<p>
+     * 
+     * @param widget the widget to add
+     */
+    public void addToFrontOfFloat(Widget widget) {
+
+        m_floatBox.insert(widget, 0);
     }
 
     /**
