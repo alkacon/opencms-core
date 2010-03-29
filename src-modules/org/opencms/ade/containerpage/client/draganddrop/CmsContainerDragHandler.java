@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/03/29 05:58:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/29 08:11:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -305,7 +305,11 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         String clientId = ((CmsDragContainerElement)m_dragElement).getClientId();
         CmsContainerpageDataProvider.get().getElement(clientId, new I_CmsSimpleCallback<CmsContainerElement>() {
 
-            @Override
+            /**
+             * Executed with the requested element data. Generates drag element widgets from the contents for each available container type.<p>
+             * 
+             * @param arg the element data
+             */
             public void execute(CmsContainerElement arg) {
 
                 if (arg != null) {
@@ -359,7 +363,9 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
 
             }
 
-            @Override
+            /**
+             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
+             */
             public void onError(String message) {
 
                 // TODO: Auto-generated method stub
