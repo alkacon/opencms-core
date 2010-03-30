@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/03/29 08:11:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/30 06:55:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -306,13 +306,16 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         CmsContainerpageDataProvider.get().getElement(clientId, new I_CmsSimpleCallback<CmsContainerElement>() {
 
             /**
-             * Executed with the requested element data. Generates drag element widgets from the contents for each available container type.<p>
+             * Executed with the requested element data.
+             * Generates drag element widgets from the contents for each available container type.<p>
              * 
              * @param arg the element data
+             * 
+             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#execute(Object)
              */
             public void execute(CmsContainerElement arg) {
 
-                if (arg != null) {
+                if ((arg != null) && isDragging()) {
                     Iterator<Entry<String, CmsDragTargetContainer>> it = CmsContainerpageDataProvider.get().getContainerTargets().entrySet().iterator();
                     while (it.hasNext()) {
                         Entry<String, CmsDragTargetContainer> entry = it.next();
@@ -480,6 +483,16 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
             elementInfo.getPlaceholder().setVisible(false);
             elementInfo.getDraggable().setVisible(false);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#targetSortChangeAction()
+     */
+    @Override
+    protected void targetSortChangeAction() {
+
+        updateHighlighting();
+
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/29 05:58:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/30 06:55:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -47,6 +47,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
     /** The drag and drop CSS. */
     interface I_CmsDragDropCss extends CssResource {
+
+        /**
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String clearFix();
 
         /**
          * Access method.<p>

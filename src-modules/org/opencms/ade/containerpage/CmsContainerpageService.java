@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/30 06:55:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,13 +59,15 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerpageService extends CmsGwtService implements I_CmsContainerpageService {
 
+    /** Serial version UID. */
     private static final long serialVersionUID = -6188370638303594280L;
+
     /** The session cache. */
     private CmsADESessionCache m_sessionCache;
 

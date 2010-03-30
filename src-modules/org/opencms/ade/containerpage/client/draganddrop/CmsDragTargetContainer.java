@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/30 06:55:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -202,6 +202,14 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
     public void highlightContainer() {
 
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+
+        // adding the 'clearFix' style to all targets containing floated elements
+        // in some layouts this may lead to inappropriate clearing after the target, 
+        // but it is still necessary as it forces the target to enclose it's floated content 
+        if ((m_root.getWidgetCount() > 0)
+            && !CmsDomUtil.getCurrentStyle(m_root.getWidget(0).getElement(), "float").equals("none")) {
+            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
+        }
         m_highlighting = new CmsHighlightingBorder(getInnerDimensions(), CmsHighlightingBorder.BorderColor.red);
         RootPanel.get().add(m_highlighting);
 
@@ -293,6 +301,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
         m_highlighting.removeFromParent();
         m_highlighting = null;
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
     }
 
     /**
@@ -310,7 +319,6 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
     @SuppressWarnings("cast")
     private List<CmsDragContainerElement> consumeChildren() {
 
-        //NodeList<Element> children = m_root.getElement().getElementsByTagName("*");
         List<CmsDragContainerElement> elements = new ArrayList<CmsDragContainerElement>();
         // the drag element widgets are created from the existing DOM elements,
         // to establish the internal widget hierarchy the elements need to be removed from the DOM and added as widgets to the root panel
@@ -330,6 +338,8 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
                 elements.add(dragElement);
 
                 m_debug.printLine("child removed");
+            } else if (CmsDomUtil.hasClass(CLASS_SUB_CONTAINER_ELEMENTS, child)) {
+                // TODO: handle sub-container
             }
 
             m_debug.printLine("removing: " + child.getTagName());

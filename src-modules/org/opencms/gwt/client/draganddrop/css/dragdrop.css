@@ -18,8 +18,9 @@
 
 }
 
-/** Following is a magic clear-fix for containers with floated contend. @see http://www.positioniseverything.net/easyclearing.html */
-.dragTarget.dragging:after {
+/** Following is a clear-fix for containers with floated contend, forcing the to enclose their content.
+    @see http://www.positioniseverything.net/easyclearing.html */
+.dragTarget.clearFix:after {
     content: ".";
     display: block;
     height: 0;
