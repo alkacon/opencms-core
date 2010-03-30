@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryInfoBean.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/30 14:08:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,36 +34,29 @@ package org.opencms.ade.galleries.shared;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * This bean contains the gallery information required for displaying the gallery information and the search.<p>
+ * The general bean holding the gallery information required for displaying the gallery information and the search.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
 public class CmsGalleryInfoBean implements IsSerializable {
 
     /** The search beans contains the currents search criteria. */
-    private CmsGallerySearchObject m_searchObject;
-
-    /** The search beans contains the currents search criteria. */
     private CmsGalleryDialogBean m_dialogInfo;
 
-    /**
-     * Returns the searchObject.<p>
-     *
-     * @return the searchObject
-     */
-    public CmsGallerySearchObject getSearchObject() {
+    /** The dialogmode of the current gallery (view, widget, editor, properties, ade).*/
+    private String m_dialogMode;
 
-        return m_searchObject;
-    }
+    /** The search beans contains the currents search criteria. */
+    private CmsGallerySearchObject m_searchObject;
 
     /**
-     * Returns the dialogInfo.<p>
+     * Returns the dialog info.<p>
      *
-     * @return the dialogInfo
+     * @return the dialog info
      */
     public CmsGalleryDialogBean getDialogInfo() {
 
@@ -71,9 +64,32 @@ public class CmsGalleryInfoBean implements IsSerializable {
     }
 
     /**
-     * Sets the dialogInfo.<p>
+     * Returns the dialog mode.<p>
      *
-     * @param dialogInfo the dialogInfo to set
+     * @return the dialog mode
+     */
+    public String getDialogMode() {
+
+        if (m_dialogMode == null) {
+            return "";
+        }
+        return m_dialogMode;
+    }
+
+    /**
+     * Returns the search object.<p>
+     *
+     * @return the search object
+     */
+    public CmsGallerySearchObject getSearchObject() {
+
+        return m_searchObject;
+    }
+
+    /**
+     * Sets the dialog info.<p>
+     *
+     * @param dialogInfo the dialog infos to set
      */
     public void setDialogInfo(CmsGalleryDialogBean dialogInfo) {
 
@@ -81,9 +97,19 @@ public class CmsGalleryInfoBean implements IsSerializable {
     }
 
     /**
-     * Sets the searchObject.<p>
+     * Sets the dialog mode.<p>
      *
-     * @param searchObject the searchObject to set
+     * @param dialogMode the dialog mode to set
+     */
+    public void setDialogMode(String dialogMode) {
+
+        m_dialogMode = dialogMode;
+    }
+
+    /**
+     * Sets the search object.<p>
+     *
+     * @param searchObject the search object to set
      */
     public void setSearchObject(CmsGallerySearchObject searchObject) {
 

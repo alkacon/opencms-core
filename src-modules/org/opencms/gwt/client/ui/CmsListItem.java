@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/03/18 09:31:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/30 14:08:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,10 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
-
 public class CmsListItem extends Composite {
 
     /**
@@ -108,5 +107,4 @@ public class CmsListItem extends Composite {
         m_panel = uiBinder.createAndBindUi(this);
         initWidget(m_panel);
     }
-
 }

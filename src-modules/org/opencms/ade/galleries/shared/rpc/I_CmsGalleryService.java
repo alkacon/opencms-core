@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryService.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/30 14:08:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -87,11 +87,12 @@ public interface I_CmsGalleryService extends RemoteService {
      *  
      * @param tabs the configuration of the tabs
      * @param searchObj the initial search object
+     * @param dialogMode the dialog mode of this gallery dialog
      * 
      * @return the gallery info bean including the tabs' content and search results 
      * @throws CmsRpcException if something goes wrong
      */
-    CmsGalleryInfoBean getInitialSettings(ArrayList<String> tabs, CmsGallerySearchObject searchObj)
+    CmsGalleryInfoBean getInitialSettings(ArrayList<String> tabs, CmsGallerySearchObject searchObj, String dialogMode)
     throws CmsRpcException;
 
     /**

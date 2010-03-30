@@ -1,0 +1,59 @@
+/* For Debugging comment in. */
+@external galleryList,galleriesDialog,galleryDialogSize,listIcon,tabPanel,bottomMargin;
+
+.galleriesDialog{
+	margin:1px;
+	padding:0px;
+}
+
+.galleryDialogSize{
+	width:650px;
+	height:486px;
+}
+
+.criteriaList {
+	-moz-border-radius-bottomleft:4px;
+	-moz-border-radius-bottomright:4px;
+	-moz-border-radius-topleft:4px;
+	-moz-border-radius-topright:4px;
+	border:1px solid #999999;
+	height:405px;
+	
+}
+
+.tabPanel {
+	margin:10px 8px 8px;
+}
+
+.marginBottom {
+	margin-bottom:5px;
+}
+
+.listIcon {
+	margin:7px;
+}
+
+@sprite .showParams {
+	gwt-image: "backgroundDefault";
+	background-position: 50% 50%;
+	height: auto;
+	color:value("constantsCss.color");
+	border:1px solid value("constantsCss.borderColor");
+	display:inline-block;
+	/*margin:1px 1px 1px 0;*/
+	margin-right:1px;
+	margin-bottom:1px;
+	padding:2px;
+	-moz-border-radius-bottomleft:4px;
+	-moz-border-radius-bottomright:4px;
+	-moz-border-radius-topleft:4px;
+	-moz-border-radius-topright:4px;
+	
+}
+
+.paramsText {
+	dispaly:inline-block;
+	float:left;
+	margin-right:5px;
+	max-width: 600px;
+}

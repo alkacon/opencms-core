@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDialogBean.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/30 14:08:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,33 +31,28 @@
 
 package org.opencms.ade.galleries.shared;
 
-import org.opencms.gwt.shared.CmsListInfoBean;
-
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * This bean contains the gallery dialog information required for displaying the content of the gallery tabs.<p>
+ * This bean holding the gallery dialog information required for displaying the content of the gallery tabs.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
 public class CmsGalleryDialogBean implements IsSerializable {
 
     /** The categories to display in the list of available categories. */
-    private List<CmsListInfoBean> m_categories;
-
-    /** The dialogmode of the current gallery (view, widget, editor, properties, ade).*/
-    private String m_dialogMode;
+    private LinkedHashMap<String, CmsCategoriesListInfoBean> m_categories;
 
     /** The galleries to display in the list with available galleries. */
-    private List<CmsListInfoBean> m_galleries;
+    private LinkedHashMap<String, CmsGalleriesListInfoBean> m_galleries;
 
     /** The available workplace locales. */
     private TreeMap<String, String> m_locales;
@@ -66,48 +61,32 @@ public class CmsGalleryDialogBean implements IsSerializable {
     private ArrayList<String> m_tabs;
 
     /** The types to display in the list of available categories. */
-    private List<CmsListInfoBean> m_typeIds;
+    private LinkedHashMap<String, CmsTypesListInfoBean> m_types;
 
-    /** The types to display in the list of available categories. */
-    private List<CmsListInfoBean> m_types;
-
-    //TODO: add sitemap data
-    //TODO: add vfs tree data
-    //TODO: add container page data
-    // TODO: do we need locale for resource here?
+    //TODO: add sitemap data, add vfs tree data, add container page data, resource locales if required
 
     /**
-     * Returns the categories.<p>
+     * Returns the categories map.<p>
      *
      * @return the categories
      */
-    public List<CmsListInfoBean> getCategories() {
+    public LinkedHashMap<String, CmsCategoriesListInfoBean> getCategories() {
 
         return m_categories;
     }
 
     /**
-     * Returns the dialogMode.<p>
-     *
-     * @return the dialogMode
-     */
-    public String getDialogMode() {
-
-        return m_dialogMode;
-    }
-
-    /**
-     * Returns the galleries.<p>
+     * Returns the galleries map.<p>
      *
      * @return the galleries
      */
-    public List<CmsListInfoBean> getGalleries() {
+    public LinkedHashMap<String, CmsGalleriesListInfoBean> getGalleries() {
 
         return m_galleries;
     }
 
     /**
-     * Returns the locales.<p>
+     * Returns the locales map.<p>
      *
      * @return the locales
      */
@@ -117,7 +96,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
     }
 
     /**
-     * Returns the tabs.<p>
+     * Returns the tabs arrays.<p>
      *
      * @return the tabs
      */
@@ -127,57 +106,37 @@ public class CmsGalleryDialogBean implements IsSerializable {
     }
 
     /**
-     * Returns the typeIds.<p>
-     *
-     * @return the typeIds
-     */
-    public List<CmsListInfoBean> getTypeIds() {
-
-        return m_typeIds;
-    }
-
-    /**
-     * Returns the types.<p>
+     * Returns the types map.<p>
      *
      * @return the types
      */
-    public List<CmsListInfoBean> getTypes() {
+    public LinkedHashMap<String, CmsTypesListInfoBean> getTypes() {
 
         return m_types;
     }
 
     /**
-     * Sets the categories.<p>
+     * Sets the categories map.<p>
      *
      * @param categories the categories to set
      */
-    public void setCategories(List<CmsListInfoBean> categories) {
+    public void setCategories(LinkedHashMap<String, CmsCategoriesListInfoBean> categories) {
 
         m_categories = categories;
     }
 
     /**
-     * Sets the dialogMode.<p>
-     *
-     * @param dialogMode the dialogMode to set
-     */
-    public void setDialogMode(String dialogMode) {
-
-        m_dialogMode = dialogMode;
-    }
-
-    /**
-     * Sets the galleries.<p>
+     * Sets the galleries map.<p>
      *
      * @param galleries the galleries to set
      */
-    public void setGalleries(List<CmsListInfoBean> galleries) {
+    public void setGalleries(LinkedHashMap<String, CmsGalleriesListInfoBean> galleries) {
 
         m_galleries = galleries;
     }
 
     /**
-     * Sets the locales.<p>
+     * Sets the locales map.<p>
      *
      * @param locales the locales to set
      */
@@ -187,7 +146,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
     }
 
     /**
-     * Sets the tabs.<p>
+     * Sets the tabs array.<p>
      *
      * @param tabs the tabs to set
      */
@@ -197,23 +156,12 @@ public class CmsGalleryDialogBean implements IsSerializable {
     }
 
     /**
-     * Sets the typeIds.<p>
-     *
-     * @param typeIds the typeIds to set
-     */
-    public void setTypeIds(List<CmsListInfoBean> typeIds) {
-
-        m_typeIds = typeIds;
-    }
-
-    /**
-     * Sets the types.<p>
+     * Sets the types map.<p>
      *
      * @param types the types to set
      */
-    public void setTypes(List<CmsListInfoBean> types) {
+    public void setTypes(LinkedHashMap<String, CmsTypesListInfoBean> types) {
 
         m_types = types;
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryServiceAsync.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/30 14:08:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -77,12 +77,14 @@ public interface I_CmsGalleryServiceAsync {
      * As search results content of selected galleries or categories or a specified resource can be returned.
      * 
      * @param tabs the configuration of the tabs
-     * @param searchObj the initial search object     
+     * @param searchObj the initial search object 
+     * @param dialogMode the dialog mode of this gallery dialog   
      * @param callback the async callback
      */
     void getInitialSettings(
         ArrayList<String> tabs,
         CmsGallerySearchObject searchObj,
+        String dialogMode,
         AsyncCallback<CmsGalleryInfoBean> callback);
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsImageButton.java,v $
- * Date   : $Date: 2010/03/30 07:49:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/30 14:08:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 /**
@@ -38,7 +39,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -438,6 +439,7 @@ public class CmsImageButton extends CmsButton {
         }
         String upFaceHtml = "<div class='" + upImageClass + "'></div>";
         this.getUpFace().setHTML(upFaceHtml);
+
     }
 
     /**
@@ -456,5 +458,7 @@ public class CmsImageButton extends CmsButton {
 
     static {
         I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
+        I_CmsImageBundle.INSTANCE.style().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.iconsCss().ensureInjected();
     }
 }

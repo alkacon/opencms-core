@@ -1,4 +1,4 @@
-@external gwt-TabLayoutPanel gwt-TabLayoutPanelTab gwt-TabLayoutPanelTabBar gwt-TabLayoutPanelTabs gwt-TabLayoutPanelContent gwt-TabLayoutPanelTab-selected gwt-TabLayoutPanelTabInner internal-tabbed; 
+@external gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanelTabs, gwt-TabLayoutPanelContent, gwt-TabLayoutPanelTab-selected, gwt-TabLayoutPanelTabInner, internal-tabbed,tabLeftMargin; 
 
 .gwt-TabLayoutPanel {	
 	display:block;
@@ -37,8 +37,13 @@
 	display:block;
 	color:value("constantsCss.color");
 }
+
+.tabLeftMargin {
+	margin-left:30px !important;
+}
+
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
-	gwt-image: "backgroundDefault";
+	gwt-image: "backgroundHover";
 	background-position: 50% 50%;
 	height: auto;
 	margin:0 0 -1px 2px;
@@ -52,7 +57,7 @@
 }
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
-	gwt-image: "backgroundHover";
+	gwt-image: "backgroundDefault";
 	background-position: 50% 50%;
 	height: auto;	
 }

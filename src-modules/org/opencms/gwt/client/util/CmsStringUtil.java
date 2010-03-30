@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsStringUtil.java,v $
- * Date   : $Date: 2010/03/29 06:39:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/30 14:08:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.util;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -126,4 +126,19 @@ public final class CmsStringUtil {
     public static native String[] splitAsArray(String str, String splitter) /*-{
         return str.split(splitter);
     }-*/;
+
+    /**
+     * The parseInt() function parses a string and returns an integer..<p>
+     * 
+     * Only the first number in the string is returned. Leading and trailing spaces are allowed.
+     * If the first character cannot be converted to a number, parseInt() returns NaN.
+     * 
+     * @param str the string to be parsed
+     * 
+     * @return the parsed number
+     */
+    public static native int parseInt(String str) /*-{
+        return parseInt(str);
+    }-*/;
+
 }

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsItemId.java,v $
+ * Date   : $Date: 2010/03/30 14:08:36 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,29 +29,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client;
+package org.opencms.ade.galleries.shared;
 
-import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
-import org.opencms.gwt.client.util.CmsPair;
-
-import java.util.List;
-
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
-
-public class CmsGalleryDialog extends Composite {
+/**
+ * This interface provides a common methods for galleries to get and set the unique id of different widgets.<p>
+ * 
+ * @author Polina Smagina
+ * 
+ * @version $Revision: 1.1 $ 
+ * 
+ * @since 8.0.0
+ */
+public interface I_CmsItemId {
 
     /**
-     * The default constructor. <p>
+     * Sets a unique id.<p>
+     * 
+     * @param id the unique id
      */
-    public CmsGalleryDialog(List<CmsPair<Widget, String>> galleryTabs) {
+    void setId(String id);
 
-        final CmsTabbedPanel tabbedPanel = new CmsTabbedPanel(CmsTabLayout.standard, false);
-
-        for (CmsPair<Widget, String> item : galleryTabs) {
-            tabbedPanel.add(item.getFirst(), item.getSecond());
-        }
-
-    }
+    /**
+     * Returns the unique id.<p>
+     * 
+     * @return the unique id
+     */
+    String getId();
 }

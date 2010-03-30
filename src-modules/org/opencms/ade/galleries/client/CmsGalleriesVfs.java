@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesVfs.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/30 14:08:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.galleries.client;
 
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.util.CmsGalleryProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
@@ -39,18 +41,12 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.util.CmsStringUtil;
-import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -58,12 +54,10 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
-// TODO: internatiolisation
-// TODO: extract tab panel code to build gallery dialog to an class 
 public class CmsGalleriesVfs extends A_CmsEntryPoint {
 
     /** The gallery service instance. */
@@ -89,11 +83,16 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        final CmsTabbedPanel tabbedPanel = new CmsTabbedPanel();
+        I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
+        final CmsFlowPanel html = new CmsFlowPanel("div");
+        html.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryDialogSize());
+        RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleriesDialog());
+        RootPanel.get().add(html);
 
-        // TODO: test data for initial search object
+        // set the search object
+        // TODO: replace the dummy data with indos from openvfsgallery.jsp
+
         final CmsGallerySearchObject searchObj = new CmsGallerySearchObject();
-        // TODO: set the initial search bean:
         // if gallery is selected write the gallery path to the gallery list
         ArrayList<String> galleries = new ArrayList<String>();
         // TODO: replace string params through JSON string
@@ -102,18 +101,24 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
 
         }
         searchObj.setGalleries(galleries);
-        //TODO: replace dummy data with data openvfsgallery.jsp
-
         searchObj.setSortOrder("");
         searchObj.setTabId(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name());
-        searchObj.setMachesPerPage(8);
+        searchObj.setMachesPerPage(12);
 
         // set tabs config
-        String[] tabs = CmsStringUtil.splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
+        // TODO: why do this method throw ClassNotCast Exeption in host mode??
+        // String[] tabs = splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
+        String[] tabs = {
+            I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name(),
+            I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name(),
+            I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name(),
+            I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_search.name()};
         final ArrayList<String> tabsConfig = new ArrayList<String>();
         for (int i = 0; tabs.length > i; i++) {
             tabsConfig.add(tabs[i]);
         }
+
+        final String dialogMode = "view";
 
         CmsRpcAction<CmsGalleryInfoBean> getInitialAction = new CmsRpcAction<CmsGalleryInfoBean>() {
 
@@ -123,9 +128,7 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
             @Override
             public void execute() {
 
-                // TODO: call an inteface function to load all possible lists                
-                getGalleryService().getInitialSettings(tabsConfig, searchObj, this);
-
+                getGalleryService().getInitialSettings(tabsConfig, searchObj, dialogMode, this);
             }
 
             /**
@@ -134,120 +137,10 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
             @Override
             public void onResponse(CmsGalleryInfoBean infoBean) {
 
-                //TODO: use enum for tabs names!!!!                
-                ArrayList<String> tabs = infoBean.getDialogInfo().getTabs();
-
-                if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name())) {
-                    CmsList galleriesList = new CmsList();
-                    List<CmsListInfoBean> list = infoBean.getDialogInfo().getTypes();
-                    for (CmsListInfoBean item : list) {
-                        CmsListItemWidget typesItem = new CmsListItemWidget(item);
-                        galleriesList.addItem(new CmsListItem(typesItem));
-                    }
-
-                    tabbedPanel.add(galleriesList, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
-
-                }
-
-                if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name())) {
-                    CmsList galleriesList = new CmsList();
-                    List<CmsListInfoBean> list = infoBean.getDialogInfo().getGalleries();
-                    for (CmsListInfoBean item : list) {
-                        CmsListItemWidget galleryItem = new CmsListItemWidget(item);
-                        galleriesList.addItem(new CmsListItem(galleryItem));
-                    }
-
-                    tabbedPanel.add(galleriesList, Messages.get().key(Messages.GUI_TAB_TITLE_GALLERIES_0));
-
-                }
-
-                if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name())) {
-                    CmsList categoriesList = new CmsList();
-                    List<CmsListInfoBean> list = infoBean.getDialogInfo().getCategories();
-                    for (CmsListInfoBean item : list) {
-                        CmsListItemWidget categoryItem = new CmsListItemWidget(item);
-                        categoriesList.addItem(new CmsListItem(categoryItem));
-                    }
-
-                    tabbedPanel.add(categoriesList, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
-
-                }
-                if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_search.name())) {
-                    tabbedPanel.add(new Label("Hallo"), Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
-                }
-                if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_sitemap.name())) {
-                    // TODO: implement  
-                }
-                if (!infoBean.getSearchObject().getResults().isEmpty()) {
-                    CmsList resultList = new CmsList();
-                    List<CmsListInfoBean> list = infoBean.getSearchObject().getResults();
-                    for (CmsListInfoBean item : list) {
-                        CmsListItemWidget resultItem = new CmsListItemWidget(item);
-                        resultList.addItem(new CmsListItem(resultItem));
-                    }
-                    tabbedPanel.insert(resultList, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0), 0);
-                }
-                RootPanel.get().add(tabbedPanel);
+                CmsGalleryDialog galleryDialog = new CmsGalleryDialog(infoBean);
+                html.add(galleryDialog);
             }
-
         };
         getInitialAction.execute();
-
-        CmsRpcAction<CmsGalleryInfoBean> getTabsAction = new CmsRpcAction<CmsGalleryInfoBean>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                // TODO: call an inteface function to load all possible lists                
-                getGalleryService().getCriteriaLists(tabsConfig, this);
-
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(CmsGalleryInfoBean infoBean) {
-
-                //TODO: use enum for tabs names!!!!
-                ArrayList<String> tabs = infoBean.getDialogInfo().getTabs();
-
-                if (tabs.contains("cms_tabs_galleries")) {
-                    CmsList galleriesList = new CmsList();
-                    List<CmsListInfoBean> list = infoBean.getDialogInfo().getGalleries();
-                    for (CmsListInfoBean item : list) {
-                        CmsListItemWidget galleryItem = new CmsListItemWidget(item);
-                        galleriesList.addItem(new CmsListItem(galleryItem));
-                    }
-
-                    tabbedPanel.add(galleriesList, "Galleries");
-
-                }
-                if (tabs.contains("cms_tabs_categories")) {
-                    CmsList categoriesList = new CmsList();
-                    List<CmsListInfoBean> list = infoBean.getDialogInfo().getCategories();
-                    for (CmsListInfoBean item : list) {
-                        CmsListItemWidget categoryItem = new CmsListItemWidget(item);
-                        categoriesList.addItem(new CmsListItem(categoryItem));
-                    }
-
-                    tabbedPanel.add(categoriesList, "Categories");
-
-                }
-                if (tabs.contains("cms_tabs_query")) {
-                    tabbedPanel.add(new Label("Hallo"), "Search Query");
-                }
-                if (tabs.contains("cms_tabs_sitemap")) {
-                    // TODO: implement  
-                }
-
-                RootPanel.get().add(tabbedPanel);
-            }
-
-        };
-        // getTabsAction.execute();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsOpenVfsGallery.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/30 14:08:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,11 +50,11 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for open gwt-based gallery dialog.<p> 
+ * Provides methods to open gwt-based gallery dialog.<p> 
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0
  */
@@ -154,7 +154,7 @@ public class CmsOpenVfsGallery extends CmsDialog {
                 jsOpener.append(width);
                 jsOpener.append(", height=");
                 jsOpener.append(height);
-                jsOpener.append(", resizable=yes, top=100, left=270, status=yes');");
+                jsOpener.append(", resizable=yes, top=100, left=270, status=yes, toolbar=yes');");
             }
         } catch (CmsException e) {
             // requested type is not configured

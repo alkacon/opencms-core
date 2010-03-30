@@ -1,6 +1,6 @@
 
 /* for debugging purposes */
-/* @external listTreeItemChildren, listTreeItemLeaf, listTreeItemInternal, listTreeItemOpen, listTreeItemClosed, listTreeItemNoOpeners ;  */
+@external listTreeItem, listTreeItemHandler, listTreeItemHandler,listTreeItemContent, listTreeItemChildren, listTreeItemLeaf, listTreeItemInternal, listTreeItemOpen, listTreeItemClosed, listTreeItemNoOpeners, listScrollable;
 
 .listTreeItem {
 	
@@ -9,7 +9,6 @@
 .listTreeItemHandler {
 	vertical-align: top;
 	padding-top: 2px;
-	
 	margin-right: 4px;
 	
 }
@@ -30,6 +29,10 @@
 }
 
 
+
+
+
+
 .listTreeItemChildren {
 	list-style-type: none;
 	margin-left: 40px;
@@ -38,8 +41,8 @@
 
 .list {
 	list-style-type: none;
-	margin-left: 0px;
-	padding-left: 0px;
+	margin: 0px;
+	padding: 0px;
 }
 
 .listTreeItemOpen {
@@ -79,4 +82,7 @@
 	display: list-item ;
 }
 
-
+.listScrollable {
+	height: 100%;
+	overflow: auto;
+}

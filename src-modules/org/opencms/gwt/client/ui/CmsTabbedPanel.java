@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/30 14:08:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
@@ -175,6 +175,29 @@ public class CmsTabbedPanel extends Composite {
 
         m_tabPanel.add(tabContent, tabName);
 
+    }
+
+    /**
+     * Add a new tab with the provided name and content and additional left margin.<p>
+     * 
+     * @param tabContent the widget to add as a tab 
+     * @param tabName the name of the tab to display in the tabbar
+     */
+    public void addWithLeftMargin(Widget tabContent, String tabName) {
+
+        m_tabPanel.add(tabContent, tabName);
+
+        int tabIndex = m_tabPanel.getWidgetIndex(tabContent);
+        Element tabRootEl = m_tabPanel.getElement();
+        // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
+        List<Element> tabDivs = CmsDomUtil.getElementsByClass(
+            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTab(),
+            "div",
+            tabRootEl);
+        if ((tabDivs != null) && (tabDivs.size() > tabIndex)) {
+            tabDivs.get(tabIndex).addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin());
+            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().ensureInjected();
+        }
     }
 
     /**
