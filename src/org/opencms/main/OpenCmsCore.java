@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/03/16 12:00:39 $
- * Version: $Revision: 1.252 $
+ * Date   : $Date: 2010/03/30 08:36:51 $
+ * Version: $Revision: 1.253 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.252 $ 
+ * @version $Revision: 1.253 $ 
  * 
  * @since 6.0.0 
  */
@@ -1195,8 +1195,6 @@ public final class OpenCmsCore {
             // initialize the session manager
             m_sessionManager.initialize(sessionStorageProvider);
 
-            // everything is initialized, now start publishing
-            m_publishManager.startPublishing();
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
@@ -1703,6 +1701,8 @@ public final class OpenCmsCore {
             // upgrade the runlevel - OpenCms shell is available
             setRunLevel(OpenCms.RUNLEVEL_3_SHELL_ACCESS);
 
+            afterUpgradeRunlevel();
+
             return m_instance;
         }
     }
@@ -1741,15 +1741,7 @@ public final class OpenCmsCore {
             // the runlevel will change from 2 directly to 4, this is on purpose
             setRunLevel(OpenCms.RUNLEVEL_4_SERVLET_ACCESS);
 
-            try {
-                // now read the persistent locks
-                m_instance.m_securityManager.readLocks();
-            } catch (CmsException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.lock.Messages.get().getBundle().key(
-                        org.opencms.lock.Messages.ERR_READ_LOCKS_0), e);
-                }
-            }
+            afterUpgradeRunlevel();
 
             return m_instance;
         }
@@ -1788,6 +1780,26 @@ public final class OpenCmsCore {
         newSet.addAll(exportPoints);
         newSet.addAll(m_exportPoints);
         m_exportPoints = Collections.unmodifiableSet(newSet);
+    }
+
+    /**
+     * Finishes the startup sequence after last runlevel upgrade.<p>
+     */
+    private void afterUpgradeRunlevel() {
+
+        try {
+            // read the persistent locks
+            m_instance.m_securityManager.readLocks();
+
+            // everything is initialized, now start publishing
+            m_publishManager.startPublishing();
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(
+                    org.opencms.lock.Messages.get().getBundle().key(org.opencms.lock.Messages.ERR_READ_LOCKS_0),
+                    e);
+            }
+        }
     }
 
     /**
