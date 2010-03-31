@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/03/31 11:25:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/03/31 13:35:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,169 @@ import com.google.gwt.dom.client.NodeList;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public final class CmsDomUtil {
+
+    /**
+     * CSS Colors.<p>
+     */
+    public static enum Color {
+
+        /** CSS Color. */
+        red,
+    }
+
+    /**
+     * CSS Properties.<p>
+     */
+    public static enum Style {
+
+        /** CSS Property. */
+        backgroundColor,
+
+        /** CSS Property. */
+        backgroundImage,
+
+        /** CSS Property. */
+        borderStyle,
+
+        /** CSS Property. */
+        floatCss {
+
+            /**
+             * @see java.lang.Enum#toString()
+             */
+            @Override
+            public String toString() {
+
+                return "float";
+            }
+        },
+
+        /** CSS Property. */
+        fontFamily,
+
+        /** CSS Property. */
+        fontSize,
+
+        /** CSS Property. */
+        fontSizeAdjust,
+
+        /** CSS Property. */
+        fontStretch,
+
+        /** CSS Property. */
+        fontStyle,
+
+        /** CSS Property. */
+        fontVariant,
+
+        /** CSS Property. */
+        fontWeight,
+
+        /** CSS Property. */
+        height,
+
+        /** CSS Property. */
+        left,
+
+        /** CSS Property. */
+        letterSpacing,
+
+        /** CSS Property. */
+        lineHeight,
+
+        /** CSS Property. */
+        marginBottom,
+
+        /** CSS Property. */
+        position,
+
+        /** CSS Property. */
+        textAlign,
+
+        /** CSS Property. */
+        textDecoration,
+
+        /** CSS Property. */
+        textIndent,
+
+        /** CSS Property. */
+        textShadow,
+
+        /** CSS Property. */
+        textTransform,
+
+        /** CSS Property. */
+        top,
+
+        /** CSS Property. */
+        visibility,
+
+        /** CSS Property. */
+        whiteSpace,
+
+        /** CSS Property. */
+        width,
+
+        /** CSS Property. */
+        wordSpacing,
+
+        /** CSS Property. */
+        wordWrap
+    }
+
+    /**
+     * CSS Property values.<p>
+     */
+    public static enum StyleValue {
+
+        /** CSS Property value. */
+        absolute,
+
+        /** CSS Property value. */
+        hidden,
+
+        /** CSS Property value. */
+        none,
+
+        /** CSS Property value. */
+        transparent;
+    }
+
+    /**
+     * HTML Tags.<p>
+     */
+    public static enum Tag {
+
+        /** HTML Tag. */
+        ALL {
+
+            /**
+             * @see java.lang.Enum#toString()
+             */
+            @Override
+            public String toString() {
+
+                return "*";
+            }
+        },
+
+        /** HTML Tag. */
+        b,
+
+        /** HTML Tag. */
+        div,
+
+        /** HTML Tag. */
+        li,
+
+        /** HTML Tag. */
+        ul;
+    }
 
     /** Browser dependent implementation. */
     private static DocumentStyleImpl styleImpl;
@@ -64,32 +222,57 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Generates a closing tag.<p>
+     * 
+     * @param tag the tag to use
+     * 
+     * @return HTML code
+     */
+    public static String close(Tag tag) {
+
+        return "</" + tag.name() + ">";
+    }
+
+    /**
+     * Encloses the given text with the given tag.<p>
+     * 
+     * @param tag the tag to use
+     * @param text the text to enclose
+     * 
+     * @return HTML code
+     */
+    public static String enclose(Tag tag, String text) {
+
+        return open(tag) + text + close(tag);
+    }
+
+    /**
      * Returns the computed style of the given element.<p>
      * 
      * @param element the element
-     * @param name the name of the CSS property 
+     * @param style the CSS property 
      * 
      * @return the currently computed style
      */
-    public static String getCurrentStyle(Element element, String name) {
+    public static String getCurrentStyle(Element element, Style style) {
 
         if (styleImpl == null) {
             styleImpl = GWT.create(DocumentStyleImpl.class);
         }
-        return styleImpl.getCurrentStyle(element, name);
+        return styleImpl.getCurrentStyle(element, style.toString());
     }
 
     /**
      * Returns the computed style of the given element as number.<p>
      * 
      * @param element the element
-     * @param name the name of the CSS property 
+     * @param style the CSS property 
      * 
      * @return the currently computed style
      */
-    public static int getCurrentStyleInt(Element element, String name) {
+    public static int getCurrentStyleInt(Element element, Style style) {
 
-        String currentStyle = getCurrentStyle(element, name);
+        String currentStyle = getCurrentStyle(element, style);
         return CmsStringUtil.parseInt(currentStyle);
     }
 
@@ -97,13 +280,13 @@ public final class CmsDomUtil {
      * Returns all elements from the DOM with the given CSS class and tag name.<p>
      * 
      * @param className the class name to look for
-     * @param tagName the tag name
+     * @param tag the tag
      * 
      * @return the matching elements
      */
-    public static List<Element> getElementByClass(String className, String tagName) {
+    public static List<Element> getElementByClass(String className, Tag tag) {
 
-        return getElementsByClass(className, tagName, Document.get().getBody());
+        return getElementsByClass(className, tag, Document.get().getBody());
     }
 
     /**
@@ -115,7 +298,7 @@ public final class CmsDomUtil {
      */
     public static List<Element> getElementsByClass(String className) {
 
-        return getElementsByClass(className, "*", Document.get().getBody());
+        return getElementsByClass(className, Tag.ALL, Document.get().getBody());
     }
 
     /**
@@ -128,7 +311,7 @@ public final class CmsDomUtil {
      */
     public static List<Element> getElementsByClass(String className, Element rootElement) {
 
-        return getElementsByClass(className, "*", rootElement);
+        return getElementsByClass(className, Tag.ALL, rootElement);
 
     }
 
@@ -136,28 +319,24 @@ public final class CmsDomUtil {
      * Returns all elements with the given CSS class and tag name including the root element.<p>
      * 
      * @param className the class name to look for
-     * @param tagName the tag name
+     * @param tag the tag
      * @param rootElement the root element of the search
      * 
      * @return the matching elements
      */
-    public static List<Element> getElementsByClass(String className, String tagName, Element rootElement) {
+    public static List<Element> getElementsByClass(String className, Tag tag, Element rootElement) {
 
-        if ((rootElement == null)
-            || (className == null)
-            || (className.trim().length() == 0)
-            || (tagName == null)
-            || (tagName.trim().length() == 0)) {
+        if ((rootElement == null) || (className == null) || (className.trim().length() == 0) || (tag == null)) {
             return null;
         }
         className = className.trim();
         List<Element> result = new ArrayList<Element>();
-        if (intHasClass(className, rootElement)) {
+        if (internalHasClass(className, rootElement)) {
             result.add(rootElement);
         }
-        NodeList<Element> elements = rootElement.getElementsByTagName(tagName.trim());
+        NodeList<Element> elements = rootElement.getElementsByTagName(tag.toString());
         for (int i = 0; i < elements.getLength(); i++) {
-            if (intHasClass(className, elements.getItem(i))) {
+            if (internalHasClass(className, elements.getItem(i))) {
                 result.add(elements.getItem(i));
             }
         }
@@ -173,10 +352,10 @@ public final class CmsDomUtil {
      */
     public static boolean hasBackground(Element element) {
 
-        String backgroundColor = CmsDomUtil.getCurrentStyle(element, "background-color");
-        String backgroundImage = CmsDomUtil.getCurrentStyle(element, "background-image");
-        if ((backgroundColor.equals("transparent"))
-            && ((backgroundImage == null) || (backgroundImage.trim().length() == 0) || backgroundImage.equals("none"))) {
+        String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
+        String backgroundImage = CmsDomUtil.getCurrentStyle(element, Style.backgroundImage);
+        if ((backgroundColor.equals(StyleValue.transparent.toString()))
+            && ((backgroundImage == null) || (backgroundImage.trim().length() == 0) || backgroundImage.equals(StyleValue.none.toString()))) {
             return false;
         }
         return true;
@@ -191,8 +370,8 @@ public final class CmsDomUtil {
      */
     public static boolean hasBorder(Element element) {
 
-        String borderStyle = CmsDomUtil.getCurrentStyle(element, "border-style");
-        if ((borderStyle == null) || borderStyle.equals("none") || (borderStyle.length() == 0)) {
+        String borderStyle = CmsDomUtil.getCurrentStyle(element, Style.borderStyle);
+        if ((borderStyle == null) || borderStyle.equals(StyleValue.none.toString()) || (borderStyle.length() == 0)) {
             return false;
         }
         return true;
@@ -209,7 +388,19 @@ public final class CmsDomUtil {
      */
     public static boolean hasClass(String className, Element element) {
 
-        return intHasClass(className.trim(), element);
+        return internalHasClass(className.trim(), element);
+    }
+
+    /**
+     * Generates an opening tag.<p>
+     * 
+     * @param tag the tag to use
+     * 
+     * @return HTML code
+     */
+    public static String open(Tag tag) {
+
+        return "<" + tag.name() + ">";
     }
 
     /**
@@ -220,15 +411,12 @@ public final class CmsDomUtil {
      * 
      * @return <code>true</code> if the element has the given CSS class
      */
-    private static boolean intHasClass(String className, Element element) {
+    private static boolean internalHasClass(String className, Element element) {
 
         String elementClass = element.getClassName().trim();
-        if (elementClass.contains(className)
-            && (elementClass.equals(className)
-                || elementClass.startsWith(className + " ")
-                || elementClass.endsWith(" " + className) || elementClass.contains(" " + className + " "))) {
-            return true;
-        }
-        return false;
+        boolean hasClass = elementClass.contains(" " + className + " ");
+        hasClass |= elementClass.startsWith(className + " ");
+        hasClass |= elementClass.endsWith(" " + className);
+        return hasClass;
     }
 }

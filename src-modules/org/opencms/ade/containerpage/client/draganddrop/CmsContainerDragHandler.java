@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/03/30 06:55:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/31 13:35:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -464,12 +464,12 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
     void prepareElement(DragInfo elementInfo, I_CmsDragTargetContainer target, boolean setHidden) {
 
         Element element = elementInfo.getDraggable().getElement();
-        Style style = element.getStyle();
-        String width = CmsDomUtil.getCurrentStyle(element, "width");
+        int width = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
         target.insert(elementInfo.getPlaceholder(), target.getWidgetIndex((Widget)elementInfo.getDraggable()));
-        style.setProperty("width", width);
+        Style style = element.getStyle();
         style.setPosition(Position.ABSOLUTE);
         style.setMargin(0, Unit.PX);
+        style.setWidth(width, Unit.PX);
         style.setZIndex(100);
         element.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         if (!CmsDomUtil.hasBackground(element)) {

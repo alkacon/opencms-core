@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsTextMetrics.java,v $
- * Date   : $Date: 2010/03/31 12:19:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/31 13:35:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,31 +62,31 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
 public final class CmsTextMetrics {
 
     /** Default attributes to bind. */
-    private static final String[] ATTRIBUTES = new String[] {
-        "fontSize",
-        "fontSizeAdjust",
-        "fontFamily",
-        "fontStretch",
-        "fontStyle",
-        "fontVariant",
-        "fontWeight",
-        "letterSpacing",
-        "textAlign",
-        "textDecoration",
-        "textIndent",
-        "textShadow",
-        "textTransform",
-        "lineHeight",
-        "whiteSpace",
-        "wordSpacing",
-        "wordWrap"};
+    private static final CmsDomUtil.Style[] ATTRIBUTES = new CmsDomUtil.Style[] {
+        CmsDomUtil.Style.fontSize,
+        CmsDomUtil.Style.fontSizeAdjust,
+        CmsDomUtil.Style.fontFamily,
+        CmsDomUtil.Style.fontStretch,
+        CmsDomUtil.Style.fontStyle,
+        CmsDomUtil.Style.fontVariant,
+        CmsDomUtil.Style.fontWeight,
+        CmsDomUtil.Style.letterSpacing,
+        CmsDomUtil.Style.textAlign,
+        CmsDomUtil.Style.textDecoration,
+        CmsDomUtil.Style.textIndent,
+        CmsDomUtil.Style.textShadow,
+        CmsDomUtil.Style.textTransform,
+        CmsDomUtil.Style.lineHeight,
+        CmsDomUtil.Style.whiteSpace,
+        CmsDomUtil.Style.wordSpacing,
+        CmsDomUtil.Style.wordWrap};
 
     /** The count of used instances. */
     private static int m_count;
@@ -102,12 +102,7 @@ public final class CmsTextMetrics {
      */
     private CmsTextMetrics() {
 
-        m_elem = DOM.createDiv();
-        DOM.appendChild(RootPanel.getBodyElement(), m_elem);
-        DOM.setStyleAttribute(m_elem, "position", "absolute");
-        DOM.setStyleAttribute(m_elem, "left", "-5000px");
-        DOM.setStyleAttribute(m_elem, "top", "-5000px");
-        DOM.setStyleAttribute(m_elem, "visibility", "hidden");
+        // empty
     }
 
     /**
@@ -142,11 +137,20 @@ public final class CmsTextMetrics {
      * @param element the element
      * @param attributes the attributes to bind
      */
-    public void bind(Element element, String... attributes) {
+    public void bind(Element element, CmsDomUtil.Style... attributes) {
 
-        for (String attr : attributes) {
-            DOM.setStyleAttribute(m_elem, attr, DOM.getStyleAttribute(element, attr));
+        if (m_elem == null) {
+            m_elem = DOM.createDiv();
         }
+        DOM.setStyleAttribute(m_elem, CmsDomUtil.Style.position.name(), CmsDomUtil.StyleValue.absolute.name());
+        DOM.setStyleAttribute(m_elem, CmsDomUtil.Style.left.name(), "-5000px");
+        DOM.setStyleAttribute(m_elem, CmsDomUtil.Style.top.name(), "-5000px");
+        DOM.setStyleAttribute(m_elem, CmsDomUtil.Style.visibility.name(), CmsDomUtil.StyleValue.hidden.name());
+        for (CmsDomUtil.Style attr : attributes) {
+            String attrName = attr.toString();
+            DOM.setStyleAttribute(m_elem, attrName, DOM.getStyleAttribute(element, attrName));
+        }
+        DOM.appendChild(RootPanel.getBodyElement(), m_elem);
     }
 
     /**
@@ -159,7 +163,7 @@ public final class CmsTextMetrics {
     public int getHeight(String text) {
 
         m_elem.setInnerText(text);
-        return CmsDomUtil.getCurrentStyleInt(m_elem, "height");
+        return CmsDomUtil.getCurrentStyleInt(m_elem, CmsDomUtil.Style.height);
     }
 
     /**
@@ -170,9 +174,8 @@ public final class CmsTextMetrics {
      */
     public int getWidth(String text) {
 
-        DOM.setStyleAttribute(m_elem, "width", "auto");
         m_elem.setInnerText(text);
-        return CmsDomUtil.getCurrentStyleInt(m_elem, "width");
+        return CmsDomUtil.getCurrentStyleInt(m_elem, CmsDomUtil.Style.width);
     }
 
     /**
@@ -180,6 +183,8 @@ public final class CmsTextMetrics {
      */
     public void release() {
 
+        m_elem.removeFromParent();
+        m_elem = null;
         m_count--;
     }
 
@@ -192,6 +197,6 @@ public final class CmsTextMetrics {
      */
     public void setFixedWidth(int width) {
 
-        DOM.setIntStyleAttribute(m_elem, "width", width);
+        DOM.setIntStyleAttribute(m_elem, CmsDomUtil.Style.width.name(), width);
     }
 }

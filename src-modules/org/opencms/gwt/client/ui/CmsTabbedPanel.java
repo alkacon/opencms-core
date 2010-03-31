@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/03/30 14:08:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/31 13:35:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  * 
@@ -109,7 +109,7 @@ public class CmsTabbedPanel extends Composite {
 
         List<Element> tabBarDivs = CmsDomUtil.getElementsByClass(
             I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabs(),
-            "div",
+            CmsDomUtil.Tag.div,
             m_tabPanel.getElement());
 
         // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
@@ -138,7 +138,7 @@ public class CmsTabbedPanel extends Composite {
         // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
         List<Element> tabBarDivs = CmsDomUtil.getElementsByClass(
             I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabs(),
-            "div",
+            CmsDomUtil.Tag.div,
             tabRootEl);
         if (tabBarDivs.size() == 1) {
             tabBarDivs.get(0).getParentElement().setClassName(
@@ -192,7 +192,7 @@ public class CmsTabbedPanel extends Composite {
         // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
         List<Element> tabDivs = CmsDomUtil.getElementsByClass(
             I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTab(),
-            "div",
+            CmsDomUtil.Tag.div,
             tabRootEl);
         if ((tabDivs != null) && (tabDivs.size() > tabIndex)) {
             tabDivs.get(tabIndex).addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin());

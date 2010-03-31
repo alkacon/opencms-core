@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/03/31 12:21:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/03/31 13:38:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,21 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsStringUtil;
+import org.opencms.gwt.client.util.CmsTextMetrics;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -58,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -132,9 +141,7 @@ public class CmsListItemWidget extends Composite {
                 m_owner.addStyleName(CmsListItemWidget.OPENCLASS);
                 m_button.setDown(true);
             }
-
         }
-
     }
 
     /** The CSS class to set the additional info open. */
@@ -145,7 +152,7 @@ public class CmsListItemWidget extends Composite {
 
     /** DIV for additional item info. */
     @UiField
-    Element m_additionalDiv;
+    DivElement m_additionalDiv;
 
     /** Panel to hold buttons.*/
     @UiField
@@ -230,7 +237,7 @@ public class CmsListItemWidget extends Composite {
      */
     protected void init(CmsListInfoBean infoBean) {
 
-        HTMLPanel panel = new HTMLPanel("div", "");
+        HTMLPanel panel = new HTMLPanel(CmsDomUtil.Tag.div.name(), "");
         m_rootId = HTMLPanel.createUniqueId();
         panel.getElement().setId(m_rootId);
         panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().listItem());
@@ -252,5 +259,67 @@ public class CmsListItemWidget extends Composite {
                 m_additionalDiv.appendChild(info.getElement());
             }
         }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
+
+        super.onLoad();
+
+        /* defer until children have been (hopefully) layouted. */
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                int size = 2 + m_additionalDiv.getChildCount();
+
+                List<Element> elements = new ArrayList<Element>(size);
+                elements.add(m_titleDiv.getElement());
+                elements.add(m_subTitleDiv.getElement());
+
+                NodeList<Node> childNodes = m_additionalDiv.getChildNodes();
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    Node addInfo = childNodes.getItem(i);
+                    Element element = addInfo.getChild(1).<Element> cast();
+                    elements.add(element);
+                }
+
+                for (int i = 0; i < elements.size(); i++) {
+                    Element element = elements.get(i);
+                    CmsTextMetrics tm = CmsTextMetrics.get();
+                    tm.bind(element);
+                    String text = element.getInnerText();
+                    int clientWidth = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
+                    int textWidth = tm.getWidth(text);
+                    if (clientWidth < textWidth) {
+                        // fix text
+                        int maxChars = (int)((float)clientWidth / (float)textWidth * text.length());
+                        if (maxChars < 1) {
+                            maxChars = 1;
+                        }
+                        String newText = text.substring(0, maxChars - 1);
+                        if (text.startsWith("/")) {
+                            newText = CmsStringUtil.formatResourceName(text, maxChars);
+                        } else if (maxChars > 2) {
+                            newText += "&hellip;";
+                        }
+                        if (newText.isEmpty()) {
+                            newText = "&nbsp;";
+                        }
+                        // FIXME: clientWidth seems to be from time to time zero :(
+                        element.setInnerHTML(text); // newText
+                        // add tooltip
+                        element.setAttribute("title", text);
+                    }
+                    tm.release();
+                }
+            }
+        });
     }
 }

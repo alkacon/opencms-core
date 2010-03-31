@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesVfs.java,v $
- * Date   : $Date: 2010/03/30 14:08:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/31 13:35:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -84,13 +85,13 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
 
         super.onModuleLoad();
         I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
-        final CmsFlowPanel html = new CmsFlowPanel("div");
+        final CmsFlowPanel html = new CmsFlowPanel(CmsDomUtil.Tag.div.name());
         html.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryDialogSize());
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleriesDialog());
         RootPanel.get().add(html);
 
         // set the search object
-        // TODO: replace the dummy data with indos from openvfsgallery.jsp
+        // TODO: replace the dummy data with infos from openvfsgallery.jsp
 
         final CmsGallerySearchObject searchObj = new CmsGallerySearchObject();
         // if gallery is selected write the gallery path to the gallery list
@@ -107,6 +108,7 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
 
         // set tabs config
         // TODO: why do this method throw ClassNotCast Exeption in host mode??
+        // ANSWER: because it just did not work, but now it works ;)
         // String[] tabs = splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
         String[] tabs = {
             I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name(),

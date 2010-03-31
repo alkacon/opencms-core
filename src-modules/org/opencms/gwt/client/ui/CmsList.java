@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/03/23 09:30:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/31 13:35:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -43,26 +44,21 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
 public class CmsList extends ComplexPanel {
 
-    // TODO: add sorting functions
-
     /** The css bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
-
-    /** The list panel. */
-    //    protected HTMLPanel m_list;
 
     /**
      * Constructor.<p>
      */
     public CmsList() {
 
-        setElement(DOM.createElement("ul"));
+        setElement(DOM.createElement(CmsDomUtil.Tag.ul.name()));
         setStyleName(CSS.list());
     }
 

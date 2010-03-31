@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTabInnerPanel.java,v $
- * Date   : $Date: 2010/03/30 14:08:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/31 13:35:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -246,14 +246,14 @@ public class CmsTabInnerPanel extends Composite {
         int tabHeight = m_tab.getElement().getClientHeight();
 
         int marginValueParams = 0;
-        String marginBottomPrams = CmsDomUtil.getCurrentStyle(m_params.getElement(), "margin-bottom");
+        String marginBottomPrams = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomPrams)) {
             marginValueParams = CmsStringUtil.parseInt(marginBottomPrams);
         }
         int paramsHeight = m_params.getOffsetHeight() + marginValueParams;
 
         int marginValueOptions = 0;
-        String marginBottomOptions = CmsDomUtil.getCurrentStyle(m_params.getElement(), "margin-bottom");
+        String marginBottomOptions = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomOptions)) {
             marginValueOptions = CmsStringUtil.parseInt(marginBottomOptions);
         }
@@ -321,24 +321,10 @@ public class CmsTabInnerPanel extends Composite {
                 panelText = panelText.concat(" ").concat(title);
             }
         }
-        categoriesPanel.add(new HTMLPanel("div", panelText));
+        categoriesPanel.add(new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText));
 
         return categoriesPanel;
     }
-
-    //    /**
-    //     * 
-    //     * @param widget
-    //     */
-    //    public void removeFromParams(Widget widget) {
-    //
-    //        m_params.remove(widget);
-    //        // removes the margin bottom if this "div" has no childeren.
-    //        // TODO: does this always work?
-    //        if (!m_params.getElement().hasChildNodes()) {
-    //            m_params.removeStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
-    //        }
-    //    }
 
     /**
      * Returns the panel with the content of the galleries search parameter.<p>
@@ -375,7 +361,7 @@ public class CmsTabInnerPanel extends Composite {
                 panelText = panelText.concat(" ").concat(title);
             }
         }
-        galleriesPanel = new HTMLPanel("div", panelText);
+        galleriesPanel = new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText);
 
         return galleriesPanel;
     }
@@ -396,17 +382,15 @@ public class CmsTabInnerPanel extends Composite {
         //        typesPanel.addToFloat(button);
         String panelText = "";
         if (selectedTypes.size() == 1) {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPE_0)).concat(
-                "</b>");
+            panelText += CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPE_0));
             CmsTypesListInfoBean galleryBean = types.get(selectedTypes.get(0));
             String title = galleryBean.getTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = galleryBean.getSubTitle();
             }
-            panelText = panelText.concat(" ").concat(title);
+            panelText = panelText + " " + title;
         } else {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPES_0)).concat(
-                "</b>");
+            panelText += CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPES_0));
             for (String galleryPath : selectedTypes) {
 
                 CmsTypesListInfoBean galleryBean = types.get(galleryPath);
@@ -414,10 +398,10 @@ public class CmsTabInnerPanel extends Composite {
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                     title = galleryBean.getSubTitle();
                 }
-                panelText = panelText.concat(" ").concat(title);
+                panelText = panelText + " " + title;
             }
         }
-        HTMLPanel test = new HTMLPanel("div", panelText);
+        HTMLPanel test = new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText);
         test.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
         typesPanel.add(test);
 

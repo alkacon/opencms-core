@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/03/30 06:55:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/31 13:35:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -65,10 +65,6 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
 
     /** HTML class used to identify sub container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_SUB_CONTAINER_ELEMENTS}. */
     public static final String CLASS_SUB_CONTAINER_ELEMENTS = "cms_ade_subcontainer";
-
-    //    private enum TagName {
-    //        DIV, SPAN, UL, OL, LI, TR, TD, TABLE, DL, DT, FIELDSET, FORM
-    //    }
 
     /** Container element id. */
     private String m_containerId;
@@ -207,7 +203,8 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
         // in some layouts this may lead to inappropriate clearing after the target, 
         // but it is still necessary as it forces the target to enclose it's floated content 
         if ((m_root.getWidgetCount() > 0)
-            && !CmsDomUtil.getCurrentStyle(m_root.getWidget(0).getElement(), "float").equals("none")) {
+            && !CmsDomUtil.getCurrentStyle(m_root.getWidget(0).getElement(), CmsDomUtil.Style.floatCss).equals(
+                CmsDomUtil.StyleValue.none.toString())) {
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
         }
         m_highlighting = new CmsHighlightingBorder(getInnerDimensions(), CmsHighlightingBorder.BorderColor.red);
@@ -237,9 +234,8 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
      */
     public void onDragEnter(I_CmsDragHandler<?, ?> handler) {
 
-        m_root.getElement().getStyle().setBorderColor("red");
+        m_root.getElement().getStyle().setBorderColor(CmsDomUtil.Color.red.name());
         //add(handler.getDragElement().getCurrentPlaceholder());
-
     }
 
     /**
@@ -375,7 +371,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             Widget w = it.next();
-            if (w.isVisible() && !w.getElement().getStyle().getPosition().equals("absolute")) {
+            if (w.isVisible() && !w.getElement().getStyle().getPosition().equals(CmsDomUtil.StyleValue.absolute.name())) {
                 if (first) {
                     first = false;
                     top = w.getAbsoluteTop();
