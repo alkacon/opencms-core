@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/03/29 08:47:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/31 12:15:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.ui.CmsTextButton;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.lazytree.CmsListTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStringUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -149,6 +149,7 @@ public class CmsPublishGroupPanel extends Composite {
         }
         Image icon = new Image(resourceBean.getIcon());
         icon.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        // TODO: check this!?
         itemWidget.setIcon(new Image(resourceBean.getIcon()));
         return itemWidget;
     }
@@ -245,7 +246,7 @@ public class CmsPublishGroupPanel extends Composite {
      */
     private void addResource(CmsClientPublishResourceBean resourceBean, boolean indent) {
 
-        CmsListTreeItem row = buildItem(resourceBean);
+        CmsTreeItem row = buildItem(resourceBean);
         m_panel.add(row);
         if (!CmsStringUtil.isEmpty(resourceBean.getInfoValue())) {
             m_numProblems += 1;
@@ -263,7 +264,7 @@ public class CmsPublishGroupPanel extends Composite {
      * 
      * @return a widget representing the resource bean
      */
-    private CmsListTreeItem buildItem(CmsClientPublishResourceBean resourceBean) {
+    private CmsTreeItem buildItem(CmsClientPublishResourceBean resourceBean) {
 
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean);
         final CmsStyleVariable styleVar = new CmsStyleVariable(itemWidget);
@@ -276,7 +277,7 @@ public class CmsPublishGroupPanel extends Composite {
             checkbox.setChecked(false);
             checkbox.setEnabled(false);
         }
-        CmsListTreeItem row = new CmsListTreeItem(false, checkbox, itemWidget);
+        CmsTreeItem row = new CmsTreeItem(false, checkbox, itemWidget);
         final CmsCheckBox remover = new CmsCheckBox();
         final CmsPublishItemSelectionController controller = new CmsPublishItemSelectionController(
             resourceBean.getId(),
@@ -288,6 +289,9 @@ public class CmsPublishGroupPanel extends Composite {
         remover.setTitle(messages.key(Messages.GUI_PUBLISH_REMOVE_BUTTON_0));
         remover.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent e) {
 
                 boolean remove = remover.isChecked();
@@ -314,6 +318,9 @@ public class CmsPublishGroupPanel extends Composite {
         m_selectNone = createSmallButton(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
         m_selectAll.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent event) {
 
                 setAllSelected(true);
@@ -321,6 +328,9 @@ public class CmsPublishGroupPanel extends Composite {
         });
         m_selectNone.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent event) {
 
                 setAllSelected(false);

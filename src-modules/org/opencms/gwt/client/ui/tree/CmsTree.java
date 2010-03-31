@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/CmsListTree.java,v $
- * Date   : $Date: 2010/03/19 15:28:29 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
+ * Date   : $Date: 2010/03/31 12:15:23 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.lazytree;
+package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.ui.CmsList;
 
@@ -44,13 +44,15 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A tree of list items.<p>
  * 
+ * @param <I> the specific tree item implementation 
+ * 
  * @author Georg Westenberger
  * 
  * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsListTree extends CmsList implements HasOpenHandlers<CmsListTreeItem> {
+public class CmsTree<I extends CmsTreeItem> extends CmsList implements HasOpenHandlers<I> {
 
     /** The event handlers for the tree. */
     protected HandlerManager m_handlers = new HandlerManager(null);
@@ -58,20 +60,20 @@ public class CmsListTree extends CmsList implements HasOpenHandlers<CmsListTreeI
     /**
      * @see org.opencms.gwt.client.ui.CmsList#add(com.google.gwt.user.client.ui.Widget)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void add(Widget item) {
 
         super.add(item);
-        if (item instanceof CmsListTreeItem) {
-            ((CmsListTreeItem)item).setTree(this);
+        if (item instanceof CmsTreeItem) {
+            ((CmsTreeItem)item).setTree((CmsTree<CmsTreeItem>)this);
         }
-
     }
 
     /**
      * @see com.google.gwt.event.logical.shared.HasOpenHandlers#addOpenHandler(com.google.gwt.event.logical.shared.OpenHandler)
      */
-    public HandlerRegistration addOpenHandler(final OpenHandler<CmsListTreeItem> handler) {
+    public HandlerRegistration addOpenHandler(final OpenHandler<I> handler) {
 
         m_handlers.addHandler(OpenEvent.getType(), handler);
         return new HandlerRegistration() {
@@ -97,7 +99,7 @@ public class CmsListTree extends CmsList implements HasOpenHandlers<CmsListTreeI
      *
      * @param item the tree item for which the open event should be fired
      */
-    public void fireOpen(CmsListTreeItem item) {
+    public void fireOpen(I item) {
 
         OpenEvent.fire(this, item);
     }

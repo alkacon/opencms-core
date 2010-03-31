@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsBrokenLinksPanel.java,v $
- * Date   : $Date: 2010/03/29 08:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/31 12:15:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsTextButton;
-import org.opencms.gwt.client.ui.lazytree.CmsListTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -128,12 +128,12 @@ public class CmsBrokenLinksPanel extends Composite {
     public void addEntry(CmsClientPublishResourceBean res) {
 
         CmsListItemWidget itemWidget = CmsPublishGroupPanel.createListItemWidget(res);
-        CmsListTreeItem item = new CmsListTreeItem(false, itemWidget);
+        CmsTreeItem item = new CmsTreeItem(false, itemWidget);
         item.setOpen(true);
         item.setContentVisible(true);
         for (CmsClientPublishResourceBean subRes : res.getRelated()) {
             CmsListItemWidget subWidget = CmsPublishGroupPanel.createListItemWidget(subRes);
-            CmsListTreeItem subItem = new CmsListTreeItem(false, subWidget);
+            CmsTreeItem subItem = new CmsTreeItem(false, subWidget);
             item.addChild(subItem);
         }
         m_list.addItem(item);

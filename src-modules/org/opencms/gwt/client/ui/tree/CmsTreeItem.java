@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/CmsListTreeItem.java,v $
- * Date   : $Date: 2010/03/22 16:16:02 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
+ * Date   : $Date: 2010/03/31 12:15:23 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.lazytree;
+package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
@@ -61,14 +61,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * Where state can be <code>opened</code>, <code>closed</code> or <code>leaf</code>.<p>
  * 
+ * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
- * 
  */
-public class CmsListTreeItem extends CmsSimpleListItem {
+public class CmsTreeItem extends CmsSimpleListItem {
 
     /** The CSS bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
@@ -85,12 +85,13 @@ public class CmsListTreeItem extends CmsSimpleListItem {
     /** The style variable controlling this tree item's open/closed state. */
     private CmsStyleVariable m_styleVar;
 
-    private CmsListTree m_tree;
+    /** The tree reference. */
+    private CmsTree<CmsTreeItem> m_tree;
 
     /** 
      * Default constructor.<p>
      */
-    public CmsListTreeItem() {
+    public CmsTreeItem() {
 
         super();
     }
@@ -101,7 +102,7 @@ public class CmsListTreeItem extends CmsSimpleListItem {
      * @param showOpeners if true, show open/close icons
      * @param content the widgets to put into the tree item 
      */
-    public CmsListTreeItem(boolean showOpeners, Widget... content) {
+    public CmsTreeItem(boolean showOpeners, Widget... content) {
 
         this();
         if (content.length > 0) {
@@ -137,11 +138,10 @@ public class CmsListTreeItem extends CmsSimpleListItem {
     public void addChild(CmsListItem item) {
 
         m_children.addItem(item);
-        if (item instanceof CmsListTreeItem) {
-            ((CmsListTreeItem)item).setTree(m_tree);
+        if (item instanceof CmsTreeItem) {
+            ((CmsTreeItem)item).setTree(m_tree);
         }
         onChangeChildren();
-
     }
 
     /**
@@ -158,7 +158,7 @@ public class CmsListTreeItem extends CmsSimpleListItem {
      * 
      * @return a tree or null
      */
-    public CmsListTree getTree() {
+    public CmsTree<CmsTreeItem> getTree() {
 
         return m_tree;
     }
@@ -202,24 +202,66 @@ public class CmsListTreeItem extends CmsSimpleListItem {
     /**
      * Sets the tree to which this tree item belongs.<p>
      * 
-     * This is automatically called when this tree item or one of its ancestors is inserted into a tree.
+     * This is automatically called when this tree item or one of its ancestors is inserted into a tree.<p>
      * 
      * @param tree the tree into which the item has been inserted
-     * 
      */
-    public void setTree(CmsListTree tree) {
+    public void setTree(CmsTree<CmsTreeItem> tree) {
 
         m_tree = tree;
         for (Widget widget : m_children) {
-            if (widget instanceof CmsListTreeItem) {
-                ((CmsListTreeItem)widget).setTree(tree);
+            if (widget instanceof CmsTreeItem) {
+                ((CmsTreeItem)widget).setTree(tree);
             }
         }
     }
 
     /**
-     * Initializes this widget.<p>
+     * Creates the button for opening/closing this item.<p>
      * 
+     * @return a button
+     */
+    protected ToggleButton createOpener() {
+
+        final ToggleButton opener = new ToggleButton();
+        opener.setStyleName(CSS.listTreeItemHandler());
+        opener.getUpFace().setImage(getPlusImage());
+        opener.getDownFace().setImage(getMinusImage());
+        opener.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent e) {
+
+                setOpen(opener.isDown());
+            }
+        });
+        return opener;
+    }
+
+    /**
+     * The '-' image.<p>
+     * 
+     * @return the minus image 
+     */
+    protected Image getMinusImage() {
+
+        return new Image(I_CmsImageBundle.INSTANCE.minus());
+    }
+
+    /**
+     * The '+' image.<p>
+     * 
+     * @return the plus image 
+     */
+    protected Image getPlusImage() {
+
+        return new Image(I_CmsImageBundle.INSTANCE.plus());
+    }
+
+    /**
+     * Initializes this widget.<p>
      */
     @Override
     protected void init() {
@@ -236,28 +278,9 @@ public class CmsListTreeItem extends CmsSimpleListItem {
         setOpen(false);
     }
 
-    /**
-     * Creates the button for opening/closing this item.<p>
-     * 
-     * @return a button
+    /** 
+     * Fires the open event on the tree.<p> 
      */
-    private ToggleButton createOpener() {
-
-        final ToggleButton opener = new ToggleButton();
-        opener.setStyleName(CSS.listTreeItemHandler());
-        opener.getUpFace().setImage(new Image(I_CmsImageBundle.INSTANCE.plus()));
-        opener.getDownFace().setImage(new Image(I_CmsImageBundle.INSTANCE.minus()));
-        opener.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent e) {
-
-                setOpen(opener.isDown());
-            }
-        });
-        return opener;
-    }
-
-    /** Fires the open event on the tree.<p> */
     private void fireOpen() {
 
         if (m_tree != null) {
@@ -283,5 +306,4 @@ public class CmsListTreeItem extends CmsSimpleListItem {
         int count = getChildCount();
         m_leafStyleVar.setValue(count == 0 ? CSS.listTreeItemLeaf() : CSS.listTreeItemInternal());
     }
-
 }

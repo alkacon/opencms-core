@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/A_CmsLazyListOpenHandler.java,v $
- * Date   : $Date: 2010/03/19 15:28:29 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/I_CmsLazyOpenHandler.java,v $
+ * Date   : $Date: 2010/03/31 12:15:23 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,36 +29,35 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.lazytree;
+package org.opencms.gwt.client.ui.tree;
 
 import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 
 /**
- * Lazy list tree open handler abstract implementation.<p>
+ * Lazy tree open handler interface.<p>
  * 
- * @author Georg Westenberger
+ * @param <I> the specific lazy tree item implementation 
+ * 
+ * @author Michael Moossen
  * 
  * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  * 
+ * @see org.opencms.gwt.client.ui.tree.CmsLazyTreeItem
  */
-public abstract class A_CmsLazyListOpenHandler implements I_CmsLazyOpenHandler<CmsListTreeItem> {
+public interface I_CmsLazyOpenHandler<I extends CmsLazyTreeItem> extends OpenHandler<I> {
 
     /**
-     * @see org.opencms.gwt.client.ui.lazytree.I_CmsLazyOpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
+     * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
      */
-    public void onOpen(OpenEvent<CmsListTreeItem> event) {
+    void onOpen(OpenEvent<I> event);
 
-        if (!(event.getTarget() instanceof CmsLazyListTreeItem)) {
-            return;
-        }
-        CmsLazyListTreeItem target = (CmsLazyListTreeItem)event.getTarget();
-        if (target.getLoadState() != CmsLazyListTreeItem.LoadState.UNLOADED) {
-            return;
-        }
-        target.onStartLoading();
-        target.setOpen(true);
-        load(target);
-    }
+    /**
+     * Load the children of the given tree item.<p>
+     * 
+     * @param target the tree item to be loaded
+     */
+    void load(I target);
 }

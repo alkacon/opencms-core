@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/lazytree/Attic/CmsLazyListTreeItem.java,v $
- * Date   : $Date: 2010/03/22 10:07:04 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsLazyTreeItem.java,v $
+ * Date   : $Date: 2010/03/31 12:15:23 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,11 +29,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.lazytree;
+package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -41,28 +43,31 @@ import com.google.gwt.user.client.ui.Widget;
  * Tree item for lazily loaded list trees.<p>
  * 
  * @author Georg Westenberger
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsLazyListTreeItem extends CmsListTreeItem {
+public class CmsLazyTreeItem extends CmsTreeItem {
 
-    /** Enum for indicating the load state of a tree item */
+    /** Enum for indicating the load state of a tree item. */
     public enum LoadState {
-        /** children have been loaded */
+
+        /** children have been loaded. */
         LOADED,
-        /** loading children */
+
+        /** loading children. */
         LOADING,
-        /** children haven't been loaded */
+
+        /** children haven't been loaded. */
         UNLOADED;
     }
 
     /**
      * Helper tree item which displays a "loading" message.<p>
-     * 
      */
-    class LoadingItem extends CmsListItem {
+    protected class LoadingItem extends CmsListItem {
 
         /**
          * Constructs a new instance.<p>
@@ -82,7 +87,7 @@ public class CmsLazyListTreeItem extends CmsListTreeItem {
      * 
      * @param widgets the widgets to insert into the new tree item
      */
-    public CmsLazyListTreeItem(Widget... widgets) {
+    public CmsLazyTreeItem(Widget... widgets) {
 
         super(true, widgets);
         addChild(new LoadingItem());
@@ -99,29 +104,34 @@ public class CmsLazyListTreeItem extends CmsListTreeItem {
     }
 
     /**
-     * This method should be called when loading the item's children has failed.<p> 
-     */
-    public void onFailLoading() {
-
-        m_loadState = LoadState.UNLOADED;
-        this.setOpen(false);
-    }
-
-    /**
      * This method should be called when the item's children have finished loading.<p>
      */
     public void onFinishLoading() {
 
+        m_opener.getUpFace().setImage(getPlusImage());
+        m_opener.getDownFace().setImage(getMinusImage());
         m_loadState = LoadState.LOADED;
     }
 
     /**
      * This method is called when the tree item's children start being loaded.<p>
-     * 
      */
     public void onStartLoading() {
 
         m_loadState = LoadState.LOADING;
+        m_opener.getUpFace().setImage(getLoadingImage());
+        m_opener.getDownFace().setImage(getLoadingImage());
     }
 
+    /**
+     * Returns the loading image.<p>
+     * 
+     * @return the loading image
+     */
+    protected Image getLoadingImage() {
+
+        Image image = new Image(I_CmsImageBundle.INSTANCE.loading());
+        image.setPixelSize(11, 11);
+        return image;
+    }
 }
