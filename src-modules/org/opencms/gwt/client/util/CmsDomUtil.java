@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/03/26 09:42:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/03/31 11:25:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,12 +46,13 @@ import com.google.gwt.dom.client.NodeList;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public final class CmsDomUtil {
 
+    /** Browser dependent implementation. */
     private static DocumentStyleImpl styleImpl;
 
     /**
@@ -67,6 +68,7 @@ public final class CmsDomUtil {
      * 
      * @param element the element
      * @param name the name of the CSS property 
+     * 
      * @return the currently computed style
      */
     public static String getCurrentStyle(Element element, String name) {
@@ -75,6 +77,20 @@ public final class CmsDomUtil {
             styleImpl = GWT.create(DocumentStyleImpl.class);
         }
         return styleImpl.getCurrentStyle(element, name);
+    }
+
+    /**
+     * Returns the computed style of the given element as number.<p>
+     * 
+     * @param element the element
+     * @param name the name of the CSS property 
+     * 
+     * @return the currently computed style
+     */
+    public static int getCurrentStyleInt(Element element, String name) {
+
+        String currentStyle = getCurrentStyle(element, name);
+        return CmsStringUtil.parseInt(currentStyle);
     }
 
     /**
@@ -153,7 +169,7 @@ public final class CmsDomUtil {
      * 
      * @param element the element
      * 
-     * @return true if the element has a background set
+     * @return <code>true</code> if the element has a background set
      */
     public static boolean hasBackground(Element element) {
 
@@ -171,7 +187,7 @@ public final class CmsDomUtil {
      * 
      * @param element the element
      * 
-     * @return true if the element has a border
+     * @return <code>true</code> if the element has a border
      */
     public static boolean hasBorder(Element element) {
 
@@ -189,7 +205,7 @@ public final class CmsDomUtil {
      * @param className the class name to look for
      * @param element the element
      * 
-     * @return true if the element has the given CSS class
+     * @return <code>true</code> if the element has the given CSS class
      */
     public static boolean hasClass(String className, Element element) {
 
@@ -202,7 +218,7 @@ public final class CmsDomUtil {
      * @param className the class name to look for
      * @param element the element
      * 
-     * @return true if the element has the given CSS class
+     * @return <code>true</code> if the element has the given CSS class
      */
     private static boolean intHasClass(String className, Element element) {
 
