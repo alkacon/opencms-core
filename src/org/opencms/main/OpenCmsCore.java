@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/03/30 07:56:39 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/03/31 10:13:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -145,7 +145,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1909,9 +1909,6 @@ public final class OpenCmsCore {
         try {
             // read the persistent locks
             m_instance.m_securityManager.readLocks();
-
-            // everything is initialized, now start publishing
-            m_publishManager.startPublishing();
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(
@@ -1919,6 +1916,9 @@ public final class OpenCmsCore {
                     e);
             }
         }
+
+        // everything is initialized, now start publishing
+        m_publishManager.startPublishing();
     }
 
     /**
