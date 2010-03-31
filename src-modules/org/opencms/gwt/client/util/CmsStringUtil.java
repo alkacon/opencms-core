@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsStringUtil.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/03/31 11:24:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.util;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -50,6 +50,61 @@ public final class CmsStringUtil {
     private CmsStringUtil() {
 
         // empty
+    }
+
+    /**
+     * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
+     * In order to reduce the length of the displayed names, single folder names are removed/replaced with ... successively, 
+     * starting with the second! folder. The first folder is removed as last.<p>
+     * 
+     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/myfolder/.../index.html</code>.<p>
+     * 
+     * @param name the resource name to format
+     * @param maxLength the maximum length of the resource name (without leading <code>/...</code>)
+     * 
+     * @return the formatted resource name
+     * 
+     * @see org.opencms.util.CmsStringUtil#formatResourceName(String, int)
+     */
+    public static String formatResourceName(String name, int maxLength) {
+
+        if (name == null) {
+            return null;
+        }
+
+        if (name.length() <= maxLength) {
+            return name;
+        }
+
+        int total = name.length();
+        String[] names = splitAsArray(name, "/");
+        if (name.endsWith("/")) {
+            names[names.length - 1] = names[names.length - 1] + "/";
+        }
+        for (int i = 1; (total > maxLength) && (i < names.length - 1); i++) {
+            if (i > 1) {
+                names[i - 1] = "";
+            }
+            names[i] = "...";
+            total = 0;
+            for (int j = 0; j < names.length; j++) {
+                int l = names[j].length();
+                total += l + ((l > 0) ? 1 : 0);
+            }
+        }
+        if (total > maxLength) {
+            names[0] = (names.length > 2) ? "" : (names.length > 1) ? "..." : names[0];
+        }
+
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].length() > 0) {
+                result.append("/");
+                result.append(names[i]);
+            }
+        }
+
+        return result.toString();
     }
 
     /**
@@ -116,6 +171,24 @@ public final class CmsStringUtil {
     }
 
     /**
+     * The parseInt() function parses a string and returns an integer.<p>
+     * 
+     * Only the first number in the string is returned. Leading and trailing spaces are allowed.
+     * If the first character cannot be converted to a number, parseInt() returns zero.<p>
+     * 
+     * @param str the string to be parsed
+     * 
+     * @return the parsed number
+     */
+    public static native int parseInt(String str) /*-{
+        var ret = parseInt(str, 10);
+        if (isNaN(ret)) {
+        return 0;
+        } 
+        return ret;
+    }-*/;
+
+    /**
      * Same as {@link org.opencms.util.CmsStringUtil#splitAsArray(String, String)}.<p>
      * 
      * @param str the string to split
@@ -123,22 +196,8 @@ public final class CmsStringUtil {
      * 
      * @return the splitted string
      */
-    public static native String[] splitAsArray(String str, String splitter) /*-{
+    public static String[] splitAsArray(String str, String splitter) {
+
         return str.split(splitter);
-    }-*/;
-
-    /**
-     * The parseInt() function parses a string and returns an integer..<p>
-     * 
-     * Only the first number in the string is returned. Leading and trailing spaces are allowed.
-     * If the first character cannot be converted to a number, parseInt() returns NaN.
-     * 
-     * @param str the string to be parsed
-     * 
-     * @return the parsed number
-     */
-    public static native int parseInt(String str) /*-{
-        return parseInt(str);
-    }-*/;
-
+    }
 }
