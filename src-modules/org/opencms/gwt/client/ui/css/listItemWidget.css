@@ -30,8 +30,7 @@
     height: auto;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	border-radius: 4px;
-	
+	border-radius: 4px;	
 }
 
 .disabledItem .itemContent {
@@ -81,7 +80,6 @@
 }
 
 .itemAdditionalTitle{
-	display:block;
 	float:left;
 	height:16px;
 	margin-right:5px;
@@ -91,7 +89,6 @@
 }
 
 .itemAdditionalValue{
-	display:block;
 	margin-left:95px;
 	vertical-align:top;
 }

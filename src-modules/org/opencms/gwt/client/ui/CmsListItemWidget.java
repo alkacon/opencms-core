@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/03/29 06:39:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/03/31 12:21:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,13 +38,12 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -59,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -73,22 +72,30 @@ public class CmsListItemWidget extends Composite {
          * 
          * @param title info title
          * @param value info value
+         * @param additionalStyle an additional class name
          */
         AdditionalInfoItem(String title, String value, String additionalStyle) {
 
             super(DOM.createDiv());
-            Element titleSpan = DOM.createSpan();
-            titleSpan.setInnerText(title + ":");
-            titleSpan.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemAdditionalTitle());
-            Element valueSpan = DOM.createSpan();
-            valueSpan.setInnerText(value);
-            valueSpan.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemAdditionalValue());
+            Element titleElem = DOM.createDiv();
+            titleElem.setInnerText(title + ":");
+            titleElem.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemAdditionalTitle());
+            Element valueElem = DOM.createDiv();
+            valueElem.setInnerText(value);
+            valueElem.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemAdditionalValue());
             if (additionalStyle != null) {
-                valueSpan.addClassName(additionalStyle);
+                valueElem.addClassName(additionalStyle);
             }
-            getElement().appendChild(titleSpan);
-            getElement().appendChild(valueSpan);
+            getElement().appendChild(titleElem);
+            getElement().appendChild(valueElem);
         }
+    }
+
+    /**
+     * @see com.google.gwt.uibinder.client.UiBinder
+     */
+    protected interface I_CmsListItemWidgetUiBinder extends UiBinder<CmsHTMLHoverPanel, CmsListItemWidget> {
+        // GWT interface, nothing to do here
     }
 
     /**
@@ -130,22 +137,15 @@ public class CmsListItemWidget extends Composite {
 
     }
 
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    /* default */interface I_CmsListItemWidgetUiBinder extends UiBinder<CmsHTMLHoverPanel, CmsListItemWidget> {
-        // GWT interface, nothing to do here
-    }
-
     /** The CSS class to set the additional info open. */
-    /* default */static final String OPENCLASS = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().open();
+    protected static final String OPENCLASS = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().open();
 
     /** The ui-binder instance for this class. */
     private static I_CmsListItemWidgetUiBinder uiBinder = GWT.create(I_CmsListItemWidgetUiBinder.class);
 
     /** DIV for additional item info. */
     @UiField
-    DivElement m_additionalDiv;
+    Element m_additionalDiv;
 
     /** Panel to hold buttons.*/
     @UiField
@@ -170,6 +170,7 @@ public class CmsListItemWidget extends Composite {
     /** The open-close button for the additional info. */
     private CmsImageButton m_openClose;
 
+    /** The root id. */
     private String m_rootId;
 
     /**
@@ -251,6 +252,5 @@ public class CmsListItemWidget extends Composite {
                 m_additionalDiv.appendChild(info.getElement());
             }
         }
-
     }
 }
