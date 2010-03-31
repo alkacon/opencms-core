@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/03/11 13:28:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/31 12:19:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -105,14 +106,20 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      * @param entry the entry to convert
      * 
      * @return the JSON representation, can be <code>null</code> in case of not enough permissions
+     * 
+     * @throws CmsException should never happen 
      */
-    protected CmsClientSitemapEntry toGwtEntry(CmsSitemapEntry entry) {
+    protected CmsClientSitemapEntry toGwtEntry(CmsSitemapEntry entry) throws CmsException {
 
         CmsClientSitemapEntry gwtEntry = new CmsClientSitemapEntry();
         gwtEntry.setId(entry.getId().toString());
         gwtEntry.setName(entry.getName());
         gwtEntry.setTitle(entry.getTitle());
-        gwtEntry.setResourceId(entry.getResourceId().toString());
+        String vfsPath = "broken";
+        if (getCmsObject().existsResource(entry.getResourceId())) {
+            vfsPath = getCmsObject().getSitePath(getCmsObject().readResource(entry.getResourceId()));
+        }
+        gwtEntry.setVfsPath(vfsPath);
         gwtEntry.setProperties(new HashMap<String, String>(entry.getProperties()));
         gwtEntry.setSitePath(entry.getSitePath(getCmsObject()));
         return gwtEntry;

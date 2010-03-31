@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEditor.java,v $
- * Date   : $Date: 2010/03/15 15:12:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/31 12:19:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,8 +44,8 @@ import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.lazytree.A_CmsLazyOpenHandler;
-import org.opencms.gwt.client.ui.lazytree.CmsLazyTree;
+import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
+import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Label;
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -135,7 +135,7 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
                     new A_CmsLazyOpenHandler<CmsSitemapTreeItem>() {
 
                         /**
-                         * @see org.opencms.gwt.client.ui.lazytree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.lazytree.CmsLazyTreeItem)
+                         * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
                          */
                         public void load(final CmsSitemapTreeItem target) {
 
@@ -158,11 +158,11 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
                                 @Override
                                 public void onResponse(CmsClientSitemapEntry[] result) {
 
-                                    target.removeItems();
+                                    target.clearChildren();
                                     for (CmsClientSitemapEntry entry : result) {
-                                        target.addItem(entry);
+                                        target.addChild(entry);
                                     }
-                                    target.setState(true);
+                                    target.onFinishLoading();
                                     stop();
                                 }
                             };

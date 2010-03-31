@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/util/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/03/15 15:12:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/31 12:19:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,20 +34,20 @@ package org.opencms.ade.sitemap.client.util;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants;
 import org.opencms.gwt.client.util.CmsStringUtil;
 
-import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Client side implementation for {@link org.opencms.ade.sitemap.CmsSitemapProvider}.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.ade.sitemap.CmsSitemapProvider
  */
-public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants {
+public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsSitemapProviderConstants {
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
@@ -55,34 +55,12 @@ public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants {
     /** Internal instance. */
     private static CmsSitemapProvider INSTANCE;
 
-    /** The current container page type. */
-    private int m_cntPageType;
-
-    /** If the current sitemap is editable. */
-    private boolean m_editable;
-
-    /** The reason not to be able to edit the sitemap. */
-    private String m_noEditReason;
-
-    /** Flag to indicate if the toolbar has to be shown. */
-    private boolean m_toolbar;
-
-    /** The current sitemap URI. */
-    private String m_uri;
-
     /**
      * Prevent instantiation.<p> 
      */
-    private CmsSitemapProvider() {
+    protected CmsSitemapProvider() {
 
-        Dictionary dict = Dictionary.getDictionary(DICT_NAME.replace('.', '_'));
-        m_toolbar = Boolean.parseBoolean(dict.get(KEY_TOOLBAR));
-        m_uri = dict.get(KEY_URI_SITEMAP);
-        m_noEditReason = dict.get(KEY_EDIT);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_noEditReason)) {
-            m_editable = true;
-        }
-        m_cntPageType = Integer.parseInt(dict.get(KEY_TYPE_CNTPAGE));
+        // empty
     }
 
     /**
@@ -93,9 +71,28 @@ public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants {
     public static CmsSitemapProvider get() {
 
         if (INSTANCE == null) {
-            INSTANCE = new CmsSitemapProvider();
+            INSTANCE = init();
         }
         return INSTANCE;
+    }
+
+    /**
+     * Initializes the data from the host page.<p>
+     */
+    private static native CmsSitemapProvider init() /*-{
+        return $wnd[@org.opencms.ade.sitemap.client.util.CmsSitemapProvider::getDictName()()];
+    }-*/;
+
+    /**
+     * Returns the json object name.<p>
+     * 
+     * @return the json object name
+     */
+    // only used in native code
+    @SuppressWarnings("unused")
+    private static String getDictName() {
+
+        return DICT_NAME.replace('.', '_');
     }
 
     /**
@@ -103,30 +100,27 @@ public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants {
      *
      * @return the cntPageType
      */
-    public int getCntPageType() {
-
-        return m_cntPageType;
-    }
+    public native int getCntPageType() /*-{
+        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_TYPE_CNTPAGE];
+    }-*/;
 
     /**
      * Returns the reason not to be able to edit the sitemap.<p>
      *
      * @return the reason not to be able to edit the sitemap
      */
-    public String getNoEditReason() {
-
-        return m_noEditReason;
-    }
+    public native String getNoEditReason() /*-{
+        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_EDIT];
+    }-*/;
 
     /**
      * Returns the current sitemap uri.<p>
      *
      * @return the current sitemap uri
      */
-    public String getUri() {
-
-        return m_uri;
-    }
+    public native String getUri() /*-{
+        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_URI_SITEMAP];
+    }-*/;
 
     /**
      * Checks if the current sitemap is editable.<p>
@@ -135,7 +129,7 @@ public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants {
      */
     public boolean isEditable() {
 
-        return m_editable;
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(getNoEditReason());
     }
 
     /**
@@ -143,9 +137,7 @@ public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants {
      *
      * @return <code>true</code> if the toolbar has to be displayed
      */
-    public boolean showToolbar() {
-
-        return m_toolbar;
-    }
-
+    public native boolean showToolbar() /*-{
+        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_TOOLBAR];
+    }-*/;
 }

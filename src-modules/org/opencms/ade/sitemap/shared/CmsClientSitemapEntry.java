@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/03/11 13:28:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/03/31 12:19:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -55,14 +55,14 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The property map. */
     private Map<String, String> m_properties;
 
-    /** The VFS resource id. */
-    private String m_resourceId;
-
-    /** The site path. */
+    /** The sitemap path. */
     private String m_sitePath;
 
     /** The title. */
     private String m_title;
+
+    /** The VFS path. */
+    private String m_vfsPath;
 
     /**
      * Returns the id.<p>
@@ -105,19 +105,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns the file's structure id.<p>
+     * Returns the sitemap path.<p>
      *
-     * @return the file's structure id
-     */
-    public String getResourceId() {
-
-        return m_resourceId;
-    }
-
-    /**
-     * Returns the site path.<p>
-     *
-     * @return the site path
+     * @return the sitemap path
      */
     public String getSitePath() {
 
@@ -132,6 +122,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Returns the vfs path.<p>
+     *
+     * @return the vfs path
+     */
+    public String getVfsPath() {
+
+        return m_vfsPath;
     }
 
     /**
@@ -165,16 +165,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Sets the resoureId.<p>
-     *
-     * @param resoureId the resoureId to set
-     */
-    public void setResourceId(String resoureId) {
-
-        m_resourceId = resoureId;
-    }
-
-    /**
      * Sets the site path.<p>
      *
      * @param sitePath the site path to set
@@ -192,5 +182,15 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setTitle(String title) {
 
         m_title = title;
+    }
+
+    /**
+     * Sets the VFS path.<p>
+     *
+     * @param path the path to set
+     */
+    public void setVfsPath(String path) {
+
+        m_vfsPath = path;
     }
 }
