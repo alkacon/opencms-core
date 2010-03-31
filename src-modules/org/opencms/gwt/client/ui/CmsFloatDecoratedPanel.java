@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/03/29 06:39:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/03/31 12:15:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -130,11 +130,12 @@ public class CmsFloatDecoratedPanel extends Composite {
      */
     public void updateLayout() {
 
-        if (isAttached()) {
-            int floatBoxWidth = getFloatBoxWidth();
-            m_primary.getElement().getStyle().setMarginLeft(floatBoxWidth, Unit.PX);
-            updateVerticalMargin();
+        if (!isAttached()) {
+            return;
         }
+        int floatBoxWidth = getFloatBoxWidth();
+        m_primary.getElement().getStyle().setMarginLeft(floatBoxWidth, Unit.PX);
+        updateVerticalMargin();
     }
 
     /**
@@ -148,6 +149,9 @@ public class CmsFloatDecoratedPanel extends Composite {
         /* defer until children have been (hopefully) layouted. */
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
             public void execute() {
 
                 updateLayout();

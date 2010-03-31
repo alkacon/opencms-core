@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/03/30 14:08:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/03/31 12:15:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -51,7 +51,7 @@ public class CmsListItem extends Composite {
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    /* default */interface I_CmsListItemUiBinder extends UiBinder<CmsFlowPanel, CmsListItem> {
+    protected interface I_CmsListItemUiBinder extends UiBinder<CmsFlowPanel, CmsListItem> {
         // GWT interface, nothing to do here
     }
 
@@ -91,12 +91,11 @@ public class CmsListItem extends Composite {
     }
 
     /**
-     * Method which should be called to update the layout of the item.<p>
-     * 
-     * This is only used by the CmsListTreeItem class.
+     * Method for updating the layout of the item.<p>
      */
     public void updateLayout() {
 
+        // empty
     }
 
     /**
