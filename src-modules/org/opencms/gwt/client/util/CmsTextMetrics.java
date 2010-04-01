@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsTextMetrics.java,v $
- * Date   : $Date: 2010/03/31 13:35:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/01 09:25:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -62,7 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -86,7 +87,8 @@ public final class CmsTextMetrics {
         CmsDomUtil.Style.lineHeight,
         CmsDomUtil.Style.whiteSpace,
         CmsDomUtil.Style.wordSpacing,
-        CmsDomUtil.Style.wordWrap};
+        CmsDomUtil.Style.wordWrap,
+        CmsDomUtil.Style.padding};
 
     /** The count of used instances. */
     private static int m_count;
@@ -142,13 +144,13 @@ public final class CmsTextMetrics {
         if (m_elem == null) {
             m_elem = DOM.createDiv();
         }
-        DOM.setStyleAttribute(m_elem, CmsDomUtil.Style.position.name(), CmsDomUtil.StyleValue.absolute.name());
-        DOM.setStyleAttribute(m_elem, CmsDomUtil.Style.left.name(), "-5000px");
-        DOM.setStyleAttribute(m_elem, CmsDomUtil.Style.top.name(), "-5000px");
-        DOM.setStyleAttribute(m_elem, CmsDomUtil.Style.visibility.name(), CmsDomUtil.StyleValue.hidden.name());
+        m_elem.getStyle().setVisibility(Style.Visibility.HIDDEN);
+        m_elem.getStyle().setPosition(Style.Position.ABSOLUTE);
+        m_elem.getStyle().setLeft(-5000, Style.Unit.PX);
+        m_elem.getStyle().setTop(-5000, Style.Unit.PX);
         for (CmsDomUtil.Style attr : attributes) {
             String attrName = attr.toString();
-            DOM.setStyleAttribute(m_elem, attrName, DOM.getStyleAttribute(element, attrName));
+            DOM.setStyleAttribute(m_elem, attrName, CmsDomUtil.getCurrentStyle(element, attr));
         }
         DOM.appendChild(RootPanel.getBodyElement(), m_elem);
     }
@@ -197,6 +199,6 @@ public final class CmsTextMetrics {
      */
     public void setFixedWidth(int width) {
 
-        DOM.setIntStyleAttribute(m_elem, CmsDomUtil.Style.width.name(), width);
+        m_elem.getStyle().setWidth(width, Style.Unit.PX);
     }
 }

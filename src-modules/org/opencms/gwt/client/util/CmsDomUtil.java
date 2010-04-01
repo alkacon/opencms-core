@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/04/01 07:40:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/01 09:25:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.dom.client.NodeList;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -74,6 +74,9 @@ public final class CmsDomUtil {
 
         /** CSS Property. */
         borderStyle,
+
+        /** CSS Property. */
+        display,
 
         /** CSS Property. */
         floatCss {
@@ -123,6 +126,12 @@ public final class CmsDomUtil {
 
         /** CSS Property. */
         marginBottom,
+
+        /** CSS Property. */
+        opacity,
+
+        /** CSS Property. */
+        padding,
 
         /** CSS Property. */
         position,
