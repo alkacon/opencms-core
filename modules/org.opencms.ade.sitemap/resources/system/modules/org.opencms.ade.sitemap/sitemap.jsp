@@ -1,7 +1,7 @@
 <%@page import="org.opencms.ade.sitemap.CmsSitemapActionElement"%>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
   CmsSitemapActionElement jsp = new CmsSitemapActionElement(pageContext, request, response);
-%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+%><!DOCTYPE HTML>
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
