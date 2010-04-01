@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/01 09:26:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/01 13:46:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,34 +32,22 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsStringUtil;
-import org.opencms.gwt.client.util.CmsTextMetrics;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -67,15 +55,22 @@ import com.google.gwt.user.client.ui.Widget;
  * Provides a UI list item.<p>
  * 
  * @author Tobias Herrmann
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsListItemWidget extends Composite {
 
     /** Additional info item HTML. */
-    protected static class AdditionalInfoItem extends HTML {
+    protected static class AdditionalInfoItem extends CmsSimplePanel {
+
+        /** The title element. */
+        private CmsLabel m_titleElem;
+
+        /** The value element. */
+        private CmsLabel m_valueElem;
 
         /**
          * Constructor.<p>
@@ -86,18 +81,41 @@ public class CmsListItemWidget extends Composite {
          */
         AdditionalInfoItem(String title, String value, String additionalStyle) {
 
-            super(DOM.createDiv());
-            Element titleElem = DOM.createDiv();
-            titleElem.setInnerText(title + ":");
-            titleElem.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemAdditionalTitle());
-            Element valueElem = DOM.createDiv();
-            valueElem.setInnerText(value);
-            valueElem.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemAdditionalValue());
+            super();
+            I_CmsListItemWidgetCss style = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
+            // create title
+            m_titleElem = new CmsLabel(title + ":");
+            m_titleElem.addStyleName(style.itemAdditionalTitle());
+            m_titleElem.setTruncate(false);
+            add(m_titleElem);
+            // create value
+            m_valueElem = new CmsLabel(value);
+            m_valueElem.addStyleName(style.itemAdditionalValue());
+            m_valueElem.setTruncate(false);
             if (additionalStyle != null) {
-                valueElem.addClassName(additionalStyle);
+                m_valueElem.addStyleName(additionalStyle);
             }
-            getElement().appendChild(titleElem);
-            getElement().appendChild(valueElem);
+            add(m_valueElem);
+        }
+
+        /**
+         * Returns the title element.<p>
+         *
+         * @return the title element
+         */
+        public CmsLabel getTitleElem() {
+
+            return m_titleElem;
+        }
+
+        /**
+         * Returns the value element.<p>
+         *
+         * @return the value element
+         */
+        public CmsLabel getValueElem() {
+
+            return m_valueElem;
         }
     }
 
@@ -145,23 +163,12 @@ public class CmsListItemWidget extends Composite {
                 m_owner.addStyleName(CmsListItemWidget.OPENCLASS);
                 m_button.setDown(true);
                 if (!m_init) {
-                    /* defer until children have been (hopefully) layouted. */
-                    Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-
-                        /**
-                         * @see com.google.gwt.user.client.Command#execute()
-                         */
-                        public void execute() {
-
-                            NodeList<Node> childNodes = m_additionalDiv.getChildNodes();
-                            for (int i = 0; i < childNodes.getLength(); i++) {
-                                Node addInfo = childNodes.getItem(i);
-                                Element element = addInfo.getChild(1).<Element> cast();
-                                fixElement(element);
-                            }
-                        }
-                    });
                     m_init = true;
+                    for (Widget w : m_additionalInfo) {
+                        CmsLabel valueElem = ((AdditionalInfoItem)w).getValueElem();
+                        valueElem.setTruncate(true);
+                        valueElem.widthCheck();
+                    }
                 }
             }
         }
@@ -175,27 +182,27 @@ public class CmsListItemWidget extends Composite {
 
     /** DIV for additional item info. */
     @UiField
-    DivElement m_additionalDiv;
+    protected CmsSimplePanel m_additionalInfo;
 
     /** Panel to hold buttons.*/
     @UiField
-    FlowPanel m_buttonPanel;
+    protected FlowPanel m_buttonPanel;
 
     /** The DIV showing the list icon. */
     @UiField
-    SimplePanel m_iconPanel;
+    protected SimplePanel m_iconPanel;
 
     /** Sub title label. */
     @UiField
-    Label m_subTitleDiv;
+    protected CmsLabel m_subTitle;
 
     /** Title label. */
     @UiField
-    Label m_titleDiv;
+    protected CmsLabel m_title;
 
     /** The title row, holding the title and the open-close button for the additional info. */
     @UiField
-    FlowPanel m_titleRow;
+    protected FlowPanel m_titleRow;
 
     /** The open-close button for the additional info. */
     private CmsImageButton m_openClose;
@@ -253,75 +260,6 @@ public class CmsListItemWidget extends Composite {
         m_iconPanel.setWidget(image);
     }
 
-    /** Debug log displayed within the client window. */
-    private static CmsDebugLog m_debug;
-
-    /**
-     * Returns the debug log.<p>
-     * 
-     * @return the debug log
-     */
-    public static CmsDebugLog getDebug() {
-
-        if (m_debug == null) {
-            m_debug = new CmsDebugLog();
-            RootPanel.get().add(m_debug);
-        }
-        return m_debug;
-    }
-
-    /**
-     * Truncates long text and sets the original text to the title attribute.<p> 
-     * 
-     * @param element the element to fix
-     */
-    protected void fixElement(Element element) {
-
-        // measure the actual text width
-        CmsTextMetrics tm = CmsTextMetrics.get();
-        tm.bind(element);
-        String text = element.getInnerText();
-        int textWidth = tm.getWidth(text);
-        tm.release();
-
-        // the current element width
-        int elementWidth = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
-
-        getDebug().printLine("fixElement: ");
-        getDebug().printLine("text: " + text);
-        getDebug().printLine("elemWidth: " + elementWidth);
-        getDebug().printLine("textWidth: " + textWidth);
-
-        if (elementWidth == 0) {
-            // HACK: clientWidth seems to be from time to time zero :(
-            // see #onLoad
-            elementWidth = textWidth;
-        }
-        if (elementWidth < textWidth) {
-            // if the text does not have enough space, fix it
-            int maxChars = (int)((float)elementWidth / (float)textWidth * text.length());
-            if (maxChars < 1) {
-                maxChars = 1;
-            }
-            String newText = text.substring(0, maxChars - 1);
-            if (text.startsWith("/")) {
-                // file name?
-                newText = CmsStringUtil.formatResourceName(text, maxChars);
-            } else if (maxChars > 2) {
-                // enough space for ellipsis?
-                newText += "&hellip;";
-            }
-            if (newText.isEmpty()) {
-                // if empty, it will break the layout
-                newText = "&nbsp;";
-            }
-            // use html instead of text because of the entities
-            element.setInnerHTML(newText);
-            // add tooltip with the original text
-            element.setAttribute("title", text);
-        }
-    }
-
     /**
      * Constructor.<p>
      * 
@@ -337,8 +275,8 @@ public class CmsListItemWidget extends Composite {
         panel.add(itemContent, m_rootId);
         initWidget(panel);
         I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().ensureInjected();
-        m_titleDiv.setText(infoBean.getTitle());
-        m_subTitleDiv.setText(infoBean.getSubTitle());
+        m_title.setText(infoBean.getTitle());
+        m_subTitle.setText(infoBean.getSubTitle());
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
             m_openClose = new CmsImageButton(CmsImageButton.ICON.triangle_1_e, CmsImageButton.ICON.triangle_1_s, false);
             m_titleRow.insert(m_openClose, 0);
@@ -348,31 +286,8 @@ public class CmsListItemWidget extends Composite {
                 Entry<String, String> entry = it.next();
                 String valueStyle = infoBean.getValueStyle(entry.getKey());
                 AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), entry.getValue(), valueStyle);
-                m_additionalDiv.appendChild(info.getElement());
+                m_additionalInfo.add(info);
             }
         }
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#onLoad()
-     */
-    @Override
-    protected void onLoad() {
-
-        super.onLoad();
-
-        /* defer until children have been (hopefully) layouted. */
-        Timer t = new Timer() {
-
-            @Override
-            public void run() {
-
-                fixElement(m_titleDiv.getElement());
-                fixElement(m_subTitleDiv.getElement());
-            }
-        };
-        // HACK: clientWidth seems to be from time to time zero :(
-        // specially if waiting less than 300ms, see #fixElement
-        t.schedule(300);
     }
 }

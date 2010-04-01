@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/04/01 13:46:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/01 13:49:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -253,8 +253,8 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
                 }
             };
             // HACK: clientWidth seems to be from time to time zero :(
-            // specially if waiting less than 200ms, see #fixElement
-            m_timer.schedule(200);
+            // specially if waiting less than 300ms, see #fixElement
+            m_timer.schedule(300);
         } else {
             m_elements.add(element);
         }
