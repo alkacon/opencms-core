@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImplIE.java,v $
- * Date   : $Date: 2010/03/16 08:22:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/01 09:25:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,29 +40,11 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class DocumentStyleImplIE extends DocumentStyleImpl {
-
-    /**
-     * Returns the computed style of the given element.<p>
-     * 
-     * @param elem the element
-     * @param name the name of the CSS property 
-     * @return the currently computed style
-     */
-    @Override
-    public String getCurrentStyle(Element elem, String name) {
-
-        name = hyphenize(name);
-        String propVal = getComputedStyle(elem, name, null);
-        if ("opacity".equals(name) && ((propVal == null) || (propVal.trim().length() == 0))) {
-            propVal = "1";
-        }
-        return propVal;
-    }
 
     /**
      * Transforms the CSS style name to the name of the javascript style property.<p>
@@ -84,14 +66,10 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
     }
 
     /**
-     * Returns the computed style from the DOM object.<p>
-     * 
-     * @param elem the element object
-     * @param name name of the CSS property
-     * @param pseudo the pseudo-element to match
-     * @return the property value
+     * @see org.opencms.gwt.client.util.impl.DocumentStyleImpl#getComputedStyle(com.google.gwt.dom.client.Element, java.lang.String)
      */
-    private native String getComputedStyle(Element elem, String name, String pseudo) /*-{
+    @Override
+    protected native String getComputedStyle(Element elem, String name) /*-{
         function getComputed(elem, name){
         var style = elem.style;
         var camelCase = name.replace(/\-(\w)/g, function(all, letter){

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImpl.java,v $
- * Date   : $Date: 2010/04/01 07:40:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/01 09:25:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.util.impl;
 
+import org.opencms.gwt.client.util.CmsDomUtil;
+
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -40,7 +42,7 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -50,6 +52,7 @@ public class DocumentStyleImpl {
      * Transforms a CSS property name to its javascript property name (font-size >> fontSize).<p>
      * 
      * @param s the property name
+     * 
      * @return the javascript property name
      */
     protected static native String camelize(String s)/*-{
@@ -63,13 +66,14 @@ public class DocumentStyleImpl {
      * 
      * @param elem the element
      * @param name the name of the CSS property 
+     * 
      * @return the currently computed style
      */
     public String getCurrentStyle(Element elem, String name) {
 
         name = hyphenize(name);
         String propVal = getComputedStyle(elem, name);
-        if ("opacity".equals(name) && ((propVal == null) || (propVal.trim().length() == 0))) {
+        if (CmsDomUtil.Style.opacity.name().equals(name) && ((propVal == null) || (propVal.trim().length() == 0))) {
             propVal = "1";
         }
         return propVal;
@@ -79,6 +83,7 @@ public class DocumentStyleImpl {
      * Transforms the CSS style name to the name of the javascript style property.<p>
      * 
      * @param name the name of the CSS property
+     * 
      * @return the javascript property name
      */
     public String getPropertyName(String name) {
@@ -97,6 +102,7 @@ public class DocumentStyleImpl {
      * Hyphenizes the given string.<p>
      * 
      * @param name the string to hyphenize
+     * 
      * @return the result
      */
     protected native String hyphenize(String name) /*-{
@@ -108,10 +114,10 @@ public class DocumentStyleImpl {
      * 
      * @param elem the element object
      * @param name name of the CSS property
-     * @param pseudo the pseudo-element to match
+     * 
      * @return the property value
      */
-    private native String getComputedStyle(Element elem, String name) /*-{
+    protected native String getComputedStyle(Element elem, String name) /*-{
         var cStyle = $doc.defaultView.getComputedStyle( elem, null );
         if (cStyle==null){
         return null;
@@ -134,5 +140,4 @@ public class DocumentStyleImpl {
 
         return value;
     }-*/;
-
 }
