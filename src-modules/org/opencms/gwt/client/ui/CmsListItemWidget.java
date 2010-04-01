@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/03/31 13:38:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/01 09:26:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,14 +32,13 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStringUtil;
 import org.opencms.gwt.client.util.CmsTextMetrics;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
@@ -53,12 +52,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -67,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -115,6 +116,9 @@ public class CmsListItemWidget extends Composite {
         /** The button. */
         private CmsImageButton m_button;
 
+        /** If initialized. */
+        private boolean m_init;
+
         /** The owner widget. */
         private Widget m_owner;
 
@@ -140,6 +144,25 @@ public class CmsListItemWidget extends Composite {
             } else {
                 m_owner.addStyleName(CmsListItemWidget.OPENCLASS);
                 m_button.setDown(true);
+                if (!m_init) {
+                    /* defer until children have been (hopefully) layouted. */
+                    Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+
+                        /**
+                         * @see com.google.gwt.user.client.Command#execute()
+                         */
+                        public void execute() {
+
+                            NodeList<Node> childNodes = m_additionalDiv.getChildNodes();
+                            for (int i = 0; i < childNodes.getLength(); i++) {
+                                Node addInfo = childNodes.getItem(i);
+                                Element element = addInfo.getChild(1).<Element> cast();
+                                fixElement(element);
+                            }
+                        }
+                    });
+                    m_init = true;
+                }
             }
         }
     }
@@ -230,6 +253,75 @@ public class CmsListItemWidget extends Composite {
         m_iconPanel.setWidget(image);
     }
 
+    /** Debug log displayed within the client window. */
+    private static CmsDebugLog m_debug;
+
+    /**
+     * Returns the debug log.<p>
+     * 
+     * @return the debug log
+     */
+    public static CmsDebugLog getDebug() {
+
+        if (m_debug == null) {
+            m_debug = new CmsDebugLog();
+            RootPanel.get().add(m_debug);
+        }
+        return m_debug;
+    }
+
+    /**
+     * Truncates long text and sets the original text to the title attribute.<p> 
+     * 
+     * @param element the element to fix
+     */
+    protected void fixElement(Element element) {
+
+        // measure the actual text width
+        CmsTextMetrics tm = CmsTextMetrics.get();
+        tm.bind(element);
+        String text = element.getInnerText();
+        int textWidth = tm.getWidth(text);
+        tm.release();
+
+        // the current element width
+        int elementWidth = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
+
+        getDebug().printLine("fixElement: ");
+        getDebug().printLine("text: " + text);
+        getDebug().printLine("elemWidth: " + elementWidth);
+        getDebug().printLine("textWidth: " + textWidth);
+
+        if (elementWidth == 0) {
+            // HACK: clientWidth seems to be from time to time zero :(
+            // see #onLoad
+            elementWidth = textWidth;
+        }
+        if (elementWidth < textWidth) {
+            // if the text does not have enough space, fix it
+            int maxChars = (int)((float)elementWidth / (float)textWidth * text.length());
+            if (maxChars < 1) {
+                maxChars = 1;
+            }
+            String newText = text.substring(0, maxChars - 1);
+            if (text.startsWith("/")) {
+                // file name?
+                newText = CmsStringUtil.formatResourceName(text, maxChars);
+            } else if (maxChars > 2) {
+                // enough space for ellipsis?
+                newText += "&hellip;";
+            }
+            if (newText.isEmpty()) {
+                // if empty, it will break the layout
+                newText = "&nbsp;";
+            }
+            // use html instead of text because of the entities
+            element.setInnerHTML(newText);
+            // add tooltip with the original text
+            element.setAttribute("title", text);
+        }
+    }
+
     /**
      * Constructor.<p>
      * 
@@ -270,56 +362,17 @@ public class CmsListItemWidget extends Composite {
         super.onLoad();
 
         /* defer until children have been (hopefully) layouted. */
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+        Timer t = new Timer() {
 
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
+            @Override
+            public void run() {
 
-                int size = 2 + m_additionalDiv.getChildCount();
-
-                List<Element> elements = new ArrayList<Element>(size);
-                elements.add(m_titleDiv.getElement());
-                elements.add(m_subTitleDiv.getElement());
-
-                NodeList<Node> childNodes = m_additionalDiv.getChildNodes();
-                for (int i = 0; i < childNodes.getLength(); i++) {
-                    Node addInfo = childNodes.getItem(i);
-                    Element element = addInfo.getChild(1).<Element> cast();
-                    elements.add(element);
-                }
-
-                for (int i = 0; i < elements.size(); i++) {
-                    Element element = elements.get(i);
-                    CmsTextMetrics tm = CmsTextMetrics.get();
-                    tm.bind(element);
-                    String text = element.getInnerText();
-                    int clientWidth = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
-                    int textWidth = tm.getWidth(text);
-                    if (clientWidth < textWidth) {
-                        // fix text
-                        int maxChars = (int)((float)clientWidth / (float)textWidth * text.length());
-                        if (maxChars < 1) {
-                            maxChars = 1;
-                        }
-                        String newText = text.substring(0, maxChars - 1);
-                        if (text.startsWith("/")) {
-                            newText = CmsStringUtil.formatResourceName(text, maxChars);
-                        } else if (maxChars > 2) {
-                            newText += "&hellip;";
-                        }
-                        if (newText.isEmpty()) {
-                            newText = "&nbsp;";
-                        }
-                        // FIXME: clientWidth seems to be from time to time zero :(
-                        element.setInnerHTML(text); // newText
-                        // add tooltip
-                        element.setAttribute("title", text);
-                    }
-                    tm.release();
-                }
+                fixElement(m_titleDiv.getElement());
+                fixElement(m_subTitleDiv.getElement());
             }
-        });
+        };
+        // HACK: clientWidth seems to be from time to time zero :(
+        // specially if waiting less than 300ms, see #fixElement
+        t.schedule(300);
     }
 }
