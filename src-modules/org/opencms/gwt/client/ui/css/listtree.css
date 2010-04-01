@@ -1,6 +1,7 @@
 
-/* for debugging purposes */
-@external listTreeItem, listTreeItemHandler, listTreeItemHandler,listTreeItemContent, listTreeItemChildren, listTreeItemLeaf, listTreeItemInternal, listTreeItemOpen, listTreeItemClosed, listTreeItemNoOpeners, listScrollable;
+/* for debugging purposes 
+@-external listTreeItem, listTreeItemHandler, listTreeItemHandler,listTreeItemContent, listTreeItemChildren, listTreeItemLeaf, listTreeItemInternal, listTreeItemOpen, listTreeItemClosed, listTreeItemNoOpeners, listScrollable;
+*/
 
 .listTreeItem {
 	
