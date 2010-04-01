@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsTextMetrics.java,v $
- * Date   : $Date: 2010/04/01 09:25:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/01 13:45:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,9 +34,9 @@ package org.opencms.gwt.client.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -142,17 +142,22 @@ public final class CmsTextMetrics {
     public void bind(Element element, CmsDomUtil.Style... attributes) {
 
         if (m_elem == null) {
+            // create playground
             m_elem = DOM.createDiv();
+            Style style = m_elem.getStyle();
+            style.setVisibility(Style.Visibility.HIDDEN);
+            style.setPosition(Style.Position.ABSOLUTE);
+            style.setLeft(-5000, Style.Unit.PX);
+            style.setTop(-5000, Style.Unit.PX);
         }
-        m_elem.getStyle().setVisibility(Style.Visibility.HIDDEN);
-        m_elem.getStyle().setPosition(Style.Position.ABSOLUTE);
-        m_elem.getStyle().setLeft(-5000, Style.Unit.PX);
-        m_elem.getStyle().setTop(-5000, Style.Unit.PX);
+        // copy all relevant CSS properties
+        Style style = m_elem.getStyle();
         for (CmsDomUtil.Style attr : attributes) {
             String attrName = attr.toString();
-            DOM.setStyleAttribute(m_elem, attrName, CmsDomUtil.getCurrentStyle(element, attr));
+            style.setProperty(attrName, CmsDomUtil.getCurrentStyle(element, attr));
         }
-        DOM.appendChild(RootPanel.getBodyElement(), m_elem);
+        // append playground
+        RootPanel.getBodyElement().appendChild(m_elem);
     }
 
     /**
