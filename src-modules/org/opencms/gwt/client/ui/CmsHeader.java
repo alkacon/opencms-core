@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHeader.java,v $
- * Date   : $Date: 2010/03/15 14:52:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/01 13:56:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasText;
@@ -42,57 +43,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsHeader extends Widget implements HasText {
-
-    /**
-     * The supported tags.<p>
-     */
-    public enum Tag {
-        /** h1. */
-        H1(I_CmsLayoutBundle.INSTANCE.headerCss().h1()),
-
-        /** h2. */
-        H2(I_CmsLayoutBundle.INSTANCE.headerCss().h2()),
-
-        /** h3. */
-        H3(I_CmsLayoutBundle.INSTANCE.headerCss().h3()),
-
-        /** h4. */
-        H4(I_CmsLayoutBundle.INSTANCE.headerCss().h4()),
-
-        /** h5. */
-        H5(I_CmsLayoutBundle.INSTANCE.headerCss().h5()),
-
-        /** h6. */
-        H6(I_CmsLayoutBundle.INSTANCE.headerCss().h6());
-
-        /** The class name. */
-        private final String m_className;
-
-        /**
-         * Constructor.<p>
-         * 
-         * @param className the class name
-         */
-        private Tag(String className) {
-
-            m_className = className;
-        }
-
-        /**
-         * Returns the class name.<p>
-         *
-         * @return the class name
-         */
-        public String className() {
-
-            return m_className;
-        }
-    }
 
     /**
      * Constructor.<p>
@@ -109,7 +64,7 @@ public class CmsHeader extends Widget implements HasText {
      */
     public CmsHeader(String text) {
 
-        this(text, Tag.H1);
+        this(text, CmsDomUtil.Tag.h1);
     }
 
     /**
@@ -118,10 +73,21 @@ public class CmsHeader extends Widget implements HasText {
      * @param text the text to set
      * @param tag the tag to use 
      */
-    public CmsHeader(String text, Tag tag) {
+    public CmsHeader(String text, CmsDomUtil.Tag tag) {
 
         setElement(DOM.createElement(tag.name()));
-        getElement().addClassName(tag.className());
+        String className = I_CmsLayoutBundle.INSTANCE.headerCss().h1();
+        if (tag == CmsDomUtil.Tag.h2) {
+            className = I_CmsLayoutBundle.INSTANCE.headerCss().h2();
+        } else if (tag == CmsDomUtil.Tag.h3) {
+            className = I_CmsLayoutBundle.INSTANCE.headerCss().h3();
+        } else if (tag == CmsDomUtil.Tag.h4) {
+            className = I_CmsLayoutBundle.INSTANCE.headerCss().h4();
+        } else if (tag != CmsDomUtil.Tag.h1) {
+            // prevent use of any other tags
+            assert false;
+        }
+        getElement().addClassName(className);
         setText(text);
     }
 
