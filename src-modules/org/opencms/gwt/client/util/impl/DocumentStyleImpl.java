@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImpl.java,v $
- * Date   : $Date: 2010/03/16 08:22:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/01 06:45:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -113,7 +113,26 @@ public class DocumentStyleImpl {
      */
     private native String getComputedStyle(Element elem, String name, String pseudo) /*-{
         var cStyle = $doc.defaultView.getComputedStyle( elem, pseudo );
-        return cStyle ? cStyle.getPropertyValue( name ) : null;
+        if (cStyle==null){
+        return null;
+        }
+        var value=cStyle.getPropertyValue( name );
+        if (value=="auto" && (name=="width" || name=="height")){
+        var which = name === "width" ? ["Left", "Right"] : ["Top", "Bottom"];
+        function getWH() {
+        var val;
+        val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
+        for (var i=0; i<which.length; i++){
+        val -= parseFloat(getComputed( elem, "padding" + which[i])) || 0;
+        val -= parseFloat(getComputed( elem, "border" + which[i] + "Width")) || 0;
+
+        }
+        return Math.max(0, Math.round(val));
+        }
+        value= getWH()+"px";
+        }
+
+        return value;
     }-*/;
 
 }
