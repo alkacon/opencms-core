@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEditor.java,v $
- * Date   : $Date: 2010/03/31 12:19:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/01 14:36:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -64,19 +64,6 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
 
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_sitemapSvc;
-
-    /**
-     * Returns the sitemap service instance.<p>
-     * 
-     * @return the sitemap service instance
-     */
-    protected I_CmsSitemapServiceAsync getSitemapService() {
-
-        if (m_sitemapSvc == null) {
-            m_sitemapSvc = GWT.create(I_CmsSitemapService.class);
-        }
-        return m_sitemapSvc;
-    }
 
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
@@ -97,9 +84,9 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
         RootPanel.get().add(toolBar);
 
         RootPanel.get().add(new CmsToolbarPlaceHolder());
-        CmsHeader title = new CmsHeader(Messages.get().key(
-            Messages.GUI_EDITOR_TITLE_1,
-            CmsSitemapProvider.get().getUri()));
+        CmsHeader title = new CmsHeader(
+            Messages.get().key(Messages.GUI_EDITOR_TITLE_1, ""),
+            CmsSitemapProvider.get().getUri());
         title.addStyleName(I_CmsLayoutBundle.INSTANCE.rootCss().pageCenter());
         RootPanel.get().add(title);
 
@@ -177,5 +164,18 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
 
         };
         getRootAction.execute();
+    }
+
+    /**
+     * Returns the sitemap service instance.<p>
+     * 
+     * @return the sitemap service instance
+     */
+    protected I_CmsSitemapServiceAsync getSitemapService() {
+
+        if (m_sitemapSvc == null) {
+            m_sitemapSvc = GWT.create(I_CmsSitemapService.class);
+        }
+        return m_sitemapSvc;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHeader.java,v $
- * Date   : $Date: 2010/04/01 13:56:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/01 14:36:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,9 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -43,11 +45,13 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsHeader extends Widget implements HasText {
+
+    private CmsLabel m_label;
 
     /**
      * Constructor.<p>
@@ -92,6 +96,21 @@ public class CmsHeader extends Widget implements HasText {
     }
 
     /**
+     * Constructor with label.<p>
+     * 
+     * @param text the text to set
+     * @param label the label text to use 
+     */
+    public CmsHeader(String text, String label) {
+
+        this(text, CmsDomUtil.Tag.h1);
+        m_label = new CmsLabel(label);
+        Element element = m_label.getElement();
+        element.getStyle().setDisplay(Style.Display.INLINE);
+        getElement().appendChild(element);
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasText#getText()
      */
     public String getText() {
@@ -105,5 +124,17 @@ public class CmsHeader extends Widget implements HasText {
     public void setText(String text) {
 
         getElement().setInnerText(text);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#doAttachChildren()
+     */
+    @Override
+    protected void doAttachChildren() {
+
+        if (m_label == null) {
+            return;
+        }
+        m_label.onAttach();
     }
 }

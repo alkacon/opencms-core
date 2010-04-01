@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/04/01 13:49:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/01 14:36:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -414,6 +414,16 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
             return;
         }
         schedule(this.getElement());
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        // just for visibility
+        super.onAttach();
     }
 
     /**
