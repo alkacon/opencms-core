@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImpl.java,v $
- * Date   : $Date: 2010/04/01 06:45:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/01 07:40:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -68,7 +68,7 @@ public class DocumentStyleImpl {
     public String getCurrentStyle(Element elem, String name) {
 
         name = hyphenize(name);
-        String propVal = getComputedStyle(elem, name, null);
+        String propVal = getComputedStyle(elem, name);
         if ("opacity".equals(name) && ((propVal == null) || (propVal.trim().length() == 0))) {
             propVal = "1";
         }
@@ -111,8 +111,8 @@ public class DocumentStyleImpl {
      * @param pseudo the pseudo-element to match
      * @return the property value
      */
-    private native String getComputedStyle(Element elem, String name, String pseudo) /*-{
-        var cStyle = $doc.defaultView.getComputedStyle( elem, pseudo );
+    private native String getComputedStyle(Element elem, String name) /*-{
+        var cStyle = $doc.defaultView.getComputedStyle( elem, null );
         if (cStyle==null){
         return null;
         }
@@ -123,8 +123,8 @@ public class DocumentStyleImpl {
         var val;
         val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
         for (var i=0; i<which.length; i++){
-        val -= parseFloat(getComputed( elem, "padding" + which[i])) || 0;
-        val -= parseFloat(getComputed( elem, "border" + which[i] + "Width")) || 0;
+        val -= parseFloat(getComputedStyle( elem, "padding" + which[i])) || 0;
+        val -= parseFloat(getComputedStyle( elem, "border" + which[i] + "Width")) || 0;
 
         }
         return Math.max(0, Math.round(val));

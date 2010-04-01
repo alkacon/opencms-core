@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/03/31 13:35:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/01 07:40:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.dom.client.NodeList;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -168,6 +168,9 @@ public final class CmsDomUtil {
 
         /** CSS Property value. */
         absolute,
+
+        /** CSS Property value. */
+        auto,
 
         /** CSS Property value. */
         hidden,
@@ -414,9 +417,11 @@ public final class CmsDomUtil {
     private static boolean internalHasClass(String className, Element element) {
 
         String elementClass = element.getClassName().trim();
-        boolean hasClass = elementClass.contains(" " + className + " ");
+        boolean hasClass = elementClass.equals(className);
+        hasClass |= elementClass.contains(" " + className + " ");
         hasClass |= elementClass.startsWith(className + " ");
         hasClass |= elementClass.endsWith(" " + className);
+
         return hasClass;
     }
 }
