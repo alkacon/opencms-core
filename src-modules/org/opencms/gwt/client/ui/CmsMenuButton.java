@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/03/11 08:07:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/06 14:16:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -56,11 +57,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasToggleHandlers {
+public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasToggleHandlers, HasClickHandlers {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -122,20 +123,37 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
 
     /**
      * Constructor.<p>
+     * 
+     * @param buttonText the menu button text
+     * @param imageClass the menu button image sprite class
      */
-    public CmsMenuButton() {
+    @UiConstructor
+    public CmsMenuButton(String buttonText, String imageClass) {
+
+        this();
+        m_button.setUpFace(buttonText, imageClass);
+
+        // using default click and close handler
+        //        m_button.addClickHandler(new ClickHandler() {
+        //
+        //            public void onClick(ClickEvent event) {
+        //
+        //                toggleMenu();
+        //            }
+        //        });
+
+    }
+
+    /**
+     * Constructor.<p>
+     */
+    private CmsMenuButton() {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_initialized = false;
         m_content = new CmsMenuContent();
         m_isOpen = false;
-        m_button.addClickHandler(new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-
-                toggleMenu();
-            }
-        });
         m_content.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> event) {
@@ -147,19 +165,7 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
             }
 
         });
-    }
 
-    /**
-     * Constructor.<p>
-     * 
-     * @param buttonText the menu button text
-     * @param imageClass the menu button image sprite class
-     */
-    @UiConstructor
-    public CmsMenuButton(String buttonText, String imageClass) {
-
-        this();
-        m_button.setUpFace(buttonText, imageClass);
     }
 
     /**
@@ -170,6 +176,14 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
     public void add(Widget widget) {
 
         m_content.setWidget(widget);
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+     */
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+
+        return addDomHandler(handler, ClickEvent.getType());
     }
 
     /**
@@ -196,6 +210,16 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
 
         m_content.hide();
         setButtonUp();
+    }
+
+    /**
+     * Returns if the menu is open.<p>
+     * 
+     * @return <code>true</code> if the menu is opened
+     */
+    public boolean isOpen() {
+
+        return m_isOpen;
     }
 
     /**
