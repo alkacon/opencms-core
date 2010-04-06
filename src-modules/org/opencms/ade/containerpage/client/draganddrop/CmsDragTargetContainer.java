@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/03/31 13:35:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/06 07:31:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.containerpage.client.draganddrop;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageEditor;
 import org.opencms.ade.containerpage.shared.I_CmsContainer;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
@@ -54,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -86,7 +85,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
         m_root = RootPanel.get(containerData.getName());
         m_containerId = containerData.getName();
         m_root.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
-        m_debug = CmsContainerpageEditor.INSTANCE.getDebug();
+        m_debug = CmsDebugLog.getInstance();
         m_debug.printLine("created instance of container id: " + containerData.getName());
         consumeChildren();
     }

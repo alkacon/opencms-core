@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/06 07:31:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,16 +33,13 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
-
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * The container page editor.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -50,9 +47,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The editor instance. */
     public static CmsContainerpageEditor INSTANCE;
-
-    /** Debug log displayed within the client window. */
-    private CmsDebugLog m_debug;
 
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
@@ -66,19 +60,4 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
 
     }
-
-    /**
-     * Returns the debug log.<p>
-     * 
-     * @return the debug log
-     */
-    public CmsDebugLog getDebug() {
-
-        if (m_debug == null) {
-            m_debug = new CmsDebugLog();
-            RootPanel.get().add(m_debug);
-        }
-        return m_debug;
-    }
-
 }

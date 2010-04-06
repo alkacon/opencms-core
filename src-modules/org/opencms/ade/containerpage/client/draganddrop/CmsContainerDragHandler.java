@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/03/31 13:35:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/06 07:31:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,12 @@
 package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
-import org.opencms.ade.containerpage.client.CmsContainerpageEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.client.draganddrop.A_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -334,7 +334,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
                                 DOM.removeChild(wrapperDiv, elementRoot);
                             }
                             if (elementRoot == null) {
-                                CmsContainerpageEditor.INSTANCE.getDebug().printLine(
+                                CmsDebugLog.getInstance().printLine(
                                     "Element "
                                         + arg.toString()
                                         + " has no appropriate root element for container-type: "
@@ -354,7 +354,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
                             addDragTarget(entry.getValue());
                             entry.getValue().highlightContainer();
                             if (wrapperDiv.hasChildNodes()) {
-                                CmsContainerpageEditor.INSTANCE.getDebug().printLine(
+                                CmsDebugLog.getInstance().printLine(
                                     "Element "
                                         + arg.toString()
                                         + " has more than a single root element for container-type: "

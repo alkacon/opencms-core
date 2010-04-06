@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/04/01 14:36:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/06 07:31:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWordWrap;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -71,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -86,9 +85,6 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
 
     /** Attribute name constant. */
     private static final String ATTR_WIDTH_CHECKED = "__widthChecked";
-
-    /** Debug log displayed within the client window. */
-    private static CmsDebugLog m_debug;
 
     /** Current horizontal alignment. */
     private HorizontalAlignmentConstant m_horzAlign;
@@ -159,10 +155,11 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
         // the current element width
         int elementWidth = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
 
-        getDebug().printLine("fixElement: ");
-        getDebug().printLine("text: " + text);
-        getDebug().printLine("elemWidth: " + elementWidth);
-        getDebug().printLine("textWidth: " + textWidth);
+        CmsDebugLog log = CmsDebugLog.getInstance();
+        log.printLine("fixElement: ");
+        log.printLine("text: " + text);
+        log.printLine("elemWidth: " + elementWidth);
+        log.printLine("textWidth: " + textWidth);
 
         if (elementWidth == 0) {
             // HACK: from time to time elementWidth seems to be zero :(
@@ -193,20 +190,6 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
         element.setInnerHTML(newText);
         // add tooltip with the original text
         element.setAttribute("title", text);
-    }
-
-    /**
-     * Returns the debug log.<p>
-     * 
-     * @return the debug log
-     */
-    private static CmsDebugLog getDebug() {
-
-        if (m_debug == null) {
-            m_debug = new CmsDebugLog();
-            RootPanel.get().add(m_debug);
-        }
-        return m_debug;
     }
 
     /**
@@ -252,7 +235,7 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
                     }
                 }
             };
-            // HACK: clientWidth seems to be from time to time zero :(
+            // HACK: from time to time clientWidth seems to be zero :(
             // specially if waiting less than 300ms, see #fixElement
             m_timer.schedule(300);
         } else {

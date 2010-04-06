@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDebugLog.java,v $
- * Date   : $Date: 2010/03/26 09:42:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/06 07:31:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,26 +40,36 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A basic debug log, to print messages into the client window.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsDebugLog extends Composite {
+public final class CmsDebugLog extends Composite {
+
+    /** Debug log displayed within the client window. */
+    private static CmsDebugLog m_debug;
+
+    /** Global debugging flag. */
+    private static final boolean DEBUG = true;
 
     /** The wrapped widget. */
-    HTML m_html;
+    protected HTML m_html;
 
     /**
      * Constructor.<p>
      */
-    public CmsDebugLog() {
+    private CmsDebugLog() {
 
+        if (!DEBUG) {
+            return;
+        }
         m_html = new HTML();
         initWidget(m_html);
         Style style = getElement().getStyle();
@@ -78,12 +88,31 @@ public class CmsDebugLog extends Composite {
     }
 
     /**
+     * Returns the debug log.<p>
+     * 
+     * @return the debug log
+     */
+    public static CmsDebugLog getInstance() {
+
+        if (m_debug == null) {
+            m_debug = new CmsDebugLog();
+            if (DEBUG) {
+                RootPanel.get().add(m_debug);
+            }
+        }
+        return m_debug;
+    }
+
+    /**
      * Prints a new line into the log window by adding a p-tag including given text as HTML.<p>
      * 
      * @param text the text to print
      */
     public void printLine(String text) {
 
+        if (!DEBUG) {
+            return;
+        }
         Element child = DOM.createElement("p");
         child.setInnerHTML(text);
         m_html.getElement().appendChild(child);
@@ -95,7 +124,9 @@ public class CmsDebugLog extends Composite {
      */
     public void clear() {
 
+        if (!DEBUG) {
+            return;
+        }
         m_html.setHTML("");
     }
-
 }
