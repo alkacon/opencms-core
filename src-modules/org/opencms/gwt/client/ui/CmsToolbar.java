@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbar.java,v $
- * Date   : $Date: 2010/03/11 14:23:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/06 08:24:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,10 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -45,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -104,6 +108,26 @@ public class CmsToolbar extends Composite {
     public void addRight(Widget widget) {
 
         m_buttonPanelRight.add(widget);
+
+    }
+
+    /**
+     * Returns all {@link com.google.gwt.user.client.ui.Widget} added to the tool-bar in order of addition first left than right.<p>
+     * 
+     * @return all added Widgets
+     */
+    public List<Widget> getAll() {
+
+        List<Widget> all = new ArrayList<Widget>();
+        Iterator<Widget> it = m_buttonPanelLeft.iterator();
+        while (it.hasNext()) {
+            all.add(it.next());
+        }
+        it = m_buttonPanelRight.iterator();
+        while (it.hasNext()) {
+            all.add(it.next());
+        }
+        return all;
     }
 
 }
