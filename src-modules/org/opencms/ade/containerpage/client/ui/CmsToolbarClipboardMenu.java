@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarRemoveButton.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
  * Date   : $Date: 2010/04/06 14:22:07 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,29 +33,24 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
-
-import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
- * The remove button holding all remove related methods.<p>
+ * The clip-board tool-bar menu.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarRemoveButton extends A_CmsContainerpageToolbarButton {
+public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
 
     /**
      * Constructor.<p>
      */
-    public CmsToolbarRemoveButton() {
+    public CmsToolbarClipboardMenu() {
 
-        super(CmsToolbarButton.ToolbarIcon.REMOVE, "Remove", "remove", true, true);
-        I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
-
+        super(CmsToolbarButton.ToolbarIcon.CLIPBOARD, "Clipboard", "clipboard", true);
     }
 
     /**
@@ -63,7 +58,7 @@ public class CmsToolbarRemoveButton extends A_CmsContainerpageToolbarButton {
      */
     public boolean hasPermissions(CmsDragContainerElement element) {
 
-        // TODO: get permissions from element
+        // TODO: Auto-generated method stub
         return true;
     }
 
@@ -72,16 +67,7 @@ public class CmsToolbarRemoveButton extends A_CmsContainerpageToolbarButton {
      */
     public void init() {
 
-        // do nothing
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
-     */
-    public void onElementClick(ClickEvent event, CmsDragContainerElement element) {
-
-        // do nothing
+        // TODO: Auto-generated method stub
 
     }
 
@@ -90,7 +76,7 @@ public class CmsToolbarRemoveButton extends A_CmsContainerpageToolbarButton {
      */
     public void onToolbarActivate() {
 
-        showSingleElementOption(true);
+        // TODO: Auto-generated method stub
 
     }
 
@@ -99,7 +85,7 @@ public class CmsToolbarRemoveButton extends A_CmsContainerpageToolbarButton {
      */
     public void onToolbarDeactivate() {
 
-        showSingleElementOption(false);
+        // TODO: Auto-generated method stub
 
     }
 

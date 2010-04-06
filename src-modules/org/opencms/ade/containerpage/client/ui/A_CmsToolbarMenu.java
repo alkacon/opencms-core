@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsContainerpageToolbarButton.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarMenu.java,v $
  * Date   : $Date: 2010/04/06 14:22:07 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,30 +33,22 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageEditor;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
+import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
-import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
- * Abstract button class implementing common methods of {@link org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton} for all container-page tool-bar buttons.<p>
+ * Abstract button class implementing common methods of {@link org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton} 
+ * for all container-page tool-bar menu buttons.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsContainerpageToolbarButton extends CmsToolbarButton
-implements I_CmsContainerpageToolbarButton {
-
-    /** The click handler for all tool-bar buttons. */
-    private static CmsElementClickHandler m_elementClickHandler = new CmsElementClickHandler();
-
-    /** The show left flag, default is <code>true</code>. */
-    protected boolean m_showLeft = true;
-
-    /** Flag to indicate if there are element functions (like edit, move, remove ...) available. */
-    private boolean m_hasElementFunctions;
+public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsContainerpageToolbarButton {
 
     /** The CSS class responsible for displaying the proper icon. */
     private String m_iconClass;
@@ -64,43 +56,31 @@ implements I_CmsContainerpageToolbarButton {
     /** The button name. */
     private String m_name;
 
+    /** The show left flag, default is <code>true</code>. */
+    protected boolean m_showLeft = true;
+
     /**
-     * Constructor.<p>
-     * 
-     * @param icon the icon to use
-     * @param title the button title
-     * @param name the button name
-     * @param hasElementFunctions set <code>true</code> if the button has element functions
+     * @param icon
+     * @param title
+     * @param name
      * @param showLeft set <code>true</code> if the button should be displayed on the left side of the tool-bar
      */
-    public A_CmsContainerpageToolbarButton(
-        CmsToolbarButton.ToolbarIcon icon,
-        String title,
-        String name,
-        boolean hasElementFunctions,
-        boolean showLeft) {
+    public A_CmsToolbarMenu(CmsToolbarButton.ToolbarIcon icon, String title, String name, boolean showLeft) {
 
-        super(icon, title);
+        super(title, icon.getCssClassName());
+        this.setTitle(title);
         m_name = name;
         m_iconClass = icon.getCssClassName();
-        m_hasElementFunctions = hasElementFunctions;
         m_showLeft = showLeft;
     }
 
     /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#createOptionForElement(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
      */
-    public CmsElementOptionButton createOptionForElement(CmsDragContainerElement element) {
+    public CmsElementOptionButton createOptionForElement(CmsDragContainerElement element)
+    throws UnsupportedOperationException {
 
-        if (m_hasElementFunctions) {
-            CmsElementOptionButton button = new CmsElementOptionButton(this, element);
-            button.addClickHandler(m_elementClickHandler);
-            button.setEnabled(hasPermissions(element));
-
-            return button;
-        } else {
-            throw new UnsupportedOperationException();
-        }
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -124,7 +104,7 @@ implements I_CmsContainerpageToolbarButton {
      */
     public boolean hasElementFunctions() {
 
-        return m_hasElementFunctions;
+        return false;
     }
 
     /**
@@ -132,7 +112,16 @@ implements I_CmsContainerpageToolbarButton {
      */
     public boolean isActive() {
 
-        return isDown();
+        return !isOpen();
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
+     */
+    public void onElementClick(ClickEvent event, CmsDragContainerElement element) {
+
+        throw new UnsupportedOperationException();
+
     }
 
     /**
@@ -146,11 +135,14 @@ implements I_CmsContainerpageToolbarButton {
             }
             onToolbarActivate();
             CmsContainerpageEditor.INSTANCE.setCurrentButton(this);
+            this.openMenu();
+
         } else {
             onToolbarDeactivate();
             CmsContainerpageEditor.INSTANCE.setCurrentButton(null);
+            this.closeMenu();
         }
-        setDown(active);
+
     }
 
     /**
@@ -159,20 +151,6 @@ implements I_CmsContainerpageToolbarButton {
     public boolean showLeft() {
 
         return m_showLeft;
-    }
-
-    /**
-     * Toggle function. Shows of the element option buttons only the ones associated with this button.<p>
-     * 
-     * @param show <code>true</code> if to show the buttons
-     */
-    public void showSingleElementOption(boolean show) {
-
-        if (show) {
-            Document.get().getBody().addClassName(m_iconClass);
-        } else {
-            Document.get().getBody().removeClassName(m_iconClass);
-        }
     }
 
 }

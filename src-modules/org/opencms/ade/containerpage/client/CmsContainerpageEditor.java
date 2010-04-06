@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/04/06 09:49:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/06 14:22:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClickHandler;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPropertiesButton;
@@ -41,12 +42,22 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
 import org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -55,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +74,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The editor instance. */
     public static CmsContainerpageEditor INSTANCE;
+
+    private int m_bodyMarginTop;
 
     /** The currently active button. */
     private I_CmsContainerpageToolbarButton m_currentButton;
@@ -118,6 +131,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbarButtons.add(new CmsToolbarEditButton());
         m_toolbarButtons.add(new CmsToolbarRemoveButton());
         m_toolbarButtons.add(new CmsToolbarPropertiesButton());
+        m_toolbarButtons.add(new CmsToolbarClipboardMenu());
         initToolbar();
         CmsContainerpageDataProvider.init();
 
@@ -137,10 +151,42 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
+     * Shows the tool-bar.<p>
+     * 
+     * @param show if <code>true</code> the tool-bar will be shown
+     */
+    public void showToolbar(boolean show) {
+
+        Element body = Document.get().getBody();
+        if (show) {
+            body.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
+            body.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+            body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
+        } else {
+            body.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
+            body.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+            body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
+        }
+    }
+
+    /**
+     * Returns if the tool-bar is visible.<p>
+     * 
+     * @return <code>true</code> if the tool-bar is visible
+     */
+    public boolean toolbarVisible() {
+
+        return !CmsDomUtil.hasClass(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide(),
+            Document.get().getBody());
+    }
+
+    /**
      * Initialises the tool-bar and its buttons.<p>
      */
     private void initToolbar() {
 
+        m_bodyMarginTop = CmsDomUtil.getCurrentStyleInt(Document.get().getBody(), Style.marginTop);
         m_toolbar = new CmsToolbar();
         CmsToolbarClickHandler handler = new CmsToolbarClickHandler();
         Iterator<I_CmsContainerpageToolbarButton> it = m_toolbarButtons.iterator();
@@ -154,6 +200,26 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             }
         }
         RootPanel.get().add(m_toolbar);
+        showToolbar(false);
+        CmsImageButton toggleToolbarButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.style().opencmsLogo(), true);
+        RootPanel.get().add(toggleToolbarButton);
+        toggleToolbarButton.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                showToolbar(!toolbarVisible());
+
+            }
+
+        });
+
+        toggleToolbarButton.getElement().getStyle().setPosition(Position.FIXED);
+        toggleToolbarButton.getElement().getStyle().setTop(-3, Unit.PX);
+        toggleToolbarButton.getElement().getStyle().setRight(50, Unit.PX);
+        toggleToolbarButton.getElement().getStyle().setZIndex(10010);
 
     }
 
