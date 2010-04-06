@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/04/06 07:31:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/06 09:48:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,14 @@
 package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
+import org.opencms.ade.containerpage.client.CmsContainerpageEditor;
+import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.client.draganddrop.A_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
@@ -60,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -141,14 +144,17 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         }
     }
 
+    /** Instance of the drag and drop handler. */
+    private static CmsContainerDragHandler INSTANCE;
+
     /** The current element info. */
     private DragInfo m_current;
 
+    /** The element info of the start element. */
     private DragInfo m_startInfo;
 
+    /** Map of element info's. */
     private Map<I_CmsDragTargetContainer, DragInfo> m_targetInfos;
-
-    private static CmsContainerDragHandler INSTANCE;
 
     /**
      * Constructor.<p>
@@ -400,6 +406,8 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
                 element.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
                 element.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
                 element.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+                ((CmsDragContainerElement)entry.getValue().getDraggable()).getElementOptionBar().removeStyleName(
+                    I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
             } else {
                 entry.getValue().getPlaceholder().removeFromParent();
                 ((Widget)entry.getValue().getDraggable()).removeFromParent();
@@ -407,6 +415,20 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
             entry.getKey().getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
             entry.getKey().removeHighlighting();
         }
+
+        m_targetInfos = null;
+        m_current = null;
+        m_startInfo = null;
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#targetSortChangeAction()
+     */
+    @Override
+    protected void targetSortChangeAction() {
+
+        updateHighlighting();
 
     }
 
@@ -464,12 +486,12 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
     void prepareElement(DragInfo elementInfo, I_CmsDragTargetContainer target, boolean setHidden) {
 
         Element element = elementInfo.getDraggable().getElement();
-        int width = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
+        String width = CmsDomUtil.getCurrentStyle(element, CmsDomUtil.Style.width);
         target.insert(elementInfo.getPlaceholder(), target.getWidgetIndex((Widget)elementInfo.getDraggable()));
         Style style = element.getStyle();
         style.setPosition(Position.ABSOLUTE);
         style.setMargin(0, Unit.PX);
-        style.setWidth(width, Unit.PX);
+        style.setProperty(CmsDomUtil.Style.width.name(), width);
         style.setZIndex(100);
         element.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         if (!CmsDomUtil.hasBackground(element)) {
@@ -482,17 +504,12 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         if (setHidden) {
             elementInfo.getPlaceholder().setVisible(false);
             elementInfo.getDraggable().setVisible(false);
+            CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(
+                (CmsDragContainerElement)elementInfo.getDraggable(),
+                CmsContainerpageEditor.INSTANCE.getToolbarButtons());
+            optionBar.addStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
+            ((CmsDragContainerElement)elementInfo.getDraggable()).setElementOptionBar(optionBar);
         }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#targetSortChangeAction()
-     */
-    @Override
-    protected void targetSortChangeAction() {
-
-        updateHighlighting();
-
     }
 
 }

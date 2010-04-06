@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/06 09:48:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,13 @@
 
 package org.opencms.ade.containerpage.client.draganddrop;
 
+import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,8 +45,11 @@ import java.util.Map;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -67,11 +73,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragElement {
+public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragElement, HasClickHandlers {
 
     /** The current place holder element. */
     protected Widget m_currentPlaceholder;
@@ -100,6 +106,10 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     /** List of available drag targets. */
     private Map<I_CmsDragTarget, I_CmsDragElement> m_dragTargets;
 
+    private CmsElementOptionBar m_elementOptionBar;
+
+    private static final String MOVE_HANDLE_CLASS = CmsToolbarButton.ToolbarIcon.MOVE.getCssClassName();
+
     /**
      * Constructor.<p>
      * 
@@ -115,7 +125,14 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
         m_dragTargets = new HashMap<I_CmsDragTarget, I_CmsDragElement>();
         m_dragTargets.put(parent, this);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
+    }
 
+    /**
+     * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+     */
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+
+        return addDomHandler(handler, ClickEvent.getType());
     }
 
     /**
@@ -213,16 +230,27 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     }
 
     /**
+     * Returns the option bar of this element.<p>
+     * 
+     * @return the option bar widget
+     */
+    public CmsElementOptionBar getElementOptionBar() {
+
+        return m_elementOptionBar;
+    }
+
+    /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#isHandleEvent(com.google.gwt.dom.client.NativeEvent)
      */
     public boolean isHandleEvent(NativeEvent event) {
 
-        if (m_dragHandle == null) {
-            return true;
-        }
+        //        if (m_dragHandle == null) {
+        //            return true;
+        //        }
         EventTarget target = event.getEventTarget();
         if (com.google.gwt.dom.client.Element.is(target)) {
-            return m_dragHandle.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
+            return CmsDomUtil.hasClass(MOVE_HANDLE_CLASS, com.google.gwt.dom.client.Element.as(target));
+            //  m_dragHandle.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
         }
         return false;
     }
@@ -298,6 +326,20 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     }
 
     /**
+     * Sets the elementOptionBar.<p>
+     *
+     * @param elementOptionBar the elementOptionBar to set
+     */
+    public void setElementOptionBar(CmsElementOptionBar elementOptionBar) {
+
+        if ((m_elementOptionBar != null) && (getWidgetIndex(m_elementOptionBar) >= 0)) {
+            m_elementOptionBar.removeFromParent();
+        }
+        add(elementOptionBar);
+        m_elementOptionBar = elementOptionBar;
+    }
+
+    /**
      * Sets the drag handle of the element. If set, the element will only be draggable by the handle.<p>
      * 
      * @param handle the handle
@@ -311,5 +353,4 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
             throw new UnsupportedOperationException("The drag handle has to be a child of the draggable element.");
         }
     }
-
 }

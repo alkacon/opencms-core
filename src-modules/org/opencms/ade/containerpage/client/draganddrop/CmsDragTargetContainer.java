@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/04/06 07:31:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/06 09:48:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -87,7 +87,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
         m_root.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
         m_debug = CmsDebugLog.getInstance();
         m_debug.printLine("created instance of container id: " + containerData.getName());
-        consumeChildren();
+        //   consumeChildren();
     }
 
     /**
@@ -108,26 +108,65 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
 
     }
 
-    //    /**
-    //     * Returns the list of drag containers contained in the page.<p>
-    //     * 
-    //     * @return the container list
-    //     */
-    //    public static List<I_CmsDragTarget> getPageContainers() {
-    //
-    //        List<I_CmsDragTarget> result = new ArrayList<I_CmsDragTarget>();
-    //        JsArrayString containerIds = CmsDragTarget.getContainerIds();
-    //        if ((containerIds != null) && (containerIds.length() > 0)) {
-    //            for (int i = 0; i < containerIds.length(); i++) {
-    //                if ((containerIds.get(i) != null) && (containerIds.get(i).trim().length() > 0)) {
-    //                    CmsDragTarget container = new CmsDragTarget(containerIds.get(i));
-    //                    result.add(container);
-    //                }
-    //            }
-    //        }
-    //        targets = result;
-    //        return result;
-    //    }
+    /**
+     * Consumes all child DOM elements as draggable elements and returns those.<p> 
+     * 
+     * @return list of created drag elements
+     */
+    @SuppressWarnings("cast")
+    public List<CmsDragContainerElement> consumeChildren() {
+
+        List<CmsDragContainerElement> elements = new ArrayList<CmsDragContainerElement>();
+        // the drag element widgets are created from the existing DOM elements,
+        // to establish the internal widget hierarchy the elements need to be removed from the DOM and added as widgets to the root panel
+        Element child = (Element)m_root.getElement().getFirstChildElement();
+        while (child != null) {
+            if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENTS, child)) {
+                String clientId = child.getAttribute("rel");
+                Element elementRoot = (Element)child.getFirstChildElement();
+                DOM.removeChild(child, elementRoot);
+                CmsDragContainerElement dragElement = new CmsDragContainerElement(
+                    (com.google.gwt.user.client.Element)elementRoot,
+                    this,
+                    clientId);
+                elements.add(dragElement);
+            } else if (CmsDomUtil.hasClass(CLASS_SUB_CONTAINER_ELEMENTS, child)) {
+                // TODO: handle sub-container
+            }
+            DOM.removeChild(m_root.getElement(), child);
+            child = (Element)m_root.getElement().getFirstChildElement();
+        }
+
+        // re-append the element widgets by adding them to the root panel
+        Iterator<CmsDragContainerElement> it = elements.iterator();
+        while (it.hasNext()) {
+            CmsDragContainerElement childElem = it.next();
+            m_root.add(childElem);
+            CmsContainerDragHandler.get().registerMouseHandler(childElem);
+        }
+        return elements;
+    }
+
+    /**
+     * Returns all contained drag elements.<p>
+     * 
+     * @return the drag elements
+     */
+    public List<CmsDragContainerElement> getAllDragElements() {
+
+        List<CmsDragContainerElement> elements = new ArrayList<CmsDragContainerElement>();
+        Iterator<Widget> it = m_root.iterator();
+        while (it.hasNext()) {
+            Widget w = it.next();
+            if (w instanceof CmsDragContainerElement) {
+                elements.add((CmsDragContainerElement)w);
+            } else {
+                m_debug.printLine("WARNING: " + w.toString() + " is no instance of CmsDragContainerElement");
+            }
+        }
+        return elements;
+
+    }
 
     /**
      * Returns the container id.<p>
@@ -235,6 +274,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
 
         m_root.getElement().getStyle().setBorderColor(CmsDomUtil.Color.red.name());
         //add(handler.getDragElement().getCurrentPlaceholder());
+
     }
 
     /**
@@ -306,51 +346,6 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
 
         m_root.setWidgetPosition(w, left, top);
 
-    }
-
-    /**
-     * Consumes all child elements as draggable elements.<p> 
-     */
-    @SuppressWarnings("cast")
-    private List<CmsDragContainerElement> consumeChildren() {
-
-        List<CmsDragContainerElement> elements = new ArrayList<CmsDragContainerElement>();
-        // the drag element widgets are created from the existing DOM elements,
-        // to establish the internal widget hierarchy the elements need to be removed from the DOM and added as widgets to the root panel
-        Element child = (Element)m_root.getElement().getFirstChildElement();
-        while (child != null) {
-            if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENTS, child)) {
-
-                String clientId = child.getAttribute("rel");
-                m_debug.printLine("instance of element id: " + clientId);
-                Element elementRoot = (Element)child.getFirstChildElement();
-                m_debug.printLine(clientId + " first child tagname: " + elementRoot.getTagName());
-                DOM.removeChild(child, elementRoot);
-                CmsDragContainerElement dragElement = new CmsDragContainerElement(
-                    (com.google.gwt.user.client.Element)elementRoot,
-                    this,
-                    clientId);
-                elements.add(dragElement);
-
-                m_debug.printLine("child removed");
-            } else if (CmsDomUtil.hasClass(CLASS_SUB_CONTAINER_ELEMENTS, child)) {
-                // TODO: handle sub-container
-            }
-
-            m_debug.printLine("removing: " + child.getTagName());
-            DOM.removeChild(m_root.getElement(), child);
-            child = (Element)m_root.getElement().getFirstChildElement();
-        }
-
-        // re-append the element widgets by adding them to the root panel
-        Iterator<CmsDragContainerElement> it = elements.iterator();
-        while (it.hasNext()) {
-            CmsDragContainerElement childElem = it.next();
-            m_debug.printLine("re-attaching child " + childElem.getClientId());
-            m_root.add(childElem);
-            CmsContainerDragHandler.get().registerMouseHandler(childElem);
-        }
-        return elements;
     }
 
     /**
