@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsToolbarButtonLayoutBundle.java,v $
- * Date   : $Date: 2010/04/06 09:49:45 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
+ * Date   : $Date: 2010/04/06 09:49:44 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,29 +29,41 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.css;
+package org.opencms.ade.containerpage.client.ui.css;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.CssResource;
 
-/**
- * Resource bundle to access CSS and image resources for tool-bar buttons.<p>
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.3 $
- * 
- * @since 8.0.0
- */
-public interface I_CmsToolbarButtonLayoutBundle extends I_CmsImageBundle {
+public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsImageBundle {
 
-    /** The button CSS. */
-    public interface I_CmsToolbarButtonCss
-    extends I_CmsLayoutBundle.I_CmsStateCss, org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle.I_CmsDragCss {
+    public I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
+    public interface I_CmsContainerpageCss extends CssResource {
+
+        String saveButton();
+
+        String publishButton();
+
+        String selectionButton();
+
+        String editButton();
+
+        String moveButton();
+
+        String removeButton();
+
+        String propertiesButton();
+
+        String addButton();
+
+        String clipboardButton();
+
+        String extrasButton();
+
+        String sitemapButton();
+
+        String resetButton();
+
         String optionBar();
 
         /** Access method.<p>
@@ -124,24 +136,9 @@ public interface I_CmsToolbarButtonLayoutBundle extends I_CmsImageBundle {
          * 
          * @return the CSS class name
          */
-        String toolbarSelection();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String toolbarSitemap();
     }
 
-    /** The bundle instance. */
-    I_CmsToolbarButtonLayoutBundle INSTANCE = GWT.create(I_CmsToolbarButtonLayoutBundle.class);
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the button CSS
-     */
-    @Source("toolbarButton.css")
-    I_CmsToolbarButtonCss toolbarButtonCss();
-
+    @Source("containerpage.css")
+    I_CmsContainerpageCss containerpageCss();
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDataProvider.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/06 09:49:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,9 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
+import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
@@ -54,7 +56,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -213,14 +215,14 @@ public final class CmsContainerpageDataProvider {
     /** The container element data. All requested elements will be cached here.*/
     /*DEFAULT*/Map<String, CmsContainerElement> m_elements;
 
-    /** The drag targets within this page. */
-    private Map<String, CmsDragTargetContainer> m_targetContainers;
+    /** The container-page RPC service. */
+    private I_CmsContainerpageServiceAsync m_containerpageService;
 
     /** The container data. */
     private Map<String, CmsContainerJso> m_containers;
 
-    /** The container-page RPC service. */
-    private I_CmsContainerpageServiceAsync m_containerpageService;
+    /** The drag targets within this page. */
+    private Map<String, CmsDragTargetContainer> m_targetContainers;
 
     /**
      * Hidden constructor.<p>
@@ -233,13 +235,23 @@ public final class CmsContainerpageDataProvider {
         m_targetContainers = new HashMap<String, CmsDragTargetContainer>();
 
         JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
+        List<CmsDragContainerElement> elements = new ArrayList<CmsDragContainerElement>();
         for (int i = 0; i < containers.length(); i++) {
             CmsContainerJso container = containers.get(i);
             m_containerTypes.add(container.getType());
             m_containers.put(container.getName(), container);
-            m_targetContainers.put(container.getName(), new CmsDragTargetContainer(container));
+            CmsDragTargetContainer target = new CmsDragTargetContainer(container);
+            elements.addAll(target.consumeChildren());
+            m_targetContainers.put(container.getName(), target);
         }
-
+        Iterator<CmsDragContainerElement> it = elements.iterator();
+        while (it.hasNext()) {
+            CmsDragContainerElement element = it.next();
+            CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(
+                element,
+                CmsContainerpageEditor.INSTANCE.getToolbarButtons());
+            element.setElementOptionBar(optionBar);
+        }
     }
 
     /**
@@ -270,6 +282,16 @@ public final class CmsContainerpageDataProvider {
     }
 
     /**
+     * Initialises the data provider. This will also transform the pages containers and elements into the appropriate widgets (done within the private constructor).<p> 
+     */
+    public static void init() {
+
+        if (INSTANCE == null) {
+            INSTANCE = new CmsContainerpageDataProvider();
+        }
+    }
+
+    /**
      * Accesses the window object to read the current URI.<p>
      * 
      * @return the current URI
@@ -277,6 +299,33 @@ public final class CmsContainerpageDataProvider {
     private static native String getCurrentUriNative() /*-{
         return $wnd[@org.opencms.ade.containerpage.client.CmsContainerpageDataProvider::KEY_CURRENT_URI];
     }-*/;
+
+    /**
+     * Returns all drag elements of the page.<p>
+     * 
+     * @return the drag elements
+     */
+    public List<CmsDragContainerElement> getAllDragElements() {
+
+        List<CmsDragContainerElement> result = new ArrayList<CmsDragContainerElement>();
+        Iterator<CmsDragTargetContainer> it = m_targetContainers.values().iterator();
+        while (it.hasNext()) {
+            result.addAll(it.next().getAllDragElements());
+        }
+        return result;
+    }
+
+    /**
+     * Returns the container data of container with the given name.
+     * 
+     * @param containerName the container name
+     * 
+     * @return the container data
+     */
+    public CmsContainerJso getContainer(String containerName) {
+
+        return m_containers.get(containerName);
+    }
 
     /**
      * Returns the container-page RPC service.<p>
@@ -335,18 +384,6 @@ public final class CmsContainerpageDataProvider {
     }
 
     /**
-     * Returns the container data of container with the given name.
-     * 
-     * @param containerName the container name
-     * 
-     * @return the container data
-     */
-    public CmsContainerJso getContainer(String containerName) {
-
-        return m_containers.get(containerName);
-    }
-
-    /**
      * Requests the data for a container element specified by the client id. The data will be provided to the given call-back function.<p>
      * 
      * @param clientId the element id
@@ -372,16 +409,6 @@ public final class CmsContainerpageDataProvider {
 
         MultiElementAction action = new MultiElementAction(clientIds, callback);
         action.execute();
-    }
-
-    /**
-     * Initialises the data provider. This will also transform the pages containers and elements into the appropriate widgets (done within the private constructor).<p> 
-     */
-    public static void init() {
-
-        if (INSTANCE == null) {
-            INSTANCE = new CmsContainerpageDataProvider();
-        }
     }
 
     /** 

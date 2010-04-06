@@ -1,0 +1,366 @@
+@external cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
+
+.saveButton, .publishButton, .selectionButton, .editButton, .moveButton, .removeButton, .propertiesButton, .addButton, .clipboardButton, .extrasButton, .sitemapButton, .resetButton{}
+
+.optionBar{
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	
+}
+
+.optionBar div{
+	float: right;
+}
+
+@sprite .optionBar .cmsState-up-hovering .toolbarRemove, .optionBar .cmsState-down-hovering .toolbarRemove, .optionBar .cmsState-down .toolbarRemove{
+    gwt-image: "deleteIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .optionBar .cmsState-up .toolbarRemove{
+    gwt-image: "deleteIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .optionBar .cmsState-up-disabled .toolbarRemove, .optionBar .cmsState-down-disabled .toolbarRemove{
+    gwt-image: "deleteIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .optionBar .cmsState-up-hovering .toolbarEdit, .optionBar .cmsState-down-hovering .toolbarEdit, .optionBar .cmsState-down .toolbarEdit{
+    gwt-image: "editorIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .optionBar .cmsState-up .toolbarEdit{
+    gwt-image: "editorIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit{
+    gwt-image: "editorIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .optionBar .cmsState-up-hovering .toolbarMove, .optionBar .cmsState-down-hovering .toolbarMove, .optionBar .cmsState-down .toolbarMove{
+    gwt-image: "moveIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .optionBar .cmsState-up .toolbarMove{
+    gwt-image: "moveIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .optionBar .cmsState-up-disabled .toolbarMove, .optionBar .cmsState-down-disabled .toolbarMove{
+    gwt-image: "moveIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .optionBar .cmsState-up-hovering .toolbarNew, .optionBar .cmsState-down-hovering .toolbarNew, .optionBar .cmsState-down .toolbarNew{
+    gwt-image: "newIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .optionBar .cmsState-up .toolbarNew{
+    gwt-image: "newIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .optionBar .cmsState-up-disabled .toolbarNew, .optionBar .cmsState-down-disabled .toolbarNew{
+    gwt-image: "newIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .optionBar .cmsState-up-hovering .toolbarProperties, .optionBar .cmsState-down-hovering .toolbarProperties, .optionBar .cmsState-down .toolbarProperties{
+    gwt-image: "propertyIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .optionBar .cmsState-up .toolbarProperties{
+    gwt-image: "propertyIconInactive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .optionBar .cmsState-up-disabled .toolbarProperties, .optionBar .cmsState-down-disabled .toolbarProperties{
+    gwt-image: "propertyIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+
+@sprite .cmsState-up-disabled .toolbarEdit, .cmsState-down-disabled .toolbarEdit{
+	gwt-image: "toolbarEditSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarEdit{
+	gwt-image: "toolbarEditSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarEdit, .cmsState-down-hovering .toolbarEdit, .cmsState-down .toolbarEdit{
+    gwt-image: "toolbarEdit";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarAdd, .cmsState-down-disabled .toolbarAdd{
+	gwt-image: "toolbarAddSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarAdd{
+	gwt-image: "toolbarAddSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarAdd, .cmsState-down-hovering .toolbarAdd, .cmsState-down .toolbarAdd{
+    gwt-image: "toolbarAdd";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarClipboard, .cmsState-down-disabled .toolbarClipboard{
+	gwt-image: "toolbarClipboardSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarClipboard{
+	gwt-image: "toolbarClipboardSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarClipboard, .cmsState-down-hovering .toolbarClipboard, .cmsState-down .toolbarClipboard{
+    gwt-image: "toolbarClipboard";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarExit, .cmsState-down-disabled .toolbarExit{
+	gwt-image: "toolbarExitSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarExit{
+	gwt-image: "toolbarExitSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarExit, .cmsState-down-hovering .toolbarExit, .cmsState-down .toolbarExit{
+    gwt-image: "toolbarExit";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarMove, .cmsState-down-disabled .toolbarMove{
+	gwt-image: "toolbarMoveSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarMove{
+	gwt-image: "toolbarMoveSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarMove, .cmsState-down-hovering .toolbarMove, .cmsState-down .toolbarMove{
+    gwt-image: "toolbarMove";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarNew, .cmsState-down-disabled .toolbarNew{
+	gwt-image: "toolbarNewSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarNew{
+	gwt-image: "toolbarNewSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarNew, .cmsState-down-hovering .toolbarNew, .cmsState-down .toolbarNew{
+    gwt-image: "toolbarNew";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarProperties, .cmsState-down-disabled .toolbarProperties{
+	gwt-image: "toolbarPropertiesSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarProperties{
+	gwt-image: "toolbarPropertiesSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarProperties, .cmsState-down-hovering .toolbarProperties, .cmsState-down .toolbarProperties{
+    gwt-image: "toolbarProperties";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarPublish, .cmsState-down-disabled .toolbarPublish{
+	gwt-image: "toolbarPublishSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarPublish{
+	gwt-image: "toolbarPublishSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarPublish, .cmsState-down-hovering .toolbarPublish, .cmsState-down .toolbarPublish{
+    gwt-image: "toolbarPublish";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarRecent, .cmsState-down-disabled .toolbarRecent{
+	gwt-image: "toolbarRecentSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarRecent{
+	gwt-image: "toolbarRecentSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarRecent, .cmsState-down-hovering .toolbarRecent, .cmsState-down .toolbarRecent{
+    gwt-image: "toolbarRecent";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarRemove, .cmsState-down-disabled .toolbarRemove{
+	gwt-image: "toolbarRemoveSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarRemove{
+	gwt-image: "toolbarRemoveSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarRemove, .cmsState-down-hovering .toolbarRemove, .cmsState-down .toolbarRemove{
+    gwt-image: "toolbarRemove";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarSave, .cmsState-down-disabled .toolbarSave{
+	gwt-image: "toolbarSaveSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarSave{
+	gwt-image: "toolbarSaveSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarSave, .cmsState-down-hovering .toolbarSave, .cmsState-down .toolbarSave{
+    gwt-image: "toolbarSave";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+@sprite .cmsState-up-disabled .toolbarSitemap, .cmsState-down-disabled .toolbarSitemap{
+	gwt-image: "toolbarSitemapSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarSitemap{
+	gwt-image: "toolbarSitemapSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarSitemap, .cmsState-down-hovering .toolbarSitemap, .cmsState-down .toolbarSitemap{
+    gwt-image: "toolbarSitemap";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+    
+}
