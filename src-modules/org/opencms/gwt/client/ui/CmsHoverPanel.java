@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHTMLHoverPanel.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHoverPanel.java,v $
  * Date   : $Date: 2010/04/06 08:23:43 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,42 +38,25 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * A HTML Panel implementation toggles the I_CmsStateCss.cmsHovering CSS class on mouse over.<p>
+ * A {@link com.google.gwt.user.client.ui.FlowPanel} implementation toggles the {@link org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsStateCss#cmsHovering()} CSS class on mouse over.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsHTMLHoverPanel extends HTMLPanel implements HasMouseOutHandlers, HasMouseOverHandlers {
+public class CmsHoverPanel extends FlowPanel implements HasMouseOutHandlers, HasMouseOverHandlers {
 
     /**
-     * Creates an HTML hover panel with the specified HTML contents inside a DIV element. Any element within this HTML that has a specified id can contain a child widget.
-     * 
-     * @param html the panel's HTML
+     * Constructor.<p>
      */
-    public CmsHTMLHoverPanel(String html) {
+    public CmsHoverPanel() {
 
-        super(html);
-        CmsHoverHandler handler = new CmsHoverHandler(this);
-        addMouseOutHandler(handler);
-        addMouseOverHandler(handler);
-
-    }
-
-    /**
-     * Creates an HTML hover panel whose root element has the given tag, and with the specified HTML contents. Any element within this HTML that has a specified id can contain a child widget.
-     * 
-     * @param tag the tag of the root element
-     * @param html the panel's HTML
-     */
-    public CmsHTMLHoverPanel(String tag, String html) {
-
-        super(tag, html);
+        super();
         CmsHoverHandler handler = new CmsHoverHandler(this);
         addMouseOutHandler(handler);
         addMouseOverHandler(handler);
