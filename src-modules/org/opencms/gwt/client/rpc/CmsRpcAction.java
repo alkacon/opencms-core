@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/03/29 06:39:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/06 08:29:39 $
+ * Version: $Revision: 1.7 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,15 +32,15 @@
 package org.opencms.gwt.client.rpc;
 
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsStringUtil;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Consistently manages RPCs errors and 'loading' state.<p>
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0
  */
@@ -94,25 +94,27 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      */
     protected void provideFeedback(String ticket, String message) {
 
-        String title = "Error";
-        String text = "An error occured:\n"
-            + message
-            + "\n"
-            + "Provided ticket '"
-            + ticket
-            + "'"
-            + "\n"
-            + "You may retry this operation by clicking 'OK'.\n"
-            + "Or retry later by clicking 'Cancel'.\n"
-            + "However if the error persists, contact Technical Support.";
+        String title = Messages.get().key(Messages.GUI_ERROR_0);
+        String text = Messages.get().key(Messages.GUI_TICKET_MESSAGE_2, message, ticket);
 
-        CmsPopupDialog dialog = getDialog(title, text);
-        dialog.setAutoHideEnabled(false);
-        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+        CmsConfirmDialog dialog = new CmsConfirmDialog(title, text);
+        dialog.center();
+        dialog.setHandler(new I_CmsConfirmDialogHandler() {
 
-            public void onClose(CloseEvent<PopupPanel> event) {
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+             */
+            public void onOk() {
 
                 execute();
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onCancel()
+             */
+            public void onCancel() {
+
+                // do nothing
             }
         });
     }
@@ -181,7 +183,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
     protected CmsPopupDialog getDialog(String title, String text) {
 
         CmsPopupDialog dialog = new CmsPopupDialog(title, new Label(text));
-        dialog.setAnimationEnabled(true);
+        dialog.getContent().addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
         dialog.setGlassEnabled(true);
         dialog.setAutoHideEnabled(true);
         dialog.setModal(true);

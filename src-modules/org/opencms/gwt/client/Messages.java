@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/03/11 10:29:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/06 08:29:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,23 +38,29 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOADING_0 = "GUI_LOADING_0";
+    public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
+    public static final String GUI_ERROR_0 = "GUI_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOADING_0 = "GUI_LOADING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_OK_0 = "GUI_OK_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
+    public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TICKET_MESSAGE_2 = "GUI_TICKET_MESSAGE_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";

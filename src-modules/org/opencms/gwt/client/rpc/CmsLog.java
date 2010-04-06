@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsLog.java,v $
- * Date   : $Date: 2010/03/09 10:32:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/06 08:29:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,9 @@ package org.opencms.gwt.client.rpc;
 import org.opencms.gwt.shared.rpc.I_CmsLogService;
 import org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync;
 
-import java.util.Date;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -47,7 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -77,7 +74,7 @@ public final class CmsLog {
      */
     public static String log(final String message) {
 
-        final String ticket = String.valueOf(new Date().getTime());
+        final String ticket = String.valueOf(System.currentTimeMillis());
         // using a deferred command just to be more responsible 
         // since we do not expect any feed back from it
         DeferredCommand.addCommand(new Command() {
@@ -95,8 +92,7 @@ public final class CmsLog {
                     public void onFailure(Throwable caught) {
 
                         // logging failed, really bad
-                        // TODO: show a dialog box
-                        Window.alert("failure:" + ticket);
+                        // bad the only thing we can do is to ignore it
                     }
 
                     /**
