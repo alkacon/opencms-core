@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/03/31 12:15:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/06 06:53:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -190,6 +190,78 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String propertyIconInactive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarAdd();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarClipboard();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarEdit();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarExit();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarMove();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarNew();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarProperties();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarPublish();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarRecent();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarRemove();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarSave();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarSitemap();
 
     }
 
@@ -359,10 +431,216 @@ public interface I_CmsImageBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_selection_a.png")
+    ImageResource selectionIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_selection_sw.png")
+    ImageResource selectionIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_selection_i.png")
+    ImageResource selectionIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
      * @return the button CSS
      */
     @NotStrict
     @Source("imageSprites.css")
     I_CmsImageStyle style();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_add.png")
+    ImageResource toolbarAdd();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_add_sw.png")
+    ImageResource toolbarAddSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_favorites.png")
+    ImageResource toolbarClipboard();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_favorites_sw.png")
+    ImageResource toolbarClipboardSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_edit.png")
+    ImageResource toolbarEdit();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_edit_sw.png")
+    ImageResource toolbarEditSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_exit.png")
+    ImageResource toolbarExit();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_exit_sw.png")
+    ImageResource toolbarExitSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_move.png")
+    ImageResource toolbarMove();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_move_sw.png")
+    ImageResource toolbarMoveSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_new.png")
+    ImageResource toolbarNew();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_new_sw.png")
+    ImageResource toolbarNewSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_prop.png")
+    ImageResource toolbarProperties();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_prop_sw.png")
+    ImageResource toolbarPropertiesSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_publish.png")
+    ImageResource toolbarPublish();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_publish_sw.png")
+    ImageResource toolbarPublishSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_recent.png")
+    ImageResource toolbarRecent();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_recent_sw.png")
+    ImageResource toolbarRecentSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_delete.png")
+    ImageResource toolbarRemove();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_delete_sw.png")
+    ImageResource toolbarRemoveSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_save.png")
+    ImageResource toolbarSave();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_save_sw.png")
+    ImageResource toolbarSaveSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_selection.png")
+    ImageResource toolbarSelection();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_selection_sw.png")
+    ImageResource toolbarSelectionSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_sitemap.png")
+    ImageResource toolbarSitemap();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_sitemap_sw.png")
+    ImageResource toolbarSitemapSW();
 
 }
