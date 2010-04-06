@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButton.java,v $
- * Date   : $Date: 2010/03/10 12:51:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/06 08:25:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -85,6 +85,7 @@ public class CmsRadioButton extends CustomButton {
      * 
      * @see com.google.gwt.user.client.ui.CustomButton#setDown(boolean)
      */
+    @Override
     public void setDown(boolean down) {
 
         super.setDown(down);
