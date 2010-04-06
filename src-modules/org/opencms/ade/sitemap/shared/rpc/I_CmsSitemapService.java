@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/03/11 13:28:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/06 12:22:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -62,7 +63,18 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsClientSitemapEntry getSitemapEntry(String root) throws CmsRpcException;
+    CmsClientSitemapEntry getEntry(String root) throws CmsRpcException;
+
+    /**
+     * Returns the root sitemap entry for the given sitemap.<p>
+     * 
+     * @param sitemapUri the site relative path
+     *  
+     * @return the sitemap entry
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsClientSitemapEntry getRoot(String sitemapUri) throws CmsRpcException;
 
     /**
      * Returns the sitemap children for the given path.<p>
@@ -73,5 +85,37 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsClientSitemapEntry[] getSitemapChildren(String root) throws CmsRpcException;
+    CmsClientSitemapEntry[] getChildren(String root) throws CmsRpcException;
+
+    /**
+     * Saves the changes to the given sitemap.<p>
+     * 
+     * @param sitemapUri the sitemap URI 
+     * @param changes the changes to save
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void save(String sitemapUri, CmsClientSitemapChange[] changes) throws CmsRpcException;
+
+    /**
+     * Creates a new sub-sitemap resource from the given sitemap and path.<p>
+     * 
+     * @param sitemapUri the super sitemap URI
+     * @param path the starting path
+     * 
+     * @return the new created sub-sitemap URI
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    String createSubsitemap(String sitemapUri, String path) throws CmsRpcException;
+
+    /**
+     * Merges the given super sitemap with the sub-sitemap at the given path.<p>
+     * 
+     * @param sitemapUri the super sitemap URI
+     * @param path the starting path
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void mergeSubsitemap(String sitemapUri, String path) throws CmsRpcException;
 }

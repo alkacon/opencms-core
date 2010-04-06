@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/03/31 12:19:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/06 12:22:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,18 +31,23 @@
 
 package org.opencms.ade.sitemap;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
+import org.opencms.file.CmsObject;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
+import org.opencms.xml.sitemap.CmsXmlSitemap;
+import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -51,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -61,30 +66,29 @@ import org.apache.commons.logging.Log;
  */
 public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapService {
 
-    /** Serialization uid. */
-    private static final long serialVersionUID = -7136544324371767330L;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapService.class);
 
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getSitemapEntry(String)
-     */
-    public CmsClientSitemapEntry getSitemapEntry(String root) throws CmsRpcException {
+    /** Serialization uid. */
+    private static final long serialVersionUID = -7136544324371767330L;
 
-        try {
-            return toGwtEntry(OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root));
-        } catch (Throwable e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
-        }
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createSubsitemap(java.lang.String, java.lang.String)
+     */
+    public String createSubsitemap(String sitemapUri, String path) {
+
+        // TODO: Auto-generated method stub
+        // TODO: problem with locales, 
+        // - if it applies to only one locale, what happens if the later language changes to the subsitemap?
+        // - if it applies to all locales, how to keep the entry point consistent?
+        // anyhow, should not be keep only one language variation with language root folders? 
+        return null;
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getSitemapChildren(java.lang.String)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getChildren(java.lang.String)
      */
-    public CmsClientSitemapEntry[] getSitemapChildren(String root) throws CmsRpcException {
+    public CmsClientSitemapEntry[] getChildren(String root) throws CmsRpcException {
 
         try {
             CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root);
@@ -98,6 +102,36 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             LOG.error(e.getLocalizedMessage(), e);
             throw new CmsRpcException(e.getLocalizedMessage());
         }
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getEntry(String)
+     */
+    public CmsClientSitemapEntry getEntry(String root) throws CmsRpcException {
+
+        try {
+            return toGwtEntry(OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root));
+        } catch (Throwable e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsRpcException(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#mergeSubsitemap(java.lang.String, java.lang.String)
+     */
+    public void mergeSubsitemap(String sitemapUri, String path) {
+
+        // TODO: 
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, org.opencms.ade.sitemap.shared.CmsClientSitemapChange[])
+     */
+    public void save(String sitemapUri, CmsClientSitemapChange[] changes) {
+
+        // TODO:
     }
 
     /**
@@ -115,7 +149,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         gwtEntry.setId(entry.getId().toString());
         gwtEntry.setName(entry.getName());
         gwtEntry.setTitle(entry.getTitle());
-        String vfsPath = "broken";
+        String vfsPath = "---";
         if (getCmsObject().existsResource(entry.getResourceId())) {
             vfsPath = getCmsObject().getSitePath(getCmsObject().readResource(entry.getResourceId()));
         }
@@ -123,5 +157,21 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         gwtEntry.setProperties(new HashMap<String, String>(entry.getProperties()));
         gwtEntry.setSitePath(entry.getSitePath(getCmsObject()));
         return gwtEntry;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getRoot(java.lang.String)
+     */
+    public CmsClientSitemapEntry getRoot(String sitemapUri) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, cms.readResource(sitemapUri));
+            return getEntry(cms.getRequestContext().removeSiteRoot(xml.getSitemap(cms, Locale.ENGLISH).getEntryPoint()));
+        } catch (Throwable e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsRpcException(e.getLocalizedMessage());
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/03/11 13:28:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/06 12:22:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -40,7 +41,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -51,12 +52,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsSitemapServiceAsync {
 
     /**
-     * Returns the sitemap entry for the given path.<p>
+     * Creates a new sub-sitemap resource from the given sitemap and path.<p>
      * 
-     * @param root the site relative root
+     * @param sitemapUri the super sitemap URI
+     * @param path the starting path
      * @param callback the async callback
      */
-    void getSitemapEntry(String root, AsyncCallback<CmsClientSitemapEntry> callback);
+    void createSubsitemap(String sitemapUri, String path, AsyncCallback<String> callback);
 
     /**
      * Returns the sitemap children for the given path.<p>
@@ -64,5 +66,39 @@ public interface I_CmsSitemapServiceAsync {
      * @param root the site relative root
      * @param callback the async callback
      */
-    void getSitemapChildren(String root, AsyncCallback<CmsClientSitemapEntry[]> callback);
+    void getChildren(String root, AsyncCallback<CmsClientSitemapEntry[]> callback);
+
+    /**
+     * Returns the sitemap entry for the given path.<p>
+     * 
+     * @param root the site relative root
+     * @param callback the async callback
+     */
+    void getEntry(String root, AsyncCallback<CmsClientSitemapEntry> callback);
+
+    /**
+     * Returns the root sitemap entry for the given sitemap.<p>
+     * 
+     * @param sitemapUri the site relative path
+     * @param callback the async callback
+     */
+    void getRoot(String sitemapUri, AsyncCallback<CmsClientSitemapEntry> callback);
+
+    /**
+     * Merges the given super sitemap with the sub-sitemap at the given path.<p>
+     * 
+     * @param sitemapUri the super sitemap URI
+     * @param path the starting path
+     * @param callback the async callback
+     */
+    void mergeSubsitemap(String sitemapUri, String path, AsyncCallback<Void> callback);
+
+    /**
+     * Saves the changes to the given sitemap.<p>
+     * 
+     * @param sitemapUri the sitemap URI 
+     * @param changes the changes to save
+     * @param callback the async callback
+     */
+    void save(String sitemapUri, CmsClientSitemapChange[] changes, AsyncCallback<Void> callback);
 }
