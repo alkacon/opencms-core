@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/30 06:55:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/06 08:30:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,20 +33,54 @@ package org.opencms.gwt.client.draganddrop;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
  * Client bundle containing CSS resources needed for drag and drop.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
 
+    /** A fraction of the drag and drop CSS also used in the container-page editor to show and hide element buttons. */
+    @Shared
+    interface I_CmsDragCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragElement();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragging();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragPlaceholder();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragStarted();
+    }
+
     /** The drag and drop CSS. */
-    interface I_CmsDragDropCss extends CssResource {
+    interface I_CmsDragDropCss extends I_CmsDragCss {
 
         /**
          * Access method.<p>
@@ -67,13 +101,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String dragElement();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String dragElementBackground();
 
         /** 
@@ -88,21 +115,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String dragging();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String dragListElement();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String dragPlaceholder();
 
         /** 
          * Access method.<p>

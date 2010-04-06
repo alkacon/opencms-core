@@ -9,6 +9,11 @@
 	
 }
 
+/** Assigned to the body on drag start. */
+body.dragStarted{
+	overflow-y: scroll;
+}
+
 .currentTarget{
 	position: relative;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/03/30 06:55:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/06 08:30:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.draganddrop;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -146,6 +147,7 @@ implements I_CmsDragHandler<E, T> {
             if ((m_dragElement != null) && m_dragElement.isHandleEvent(event.getNativeEvent())) {
                 DOM.setCapture(m_dragElement.getElement());
                 m_dragging = true;
+                Document.get().getBody().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
                 m_currentEvent = event;
                 m_currentTarget = (T)m_dragElement.getDragParent();
                 m_cursorOffsetLeft = m_currentEvent.getRelativeX(m_dragElement.getElement());
@@ -224,6 +226,7 @@ implements I_CmsDragHandler<E, T> {
             event.preventDefault();
             event.stopPropagation();
             restoreElementAfterDrag();
+            Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
             m_dragElement.onDragStop(this);
         }
 
