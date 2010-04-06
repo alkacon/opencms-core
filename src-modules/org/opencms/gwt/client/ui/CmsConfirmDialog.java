@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsConfirmDialog.java,v $
- * Date   : $Date: 2010/03/11 10:29:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/06 08:29:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,14 +35,14 @@ import org.opencms.gwt.client.Messages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HTML;
 
 /**
  * Provides a confirmation dialog with ok and cancel button.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -64,6 +64,7 @@ public class CmsConfirmDialog extends CmsPopupDialog {
                 if (event.getSource().equals(getOkButton())) {
                     getHandler().onOk();
                 } else {
+                    // TODO: what's about canceling with ESC or clicking on the x??
                     getHandler().onCancel();
                 }
             }
@@ -75,8 +76,10 @@ public class CmsConfirmDialog extends CmsPopupDialog {
     /** The 'Cancel' button. */
     private CmsTextButton m_cancelButton;
 
-    private Label m_content;
+    /** The content text. */
+    private HTML m_content;
 
+    /** The action handler. */
     private I_CmsConfirmDialogHandler m_handler;
 
     /** The 'Ok' button. */
@@ -88,9 +91,10 @@ public class CmsConfirmDialog extends CmsPopupDialog {
     public CmsConfirmDialog() {
 
         super();
+        super.setAutoHideEnabled(false);
+        super.setModal(true);
+        setGlassEnabled(true);
         ClickHandler clickHandler = new ButtonClickHandler();
-        // TODO: add localized messages 
-
         m_okButton = new CmsTextButton(Messages.get().key(Messages.GUI_OK_0), null);
         m_okButton.useMinWidth(true);
         m_okButton.addClickHandler(clickHandler);
@@ -110,7 +114,7 @@ public class CmsConfirmDialog extends CmsPopupDialog {
     public CmsConfirmDialog(String title, String content) {
 
         this();
-        m_content = new Label(content);
+        m_content = new HTML(content);
         this.setContent(m_content);
         getDialog().setText(title);
     }
@@ -125,6 +129,18 @@ public class CmsConfirmDialog extends CmsPopupDialog {
     public void addContentStyleName(String style) {
 
         m_content.addStyleName(style);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#center()
+     */
+    @Override
+    public void center() {
+
+        super.center();
+        getOkButton().setEnabled(true);
+        getCancelButton().setEnabled(true);
+
     }
 
     /**
@@ -149,6 +165,15 @@ public class CmsConfirmDialog extends CmsPopupDialog {
     public String getContentStylePrimaryName() {
 
         return m_content.getStylePrimaryName();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#setAutoHideEnabled(boolean)
+     */
+    @Override
+    public void setAutoHideEnabled(boolean autoHide) {
+
+        // prevent enabling auto hide
     }
 
     /**
@@ -186,6 +211,26 @@ public class CmsConfirmDialog extends CmsPopupDialog {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#setModal(boolean)
+     */
+    @Override
+    public void setModal(boolean modal) {
+
+        // it is always modal
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#show()
+     */
+    @Override
+    public void show() {
+
+        super.show();
+        getOkButton().setEnabled(true);
+        getCancelButton().setEnabled(true);
+    }
+
+    /**
      * Returns the 'Cancel' button widget.<p>
      * 
      * @return the 'Cancel' button
@@ -214,28 +259,4 @@ public class CmsConfirmDialog extends CmsPopupDialog {
 
         return m_okButton;
     }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsPopup#center()
-     */
-    @Override
-    public void center() {
-
-        super.center();
-        getOkButton().setEnabled(true);
-        getCancelButton().setEnabled(true);
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsPopup#show()
-     */
-    @Override
-    public void show() {
-
-        super.show();
-        getOkButton().setEnabled(true);
-        getCancelButton().setEnabled(true);
-    }
-
 }
