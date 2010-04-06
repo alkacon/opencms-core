@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsToolbarButtonLayoutBundle.java,v $
- * Date   : $Date: 2010/04/06 06:52:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/06 08:26:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,14 +38,15 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsToolbarButtonLayoutBundle extends I_CmsImageBundle {
 
     /** The button CSS. */
-    public interface I_CmsToolbarButtonCss extends I_CmsLayoutBundle.I_CmsStateCss {
+    public interface I_CmsToolbarButtonCss
+    extends I_CmsLayoutBundle.I_CmsStateCss, org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle.I_CmsDragCss {
 
         /** Access method.<p>
          * 
