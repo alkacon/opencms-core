@@ -18,9 +18,11 @@
 	
 }
 
-.toolbarSelection .optionBar.cmsHovering{
-	background: #ffffff;
+@sprite .toolbarSelection .optionBar.cmsHovering{
+	gwt-image: "backgroundSoft";
+	height: auto;
 	-moz-border-radius: 2px;
+	border: 1px solid #aaaaaa;
 }
 
 .optionBar .cmsState{
@@ -42,6 +44,7 @@
 
 .toolbarSelection .dragging .optionBar.cmsHovering{
 	background: transparent;
+	border: none;
 }
 
 .toolbarSelection .dragging .optionBar .toolbarRemove, 

@@ -363,3 +363,9 @@
     margin-top: 1px;
     
 }
+
+@sprite .opencmsLogo{
+	gwt-image: "opencmsLogo";
+	display: inline-block;
+	cursor: pointer;
+}

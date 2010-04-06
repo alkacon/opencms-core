@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/30 14:08:37 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/04/06 14:23:10 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -413,6 +413,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String listScrollable();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String listTreeItem();
 
         /** Access method.<p>
@@ -462,12 +468,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String listTreeItemOpen();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String listScrollable();
     }
 
     /** Page CSS. */
@@ -637,6 +637,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String toolbarHide();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String toolbarPlaceholder();
 
         /** Access method.<p>
@@ -644,6 +650,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String toolbarShadow();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarShow();
     }
 
     /** The bundle instance. */
@@ -663,18 +675,18 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/ui-bg_glass_75_cccccc_1x400.png")
+    @Source("images/ui-bg_glass_75_e6e6e6_1x400.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundHover();
+    ImageResource backgroundDefault();
 
     /**
      * Access method.<p>
      * 
      * @return the image resource
      */
-    @Source("images/ui-bg_glass_75_e6e6e6_1x400.png")
+    @Source("images/ui-bg_glass_75_cccccc_1x400.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundDefault();
+    ImageResource backgroundHover();
 
     /**
      * Access method.<p>

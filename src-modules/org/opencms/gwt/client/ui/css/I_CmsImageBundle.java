@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/04/06 06:53:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/06 14:23:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,13 +37,15 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Resource bundle to access CSS and image resources.
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -171,6 +173,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String opencmsLogo();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String propertyIcon();
 
         /** Access method.<p>
@@ -267,6 +275,15 @@ public interface I_CmsImageBundle extends ClientBundle {
 
     /** The bundle instance. */
     I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-bg_highlight-soft_75_aaaaaa_1x100.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundSoft();
 
     /**
      * Access method.<p>
@@ -403,6 +420,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/loading.gif")
     ImageResource loading();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/opencms_logo_16.png")
+    ImageResource opencmsLogo();
 
     /**
      * Access method.<p>

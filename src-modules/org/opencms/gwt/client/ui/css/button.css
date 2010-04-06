@@ -14,15 +14,19 @@
     border-radius: 4px;
     
     border:1px solid value("constantsCss.borderColor");
-    color: value("constantsCss.color");
     padding: 2px 4px;
-    line-height: 16px;
-    font-size: value("constantsCss.fontSize");
     display: inline-block;
     vertical-align: middle;
     outline: none;
     cursor: pointer;
     text-align: center;
+}
+
+.cmsTextButton{
+	color: value("constantsCss.color");
+    
+    line-height: 16px;
+    font-size: value("constantsCss.fontSize");
 }
 
 .cmsImageButtonTransparent{
