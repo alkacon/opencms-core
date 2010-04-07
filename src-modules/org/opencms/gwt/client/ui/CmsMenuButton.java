@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/04/07 06:33:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/07 14:49:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -54,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -112,11 +114,13 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
     @UiField
     I_MenuButtonCss m_style;
 
-    private CmsMenuContent m_content;
-
-    private boolean m_initialized;
+    /** The menu content. */
+    CmsMenuContent m_content;
 
     private boolean m_isOpen;
+
+    /** Registration of the window resize handler. */
+    HandlerRegistration m_resizeRegistration;
 
     /**
      * Constructor.<p>
@@ -147,7 +151,6 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
     private CmsMenuButton() {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_initialized = false;
         m_content = new CmsMenuContent();
 
         // important, so a click on the button won't trigger the auto-close 
@@ -161,7 +164,10 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
 
                 if (event.isAutoClosed()) {
                     setButtonUp();
-
+                    if (m_resizeRegistration != null) {
+                        m_resizeRegistration.removeHandler();
+                        m_resizeRegistration = null;
+                    }
                 }
 
             }
@@ -212,6 +218,10 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
 
         m_content.hide();
         setButtonUp();
+        if (m_resizeRegistration != null) {
+            m_resizeRegistration.removeHandler();
+            m_resizeRegistration = null;
+        }
     }
 
     /**
@@ -229,22 +239,35 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
      */
     public void openMenu() {
 
-        if (!m_initialized) {
-            if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
-                // 
-                m_content.setPopupPosition(m_button.getAbsoluteLeft() - 5, m_button.getAbsoluteTop() + 34);
-            } else {
-                m_content.setPopupPosition(m_button.getAbsoluteLeft() - 4, m_button.getAbsoluteTop() + 34);
-            }
-            m_menuConnect.getStyle().setWidth(m_button.getOffsetWidth() + 2, Style.Unit.PX);
-            m_initialized = true;
+        if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
+            // 
+            m_content.setPopupPosition(m_button.getAbsoluteLeft() - 5, m_button.getAbsoluteTop() + 34);
+        } else {
+            m_content.setPopupPosition(m_button.getAbsoluteLeft() - 5, m_button.getAbsoluteTop() + 34);
         }
+        m_menuConnect.getStyle().setWidth(m_button.getOffsetWidth() + 2, Style.Unit.PX);
+
         m_isOpen = true;
         m_button.setDown(true);
 
         m_menuConnect.removeClassName(m_style.hidden());
         m_content.show();
+
+        m_resizeRegistration = Window.addResizeHandler(new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+
+                if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
+                    // 
+                    m_content.setPopupPosition(m_button.getAbsoluteLeft() - 5, m_button.getAbsoluteTop() + 34);
+                } else {
+                    m_content.setPopupPosition(m_button.getAbsoluteLeft() - 5, m_button.getAbsoluteTop() + 34);
+                }
+
+            }
+        });
         CmsToggleEvent.fire(this, true);
+
     }
 
     /** 
