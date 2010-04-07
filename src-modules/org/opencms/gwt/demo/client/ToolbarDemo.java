@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/demo/client/Attic/ToolbarDemo.java,v $
- * Date   : $Date: 2010/03/11 08:26:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/07 06:33:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ public class ToolbarDemo implements EntryPoint {
 
         // generating a button to open a menu fly out
         CmsMenuButton button2 = new CmsMenuButton("Menu", I_CmsImageBundle.INSTANCE.style().magnifierIcon());
-        button2.add(new Label("This is the menu content"));
+        button2.setMenuWidget(new Label("This is the menu content"));
         toolbar.addLeft(button2);
 
         // adding buttons to the right side of the toolbar

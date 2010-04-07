@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/04/06 14:16:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/07 06:33:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.gwt.client.ui;
 
-import java.util.Iterator;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
@@ -48,7 +46,6 @@ import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -57,11 +54,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasToggleHandlers, HasClickHandlers {
+public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, HasClickHandlers {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -152,6 +149,10 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
         initWidget(uiBinder.createAndBindUi(this));
         m_initialized = false;
         m_content = new CmsMenuContent();
+
+        // important, so a click on the button won't trigger the auto-close 
+        m_content.addAutoHidePartner(getElement());
+
         m_isOpen = false;
 
         m_content.addCloseHandler(new CloseHandler<PopupPanel>() {
@@ -160,6 +161,7 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
 
                 if (event.isAutoClosed()) {
                     setButtonUp();
+
                 }
 
             }
@@ -171,9 +173,9 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
     /**
      * This will set the menu content widget.<p>
      * 
-     * @see com.google.gwt.user.client.ui.HasWidgets#add(com.google.gwt.user.client.ui.Widget)
+     * @param widget the widget to set as content 
      */
-    public void add(Widget widget) {
+    public void setMenuWidget(Widget widget) {
 
         m_content.setWidget(widget);
     }
@@ -195,7 +197,7 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasWidgets#clear()
+     * Removes all content from menu.<p>
      */
     public void clear() {
 
@@ -223,14 +225,6 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasWidgets#iterator()
-     */
-    public Iterator<Widget> iterator() {
-
-        return m_content.iterator();
-    }
-
-    /**
      * Opens the menu and fires the on toggle event.<p>
      */
     public void openMenu() {
@@ -251,14 +245,6 @@ public class CmsMenuButton extends Composite implements HasWidgets, I_CmsHasTogg
         m_menuConnect.removeClassName(m_style.hidden());
         m_content.show();
         CmsToggleEvent.fire(this, true);
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasWidgets#remove(com.google.gwt.user.client.ui.Widget)
-     */
-    public boolean remove(Widget w) {
-
-        return m_content.remove(w);
     }
 
     /** 

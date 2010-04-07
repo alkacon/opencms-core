@@ -57,7 +57,7 @@
 
 .cmsTextButton.cmsButtonBig{
     font-size: value("constantsCss.fontSizeBig");
-    padding: 3px 6px;
+    padding: 2px 4px;
 }
 
 .cmsTextButton.cmsButtonSmall{
