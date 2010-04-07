@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishActionElement.java,v $
- * Date   : $Date: 2010/03/29 08:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/07 13:34:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import javax.servlet.jsp.PageContext;
 /**
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -65,7 +65,6 @@ public class CmsPublishActionElement extends CmsJspActionElement {
      */
     public String getData() {
 
-        return CmsPublishProvider.get().export(ClientMessages.get(), getRequest())
-            + org.opencms.gwt.ClientMessages.get().export(getRequest());
+        return CmsPublishProvider.get().export(getRequest());
     }
 }

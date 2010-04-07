@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryProvider.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/07 13:34:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.ade.galleries;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.gwt.I_CmsClientMessageBundle;
+import org.opencms.gwt.CmsCoreProvider;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -84,19 +84,19 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants {
     }
 
     /**
-     * Returns the JSON code for the core provider and the given message bundle.<p>
+     * Returns the JSON code for the core provider.<p>
      * 
-     * @param message the messages to use
      * @param request the current request to get the default locale from 
      * 
      * @return the JSON code
      */
-    public String export(I_CmsClientMessageBundle message, HttpServletRequest request) {
+    public String export(HttpServletRequest request) {
 
         CmsObject cms = CmsFlexController.getCmsObject(request);
 
         StringBuffer sb = new StringBuffer();
-        sb.append(org.opencms.gwt.CmsCoreProvider.get().export(message, request));
+        sb.append(CmsCoreProvider.get().export(request));
+        sb.append(ClientMessages.get().export(request));
         sb.append(DICT_NAME.replace('.', '_')).append("=").append(getData(cms, request).toString()).append(";");
         return sb.toString();
     }

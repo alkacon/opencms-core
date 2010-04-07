@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2010/03/15 15:12:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/07 13:34:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -86,7 +86,7 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
      */
     public String getData() {
 
-        return CmsSitemapProvider.get().export(ClientMessages.get(), getRequest());
+        return CmsSitemapProvider.get().export(getRequest());
     }
 
     /**

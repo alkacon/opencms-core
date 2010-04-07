@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/03/15 12:45:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/07 13:34:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -86,18 +86,17 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
     /**
      * Returns the JSON code for the core provider and the given message bundle.<p>
      * 
-     * @param message the messages to use
      * @param request the current request to get the default locale from 
      * 
      * @return the JSON code
      */
-    public String export(I_CmsClientMessageBundle message, HttpServletRequest request) {
+    public String export(HttpServletRequest request) {
 
         CmsObject cms = CmsFlexController.getCmsObject(request);
 
         StringBuffer sb = new StringBuffer();
         sb.append(DICT_NAME.replace('.', '_')).append("=").append(getData(cms).toString()).append(";");
-        sb.append(message.export(request));
+        sb.append(ClientMessages.get().export(request));
         return sb.toString();
     }
 

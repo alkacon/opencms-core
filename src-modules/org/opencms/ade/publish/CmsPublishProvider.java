@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishProvider.java,v $
- * Date   : $Date: 2010/03/29 08:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/07 13:34:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.publish;
 import org.opencms.ade.publish.shared.I_CmsPublishProviderConstants;
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.gwt.I_CmsClientMessageBundle;
 import org.opencms.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -80,19 +79,19 @@ public final class CmsPublishProvider {
     /**
      * Returns the JSON code for the core provider and the given message bundle.<p>
      * 
-     * @param message the messages to use
      * @param request the current request to get the default locale from 
      * 
      * @return the JSON code
      */
-    public String export(I_CmsClientMessageBundle message, HttpServletRequest request) {
+    public String export(HttpServletRequest request) {
 
         CmsObject cms = CmsFlexController.getCmsObject(request);
 
         StringBuffer sb = new StringBuffer();
-        sb.append(org.opencms.gwt.CmsCoreProvider.get().export(message, request));
+        sb.append(org.opencms.gwt.CmsCoreProvider.get().export(request));
         sb.append(I_CmsPublishProviderConstants.DICT_NAME.replace('.', '_')).append("=").append(
             getData(cms, request).toString()).append(";");
+        sb.append(ClientMessages.get().export(request));
         return sb.toString();
     }
 

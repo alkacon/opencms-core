@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/03/15 15:12:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/07 13:34:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.gwt.I_CmsClientMessageBundle;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -55,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -91,20 +90,20 @@ public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants {
     }
 
     /**
-     * Returns the JSON code for the core provider and the given message bundle.<p>
+     * Returns the JSON code for the core provider.<p>
      * 
-     * @param message the messages to use
      * @param request the current request to get the default locale from 
      * 
      * @return the JSON code
      */
-    public String export(I_CmsClientMessageBundle message, HttpServletRequest request) {
+    public String export(HttpServletRequest request) {
 
         CmsObject cms = CmsFlexController.getCmsObject(request);
 
         StringBuffer sb = new StringBuffer();
-        sb.append(org.opencms.gwt.CmsCoreProvider.get().export(message, request));
+        sb.append(org.opencms.ade.publish.CmsPublishProvider.get().export(request));
         sb.append(DICT_NAME.replace('.', '_')).append("=").append(getData(cms, request).toString()).append(";");
+        sb.append(ClientMessages.get().export(request));
         return sb.toString();
     }
 
