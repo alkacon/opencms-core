@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/i18n/Attic/CmsMessages.java,v $
- * Date   : $Date: 2010/03/15 12:43:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/07 13:35:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.i18n.client.Dictionary;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -237,6 +237,7 @@ public class CmsMessages {
      * if the bundle was not properly initialized first.
      * 
      * @param keyName the key for the desired string 
+     * 
      * @return the resource string for the given key 
      */
     public String key(String keyName) {
@@ -257,6 +258,7 @@ public class CmsMessages {
      * 
      * @param keyName the key for the desired string 
      * @param allowNull if true, 'null' is an allowed return value
+     * 
      * @return the resource string for the given key 
      */
     public String key(String keyName, boolean allowNull) {
