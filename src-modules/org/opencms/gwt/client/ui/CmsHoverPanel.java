@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHoverPanel.java,v $
- * Date   : $Date: 2010/04/06 08:23:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/07 14:46:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -67,7 +67,7 @@ public class CmsHoverPanel extends FlowPanel implements HasMouseOutHandlers, Has
      */
     public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
 
-        return this.addDomHandler(handler, MouseOutEvent.getType());
+        return addDomHandler(handler, MouseOutEvent.getType());
 
     }
 
@@ -76,6 +76,6 @@ public class CmsHoverPanel extends FlowPanel implements HasMouseOutHandlers, Has
      */
     public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
 
-        return this.addDomHandler(handler, MouseOverEvent.getType());
+        return addDomHandler(handler, MouseOverEvent.getType());
     }
 }

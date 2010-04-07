@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHoverHandler.java,v $
- * Date   : $Date: 2010/04/06 08:23:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/07 14:46:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,21 +37,26 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Event handler to toggle the {@link org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsStateCss#cmsHovering()} class on mouse out/over.<p>
  * 
  * @author Tobias Herrmann
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsHoverHandler implements MouseOutHandler, MouseOverHandler {
 
     /** The owner widget. */
-    private Widget m_owner;
+    protected Widget m_owner;
+
+    /** Timer to achieve the hover intent effect. */
+    protected Timer m_timer;
 
     /**
      * Constructor.<p>
@@ -68,8 +73,12 @@ public class CmsHoverHandler implements MouseOutHandler, MouseOverHandler {
      */
     public void onMouseOut(MouseOutEvent event) {
 
-        m_owner.removeStyleName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-
+        if (m_timer != null) {
+            m_timer.cancel();
+            m_timer = null;
+        } else {
+            m_owner.removeStyleName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+        }
     }
 
     /**
@@ -77,7 +86,21 @@ public class CmsHoverHandler implements MouseOutHandler, MouseOverHandler {
      */
     public void onMouseOver(MouseOverEvent event) {
 
-        m_owner.addStyleName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+        if (m_timer != null) {
+            return;
+        }
+        m_timer = new Timer() {
 
+            /**
+             * @see com.google.gwt.user.client.Timer#run()
+             */
+            @Override
+            public void run() {
+
+                m_owner.addStyleName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+                m_timer = null;
+            }
+        };
+        m_timer.schedule(200);
     }
 }
