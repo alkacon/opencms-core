@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/06 08:29:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/07 12:06:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,45 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TICKET_MESSAGE_2 = "GUI_TICKET_MESSAGE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_ADD_0 = "GUI_TOOLBAR_ADD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_CLIPBOARD_0 = "GUI_TOOLBAR_CLIPBOARD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_EDIT_0 = "GUI_TOOLBAR_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_EXIT_0 = "GUI_TOOLBAR_EXIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_MOVE_0 = "GUI_TOOLBAR_MOVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_NEW_0 = "GUI_TOOLBAR_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_PROPERTIES_0 = "GUI_TOOLBAR_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_PUBLISH_0 = "GUI_TOOLBAR_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_REMOVE_0 = "GUI_TOOLBAR_REMOVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_RESET_0 = "GUI_TOOLBAR_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_SAVE_0 = "GUI_TOOLBAR_SAVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_SELECTION_0 = "GUI_TOOLBAR_SELECTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_SITEMAP_0 = "GUI_TOOLBAR_SITEMAP_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";

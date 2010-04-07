@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarMenu.java,v $
- * Date   : $Date: 2010/04/06 14:22:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/07 12:06:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -65,12 +65,12 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsCon
      * @param name
      * @param showLeft set <code>true</code> if the button should be displayed on the left side of the tool-bar
      */
-    public A_CmsToolbarMenu(CmsToolbarButton.ToolbarIcon icon, String title, String name, boolean showLeft) {
+    public A_CmsToolbarMenu(CmsToolbarButton.ButtonData buttonData, String name, boolean showLeft) {
 
-        super(title, icon.getCssClassName());
-        this.setTitle(title);
+        super(buttonData.getTitle(), buttonData.getIconClass());
+        this.setTitle(buttonData.getTitle());
         m_name = name;
-        m_iconClass = icon.getCssClassName();
+        m_iconClass = buttonData.getIconClass();
         m_showLeft = showLeft;
     }
 

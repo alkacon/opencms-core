@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarEditButton.java,v $
- * Date   : $Date: 2010/04/06 14:22:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/07 12:06:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -53,7 +53,7 @@ public class CmsToolbarEditButton extends A_CmsContainerpageToolbarButton {
      */
     public CmsToolbarEditButton() {
 
-        super(CmsToolbarButton.ToolbarIcon.EDIT, "Edit", "edit", true, true);
+        super(CmsToolbarButton.ButtonData.EDIT, "edit", true, true);
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
 
     }

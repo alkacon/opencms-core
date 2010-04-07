@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/04/06 09:48:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/07 12:06:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -108,7 +108,7 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
 
     private CmsElementOptionBar m_elementOptionBar;
 
-    private static final String MOVE_HANDLE_CLASS = CmsToolbarButton.ToolbarIcon.MOVE.getCssClassName();
+    private static final String MOVE_HANDLE_CLASS = CmsToolbarButton.ButtonData.MOVE.getIconClass();
 
     /**
      * Constructor.<p>

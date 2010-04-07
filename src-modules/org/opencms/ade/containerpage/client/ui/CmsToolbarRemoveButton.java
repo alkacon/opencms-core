@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarRemoveButton.java,v $
- * Date   : $Date: 2010/04/06 14:22:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/07 12:06:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -53,7 +53,7 @@ public class CmsToolbarRemoveButton extends A_CmsContainerpageToolbarButton {
      */
     public CmsToolbarRemoveButton() {
 
-        super(CmsToolbarButton.ToolbarIcon.REMOVE, "Remove", "remove", true, true);
+        super(CmsToolbarButton.ButtonData.REMOVE, "remove", true, true);
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
 
     }

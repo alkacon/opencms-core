@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarButton.java,v $
- * Date   : $Date: 2010/04/06 09:49:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/07 12:06:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 
@@ -41,81 +42,129 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarButton extends ToggleButton {
 
     /** Available button icons. */
-    public enum ToolbarIcon {
-        /** Icon name. */
-        ADD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarAdd()),
-        /** Icon name. */
-        CLIPBOARD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard()),
-        /** Icon name. */
-        EDIT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarEdit()),
-        /** Icon name. */
-        EXIT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarExit()),
-        //        /** Icon name. */
-        //        EXTRAS(""),
-        /** Icon name. */
-        MOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarMove()),
-        /** Icon name. */
-        NEW(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarNew()),
-        /** Icon name. */
-        PROPERTIES(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarProperties()),
-        /** Icon name. */
-        PUBLISH(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarPublish()),
-        /** Icon name. */
-        REMOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRemove()),
-        /** Icon name. */
-        RESET(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarExit()),
-        /** Icon name. */
-        SAVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSave()),
-        /** Icon name. */
-        SELECTION(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSelection()),
-        /** Icon name. */
-        SITEMAP(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSitemap());
+    public enum ButtonData {
 
-        /** The CSS class name. */
-        private String m_cssClassName;
+        /** Toolbar button. */
+        ADD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarAdd(), Messages.get().key(
+            Messages.GUI_TOOLBAR_ADD_0)),
+
+        /** Toolbar button. */
+        CLIPBOARD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard(), Messages.get().key(
+            Messages.GUI_TOOLBAR_CLIPBOARD_0)),
+
+        /** Toolbar button. */
+        EDIT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarEdit(), Messages.get().key(
+            Messages.GUI_TOOLBAR_EDIT_0)),
+
+        /** Toolbar button. */
+        EXIT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarExit(), Messages.get().key(
+            Messages.GUI_TOOLBAR_EXIT_0)),
+
+        /** Toolbar button. */
+        MOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarMove(), Messages.get().key(
+            Messages.GUI_TOOLBAR_MOVE_0)),
+
+        /** Toolbar button. */
+        NEW(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarNew(), Messages.get().key(
+            Messages.GUI_TOOLBAR_NEW_0)),
+
+        /** Toolbar button. */
+        PROPERTIES(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarProperties(), Messages.get().key(
+            Messages.GUI_TOOLBAR_PROPERTIES_0)),
+
+        /** Toolbar button. */
+        PUBLISH(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarPublish(), Messages.get().key(
+            Messages.GUI_TOOLBAR_PUBLISH_0)),
+
+        /** Toolbar button. */
+        REMOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRemove(), Messages.get().key(
+            Messages.GUI_TOOLBAR_REMOVE_0)),
+
+        /** Toolbar button. */
+        RESET(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarExit(), Messages.get().key(
+            Messages.GUI_TOOLBAR_RESET_0)),
+
+        /** Toolbar button. */
+        SAVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSave(), Messages.get().key(
+            Messages.GUI_TOOLBAR_SAVE_0)),
+
+        /** Toolbar button. */
+        SELECTION(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSelection(), Messages.get().key(
+            Messages.GUI_TOOLBAR_SELECTION_0)),
+
+        /** Toolbar button. */
+        SITEMAP(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSitemap(), Messages.get().key(
+            Messages.GUI_TOOLBAR_SITEMAP_0));
+
+        /** The icon class name. */
+        private String m_iconClass;
+
+        /** The title. */
+        private String m_title;
 
         /**
          * Constructor.<p>
          * 
-         * @param cssClassName the CSS class name
+         * @param iconClass the icon class name
+         * @param title the title
          */
-        ToolbarIcon(String cssClassName) {
+        private ButtonData(String iconClass, String title) {
 
-            m_cssClassName = cssClassName;
+            m_iconClass = iconClass;
+            m_title = title;
         }
 
         /**
-         * Returns the CSS class name of this style.<p>
+         * Returns the CSS class name.<p>
          * 
          * @return the CSS class name
          */
-        public String getCssClassName() {
+        public String getIconClass() {
 
-            return m_cssClassName;
+            return m_iconClass;
+        }
+
+        /**
+         * Returns the title.<p>
+         * 
+         * @return the title
+         */
+        public String getTitle() {
+
+            return m_title;
         }
     }
 
     /**
      * Constructor.<p>
      * 
-     * @param icon the icon to use for the button
+     * @param iconClass the icon to use for the button
      * @param title the button title
      */
-    public CmsToolbarButton(ToolbarIcon icon, String title) {
+    public CmsToolbarButton(String iconClass, String title) {
 
         super();
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
         addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton());
         setTitle(title);
-        String upFaceHtml = "<div class='" + icon.getCssClassName() + "'></div>";
+        String upFaceHtml = "<div class='" + iconClass + "'></div>";
         this.getUpFace().setHTML(upFaceHtml);
     }
 
+    /**
+     * Constructor.<p>
+     * 
+     * @param buttonData the button data 
+     */
+    protected CmsToolbarButton(ButtonData buttonData) {
+
+        this(buttonData.getIconClass(), buttonData.getTitle());
+    }
 }

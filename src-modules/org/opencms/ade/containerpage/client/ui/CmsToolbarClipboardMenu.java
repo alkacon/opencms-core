@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/06 14:22:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/07 12:06:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.gwt.client.ui.CmsToolbarButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -50,7 +50,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public CmsToolbarClipboardMenu() {
 
-        super(CmsToolbarButton.ToolbarIcon.CLIPBOARD, "Clipboard", "clipboard", true);
+        super(CmsToolbarButton.ButtonData.CLIPBOARD, "clipboard", true);
     }
 
     /**

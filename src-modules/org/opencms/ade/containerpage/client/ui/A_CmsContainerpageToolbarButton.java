@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsContainerpageToolbarButton.java,v $
- * Date   : $Date: 2010/04/06 14:22:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/07 12:06:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.dom.client.Document;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -67,22 +67,20 @@ implements I_CmsContainerpageToolbarButton {
     /**
      * Constructor.<p>
      * 
-     * @param icon the icon to use
-     * @param title the button title
+     * @param buttonData the button data to use
      * @param name the button name
      * @param hasElementFunctions set <code>true</code> if the button has element functions
      * @param showLeft set <code>true</code> if the button should be displayed on the left side of the tool-bar
      */
-    public A_CmsContainerpageToolbarButton(
-        CmsToolbarButton.ToolbarIcon icon,
-        String title,
+    protected A_CmsContainerpageToolbarButton(
+        CmsToolbarButton.ButtonData buttonData,
         String name,
         boolean hasElementFunctions,
         boolean showLeft) {
 
-        super(icon, title);
+        super(buttonData);
         m_name = name;
-        m_iconClass = icon.getCssClassName();
+        m_iconClass = buttonData.getIconClass();
         m_hasElementFunctions = hasElementFunctions;
         m_showLeft = showLeft;
     }
