@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/01/05 14:05:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/07 06:29:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0 
  */
@@ -119,6 +119,19 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** Property for the organizational unit description. */
     private static final String ORGUNIT_PROPERTY_DESCRIPTION = CmsPropertyDefinition.PROPERTY_DESCRIPTION;
+
+    // TODO: remove all these constants
+    /** Attribute WRITE USER_ADDINFO. */
+    private static final String ATTRIBUTE_USERADDINFO = "A_USERADDINFO";
+
+    /** Attribute WRITE USER_ADDINFO value delete. */
+    private static final String ATTRIBUTE_USERADDINFO_VALUE_DELETE = "delete";
+
+    /** Attribute WRITE USER_ADDINFO value insert. */
+    private static final String ATTRIBUTE_USERADDINFO_VALUE_INSERT = "insert";
+
+    /** Attribute WRITE USER_ADDINFO value update. */
+    private static final String ATTRIBUTE_USERADDINFO_VALUE_UPDATE = "update";
 
     /** Property for the organizational unit default project id. */
     private static final String ORGUNIT_PROPERTY_PROJECTID = CmsPropertyDefinition.PROPERTY_KEYWORDS;
@@ -1952,12 +1965,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public void writeUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value) throws CmsDataAccessException {
 
         // analyse the dbc attribute what to do here
-        String mode = (String)dbc.getAttribute(CmsDriverManager.ATTRIBUTE_USERADDINFO);
+        String mode = (String)dbc.getAttribute(ATTRIBUTE_USERADDINFO);
 
         // delete the user info
-        if (CmsStringUtil.isNotEmpty(mode) && mode.equals(CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_DELETE)) {
+        if (CmsStringUtil.isNotEmpty(mode) && mode.equals(ATTRIBUTE_USERADDINFO_VALUE_DELETE)) {
             internalDeleteUserInfo(dbc, userId, key);
-        } else if (CmsStringUtil.isNotEmpty(mode) && mode.equals(CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_UPDATE)) {
+        } else if (CmsStringUtil.isNotEmpty(mode) && mode.equals(ATTRIBUTE_USERADDINFO_VALUE_UPDATE)) {
             internalUpdateUserInfo(dbc, userId, key, value);
         } else {
             // default is to insert or update a new value
@@ -2723,17 +2736,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if ((entry.getKey() != null) && (entry.getValue() != null)) {
                 // entry does not exist in new additional infos -> delete it
                 if (!additionalInfo.containsKey(entry.getKey())) {
-                    dbc.setAttribute(
-                        CmsDriverManager.ATTRIBUTE_USERADDINFO,
-                        CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_DELETE);
+                    dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_DELETE);
                     writeUserInfo(dbc, userId, (String)entry.getKey(), entry.getValue());
                 } else {
                     Object newValue = additionalInfo.get(entry.getKey());
                     // entry does exist but has different value -> update it
                     if ((newValue != null) && !newValue.equals(entry.getValue())) {
-                        dbc.setAttribute(
-                            CmsDriverManager.ATTRIBUTE_USERADDINFO,
-                            CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_UPDATE);
+                        dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_UPDATE);
                         writeUserInfo(dbc, userId, (String)entry.getKey(), newValue);
                     }
                 }
@@ -2747,9 +2756,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if ((entry.getKey() != null) && (entry.getValue() != null)) {
                 // entry doews not exist in the existing additional infos -> create a new one
                 if (!existingInfos.containsKey(entry.getKey())) {
-                    dbc.setAttribute(
-                        CmsDriverManager.ATTRIBUTE_USERADDINFO,
-                        CmsDriverManager.ATTRIBUTE_USERADDINFO_VALUE_INSERT);
+                    dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_INSERT);
                     writeUserInfo(dbc, userId, (String)entry.getKey(), entry.getValue());
                 }
             }

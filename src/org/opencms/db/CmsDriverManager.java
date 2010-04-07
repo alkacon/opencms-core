@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/02/10 14:28:06 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/04/07 06:29:20 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -158,20 +158,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
     }
 
-    /** Attribute login */
+    /** Attribute login. */
     public static final String ATTRIBUTE_LOGIN = "A_LOGIN";
-
-    /** Attribute WRITE USER_ADDINFO */
-    public static final String ATTRIBUTE_USERADDINFO = "A_USERADDINFO";
-
-    /** Attribute WRITE USER_ADDINFO value delete */
-    public static final String ATTRIBUTE_USERADDINFO_VALUE_DELETE = "delete";
-
-    /** Attribute WRITE USER_ADDINFO value insert */
-    public static final String ATTRIBUTE_USERADDINFO_VALUE_INSERT = "insert";
-
-    /** Attribute WRITE USER_ADDINFO value insert */
-    public static final String ATTRIBUTE_USERADDINFO_VALUE_UPDATE = "update";
 
     /** Cache key for all properties. */
     public static final String CACHE_ALL_PROPERTIES = "_CAP_";
@@ -315,7 +303,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The log entry cache. */
     private List<CmsLogEntry> m_log = new ArrayList<CmsLogEntry>();
 
-    /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singelton. */
+    /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singleton. */
     private CmsMemoryMonitor m_monitor;
 
     /** The project driver. */
@@ -324,7 +312,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The the configuration read from the <code>opencms.properties</code> file. */
     private ExtendedProperties m_propertyConfiguration;
 
-    /* the publish engine. */
+    /** the publish engine. */
     private CmsPublishEngine m_publishEngine;
 
     /** The security manager (for access checks). */
@@ -8181,6 +8169,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void updateLog(CmsDbContext dbc) throws CmsDataAccessException {
 
+        if (m_log.isEmpty()) {
+            return;
+        }
         List<CmsLogEntry> log = new ArrayList<CmsLogEntry>(m_log);
         m_log.clear();
         m_projectDriver.log(dbc, log);
