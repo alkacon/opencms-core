@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEditor.java,v $
- * Date   : $Date: 2010/04/06 12:22:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/07 13:37:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,10 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.sitemap.client.ui.CmsPage;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.ade.sitemap.client.util.CmsSitemapProvider;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -40,14 +42,15 @@ import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsHeader;
-import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.gwt.client.ui.CmsToolbarButton;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -56,7 +59,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -75,12 +78,31 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
 
         I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
+        I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
 
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
 
         CmsToolbar toolBar = new CmsToolbar();
-        toolBar.addLeft(new CmsImageButton(I_CmsImageBundle.INSTANCE.style().editorIcon(), true));
-        toolBar.addRight(new CmsImageButton(I_CmsImageBundle.INSTANCE.style().deleteIcon(), true));
+        toolBar.addLeft(new CmsToolbarButton(CmsToolbarButton.ButtonData.SAVE));
+        toolBar.addLeft(new CmsToolbarButton(
+            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSubsitemap(),
+            Messages.get().key(Messages.GUI_TOOLBAR_SUBSITEMAP_0)));
+        toolBar.addLeft(new CmsToolbarButton(CmsToolbarButton.ButtonData.ADD));
+        toolBar.addLeft(new CmsToolbarButton(CmsToolbarButton.ButtonData.NEW));
+        toolBar.addLeft(new CmsToolbarButton(CmsToolbarButton.ButtonData.CLIPBOARD));
+        CmsToolbarButton publishButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.PUBLISH);
+        publishButton.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                CmsPublishDialog.showPublishDialog();
+            }
+        });
+        toolBar.addRight(publishButton);
+        toolBar.addRight(new CmsToolbarButton(CmsToolbarButton.ButtonData.RESET));
         RootPanel.get().add(toolBar);
 
         RootPanel.get().add(new CmsToolbarPlaceHolder());
@@ -115,7 +137,7 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
             @Override
             public void onResponse(CmsClientSitemapEntry root) {
 
-                root.setName("demo_t3");
+                // root.setName("demo_t3");
                 page.remove(loadingLabel);
 
                 CmsLazyTree<CmsSitemapTreeItem> tree = new CmsLazyTree<CmsSitemapTreeItem>(
