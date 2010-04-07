@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/04/07 06:18:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Jan Baudisch 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,7 +54,7 @@ public class CmsLogReport extends A_CmsReport {
     private StringBuffer m_buffer;
 
     /** The class name to use for the logger. */
-    private Class m_clazz;
+    private Class<?> m_clazz;
 
     /**
      * Constructs a new report using the provided locale for the output language, 
@@ -63,7 +63,7 @@ public class CmsLogReport extends A_CmsReport {
      * @param locale the locale to use for the report output messages
      * @param clazz the the class for the logger channel 
      */
-    public CmsLogReport(Locale locale, Class clazz) {
+    public CmsLogReport(Locale locale, Class<?> clazz) {
 
         init(locale, null);
         m_buffer = new StringBuffer();
@@ -84,6 +84,7 @@ public class CmsLogReport extends A_CmsReport {
     /**
      * @see org.opencms.report.A_CmsReport#print(java.lang.String, int)
      */
+    @Override
     public synchronized void print(String value, int format) {
 
         switch (format) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/languagecopy/CmsMultiplexReport.java,v $
- * Date   : $Date: 2009/10/14 11:03:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2010/04/07 06:21:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,16 +37,14 @@ import org.opencms.report.I_CmsReport;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 /**
- * Report proxy that multiplexes to all contained <code>{@link I_CmsReport}</code> instances.
- * <p>
+ * Report proxy that multiplexes to all contained <code>{@link I_CmsReport}</code> instances.<p>
  * 
  * @author Achim Westermann
  * @author Mario Jaeger 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.5.1
  */
@@ -56,20 +54,7 @@ public class CmsMultiplexReport extends A_CmsReport {
     private List<A_CmsReport> m_delegates = new LinkedList<A_CmsReport>();
 
     /**
-     * The errors.
-     * <p>
-     */
-    private List<CmsMessageContainer> m_errors = new LinkedList<CmsMessageContainer>();
-
-    /**
-     * The warning messages.
-     * <p>
-     */
-    private List<CmsMessageContainer> m_warnings = new LinkedList<CmsMessageContainer>();
-
-    /**
-     * Default constructor.
-     * <p>
+     * Default constructor.<p>
      */
     public CmsMultiplexReport() {
 
@@ -77,21 +62,9 @@ public class CmsMultiplexReport extends A_CmsReport {
     }
 
     /**
-     * Adds the error to this report.
-     * <p>
+     * Adds the given report to become a proxy delegate of this multiplexer.<p>
      * 
-     * @param error the error to add.
-     */
-    public void addError(final CmsMessageContainer error) {
-
-        this.m_errors.add(error);
-    }
-
-    /**
-     * Adds the given report to become a proxy delegate of this multiplexer.
-     * <p>
-     * 
-     * @param report the report to be on the recepient list.
+     * @param report the report to be on the recipient list.
      */
     public void addReport(final A_CmsReport report) {
 
@@ -99,45 +72,15 @@ public class CmsMultiplexReport extends A_CmsReport {
     }
 
     /**
-     * Adds the warning message.
-     * <p>
-     * 
-     * @param container the warning message.
-     * <p>
-     * 
-     */
-    public void addWarning(final CmsMessageContainer container) {
-
-        this.m_warnings.add(container);
-    }
-
-    /**
-     * @see I_CmsReport#formatRuntime()
+     * @see org.opencms.report.A_CmsReport#getLastEntryTime()
      */
     @Override
-    public String formatRuntime() {
+    public long getLastEntryTime() {
 
-        return super.formatRuntime();
-    }
-
-    /**
-     * @see I_CmsReport#getErrors()
-     */
-
-    @Override
-    public List<CmsMessageContainer> getErrors() {
-
-        return this.m_errors;
-    }
-
-    /**
-     * @see I_CmsReport#getLocale()
-     */
-
-    @Override
-    public Locale getLocale() {
-
-        return super.getLocale();
+        if (m_delegates.isEmpty()) {
+            return 0;
+        }
+        return m_delegates.get(0).getLastEntryTime();
     }
 
     /**
@@ -158,51 +101,6 @@ public class CmsMultiplexReport extends A_CmsReport {
             }
         }
         return "";
-    }
-
-    /**
-     * @see I_CmsReport#getRuntime()
-     */
-    @Override
-    public long getRuntime() {
-
-        return super.getRuntime();
-    }
-
-    /**
-     * @see I_CmsReport#getSiteRoot()
-     */
-    @Override
-    public String getSiteRoot() {
-
-        return super.getSiteRoot();
-    }
-
-    /**
-     * @see I_CmsReport#getWarnings()
-     */
-    @Override
-    public List<CmsMessageContainer> getWarnings() {
-
-        return this.m_warnings;
-    }
-
-    /**
-     * @see I_CmsReport#hasError()
-     */
-    @Override
-    public boolean hasError() {
-
-        return this.m_errors.size() > 0;
-    }
-
-    /**
-     * @see I_CmsReport#hasWarning()
-     */
-    @Override
-    public boolean hasWarning() {
-
-        return this.m_warnings.size() > 0;
     }
 
     /**
@@ -231,13 +129,11 @@ public class CmsMultiplexReport extends A_CmsReport {
     /**
      * @see I_CmsReport#println()
      */
-
     public void println() {
 
         for (I_CmsReport report : this.m_delegates) {
             report.println();
         }
-
     }
 
     /**
@@ -265,7 +161,6 @@ public class CmsMultiplexReport extends A_CmsReport {
     /**
      * @see I_CmsReport#println(Throwable)
      */
-
     public void println(final Throwable t) {
 
         // do nothing
@@ -280,7 +175,6 @@ public class CmsMultiplexReport extends A_CmsReport {
         for (I_CmsReport report : this.m_delegates) {
             report.printMessageWithParam(container, param);
         }
-
     }
 
     /**
@@ -292,16 +186,6 @@ public class CmsMultiplexReport extends A_CmsReport {
         for (I_CmsReport report : this.m_delegates) {
             report.printMessageWithParam(m, n, container, param);
         }
-
-    }
-
-    /**
-     * @see I_CmsReport#removeSiteRoot(String)
-     */
-    @Override
-    public String removeSiteRoot(final String resourcename) {
-
-        return super.removeSiteRoot(resourcename);
     }
 
     /**
@@ -319,9 +203,8 @@ public class CmsMultiplexReport extends A_CmsReport {
      * @see org.opencms.report.A_CmsReport#print(java.lang.String, int)
      */
     @Override
-    protected void print(final String value, final int format) {
+    protected void print(String value, int format) {
 
         // nop, this is a helper method in A_CmsReport just called from the other routines but not directly.
     }
-
 }

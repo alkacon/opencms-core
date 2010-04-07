@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:41 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2010/04/07 06:21:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -57,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -76,7 +77,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     private static final long serialVersionUID = -5994026786008303964L;
 
     /** A map to cache queries with replaced search patterns. */
-    protected Map m_cachedQueries;
+    protected Map<String, String> m_cachedQueries;
 
     /** The type ID of the driver (vfs, user, project or history) from where this SQL manager is referenced. */
     protected int m_driverType;
@@ -85,15 +86,15 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     protected String m_poolUrl;
 
     /** A map holding all SQL queries. */
-    protected Map m_queries;
+    protected Map<String, String> m_queries;
 
     /**
      * Creates a new, empty SQL manager.<p>
      */
     public CmsSqlManager() {
 
-        m_cachedQueries = new HashMap();
-        m_queries = new HashMap();
+        m_cachedQueries = new HashMap<String, String>();
+        m_queries = new HashMap<String, String>();
         loadQueryProperties(QUERY_PROPERTIES);
     }
 
@@ -135,7 +136,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     protected static String replaceProjectPattern(CmsUUID projectId, String query) {
 
         // make the statement project dependent
-        String replacePattern = ((projectId == null) || projectId.equals(CmsProject.ONLINE_PROJECT_ID)) ? "_ONLINE_"
+        String replacePattern = ((projectId == null) || projectId.equals(CmsProject.ONLINE_PROJECT_ID))
+        ? "_ONLINE_"
         : "_OFFLINE_";
         return CmsStringUtil.substitute(query, QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
     }
@@ -220,6 +222,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @param dbc the current database context
      * 
      * @return a JDBC connection
+     * 
      * @throws SQLException if the project id is not supported
      */
     public Connection getConnection(CmsDbContext dbc) throws SQLException {
@@ -355,7 +358,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         }
 
         // look up the query in the cache
-        String query = (String)m_cachedQueries.get(key);
+        String query = m_cachedQueries.get(key);
 
         if (query == null) {
             // the query has not been cached yet
@@ -391,7 +394,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public String readQuery(String queryKey) {
 
-        String value = (String)m_queries.get(queryKey);
+        String value = m_queries.get(queryKey);
         if (value == null) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_QUERY_NOT_FOUND_1, queryKey));
@@ -438,6 +441,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     /**
      * @see java.lang.Object#finalize()
      */
+    @Override
     protected void finalize() throws Throwable {
 
         try {
@@ -465,7 +469,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
-            m_queries.putAll(properties);
+            m_queries.putAll(CmsCollectionsGenericWrapper.<String, String> map(properties));
             replaceQuerySearchPatterns();
         } catch (Throwable t) {
             if (LOG.isErrorEnabled()) {
@@ -489,10 +493,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         int endIndex = 0;
         int lastIndex = 0;
 
-        Iterator allKeys = m_queries.keySet().iterator();
+        Iterator<String> allKeys = m_queries.keySet().iterator();
         while (allKeys.hasNext()) {
-            currentKey = (String)allKeys.next();
-            currentValue = (String)m_queries.get(currentKey);
+            currentKey = allKeys.next();
+            currentValue = m_queries.get(currentKey);
             startIndex = 0;
             endIndex = 0;
             lastIndex = 0;

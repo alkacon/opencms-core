@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/languagecopy/CmsLanguageCopyThread.java,v $
- * Date   : $Date: 2009/10/14 11:03:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2010/04/07 06:21:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,13 +52,12 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 
 /**
- * Copies language nodes in XML contents.
- * <p>
+ * Copies language nodes in XML contents.<p>
  * 
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.5.1
  */
@@ -80,14 +79,12 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
     private String m_targetLanguage;
 
     /**
-     * Copies language nodes in XML contents..
-     * <p>
+     * Copies language nodes in XML contents.<p>
      * 
-     * @param cms the current CmsObject
+     * @param cms the current cms context
      * @param copyResources the resources to copy
      * @param sourceLanguage the source language
      * @param targetLanguage the target language
-     *            
      */
     public CmsLanguageCopyThread(
         final CmsObject cms,
@@ -140,19 +137,22 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
             }
         }
         // List the errors:
-        List<CmsMessageContainer> errors = report.getErrors();
-        List<CmsMessageContainer> warnings = report.getWarnings();
+        List<Object> errors = report.getErrors();
+        List<Object> warnings = report.getWarnings();
 
         report.println(Messages.get().container(
             Messages.GUI_REPORT_LANGUAGEC0PY_END_2,
             new Object[] {new Integer(warnings.size()), new Integer(errors.size())}), I_CmsReport.FORMAT_HEADLINE);
-        for (CmsMessageContainer f : warnings) {
-            report.println(f, I_CmsReport.FORMAT_WARNING);
+        for (Object f : warnings) {
+            if (f instanceof CmsMessageContainer) {
+                report.println((CmsMessageContainer)f, I_CmsReport.FORMAT_WARNING);
+            }
         }
-        for (CmsMessageContainer f : errors) {
-            report.println(f, I_CmsReport.FORMAT_ERROR);
+        for (Object f : errors) {
+            if (f instanceof CmsMessageContainer) {
+                report.println((CmsMessageContainer)f, I_CmsReport.FORMAT_ERROR);
+            }
         }
-
     }
 
     /**
@@ -161,12 +161,11 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
     @Override
     protected I_CmsReport getReport() {
 
-        return this.m_report;
+        return m_report;
     }
 
     /**
-     * Does the job.
-     * <p>
+     * Does the job.<p>
      */
     private void copyLanguageNodes() {
 
@@ -249,15 +248,13 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
     }
 
     /**
-     * Returns the lock of a possible locked parent folder of a resource, system locks are ignored.
-     * <p>
+     * Returns the lock of a possible locked parent folder of a resource, system locks are ignored.<p>
      * 
      * @param absoluteResourceName the name of the resource
      * 
-     * @return the lock of a parent folder, or {@link CmsLock#getNullLock()} if no parent folders are locked by a non
-     *  system lock.
+     * @return the lock of a parent folder, or {@link CmsLock#getNullLock()} 
+     *            if no parent folders are locked by a non system lock
      */
-    @SuppressWarnings("unchecked")
     private CmsLock getParentFolderLock(final String absoluteResourceName) {
 
         Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
@@ -278,10 +275,10 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
     }
 
     /**
-     * Returns the inherited lock of a resource.
-     * <p>
+     * Returns the inherited lock of a resource.<p>
      * 
      * @param absoluteResourcename the absolute path of the resource
+     * 
      * @return the inherited lock or the null lock
      */
     private CmsLock getParentLock(final String absoluteResourcename) {
@@ -294,21 +291,20 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
     }
 
     /**
-     * Recursively steps up to the resource that is the originator of the given resource which has an inherited lock.
-     * <p>
+     * Recursively steps up to the resource that is the originator of the given 
+     * resource which has an inherited lock.<p>
      * 
-     * @param absoluteResourcename the absolute resource with the inherited lock.
+     * @param absoluteResourcename the absolute resource with the inherited lock
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     private void unlockInherited(final String absoluteResourcename) throws CmsException {
 
-        CmsObject cms = this.getCms();
-        CmsLock parentLock = this.getParentLock(absoluteResourcename);
+        CmsObject cms = getCms();
+        CmsLock parentLock = getParentLock(absoluteResourcename);
         if (!parentLock.isNullLock()) {
-
             if (parentLock.isInherited()) {
-                this.unlockInherited(parentLock.getResourceName());
+                unlockInherited(parentLock.getResourceName());
             } else {
                 if (!parentLock.isLockableBy(cms.getRequestContext().currentUser())) {
                     cms.changeLock(cms.getRequestContext().removeSiteRoot(parentLock.getResourceName()));
@@ -318,5 +314,4 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
         }
 
     }
-
 }

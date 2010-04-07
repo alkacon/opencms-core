@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2010/04/07 06:18:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +64,7 @@ public class CmsHtmlReport extends A_CmsReport {
     protected static final String LINEBREAK_TRADITIONAL = "<br>\\n";
 
     /** The list of report objects e.g. String, CmsPageLink, Exception ... */
-    private List m_content;
+    private List<Object> m_content;
 
     /**
      * Counter to remember what is already shown,
@@ -103,7 +103,7 @@ public class CmsHtmlReport extends A_CmsReport {
     public CmsHtmlReport(Locale locale, String siteRoot, boolean writeHtml, boolean isTransient) {
 
         init(locale, siteRoot);
-        m_content = new ArrayList(256);
+        m_content = new ArrayList<Object>(256);
         m_showExceptionStackTrace = true;
         m_writeHtml = writeHtml;
         m_transient = isTransient;
@@ -145,6 +145,7 @@ public class CmsHtmlReport extends A_CmsReport {
     /**
      * @see org.opencms.report.A_CmsReport#print(java.lang.String, int)
      */
+    @Override
     public synchronized void print(String value, int format) {
 
         StringBuffer buf = null;
@@ -273,7 +274,7 @@ public class CmsHtmlReport extends A_CmsReport {
     }
 
     /**
-     * Output helper method to format a reported <code>Throwable</code> element.<p>
+     * Output helper method to format a reported {@link Throwable} element.<p>
      * 
      * This method ensures that exception stack traces are properly escaped
      * when they are added to the report.<p>
@@ -283,6 +284,7 @@ public class CmsHtmlReport extends A_CmsReport {
      * In a later version this might be configurable on a per-user basis.<p>
      *      
      * @param throwable the exception to format
+     * 
      * @return the formatted StringBuffer
      */
     private StringBuffer getExceptionElement(Throwable throwable) {
