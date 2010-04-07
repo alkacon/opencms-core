@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/04/07 09:13:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,7 +54,7 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
 
     /** Indicates if the thread was already checked by the grim reaper. */
     private boolean m_doomed;
-    
+
     /** The id of this report. */
     private CmsUUID m_id;
 
@@ -102,6 +102,21 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
     }
 
     /**
+     * Returns the time of last report entry.<p>
+     * 
+     * Will return zero if no entry has been written.<p>
+     * 
+     * @return time of last report entry
+     */
+    public long getLastEntryTime() {
+
+        if (getReport() == null) {
+            return 0;
+        }
+        return getReport().getLastEntryTime();
+    }
+
+    /**
      * Returns the error exception in case there was an error during the execution of
      * this Thread, null otherwise.<p>
      * 
@@ -117,7 +132,7 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      * 
      * @return an error list that occurred during the report
      */
-    public List getErrors() {
+    public List<Object> getErrors() {
 
         if (getReport() != null) {
             return getReport().getErrors();

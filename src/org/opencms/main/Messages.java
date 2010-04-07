@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2010/03/03 15:32:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/07 09:13:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -460,9 +460,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_THREADSTORE_POOL_CONTENT_2 = "LOG_THREADSTORE_POOL_CONTENT_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_2 = "LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_INIT_SEQUENCE_2 = "LOG_WRONG_INIT_SEQUENCE_2";

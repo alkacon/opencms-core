@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/07 09:13:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -168,6 +168,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_REPORT_DELETE_FAILED_1 = "LOG_PUBLISH_REPORT_DELETE_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_2 = "LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_JSPLOADER_UPDATE_CACHE_0 = "RPT_JSPLOADER_UPDATE_CACHE_0";

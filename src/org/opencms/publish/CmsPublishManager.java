@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2009/11/23 15:20:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/07 09:13:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.5
  */
@@ -121,6 +121,14 @@ public class CmsPublishManager {
     }
 
     /**
+     * Abandons the current publish thread.<p>
+     */
+    public void abandonThread() {
+
+        m_publishEngine.abandonThread();
+    }
+
+    /**
      * Aborts the given publish job.<p>
      * 
      * @param cms the cms context
@@ -160,7 +168,7 @@ public class CmsPublishManager {
      */
     public void checkCurrentPublishJobThread() {
 
-        m_publishEngine.run();
+        m_publishEngine.checkCurrentPublishJobThread();
     }
 
     /**

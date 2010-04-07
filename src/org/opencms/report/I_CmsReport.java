@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/04/07 09:13:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Jan Baudisch 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,7 +101,16 @@ public interface I_CmsReport {
      * 
      * @return an error list that occurred during the report
      */
-    List getErrors();
+    List<Object> getErrors();
+
+    /**
+     * Returns the time of last report entry.<p>
+     * 
+     * Will return zero if no entry has been written.<p>
+     * 
+     * @return time of last report entry
+     */
+    long getLastEntryTime();
 
     /**
      * Returns the locale this report was initialized with.<p>
@@ -141,7 +150,7 @@ public interface I_CmsReport {
      * 
      * @return a warning list that occurred during the report
      */
-    List getWarnings();
+    List<Object> getWarnings();
 
     /**
      * Returns if the report generated an error output.<p>
