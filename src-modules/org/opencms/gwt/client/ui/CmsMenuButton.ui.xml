@@ -13,6 +13,9 @@
     		.menu{
 		        display: inline;
 		    }
+		    .menu .button{
+		    	padding-top: 1px;
+		    }
 		} @else {
 		    .menu{
 		        display: inline-block;
