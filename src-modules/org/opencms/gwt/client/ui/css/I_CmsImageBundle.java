@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/04/06 14:23:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/07 13:36:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -541,6 +541,20 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/toolbaricons/ade_exit_sw.png")
     ImageResource toolbarExitSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_reset.png")
+    ImageResource toolbarReset();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_reset_sw.png")
+    ImageResource toolbarResetSW();
 
     /** 
      * Access method.<p>

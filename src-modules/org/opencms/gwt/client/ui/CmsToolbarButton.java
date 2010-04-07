@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarButton.java,v $
- * Date   : $Date: 2010/04/07 12:08:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/07 13:36:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -88,7 +88,7 @@ public class CmsToolbarButton extends ToggleButton {
             Messages.GUI_TOOLBAR_REMOVE_0)),
 
         /** Toolbar button. */
-        RESET(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarExit(), Messages.get().key(
+        RESET(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarReset(), Messages.get().key(
             Messages.GUI_TOOLBAR_RESET_0)),
 
         /** Toolbar button. */

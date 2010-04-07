@@ -282,6 +282,28 @@
     margin-top: 1px;
 }
 
+@sprite .cmsState-up-disabled .toolbarReset, .cmsState-down-disabled .toolbarReset{
+	gwt-image: "toolbarResetSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+}
+@sprite .cmsState-up .toolbarReset{
+	gwt-image: "toolbarResetSW";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+@sprite .cmsState-up-hovering .toolbarReset, .cmsState-down-hovering .toolbarReset, .cmsState-down .toolbarReset{
+    gwt-image: "toolbarReset";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
 @sprite .cmsState-up-disabled .toolbarMove, .cmsState-down-disabled .toolbarMove{
 	gwt-image: "toolbarMoveSW";
 	display: inline-block;
