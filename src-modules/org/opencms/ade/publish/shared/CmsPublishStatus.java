@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishStatus.java,v $
- * Date   : $Date: 2010/03/29 08:47:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 07:30:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -52,13 +52,11 @@ public class CmsPublishStatus implements IsSerializable {
     private List<CmsClientPublishResourceBean> m_problemResources = new ArrayList<CmsClientPublishResourceBean>();
 
     /**
-     * Constructs a new instance of this class.<p>
-     * 
+     * Constructor.<p>
      */
     public CmsPublishStatus() {
 
         // default constructor, do nothing
-
     }
 
     /**

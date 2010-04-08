@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/03/29 08:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 07:30:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -100,8 +100,8 @@ public class CmsPublishDialog extends CmsPopupDialog {
         @Override
         protected void onResponse(CmsPublishStatus result) {
 
-            stop();
             onReceiveStatus(result);
+            stop();
         }
     }
 
@@ -129,7 +129,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
         @Override
         public void execute() {
 
-            start(1000);
+            start(500);
             m_publishService.getPublishGroups(m_options, this);
         }
 
@@ -139,8 +139,8 @@ public class CmsPublishDialog extends CmsPopupDialog {
         @Override
         protected void onResponse(CmsPublishGroups result) {
 
-            stop();
             onReceivePublishList(result);
+            stop();
         }
     }
 
@@ -148,7 +148,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
     public static Map<String, String> m_staticProjects;
 
     /** The message bundle used for this widget. */
-    private static CmsMessages messages = Messages.get().getBundle();
+    private static final CmsMessages MESSAGES = Messages.get();
 
     /** The index of the "broken links" panel. */
     private static final int PANEL_BROKEN_LINKS = 1;
@@ -183,7 +183,10 @@ public class CmsPublishDialog extends CmsPopupDialog {
         Map<String, String> projects,
         CmsClientPublishOptions options) {
 
-        super(messages.key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
+        super(MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
+        setGlassEnabled(true);
+        setAutoHideEnabled(false);
+        setModal(true);
         m_panel = (DeckPanel)getContent();
         m_projects = projects;
         m_publishSelectPanel = new CmsPublishSelectPanel(this, m_projects, options);
@@ -219,11 +222,11 @@ public class CmsPublishDialog extends CmsPopupDialog {
             @Override
             protected void onResponse(CmsPublishOptionsAndProjects result) {
 
-                stop();
                 CmsPublishDialog publishDialog = new CmsPublishDialog(
                     publishService,
                     result.getProjects(),
                     result.getOptions());
+                stop();
                 publishDialog.center();
             }
         }).execute();

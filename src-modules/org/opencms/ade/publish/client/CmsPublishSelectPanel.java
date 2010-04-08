@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/03/29 08:47:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 07:30:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,21 +70,22 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsPublishSelectPanel extends Composite {
 
     /** The UiBinder interface for this widget. */
-    interface I_CmsPublishSelectPanelUiBinder extends UiBinder<Widget, CmsPublishSelectPanel> {
+    protected interface I_CmsPublishSelectPanelUiBinder extends UiBinder<Widget, CmsPublishSelectPanel> {
+        // empty
     }
 
     /** The CSS bundle used for this widget. */
     private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
     /** The message bundle used for this widget. */
-    private static CmsMessages messages = Messages.get().getBundle();
+    private static final CmsMessages MESSAGES = Messages.get();
 
     /** The UiBinder instance used for this widget. */
     private static I_CmsPublishSelectPanelUiBinder uiBinder = GWT.create(I_CmsPublishSelectPanelUiBinder.class);
@@ -187,7 +188,7 @@ public class CmsPublishSelectPanel extends Composite {
         m_groupPanel.setStyleName(CSS.groupPanel());
         m_topBar.setStyleName(CSS.topBar());
 
-        projects.put("", messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
+        projects.put("", MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
         m_projectSelector = new CmsSelectBox(CmsSelectBox.Mode.TEXT, projects);
         m_projectSelector.addStyleName(CSS.selector());
         m_selectorPanel.add(m_projectSelector);
@@ -202,16 +203,21 @@ public class CmsPublishSelectPanel extends Composite {
 
         m_projectSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
 
+            /**
+             * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
+             */
             public void onValueChange(ValueChangeEvent<String> event) {
 
                 m_publishOptions.setProject(event.getValue());
                 m_publishDialog.onChangeOptions();
             }
-
         });
 
         m_checkboxRelated.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent e) {
 
                 m_publishOptions.setIncludeRelated(m_checkboxRelated.isChecked());
@@ -220,6 +226,9 @@ public class CmsPublishSelectPanel extends Composite {
         });
         m_checkboxSiblings.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent e) {
 
                 m_publishOptions.setIncludeSiblings(m_checkboxSiblings.isChecked());
@@ -228,44 +237,46 @@ public class CmsPublishSelectPanel extends Composite {
 
         });
 
-        m_publishButton.setUpFace(messages.key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0), null);
+        m_publishButton.setUpFace(MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0), null);
         m_publishButton.useMinWidth(true);
-        m_cancelButton.setUpFace(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0), null);
+        m_cancelButton.setUpFace(MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0), null);
         m_cancelButton.useMinWidth(true);
 
-        m_selectAll.setUpFace(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0), null);
+        m_selectAll.setUpFace(MESSAGES.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0), null);
         m_selectAll.useMinWidth(true);
-        m_selectNone.setUpFace(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0), null);
+        m_selectNone.setUpFace(MESSAGES.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0), null);
         m_selectNone.useMinWidth(true);
 
-        m_noResources.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
+        m_noResources.setText(MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
         m_selectAll.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent e) {
 
                 setAllCheckboxes(true);
             }
-
         });
 
         m_selectNone.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent e) {
 
                 setAllCheckboxes(false);
-
             }
-
         });
 
-        m_siblingsLabel.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
-        m_relatedLabel.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
+        m_siblingsLabel.setText(MESSAGES.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
+        m_relatedLabel.setText(MESSAGES.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
         m_relatedLabel.addStyleName(CSS.clear());
         m_siblingsLabel.addStyleName(CSS.clear());
-        m_selectLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
-        m_selectorLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
+        m_selectLabel.setText(MESSAGES.key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
+        m_selectorLabel.setText(MESSAGES.key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
         m_numProblems = 0;
-
     }
 
     static {
@@ -422,7 +433,7 @@ public class CmsPublishSelectPanel extends Composite {
 
         m_problemsPanel.clear();
         if (m_numProblems > 0) {
-            String message = messages.key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + m_numProblems);
+            String message = MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + m_numProblems);
             m_problemsPanel.add(new InlineLabel(message));
         }
     }
