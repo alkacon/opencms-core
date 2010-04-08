@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/03/11 08:07:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/08 07:30:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -259,7 +259,7 @@ public class CmsPopup {
     }
 
     /**
-     * Opens the dialog at the centre of the browser window, or positions it there, if already visible.<p> 
+     * Opens the dialog at the center of the browser window, or positions it there, if already visible.<p> 
      */
     public void center() {
 
