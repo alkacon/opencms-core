@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2010/01/18 10:01:21 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2010/04/08 16:04:20 $
+ * Version: $Revision: 1.126 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.125 $
+ * @version $Revision: 1.126 $
  * 
  * @since 6.0.0 
  */
@@ -416,10 +416,9 @@ public interface I_CmsVfsDriver {
      * @param name the name of the property definition to read
      * @param projectId the id of the project
      * 
-     * @return the property definition that was read, 
-     *          or <code>null</code> if there is no property definition with the given name.
+     * @return the property definition that was read
      * 
-     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsDataAccessException a CmsDbEntryNotFoundException is thrown if the property definition does not exist
      */
     CmsPropertyDefinition readPropertyDefinition(CmsDbContext dbc, String name, CmsUUID projectId)
     throws CmsDataAccessException;

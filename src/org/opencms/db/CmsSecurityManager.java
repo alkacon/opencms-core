@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2010/03/19 09:01:35 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2010/04/08 16:04:20 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3800,10 +3800,9 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param name the name of the property definition to read
      * 
-     * @return the property definition that was read, 
-     *          or <code>null</code> if there is no property definition with the given name
+     * @return the property definition that was read 
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException a CmsDbEntryNotFoundException is thrown if the property definition does not exist
      */
     public CmsPropertyDefinition readPropertyDefinition(CmsRequestContext context, String name) throws CmsException {
 
