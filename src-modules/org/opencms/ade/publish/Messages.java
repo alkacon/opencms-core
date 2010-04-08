@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/Messages.java,v $
- * Date   : $Date: 2010/03/29 08:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 07:29:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -32,26 +32,77 @@
 package org.opencms.ade.publish;
 
 import org.opencms.i18n.A_CmsMessageBundle;
+import org.opencms.i18n.I_CmsMessageBundle;
 
 /**
- * The message bundle for the publish module.<p>
+ * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @author Georg Westenberger
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $ 
  * 
- * @since 8.0.0
- * 
+ * @since 8.0.0 
  */
-public class Messages extends A_CmsMessageBundle {
+public final class Messages extends A_CmsMessageBundle {
 
-    /** 
-     * @see org.opencms.i18n.I_CmsMessageBundle#getBundleName()
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKEN_LINK_ONLINE_0 = "GUI_BROKEN_LINK_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_MISSING_ONLINE_0 = "GUI_RESOURCE_MISSING_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPNAME_DAY_1 = "GUI_GROUPNAME_DAY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPNAME_EVERYTHING_ELSE_0 = "GUI_GROUPNAME_EVERYTHING_ELSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPNAME_SESSION_1 = "GUI_GROUPNAME_SESSION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0 = "GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_LOCKED_BY_2 = "GUI_RESOURCE_LOCKED_BY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0 = "GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_PUBLISHED_BY_2 = "GUI_RESOURCE_PUBLISHED_BY_2";
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.ade.publish.messages";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
+
+    /**
+     * Returns an instance of this localized message accessor.<p>
+     * 
+     * @return an instance of this localized message accessor
+     */
+    public static I_CmsMessageBundle get() {
+
+        return INSTANCE;
+    }
+
+    /**
+     * Returns the bundle name for this OpenCms package.<p>
+     * 
+     * @return the bundle name for this OpenCms package
      */
     public String getBundleName() {
 
-        // TODO: Auto-generated method stub
-        return null;
+        return BUNDLE_NAME;
     }
-
 }

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/editors/ade/Attic/AllTests.java,v $
- * Date   : $Date: 2009/10/28 15:38:11 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/ade/publish/AllTests.java,v $
+ * Date   : $Date: 2010/04/08 07:30:34 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.ade.publish;
 
 import org.opencms.test.OpenCmsTestProperties;
 

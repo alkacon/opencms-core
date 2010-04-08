@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishService.java,v $
- * Date   : $Date: 2010/03/29 08:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 07:29:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,13 +45,6 @@ import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.editors.ade.CmsADEPublish;
-import org.opencms.workplace.editors.ade.CmsADESessionCache;
-import org.opencms.workplace.editors.ade.CmsProjectBean;
-import org.opencms.workplace.editors.ade.CmsPublishGroupBean;
-import org.opencms.workplace.editors.ade.CmsPublishOptions;
-import org.opencms.workplace.editors.ade.CmsPublishResourceBean;
-import org.opencms.workplace.editors.ade.CmsPublishResourceInfoBean;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -65,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -78,6 +71,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     /** The version id for serialization. */
     private static final long serialVersionUID = 1L;
 
+    /** Session attribute name constant. */
+    private static final String SESSION_ATTR_ADE_PUB_OPTS_CACHE = "__OCMS_ADE_PUB_OPTS_CACHE__";
+
     /**
      * 
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getProjects()
@@ -85,7 +81,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     public Map<String, String> getProjects() {
 
         CmsObject cms = getCmsObject();
-        CmsADEPublish pub = new CmsADEPublish(cms);
+        CmsPublish pub = new CmsPublish(cms);
         List<CmsProjectBean> projects = pub.getManageableProjects();
         Map<String, String> result = new LinkedHashMap<String, String>();
         for (CmsProjectBean project : projects) {
@@ -102,7 +98,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
         CmsPublishGroups result = new CmsPublishGroups();
         CmsObject cms = this.getCmsObject();
-        CmsADEPublish pub = new CmsADEPublish(cms);
+        CmsPublish pub = new CmsPublish(cms);
         CmsPublishOptions serverOptions = pub.getOptions();
         serverOptions.setIncludeRelated(options.isIncludeRelated());
         serverOptions.setIncludeSiblings(options.isIncludeSiblings());
@@ -112,7 +108,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             projectId = new CmsUUID(project);
         }
         serverOptions.setProjectId(projectId);
-        getSessionCache().setCachePublishOptions(serverOptions);
+        setCachedOptions(serverOptions);
         List<CmsPublishGroupBean> groups = pub.getPublishGroups();
         for (CmsPublishGroupBean group : groups) {
             String groupName = group.getName();
@@ -130,8 +126,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      */
     public CmsClientPublishOptions getPublishOptions() {
 
-        CmsADESessionCache cache = getSessionCache();
-        return toClientPublishOptions(cache.getPublishOptions());
+        CmsPublishOptions cache = getCachedOptions();
+        return toClientPublishOptions(cache);
     }
 
     /**
@@ -151,8 +147,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
         CmsPublishStatus result = new CmsPublishStatus();
         try {
-            CmsObject cms = this.getCmsObject();
-            CmsADEPublish pub = new CmsADEPublish(cms);
+            CmsObject cms = getCmsObject();
+            CmsPublish pub = new CmsPublish(cms);
             List<CmsResource> publishResources = uuidStringsToResources(cms, toPublish);
             List<CmsPublishResourceBean> brokenLinkBeans = pub.getBrokenResources(publishResources);
             if (brokenLinkBeans.size() == 0) {
@@ -169,30 +165,40 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * Helper method for returning the session cache, creating it if it doesn't already exist.<p>
+     * Returns the cached publish options, creating it if it doesn't already exist.<p>
      * 
-     * @return the session cache
+     * @return the cached publish options
      */
-    private CmsADESessionCache getSessionCache() {
+    private CmsPublishOptions getCachedOptions() {
 
-        CmsADESessionCache cache = (CmsADESessionCache)this.getRequest().getSession().getAttribute(
-            CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
+        CmsPublishOptions cache = (CmsPublishOptions)getRequest().getSession().getAttribute(
+            SESSION_ATTR_ADE_PUB_OPTS_CACHE);
         if (cache == null) {
-            cache = new CmsADESessionCache(getCmsObject());
-            getRequest().getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, cache);
+            cache = new CmsPublishOptions();
+            getRequest().getSession().setAttribute(SESSION_ATTR_ADE_PUB_OPTS_CACHE, cache);
         }
         return cache;
 
     }
 
     /**
+     * Saves the given options to the session.<p>
+     * 
+     * @param options the options to save
+     */
+    private void setCachedOptions(CmsPublishOptions options) {
+
+        getRequest().getSession().setAttribute(SESSION_ATTR_ADE_PUB_OPTS_CACHE, options);
+    }
+
+    /**
      * Helper method for converting server side to client side publish options beans.<p>
      * 
      * @param publishOptions the server side publish option bean
+     * 
      * @return a client-side publish options bean
      */
-    private CmsClientPublishOptions toClientPublishOptions(
-        org.opencms.workplace.editors.ade.CmsPublishOptions publishOptions) {
+    private CmsClientPublishOptions toClientPublishOptions(CmsPublishOptions publishOptions) {
 
         CmsClientPublishOptions result = new CmsClientPublishOptions();
         CmsUUID projectId = publishOptions.getProjectId();

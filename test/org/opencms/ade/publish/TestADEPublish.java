@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/editors/ade/Attic/TestADEPublish.java,v $
- * Date   : $Date: 2010/02/03 14:52:43 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/ade/publish/TestADEPublish.java,v $
+ * Date   : $Date: 2010/04/08 07:30:34 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.ade.publish;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  */
 public class TestADEPublish extends OpenCmsTestCase {
 
@@ -119,7 +119,7 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
 
-        CmsADEPublish adePub = new CmsADEPublish(cms);
+        CmsPublish adePub = new CmsPublish(cms);
 
         // TODO: from time to time there are still some resources in the list :( 
 
@@ -135,7 +135,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsResource resource = cms.readResource(resourcename);
 
         // check after
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
 
@@ -147,7 +147,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot(site);
 
         // check before
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
@@ -157,7 +157,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         cms.unlockResource(resourcename);
 
         // check after
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
 
@@ -165,7 +165,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         cms = getCmsObject();
 
         // check before
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
 
@@ -174,7 +174,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check after
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
@@ -184,7 +184,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot(site);
 
         // check it
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
         assertEquals(1, groups.get(0).getResources().size());
@@ -199,7 +199,7 @@ public class TestADEPublish extends OpenCmsTestCase {
             Collections.singletonList(resource.getStructureId()));
 
         // check again
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
     }
@@ -214,7 +214,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
 
         // check before
-        CmsADEPublish adePub = new CmsADEPublish(cms);
+        CmsPublish adePub = new CmsPublish(cms);
         List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
@@ -226,7 +226,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsResource resource = cms.readResource(resourcename);
 
         // check after
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
 
@@ -244,7 +244,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         cms = getCmsObject();
 
         // check again
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
         assertEquals(1, groups.get(0).getResources().size());
@@ -271,7 +271,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot(site);
 
         // check before
-        CmsADEPublish adePub = new CmsADEPublish(cms);
+        CmsPublish adePub = new CmsPublish(cms);
         List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
@@ -283,7 +283,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsResource resource = cms.readResource(resourcename);
 
         // check after
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
         assertEquals(1, groups.get(0).getResources().size());
@@ -306,7 +306,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot(site);
 
         // try again
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
         assertEquals(1, groups.get(0).getResources().size());
@@ -320,7 +320,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check again
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
@@ -328,7 +328,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         cms = getCmsObject();
 
         // check again
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
 
@@ -337,7 +337,7 @@ public class TestADEPublish extends OpenCmsTestCase {
             Collections.singleton(resource.getStructureId()));
 
         // check again
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
     }
@@ -351,7 +351,7 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
 
-        CmsADEPublish adePub = new CmsADEPublish(cms);
+        CmsPublish adePub = new CmsPublish(cms);
 
         // projects
         List<CmsProjectBean> projects = adePub.getManageableProjects();
@@ -362,7 +362,7 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         // create new project
         CmsProject newProject = cms.createProject("test", "test", "Users", "Users");
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         projects = adePub.getManageableProjects();
         assertEquals(2, projects.size());
         assertEquals(offline.getName(), projects.get(0).getName());
@@ -372,7 +372,7 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         // change user
         cms.loginUser("test1", "test1");
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         projects = adePub.getManageableProjects();
         assertEquals(1, projects.size());
         assertEquals(newProject.getName(), projects.get(0).getName());
@@ -388,7 +388,7 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
 
-        CmsADEPublish adePub = new CmsADEPublish(cms);
+        CmsPublish adePub = new CmsPublish(cms);
 
         // first check when empty
         List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
@@ -401,7 +401,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsResource resource = cms.readResource(resourcename, CmsResourceFilter.ALL);
 
         // check the publish list
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
         assertEquals(1, groups.get(0).getResources().size());
@@ -423,7 +423,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsResource resource2 = cms.readResource(resourcename2, CmsResourceFilter.ALL);
 
         // check the publish list
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
         assertEquals(2, groups.get(0).getResources().size());
@@ -475,7 +475,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         OpenCms.getPublishManager().removePublishListener(listener);
 
         // check the publish list
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
     }
@@ -489,7 +489,7 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
 
-        CmsADEPublish adePub = new CmsADEPublish(cms);
+        CmsPublish adePub = new CmsPublish(cms);
 
         // first check when empty
         List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
@@ -502,7 +502,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsResource resource = cms.readResource(resourcename, CmsResourceFilter.ALL);
 
         // check the publish list
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
         assertEquals(1, groups.get(0).getResources().size());
@@ -536,7 +536,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertFalse(cms.existsResource(resourcename, CmsResourceFilter.ALL));
 
         // publish list has to be empty again
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
@@ -557,7 +557,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsResource resource = cms.readResource(resourcename);
 
         // the resource is new/restored from previous test case
-        CmsADEPublish adePub = new CmsADEPublish(cms);
+        CmsPublish adePub = new CmsPublish(cms);
 
         List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
@@ -575,7 +575,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         // publish list has to be empty again
-        adePub = new CmsADEPublish(cms);
+        adePub = new CmsPublish(cms);
         groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
     }
