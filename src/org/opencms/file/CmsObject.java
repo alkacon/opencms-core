@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2010/01/28 15:03:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/08 15:34:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0 
  */
@@ -2262,10 +2262,9 @@ public final class CmsObject {
      * 
      * @param name the name of the property definition to read
      * 
-     * @return the property definition that was read, 
-     *          or <code>null</code> if there is no property definition with the given name.
+     * @return the property definition that was read
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsException a CmsDbEntryNotFoundException is thrown if the property definition does not exist
      */
     public CmsPropertyDefinition readPropertyDefinition(String name) throws CmsException {
 

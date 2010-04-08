@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2009/09/04 15:01:17 $
- * Version: $Revision: 1.28.2.1 $
+ * Date   : $Date: 2010/04/08 15:34:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -316,7 +316,7 @@ public final class CmsXmlUtils {
 
     /**
      * Returns <code>true</code> if the given path is a Xpath with 
-     * at last 2 elements.<p>
+     * at least 2 elements.<p>
      * 
      * Examples:<br> 
      * <code>title</code> returns <code>false</code><br>
@@ -325,7 +325,7 @@ public final class CmsXmlUtils {
      * <code>title[1]/subtitle[1]</code> returns <code>true</code><p>
      * 
      * @param path the path to check
-     * @return true if the given path is a Xpath with at last 2 elements
+     * @return true if the given path is a Xpath with at least 2 elements
      */
     public static boolean isDeepXpath(String path) {
 
