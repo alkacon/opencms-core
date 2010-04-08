@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsHttpAuthenticationSettings.java,v $
- * Date   : $Date: 2010/01/18 10:02:20 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/04/08 15:28:08 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.workplace.CmsWorkplace;
  * @author Thomas Weckert
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,11 +63,11 @@ public class CmsHttpAuthenticationSettings {
     public static final String DEFAULT_AUTHENTICATION_URI = CmsWorkplace.VFS_PATH_WORKPLACE
         + "action/authenticate.html";
 
-    /** The URI of the system wide login form if browser-based HTTP basic authentication is disabled. */
-    private String m_formBasedHttpAuthenticationUri;
-
     /** The mechanism used in browser-based HTTP authentication. */
     private String m_browserBasedAuthenticationMechanism;
+
+    /** The URI of the system wide login form if browser-based HTTP basic authentication is disabled. */
+    private String m_formBasedHttpAuthenticationUri;
 
     /** Boolean flag to enable or disable browser-based HTTP basic authentication. */
     private boolean m_useBrowserBasedHttpAuthentication;
@@ -84,7 +84,7 @@ public class CmsHttpAuthenticationSettings {
     }
 
     /**
-     * Returns the browser based authentication mechanism or <code>null</code> if unused.
+     * Returns the browser based authentication mechanism or <code>null</code> if unused.<p>
      * 
      * @return "BASIC" in case of browser based basic authentication, "FORM" in case of form based authentication or the alternative mechanism or <code>null</code> if unused.
      */
@@ -98,6 +98,22 @@ public class CmsHttpAuthenticationSettings {
             return AUTHENTICATION_FORM;
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Returns the browser based authentication text for the configuration.<p>
+     * 
+     * @return the browser based authentication text for the configuration
+     */
+    public String getConfigBrowserBasedAuthentication() {
+
+        if (m_useBrowserBasedHttpAuthentication) {
+            return Boolean.TRUE.toString();
+        } else if (m_browserBasedAuthenticationMechanism != null) {
+            return m_browserBasedAuthenticationMechanism;
+        } else {
+            return Boolean.FALSE.toString();
         }
     }
 

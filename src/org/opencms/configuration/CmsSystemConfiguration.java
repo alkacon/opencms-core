@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2010/01/18 10:02:32 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2010/04/08 15:28:08 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 6.0.0
  */
@@ -1332,7 +1332,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // create <http-authentication> node
         Element httpAuthenticationElement = systemElement.addElement(N_HTTP_AUTHENTICATION);
         httpAuthenticationElement.addElement(N_BROWSER_BASED).setText(
-            Boolean.toString(m_httpAuthenticationSettings.useBrowserBasedHttpAuthentication()));
+            m_httpAuthenticationSettings.getConfigBrowserBasedAuthentication());
         if (m_httpAuthenticationSettings.getFormBasedHttpAuthenticationUri() != null) {
             httpAuthenticationElement.addElement(N_FORM_BASED).setText(
                 m_httpAuthenticationSettings.getFormBasedHttpAuthenticationUri());
