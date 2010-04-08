@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/03/16 12:40:14 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/04/08 14:57:49 $
+ * Version: $Revision: 1.26 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -18,6 +18,9 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms x.x.x - Month Day, Year
+* Keep browser based authentication text when rewriting the opencms-system.xml
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
