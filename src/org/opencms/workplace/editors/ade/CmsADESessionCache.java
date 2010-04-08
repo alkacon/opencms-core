@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADESessionCache.java,v $
- * Date   : $Date: 2009/11/04 13:53:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/08 07:29:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.9.2
  */
@@ -69,9 +69,6 @@ public final class CmsADESessionCache {
     /** The container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;
 
-    /** The ADE publish options. */
-    private CmsPublishOptions m_publishOptions;
-
     /** Session attribute name constant. */
     public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
 
@@ -88,9 +85,6 @@ public final class CmsADESessionCache {
 
         // ADE search options
         m_searchOptions = null;
-
-        // ADE publish options
-        m_publishOptions = new CmsPublishOptions();
 
         // ADE recent lists
         int maxElems = 10;
@@ -122,16 +116,6 @@ public final class CmsADESessionCache {
     public CmsSearchOptions getSearchOptions() {
 
         return m_searchOptions;
-    }
-
-    /**
-     * Returns the publish options.<p>
-     * 
-     * @return the cached publish options
-     */
-    public CmsPublishOptions getPublishOptions() {
-
-        return m_publishOptions;
     }
 
     /**
@@ -171,20 +155,6 @@ public final class CmsADESessionCache {
             m_searchOptions = null;
         } else {
             m_searchOptions = opts.resetPage();
-        }
-    }
-
-    /**
-     * Caches the given publish options.<p>
-     * 
-     * @param opts the publish options to cache
-     */
-    public void setCachePublishOptions(CmsPublishOptions opts) {
-
-        if (opts == null) {
-            m_publishOptions = new CmsPublishOptions();
-        } else {
-            m_publishOptions = opts;
         }
     }
 

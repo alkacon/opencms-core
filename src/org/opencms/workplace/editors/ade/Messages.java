@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/12/14 09:41:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/08 07:29:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,9 +53,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_JSON_WRONG_PARAMETER_VALUE_2 = "ERR_JSON_WRONG_PARAMETER_VALUE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_BROKEN_LINK_ONLINE_0 = "GUI_BROKEN_LINK_ONLINE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_FORMATTER_FILE_0 = "GUI_DEFAULT_FORMATTER_FILE_0";
@@ -77,30 +74,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_FORMATTER_TYPE_1 = "GUI_DEFAULT_FORMATTER_TYPE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_GROUPNAME_DAY_1 = "GUI_GROUPNAME_DAY_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_GROUPNAME_EVERYTHING_ELSE_0 = "GUI_GROUPNAME_EVERYTHING_ELSE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_GROUPNAME_SESSION_1 = "GUI_GROUPNAME_SESSION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0 = "GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_LOCKED_BY_2 = "GUI_RESOURCE_LOCKED_BY_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_MISSING_ONLINE_0 = "GUI_RESOURCE_MISSING_ONLINE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0 = "GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_PUBLISHED_BY_2 = "GUI_RESOURCE_PUBLISHED_BY_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_TITLE_0 = "GUI_LABEL_TITLE_0";
