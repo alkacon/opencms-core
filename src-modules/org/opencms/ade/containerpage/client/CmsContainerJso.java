@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerJso.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 06:01:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -58,10 +58,6 @@ public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer 
 
     /** Key 'type' used within the JSON representation of a container object. */
     public static final String JSONKEY_TYPE = "type";
-
-    /** 
-     * Key used to write container data into the javascript window object. This has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#KEY_CONTAINER_DATA}. */
-    public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
 
     /**
      * Constructor. Overlay types always have protected, zero-argument constructors.<p>
@@ -112,7 +108,7 @@ public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer 
      * @return the containers
      */
     public static final native JsArray<CmsContainerJso> getContainers() /*-{
-        return $wnd[@org.opencms.ade.containerpage.client.CmsContainerJso::KEY_CONTAINER_DATA];
+        return $wnd[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_CONTAINER_DATA];
     }-*/;
 
 }

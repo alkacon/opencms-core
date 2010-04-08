@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/04/06 14:22:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/08 06:01:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,15 @@ package org.opencms.ade.containerpage.client;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClickHandler;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPropertiesButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPublishButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarRemoveButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarResetButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarSaveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
@@ -66,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -75,26 +79,14 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** The editor instance. */
     public static CmsContainerpageEditor INSTANCE;
 
+    /** Margin-top added to the document body element when the tool-bar is shown. */
     private int m_bodyMarginTop;
-
-    /** The currently active button. */
-    private I_CmsContainerpageToolbarButton m_currentButton;
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
 
     /** List of buttons of the tool-bar. */
     private List<I_CmsContainerpageToolbarButton> m_toolbarButtons;
-
-    /**
-     * Returns the currently active button. May return <code>null</code>, if none is active.<p>
-     * 
-     * @return the current button
-     */
-    public I_CmsContainerpageToolbarButton getCurrentButton() {
-
-        return m_currentButton;
-    }
 
     /**
      * Returns the tool-bar widget.<p>
@@ -126,28 +118,22 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         INSTANCE = this;
         m_toolbarButtons = new ArrayList<I_CmsContainerpageToolbarButton>();
         m_toolbarButtons.add(new CmsToolbarPublishButton());
+        m_toolbarButtons.add(new CmsToolbarSaveButton());
         m_toolbarButtons.add(new CmsToolbarSelectionButton());
         m_toolbarButtons.add(new CmsToolbarMoveButton());
         m_toolbarButtons.add(new CmsToolbarEditButton());
         m_toolbarButtons.add(new CmsToolbarRemoveButton());
         m_toolbarButtons.add(new CmsToolbarPropertiesButton());
+        m_toolbarButtons.add(new CmsToolbarGalleryMenu());
         m_toolbarButtons.add(new CmsToolbarClipboardMenu());
+        m_toolbarButtons.add(new CmsToolbarSitemapButton());
+        m_toolbarButtons.add(new CmsToolbarResetButton());
         initToolbar();
         CmsContainerpageDataProvider.init();
 
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
         org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
 
-    }
-
-    /**
-     * Sets the current button.<p>
-     * 
-     * @param button the current button
-     */
-    public void setCurrentButton(I_CmsContainerpageToolbarButton button) {
-
-        m_currentButton = button;
     }
 
     /**
@@ -216,9 +202,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         });
 
+        // TODO: use CSS for these properties
         toggleToolbarButton.getElement().getStyle().setPosition(Position.FIXED);
         toggleToolbarButton.getElement().getStyle().setTop(-3, Unit.PX);
-        toggleToolbarButton.getElement().getStyle().setRight(50, Unit.PX);
+        toggleToolbarButton.getElement().getStyle().setLeft(97, Unit.PCT);
         toggleToolbarButton.getElement().getStyle().setZIndex(10010);
 
     }
