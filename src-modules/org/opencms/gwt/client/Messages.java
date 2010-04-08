@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/07 12:06:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/08 07:45:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -46,6 +46,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_UUID_1 = "ERR_INVALID_UUID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERROR_0 = "GUI_ERROR_0";

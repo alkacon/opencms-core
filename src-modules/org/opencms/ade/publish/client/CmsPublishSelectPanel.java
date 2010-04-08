@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/08 07:30:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/08 07:45:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,15 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.ade.publish.shared.CmsClientPublishOptions;
 import org.opencms.ade.publish.shared.CmsClientPublishResourceBean;
 import org.opencms.ade.publish.shared.CmsPublishGroups;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.i18n.CmsMessages;
 import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsTextButton;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -70,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -125,7 +126,7 @@ public class CmsPublishSelectPanel extends Composite {
     protected CmsPublishDialog m_publishDialog;
 
     /** The current publish list options. */
-    protected CmsClientPublishOptions m_publishOptions;
+    protected CmsPublishOptions m_publishOptions;
 
     /** The label for the "include related" checkbox. */
     @UiField
@@ -179,7 +180,7 @@ public class CmsPublishSelectPanel extends Composite {
     public CmsPublishSelectPanel(
         CmsPublishDialog publishDialog,
         Map<String, String> projects,
-        CmsClientPublishOptions publishOptions) {
+        CmsPublishOptions publishOptions) {
 
         m_publishOptions = publishOptions;
 
@@ -197,9 +198,8 @@ public class CmsPublishSelectPanel extends Composite {
         m_publishDialog = publishDialog;
         m_checkboxRelated.setChecked(publishOptions.isIncludeRelated());
         m_checkboxSiblings.setChecked(publishOptions.isIncludeSiblings());
-        String project = publishOptions.getProject();
-        project = (project == null) ? "" : project;
-        m_projectSelector.selectValue(project);
+        CmsUUID project = publishOptions.getProjectId();
+        m_projectSelector.selectValue((project == null) ? "" : project.toString());
 
         m_projectSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -208,7 +208,7 @@ public class CmsPublishSelectPanel extends Composite {
              */
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                m_publishOptions.setProject(event.getValue());
+                m_publishOptions.setProjectId(new CmsUUID(event.getValue()));
                 m_publishDialog.onChangeOptions();
             }
         });
@@ -300,7 +300,7 @@ public class CmsPublishSelectPanel extends Composite {
      * 
      * @return a publish options bean
      */
-    public CmsClientPublishOptions getPublishOptions() {
+    public CmsPublishOptions getPublishOptions() {
 
         return m_publishOptions;
     }

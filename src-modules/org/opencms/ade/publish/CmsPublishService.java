@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishService.java,v $
- * Date   : $Date: 2010/04/08 07:29:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/08 07:45:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,9 @@
 
 package org.opencms.ade.publish;
 
-import org.opencms.ade.publish.shared.CmsClientPublishOptions;
 import org.opencms.ade.publish.shared.CmsClientPublishResourceBean;
 import org.opencms.ade.publish.shared.CmsPublishGroups;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
 import org.opencms.ade.publish.shared.CmsPublishStatus;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -92,9 +92,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * 
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getPublishGroups(org.opencms.ade.publish.shared.CmsClientPublishOptions)
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getPublishGroups(org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public CmsPublishGroups getPublishGroups(CmsClientPublishOptions options) {
+    public CmsPublishGroups getPublishGroups(CmsPublishOptions options) {
 
         CmsPublishGroups result = new CmsPublishGroups();
         CmsObject cms = this.getCmsObject();
@@ -102,12 +102,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         CmsPublishOptions serverOptions = pub.getOptions();
         serverOptions.setIncludeRelated(options.isIncludeRelated());
         serverOptions.setIncludeSiblings(options.isIncludeSiblings());
-        String project = options.getProject();
-        CmsUUID projectId = null;
-        if ((project != null) && !project.equals("")) {
-            projectId = new CmsUUID(project);
-        }
-        serverOptions.setProjectId(projectId);
+        serverOptions.setProjectId(options.getProjectId());
         setCachedOptions(serverOptions);
         List<CmsPublishGroupBean> groups = pub.getPublishGroups();
         for (CmsPublishGroupBean group : groups) {
@@ -124,10 +119,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      * 
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getPublishOptions()
      */
-    public CmsClientPublishOptions getPublishOptions() {
+    public CmsPublishOptions getPublishOptions() {
 
-        CmsPublishOptions cache = getCachedOptions();
-        return toClientPublishOptions(cache);
+        return getCachedOptions();
     }
 
     /**
@@ -189,23 +183,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     private void setCachedOptions(CmsPublishOptions options) {
 
         getRequest().getSession().setAttribute(SESSION_ATTR_ADE_PUB_OPTS_CACHE, options);
-    }
-
-    /**
-     * Helper method for converting server side to client side publish options beans.<p>
-     * 
-     * @param publishOptions the server side publish option bean
-     * 
-     * @return a client-side publish options bean
-     */
-    private CmsClientPublishOptions toClientPublishOptions(CmsPublishOptions publishOptions) {
-
-        CmsClientPublishOptions result = new CmsClientPublishOptions();
-        CmsUUID projectId = publishOptions.getProjectId();
-        result.setProject(projectId != null ? projectId.toString() : "");
-        result.setIncludeRelated(publishOptions.isIncludeRelated());
-        result.setIncludeSiblings(publishOptions.isIncludeSiblings());
-        return result;
     }
 
     /**

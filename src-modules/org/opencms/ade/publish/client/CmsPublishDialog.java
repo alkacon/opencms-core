@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/08 07:30:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/08 07:45:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.ade.publish.shared.CmsClientPublishOptions;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishGroups;
 import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
 import org.opencms.ade.publish.shared.CmsPublishStatus;
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -111,14 +111,14 @@ public class CmsPublishDialog extends CmsPopupDialog {
     private class CmsPublishListAction extends CmsRpcAction<CmsPublishGroups> {
 
         /** The publish list options which should be used. */
-        private CmsClientPublishOptions m_options;
+        private CmsPublishOptions m_options;
 
         /**
          * Creates a new publish list action.<p>
          * 
          * @param options the publish list options which should be used 
          */
-        public CmsPublishListAction(CmsClientPublishOptions options) {
+        public CmsPublishListAction(CmsPublishOptions options) {
 
             m_options = options;
         }
@@ -181,7 +181,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
     public CmsPublishDialog(
         I_CmsPublishServiceAsync publishService,
         Map<String, String> projects,
-        CmsClientPublishOptions options) {
+        CmsPublishOptions options) {
 
         super(MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
         setGlassEnabled(true);
@@ -246,7 +246,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
      */
     public void onChangeOptions() {
 
-        CmsClientPublishOptions options = m_publishSelectPanel.getPublishOptions();
+        CmsPublishOptions options = m_publishSelectPanel.getPublishOptions();
         (new CmsPublishListAction(options)).execute();
     }
 

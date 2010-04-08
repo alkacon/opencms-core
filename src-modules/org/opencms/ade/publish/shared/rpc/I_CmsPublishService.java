@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/rpc/Attic/I_CmsPublishService.java,v $
- * Date   : $Date: 2010/03/29 08:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 07:45:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.publish.shared.rpc;
 
-import org.opencms.ade.publish.shared.CmsClientPublishOptions;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishGroups;
 import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
 import org.opencms.ade.publish.shared.CmsPublishStatus;
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -75,7 +75,7 @@ public interface I_CmsPublishService extends RemoteService {
      *  
      * @throws CmsRpcException if something goes wrong
      */
-    CmsPublishGroups getPublishGroups(CmsClientPublishOptions options) throws CmsRpcException;
+    CmsPublishGroups getPublishGroups(CmsPublishOptions options) throws CmsRpcException;
 
     /**
      * Retrieves the publish options.<p>
@@ -84,7 +84,7 @@ public interface I_CmsPublishService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong.
      */
-    CmsClientPublishOptions getPublishOptions() throws CmsRpcException;
+    CmsPublishOptions getPublishOptions() throws CmsRpcException;
 
     /**
      * Gets a bean containing both the publish options and the list of projects.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishOptionsAndProjects.java,v $
- * Date   : $Date: 2010/03/29 08:47:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 07:45:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,14 +40,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0
  */
 public class CmsPublishOptionsAndProjects implements IsSerializable {
 
     /** The publish options. */
-    private CmsClientPublishOptions m_options;
+    private CmsPublishOptions m_options;
 
     /** The map of projects. */
     private Map<String, String> m_projects;
@@ -67,7 +67,7 @@ public class CmsPublishOptionsAndProjects implements IsSerializable {
      * @param options the publish options 
      * @param projects the map of projects 
      */
-    public CmsPublishOptionsAndProjects(CmsClientPublishOptions options, Map<String, String> projects) {
+    public CmsPublishOptionsAndProjects(CmsPublishOptions options, Map<String, String> projects) {
 
         m_options = options;
         m_projects = projects;
@@ -78,7 +78,7 @@ public class CmsPublishOptionsAndProjects implements IsSerializable {
      * 
      * @return the publish options
      */
-    public CmsClientPublishOptions getOptions() {
+    public CmsPublishOptions getOptions() {
 
         return m_options;
     }

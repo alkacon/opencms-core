@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishOptions.java,v $
- * Date   : $Date: 2010/04/08 07:29:56 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishOptions.java,v $
+ * Date   : $Date: 2010/04/08 07:45:43 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,9 +29,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.publish;
+package org.opencms.ade.publish.shared;
 
 import org.opencms.util.CmsUUID;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Bean encapsulating all ADE publish options.<p>
@@ -42,7 +44,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @since 7.6 
  */
-public class CmsPublishOptions {
+public class CmsPublishOptions  implements IsSerializable {
 
     /** Flag to include related resources. */
     private boolean m_includeRelated;

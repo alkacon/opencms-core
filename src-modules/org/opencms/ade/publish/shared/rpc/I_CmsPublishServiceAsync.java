@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/rpc/Attic/I_CmsPublishServiceAsync.java,v $
- * Date   : $Date: 2010/03/29 08:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 07:45:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.publish.shared.rpc;
 
-import org.opencms.ade.publish.shared.CmsClientPublishOptions;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishGroups;
 import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
 import org.opencms.ade.publish.shared.CmsPublishStatus;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -60,18 +60,18 @@ public interface I_CmsPublishServiceAsync {
     void getProjects(AsyncCallback<Map<String, String>> callback);
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#getPublishGroups(CmsClientPublishOptions)} .<p>
+     * Asynchronous version of {@link I_CmsPublishService#getPublishGroups(CmsPublishOptions)} .<p>
      * 
      * @param options the publish list options
      * @param callback the result callback
      */
-    void getPublishGroups(CmsClientPublishOptions options, AsyncCallback<CmsPublishGroups> callback);
+    void getPublishGroups(CmsPublishOptions options, AsyncCallback<CmsPublishGroups> callback);
 
     /**
      * Asynchronous version of {@link I_CmsPublishService#getPublishOptions()}.<p>
      * @param callback the result callback
      */
-    void getPublishOptions(AsyncCallback<CmsClientPublishOptions> callback);
+    void getPublishOptions(AsyncCallback<CmsPublishOptions> callback);
 
     /**
      * Asynchronous version of {@link I_CmsPublishService#getPublishOptionsAndProjects()}.<p>
