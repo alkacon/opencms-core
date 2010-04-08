@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarMenu.java,v $
- * Date   : $Date: 2010/04/07 12:06:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/08 06:01:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageEditor;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
@@ -44,7 +43,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -112,7 +111,7 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsCon
      */
     public boolean isActive() {
 
-        return !isOpen();
+        return isOpen();
     }
 
     /**
@@ -130,16 +129,16 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsCon
     public void setActive(boolean active) {
 
         if (active) {
-            if (CmsContainerpageEditor.INSTANCE.getCurrentButton() != null) {
-                CmsContainerpageEditor.INSTANCE.getCurrentButton().setActive(false);
-            }
+            //            if (CmsContainerpageEditor.INSTANCE.getCurrentButton() != null) {
+            //                CmsContainerpageEditor.INSTANCE.getCurrentButton().setActive(false);
+            //            }
             onToolbarActivate();
-            CmsContainerpageEditor.INSTANCE.setCurrentButton(this);
+            //            CmsContainerpageEditor.INSTANCE.setCurrentButton(this);
             this.openMenu();
 
         } else {
             onToolbarDeactivate();
-            CmsContainerpageEditor.INSTANCE.setCurrentButton(null);
+            //            CmsContainerpageEditor.INSTANCE.setCurrentButton(null);
             this.closeMenu();
         }
 

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarGalleryMenu.java,v $
  * Date   : $Date: 2010/04/08 06:01:24 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,34 +31,26 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Label;
-
 /**
- * The clip-board tool-bar menu.<p>
+ * The gallery tool-bar menu.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
+public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
 
     /**
      * Constructor.<p>
      */
-    public CmsToolbarClipboardMenu() {
+    public CmsToolbarGalleryMenu() {
 
-        super(CmsToolbarButton.ButtonData.CLIPBOARD, "clipboard", true);
-        Label menuContent = new Label("Menu content");
-        menuContent.getElement().getStyle().setHeight(100, Unit.PX);
-        menuContent.getElement().getStyle().setWidth(650, Unit.PX);
-        setMenuWidget(menuContent);
+        super(CmsToolbarButton.ButtonData.ADD, "add", true);
     }
 
     /**

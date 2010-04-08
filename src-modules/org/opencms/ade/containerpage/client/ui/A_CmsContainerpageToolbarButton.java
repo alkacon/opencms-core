@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsContainerpageToolbarButton.java,v $
- * Date   : $Date: 2010/04/07 12:06:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/08 06:01:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageEditor;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
@@ -42,7 +41,7 @@ import com.google.gwt.dom.client.Document;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +62,8 @@ implements I_CmsContainerpageToolbarButton {
 
     /** The button name. */
     private String m_name;
+
+    private boolean m_isActive;
 
     /**
      * Constructor.<p>
@@ -130,7 +131,8 @@ implements I_CmsContainerpageToolbarButton {
      */
     public boolean isActive() {
 
-        return isDown();
+        return m_isActive;
+        //return isDown();
     }
 
     /**
@@ -138,17 +140,20 @@ implements I_CmsContainerpageToolbarButton {
      */
     public void setActive(boolean active) {
 
+        m_isActive = active;
+        setDown(m_isActive);
+
         if (active) {
-            if (CmsContainerpageEditor.INSTANCE.getCurrentButton() != null) {
-                CmsContainerpageEditor.INSTANCE.getCurrentButton().setActive(false);
-            }
+            //            if (CmsContainerpageEditor.INSTANCE.getCurrentButton() != null) {
+            //                CmsContainerpageEditor.INSTANCE.getCurrentButton().setActive(false);
+            //            }
             onToolbarActivate();
-            CmsContainerpageEditor.INSTANCE.setCurrentButton(this);
+            //           CmsContainerpageEditor.INSTANCE.setCurrentButton(this);
         } else {
             onToolbarDeactivate();
-            CmsContainerpageEditor.INSTANCE.setCurrentButton(null);
+            //            CmsContainerpageEditor.INSTANCE.setCurrentButton(null);
         }
-        setDown(active);
+        //        setDown(active);
     }
 
     /**

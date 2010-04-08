@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClickHandler.java,v $
- * Date   : $Date: 2010/04/06 09:49:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/08 06:01:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarClickHandler implements ClickHandler {
+
+    private I_CmsContainerpageToolbarButton m_currentButton;
 
     /**
      * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
@@ -55,8 +57,17 @@ public class CmsToolbarClickHandler implements ClickHandler {
 
         try {
             I_CmsContainerpageToolbarButton source = (I_CmsContainerpageToolbarButton)event.getSource();
+            boolean active = source.isActive();
+            if (!active) {
+                if (m_currentButton != null) {
+                    m_currentButton.setActive(false);
+                }
+                m_currentButton = source;
+            } else {
+                m_currentButton = null;
+            }
             // setting the button active/inactive depending on its current state
-            source.setActive(source.isActive());
+            source.setActive(!active);
         } catch (Exception e) {
             CmsDebugLog.getInstance().printLine(e.getMessage());
         }
