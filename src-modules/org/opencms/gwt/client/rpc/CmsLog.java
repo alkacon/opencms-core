@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsLog.java,v $
- * Date   : $Date: 2010/04/06 08:29:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/12 10:15:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -92,7 +92,7 @@ public final class CmsLog {
                     public void onFailure(Throwable caught) {
 
                         // logging failed, really bad
-                        // bad the only thing we can do is to ignore it
+                        // but the only thing we can do is to ignore it
                     }
 
                     /**
