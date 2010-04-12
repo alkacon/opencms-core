@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2010/04/07 13:34:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 14:00:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -73,9 +73,9 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
     public CmsSitemapActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
-        JSONObject coreData = CmsCoreProvider.get().getData(getCmsObject());
+        JSONObject coreData = CmsCoreProvider.get().getData(getRequest());
         m_wpLocale = CmsLocaleManager.getLocale(coreData.optString(I_CmsCoreProviderConstants.KEY_WP_LOCALE));
-        JSONObject sitemapData = CmsSitemapProvider.get().getData(getCmsObject(), getRequest());
+        JSONObject sitemapData = CmsSitemapProvider.get().getData(getRequest());
         m_uri = sitemapData.optString(I_CmsSitemapProviderConstants.KEY_URI_SITEMAP);
     }
 
@@ -86,7 +86,7 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
      */
     public String getData() {
 
-        return CmsSitemapProvider.get().export(getRequest());
+        return CmsSitemapProvider.get().exportAll(getRequest());
     }
 
     /**

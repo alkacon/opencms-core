@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2010/04/07 13:34:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/12 14:00:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -69,7 +69,7 @@ public class CmsGalleryActionElement extends CmsJspActionElement {
     public CmsGalleryActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
-        JSONObject coreData = CmsCoreProvider.get().getData(getCmsObject());
+        JSONObject coreData = CmsCoreProvider.get().getData(getRequest());
         m_wpLocale = CmsLocaleManager.getLocale(coreData.optString(I_CmsCoreProviderConstants.KEY_WP_LOCALE));
     }
 

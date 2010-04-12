@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 14:00:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -802,7 +802,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         if (m_resourceTypeNames == null) {
             try {
-                JSONObject data = CmsGalleryProvider.get().getData(getCmsObject(), getRequest());
+                JSONObject data = CmsGalleryProvider.get().getData(getRequest());
                 String typesString = data.optString(I_CmsGalleryProviderConstants.ReqParam.types.name());
                 String[] typesArray = CmsStringUtil.splitAsArray(typesString, ",");
                 m_resourceTypeNames = new JSONArray(typesArray);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryProvider.java,v $
- * Date   : $Date: 2010/04/07 13:34:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 14:00:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,7 @@
 package org.opencms.ade.galleries;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
-import org.opencms.file.CmsObject;
-import org.opencms.flex.CmsFlexController;
-import org.opencms.gwt.CmsCoreProvider;
+import org.opencms.gwt.I_CmsCoreProvider;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
@@ -48,13 +46,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.ade.galleries.client.util.CmsGalleryProvider
  */
-public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants {
+public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, I_CmsCoreProvider {
 
     /** Internal instance. */
     private static CmsGalleryProvider INSTANCE;
@@ -84,32 +82,31 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants {
     }
 
     /**
-     * Returns the JSON code for the core provider.<p>
-     * 
-     * @param request the current request to get the default locale from 
-     * 
-     * @return the JSON code
+     * @see org.opencms.gwt.I_CmsCoreProvider#export(javax.servlet.http.HttpServletRequest)
      */
     public String export(HttpServletRequest request) {
 
-        CmsObject cms = CmsFlexController.getCmsObject(request);
-
         StringBuffer sb = new StringBuffer();
-        sb.append(CmsCoreProvider.get().export(request));
         sb.append(ClientMessages.get().export(request));
-        sb.append(DICT_NAME.replace('.', '_')).append("=").append(getData(cms, request).toString()).append(";");
+        sb.append(DICT_NAME.replace('.', '_')).append("=").append(getData(request).toString()).append(";");
         return sb.toString();
     }
 
     /**
-     * Returns the provided json data.<p>
-     * 
-     * @param cms the current cms object
-     * @param request the current request
-     * 
-     * @return the provided json data
+     * @see org.opencms.gwt.I_CmsCoreProvider#exportAll(javax.servlet.http.HttpServletRequest)
      */
-    public JSONObject getData(CmsObject cms, HttpServletRequest request) {
+    public String exportAll(HttpServletRequest request) {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(org.opencms.gwt.CmsCoreProvider.get().export(request));
+        sb.append(export(request));
+        return sb.toString();
+    }
+
+    /**
+     * @see org.opencms.gwt.I_CmsCoreProvider#getData(javax.servlet.http.HttpServletRequest)
+     */
+    public JSONObject getData(HttpServletRequest request) {
 
         JSONObject keys = new JSONObject();
         try {

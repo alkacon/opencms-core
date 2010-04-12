@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/04/07 13:34:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/12 14:00:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,16 +48,16 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.client.util.CmsCoreProvider
  */
-public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
+public final class CmsCoreProvider implements I_CmsCoreProviderConstants, I_CmsCoreProvider {
 
     /** Internal instance. */
-    private static CmsCoreProvider INSTANCE;
+    private static I_CmsCoreProvider INSTANCE;
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsCoreProvider.class);
@@ -75,7 +75,7 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
      * 
      * @return the client message instance
      */
-    public static CmsCoreProvider get() {
+    public static I_CmsCoreProvider get() {
 
         if (INSTANCE == null) {
             INSTANCE = new CmsCoreProvider();
@@ -84,30 +84,30 @@ public final class CmsCoreProvider implements I_CmsCoreProviderConstants {
     }
 
     /**
-     * Returns the JSON code for the core provider and the given message bundle.<p>
-     * 
-     * @param request the current request to get the default locale from 
-     * 
-     * @return the JSON code
+     * @see org.opencms.gwt.I_CmsCoreProvider#export(javax.servlet.http.HttpServletRequest)
      */
     public String export(HttpServletRequest request) {
 
-        CmsObject cms = CmsFlexController.getCmsObject(request);
-
         StringBuffer sb = new StringBuffer();
-        sb.append(DICT_NAME.replace('.', '_')).append("=").append(getData(cms).toString()).append(";");
+        sb.append(DICT_NAME.replace('.', '_')).append("=").append(getData(request).toString()).append(";");
         sb.append(ClientMessages.get().export(request));
         return sb.toString();
     }
 
     /**
-     * Returns the provided json data.<p>
-     * 
-     * @param cms the current cms object
-     * 
-     * @return the provided json data
+     * @see org.opencms.gwt.I_CmsCoreProvider#exportAll(javax.servlet.http.HttpServletRequest)
      */
-    public JSONObject getData(CmsObject cms) {
+    public String exportAll(HttpServletRequest request) {
+
+        return export(request);
+    }
+
+    /**
+     * @see org.opencms.gwt.I_CmsCoreProvider#getData(javax.servlet.http.HttpServletRequest)
+     */
+    public JSONObject getData(HttpServletRequest request) {
+
+        CmsObject cms = CmsFlexController.getCmsObject(request);
 
         JSONObject keys = new JSONObject();
         try {
