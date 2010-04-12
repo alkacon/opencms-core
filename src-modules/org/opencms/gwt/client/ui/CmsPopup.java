@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/04/08 07:30:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/12 11:37:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -108,6 +108,46 @@ public class CmsPopup {
         }
 
         /**
+         * Returns the content widget with the given index.<p>
+         * 
+         * @param index the index of the widget
+         * 
+         * @return the widget
+         * 
+         * @see com.google.gwt.user.client.ui.ComplexPanel#getWidget(int)
+         */
+        public Widget getWidget(int index) {
+
+            return m_main.getWidget(index);
+        }
+
+        /**
+         * Returns the number of content widgets.<p>
+         * 
+         * @return the number of widgets
+         * 
+         * @see com.google.gwt.user.client.ui.ComplexPanel#getWidgetCount()
+         */
+        public int getWidgetCount() {
+
+            return m_main.getWidgetCount();
+        }
+
+        /**
+         * Returns the index of the given widget.<p>
+         * 
+         * @param child the widget to get the index for
+         * 
+         * @return the widget index
+         * 
+         * @see com.google.gwt.user.client.ui.ComplexPanel#getWidgetIndex(com.google.gwt.user.client.ui.Widget)
+         */
+        public int getWidgetIndex(Widget child) {
+
+            return m_main.getWidgetIndex(child);
+        }
+
+        /**
          * Inserts the widget before the specified index.<p>
          * 
          * @param w the widget to insert
@@ -127,20 +167,6 @@ public class CmsPopup {
         public Iterator<Widget> iterator() {
 
             return m_main.iterator();
-        }
-
-        /**
-         * Override to work around the glass overlay still showing after dialog hide.<p>
-         * 
-         * @see com.google.gwt.user.client.ui.Widget#onDetach()
-         */
-        @Override
-        protected void onDetach() {
-
-            super.onDetach();
-            if (this.getGlassElement() != null) {
-                this.getGlassElement().removeFromParent();
-            }
         }
 
         /**
@@ -178,6 +204,20 @@ public class CmsPopup {
                 m_containerElement = super.getContainerElement();
             }
             return m_containerElement;
+        }
+
+        /**
+         * Override to work around the glass overlay still showing after dialog hide.<p>
+         * 
+         * @see com.google.gwt.user.client.ui.Widget#onDetach()
+         */
+        @Override
+        protected void onDetach() {
+
+            super.onDetach();
+            if (this.getGlassElement() != null) {
+                this.getGlassElement().removeFromParent();
+            }
         }
     }
 
@@ -233,6 +273,18 @@ public class CmsPopup {
     }
 
     /**
+     * Adds the given child widget.<p>
+     * 
+     * @param w the widget
+     * 
+     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#add(com.google.gwt.user.client.ui.Widget)
+     */
+    public void add(Widget w) {
+
+        m_dialog.add(w);
+    }
+
+    /**
      * Mouse events that occur within an autoHide partner will not hide a panel set to autoHide.<p>
      * 
      * @param partner the auto hide partner to add
@@ -259,11 +311,45 @@ public class CmsPopup {
     }
 
     /**
+     * Adds a dependent style name.<p>
+     * 
+     * @param styleSuffix the style suffix
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#addStyleDependentName(java.lang.String)
+     */
+    public void addStyleDependentName(String styleSuffix) {
+
+        m_dialog.addStyleDependentName(styleSuffix);
+    }
+
+    /**
+     * Adds another style name.<p>
+     * 
+     * @param style the style name
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#addStyleName(java.lang.String)
+     */
+    public void addStyleName(String style) {
+
+        m_dialog.addStyleName(style);
+    }
+
+    /**
      * Opens the dialog at the center of the browser window, or positions it there, if already visible.<p> 
      */
     public void center() {
 
         m_dialog.center();
+    }
+
+    /**
+     * Clears all child widgets.<p>
+     * 
+     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#clear()
+     */
+    public void clear() {
+
+        m_dialog.clear();
     }
 
     /**
@@ -375,11 +461,66 @@ public class CmsPopup {
     }
 
     /**
+     * Returns the child widget with the given index.<p>
+     * 
+     * @param index the index
+     * 
+     * @return the child widget
+     * 
+     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#getWidget(int)
+     */
+    public Widget getWidget(int index) {
+
+        return m_dialog.getWidget(index);
+    }
+
+    /**
+     * Returns the number of child widgets.<p>
+     * 
+     * @return the number of child widgets
+     * 
+     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#getWidgetCount()
+     */
+    public int getWidgetCount() {
+
+        return m_dialog.getWidgetCount();
+    }
+
+    /**
+     * Returns the index of the given child widget.<p>
+     * 
+     * @param child the child widget
+     * 
+     * @return the index
+     *  
+     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#getWidgetIndex(com.google.gwt.user.client.ui.Widget)
+     */
+    public int getWidgetIndex(Widget child) {
+
+        return m_dialog.getWidgetIndex(child);
+    }
+
+    /**
      * Hides the dialog window.<p>
      */
     public void hide() {
 
         m_dialog.hide();
+    }
+
+    /**
+     * Inserts a child widget before the given index.<p>
+     * 
+     * @param w the child widget
+     * @param beforeIndex the index
+     * 
+     * @throws IndexOutOfBoundsException if the index is out of bounds
+     * 
+     * @see org.opencms.gwt.client.ui.CmsPopup.PopupDialog#insert(com.google.gwt.user.client.ui.Widget, int)
+     */
+    public void insert(Widget w, int beforeIndex) throws IndexOutOfBoundsException {
+
+        m_dialog.insert(w, beforeIndex);
     }
 
     /**
@@ -512,6 +653,30 @@ public class CmsPopup {
     public void onBrowserEvent(Event event) {
 
         m_dialog.onBrowserEvent(event);
+    }
+
+    /**
+     * Removes a dependent style name.<p>
+     * 
+     * @param styleSuffix the dependent style name to remove
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#removeStyleDependentName(java.lang.String)
+     */
+    public void removeStyleDependentName(String styleSuffix) {
+
+        m_dialog.removeStyleDependentName(styleSuffix);
+    }
+
+    /**
+     * Removes a style name.<p>
+     * 
+     * @param style the style name to remove
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#removeStyleName(java.lang.String)
+     */
+    public void removeStyleName(String style) {
+
+        m_dialog.removeStyleName(style);
     }
 
     /**

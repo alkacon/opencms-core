@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/04/07 14:49:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/12 11:37:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -252,7 +252,8 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
 
         m_menuConnect.removeClassName(m_style.hidden());
         m_content.show();
-
+        //        this.getElement().getOffsetParent();
+        //        this.getElement();
         m_resizeRegistration = Window.addResizeHandler(new ResizeHandler() {
 
             public void onResize(ResizeEvent event) {
