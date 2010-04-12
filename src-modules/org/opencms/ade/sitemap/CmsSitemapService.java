@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/06 12:22:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/12 10:24:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -146,7 +146,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     protected CmsClientSitemapEntry toGwtEntry(CmsSitemapEntry entry) throws CmsException {
 
         CmsClientSitemapEntry gwtEntry = new CmsClientSitemapEntry();
-        gwtEntry.setId(entry.getId().toString());
+        gwtEntry.setId(entry.getId());
         gwtEntry.setName(entry.getName());
         gwtEntry.setTitle(entry.getTitle());
         String vfsPath = "---";

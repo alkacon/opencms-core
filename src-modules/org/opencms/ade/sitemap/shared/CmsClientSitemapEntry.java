@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/03/31 12:19:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 10:24:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -40,14 +42,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The entry id. */
-    private String m_id;
+    private CmsUUID m_id;
 
     /** The entry name. */
     private String m_name;
@@ -69,7 +71,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      *
      * @return the id
      */
-    public String getId() {
+    public CmsUUID getId() {
 
         return m_id;
     }
@@ -139,7 +141,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      *
      * @param id the id to set
      */
-    public void setId(String id) {
+    public void setId(CmsUUID id) {
 
         m_id = id;
     }
