@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/rpc/Attic/I_CmsPublishService.java,v $
- * Date   : $Date: 2010/04/08 07:45:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,15 @@
 
 package org.opencms.ade.publish.shared.rpc;
 
+import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishGroups;
 import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
-import org.opencms.ade.publish.shared.CmsPublishStatus;
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -56,33 +57,31 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface I_CmsPublishService extends RemoteService {
 
     /**
-     * Gets a map of projects from the server.<p>
+     * Gets a list of projects from the server.<p>
      * 
-     * The map's keys are the project uuids, the values are the user-readable names.
-     * 
-     * @return a map of projects 
+     * @return a list of projects 
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    Map<String, String> getProjects() throws CmsRpcException;
+    List<CmsProjectBean> getProjects() throws CmsRpcException;
 
     /**
      * Retrieves the publish list, subdivided into groups based on the time of their last change.<p>
      * 
-     * @param options the publish options for which the publish list should be fetched. 
+     * @param options the publish options for which the publish list should be fetched
      * 
      * @return the publish list groups 
      *  
      * @throws CmsRpcException if something goes wrong
      */
-    CmsPublishGroups getPublishGroups(CmsPublishOptions options) throws CmsRpcException;
+    List<CmsPublishGroup> getPublishGroups(CmsPublishOptions options) throws CmsRpcException;
 
     /**
      * Retrieves the publish options.<p>
      * 
      * @return the publish options last used
      * 
-     * @throws CmsRpcException if something goes wrong.
+     * @throws CmsRpcException if something goes wrong
      */
     CmsPublishOptions getPublishOptions() throws CmsRpcException;
 
@@ -98,16 +97,15 @@ public interface I_CmsPublishService extends RemoteService {
     /**
      * Tries to publish a list of resources.<p>
      * 
-     * @param toPublish list of uuids of resources to publish
-     * 
-     * @param toRemove list of uuids of resources to remove from the publish list
-     * 
-     * @param force if true, ignore "broken link" problems
+     * @param toPublish list of IDs of resources to publish
+     * @param toRemove list of IDs of resources to remove from the publish list
+     * @param force if <code>true</code>, ignore "broken link" problems
      *  
-     * @return a status object containing the 
-     * @throws CmsRpcException
+     * @return the resources with problems
+     * 
+     * @throws CmsRpcException  if something goes wrong
      */
-    CmsPublishStatus publishResources(List<String> toPublish, List<String> toRemove, boolean force)
+    List<CmsPublishResource> publishResources(List<CmsUUID> toPublish, List<CmsUUID> toRemove, boolean force)
     throws CmsRpcException;
 
 }

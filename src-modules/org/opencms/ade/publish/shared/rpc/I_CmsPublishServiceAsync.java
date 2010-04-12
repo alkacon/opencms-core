@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/rpc/Attic/I_CmsPublishServiceAsync.java,v $
- * Date   : $Date: 2010/04/08 07:45:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,14 @@
 
 package org.opencms.ade.publish.shared.rpc;
 
+import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishGroups;
 import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
-import org.opencms.ade.publish.shared.CmsPublishStatus;
+import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -46,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -57,18 +58,19 @@ public interface I_CmsPublishServiceAsync {
      * 
      * @param callback the result callback
      */
-    void getProjects(AsyncCallback<Map<String, String>> callback);
+    void getProjects(AsyncCallback<List<CmsProjectBean>> callback);
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#getPublishGroups(CmsPublishOptions)} .<p>
+     * Asynchronous version of {@link I_CmsPublishService#getPublishGroups(CmsPublishOptions)}.<p>
      * 
      * @param options the publish list options
      * @param callback the result callback
      */
-    void getPublishGroups(CmsPublishOptions options, AsyncCallback<CmsPublishGroups> callback);
+    void getPublishGroups(CmsPublishOptions options, AsyncCallback<List<CmsPublishGroup>> callback);
 
     /**
      * Asynchronous version of {@link I_CmsPublishService#getPublishOptions()}.<p>
+     * 
      * @param callback the result callback
      */
     void getPublishOptions(AsyncCallback<CmsPublishOptions> callback);
@@ -89,9 +91,8 @@ public interface I_CmsPublishServiceAsync {
      * @param callback the result callback 
      */
     void publishResources(
-        List<String> toPublish,
-        List<String> toRemove,
+        List<CmsUUID> toPublish,
+        List<CmsUUID> toRemove,
         boolean force,
-        AsyncCallback<CmsPublishStatus> callback);
-
+        AsyncCallback<List<CmsPublishResource>> callback);
 }

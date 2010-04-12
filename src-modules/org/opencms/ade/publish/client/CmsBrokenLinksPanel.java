@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsBrokenLinksPanel.java,v $
- * Date   : $Date: 2010/03/31 12:15:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,7 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.ade.publish.shared.CmsClientPublishResourceBean;
-import org.opencms.gwt.client.i18n.CmsMessages;
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -58,24 +57,22 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsBrokenLinksPanel extends Composite {
 
     /** The UiBinder interface. */
-    interface I_CmsBrokenLinksPanelUiBinder extends UiBinder<Widget, CmsBrokenLinksPanel> {
+    protected interface I_CmsBrokenLinksPanelUiBinder extends UiBinder<Widget, CmsBrokenLinksPanel> {
+        // empty
     }
 
     /** The CSS bundle used for this widget. */
     private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
-    /** The message bundle used for this widget. */
-    private static CmsMessages messages = Messages.get().getBundle();
-
     /** The UiBinder instance for this widget. */
-    private static I_CmsBrokenLinksPanelUiBinder uiBinder = GWT.create(I_CmsBrokenLinksPanelUiBinder.class);
+    private static final I_CmsBrokenLinksPanelUiBinder UI_BINDER = GWT.create(I_CmsBrokenLinksPanelUiBinder.class);
 
     /** The button which makes the publish dialog go back to the "resource selection" state. */
     @UiField
@@ -107,11 +104,11 @@ public class CmsBrokenLinksPanel extends Composite {
      */
     public CmsBrokenLinksPanel(CmsPublishDialog publishDialog) {
 
-        initWidget(uiBinder.createAndBindUi(this));
-        prepareButton(m_publishButton, messages.key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0));
-        prepareButton(m_cancelButton, messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
-        prepareButton(m_backButton, messages.key(Messages.GUI_PUBLISH_DIALOG_BACK_0));
-        m_label.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_BROKEN_LINKS_0));
+        initWidget(UI_BINDER.createAndBindUi(this));
+        prepareButton(m_publishButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0));
+        prepareButton(m_cancelButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
+        prepareButton(m_backButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_BACK_0));
+        m_label.setText(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_BROKEN_LINKS_0));
         m_publishDialog = publishDialog;
 
     }
@@ -125,13 +122,13 @@ public class CmsBrokenLinksPanel extends Composite {
      * 
      * @param res a resource bean
      */
-    public void addEntry(CmsClientPublishResourceBean res) {
+    public void addEntry(CmsPublishResource res) {
 
         CmsListItemWidget itemWidget = CmsPublishGroupPanel.createListItemWidget(res);
         CmsTreeItem item = new CmsTreeItem(false, itemWidget);
         item.setOpen(true);
         item.setContentVisible(true);
-        for (CmsClientPublishResourceBean subRes : res.getRelated()) {
+        for (CmsPublishResource subRes : res.getRelated()) {
             CmsListItemWidget subWidget = CmsPublishGroupPanel.createListItemWidget(subRes);
             CmsTreeItem subItem = new CmsTreeItem(false, subWidget);
             item.addChild(subItem);
@@ -159,10 +156,10 @@ public class CmsBrokenLinksPanel extends Composite {
      * 
      * @param resourceBeans the resource beans to be displayed 
      */
-    public void setEntries(Collection<CmsClientPublishResourceBean> resourceBeans) {
+    public void setEntries(Collection<CmsPublishResource> resourceBeans) {
 
         m_list.clear();
-        for (CmsClientPublishResourceBean res : resourceBeans) {
+        for (CmsPublishResource res : resourceBeans) {
             addEntry(res);
         }
     }

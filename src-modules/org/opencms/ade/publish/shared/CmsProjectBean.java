@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsProjectBean.java,v $
- * Date   : $Date: 2010/04/08 07:29:56 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsProjectBean.java,v $
+ * Date   : $Date: 2010/04/12 10:24:47 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,12 +29,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.publish;
+package org.opencms.ade.publish.shared;
 
-import org.opencms.json.I_CmsJsonifable;
-import org.opencms.json.JSONException;
-import org.opencms.json.JSONObject;
 import org.opencms.util.CmsUUID;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A project bean.<p>
@@ -45,22 +44,13 @@ import org.opencms.util.CmsUUID;
  * 
  * @since 7.6 
  */
-public class CmsProjectBean implements I_CmsJsonifable {
-
-    /** Json property name constants. */
-    public enum JsonProperty {
-
-        /** The id. */
-        id,
-        /** The project name. */
-        name;
-    }
+public class CmsProjectBean implements IsSerializable {
 
     /** The project id.*/
-    private final CmsUUID m_id;
+    private CmsUUID m_id;
 
     /** The project name.*/
-    private final String m_name;
+    private String m_name;
 
     /** 
      * Creates a new project bean.<p> 
@@ -72,6 +62,14 @@ public class CmsProjectBean implements I_CmsJsonifable {
 
         m_id = id;
         m_name = name;
+    }
+
+    /**
+     * For serialization.<p>
+     */
+    protected CmsProjectBean() {
+
+        // for serialization
     }
 
     /**
@@ -92,30 +90,5 @@ public class CmsProjectBean implements I_CmsJsonifable {
     public String getName() {
 
         return m_name;
-    }
-
-    /**
-     * @see org.opencms.json.I_CmsJsonifable#toJson()
-     */
-    public JSONObject toJson() throws JSONException {
-
-        JSONObject json = new JSONObject();
-        json.put(JsonProperty.id.name(), getId());
-        json.put(JsonProperty.name.name(), getName());
-        return json;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-
-        try {
-            return toJson().toString();
-        } catch (JSONException e) {
-            // should never happen
-            return m_name;
-        }
     }
 }

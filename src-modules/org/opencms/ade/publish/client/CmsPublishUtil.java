@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishUtil.java,v $
- * Date   : $Date: 2010/03/29 08:47:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,13 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.gwt.client.i18n.CmsMessages;
 
 /**
  * Utility class for the publish dialog.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -47,15 +46,12 @@ public final class CmsPublishUtil {
     /** The CSS bundle for the publish dialog. <p> */
     private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.CSS;
 
-    /** The message bundle used for this widget. */
-    private static CmsMessages messages = Messages.get().getBundle();
-
     /**
      * Hide constructor.<p>
-     * 
      */
     private CmsPublishUtil() {
 
+        // empty
     }
 
     static {
@@ -75,13 +71,13 @@ public final class CmsPublishUtil {
 
         switch (code.charAt(0)) {
             case 'N':
-                result = messages.key(Messages.GUI_PUBLISH_RESOURCE_STATE_NEW_0);
+                result = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_NEW_0);
                 break;
             case 'D':
-                result = messages.key(Messages.GUI_PUBLISH_RESOURCE_STATE_DELETED_0);
+                result = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_DELETED_0);
                 break;
             case 'C':
-                result = messages.key(Messages.GUI_PUBLISH_RESOURCE_STATE_CHANGED_0);
+                result = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_CHANGED_0);
                 break;
             default:
                 result = "???";

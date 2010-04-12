@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishResourceInfoBean.java,v $
- * Date   : $Date: 2010/04/08 07:29:56 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishResourceInfo.java,v $
+ * Date   : $Date: 2010/04/12 10:24:47 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.publish;
+package org.opencms.ade.publish.shared;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A publish resource additional information bean.<p>
@@ -40,7 +42,7 @@ package org.opencms.ade.publish;
  * 
  * @since 7.6 
  */
-public class CmsPublishResourceInfoBean {
+public class CmsPublishResourceInfo implements IsSerializable {
 
     /** Reason value constants, when resources can not be published. */
     public enum Type {
@@ -60,10 +62,10 @@ public class CmsPublishResourceInfoBean {
     }
 
     /** The additional info type.*/
-    private final Type m_type;
+    private Type m_type;
 
     /** The additional info.*/
-    private final String m_value;
+    private String m_value;
 
     /** 
      * Creates a new publish resource additional information bean.<p> 
@@ -71,10 +73,18 @@ public class CmsPublishResourceInfoBean {
      * @param value the additional info
      * @param type the additional info type
      **/
-    public CmsPublishResourceInfoBean(String value, Type type) {
+    public CmsPublishResourceInfo(String value, Type type) {
 
         m_type = type;
         m_value = value;
+    }
+
+    /**
+     * For serialization.<p>
+     */
+    protected CmsPublishResourceInfo() {
+
+        // for serialization
     }
 
     /**

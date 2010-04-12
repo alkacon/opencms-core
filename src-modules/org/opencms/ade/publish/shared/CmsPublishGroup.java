@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishGroupBean.java,v $
- * Date   : $Date: 2010/04/08 07:29:56 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishGroup.java,v $
+ * Date   : $Date: 2010/04/12 10:24:47 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,15 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.publish;
+package org.opencms.ade.publish.shared;
 
-import org.opencms.json.I_CmsJsonifable;
-import org.opencms.json.JSONArray;
-import org.opencms.json.JSONException;
-import org.opencms.json.JSONObject;
-
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A publish group.<p>
@@ -48,22 +45,13 @@ import java.util.List;
  * 
  * @since 7.6 
  */
-public class CmsPublishGroupBean implements I_CmsJsonifable {
-
-    /** Json property name constants. */
-    public enum JsonProperty {
-
-        /** The group name. */
-        NAME,
-        /** The resources. */
-        RESOURCES;
-    }
+public class CmsPublishGroup implements IsSerializable {
 
     /** The group name.*/
-    private final String m_name;
+    private String m_name;
 
     /** The group resources.*/
-    private final List<CmsPublishResourceBean> m_resources;
+    private List<CmsPublishResource> m_resources;
 
     /** 
      * Creates a new publish group bean.<p> 
@@ -71,12 +59,23 @@ public class CmsPublishGroupBean implements I_CmsJsonifable {
      * @param name the group name
      * @param resources the resources
      **/
-    public CmsPublishGroupBean(String name, List<CmsPublishResourceBean> resources) {
+    public CmsPublishGroup(String name, List<CmsPublishResource> resources) {
 
         m_name = name;
-        m_resources = ((resources == null)
-        ? Collections.<CmsPublishResourceBean> emptyList()
-        : Collections.unmodifiableList(resources));
+        //        m_resources = ((resources == null)
+        //        ? Collections.<CmsPublishResource> emptyList()
+        //        : Collections.unmodifiableList(resources));
+        // HACK: GWT serialization does not like unmodifiable collections :(
+        m_resources = ((resources == null) ? new ArrayList<CmsPublishResource>() : new ArrayList<CmsPublishResource>(
+            resources));
+    }
+
+    /**
+     * For serialization.<p>
+     */
+    protected CmsPublishGroup() {
+
+        // for serialization
     }
 
     /**
@@ -94,37 +93,8 @@ public class CmsPublishGroupBean implements I_CmsJsonifable {
      *
      * @return the resources
      */
-    public List<CmsPublishResourceBean> getResources() {
+    public List<CmsPublishResource> getResources() {
 
         return m_resources;
-    }
-
-    /**
-     * @see org.opencms.json.I_CmsJsonifable#toJson()
-     */
-    public JSONObject toJson() throws JSONException {
-
-        JSONObject json = new JSONObject();
-        json.put(JsonProperty.NAME.name().toLowerCase(), getName());
-        JSONArray resources = new JSONArray();
-        for (CmsPublishResourceBean resource : m_resources) {
-            resources.put(resource.toJson());
-        }
-        json.put(JsonProperty.RESOURCES.name().toLowerCase(), resources);
-        return json;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-
-        try {
-            return toJson().toString();
-        } catch (JSONException e) {
-            // should never happen
-            return m_name;
-        }
     }
 }

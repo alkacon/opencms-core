@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishItemSelectionController.java,v $
- * Date   : $Date: 2010/03/29 08:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.publish.client;
 
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -50,7 +51,7 @@ class CmsPublishItemSelectionController {
     private final boolean m_hasProblems;
 
     /** The id of the given resource. */
-    private final String m_id;
+    private final CmsUUID m_id;
 
     /** The checkbox for selecting the resource for removal. */
     private final CmsCheckBox m_removeCheckBox;
@@ -67,7 +68,7 @@ class CmsPublishItemSelectionController {
      * @param hasProblems a flag indicating whether there are problems with the resource
      */
     public CmsPublishItemSelectionController(
-        String id,
+        CmsUUID id,
         CmsCheckBox selectedCheckBox,
         CmsCheckBox removeCheckBox,
         boolean hasProblems) {
@@ -87,7 +88,7 @@ class CmsPublishItemSelectionController {
      * 
      * @param ids the list of ids
      */
-    public void addIdToPublish(List<String> ids) {
+    public void addIdToPublish(List<CmsUUID> ids) {
 
         if (isSelected()) {
             ids.add(m_id);
@@ -99,7 +100,7 @@ class CmsPublishItemSelectionController {
      * 
      * @param ids the list of ids
      */
-    public void addIdToRemove(List<String> ids) {
+    public void addIdToRemove(List<CmsUUID> ids) {
 
         if (shouldBeRemoved()) {
             ids.add(m_id);
@@ -111,7 +112,7 @@ class CmsPublishItemSelectionController {
      * 
      * @return a UUID string
      */
-    public String getId() {
+    public CmsUUID getId() {
 
         return m_id;
     }

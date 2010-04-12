@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/03/31 12:15:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,7 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.ade.publish.shared.CmsClientPublishResourceBean;
-import org.opencms.gwt.client.i18n.CmsMessages;
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
@@ -42,9 +41,9 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
-import org.opencms.gwt.client.util.CmsStringUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +61,11 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsPublishGroupPanel extends Composite {
-
-    /** The message bundle used for this widget. */
-    protected static CmsMessages messages = Messages.get().getBundle();
 
     /** The CSS bundle used for this widget. */
     protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.CSS;
@@ -98,11 +94,11 @@ public class CmsPublishGroupPanel extends Composite {
      * @param title the title of the group
      * @param group the list of resource beans for the group
      */
-    public CmsPublishGroupPanel(String title, List<CmsClientPublishResourceBean> group) {
+    public CmsPublishGroupPanel(String title, List<CmsPublishResource> group) {
 
         initWidget(m_panel);
         m_panel.add(m_header);
-        for (CmsClientPublishResourceBean resourceBean : group) {
+        for (CmsPublishResource resourceBean : group) {
             addResource(resourceBean, false);
         }
         initSelectButtons();
@@ -128,20 +124,19 @@ public class CmsPublishGroupPanel extends Composite {
      * 
      * @return the list item widget representing the publish resource bean 
      */
-    public static CmsListItemWidget createListItemWidget(CmsClientPublishResourceBean resourceBean) {
+    public static CmsListItemWidget createListItemWidget(CmsPublishResource resourceBean) {
 
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(getTitle(resourceBean));
         info.setSubTitle(resourceBean.getName());
-        String stateLabel = messages.key(Messages.GUI_PUBLISH_RESOURCE_STATE_0);
+        String stateLabel = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_0);
         info.addAdditionalInfo(stateLabel, CmsPublishUtil.getStateName(resourceBean.getState()));
         info.setValueStyle(stateLabel, CmsPublishUtil.getStateStyle(resourceBean.getState()));
 
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
-        String warning = resourceBean.getInfoValue();
-        if (!CmsStringUtil.isEmpty(warning)) {
+        if (resourceBean.getInfo() != null) {
             Image warningImage = new Image(I_CmsPublishLayoutBundle.INSTANCE.warning());
-            warningImage.setTitle(warning);
+            warningImage.setTitle(resourceBean.getInfo().getValue());
             String permaVisible = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible();
 
             warningImage.addStyleName(permaVisible);
@@ -149,8 +144,7 @@ public class CmsPublishGroupPanel extends Composite {
         }
         Image icon = new Image(resourceBean.getIcon());
         icon.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-        // TODO: check this!?
-        itemWidget.setIcon(new Image(resourceBean.getIcon()));
+        itemWidget.setIcon(icon);
         return itemWidget;
     }
 
@@ -179,11 +173,11 @@ public class CmsPublishGroupPanel extends Composite {
      *  
      * @return the bean's title, or a default title
      */
-    private static String getTitle(CmsClientPublishResourceBean resourceBean) {
+    private static String getTitle(CmsPublishResource resourceBean) {
 
         String title = resourceBean.getTitle();
         if ((title == null) || title.equals("")) {
-            title = messages.key(Messages.GUI_NO_TITLE_0);
+            title = Messages.get().key(Messages.GUI_NO_TITLE_0);
         }
         return title;
     }
@@ -203,9 +197,9 @@ public class CmsPublishGroupPanel extends Composite {
      * 
      * @return a list of ids
      */
-    public List<String> getResourcesToPublish() {
+    public List<CmsUUID> getResourcesToPublish() {
 
-        List<String> result = new ArrayList<String>();
+        List<CmsUUID> result = new ArrayList<CmsUUID>();
         for (CmsPublishItemSelectionController itemController : m_selectionControllers) {
             itemController.addIdToPublish(result);
         }
@@ -217,9 +211,9 @@ public class CmsPublishGroupPanel extends Composite {
      * 
      * @return a list of ids 
      */
-    public List<String> getResourcesToRemove() {
+    public List<CmsUUID> getResourcesToRemove() {
 
-        List<String> result = new ArrayList<String>();
+        List<CmsUUID> result = new ArrayList<CmsUUID>();
         for (CmsPublishItemSelectionController itemController : m_selectionControllers) {
             itemController.addIdToRemove(result);
         }
@@ -244,15 +238,15 @@ public class CmsPublishGroupPanel extends Composite {
      * @param resourceBean the resource bean which should be added
      * @param indent if true, indent the widget representing the resource bean (for related resources)
      */
-    private void addResource(CmsClientPublishResourceBean resourceBean, boolean indent) {
+    private void addResource(CmsPublishResource resourceBean, boolean indent) {
 
         CmsTreeItem row = buildItem(resourceBean);
         m_panel.add(row);
-        if (!CmsStringUtil.isEmpty(resourceBean.getInfoValue())) {
+        if (resourceBean.getInfo() != null) {
             m_numProblems += 1;
         }
 
-        for (CmsClientPublishResourceBean related : resourceBean.getRelated()) {
+        for (CmsPublishResource related : resourceBean.getRelated()) {
             row.addChild(buildItem(related));
         }
     }
@@ -264,14 +258,14 @@ public class CmsPublishGroupPanel extends Composite {
      * 
      * @return a widget representing the resource bean
      */
-    private CmsTreeItem buildItem(CmsClientPublishResourceBean resourceBean) {
+    private CmsTreeItem buildItem(CmsPublishResource resourceBean) {
 
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean);
         final CmsStyleVariable styleVar = new CmsStyleVariable(itemWidget);
         styleVar.setValue(CSS.itemToKeep());
 
         final CmsCheckBox checkbox = new CmsCheckBox();
-        final boolean hasProblem = !CmsStringUtil.isEmpty(resourceBean.getInfoValue());
+        final boolean hasProblem = (resourceBean.getInfo() != null);
         if (hasProblem) {
             // can't select resource with problems 
             checkbox.setChecked(false);
@@ -286,7 +280,7 @@ public class CmsPublishGroupPanel extends Composite {
             hasProblem);
         m_selectionControllers.add(controller);
 
-        remover.setTitle(messages.key(Messages.GUI_PUBLISH_REMOVE_BUTTON_0));
+        remover.setTitle(Messages.get().key(Messages.GUI_PUBLISH_REMOVE_BUTTON_0));
         remover.addClickHandler(new ClickHandler() {
 
             /**
@@ -299,8 +293,8 @@ public class CmsPublishGroupPanel extends Composite {
                 I_CmsListItemWidgetCss itemWidgetCss = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
                 styleVar.setValue(remove ? itemWidgetCss.disabledItem() : CSS.itemToKeep());
                 remover.setTitle(remove
-                ? messages.key(Messages.GUI_PUBLISH_UNREMOVE_BUTTON_0)
-                : messages.key(Messages.GUI_PUBLISH_REMOVE_BUTTON_0));
+                ? Messages.get().key(Messages.GUI_PUBLISH_UNREMOVE_BUTTON_0)
+                : Messages.get().key(Messages.GUI_PUBLISH_REMOVE_BUTTON_0));
             }
         });
         itemWidget.addButtonToFront(remover);
@@ -314,8 +308,8 @@ public class CmsPublishGroupPanel extends Composite {
      */
     private void initSelectButtons() {
 
-        m_selectAll = createSmallButton(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
-        m_selectNone = createSmallButton(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
+        m_selectAll = createSmallButton(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
+        m_selectNone = createSmallButton(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
         m_selectAll.addClickHandler(new ClickHandler() {
 
             /**

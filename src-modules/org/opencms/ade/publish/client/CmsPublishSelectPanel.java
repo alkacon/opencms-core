@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/08 07:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,10 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.ade.publish.shared.CmsClientPublishResourceBean;
-import org.opencms.ade.publish.shared.CmsPublishGroups;
+import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.gwt.client.i18n.CmsMessages;
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsTextButton;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -85,11 +86,8 @@ public class CmsPublishSelectPanel extends Composite {
     /** The CSS bundle used for this widget. */
     private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
-    /** The message bundle used for this widget. */
-    private static final CmsMessages MESSAGES = Messages.get();
-
     /** The UiBinder instance used for this widget. */
-    private static I_CmsPublishSelectPanelUiBinder uiBinder = GWT.create(I_CmsPublishSelectPanelUiBinder.class);
+    private static final I_CmsPublishSelectPanelUiBinder UI_BINDER = GWT.create(I_CmsPublishSelectPanelUiBinder.class);
 
     /** The button for escaping from the publish dialog. */
     @UiField
@@ -179,18 +177,22 @@ public class CmsPublishSelectPanel extends Composite {
      */
     public CmsPublishSelectPanel(
         CmsPublishDialog publishDialog,
-        Map<String, String> projects,
+        List<CmsProjectBean> projects,
         CmsPublishOptions publishOptions) {
 
         m_publishOptions = publishOptions;
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget(UI_BINDER.createAndBindUi(this));
         setStyleName(CSS.selectPanel());
         m_groupPanel.setStyleName(CSS.groupPanel());
         m_topBar.setStyleName(CSS.topBar());
 
-        projects.put("", MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
-        m_projectSelector = new CmsSelectBox(CmsSelectBox.Mode.TEXT, projects);
+        Map<String, String> projectData = new HashMap<String, String>();
+        projectData.put(CmsUUID.getNullUUID().toString(), Messages.get().key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
+        for (CmsProjectBean project : projects) {
+            projectData.put(project.getId().toString(), project.getName());
+        }
+        m_projectSelector = new CmsSelectBox(CmsSelectBox.Mode.TEXT, projectData);
         m_projectSelector.addStyleName(CSS.selector());
         m_selectorPanel.add(m_projectSelector);
         m_scrollPanel.setStyleName(CSS.scrollPanel());
@@ -198,8 +200,7 @@ public class CmsPublishSelectPanel extends Composite {
         m_publishDialog = publishDialog;
         m_checkboxRelated.setChecked(publishOptions.isIncludeRelated());
         m_checkboxSiblings.setChecked(publishOptions.isIncludeSiblings());
-        CmsUUID project = publishOptions.getProjectId();
-        m_projectSelector.selectValue((project == null) ? "" : project.toString());
+        m_projectSelector.selectValue(publishOptions.getProjectId().toString());
 
         m_projectSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -237,17 +238,17 @@ public class CmsPublishSelectPanel extends Composite {
 
         });
 
-        m_publishButton.setUpFace(MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0), null);
+        m_publishButton.setUpFace(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0), null);
         m_publishButton.useMinWidth(true);
-        m_cancelButton.setUpFace(MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0), null);
+        m_cancelButton.setUpFace(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0), null);
         m_cancelButton.useMinWidth(true);
 
-        m_selectAll.setUpFace(MESSAGES.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0), null);
+        m_selectAll.setUpFace(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0), null);
         m_selectAll.useMinWidth(true);
-        m_selectNone.setUpFace(MESSAGES.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0), null);
+        m_selectNone.setUpFace(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0), null);
         m_selectNone.useMinWidth(true);
 
-        m_noResources.setText(MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
+        m_noResources.setText(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
         m_selectAll.addClickHandler(new ClickHandler() {
 
             /**
@@ -270,12 +271,12 @@ public class CmsPublishSelectPanel extends Composite {
             }
         });
 
-        m_siblingsLabel.setText(MESSAGES.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
-        m_relatedLabel.setText(MESSAGES.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
+        m_siblingsLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
+        m_relatedLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
         m_relatedLabel.addStyleName(CSS.clear());
         m_siblingsLabel.addStyleName(CSS.clear());
-        m_selectLabel.setText(MESSAGES.key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
-        m_selectorLabel.setText(MESSAGES.key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
+        m_selectLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
+        m_selectorLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
         m_numProblems = 0;
     }
 
@@ -310,9 +311,9 @@ public class CmsPublishSelectPanel extends Composite {
      * 
      * @return a set of id strings 
      */
-    public Set<String> getResourcesToPublish() {
+    public Set<CmsUUID> getResourcesToPublish() {
 
-        Set<String> result = new HashSet<String>();
+        Set<CmsUUID> result = new HashSet<CmsUUID>();
         for (CmsPublishGroupPanel groupPanel : m_groups) {
             result.addAll(groupPanel.getResourcesToPublish());
         }
@@ -324,9 +325,9 @@ public class CmsPublishSelectPanel extends Composite {
      * 
      * @return a set of id strings
      */
-    public Set<String> getResourcesToRemove() {
+    public Set<CmsUUID> getResourcesToRemove() {
 
-        Set<String> result = new HashSet<String>();
+        Set<CmsUUID> result = new HashSet<CmsUUID>();
         for (CmsPublishGroupPanel groupPanel : m_groups) {
             result.addAll(groupPanel.getResourcesToRemove());
         }
@@ -360,10 +361,10 @@ public class CmsPublishSelectPanel extends Composite {
      * 
      * @param groups the new publish groups 
      */
-    public void setGroups(CmsPublishGroups groups) {
+    public void setGroups(List<CmsPublishGroup> groups) {
 
         m_scrollPanel.setVisible(true);
-        int numGroups = groups.getGroups().size();
+        int numGroups = groups.size();
         setResourcesVisible(numGroups > 0);
         if (numGroups == 0) {
             return;
@@ -374,9 +375,9 @@ public class CmsPublishSelectPanel extends Composite {
         m_groups.clear();
         m_groupPanel.clear();
 
-        for (Map.Entry<String, List<CmsClientPublishResourceBean>> entry : groups.getGroups().entrySet()) {
-            String header = entry.getKey();
-            List<CmsClientPublishResourceBean> resourceBeans = entry.getValue();
+        for (CmsPublishGroup group : groups) {
+            String header = group.getName();
+            List<CmsPublishResource> resourceBeans = group.getResources();
             CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(header, resourceBeans);
             m_numProblems += groupPanel.countProblems();
             m_groups.add(groupPanel);
@@ -433,7 +434,7 @@ public class CmsPublishSelectPanel extends Composite {
 
         m_problemsPanel.clear();
         if (m_numProblems > 0) {
-            String message = MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + m_numProblems);
+            String message = Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + m_numProblems);
             m_problemsPanel.add(new InlineLabel(message));
         }
     }

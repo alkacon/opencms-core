@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishOptions.java,v $
- * Date   : $Date: 2010/04/08 07:45:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
-public class CmsPublishOptions  implements IsSerializable {
+public class CmsPublishOptions implements IsSerializable {
 
     /** Flag to include related resources. */
     private boolean m_includeRelated;
@@ -61,6 +61,7 @@ public class CmsPublishOptions  implements IsSerializable {
     public CmsPublishOptions() {
 
         m_includeRelated = true;
+        m_projectId = CmsUUID.getNullUUID();
     }
 
     /**

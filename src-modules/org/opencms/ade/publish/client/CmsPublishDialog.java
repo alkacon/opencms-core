@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/08 07:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,17 @@
 
 package org.opencms.ade.publish.client;
 
+import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishGroups;
 import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
-import org.opencms.ade.publish.shared.CmsPublishStatus;
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
-import org.opencms.gwt.client.i18n.CmsMessages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
@@ -68,7 +69,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
     /**
      * The action for publishing and/or removing resources from the publish list.<p>
      */
-    private class CmsPublishAction extends CmsRpcAction<CmsPublishStatus> {
+    private class CmsPublishAction extends CmsRpcAction<List<CmsPublishResource>> {
 
         /** If true, try to ignore broken links when publishing. */
         private boolean m_force;
@@ -89,8 +90,8 @@ public class CmsPublishDialog extends CmsPopupDialog {
         public void execute() {
 
             start(0);
-            List<String> resourcesToPublish = new ArrayList<String>(m_publishSelectPanel.getResourcesToPublish());
-            List<String> resourcesToRemove = new ArrayList<String>(m_publishSelectPanel.getResourcesToRemove());
+            List<CmsUUID> resourcesToPublish = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToPublish());
+            List<CmsUUID> resourcesToRemove = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToRemove());
             m_publishService.publishResources(resourcesToPublish, resourcesToRemove, m_force, this);
         }
 
@@ -98,7 +99,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
          * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
          */
         @Override
-        protected void onResponse(CmsPublishStatus result) {
+        protected void onResponse(List<CmsPublishResource> result) {
 
             onReceiveStatus(result);
             stop();
@@ -108,7 +109,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
     /**
      * The action for loading the publish list.<p>
      */
-    private class CmsPublishListAction extends CmsRpcAction<CmsPublishGroups> {
+    private class CmsPublishListAction extends CmsRpcAction<List<CmsPublishGroup>> {
 
         /** The publish list options which should be used. */
         private CmsPublishOptions m_options;
@@ -137,7 +138,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
          * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
          */
         @Override
-        protected void onResponse(CmsPublishGroups result) {
+        protected void onResponse(List<CmsPublishGroup> result) {
 
             onReceivePublishList(result);
             stop();
@@ -146,9 +147,6 @@ public class CmsPublishDialog extends CmsPopupDialog {
 
     /** The project map used by showPublishDialog. */
     public static Map<String, String> m_staticProjects;
-
-    /** The message bundle used for this widget. */
-    private static final CmsMessages MESSAGES = Messages.get();
 
     /** The index of the "broken links" panel. */
     private static final int PANEL_BROKEN_LINKS = 1;
@@ -168,8 +166,8 @@ public class CmsPublishDialog extends CmsPopupDialog {
     /** The root panel of this dialog which contains both the selection panel and the panel for displaying broken links. */
     private DeckPanel m_panel = new DeckPanel();
 
-    /** The map containing the projects selectable in the publish dialog. */
-    private Map<String, String> m_projects;
+    /** The list containing the projects selectable in the publish dialog. */
+    private List<CmsProjectBean> m_projects;
 
     /**
      * Constructs a new publish dialog.<p>
@@ -180,10 +178,10 @@ public class CmsPublishDialog extends CmsPopupDialog {
      */
     public CmsPublishDialog(
         I_CmsPublishServiceAsync publishService,
-        Map<String, String> projects,
+        List<CmsProjectBean> projects,
         CmsPublishOptions options) {
 
-        super(MESSAGES.key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
+        super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
@@ -263,7 +261,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
      * 
      * @param groups the groups of the publish list
      */
-    public void onReceivePublishList(CmsPublishGroups groups) {
+    public void onReceivePublishList(List<CmsPublishGroup> groups) {
 
         m_publishSelectPanel.setGroups(groups);
         setPanel(PANEL_SELECT);
@@ -275,15 +273,15 @@ public class CmsPublishDialog extends CmsPopupDialog {
     /**
      * Method which is called after the status from a publish action has arrived.<p>
      * 
-     * @param status the publish status 
+     * @param brokenResources the list of broken resources
      */
-    public void onReceiveStatus(CmsPublishStatus status) {
+    public void onReceiveStatus(List<CmsPublishResource> brokenResources) {
 
         if (m_panel.getVisibleWidget() == PANEL_SELECT) {
-            if (!status.hasProblem()) {
+            if (brokenResources.isEmpty()) {
                 hide();
             } else {
-                m_brokenLinksPanel.setEntries(status.getProblemResources());
+                m_brokenLinksPanel.setEntries(brokenResources);
                 setPanel(PANEL_BROKEN_LINKS);
             }
         }

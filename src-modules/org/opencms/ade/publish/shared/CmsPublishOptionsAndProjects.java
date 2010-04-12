@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishOptionsAndProjects.java,v $
- * Date   : $Date: 2010/04/08 07:45:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.publish.shared;
 
-import java.util.Map;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0
  */
@@ -49,17 +49,8 @@ public class CmsPublishOptionsAndProjects implements IsSerializable {
     /** The publish options. */
     private CmsPublishOptions m_options;
 
-    /** The map of projects. */
-    private Map<String, String> m_projects;
-
-    /**
-     * Default constructor.<p>
-     * 
-     */
-    public CmsPublishOptionsAndProjects() {
-
-        // default constructor, do nothing
-    }
+    /** The list of projects. */
+    private List<CmsProjectBean> m_projects;
 
     /** 
      * Creates a new instance.<p>
@@ -67,10 +58,18 @@ public class CmsPublishOptionsAndProjects implements IsSerializable {
      * @param options the publish options 
      * @param projects the map of projects 
      */
-    public CmsPublishOptionsAndProjects(CmsPublishOptions options, Map<String, String> projects) {
+    public CmsPublishOptionsAndProjects(CmsPublishOptions options, List<CmsProjectBean> projects) {
 
         m_options = options;
         m_projects = projects;
+    }
+
+    /**
+     * For serialization.<p>
+     */
+    protected CmsPublishOptionsAndProjects() {
+
+        // for serialization
     }
 
     /**
@@ -84,11 +83,11 @@ public class CmsPublishOptionsAndProjects implements IsSerializable {
     }
 
     /**
-     * Returns the map of projects.<p>
+     * Returns the list of projects.<p>
      * 
-     * @return the map of projects 
+     * @return the list of projects 
      */
-    public Map<String, String> getProjects() {
+    public List<CmsProjectBean> getProjects() {
 
         return m_projects;
     }

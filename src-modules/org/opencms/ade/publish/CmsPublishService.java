@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishService.java,v $
- * Date   : $Date: 2010/04/08 07:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/12 10:24:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,11 @@
 
 package org.opencms.ade.publish;
 
-import org.opencms.ade.publish.shared.CmsClientPublishResourceBean;
-import org.opencms.ade.publish.shared.CmsPublishGroups;
+import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
-import org.opencms.ade.publish.shared.CmsPublishStatus;
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -47,9 +47,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -58,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
@@ -75,84 +73,78 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     private static final String SESSION_ATTR_ADE_PUB_OPTS_CACHE = "__OCMS_ADE_PUB_OPTS_CACHE__";
 
     /**
-     * 
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getProjects()
      */
-    public Map<String, String> getProjects() {
+    public List<CmsProjectBean> getProjects() throws CmsRpcException {
 
-        CmsObject cms = getCmsObject();
-        CmsPublish pub = new CmsPublish(cms);
-        List<CmsProjectBean> projects = pub.getManageableProjects();
-        Map<String, String> result = new LinkedHashMap<String, String>();
-        for (CmsProjectBean project : projects) {
-            result.put(project.getId().toString(), project.getName());
+        try {
+            return new CmsPublish(getCmsObject()).getManageableProjects();
+        } catch (Throwable e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
         }
-        return result;
     }
 
     /**
-     * 
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getPublishGroups(org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public CmsPublishGroups getPublishGroups(CmsPublishOptions options) {
+    public List<CmsPublishGroup> getPublishGroups(CmsPublishOptions options) throws CmsRpcException {
 
-        CmsPublishGroups result = new CmsPublishGroups();
-        CmsObject cms = this.getCmsObject();
-        CmsPublish pub = new CmsPublish(cms);
-        CmsPublishOptions serverOptions = pub.getOptions();
-        serverOptions.setIncludeRelated(options.isIncludeRelated());
-        serverOptions.setIncludeSiblings(options.isIncludeSiblings());
-        serverOptions.setProjectId(options.getProjectId());
-        setCachedOptions(serverOptions);
-        List<CmsPublishGroupBean> groups = pub.getPublishGroups();
-        for (CmsPublishGroupBean group : groups) {
-            String groupName = group.getName();
-            List<CmsPublishResourceBean> resourceBeans = group.getResources();
-            List<CmsClientPublishResourceBean> clientBeans = toClientResourceBeans(resourceBeans);
-            result.addGroup(groupName, clientBeans);
-
+        try {
+            CmsPublish pub = new CmsPublish(getCmsObject(), options);
+            setCachedOptions(options);
+            return pub.getPublishGroups();
+        } catch (Throwable e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
         }
-        return result;
     }
 
     /**
-     * 
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getPublishOptions()
      */
-    public CmsPublishOptions getPublishOptions() {
+    public CmsPublishOptions getPublishOptions() throws CmsRpcException {
 
-        return getCachedOptions();
+        try {
+            return getCachedOptions();
+        } catch (Throwable e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
+        }
     }
 
     /**
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getPublishOptionsAndProjects()
      */
-    public CmsPublishOptionsAndProjects getPublishOptionsAndProjects() {
+    public CmsPublishOptionsAndProjects getPublishOptionsAndProjects() throws CmsRpcException {
 
-        return new CmsPublishOptionsAndProjects(getPublishOptions(), getProjects());
+        try {
+            return new CmsPublishOptionsAndProjects(getCachedOptions(), getProjects());
+        } catch (Throwable e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
+        }
     }
 
     /**
      * 
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#publishResources(java.util.List, java.util.List, boolean)
      */
-    public CmsPublishStatus publishResources(List<String> toPublish, List<String> toRemove, boolean force)
+    public List<CmsPublishResource> publishResources(List<CmsUUID> toPublish, List<CmsUUID> toRemove, boolean force)
     throws CmsRpcException {
 
-        CmsPublishStatus result = new CmsPublishStatus();
         try {
             CmsObject cms = getCmsObject();
+            // TODO: i think we need the publish options here!
             CmsPublish pub = new CmsPublish(cms);
-            List<CmsResource> publishResources = uuidStringsToResources(cms, toPublish);
-            List<CmsPublishResourceBean> brokenLinkBeans = pub.getBrokenResources(publishResources);
+            List<CmsResource> publishResources = idsToResources(cms, toPublish);
+            List<CmsPublishResource> brokenLinkBeans = pub.getBrokenResources(publishResources);
             if (brokenLinkBeans.size() == 0) {
                 pub.publishResources(publishResources);
-                pub.removeResourcesFromPublishList(uuidStringsToUuids(toRemove));
-            } else {
-                result.setProblemResources(toClientResourceBeans(brokenLinkBeans));
+                pub.removeResourcesFromPublishList(toRemove);
             }
-            return result;
-        } catch (CmsException e) {
+            return brokenLinkBeans;
+        } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             throw new CmsRpcException(CmsException.getStackTraceAsString(e));
         }
@@ -176,6 +168,29 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
+     * Converts a list of IDs to resources.<p>
+     * 
+     * @param cms the CmObject used for reading the resources 
+     * @param ids the list of IDs
+     * 
+     * @return a list of resources 
+     */
+    private List<CmsResource> idsToResources(CmsObject cms, List<CmsUUID> ids) {
+
+        List<CmsResource> result = new ArrayList<CmsResource>();
+        for (CmsUUID id : ids) {
+            try {
+                CmsResource resource = cms.readResource(id, CmsResourceFilter.ALL);
+                result.add(resource);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                // TODO: do something with these resources. show them to the user?
+            }
+        }
+        return result;
+    }
+
+    /**
      * Saves the given options to the session.<p>
      * 
      * @param options the options to save
@@ -183,86 +198,5 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     private void setCachedOptions(CmsPublishOptions options) {
 
         getRequest().getSession().setAttribute(SESSION_ATTR_ADE_PUB_OPTS_CACHE, options);
-    }
-
-    /**
-     * Helper method for converting server side to client side resource beans.<p>
-     * 
-     * @param bean a server-side resource bean
-     * 
-     * @return a client-side resource bean
-     */
-    private CmsClientPublishResourceBean toClientResourceBean(CmsPublishResourceBean bean) {
-
-        CmsClientPublishResourceBean result = new CmsClientPublishResourceBean();
-        result.setTitle(bean.getTitle());
-        result.setName(bean.getName());
-        result.setId(bean.getId().toString());
-        result.setIcon(bean.getIcon());
-        result.setState(bean.getState());
-
-        CmsPublishResourceInfoBean info = bean.getInfo();
-        if (info != null) {
-            result.setInfoType(info.getType().toString());
-            result.setInfoValue(info.getValue());
-        }
-
-        for (CmsPublishResourceBean relatedBean : bean.getRelated()) {
-            result.addRelated(toClientResourceBean(relatedBean));
-        }
-        return result;
-    }
-
-    /**
-     * Helper method for converting multiple server side to client side resource beans.<p>
-     * 
-     * @param beans a list of server-side resource bean
-     * 
-     * @return a list of client-side resource beans  
-     */
-    private List<CmsClientPublishResourceBean> toClientResourceBeans(List<CmsPublishResourceBean> beans) {
-
-        List<CmsClientPublishResourceBean> result = new ArrayList<CmsClientPublishResourceBean>();
-        for (CmsPublishResourceBean bean : beans) {
-            result.add(toClientResourceBean(bean));
-        }
-        return result;
-    }
-
-    /**
-     * Helper method for converting a list of UUID strings to resources.<p>
-     * 
-     * @param cms the CmObject used for reading the resources 
-     * @param uuids the list of uuid strings
-     * 
-     * @return a list of resources 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    private List<CmsResource> uuidStringsToResources(CmsObject cms, List<String> uuids) throws CmsException {
-
-        List<CmsResource> result = new ArrayList<CmsResource>();
-        for (String id : uuids) {
-            CmsUUID uuid = new CmsUUID(id);
-            CmsResource resource = cms.readResource(uuid, CmsResourceFilter.ALL);
-            result.add(resource);
-        }
-        return result;
-    }
-
-    /**
-     * Helper method for converting a list of uuid strings to uuid objects.<p>
-     * 
-     * @param uuids a list of uuid strings
-     *  
-     * @return a list of CmsUUIDs
-     */
-    private List<CmsUUID> uuidStringsToUuids(List<String> uuids) {
-
-        List<CmsUUID> result = new ArrayList<CmsUUID>();
-        for (String id : uuids) {
-            result.add(new CmsUUID(id));
-        }
-        return result;
     }
 }
