@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/03/29 08:47:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/12 10:16:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -285,9 +285,10 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
-     * Constructs a new select box from a list of key-value pairs.
+     * Constructs a new select box from a list of key-value pairs.<p>
      * 
-     * The first component of each pair is the option value, the second is the text to be displayed for the option value. 
+     * The first component of each pair is the option value, the second is the text to be displayed for the option value.<p>
+     * 
      * @param items
      * @param mode the mode of the select box (Mode.TEXT or Mode.HTML)
      */
