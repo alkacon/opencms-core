@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/08 06:01:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
@@ -43,7 +42,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -55,6 +54,8 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     public CmsToolbarClipboardMenu() {
 
         super(CmsToolbarButton.ButtonData.CLIPBOARD, "clipboard", true);
+
+        //TODO: replace the following with the real menu content
         Label menuContent = new Label("Menu content");
         menuContent.getElement().getStyle().setHeight(100, Unit.PX);
         menuContent.getElement().getStyle().setWidth(650, Unit.PX);

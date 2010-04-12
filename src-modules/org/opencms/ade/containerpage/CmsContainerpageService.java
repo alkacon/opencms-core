@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/03/30 06:55:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,10 +45,10 @@ import org.opencms.xml.containerpage.CmsSubContainerBean;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -72,12 +72,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private CmsADESessionCache m_sessionCache;
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(java.lang.String, java.lang.String, java.util.List, java.util.Set)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(java.lang.String, java.lang.String, java.util.Collection, java.util.Set)
      */
     public Map<String, CmsContainerElement> getElementsData(
         String containerpageUri,
         String reqParams,
-        List<String> clientIds,
+        Collection<String> clientIds,
         Set<String> containerTypes) throws CmsRpcException {
 
         try {
@@ -102,7 +102,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @throws CmsException if something really bad happens
      */
     protected Map<String, CmsContainerElement> getElements(
-        List<String> clientIds,
+        Collection<String> clientIds,
         String uriParam,
         HttpServletRequest request,
         Set<String> types) throws CmsException {

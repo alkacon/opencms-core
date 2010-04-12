@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.ade.containerpage.shared.rpc;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -68,7 +68,7 @@ public interface I_CmsContainerpageService extends RemoteService {
     Map<String, CmsContainerElement> getElementsData(
         String containerpageUri,
         String reqParams,
-        List<String> clientIds,
+        Collection<String> clientIds,
         Set<String> containerTypes) throws CmsRpcException;
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsContainerpageToolbarButton.java,v $
- * Date   : $Date: 2010/04/08 06:01:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.dom.client.Document;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -95,7 +95,7 @@ implements I_CmsContainerpageToolbarButton {
             CmsElementOptionButton button = new CmsElementOptionButton(this, element);
             button.addClickHandler(m_elementClickHandler);
             button.setEnabled(hasPermissions(element));
-
+            // TODO: if element option is not allowed, set reason as button title
             return button;
         } else {
             throw new UnsupportedOperationException();

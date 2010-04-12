@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/08 06:01:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,47 +38,14 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ADD_BUTTON_TITLE_0 = "ADD_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String CLIPBOARD_BUTTON_TITLE_0 = "CLIPBOARD_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String EDIT_BUTTON_TITLE_0 = "EDIT_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String EXTRAS_BUTTON_TITLE_0 = "EXTRAS_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String MOVE_BUTTON_TITLE_0 = "MOVE_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String PROPERTIES_BUTTON_TITLE_0 = "PROPERTIES_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String PUBLISH_BUTTON_TITLE_0 = "PUBLISH_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String REMOVE_BUTTON_TITLE_0 = "REMOVE_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RESET_BUTTON_TITLE_0 = "RESET_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String SAVE_BUTTON_TITLE_0 = "SAVE_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String SELECTION_BUTTON_TITLE_0 = "SELECTION_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String SITEMAP_BUTTON_TITLE_0 = "SITEMAP_BUTTON_TITLE_0";
+    public static final String CONTENT_EDITOR_DIALOG_TITLE_0 = "CONTENT_EDITOR_DIALOG_TITLE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/04/07 12:06:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,11 +73,13 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragElement, HasClickHandlers {
+
+    private static final String MOVE_HANDLE_CLASS = CmsToolbarButton.ButtonData.MOVE.getIconClass();
 
     /** The current place holder element. */
     protected Widget m_currentPlaceholder;
@@ -108,7 +110,11 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
 
     private CmsElementOptionBar m_elementOptionBar;
 
-    private static final String MOVE_HANDLE_CLASS = CmsToolbarButton.ButtonData.MOVE.getIconClass();
+    /** The no edit reason, if empty editing is allowed. */
+    private String m_noEditReason;
+
+    /** The element resource site-path. */
+    private String m_sitePath;
 
     /**
      * Constructor.<p>
@@ -116,11 +122,20 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
      * @param element the DOM element
      * @param parent the drag parent
      * @param clientId the client id
+     * @param sitePath the element site-path
+     * @param noEditReason the no edit reason, if empty, editing is allowed
      */
-    public CmsDragContainerElement(Element element, I_CmsDragTarget parent, String clientId) {
+    public CmsDragContainerElement(
+        Element element,
+        I_CmsDragTarget parent,
+        String clientId,
+        String sitePath,
+        String noEditReason) {
 
         super(element);
         m_clientId = clientId;
+        m_sitePath = sitePath;
+        m_noEditReason = noEditReason;
         setDragParent(parent);
         m_dragTargets = new HashMap<I_CmsDragTarget, I_CmsDragElement>();
         m_dragTargets.put(parent, this);
@@ -240,17 +255,33 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     }
 
     /**
+     * Returns the no edit reason.<p>
+     *
+     * @return the no edit reason
+     */
+    public String getNoEditReason() {
+
+        return m_noEditReason;
+    }
+
+    /**
+     * Returns the site-path.<p>
+     *
+     * @return the site-path
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
+    }
+
+    /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#isHandleEvent(com.google.gwt.dom.client.NativeEvent)
      */
     public boolean isHandleEvent(NativeEvent event) {
 
-        //        if (m_dragHandle == null) {
-        //            return true;
-        //        }
         EventTarget target = event.getEventTarget();
         if (com.google.gwt.dom.client.Element.is(target)) {
             return CmsDomUtil.hasClass(MOVE_HANDLE_CLASS, com.google.gwt.dom.client.Element.as(target));
-            //  m_dragHandle.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
         }
         return false;
     }
@@ -302,9 +333,7 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
      */
     public void onDropTarget(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
 
-        //        m_currentElement = m_dragTargets.get(target);
-        //        m_currentElement.addToTarget(target, target.getWidgetIndex(m_currentPlaceholder));
-
+        // nothing to do here, everything is done by the drag handler
     }
 
     /**

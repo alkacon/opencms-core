@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/04/08 06:01:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,6 +62,9 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -70,23 +73,17 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerpageEditor extends A_CmsEntryPoint {
-
-    /** The editor instance. */
-    public static CmsContainerpageEditor INSTANCE;
 
     /** Margin-top added to the document body element when the tool-bar is shown. */
     private int m_bodyMarginTop;
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
-
-    /** List of buttons of the tool-bar. */
-    private List<I_CmsContainerpageToolbarButton> m_toolbarButtons;
 
     /**
      * Returns the tool-bar widget.<p>
@@ -99,40 +96,37 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
-     * Returns the list of registered tool-bar buttons.<p>
-     * 
-     * @return the tool-bar buttons
-     */
-    public List<I_CmsContainerpageToolbarButton> getToolbarButtons() {
-
-        return m_toolbarButtons;
-    }
-
-    /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
      */
     @Override
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        INSTANCE = this;
-        m_toolbarButtons = new ArrayList<I_CmsContainerpageToolbarButton>();
-        m_toolbarButtons.add(new CmsToolbarPublishButton());
-        m_toolbarButtons.add(new CmsToolbarSaveButton());
-        m_toolbarButtons.add(new CmsToolbarSelectionButton());
-        m_toolbarButtons.add(new CmsToolbarMoveButton());
-        m_toolbarButtons.add(new CmsToolbarEditButton());
-        m_toolbarButtons.add(new CmsToolbarRemoveButton());
-        m_toolbarButtons.add(new CmsToolbarPropertiesButton());
-        m_toolbarButtons.add(new CmsToolbarGalleryMenu());
-        m_toolbarButtons.add(new CmsToolbarClipboardMenu());
-        m_toolbarButtons.add(new CmsToolbarSitemapButton());
-        m_toolbarButtons.add(new CmsToolbarResetButton());
-        initToolbar();
-        CmsContainerpageDataProvider.init();
+        List<I_CmsContainerpageToolbarButton> toolbarButtons = new ArrayList<I_CmsContainerpageToolbarButton>();
+        toolbarButtons.add(new CmsToolbarPublishButton());
+        toolbarButtons.add(new CmsToolbarSaveButton());
+        toolbarButtons.add(new CmsToolbarSelectionButton());
+        toolbarButtons.add(new CmsToolbarMoveButton());
+        toolbarButtons.add(new CmsToolbarEditButton());
+        toolbarButtons.add(new CmsToolbarRemoveButton());
+        toolbarButtons.add(new CmsToolbarPropertiesButton());
+        toolbarButtons.add(new CmsToolbarGalleryMenu());
+        toolbarButtons.add(new CmsToolbarClipboardMenu());
+        toolbarButtons.add(new CmsToolbarSitemapButton());
+        toolbarButtons.add(new CmsToolbarResetButton());
+        initToolbar(toolbarButtons);
+        CmsContainerpageDataProvider.init(toolbarButtons);
 
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
         org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
+        Window.addWindowClosingHandler(new Window.ClosingHandler() {
+
+            public void onWindowClosing(ClosingEvent event) {
+
+                Cookies.setCookie("test", "test");
+
+            }
+        });
 
     }
 
@@ -168,14 +162,14 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
-     * Initialises the tool-bar and its buttons.<p>
+     * Initializes the tool-bar and its buttons.<p>
      */
-    private void initToolbar() {
+    private void initToolbar(List<I_CmsContainerpageToolbarButton> toolbarButtons) {
 
         m_bodyMarginTop = CmsDomUtil.getCurrentStyleInt(Document.get().getBody(), Style.marginTop);
         m_toolbar = new CmsToolbar();
         CmsToolbarClickHandler handler = new CmsToolbarClickHandler();
-        Iterator<I_CmsContainerpageToolbarButton> it = m_toolbarButtons.iterator();
+        Iterator<I_CmsContainerpageToolbarButton> it = toolbarButtons.iterator();
         while (it.hasNext()) {
             I_CmsContainerpageToolbarButton button = it.next();
             button.addClickHandler(handler);

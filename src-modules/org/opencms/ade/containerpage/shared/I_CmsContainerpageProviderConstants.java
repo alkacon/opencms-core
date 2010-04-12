@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/I_CmsContainerpageProviderConstants.java,v $
- * Date   : $Date: 2010/04/07 14:50:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,18 +36,39 @@ package org.opencms.ade.containerpage.shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsContainerpageProviderConstants {
 
+    /** HTML class used to identify container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_CONTAINER_ELEMENTS}. */
+    String CLASS_CONTAINER_ELEMENTS = "cms_ade_element";
+
+    /** HTML class used to identify sub container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_SUB_CONTAINER_ELEMENTS}. */
+    String CLASS_SUB_CONTAINER_ELEMENTS = "cms_ade_subcontainer";
+
     /** Name of the used dictionary. */
     String DICT_NAME = "org.opencms.ade.containerpage.core";
 
-    /** Key for the current URI. */
-    String KEY_CURRENT_URI = "cms_ade_current_uri";
-
     /** Key for container data. This has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#KEY_CONTAINER_DATA}. */
     String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
+
+    /** Key for the current URI. */
+    String KEY_CURRENT_CONTAINERPAGE_URI = "current_containerpage_uri";
+
+    /** Key for the xml-content editor URI. */
+    String KEY_EDITOR_URI = "editor_uri";
+
+    /** Key for no-edit reason. */
+    String KEY_NO_EDIT_REASON = "no_edit_reason";
+
+    /** Key for request parameters. */
+    String KEY_REQUEST_PARAMS = "request_params";
+
+    /** Key for the sitemap URI. */
+    String KEY_SITEMAP_URI = "sitemap_uri";
+
+    /** Key for back-link URI. */
+    String KEY_BACKLINK_URI = "backlink_uri";
 }

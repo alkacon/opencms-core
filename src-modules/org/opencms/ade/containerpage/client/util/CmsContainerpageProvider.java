@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/util/Attic/CmsContainerpageProvider.java,v $
- * Date   : $Date: 2010/04/08 06:01:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,11 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsContainerpageProvider extends JavaScriptObject implements I_CmsContainerpageProviderConstants {
+public final class CmsContainerpageProvider extends JavaScriptObject implements I_CmsContainerpageProviderConstants {
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
@@ -74,13 +74,6 @@ public class CmsContainerpageProvider extends JavaScriptObject implements I_CmsC
     }
 
     /**
-     * Initializes the data from the host page.<p>
-     */
-    private static native CmsContainerpageProvider init() /*-{
-        return $wnd[@org.opencms.ade.containerpage.client.util.CmsContainerpageProvider::getDictName()()];
-    }-*/;
-
-    /**
      * Returns the json object name.<p>
      * 
      * @return the json object name
@@ -91,4 +84,65 @@ public class CmsContainerpageProvider extends JavaScriptObject implements I_CmsC
 
         return DICT_NAME.replace('.', '_');
     }
+
+    /**
+     * Initializes the data from the host page.<p>
+     */
+    private static native CmsContainerpageProvider init() /*-{
+        return $wnd[@org.opencms.ade.containerpage.client.util.CmsContainerpageProvider::getDictName()()];
+    }-*/;
+
+    /**
+     * Returns the xml-content editor back-link URI.<p>
+     * 
+     * @return the back-link URI
+     */
+    public native String getBacklinkUri() /*-{
+        return this[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_BACKLINK_URI];
+    }-*/;
+
+    /**
+     * Returns the container-page URI.<p>
+     * 
+     * @return the container-page URI
+     */
+    public native String getContainerpageUri() /*-{
+        return this[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_CURRENT_CONTAINERPAGE_URI];
+    }-*/;
+
+    /**
+     * Returns the xml-content editor URI.<p>
+     * 
+     * @return the xml-content editor URI
+     */
+    public native String getEditorUri() /*-{
+        return this[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_EDITOR_URI];
+    }-*/;
+
+    /**
+     * Returns the no-edit reason.<p>
+     * 
+     * @return the no-edit reason, if empty editing is allowed
+     */
+    public native String getNoEditReason() /*-{
+        return this[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_NO_EDIT_REASON];
+    }-*/;
+
+    /**
+     * Returns the request parameters.<p>
+     * 
+     * @return the request parameters
+     */
+    public native String getRequestParams() /*-{
+        return this[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_REQUEST_PARAMS];
+    }-*/;
+
+    /**
+     * Returns the sitemap URI.<p>
+     * 
+     * @return the sitemap URI
+     */
+    public native String getSitemapUri() /*-{
+        return this[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_SITEMAP_URI];
+    }-*/;
 }

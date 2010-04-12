@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDataProvider.java,v $
- * Date   : $Date: 2010/04/06 09:49:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,13 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
-import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
+import org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.util.CmsCoreProvider;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.ArrayList;
@@ -56,7 +58,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -71,7 +73,7 @@ public final class CmsContainerpageDataProvider {
         private I_CmsSimpleCallback<Map<String, CmsContainerElement>> m_callback;
 
         /** The requested client id's. */
-        private List<String> m_clientIds;
+        private Set<String> m_clientIds;
 
         /**
          * Constructor.<p>
@@ -79,7 +81,7 @@ public final class CmsContainerpageDataProvider {
          * @param clientIds the client id's
          * @param callback the call-back
          */
-        public MultiElementAction(List<String> clientIds, I_CmsSimpleCallback<Map<String, CmsContainerElement>> callback) {
+        public MultiElementAction(Set<String> clientIds, I_CmsSimpleCallback<Map<String, CmsContainerElement>> callback) {
 
             super();
             m_clientIds = clientIds;
@@ -137,6 +139,59 @@ public final class CmsContainerpageDataProvider {
 
         }
 
+    }
+
+    /**
+     * A RPC action implementation used to reload the data for a container-page element.<p>
+     */
+    private class ReloadElementAction extends CmsRpcAction<Map<String, CmsContainerElement>> {
+
+        /** The requested client id's. */
+        private Set<String> m_clientIds;
+
+        public ReloadElementAction(Set<String> clientIds) {
+
+            super();
+            m_clientIds = clientIds;
+        }
+
+        /**
+         * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+         */
+        @Override
+        public void execute() {
+
+            getContainerpageService().getElementsData(
+                CmsContainerpageDataProvider.getCurrentUri(),
+                null,
+                m_clientIds,
+                m_containerTypes,
+                this);
+
+        }
+
+        /**
+         * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+         */
+        @Override
+        protected void onResponse(Map<String, CmsContainerElement> result) {
+
+            if (result != null) {
+                addElements(result);
+                Iterator<CmsDragContainerElement> it = getAllDragElements().iterator();
+                while (it.hasNext()) {
+                    CmsDragContainerElement dragElement = it.next();
+                    if (m_clientIds.contains(dragElement.getClientId())) {
+                        try {
+                            replaceDragElement(dragElement, m_elements.get(dragElement.getClientId()));
+                        } catch (Exception e) {
+                            CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
+                        }
+                    }
+                }
+            }
+
+        }
     }
 
     /**
@@ -202,13 +257,6 @@ public final class CmsContainerpageDataProvider {
     /** Instance of the data provider. */
     private static CmsContainerpageDataProvider INSTANCE;
 
-    /** Key to access the current URI within the window object. */
-    @SuppressWarnings("unused")
-    private static final String KEY_CURRENT_URI = "cms_ade_current_uri";
-
-    /** The current URI. */
-    private static String m_currentUri;
-
     /** The container types within this page. */
     /*DEFAULT*/Set<String> m_containerTypes;
 
@@ -218,8 +266,13 @@ public final class CmsContainerpageDataProvider {
     /** The container-page RPC service. */
     private I_CmsContainerpageServiceAsync m_containerpageService;
 
+    /**  */
+    private CmsContainerpageUtil m_containerpageUtil;
+
     /** The container data. */
     private Map<String, CmsContainerJso> m_containers;
+
+    private boolean m_pageChanged;
 
     /** The drag targets within this page. */
     private Map<String, CmsDragTargetContainer> m_targetContainers;
@@ -227,31 +280,20 @@ public final class CmsContainerpageDataProvider {
     /**
      * Hidden constructor.<p>
      */
-    private CmsContainerpageDataProvider() {
+    private CmsContainerpageDataProvider(List<I_CmsContainerpageToolbarButton> toolbarButtons) {
 
         m_elements = new HashMap<String, CmsContainerElement>();
         m_containerTypes = new HashSet<String>();
         m_containers = new HashMap<String, CmsContainerJso>();
-        m_targetContainers = new HashMap<String, CmsDragTargetContainer>();
+        m_containerpageUtil = new CmsContainerpageUtil(toolbarButtons);
 
         JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
-        List<CmsDragContainerElement> elements = new ArrayList<CmsDragContainerElement>();
         for (int i = 0; i < containers.length(); i++) {
             CmsContainerJso container = containers.get(i);
             m_containerTypes.add(container.getType());
             m_containers.put(container.getName(), container);
-            CmsDragTargetContainer target = new CmsDragTargetContainer(container);
-            elements.addAll(target.consumeChildren());
-            m_targetContainers.put(container.getName(), target);
         }
-        Iterator<CmsDragContainerElement> it = elements.iterator();
-        while (it.hasNext()) {
-            CmsDragContainerElement element = it.next();
-            CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(
-                element,
-                CmsContainerpageEditor.INSTANCE.getToolbarButtons());
-            element.setElementOptionBar(optionBar);
-        }
+        m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
     }
 
     /**
@@ -262,7 +304,8 @@ public final class CmsContainerpageDataProvider {
     public static CmsContainerpageDataProvider get() {
 
         if (INSTANCE == null) {
-            INSTANCE = new CmsContainerpageDataProvider();
+            CmsDebugLog.getInstance().printLine("WARNING: The data provider has not been initialized!");
+            return null;
         }
 
         return INSTANCE;
@@ -275,30 +318,21 @@ public final class CmsContainerpageDataProvider {
      */
     public static String getCurrentUri() {
 
-        if (m_currentUri == null) {
-            m_currentUri = getCurrentUriNative();
-        }
-        return m_currentUri;
+        return CmsCoreProvider.get().getUri();
+
     }
 
     /**
-     * Initialises the data provider. This will also transform the pages containers and elements into the appropriate widgets (done within the private constructor).<p> 
+     * Initializes the data provider. This will also transform the pages containers and elements into the appropriate widgets (done within the private constructor).<p>
+     *  
+     * @param toolbarButtons the tool-bar buttons of the container-page editor
      */
-    public static void init() {
+    public static void init(List<I_CmsContainerpageToolbarButton> toolbarButtons) {
 
         if (INSTANCE == null) {
-            INSTANCE = new CmsContainerpageDataProvider();
+            INSTANCE = new CmsContainerpageDataProvider(toolbarButtons);
         }
     }
-
-    /**
-     * Accesses the window object to read the current URI.<p>
-     * 
-     * @return the current URI
-     */
-    private static native String getCurrentUriNative() /*-{
-        return $wnd[@org.opencms.ade.containerpage.client.CmsContainerpageDataProvider::KEY_CURRENT_URI];
-    }-*/;
 
     /**
      * Returns all drag elements of the page.<p>
@@ -338,6 +372,16 @@ public final class CmsContainerpageDataProvider {
             m_containerpageService = GWT.create(I_CmsContainerpageService.class);
         }
         return m_containerpageService;
+    }
+
+    /**
+     * Returns the {@link org.opencms.ade.containerpage.client.CmsContainerpageUtil}.<p>
+     *
+     * @return the containerpage-util
+     */
+    public CmsContainerpageUtil getContainerpageUtil() {
+
+        return m_containerpageUtil;
     }
 
     /**
@@ -405,10 +449,81 @@ public final class CmsContainerpageDataProvider {
      * @param clientIds the element id's
      * @param callback the call-back to execute with the requested data
      */
-    public void getElements(List<String> clientIds, I_CmsSimpleCallback<Map<String, CmsContainerElement>> callback) {
+    public void getElements(Set<String> clientIds, I_CmsSimpleCallback<Map<String, CmsContainerElement>> callback) {
 
         MultiElementAction action = new MultiElementAction(clientIds, callback);
         action.execute();
+    }
+
+    /**
+     * Returns if the page has changed.<p>
+     * 
+     * @return <code>true</code> if the page has changed
+     */
+    public boolean hasPageChanged() {
+
+        return m_pageChanged;
+    }
+
+    /**
+     * Reloads the content for the given element and all related elements.<p>
+     * 
+     * Call this if the element content has changed.<p>
+     * 
+     * @param id the element id
+     */
+    public void reloadElement(String id) {
+
+        Set<String> related = getRelatedElementIds(id);
+        ReloadElementAction action = new ReloadElementAction(related);
+        action.execute();
+
+    }
+
+    /**
+     * Removes the given container element from its parent container.<p>
+     * 
+     * @param dragElement the element to remove
+     */
+    public void removeElement(CmsDragContainerElement dragElement) {
+
+        dragElement.removeFromParent();
+        setPageChanged();
+    }
+
+    /**
+     * Replaces the given drag-element with the given container element.<p>
+     * 
+     * @param dragElement the drag-element to replace
+     * @param elementData the new element data
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void replaceDragElement(CmsDragContainerElement dragElement, CmsContainerElement elementData)
+    throws Exception {
+
+        CmsDragTargetContainer dragParent = (CmsDragTargetContainer)dragElement.getDragParent();
+        String containerType = m_containers.get(dragParent.getContainerId()).getType();
+
+        String elementContent = elementData.getContents().get(containerType);
+        if ((elementContent != null) && (elementContent.trim().length() > 0)) {
+            CmsDragContainerElement replacer = getContainerpageUtil().createElement(
+                elementData,
+                dragParent,
+                containerType);
+
+            dragParent.insert(replacer, dragParent.getWidgetIndex(dragElement));
+            dragElement.removeFromParent();
+        }
+    }
+
+    /**
+     * Sets the page changed flag to <code>true</code>.<p>
+     */
+    public void setPageChanged() {
+
+        CmsDebugLog.getInstance().printLine("PAGE CHANGED");
+        m_pageChanged = true;
     }
 
     /** 
@@ -419,5 +534,37 @@ public final class CmsContainerpageDataProvider {
     /*DEFAULT*/void addElements(Map<String, CmsContainerElement> elements) {
 
         m_elements.putAll(elements);
+    }
+
+    /**
+     * Returns all element id's related to the given one.<p>
+     * 
+     * @param id the element id
+     * @return the related id's
+     */
+    private Set<String> getRelatedElementIds(String id) {
+
+        Set<String> result = new HashSet<String>();
+        result.add(id);
+        String serverId = id;
+        if (id.contains("#")) {
+            serverId = id.substring(0, id.indexOf("#"));
+        }
+        Iterator<String> it = m_elements.keySet().iterator();
+        while (it.hasNext()) {
+            String elId = it.next();
+            if (elId.startsWith(serverId)) {
+                result.add(elId);
+            }
+        }
+
+        Iterator<CmsDragContainerElement> itEl = getAllDragElements().iterator();
+        while (itEl.hasNext()) {
+            CmsDragContainerElement element = itEl.next();
+            if (element.getClientId().startsWith(serverId)) {
+                result.add(element.getClientId());
+            }
+        }
+        return result;
     }
 }

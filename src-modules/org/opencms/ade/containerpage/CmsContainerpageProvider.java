@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageProvider.java,v $
- * Date   : $Date: 2010/04/12 14:00:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,23 @@ package org.opencms.ade.containerpage;
 import org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants;
 import org.opencms.ade.sitemap.CmsSitemapProvider;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.I_CmsCoreProvider;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
+import org.opencms.xml.sitemap.CmsXmlSitemap;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -49,11 +60,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public final class CmsContainerpageProvider implements I_CmsContainerpageProviderConstants, I_CmsCoreProvider {
+
+    /** The xml-content editor URI. */
+    private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
+
+    /** The editor back-link URI. */
+    private static final String BACKLINK_URI = "/system/modules/org.opencms.ade.containerpage/editor-backlink.html";
 
     /** Internal instance. */
     private static CmsContainerpageProvider INSTANCE;
@@ -87,8 +104,6 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
      */
     public String export(HttpServletRequest request) {
 
-        CmsObject cms = CmsFlexController.getCmsObject(request);
-
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(request));
         sb.append(DICT_NAME.replace('.', '_')).append("=").append(getData(request).toString()).append(";");
@@ -113,9 +128,25 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
      */
     public JSONObject getData(HttpServletRequest request) {
 
+        CmsObject cms = CmsFlexController.getCmsObject(request);
         JSONObject keys = new JSONObject();
         try {
-            // TODO: add data
+            CmsResource containerpage = getContainerpage(cms);
+            keys.put(KEY_CURRENT_CONTAINERPAGE_URI, getContainerpageUri(cms, containerpage));
+            keys.put(KEY_NO_EDIT_REASON, getNoEditReason(cms, containerpage));
+            keys.put(KEY_REQUEST_PARAMS, getRequestParams(request));
+            keys.put(KEY_SITEMAP_URI, getSitemapUri(cms, request));
+            keys.put(KEY_EDITOR_URI, EDITOR_URI);
+            keys.put(KEY_BACKLINK_URI, BACKLINK_URI);
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (int i = 0; i < cookies.length; i++) {
+                    if (cookies[i].getName().equals("test")) {
+                        keys.put("cookie_value", cookies[i].getValue());
+                    }
+                }
+            }
+
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             try {
@@ -126,5 +157,99 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
             }
         }
         return keys;
+    }
+
+    /**
+     * Returns the requested container-page resource.<p>
+     * 
+     * @param cms the current cms object
+     * 
+     * @return the container-page resource
+     * 
+     * @throws CmsException if the resource could not be read for any reason
+     */
+    private CmsResource getContainerpage(CmsObject cms) throws CmsException {
+
+        String currentUri = cms.getRequestContext().getUri();
+        CmsResource containerPage = cms.readResource(currentUri);
+        if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
+            // container page is used as template
+            String cntPagePath = cms.readPropertyObject(
+                containerPage,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                true).getValue("");
+            try {
+                containerPage = cms.readResource(cntPagePath);
+            } catch (CmsException e) {
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+        return containerPage;
+    }
+
+    /**
+     * Returns the URI for the given container-page.<p>
+     * 
+     * @param cms the current cms object
+     * @param containerPage the container-page resource
+     * 
+     * @return the URI string
+     */
+    private String getContainerpageUri(CmsObject cms, CmsResource containerPage) {
+
+        return cms.getSitePath(containerPage);
+    }
+
+    /**
+     * Returns the no-edit reason for the given resource.<p>
+     * 
+     * @param cms the current cms object
+     * @param containerPage the resource
+     * 
+     * @return the no-edit reason, empty if editing is allowed
+     * 
+     * @throws CmsException is something goes wrong
+     */
+    private String getNoEditReason(CmsObject cms, CmsResource containerPage) throws CmsException {
+
+        String reason = new CmsResourceUtil(cms, containerPage).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+            cms));
+
+        return CmsStringUtil.escapeJavaScript(reason);
+    }
+
+    /**
+     * Returns the request-parameters for the given request.<p>
+     * 
+     * @param request the current request
+     * 
+     * @return the parameters
+     */
+    private String getRequestParams(HttpServletRequest request) {
+
+        return CmsRequestUtil.encodeParams(request);
+    }
+
+    /**
+     * Returns the sitemap URI of this request.<p>
+     * 
+     * @param cms the current cms object
+     * @param request the current request
+     * 
+     * @return the sitemap URI, empty if none available
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private String getSitemapUri(CmsObject cms, HttpServletRequest request) throws CmsException {
+
+        CmsXmlSitemap sitemap = null;
+        CmsSitemapEntry sitemapInfo = OpenCms.getSitemapManager().getRuntimeInfo(request);
+        if (sitemapInfo != null) {
+            sitemap = OpenCms.getSitemapManager().getSitemapForUri(cms, sitemapInfo.getSitePath(cms), false);
+        }
+        return (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap.getFile());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/04/06 09:48:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/12 15:00:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,15 +32,12 @@
 package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
-import org.opencms.ade.containerpage.client.CmsContainerpageEditor;
-import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.client.draganddrop.A_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
@@ -63,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -209,6 +206,11 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
     @Override
     protected void elementDropAction() {
 
+        if ((m_current != m_startInfo)
+            || (Math.abs(m_currentTarget.getWidgetIndex((Widget)m_current.getDraggable())
+                - m_currentTarget.getWidgetIndex(m_current.getPlaceholder())) > 1)) {
+            CmsContainerpageDataProvider.get().setPageChanged();
+        }
         m_currentTarget.insert(
             (Widget)m_current.getDraggable(),
             m_currentTarget.getWidgetIndex(m_current.getPlaceholder()));
@@ -328,44 +330,27 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
                         String containerType = CmsContainerpageDataProvider.get().getContainerType(entry.getKey());
                         if (arg.getContents().containsKey(containerType)
                             && (entry.getValue() != getDragElement().getDragParent())) {
+                            try {
 
-                            // as it is not possible to generate a DOM element from a string, the element content needs to wrapped first
-                            Element wrapperDiv = DOM.createDiv();
-                            wrapperDiv.setInnerHTML(arg.getContents().get(containerType));
-                            Element elementRoot = (Element)wrapperDiv.getFirstChildElement();
-                            DOM.removeChild(wrapperDiv, elementRoot);
-                            // just in case we have a script tag outside the root HTML-tag
-                            while ((elementRoot != null) && (elementRoot.getTagName().toLowerCase() == "script")) {
-                                elementRoot = (Element)wrapperDiv.getFirstChildElement();
-                                DOM.removeChild(wrapperDiv, elementRoot);
-                            }
-                            if (elementRoot == null) {
-                                CmsDebugLog.getInstance().printLine(
-                                    "Element "
-                                        + arg.toString()
-                                        + " has no appropriate root element for container-type: "
-                                        + containerType);
+                                CmsDragContainerElement dragElement = CmsContainerpageDataProvider.get().getContainerpageUtil().createElement(
+                                    arg,
+                                    entry.getValue(),
+                                    containerType);
+                                entry.getValue().add(dragElement);
+                                int offsetLeft = dragElement.getOffsetWidth() - 20;
+                                DragInfo info = new DragInfo(
+                                    dragElement,
+                                    createPlaceholder(dragElement),
+                                    offsetLeft,
+                                    20);
+                                addTargetInfo(entry.getValue(), info);
+                                prepareElement(info, entry.getValue(), true);
+                                addDragTarget(entry.getValue());
+                                entry.getValue().highlightContainer();
+                            } catch (Exception e) {
                                 continue;
                             }
-                            CmsDragContainerElement dragElement = new CmsDragContainerElement(
-                                elementRoot,
-                                entry.getValue(),
-                                arg.getClientId());
-                            entry.getValue().add(dragElement);
-                            CmsContainerDragHandler.get().registerMouseHandler(dragElement);
-                            int offsetLeft = dragElement.getOffsetWidth() - 20;
-                            DragInfo info = new DragInfo(dragElement, createPlaceholder(dragElement), offsetLeft, 20);
-                            addTargetInfo(entry.getValue(), info);
-                            prepareElement(info, entry.getValue(), true);
-                            addDragTarget(entry.getValue());
-                            entry.getValue().highlightContainer();
-                            if (wrapperDiv.hasChildNodes()) {
-                                CmsDebugLog.getInstance().printLine(
-                                    "Element "
-                                        + arg.toString()
-                                        + " has more than a single root element for container-type: "
-                                        + containerType);
-                            }
+
                         }
                     }
                 }
@@ -504,11 +489,8 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         if (setHidden) {
             elementInfo.getPlaceholder().setVisible(false);
             elementInfo.getDraggable().setVisible(false);
-            CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(
-                (CmsDragContainerElement)elementInfo.getDraggable(),
-                CmsContainerpageEditor.INSTANCE.getToolbarButtons());
-            optionBar.addStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
-            ((CmsDragContainerElement)elementInfo.getDraggable()).setElementOptionBar(optionBar);
+            ((CmsDragContainerElement)elementInfo.getDraggable()).getElementOptionBar().addStyleName(
+                I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
         }
     }
 
