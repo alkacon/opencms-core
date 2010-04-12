@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/ade/publish/TestADEPublish.java,v $
- * Date   : $Date: 2010/04/08 07:30:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 10:16:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,10 @@
 
 package org.opencms.ade.publish;
 
+import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishGroup;
+import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsPublishResourceInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -58,7 +62,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestADEPublish extends OpenCmsTestCase {
 
@@ -124,7 +128,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         // TODO: from time to time there are still some resources in the list :( 
 
         // check before
-        List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
+        List<CmsPublishGroup> groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
         // touch
@@ -190,7 +194,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertEquals(1, groups.get(0).getResources().size());
         assertEquals(resource.getStructureId(), groups.get(0).getResources().get(0).getId());
         assertTrue(groups.get(0).getResources().get(0).isRemovable());
-        assertEquals(CmsPublishResourceInfoBean.Type.PUBLISHED, groups.get(0).getResources().get(0).getInfo().getType());
+        assertEquals(CmsPublishResourceInfo.Type.PUBLISHED, groups.get(0).getResources().get(0).getInfo().getType());
         assertEquals(0, groups.get(0).getResources().get(0).getRelated().size());
 
         // remove it from the publish list
@@ -215,7 +219,7 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         // check before
         CmsPublish adePub = new CmsPublish(cms);
-        List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
+        List<CmsPublishGroup> groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
         // touch
@@ -250,7 +254,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertEquals(1, groups.get(0).getResources().size());
         assertEquals(resource.getStructureId(), groups.get(0).getResources().get(0).getId());
         assertTrue(groups.get(0).getResources().get(0).isRemovable());
-        assertEquals(CmsPublishResourceInfoBean.Type.LOCKED, groups.get(0).getResources().get(0).getInfo().getType());
+        assertEquals(CmsPublishResourceInfo.Type.LOCKED, groups.get(0).getResources().get(0).getInfo().getType());
         assertEquals(0, groups.get(0).getResources().get(0).getRelated().size());
     }
 
@@ -272,7 +276,7 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         // check before
         CmsPublish adePub = new CmsPublish(cms);
-        List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
+        List<CmsPublishGroup> groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
         // touch
@@ -290,7 +294,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertEquals(resource.getStructureId(), groups.get(0).getResources().get(0).getId());
         assertTrue(groups.get(0).getResources().get(0).isRemovable());
         assertEquals(
-            CmsPublishResourceInfoBean.Type.PERMISSIONS,
+            CmsPublishResourceInfo.Type.PERMISSIONS,
             groups.get(0).getResources().get(0).getInfo().getType());
         assertEquals(0, groups.get(0).getResources().get(0).getRelated().size());
 
@@ -391,7 +395,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsPublish adePub = new CmsPublish(cms);
 
         // first check when empty
-        List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
+        List<CmsPublishGroup> groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
         // touch resource
@@ -492,7 +496,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsPublish adePub = new CmsPublish(cms);
 
         // first check when empty
-        List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
+        List<CmsPublishGroup> groups = adePub.getPublishGroups();
         assertEquals(0, groups.size());
 
         // delete linked resource
@@ -513,7 +517,7 @@ public class TestADEPublish extends OpenCmsTestCase {
 
         // check the broken links
         CmsResource source = cms.readResource("/folder1/subfolder12/subsubfolder121/page1.html");
-        List<CmsPublishResourceBean> broken = adePub.getBrokenResources(Collections.singletonList(resource));
+        List<CmsPublishResource> broken = adePub.getBrokenResources(Collections.singletonList(resource));
         assertEquals(1, broken.size());
         assertEquals(source.getStructureId(), broken.get(0).getId());
         assertFalse(broken.get(0).isRemovable());
@@ -521,7 +525,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertEquals(1, broken.get(0).getRelated().size());
         assertEquals(resource.getStructureId(), broken.get(0).getRelated().get(0).getId());
         assertFalse(broken.get(0).getRelated().get(0).isRemovable());
-        assertEquals(CmsPublishResourceInfoBean.Type.BROKENLINK, broken.get(0).getRelated().get(0).getInfo().getType());
+        assertEquals(CmsPublishResourceInfo.Type.BROKENLINK, broken.get(0).getRelated().get(0).getInfo().getType());
         assertEquals(0, broken.get(0).getRelated().get(0).getRelated().size());
 
         // check before publishing
@@ -559,7 +563,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         // the resource is new/restored from previous test case
         CmsPublish adePub = new CmsPublish(cms);
 
-        List<CmsPublishGroupBean> groups = adePub.getPublishGroups();
+        List<CmsPublishGroup> groups = adePub.getPublishGroups();
         assertEquals(1, groups.size());
         assertEquals(1, groups.get(0).getResources().size());
         assertEquals(resource.getStructureId(), groups.get(0).getResources().get(0).getId());
@@ -567,7 +571,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertNull(groups.get(0).getResources().get(0).getInfo());
         assertEquals(0, groups.get(0).getResources().get(0).getRelated().size());
 
-        List<CmsPublishResourceBean> broken = adePub.getBrokenResources(Collections.singletonList(resource));
+        List<CmsPublishResource> broken = adePub.getBrokenResources(Collections.singletonList(resource));
         assertEquals(0, broken.size());
 
         // publish
