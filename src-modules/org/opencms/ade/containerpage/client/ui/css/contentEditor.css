@@ -1,0 +1,18 @@
+@external dialogTop, dialogMiddleCenter, dialogContent;
+
+.contentEditor .dialogTop{
+	height: 23px;
+}
+.contentEditor .dialogMiddleCenter, .contentEditor .dialogContent{
+	height: 100%;
+}
+
+.contentEditor .dialogContent>div{
+	height: 99.5%;
+	margin: 0.25%;
+}
+.contentEditor .dialogContent iframe{
+	height: 100%;
+	width: 100%;
+	border: none;
+}

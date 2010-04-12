@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/04/06 09:49:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 13:32:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,111 +34,57 @@ package org.opencms.ade.containerpage.client.ui.css;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 
+/**
+ * Resource bundle to access CSS and image resources.
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.0
+ */
 public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsImageBundle {
 
-    public I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
+    /** Container-page CSS. */
+    public interface I_CmsContainerpageCss
+    extends org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle.I_CmsToolbarButtonCss,
+    org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle.I_CmsDragCss {
 
-    public interface I_CmsContainerpageCss extends CssResource {
-
-        String saveButton();
-
-        String publishButton();
-
-        String selectionButton();
-
-        String editButton();
-
-        String moveButton();
-
-        String removeButton();
-
-        String propertiesButton();
-
-        String addButton();
-
-        String clipboardButton();
-
-        String extrasButton();
-
-        String sitemapButton();
-
-        String resetButton();
-
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String optionBar();
 
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarAdd();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarClipboard();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarEdit();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarExit();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarMove();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarNew();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarProperties();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarPublish();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarRecent();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarRemove();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarSave();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarSitemap();
     }
 
+    /** The content editor dialog CSS. */
+    interface I_CmsContentEditorCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String contentEditor();
+    }
+
+    /** The bundle instance. */
+    I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the container-page CSS
+     */
     @Source("containerpage.css")
     I_CmsContainerpageCss containerpageCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the content editor dialog CSS
+     */
+    @Source("contentEditor.css")
+    @CssResource.NotStrict
+    I_CmsContentEditorCss contentEditorCss();
 }
