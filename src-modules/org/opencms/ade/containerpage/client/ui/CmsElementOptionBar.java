@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsElementOptionBar.java,v $
- * Date   : $Date: 2010/04/06 09:49:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/12 13:29:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsHoverPanel;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -47,14 +46,14 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsElementOptionBar extends Composite {
 
     /** The CSS class to be assigned to each option-bar. */
-    private static String CSS_CLASS = I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().optionBar();
+    private static String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
 
     /** The option buttons. */
     private Map<String, CmsElementOptionButton> m_options;
