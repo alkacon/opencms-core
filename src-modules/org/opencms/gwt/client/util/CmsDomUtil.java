@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/04/06 14:23:44 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/04/12 10:35:28 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.gwt.client.util.impl.DOMImpl;
 import org.opencms.gwt.client.util.impl.DocumentStyleImpl;
 
 import java.util.ArrayList;
@@ -40,13 +41,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.user.client.DOM;
 
 /**
  * Utility class to access the HTML DOM.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -240,10 +242,19 @@ public final class CmsDomUtil {
         li,
 
         /** HTML Tag. */
+        p,
+
+        /** HTML Tag. */
+        script,
+
+        /** HTML Tag. */
         ul;
     }
 
-    /** Browser dependent implementation. */
+    /** Browser dependent DOM implementation. */
+    private static DOMImpl domImpl;
+
+    /** Browser dependent style implementation. */
     private static DocumentStyleImpl styleImpl;
 
     /**
@@ -264,6 +275,50 @@ public final class CmsDomUtil {
     public static String close(Tag tag) {
 
         return "</" + tag.name() + ">";
+    }
+
+    /**
+     * This method will create an {@link com.google.gwt.user.client.Element} for the given HTML. 
+     * The HTML should have a single root tag, if not, the first tag will be used and all others discarded.
+     * Script-tags will be ignored.
+     * 
+     * @param html the HTML to use for the element
+     * 
+     * @return the created element
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public static com.google.gwt.user.client.Element createElement(String html) throws Exception {
+
+        com.google.gwt.user.client.Element wrapperDiv = DOM.createDiv();
+        wrapperDiv.setInnerHTML(html);
+        com.google.gwt.user.client.Element elementRoot = (com.google.gwt.user.client.Element)wrapperDiv.getFirstChildElement();
+        DOM.removeChild(wrapperDiv, elementRoot);
+        // just in case we have a script tag outside the root HTML-tag
+        while ((elementRoot != null) && (elementRoot.getTagName().toLowerCase().equals(Tag.script.name()))) {
+            elementRoot = (com.google.gwt.user.client.Element)wrapperDiv.getFirstChildElement();
+            DOM.removeChild(wrapperDiv, elementRoot);
+        }
+        if (elementRoot == null) {
+            CmsDebugLog.getInstance().printLine(
+                "Could not create element as the given HTML has no appropriate root element");
+            throw new UnsupportedOperationException(
+                "Could not create element as the given HTML has no appropriate root element");
+        }
+        return elementRoot;
+
+    }
+
+    /**
+     * Creates an iFrame element with the given name attribute.<p>
+     * 
+     * @param name the name attribute value
+     * 
+     * @return the iFrame element
+     */
+    public static com.google.gwt.dom.client.Element createIFrameElement(String name) {
+
+        return getDOMImpl().createIFrameElement(Document.get(), name);
     }
 
     /**
@@ -434,6 +489,19 @@ public final class CmsDomUtil {
     public static String open(Tag tag) {
 
         return "<" + tag.name() + ">";
+    }
+
+    /**
+     * Returns the DOM implementation.<p>
+     * 
+     * @return the DOM implementation
+     */
+    private static DOMImpl getDOMImpl() {
+
+        if (domImpl == null) {
+            domImpl = GWT.create(DOMImpl.class);
+        }
+        return domImpl;
     }
 
     /**
