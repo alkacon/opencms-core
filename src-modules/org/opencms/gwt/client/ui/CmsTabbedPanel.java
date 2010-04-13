@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/03/31 13:35:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/13 07:10:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  * 
@@ -68,28 +68,28 @@ public class CmsTabbedPanel extends Composite {
     /** Enumeration with layout keys. */
     public enum CmsTabLayout {
         /** Standard layout size. */
-        standard("32"),
+        standard(32),
 
         /** Small layout size. */
-        small("25");
+        small(25);
 
         /** Property name. */
-        private String m_name;
+        private int m_barHeight;
 
         /** Constructor.<p> */
-        private CmsTabLayout(String name) {
+        private CmsTabLayout(int barHeight) {
 
-            m_name = name;
+            m_barHeight = barHeight;
         }
 
         /** 
-         * Returns the name.<p>
+         * Returns the tab bar height.<p>
          * 
-         * @return the name
+         * @return the tab bar height
          */
-        public String getName() {
+        public int getBarHeight() {
 
-            return m_name;
+            return m_barHeight;
         }
 
         /** The default tabbar height. */
@@ -102,7 +102,7 @@ public class CmsTabbedPanel extends Composite {
      */
     public CmsTabbedPanel() {
 
-        m_tabPanel = new TabLayoutPanel(Double.parseDouble(CmsTabLayout.DEFAULT.getName()), Unit.PX);
+        m_tabPanel = new TabLayoutPanel(CmsTabLayout.DEFAULT.getBarHeight(), Unit.PX);
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_tabPanel);
@@ -129,7 +129,7 @@ public class CmsTabbedPanel extends Composite {
      */
     public CmsTabbedPanel(CmsTabLayout tabbarHeight) {
 
-        m_tabPanel = new TabLayoutPanel(Double.parseDouble(tabbarHeight.getName()), Unit.PX);
+        m_tabPanel = new TabLayoutPanel(tabbarHeight.getBarHeight(), Unit.PX);
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_tabPanel);
