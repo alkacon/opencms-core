@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/04/13 10:27:34 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/04/13 13:45:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.util.CmsPair;
@@ -64,7 +65,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -159,10 +159,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /** The UiBinder instance used for this widget. */
     private static I_CmsSelectBoxUiBinder uiBinder = GWT.create(I_CmsSelectBoxUiBinder.class);
 
-    /** The arrow shown in the opener. */
-    @UiField
-    protected HTML m_arrow;
-
     /** Error widget. */
     @UiField
     protected CmsErrorWidget m_error;
@@ -170,8 +166,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /** Handler manager for this widget's events. */
     protected final HandlerManager m_handlerManager = new HandlerManager(this);
 
-    /** Flag indicating whether the next click on the opener should be ignored. */
-    protected boolean m_ignoreNextToggle;
+    /** The open-close button. */
+    protected CmsImageButton m_openClose;
 
     /** The opener widget. */
     @UiField
@@ -180,13 +176,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /** The field in the opener which contains the currently selected option. */
     @UiField
     protected CmsLabel m_openerLabel;
-
-    /**
-     * Flag indicating whether the mouse is over the opener.<p>
-     * 
-     *  This is used to prevent the auto-close feature of the PopupPanel with the other event handlers for the opener.
-     */
-    protected boolean m_overOpener;
 
     /**  Container for the opener and error widget. */
     @UiField
@@ -227,7 +216,24 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_selectBoxState.setValue(CSS.selectBoxClosed());
 
         m_opener.addStyleName(CSS.selectBoxSelected());
-        m_arrow.setStyleName(CSS.selectClosedIcon());
+        m_openClose = new CmsImageButton(CmsImageButton.ICON.triangle_1_e, CmsImageButton.ICON.triangle_1_s, false);
+        m_openClose.addStyleName(CSS.selectIcon());
+        m_panel.add(m_openClose);
+        m_openClose.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                if (m_popup.isShowing()) {
+                    close();
+                } else {
+                    open();
+                }
+            }
+        });
+
         m_popup.setWidget(m_selector);
         m_popup.addStyleName(CSS.selectorPopup());
 
@@ -239,38 +245,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
              */
             public void onClose(CloseEvent<PopupPanel> e) {
 
-                m_arrow.setStyleName(CSS.selectClosedIcon());
-                m_selectBoxState.setValue(CSS.selectBoxClosed());
-
-                if (e.isAutoClosed() && m_overOpener) {
-                    // user clicked on the opener, so we have to ignore the click event for the opener which will
-                    // be fired next.
-                    m_ignoreNextToggle = true;
-                }
-
-            }
-        });
-
-        // attach event handlers so we can track whether the mouse is over the opener
-        m_opener.addMouseOverHandler(new MouseOverHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
-             */
-            public void onMouseOver(MouseOverEvent e) {
-
-                m_overOpener = true;
-            }
-        });
-        m_opener.addMouseOutHandler(new MouseOutHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
-             */
-            public void onMouseOut(MouseOutEvent e) {
-
-                m_overOpener = false;
-
+                close();
             }
         });
     }
@@ -432,12 +407,25 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
+     * Internal method which is called when the selector is closed.<p> 
+     */
+    protected void close() {
+
+        if (!m_enabled) {
+            return;
+        }
+        m_openClose.setDown(false);
+        m_popup.hide();
+        m_selectBoxState.setValue(CSS.selectBoxClosed());
+    }
+
+    /**
      * Handle clicks on the opener.<p>
      * 
      * @param e the click event
      */
     @UiHandler("m_opener")
-    void doClickOpener(ClickEvent e) {
+    protected void doClickOpener(ClickEvent e) {
 
         toggleOpen();
     }
@@ -447,37 +435,24 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      * 
      * @param value the new value
      */
-    void onValueSelect(String value) {
+    protected void onValueSelect(String value) {
 
         selectValue(value);
         ValueChangeEvent.<String> fire(this, value);
     }
 
     /**
-     * Internal method which is called when the selector is closed.<p> 
-     */
-    private void close() {
-
-        if (!m_popup.isShowing()) {
-            return;
-        }
-        m_popup.hide();
-        m_arrow.setStyleName(CSS.selectClosedIcon());
-        m_selectBoxState.setValue(CSS.selectBoxClosed());
-    }
-
-    /**
      * Internal method which is called when the selector is opened.<p>
      */
-    private void open() {
+    protected void open() {
 
-        if (m_popup.isShowing()) {
+        if (!m_enabled) {
             return;
         }
+        m_openClose.setDown(true);
         m_popup.setWidth(2 /* left/right border */+ m_opener.getElement().getClientWidth() + "px");
         m_popup.show();
         positionElement(m_popup.getElement(), m_panel.getElement(), 0, m_opener.getElement().getClientHeight());
-        m_arrow.setStyleName(CSS.selectOpenIcon());
         m_selectBoxState.setValue(CSS.selectBoxOpen());
     }
 
@@ -486,10 +461,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      */
     private void toggleOpen() {
 
-        if (m_ignoreNextToggle) {
-            m_ignoreNextToggle = false;
-            return;
-        }
         if (!m_enabled) {
             return;
         }

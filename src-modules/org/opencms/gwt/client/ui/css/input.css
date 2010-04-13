@@ -1,7 +1,7 @@
 
 /* for debugging purposes */
 /* external multiCheckBox, textBox, textBoxWidget, textAreaWidget, textArea, checkBox, checkBoxLabel, checkBoxImage, error, selectBoxSelected, selectBoxSelector, selectBoxOpen,  selectBoxCell, selectHover, selectClosedIcon, selectOpenIcon, selectBoxOpen, selectBoxClosed,  selectBoxRoot, selectBoxOpener, textBoxPanel; */ 
-
+@external gwt-ToggleButton;
 
 /* inner text box of the text box widget */
 .textBox {
@@ -46,6 +46,10 @@
 
 }
 
+.checkBox .gwt-ToggleButton {
+	outline: none;
+}
+
 @if user.agent ie6 {
 	.checkBox * {
 		display: inline;
@@ -80,7 +84,7 @@
 	gwt-image: "images.backgroundLight";
 	background-position: 50% 50%;
 	margin-right: 40px;
-	
+	outline: none;
 }
 
 .selectBoxSelector {
@@ -110,16 +114,10 @@
 	background-color: #aaaaaa;
 }
 
-@sprite .selectClosedIcon { 
-	gwt-image: "images.triangleRight";
-	float: right;
-	margin-right: 4px;
-}
-
-@sprite .selectOpenIcon {
-	gwt-image: "images.triangleDown";
-	float: right;
-	margin-right: 4px;
+.selectIcon { 
+	position: absolute;
+	right: 0;
+	top: 3px;
 }
 
 .selectBoxOpen {
@@ -147,6 +145,7 @@
 	/* needed to enable hasLayout in IE (required for reading clientHeight) */
 	min-height: 0px;
 	width: 100%;
+	position: relative;
 }
 
 .selectBoxOpener {
