@@ -27,11 +27,6 @@
 			margin-bottom: 20px;
 		}
 		
-		.selector {
-			display: inline-block;
-			width: 100px;
-		}
-		
 		.selectPanel * {
 			zoom: 1;
 		}

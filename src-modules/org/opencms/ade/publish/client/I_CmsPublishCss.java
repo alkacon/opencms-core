@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/I_CmsPublishCss.java,v $
- * Date   : $Date: 2010/03/29 08:47:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 09:12:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -69,12 +69,6 @@ public interface I_CmsPublishCss extends CssResource {
      * @return the CSS class name
      */
     String indentedPublishRow();
-
-    /** Access method.<p>
-     * 
-     * @return the CSS class name
-     */
-    String invisible();
 
     /** Access method.<p>
      * 
