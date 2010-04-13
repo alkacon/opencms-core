@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/13 10:25:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/13 13:42:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -130,54 +130,6 @@ public class CmsListItemWidget extends Composite {
         // GWT interface, nothing to do here
     }
 
-    /**
-     * Click-handler to open/close the additional info.<p>
-     */
-    protected class OpenCloseHandler implements ClickHandler {
-
-        /** The button. */
-        private CmsImageButton m_button;
-
-        /** If initialized. */
-        private boolean m_init;
-
-        /** The owner widget. */
-        private Widget m_owner;
-
-        /**
-         * @param owner
-         * @param button
-         */
-        public OpenCloseHandler(Widget owner, CmsImageButton button) {
-
-            super();
-            m_owner = owner;
-            m_button = button;
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-         */
-        public void onClick(ClickEvent event) {
-
-            if (m_owner.getStyleName().contains(CmsListItemWidget.OPENCLASS)) {
-                m_owner.removeStyleName(CmsListItemWidget.OPENCLASS);
-                m_button.setDown(false);
-            } else {
-                m_owner.addStyleName(CmsListItemWidget.OPENCLASS);
-                m_button.setDown(true);
-                if (!m_init) {
-                    m_init = true;
-                    for (Widget w : m_additionalInfo) {
-                        CmsLabel valueElem = ((AdditionalInfoItem)w).getValueElem();
-                        valueElem.setTruncate(true);
-                        valueElem.widthCheck();
-                    }
-                }
-            }
-        }
-    }
-
     /** The CSS class to set the additional info open. */
     protected static final String OPENCLASS = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().open();
 
@@ -196,6 +148,9 @@ public class CmsListItemWidget extends Composite {
     @UiField
     protected SimplePanel m_iconPanel;
 
+    /** The open-close button for the additional info. */
+    protected CmsImageButton m_openClose;
+
     /** Sub title label. */
     @UiField
     protected CmsLabel m_subTitle;
@@ -207,9 +162,6 @@ public class CmsListItemWidget extends Composite {
     /** The title row, holding the title and the open-close button for the additional info. */
     @UiField
     protected FlowPanel m_titleRow;
-
-    /** The open-close button for the additional info. */
-    private CmsImageButton m_openClose;
 
     /** The root id. */
     private String m_rootId;
@@ -283,7 +235,33 @@ public class CmsListItemWidget extends Composite {
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
             m_openClose = new CmsImageButton(CmsImageButton.ICON.triangle_1_e, CmsImageButton.ICON.triangle_1_s, false);
             m_titleRow.insert(m_openClose, 0);
-            m_openClose.addClickHandler(new OpenCloseHandler(this, m_openClose));
+            m_openClose.addClickHandler(new ClickHandler() {
+
+                /** If initialized. */
+                private boolean m_init;
+
+                /**
+                 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+                 */
+                public void onClick(ClickEvent event) {
+
+                    if (CmsListItemWidget.this.getStyleName().contains(CmsListItemWidget.OPENCLASS)) {
+                        CmsListItemWidget.this.removeStyleName(CmsListItemWidget.OPENCLASS);
+                        m_openClose.setDown(false);
+                    } else {
+                        CmsListItemWidget.this.addStyleName(CmsListItemWidget.OPENCLASS);
+                        m_openClose.setDown(true);
+                        if (!m_init) {
+                            m_init = true;
+                            for (Widget w : m_additionalInfo) {
+                                CmsLabel valueElem = ((AdditionalInfoItem)w).getValueElem();
+                                valueElem.setTruncate(true);
+                                valueElem.widthCheck();
+                            }
+                        }
+                    }
+                }
+            });
             Iterator<Entry<String, String>> it = infoBean.getAdditionalInfo().entrySet().iterator();
             while (it.hasNext()) {
                 Entry<String, String> entry = it.next();
