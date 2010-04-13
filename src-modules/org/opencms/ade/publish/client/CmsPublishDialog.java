@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 06:24:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.DeckPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * 
@@ -59,7 +61,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  * 
@@ -224,6 +226,37 @@ public class CmsPublishDialog extends CmsPopupDialog {
                     publishService,
                     result.getProjects(),
                     result.getOptions());
+                stop();
+                publishDialog.center();
+            }
+        }).execute();
+    }
+
+    /**
+     * Convenience method which opens a publish dialog and adds a close handler to it.<p>
+     * 
+     * @param handler the close handler
+     */
+    public static void showPublishDialog(final CloseHandler<PopupPanel> handler) {
+
+        final I_CmsPublishServiceAsync publishService = GWT.create(I_CmsPublishService.class);
+        (new CmsRpcAction<CmsPublishOptionsAndProjects>() {
+
+            @Override
+            public void execute() {
+
+                start(0);
+                publishService.getPublishOptionsAndProjects(this);
+            }
+
+            @Override
+            protected void onResponse(CmsPublishOptionsAndProjects result) {
+
+                CmsPublishDialog publishDialog = new CmsPublishDialog(
+                    publishService,
+                    result.getProjects(),
+                    result.getOptions());
+                publishDialog.addCloseHandler(handler);
                 stop();
                 publishDialog.center();
             }
