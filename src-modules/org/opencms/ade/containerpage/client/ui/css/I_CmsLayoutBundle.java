@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/04/12 13:32:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/13 14:28:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -55,6 +55,18 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
          * @return the CSS class name
          */
         String optionBar();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String menuContent();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String menuDropzone();
 
     }
 

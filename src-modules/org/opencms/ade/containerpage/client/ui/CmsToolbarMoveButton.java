@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarMoveButton.java,v $
- * Date   : $Date: 2010/04/07 12:06:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/13 14:28:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 
@@ -42,7 +41,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -54,8 +53,6 @@ public class CmsToolbarMoveButton extends A_CmsContainerpageToolbarButton {
     public CmsToolbarMoveButton() {
 
         super(CmsToolbarButton.ButtonData.MOVE, "move", true, true);
-        I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
-
     }
 
     /**

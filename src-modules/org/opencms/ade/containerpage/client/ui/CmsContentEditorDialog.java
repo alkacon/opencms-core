@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 14:28:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -119,7 +119,6 @@ public final class CmsContentEditorDialog {
         m_currentSitePath = sitePath;
         m_dialog = new CmsPopup(Messages.get().key(Messages.CONTENT_EDITOR_DIALOG_TITLE_0));
         m_dialog.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
-        I_CmsLayoutBundle.INSTANCE.contentEditorCss().ensureInjected();
         m_dialog.setSize(800, 600, Unit.PX);
 
         CmsIFrame editorFrame = new CmsIFrame(EDITOR_IFRAME_NAME, getEditorUrl(m_currentSitePath));

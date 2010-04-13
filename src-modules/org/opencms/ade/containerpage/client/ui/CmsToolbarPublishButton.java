@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarPublishButton.java,v $
- * Date   : $Date: 2010/04/13 06:26:03 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 14:28:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -93,7 +93,7 @@ public class CmsToolbarPublishButton extends A_CmsContainerpageToolbarButton {
      */
     public void onToolbarActivate() {
 
-        // triggering a mouse-out event, as it won't be fired once the dialog has opened (event capturing...)
+        // triggering a mouse-out event, as it won't be fired once the dialog has opened (the dialog will capture all events)
         NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
         getElement().dispatchEvent(nativeEvent);
         CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {

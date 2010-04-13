@@ -3,6 +3,21 @@
 .cmsState, .cmsHovering, .toolbarAdd, .toolbarSitemap,
 .toolbarReset, .toolbarExit, .toolbarPublish, .toolbarClipboard, .toolbarRecent, .toolbarSave{}
 
+.menuContent{
+	width: 650px;
+	padding: 5px 0px;
+}
+
+.menuDropzone{
+	margin: 0px 5px;
+	-moz-border-radius: 4px;
+	border: 1px solid #aaaaaa; 
+	background: #ffffff;
+	height: 90px;
+	position: relative;
+	
+}
+
 .optionBar{
 	position: absolute;
 	top: 2px;
