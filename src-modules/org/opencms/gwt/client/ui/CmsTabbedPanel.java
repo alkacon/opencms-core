@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/13 14:07:28 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  * 
@@ -102,23 +102,7 @@ public class CmsTabbedPanel extends Composite {
      */
     public CmsTabbedPanel() {
 
-        m_tabPanel = new TabLayoutPanel(CmsTabLayout.DEFAULT.getBarHeight(), Unit.PX);
-
-        // All composites must call initWidget() in their constructors.
-        initWidget(m_tabPanel);
-
-        List<Element> tabBarDivs = CmsDomUtil.getElementsByClass(
-            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabs(),
-            CmsDomUtil.Tag.div,
-            m_tabPanel.getElement());
-
-        // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
-        if (tabBarDivs.size() == 1) {
-            tabBarDivs.get(0).getParentElement().setClassName(
-                I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabBar());
-        }
-
-        m_tabPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
+        this(CmsTabLayout.DEFAULT);
     }
 
     /**
