@@ -1,7 +1,7 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/util/Attic/CmsUUID.java,v $
- * Date   : $Date: 2010/04/12 10:16:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/13 14:30:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,14 +40,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
 public final class CmsUUID implements IsSerializable, Cloneable, Comparable<CmsUUID> {
 
     /** Constant for the null UUID. */
-    private static final CmsUUID NULL_UUID = new CmsUUID("0000000-0000-0000-0000-000000000000");
+    private static final CmsUUID NULL_UUID = new CmsUUID("00000000-0000-0000-0000-000000000000");
 
     /** Internal UUID implementation. */
     private String m_uuid;
