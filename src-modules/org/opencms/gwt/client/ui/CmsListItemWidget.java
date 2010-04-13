@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/13 09:11:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/13 10:25:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -91,6 +91,9 @@ public class CmsListItemWidget extends Composite {
             add(m_titleElem);
             // create value
             m_valueElem = new CmsLabel(value);
+            if ((value == null) || (value.trim().length() == 0)) {
+                m_valueElem.setHTML(CmsDomUtil.Entity.nbsp.html());
+            }
             m_valueElem.addStyleName(style.itemAdditionalValue());
             m_valueElem.setTruncate(false);
             if (additionalStyle != null) {
