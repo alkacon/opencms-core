@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputImageBundle.java,v $
- * Date   : $Date: 2010/03/10 12:51:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 14:07:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -151,19 +151,4 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      */
     @Source("images/radioUncheckedDisabled.png")
     ImageResource radioUncheckedDisabled();
-
-    /** 
-     * Image resource accessor.<p>
-     * @return an image resource
-     */
-    @Source("images/triangleDown.png")
-    ImageResource triangleDown();
-
-    /** 
-     * Image resource accessor.<p>
-     * @return an image resource
-     */
-    @Source("images/triangleRight.png")
-    ImageResource triangleRight();
-
 }
