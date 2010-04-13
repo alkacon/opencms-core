@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsPaddedPanel.java,v $
- * Date   : $Date: 2010/03/10 12:51:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 10:27:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -119,6 +119,9 @@ public class CmsPaddedPanel extends SimplePanel {
         // defer the layout update so that all the child elements have already been displayed
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
+            /**
+             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+             */
             public void execute() {
 
                 updatePadding();
