@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/04/12 10:35:28 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/04/13 09:12:11 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,11 +48,20 @@ import com.google.gwt.user.client.DOM;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
 public final class CmsDomUtil {
+
+    /**
+     * HTML tag attributes.<p>
+     */
+    public static enum Attribute {
+
+        /** title. */
+        title;
+    }
 
     /**
      * CSS Colors.<p>
@@ -60,7 +69,29 @@ public final class CmsDomUtil {
     public static enum Color {
 
         /** CSS Color. */
-        red,
+        red;
+    }
+
+    /**
+     * HTML entities.<p>
+     */
+    public static enum Entity {
+
+        /** non-breaking space. */
+        hellip,
+
+        /** non-breaking space. */
+        nbsp;
+
+        /**
+         * Returns the HTML code for this entity.<p>
+         * 
+         * @return the HTML code for this entity
+         */
+        public String html() {
+
+            return "&" + super.name() + ";";
+        }
     }
 
     /**
@@ -172,7 +203,7 @@ public final class CmsDomUtil {
         wordSpacing,
 
         /** CSS Property. */
-        wordWrap
+        wordWrap;
     }
 
     /**
