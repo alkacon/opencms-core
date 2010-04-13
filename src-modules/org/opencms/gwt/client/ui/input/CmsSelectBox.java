@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/04/12 10:16:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/13 09:11:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -84,28 +84,16 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String> {
 
     /**
-     * Mode constants for the select box options. 
-     */
-    public enum Mode {
-        /** HTML mode - the text of the option will be literally used as its HTML. */
-        HTML,
-
-        /** text mode - all HTML will be escaped. */
-        TEXT
-    }
-
-    /**
      * The UI Binder interface for this widget.<p>
      */
-    interface I_CmsSelectBoxUiBinder extends UiBinder<Widget, CmsSelectBox> {
+    protected interface I_CmsSelectBoxUiBinder extends UiBinder<Widget, CmsSelectBox> {
         // binder interface
     }
 
     /**
      * This class represents a single select option in the selector of the select box.
-     * 
      */
-    private class CmsSelectCell extends HTML {
+    private class CmsSelectCell extends CmsLabel {
 
         /** The text of the select option. */
         String m_text;
@@ -121,20 +109,18 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
          */
         public CmsSelectCell(String value, String text) {
 
+            super();
             final CmsSelectCell self = this;
             m_value = value;
             m_text = text;
-            if (m_mode == Mode.HTML) {
-
-                setHTML(m_text);
-            } else {
-                setText(m_text);
-            }
+            setText(m_text);
 
             addStyleName(CSS.selectBoxCell());
-
             addClickHandler(new ClickHandler() {
 
+                /**
+                 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+                 */
                 public void onClick(ClickEvent e) {
 
                     onValueSelect(m_value);
@@ -144,6 +130,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
             addMouseOverHandler(new MouseOverHandler() {
 
+                /**
+                 * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
+                 */
                 public void onMouseOver(MouseOverEvent e) {
 
                     self.addStyleName(CSS.selectHover());
@@ -153,20 +142,19 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
             addMouseOutHandler(new MouseOutHandler() {
 
+                /**
+                 * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
+                 */
                 public void onMouseOut(MouseOutEvent e) {
 
                     self.removeStyleName(CSS.selectHover());
-
                 }
             });
         }
-
     }
 
-    /**
-     * The layout bundle.<p>
-     */
-    static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+    /** The layout bundle. */
+    protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** The UiBinder instance used for this widget. */
     private static I_CmsSelectBoxUiBinder uiBinder = GWT.create(I_CmsSelectBoxUiBinder.class);
@@ -185,16 +173,13 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /** Flag indicating whether the next click on the opener should be ignored. */
     protected boolean m_ignoreNextToggle;
 
-    /** The mode of the select box (text or HTML). */
-    protected Mode m_mode;
-
     /** The opener widget. */
     @UiField
     protected FocusPanel m_opener;
 
     /** The field in the opener which contains the currently selected option. */
     @UiField
-    protected HTML m_openerHtml;
+    protected CmsLabel m_openerLabel;
 
     /**
      * Flag indicating whether the mouse is over the opener.<p>
@@ -233,12 +218,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
     /**
      * Creates a new select box.<p>
-     * 
-     * @param mode the mode of the select box (Mode.TEXT or Mode.HTML)
      */
-    public CmsSelectBox(Mode mode) {
-
-        m_mode = mode;
+    public CmsSelectBox() {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_selectBoxState = new CmsStyleVariable(m_opener, m_selector);
@@ -252,6 +233,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_selector.setStyleName(CSS.selectBoxSelector());
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 
+            /**
+             * @see CloseHandler#onClose(CloseEvent)
+             */
             public void onClose(CloseEvent<PopupPanel> e) {
 
                 m_arrow.setStyleName(CSS.selectClosedIcon());
@@ -269,6 +253,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         // attach event handlers so we can track whether the mouse is over the opener
         m_opener.addMouseOverHandler(new MouseOverHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
+             */
             public void onMouseOver(MouseOverEvent e) {
 
                 m_overOpener = true;
@@ -276,6 +263,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         });
         m_opener.addMouseOutHandler(new MouseOutHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
+             */
             public void onMouseOut(MouseOutEvent e) {
 
                 m_overOpener = false;
@@ -289,35 +279,14 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      * 
      * The first component of each pair is the option value, the second is the text to be displayed for the option value.<p>
      * 
-     * @param items
-     * @param mode the mode of the select box (Mode.TEXT or Mode.HTML)
+     * @param items the items
      */
-    public CmsSelectBox(Mode mode, List<CmsPair<String, String>> items) {
+    public CmsSelectBox(List<CmsPair<String, String>> items) {
 
-        this(mode);
+        this();
         for (CmsPair<String, String> item : items) {
             addOption(item.getFirst(), item.getSecond());
         }
-    }
-
-    /**
-     * Constructs a new select box from a map.
-     * 
-     * The keys of the  map are the select option values, the values are the texts to be displayed for the options.
-     *
-     * @param mode the mode
-     * @param items the map of options 
-     */
-    public CmsSelectBox(Mode mode, Map<String, String> items) {
-
-        this(mode);
-        for (Map.Entry<String, String> item : items.entrySet()) {
-            addOption(item.getKey(), item.getValue());
-        }
-    }
-
-    static {
-        CSS.ensureInjected();
     }
 
     /**
@@ -417,7 +386,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /**
      * Helper method to set the current selected option.<p>
      * 
-     * This method does not trigger the "value changed" event.
+     * This method does not trigger the "value changed" event.<p>
      * 
      * @param value the new value
      */
@@ -425,11 +394,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
         String label = m_valueLabels.get(value);
 
-        if (m_mode == Mode.HTML) {
-            m_openerHtml.setHTML(label);
-        } else {
-            m_openerHtml.setText(label);
-        }
+        m_openerLabel.setText(label);
         m_selectedValue = value;
         close();
     }

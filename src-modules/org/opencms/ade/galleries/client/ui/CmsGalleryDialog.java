@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/03/30 14:08:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 09:11:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.client.ui;
 
+import org.opencms.ade.galleries.client.CmsGalleriesVfs;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.ade.galleries.shared.CmsCategoriesListInfoBean;
@@ -48,7 +49,6 @@ import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.ui.input.CmsSelectBox.Mode;
 import org.opencms.gwt.client.util.CmsPair;
 
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -120,13 +120,12 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
      */
     public CmsGalleryDialog(CmsGalleryInfoBean infoBean) {
 
+        CmsGalleriesVfs.initCss();
         m_infoBean = infoBean;
         m_tabbedPanel = new CmsTabbedPanel(CmsTabLayout.standard, false);
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_tabbedPanel);
-        I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
-        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
 
         ArrayList<String> tabs = infoBean.getDialogInfo().getTabs();
 
@@ -295,7 +294,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
         pairs.add(new CmsPair<String, String>("test1", "value1"));
         pairs.add(new CmsPair<String, String>("test2", "value2"));
-        CmsSelectBox selectBox = new CmsSelectBox(Mode.TEXT, pairs);
+        CmsSelectBox selectBox = new CmsSelectBox(pairs);
         // TODO: use the common way to set the width of the select box
         selectBox.setWidth("100px");
         tabInner.addWidgetToOptions(selectBox);
@@ -325,7 +324,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
         pairs.add(new CmsPair<String, String>("test1", "value1"));
         pairs.add(new CmsPair<String, String>("test2", "value2"));
-        CmsSelectBox selectBox = new CmsSelectBox(Mode.TEXT, pairs);
+        CmsSelectBox selectBox = new CmsSelectBox(pairs);
         // TODO: use the common way to set the width of the select box
         selectBox.setWidth("100px");
         tabInner.addWidgetToOptions(selectBox);
@@ -355,7 +354,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
         pairs.add(new CmsPair<String, String>("test1", "value1"));
         pairs.add(new CmsPair<String, String>("test2", "value2"));
-        CmsSelectBox selectBox = new CmsSelectBox(Mode.TEXT, pairs);
+        CmsSelectBox selectBox = new CmsSelectBox(pairs);
         // TODO: use the common way to set the width of the select box
         selectBox.setWidth("100px");
         tabInner.addWidgetToOptions(selectBox);
@@ -388,7 +387,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
         pairs.add(new CmsPair<String, String>("test1", "value1"));
         pairs.add(new CmsPair<String, String>("test2", "value2"));
-        CmsSelectBox selectBox = new CmsSelectBox(Mode.TEXT, pairs);
+        CmsSelectBox selectBox = new CmsSelectBox(pairs);
         // TODO: use the common way to set the width of the select box
         selectBox.setWidth("100px");
         tabInner.addWidgetToOptions(selectBox);
