@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/13 14:27:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.ade.containerpage.shared.rpc;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,11 +46,27 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsContainerpageServiceAsync {
+
+    /**
+     * Adds an element specified by it's id to the favorite list.<p>
+     * 
+     * @param clientId the element id
+     * @param callback the call-back executed on response
+     */
+    void addToFavoriteList(String clientId, AsyncCallback<Void> callback);
+
+    /**
+     * Adds an element specified by it's id to the recent list.<p>
+     * 
+     * @param clientId the element id
+     * @param callback the call-back executed on response
+     */
+    void addToRecentList(String clientId, AsyncCallback<Void> callback);
 
     /**
      * Requests container element data by client id.<p>
@@ -65,4 +83,44 @@ public interface I_CmsContainerpageServiceAsync {
         Collection<String> clientIds,
         Set<String> containerTypes,
         AsyncCallback<Map<String, CmsContainerElement>> callback);
+
+    /**
+     * Requests the container element data of the favorite list.<p>
+     * 
+     * @param containerpageUri the current URI
+     * @param containerTypes the container types of the current page
+     * @param callback the call-back executed on response
+     */
+    void getFavoriteList(
+        String containerpageUri,
+        Set<String> containerTypes,
+        AsyncCallback<LinkedHashMap<String, CmsContainerElement>> callback);
+
+    /**
+     * Requests the container element data of the recent list.<p>
+     * 
+     * @param containerpageUri the current URI
+     * @param containerTypes the container types of the current page
+     * @param callback the call-back executed on response
+     */
+    void getRecentList(
+        String containerpageUri,
+        Set<String> containerTypes,
+        AsyncCallback<LinkedHashMap<String, CmsContainerElement>> callback);
+
+    /**
+     * Saves the favorite list.<p>
+     * 
+     * @param clientIds favorite list element id's
+     * @param callback the call-back executed on response
+     */
+    void saveFavoriteList(List<String> clientIds, AsyncCallback<Void> callback);
+
+    /**
+     * Saves the recent list.<p>
+     * 
+     * @param clientIds recent list element id's
+     * @param callback the call-back executed on response
+     */
+    void saveRecentList(List<String> clientIds, AsyncCallback<Void> callback);
 }

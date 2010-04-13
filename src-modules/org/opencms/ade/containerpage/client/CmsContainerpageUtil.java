@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 14:27:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants;
@@ -55,7 +56,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +64,8 @@ public class CmsContainerpageUtil {
 
     /** List of buttons of the tool-bar. */
     private List<I_CmsContainerpageToolbarButton> m_toolbarButtons;
+
+    private CmsToolbarClipboardMenu m_clipboard;
 
     /**
      * Constructor.<p>
@@ -72,6 +75,15 @@ public class CmsContainerpageUtil {
     public CmsContainerpageUtil(List<I_CmsContainerpageToolbarButton> toolbarButtons) {
 
         m_toolbarButtons = toolbarButtons;
+        Iterator<I_CmsContainerpageToolbarButton> it = m_toolbarButtons.iterator();
+        while (it.hasNext()) {
+            I_CmsContainerpageToolbarButton button = it.next();
+            if (button.getName().equals(CmsToolbarClipboardMenu.BUTTON_NAME)) {
+                m_clipboard = (CmsToolbarClipboardMenu)button;
+                break;
+            }
+
+        }
     }
 
     /**
@@ -183,6 +195,16 @@ public class CmsContainerpageUtil {
             containerElement.getClientId(),
             containerElement.getFile(),
             containerElement.getNoEditReason());
+    }
+
+    /**
+     * Returns the clipboard.<p>
+     *
+     * @return the clipboard
+     */
+    public CmsToolbarClipboardMenu getClipboard() {
+
+        return m_clipboard;
     }
 
 }

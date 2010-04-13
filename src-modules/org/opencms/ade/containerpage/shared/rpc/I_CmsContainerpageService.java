@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/13 14:27:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,7 +48,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -54,12 +56,30 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface I_CmsContainerpageService extends RemoteService {
 
     /**
+     * Adds an element specified by it's id to the favorite list.<p>
+     * 
+     * @param clientId the element id
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void addToFavoriteList(String clientId) throws CmsRpcException;
+
+    /**
+     * Adds an element specified by it's id to the recent list.<p>
+     * 
+     * @param clientId the element id
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void addToRecentList(String clientId) throws CmsRpcException;
+
+    /**
      * Returns container element data by client id.<p>
      * 
      * @param containerpageUri the current URI
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
-     * @param containerTypes the container type of the current page
+     * @param containerTypes the container types of the current page
      * 
      * @return the element data
      * 
@@ -70,5 +90,49 @@ public interface I_CmsContainerpageService extends RemoteService {
         String reqParams,
         Collection<String> clientIds,
         Set<String> containerTypes) throws CmsRpcException;
+
+    /**
+     * Returns the container element data of the favorite list.<p>
+     * 
+     * @param containerpageUri the current URI
+     * @param containerTypes the container types of the current page
+     * 
+     * @return the favorite list element data
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    LinkedHashMap<String, CmsContainerElement> getFavoriteList(String containerpageUri, Set<String> containerTypes)
+    throws CmsRpcException;
+
+    /**
+     * Returns the container element data of the recent list.<p>
+     * 
+     * @param containerpageUri the current URI
+     * @param containerTypes the container types of the current page
+     * 
+     * @return the recent list element data
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    LinkedHashMap<String, CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes)
+    throws CmsRpcException;
+
+    /**
+     * Saves the favorite list.<p>
+     * 
+     * @param clientIds favorite list element id's
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void saveFavoriteList(List<String> clientIds) throws CmsRpcException;
+
+    /**
+     * Saves the recent list.<p>
+     * 
+     * @param clientIds recent list element id's
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void saveRecentList(List<String> clientIds) throws CmsRpcException;
 
 }

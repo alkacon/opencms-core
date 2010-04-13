@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/13 14:27:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,8 +44,8 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarSaveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton;
+import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
-import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -62,9 +62,6 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -73,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -102,6 +99,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
+
+        I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.contentEditorCss().ensureInjected();
+
         List<I_CmsContainerpageToolbarButton> toolbarButtons = new ArrayList<I_CmsContainerpageToolbarButton>();
         toolbarButtons.add(new CmsToolbarPublishButton());
         toolbarButtons.add(new CmsToolbarSaveButton());
@@ -116,18 +117,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         toolbarButtons.add(new CmsToolbarResetButton());
         initToolbar(toolbarButtons);
         CmsContainerpageDataProvider.init(toolbarButtons);
-
-        I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
-        org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
-        Window.addWindowClosingHandler(new Window.ClosingHandler() {
-
-            public void onWindowClosing(ClosingEvent event) {
-
-                Cookies.setCookie("test", "test");
-
-            }
-        });
-
     }
 
     /**

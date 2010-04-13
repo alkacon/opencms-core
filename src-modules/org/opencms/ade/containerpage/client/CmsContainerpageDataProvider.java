@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDataProvider.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/13 14:27:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -332,6 +332,70 @@ public final class CmsContainerpageDataProvider {
         if (INSTANCE == null) {
             INSTANCE = new CmsContainerpageDataProvider(toolbarButtons);
         }
+    }
+
+    /**
+     * Adds an element specified by it's id to the favorite list.<p>
+     * 
+     * @param clientId the element id
+     */
+    public void addToFavoriteList(final String clientId) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().addToFavoriteList(clientId, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                CmsDebugLog.getInstance().printLine("Added " + clientId + " to favorite list");
+
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Adds an element specified by it's id to the recent list.<p>
+     * 
+     * @param clientId the element id
+     */
+    public void addToRecentList(final String clientId) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().addToRecentList(clientId, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                CmsDebugLog.getInstance().printLine("Added " + clientId + " to recent list");
+
+            }
+        };
+        action.execute();
     }
 
     /**
