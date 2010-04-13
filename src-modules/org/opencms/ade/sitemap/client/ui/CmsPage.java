@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsPage.java,v $
- * Date   : $Date: 2010/03/31 12:19:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/13 09:17:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.ade.sitemap.client.ui;
 
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -45,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -73,7 +71,6 @@ public class CmsPage extends Composite {
      */
     public CmsPage() {
 
-        I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
     }
 

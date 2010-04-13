@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsMultiCheckBox.java,v $
- * Date   : $Date: 2010/03/15 09:29:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 09:17:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.util.CmsPair;
 
@@ -50,15 +49,12 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  *  
  */
 public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
-
-    /** CSS bundle for this widget. */
-    private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** Error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
@@ -87,7 +83,7 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
         m_panel.add(m_table);
         m_panel.add(m_error);
         initWidget(m_panel);
-        m_panel.setStyleName(CSS.multiCheckBox());
+        m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().multiCheckBox());
         int i = 0;
         for (CmsPair<String, String> pair : items) {
             String value = pair.getSecond();
@@ -95,10 +91,6 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
             m_table.setText(i, 1, value);
             i += 1;
         }
-    }
-
-    static {
-        CSS.ensureInjected();
     }
 
     /**

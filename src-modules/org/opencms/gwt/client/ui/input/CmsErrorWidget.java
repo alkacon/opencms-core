@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsErrorWidget.java,v $
- * Date   : $Date: 2010/03/10 12:51:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 09:17:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -42,14 +41,11 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
 public class CmsErrorWidget extends Composite {
-
-    /** The CSS bundle for this widget. */
-    private static I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** The internal label that displays the error message. */
     private Label m_label;
@@ -64,10 +60,6 @@ public class CmsErrorWidget extends Composite {
         setText(null);
     }
 
-    static {
-        CSS.ensureInjected();
-    }
-
     /**
      * Creates the a new error label.<p>
      * 
@@ -76,7 +68,7 @@ public class CmsErrorWidget extends Composite {
     private static Label createErrorLabel() {
 
         Label label = new Label();
-        label.addStyleName(CSS.error());
+        label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().error());
         return label;
     }
 

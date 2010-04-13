@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButtonGroup.java,v $
- * Date   : $Date: 2010/04/06 08:25:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 09:17:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.util.CmsPair;
 
@@ -57,15 +56,12 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
  */
 public class CmsRadioButtonGroup extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String> {
-
-    /** CSS bundle for this widget. */
-    private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** A collection of event handlers for this widget. */
     HandlerManager m_handlers = new HandlerManager(null);
@@ -114,11 +110,7 @@ public class CmsRadioButtonGroup extends Composite implements I_CmsFormWidget, H
             i += 1;
         }
         initWidget(m_panel);
-        m_panel.setStyleName(CSS.radioButtonGroup());
-    }
-
-    static {
-        CSS.ensureInjected();
+        m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().radioButtonGroup());
     }
 
     /**

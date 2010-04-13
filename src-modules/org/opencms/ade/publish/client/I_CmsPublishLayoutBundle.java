@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/I_CmsPublishLayoutBundle.java,v $
- * Date   : $Date: 2010/03/29 08:47:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -51,9 +51,6 @@ public interface I_CmsPublishLayoutBundle extends ClientBundle {
 
     /** The instance of the layout bundle. */
     I_CmsPublishLayoutBundle INSTANCE = GWT.create(I_CmsPublishLayoutBundle.class);
-
-    /** The instance of the CSS bundle. */
-    I_CmsPublishCss CSS = INSTANCE.publishCss();
 
     /**
      * The accessor for the CSS constants bundle.<p>

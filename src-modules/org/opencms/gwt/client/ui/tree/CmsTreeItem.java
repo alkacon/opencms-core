@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/03/31 12:15:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 09:17:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -115,10 +115,6 @@ public class CmsTreeItem extends CmsSimpleListItem {
         if (!showOpeners) {
             hideOpeners();
         }
-    }
-
-    static {
-        CSS.ensureInjected();
     }
 
     /**

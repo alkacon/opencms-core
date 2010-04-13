@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbar.java,v $
- * Date   : $Date: 2010/04/06 09:49:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  * 
@@ -85,9 +83,7 @@ public class CmsToolbar extends Composite {
      */
     public CmsToolbar() {
 
-        I_CmsLayoutBundle.INSTANCE.toolbarCss().ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
-
     }
 
     /**

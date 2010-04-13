@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishUtil.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,20 +31,19 @@
 
 package org.opencms.ade.publish.client;
 
-
 /**
  * Utility class for the publish dialog.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public final class CmsPublishUtil {
 
     /** The CSS bundle for the publish dialog. <p> */
-    private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.CSS;
+    private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
     /**
      * Hide constructor.<p>
@@ -52,10 +51,6 @@ public final class CmsPublishUtil {
     private CmsPublishUtil() {
 
         // empty
-    }
-
-    static {
-        CSS.ensureInjected();
     }
 
     /**

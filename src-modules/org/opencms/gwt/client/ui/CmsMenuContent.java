@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuContent.java,v $
- * Date   : $Date: 2010/03/11 08:07:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -69,7 +69,6 @@ public class CmsMenuContent extends PopupPanel {
         shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow());
         m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
         getElement().insertFirst(shadowDiv);
-        I_CmsLayoutBundle.INSTANCE.dialogCss().ensureInjected();
     }
 
     /**

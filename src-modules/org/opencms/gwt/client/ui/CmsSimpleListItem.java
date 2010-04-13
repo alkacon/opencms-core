@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleListItem.java,v $
- * Date   : $Date: 2010/03/22 16:16:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 09:17:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -45,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -58,9 +57,6 @@ public class CmsSimpleListItem extends CmsListItem {
     interface I_CmsSimpleListItemUiBinder extends UiBinder<Panel, CmsSimpleListItem> {
         // GWT interface, nothing to do here
     }
-
-    /** The CSS bundle used for this widget. */
-    private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
 
     /** The ui-binder instance for this class. */
     private static I_CmsSimpleListItemUiBinder uiBinder = GWT.create(I_CmsSimpleListItemUiBinder.class);
@@ -92,10 +88,6 @@ public class CmsSimpleListItem extends CmsListItem {
             }
             m_content.add(content[content.length - 1]);
         }
-    }
-
-    static {
-        CSS.ensureInjected();
     }
 
     /**
@@ -146,7 +138,6 @@ public class CmsSimpleListItem extends CmsListItem {
 
         m_panel = uiBinder.createAndBindUi(this);
         initWidget(m_panel);
-        m_content.addStyleName(CSS.listTreeItemContent());
+        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.listTreeCss().listTreeItemContent());
     }
-
 }

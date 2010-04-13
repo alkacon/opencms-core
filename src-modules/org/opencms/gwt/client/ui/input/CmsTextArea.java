@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextArea.java,v $
- * Date   : $Date: 2010/03/10 12:51:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 09:17:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.TextArea;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -80,11 +80,6 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
         m_panel.add(m_error);
         m_textArea.addStyleName(CSS.textArea());
         m_textAreaContainer.addStyleName(CSS.textAreaContainer());
-
-    }
-
-    static {
-        CSS.ensureInjected();
     }
 
     /**

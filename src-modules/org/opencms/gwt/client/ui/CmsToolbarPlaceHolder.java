@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarPlaceHolder.java,v $
- * Date   : $Date: 2010/03/15 12:43:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
@@ -43,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -64,7 +62,6 @@ public class CmsToolbarPlaceHolder extends Composite {
      */
     public CmsToolbarPlaceHolder() {
 
-        I_CmsLayoutBundle.INSTANCE.toolbarCss().ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
     }
 }

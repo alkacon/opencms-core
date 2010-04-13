@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2010/04/07 13:35:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client;
 
 import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.util.CmsStringUtil;
@@ -45,7 +46,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -70,9 +71,25 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
 
         enableRemoteExceptionHandler();
 
-        I_CmsLayoutBundle.INSTANCE.dialogCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.dialogCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.headerCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.highlightCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.iconsCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.stateCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.toolbarCss().ensureInjected();
+
+        I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();
+
         I_CmsImageBundle.INSTANCE.style().ensureInjected();
+
+        I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();
+
+        I_CmsToolbarButtonLayoutBundle.INSTANCE.style().ensureInjected();
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsButton.java,v $
- * Date   : $Date: 2010/03/29 06:39:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -58,10 +58,6 @@ public class CmsButton extends PushButton {
 
         super();
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
-    }
-
-    static {
-        I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
     }
 
     /**

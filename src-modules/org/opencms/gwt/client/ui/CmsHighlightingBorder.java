@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHighlightingBorder.java,v $
- * Date   : $Date: 2010/03/26 13:02:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -125,8 +125,6 @@ public class CmsHighlightingBorder extends Composite {
         style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
         style.setHeight(height + 2 * BORDER_OFFSET, Unit.PX);
         style.setWidth(width + 2 * BORDER_OFFSET, Unit.PX);
-
-        I_CmsLayoutBundle.INSTANCE.highlightCss().ensureInjected();
     }
 
     /**

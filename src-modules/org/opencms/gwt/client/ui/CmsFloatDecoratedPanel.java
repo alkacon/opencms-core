@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/03/31 12:15:10 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -88,10 +88,6 @@ public class CmsFloatDecoratedPanel extends Composite {
         initWidget(m_panel);
         // we only make the widget visible after the layout has been updated to prevent "flickering"
         getElement().getStyle().setVisibility(Visibility.HIDDEN);
-    }
-
-    static {
-        CSS.ensureInjected();
     }
 
     /**

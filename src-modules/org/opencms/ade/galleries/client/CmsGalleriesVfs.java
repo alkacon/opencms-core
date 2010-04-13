@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesVfs.java,v $
- * Date   : $Date: 2010/03/31 13:35:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/13 09:17:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -65,16 +65,13 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
     private I_CmsGalleryServiceAsync m_gallerySvc;
 
     /**
-     * Returns the gallery service instance.<p>
-     * 
-     * @return the gallery service instance
+     * Ensures all style sheets are loaded.<p>
      */
-    protected I_CmsGalleryServiceAsync getGalleryService() {
+    public static void initCss() {
 
-        if (m_gallerySvc == null) {
-            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
-        }
-        return m_gallerySvc;
+        I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
+        org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
     }
 
     /**
@@ -84,7 +81,7 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
+        initCss();
         final CmsFlowPanel html = new CmsFlowPanel(CmsDomUtil.Tag.div.name());
         html.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryDialogSize());
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleriesDialog());
@@ -144,5 +141,18 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
             }
         };
         getInitialAction.execute();
+    }
+
+    /**
+     * Returns the gallery service instance.<p>
+     * 
+     * @return the gallery service instance
+     */
+    protected I_CmsGalleryServiceAsync getGalleryService() {
+
+        if (m_gallerySvc == null) {
+            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
+        }
+        return m_gallerySvc;
     }
 }

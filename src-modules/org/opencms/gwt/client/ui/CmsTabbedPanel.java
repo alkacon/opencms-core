@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/04/13 07:10:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  * 
@@ -118,7 +118,6 @@ public class CmsTabbedPanel extends Composite {
                 I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabBar());
         }
 
-        I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().ensureInjected();
         m_tabPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
     }
 
@@ -145,7 +144,6 @@ public class CmsTabbedPanel extends Composite {
                 I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelTabBar());
         }
 
-        I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().ensureInjected();
         m_tabPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
     }
 
@@ -196,7 +194,6 @@ public class CmsTabbedPanel extends Composite {
             tabRootEl);
         if ((tabDivs != null) && (tabDivs.size() > tabIndex)) {
             tabDivs.get(tabIndex).addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin());
-            I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().ensureInjected();
         }
     }
 

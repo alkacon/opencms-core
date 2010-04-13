@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/04/12 11:37:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -67,6 +67,7 @@ public class CmsPopup {
 
         /** The popup container element. */
         private com.google.gwt.user.client.Element m_containerElement;
+
         /** The main widget of this dialog containing all others. */
         private FlowPanel m_main;
 
@@ -77,16 +78,14 @@ public class CmsPopup {
 
             super(false);
             m_containerElement = super.getContainerElement();
-            this.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
+            setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
             Element shadowDiv = DOM.createDiv();
             shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow());
             m_main = new FlowPanel();
-            this.setWidget(m_main);
+            setWidget(m_main);
             m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
-            this.getElement().insertFirst(shadowDiv);
-            this.setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
-            I_CmsLayoutBundle.INSTANCE.dialogCss().ensureInjected();
-
+            getElement().insertFirst(shadowDiv);
+            setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
         }
 
         /**

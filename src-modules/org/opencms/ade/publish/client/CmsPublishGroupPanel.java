@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,14 +61,14 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsPublishGroupPanel extends Composite {
 
     /** The CSS bundle used for this widget. */
-    protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.CSS;
+    protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
     /** The group header (containing the label and add/remove buttons). */
     private CmsListItem m_header = new CmsListItem();
@@ -110,11 +110,6 @@ public class CmsPublishGroupPanel extends Composite {
         clear.setStyleName(CSS.clear());
         m_header.add(clear);
 
-    }
-
-    static {
-        I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().ensureInjected();
-        CSS.ensureInjected();
     }
 
     /**

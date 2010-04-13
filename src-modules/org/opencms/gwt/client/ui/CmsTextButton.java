@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTextButton.java,v $
- * Date   : $Date: 2010/03/11 08:07:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/13 09:17:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -91,15 +91,14 @@ public class CmsTextButton extends CmsButton {
     public CmsTextButton() {
 
         super();
-        I_CmsLayoutBundle.INSTANCE.buttonCss().ensureInjected();
-        this.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton());
         m_buttonStyle = BUTTON_STYLE.cmsButtonMedium;
 
     }
 
     /**
      * Constructor for <code>CmsTextButton</code>. The supplied text is used to
-     * construct the default face of the button.
+     * construct the default face of the button.<p>
      * 
      * @param text the text for the default (up) face of the button, set to <code>null</code> to not show any
      * @param imageClass the up face image class to use, set to <code>null</code> to not show any
@@ -107,13 +106,12 @@ public class CmsTextButton extends CmsButton {
     public CmsTextButton(String text, String imageClass) {
 
         this();
-        this.setUpFace(text, imageClass);
-
+        setUpFace(text, imageClass);
     }
 
     /**
      * Constructor for <code>CmsTextButton</code>. The supplied text is used to
-     * construct the default face of the button.
+     * construct the default face of the button.<p>
      * 
      * @param text the text for the default (up) face of the button, set to <code>null</code> to not show any
      * @param imageClass the up face image class to use, set to <code>null</code> to not show any
@@ -127,7 +125,7 @@ public class CmsTextButton extends CmsButton {
 
     /**
      * Constructor for <code>CmsTextButton</code>. The supplied text is used to
-     * construct the default face of the button.
+     * construct the default face of the button.<p>
      * 
      * @param text the text for the default (up) face of the button, set to <code>null</code> to not show any
      * @param imageClass the up face image class to use, set to <code>null</code> to not show any
