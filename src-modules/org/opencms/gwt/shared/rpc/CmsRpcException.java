@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/CmsRpcException.java,v $
- * Date   : $Date: 2010/03/11 10:28:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 13:45:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,18 @@
 
 package org.opencms.gwt.shared.rpc;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * RPC Exception.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
-public class CmsRpcException extends Exception {
+public class CmsRpcException extends Exception implements IsSerializable {
 
     /** Serialization uid. */
     private static final long serialVersionUID = 7582056307629544840L;
