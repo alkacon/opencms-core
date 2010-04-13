@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/rpc/Attic/I_CmsPublishService.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/13 09:17:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,9 @@
 package org.opencms.ade.publish.shared.rpc;
 
 import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.util.CmsUUID;
@@ -49,12 +49,21 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 @RemoteServiceRelativePath("org.opencms.ade.publish.CmsPublishService.gwt")
 public interface I_CmsPublishService extends RemoteService {
+
+    /**
+     * Returns the initial publish data.<p>
+     * 
+     * @return the initial publish data
+     *  
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsPublishData getInitData() throws CmsRpcException;
 
     /**
      * Gets a list of projects from the server.<p>
@@ -84,15 +93,6 @@ public interface I_CmsPublishService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     CmsPublishOptions getPublishOptions() throws CmsRpcException;
-
-    /**
-     * Gets a bean containing both the publish options and the list of projects.<p>
-     * 
-     * @return a list containing projects and publish options
-     *  
-     * @throws CmsRpcException if something goes wrong
-     */
-    CmsPublishOptionsAndProjects getPublishOptionsAndProjects() throws CmsRpcException;
 
     /**
      * Tries to publish a list of resources.<p>

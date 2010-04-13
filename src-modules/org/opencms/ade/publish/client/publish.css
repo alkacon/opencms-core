@@ -50,13 +50,11 @@
 }
 
 .groupPanel {
-	width: 600px;
 	zoom: 1;
 }
 
 .scrollPanel {
 	max-height: 400px;
-	width: 640px;
 	-moz-border-radius: 4px;
 	border: 1px solid value("constants.borderColor");
 	margin-left: 10px;
@@ -66,7 +64,6 @@
 }
 
 .noResources {
-	width: 640px;
 }
 
 .text {
@@ -97,14 +94,9 @@
 
 .selector {
 	display: inline-block;
-	width: 100px !important;
+	width: 200px !important;
 	vertical-align: middle;
 }
-
-.invisible {
-	visibility: hidden;
-}
-
 
 .noState {}
 

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishOptionsAndProjects.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishData.java,v $
+ * Date   : $Date: 2010/04/13 09:17:28 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0
  */
-public class CmsPublishOptionsAndProjects implements IsSerializable {
+public class CmsPublishData implements IsSerializable {
+
+    /** The publish groups. */
+    private List<CmsPublishGroup> m_groups;
 
     /** The publish options. */
     private CmsPublishOptions m_options;
@@ -57,19 +60,31 @@ public class CmsPublishOptionsAndProjects implements IsSerializable {
      * 
      * @param options the publish options 
      * @param projects the map of projects 
+     * @param groups the publish groups
      */
-    public CmsPublishOptionsAndProjects(CmsPublishOptions options, List<CmsProjectBean> projects) {
+    public CmsPublishData(CmsPublishOptions options, List<CmsProjectBean> projects, List<CmsPublishGroup> groups) {
 
         m_options = options;
         m_projects = projects;
+        m_groups = groups;
     }
 
     /**
      * For serialization.<p>
      */
-    protected CmsPublishOptionsAndProjects() {
+    protected CmsPublishData() {
 
         // for serialization
+    }
+
+    /**
+     * Returns the publish groups.<p>
+     *
+     * @return the publish groups
+     */
+    public List<CmsPublishGroup> getGroups() {
+
+        return m_groups;
     }
 
     /**

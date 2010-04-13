@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/13 06:24:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/13 09:17:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,9 @@
 package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  * 
@@ -168,9 +168,6 @@ public class CmsPublishDialog extends CmsPopupDialog {
     /** The root panel of this dialog which contains both the selection panel and the panel for displaying broken links. */
     private DeckPanel m_panel = new DeckPanel();
 
-    /** The list containing the projects selectable in the publish dialog. */
-    private List<CmsProjectBean> m_projects;
-
     /**
      * Constructs a new publish dialog.<p>
      * 
@@ -184,14 +181,14 @@ public class CmsPublishDialog extends CmsPopupDialog {
         CmsPublishOptions options) {
 
         super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
+        initCss();
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
+        setWidth("800px");
         m_panel = (DeckPanel)getContent();
-        m_projects = projects;
-        m_publishSelectPanel = new CmsPublishSelectPanel(this, m_projects, options);
+        m_publishSelectPanel = new CmsPublishSelectPanel(this, projects, options);
 
-        //initWidget(m_panel);
         m_panel.add(m_publishSelectPanel);
         m_panel.add(m_brokenLinksPanel);
         setPanel(PANEL_SELECT);
@@ -199,68 +196,60 @@ public class CmsPublishDialog extends CmsPopupDialog {
         m_publishService = publishService;
     }
 
-    static {
-        I_CmsPublishLayoutBundle.CSS.ensureInjected();
+    /**
+     * Convenience method which opens a publish dialog.<p>
+     */
+    public static void showPublishDialog() {
+
+        showPublishDialog(null);
     }
 
     /**
      * Convenience method which opens a publish dialog.<p>
-     * 
-     */
-    public static void showPublishDialog() {
-
-        final I_CmsPublishServiceAsync publishService = GWT.create(I_CmsPublishService.class);
-        (new CmsRpcAction<CmsPublishOptionsAndProjects>() {
-
-            @Override
-            public void execute() {
-
-                start(0);
-                publishService.getPublishOptionsAndProjects(this);
-            }
-
-            @Override
-            protected void onResponse(CmsPublishOptionsAndProjects result) {
-
-                CmsPublishDialog publishDialog = new CmsPublishDialog(
-                    publishService,
-                    result.getProjects(),
-                    result.getOptions());
-                stop();
-                publishDialog.center();
-            }
-        }).execute();
-    }
-
-    /**
-     * Convenience method which opens a publish dialog and adds a close handler to it.<p>
      * 
      * @param handler the close handler
      */
     public static void showPublishDialog(final CloseHandler<PopupPanel> handler) {
 
         final I_CmsPublishServiceAsync publishService = GWT.create(I_CmsPublishService.class);
-        (new CmsRpcAction<CmsPublishOptionsAndProjects>() {
+        (new CmsRpcAction<CmsPublishData>() {
 
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
             @Override
             public void execute() {
 
-                start(0);
-                publishService.getPublishOptionsAndProjects(this);
+                start(200);
+                publishService.getInitData(this);
             }
 
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
             @Override
-            protected void onResponse(CmsPublishOptionsAndProjects result) {
+            protected void onResponse(final CmsPublishData result) {
 
                 CmsPublishDialog publishDialog = new CmsPublishDialog(
                     publishService,
                     result.getProjects(),
                     result.getOptions());
-                publishDialog.addCloseHandler(handler);
+                publishDialog.onReceivePublishList(result.getGroups());
+                if (handler != null) {
+                    publishDialog.addCloseHandler(handler);
+                }
                 stop();
                 publishDialog.center();
             }
         }).execute();
+    }
+
+    /**
+     * Ensures all style sheets are loaded.<p>
+     */
+    public void initCss() {
+
+        I_CmsPublishLayoutBundle.INSTANCE.publishCss().ensureInjected();
     }
 
     /**
@@ -268,8 +257,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
      */
     public void onCancel() {
 
-        this.hide();
-
+        hide();
     }
 
     /**
@@ -298,7 +286,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
 
         m_publishSelectPanel.setGroups(groups);
         setPanel(PANEL_SELECT);
-        if (!this.isVisible()) {
+        if (!isVisible()) {
             center();
         }
     }

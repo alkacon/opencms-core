@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishService.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 09:17:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,9 @@
 package org.opencms.ade.publish;
 
 import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishOptionsAndProjects;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.file.CmsObject;
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  * 
@@ -71,6 +71,20 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /** Session attribute name constant. */
     private static final String SESSION_ATTR_ADE_PUB_OPTS_CACHE = "__OCMS_ADE_PUB_OPTS_CACHE__";
+
+    /**
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getInitData()
+     */
+    public CmsPublishData getInitData() throws CmsRpcException {
+
+        try {
+            CmsPublishOptions options = getCachedOptions();
+            return new CmsPublishData(options, getProjects(), getPublishGroups(options));
+        } catch (Throwable e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
+        }
+    }
 
     /**
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getProjects()
@@ -107,19 +121,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
         try {
             return getCachedOptions();
-        } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
-        }
-    }
-
-    /**
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getPublishOptionsAndProjects()
-     */
-    public CmsPublishOptionsAndProjects getPublishOptionsAndProjects() throws CmsRpcException {
-
-        try {
-            return new CmsPublishOptionsAndProjects(getCachedOptions(), getProjects());
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             throw new CmsRpcException(CmsException.getStackTraceAsString(e));

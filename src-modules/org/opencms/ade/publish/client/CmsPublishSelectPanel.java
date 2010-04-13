@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 09:17:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,13 +39,12 @@ import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsTextButton;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
@@ -72,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -187,12 +186,13 @@ public class CmsPublishSelectPanel extends Composite {
         m_groupPanel.setStyleName(CSS.groupPanel());
         m_topBar.setStyleName(CSS.topBar());
 
-        Map<String, String> projectData = new HashMap<String, String>();
-        projectData.put(CmsUUID.getNullUUID().toString(), Messages.get().key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
+        List<CmsPair<String, String>> items = new ArrayList<CmsPair<String, String>>();
+        items.add(new CmsPair<String, String>(CmsUUID.getNullUUID().toString(), Messages.get().key(
+            Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0)));
         for (CmsProjectBean project : projects) {
-            projectData.put(project.getId().toString(), project.getName());
+            items.add(new CmsPair<String, String>(project.getId().toString(), project.getName()));
         }
-        m_projectSelector = new CmsSelectBox(CmsSelectBox.Mode.TEXT, projectData);
+        m_projectSelector = new CmsSelectBox(items);
         m_projectSelector.addStyleName(CSS.selector());
         m_selectorPanel.add(m_projectSelector);
         m_scrollPanel.setStyleName(CSS.scrollPanel());
@@ -280,10 +280,6 @@ public class CmsPublishSelectPanel extends Composite {
         m_numProblems = 0;
     }
 
-    static {
-        CSS.ensureInjected();
-    }
-
     /**
      * Returns the buttons of this panel which should be shown as the buttons of the publish dialog.<p>
      * @return a list of buttons
@@ -335,16 +331,6 @@ public class CmsPublishSelectPanel extends Composite {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.Widget#onLoad()
-     */
-    @Override
-    public void onLoad() {
-
-        addStyleName(CSS.invisible());
-        m_publishDialog.onChangeOptions();
-    }
-
-    /**
      * Sets the state of all publish checkboxes in this widget to a given value.<p>
      * 
      * @param checked the new value for all the publish checkboxes
@@ -383,7 +369,6 @@ public class CmsPublishSelectPanel extends Composite {
             m_groups.add(groupPanel);
             m_groupPanel.add(groupPanel);
         }
-        removeStyleName(CSS.invisible());
         showProblemCount();
     }
 
