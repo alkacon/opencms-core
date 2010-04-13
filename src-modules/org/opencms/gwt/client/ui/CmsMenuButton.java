@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/04/12 11:37:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/13 14:08:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -239,6 +240,7 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
      */
     public void openMenu() {
 
+        // TODO: verify if there are layout differences between IE and other browsers
         if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
             // 
             m_content.setPopupPosition(m_button.getAbsoluteLeft() - 5, m_button.getAbsoluteTop() + 34);
@@ -252,12 +254,15 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
 
         m_menuConnect.removeClassName(m_style.hidden());
         m_content.show();
-        //        this.getElement().getOffsetParent();
-        //        this.getElement();
+
+        // overriding position absolute set by PopupPanel 
+        m_content.getElement().getStyle().setPosition(Position.FIXED);
+
         m_resizeRegistration = Window.addResizeHandler(new ResizeHandler() {
 
             public void onResize(ResizeEvent event) {
 
+                // TODO: verify if there are layout differences between IE and other browsers
                 if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
                     // 
                     m_content.setPopupPosition(m_button.getAbsoluteLeft() - 5, m_button.getAbsoluteTop() + 34);

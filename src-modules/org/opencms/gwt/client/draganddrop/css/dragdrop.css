@@ -70,7 +70,6 @@ body.dragStarted{
 		
 	}
 	.dragPlaceholder{
-		border: solid 1px value("constantsCss.borderColor");
 		opacity: 0.5;
 	}
 
@@ -79,7 +78,6 @@ body.dragStarted{
 		-webkit-box-shadow: 4px 4px 4px #666666;
 	}
 	.dragPlaceholder{
-		border: solid 1px value("constantsCss.borderColor");
 		opacity: 0.5;
 	}
 
@@ -88,7 +86,6 @@ body.dragStarted{
 		box-shadow: 4px 4px 4px #666666;
 	}
 	.dragPlaceholder{
-		border: solid 1px value("constantsCss.borderColor");
 		opacity: 0.5;
 	}
 
@@ -97,7 +94,6 @@ body.dragStarted{
 		 filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)");
 	}
 	.dragPlaceholder{
-		border: solid 1px value("constantsCss.borderColor");
 		filter: literal("progid:DXImageTransform.Microsoft.Alpha( Opacity=50, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)");
 		zoom: 1;
 	}
