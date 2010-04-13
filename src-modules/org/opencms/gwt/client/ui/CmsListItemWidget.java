@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/01 13:46:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/13 09:11:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
+import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
@@ -57,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -274,7 +275,6 @@ public class CmsListItemWidget extends Composite {
         CmsHTMLHoverPanel itemContent = uiBinder.createAndBindUi(this);
         panel.add(itemContent, m_rootId);
         initWidget(panel);
-        I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().ensureInjected();
         m_title.setText(infoBean.getTitle());
         m_subTitle.setText(infoBean.getSubTitle());
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {

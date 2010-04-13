@@ -1,14 +1,15 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui" 
+	xmlns:cmsInput="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<cms:CmsHTMLHoverPanel styleName="{resources.listItemWidgetCss.itemContainer}">
 			<div class="{resources.listItemWidgetCss.itemContent}">
 				<g:FlowPanel ui:field="m_buttonPanel" styleName="{resources.listItemWidgetCss.buttonPanel}"></g:FlowPanel>
 				<g:SimplePanel styleName="{resources.listItemWidgetCss.itemIcon}" ui:field="m_iconPanel"></g:SimplePanel>
-		    	<g:FlowPanel ui:field="m_titleRow"><cms:CmsLabel ui:field="m_title" styleName="{resources.listItemWidgetCss.itemTitle}"></cms:CmsLabel></g:FlowPanel>
-				<cms:CmsLabel ui:field="m_subTitle"></cms:CmsLabel>
+		    	<g:FlowPanel ui:field="m_titleRow"><cmsInput:CmsLabel ui:field="m_title" styleName="{resources.listItemWidgetCss.itemTitle}"></cmsInput:CmsLabel></g:FlowPanel>
+				<cmsInput:CmsLabel ui:field="m_subTitle"></cmsInput:CmsLabel>
 			</div>
 			<cms:CmsSimplePanel styleName="{resources.listItemWidgetCss.itemAdditional}" ui:field="m_additionalInfo"></cms:CmsSimplePanel>
 	</cms:CmsHTMLHoverPanel>

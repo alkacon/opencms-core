@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/04/06 07:31:13 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
+ * Date   : $Date: 2010/04/13 09:11:28 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,8 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStringUtil;
@@ -60,6 +61,7 @@ import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWordWrap;
@@ -70,12 +72,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
 public class CmsLabel extends Widget
-implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAllMouseHandlers {
+implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandlers, HasAllMouseHandlers {
 
     /** List of elements to measure. */
     protected static ArrayList<Element> m_elements;
@@ -109,6 +111,7 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
 
         m_truncate = true;
         setElement(element);
+        getElement().addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().label());
     }
 
     /**
@@ -120,18 +123,6 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
 
         this();
         setText(text);
-    }
-
-    /**
-     * Creates a label with the specified text.<p>
-     * 
-     * @param text the new label's text
-     * @param wordWrap <code>false</code> to disable word wrapping
-     */
-    public CmsLabel(String text, boolean wordWrap) {
-
-        this(text);
-        setWordWrap(wordWrap);
     }
 
     /**
@@ -180,16 +171,16 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
             newText = CmsStringUtil.formatResourceName(text, maxChars);
         } else if (maxChars > 2) {
             // enough space for ellipsis?
-            newText += "&hellip;";
+            newText += CmsDomUtil.Entity.hellip.html();
         }
         if (newText.isEmpty()) {
             // if empty, it will break the layout
-            newText = "&nbsp;";
+            newText = CmsDomUtil.Entity.nbsp.html();
         }
         // use html instead of text because of the entities
         element.setInnerHTML(newText);
         // add tooltip with the original text
-        element.setAttribute("title", text);
+        element.setAttribute(CmsDomUtil.Attribute.title.name(), text);
     }
 
     /**
@@ -322,6 +313,14 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.HasHTML#getHTML()
+     */
+    public String getHTML() {
+
+        return getElement().getInnerHTML();
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasText#getText()
      */
     public String getText() {
@@ -349,6 +348,16 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Widget#onAttach()
+     */
+    @Override
+    public void onAttach() {
+
+        // just for visibility
+        super.onAttach();
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
      */
     public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
@@ -358,13 +367,20 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.HasHTML#setHTML(java.lang.String)
+     */
+    public void setHTML(String html) {
+
+        getElement().setInnerHTML(html);
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
      */
     public void setText(String text) {
 
         getElement().setInnerText(text);
-        boolean value = false;
-        setWidthChecked(getElement(), value);
+        setWidthChecked(getElement(), false);
         widthCheck();
     }
 
@@ -397,16 +413,6 @@ implements HasHorizontalAlignment, HasText, HasWordWrap, HasClickHandlers, HasAl
             return;
         }
         schedule(this.getElement());
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#onAttach()
-     */
-    @Override
-    protected void onAttach() {
-
-        // just for visibility
-        super.onAttach();
     }
 
     /**

@@ -6,8 +6,6 @@
 /* inner text box of the text box widget */
 .textBox {
 	
-/*	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;*/
 	border: none;
 	width: 100%;
 }
@@ -173,3 +171,8 @@
 		display: inline-block;
 	}
 }	
+
+.label {
+	overflow: hidden;
+	white-space: nowrap;
+}

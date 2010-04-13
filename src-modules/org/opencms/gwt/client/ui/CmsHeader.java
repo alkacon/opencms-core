@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHeader.java,v $
- * Date   : $Date: 2010/04/01 14:36:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/13 09:11:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.dom.client.Style;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
