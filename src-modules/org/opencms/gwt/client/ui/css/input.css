@@ -172,7 +172,7 @@
 	}
 }	
 
-.label {
+.labelTruncated {
 	overflow: hidden;
 	white-space: nowrap;
 }

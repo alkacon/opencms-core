@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/04/13 09:11:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/13 10:29:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,8 +40,11 @@ import org.opencms.gwt.client.util.CmsTextMetrics;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
@@ -64,7 +67,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.HasWordWrap;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -72,12 +74,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsLabel extends Widget
-implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandlers, HasAllMouseHandlers {
+implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMouseHandlers {
 
     /** List of elements to measure. */
     protected static ArrayList<Element> m_elements;
@@ -111,7 +113,6 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
 
         m_truncate = true;
         setElement(element);
-        getElement().addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().label());
     }
 
     /**
@@ -145,6 +146,10 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
 
         // the current element width
         int elementWidth = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
+        if (elementWidth >= textWidth) {
+            element.getStyle().setVisibility(Style.Visibility.VISIBLE);
+            return;
+        }
 
         CmsDebugLog log = CmsDebugLog.getInstance();
         log.printLine("fixElement: ");
@@ -152,14 +157,6 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
         log.printLine("elemWidth: " + elementWidth);
         log.printLine("textWidth: " + textWidth);
 
-        if (elementWidth == 0) {
-            // HACK: from time to time elementWidth seems to be zero :(
-            setWidthChecked(element, false);
-            return;
-        }
-        if (elementWidth >= textWidth) {
-            return;
-        }
         // if the text does not have enough space, fix it
         int maxChars = (int)((float)elementWidth / (float)textWidth * text.length());
         if (maxChars < 1) {
@@ -181,18 +178,28 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
         element.setInnerHTML(newText);
         // add tooltip with the original text
         element.setAttribute(CmsDomUtil.Attribute.title.name(), text);
+        // set the corresponding style
+        element.addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().labelTruncated());
+        element.getStyle().setVisibility(Style.Visibility.VISIBLE);
     }
 
     /**
-     * Gets the width checked value.<p>
+     * Fixes the text as soon as the possible.<p> 
      * 
-     * @param element the element to get it for
+     * @param element the element to fix
      */
-    private static boolean getWidthChecked(Element element) {
+    protected static void fixNow(final Element element) {
 
-        return Boolean.parseBoolean(DOM.getElementAttribute(
-            element.<com.google.gwt.user.client.Element> cast(),
-            ATTR_WIDTH_CHECKED));
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            /**
+             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+             */
+            public void execute() {
+
+                fixElement(element);
+            }
+        });
     }
 
     /**
@@ -200,11 +207,8 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
      * 
      * @param element the element to measure
      */
-    private static void schedule(Element element) {
+    protected static void scheduleUpdate(Element element) {
 
-        if (getWidthChecked(element)) {
-            return;
-        }
         if (m_timer == null) {
             m_elements = new ArrayList<Element>();
             m_elements.add(element);
@@ -222,16 +226,30 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
                     elements.addAll(m_elements);
                     m_elements = null;
                     for (Element elem : elements) {
-                        fixElement(elem);
+                        if (CmsDomUtil.getCurrentStyleInt(elem, CmsDomUtil.Style.width) > 0) {
+                            fixNow(elem);
+                        } else {
+                            scheduleUpdate(elem);
+                        }
                     }
                 }
             };
-            // HACK: from time to time clientWidth seems to be zero :(
-            // specially if waiting less than 300ms, see #fixElement
-            m_timer.schedule(300);
+            m_timer.schedule(10);
         } else {
             m_elements.add(element);
         }
+    }
+
+    /**
+     * Gets the width checked value.<p>
+     * 
+     * @param element the element to get it for
+     */
+    private static boolean getWidthChecked(Element element) {
+
+        return Boolean.parseBoolean(DOM.getElementAttribute(
+            element.<com.google.gwt.user.client.Element> cast(),
+            ATTR_WIDTH_CHECKED));
     }
 
     /**
@@ -329,15 +347,6 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasWordWrap#getWordWrap()
-     */
-    public boolean getWordWrap() {
-
-        return !CmsDomUtil.getCurrentStyle(getElement(), CmsDomUtil.Style.whiteSpace).equals(
-            CmsDomUtil.StyleValue.nowrap.name());
-    }
-
-    /**
      * Checks if text truncation is desired.<p>
      *
      * @return the truncate
@@ -379,6 +388,9 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
      */
     public void setText(String text) {
 
+        if (isTruncate()) {
+            getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+        }
         getElement().setInnerText(text);
         setWidthChecked(getElement(), false);
         widthCheck();
@@ -391,17 +403,10 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
      */
     public void setTruncate(boolean truncate) {
 
+        if (!truncate) {
+            getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+        }
         m_truncate = truncate;
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasWordWrap#setWordWrap(boolean)
-     */
-    public void setWordWrap(boolean wrap) {
-
-        getElement().getStyle().setProperty(
-            CmsDomUtil.Style.whiteSpace.name(),
-            wrap ? CmsDomUtil.StyleValue.normal.name() : CmsDomUtil.StyleValue.nowrap.name());
     }
 
     /**
@@ -412,7 +417,14 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasWordWrap, HasClickHandle
         if (!m_truncate || !isAttached()) {
             return;
         }
-        schedule(this.getElement());
+        Element element = getElement();
+        if (getWidthChecked(element)) {
+            return;
+        }
+        if (CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width) > 0) {
+            fixNow(element);
+        }
+        scheduleUpdate(element);
     }
 
     /**
