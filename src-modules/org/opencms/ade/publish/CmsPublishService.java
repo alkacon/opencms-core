@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishService.java,v $
- * Date   : $Date: 2010/04/13 09:17:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/13 13:59:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  * 
@@ -136,8 +136,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
         try {
             CmsObject cms = getCmsObject();
-            // TODO: i think we need the publish options here!
-            CmsPublish pub = new CmsPublish(cms);
+            CmsPublish pub = new CmsPublish(cms, getCachedOptions());
             List<CmsResource> publishResources = idsToResources(cms, toPublish);
             List<CmsPublishResource> brokenLinkBeans = pub.getBrokenResources(publishResources);
             if (brokenLinkBeans.size() == 0) {
@@ -184,8 +183,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 CmsResource resource = cms.readResource(id, CmsResourceFilter.ALL);
                 result.add(resource);
             } catch (CmsException e) {
+                // should never happen
                 LOG.error(e.getLocalizedMessage(), e);
-                // TODO: do something with these resources. show them to the user?
             }
         }
         return result;
