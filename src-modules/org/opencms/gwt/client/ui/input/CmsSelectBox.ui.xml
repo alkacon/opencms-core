@@ -8,7 +8,7 @@
 		<g:FocusPanel ui:field="m_opener" styleName="{layout.inputCss.selectBoxSelected}">
 			<g:FlowPanel>
 				<g:HTML ui:field="m_arrow"></g:HTML>
-				<cmsInput:CmsLabel ui:field="m_openerLabel" styleName = "{layout.inputCss.selectBoxOpener}"></cmsInput:CmsLabel>
+				<cmsInput:CmsLabel ui:field="m_openerLabel"/>
 			</g:FlowPanel>
 		</g:FocusPanel>
 		<cmsInput:CmsErrorWidget ui:field="m_error" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/04/13 09:11:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/13 10:27:34 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -222,6 +222,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     public CmsSelectBox() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_openerLabel.addStyleName(CSS.selectBoxOpener());
         m_selectBoxState = new CmsStyleVariable(m_opener, m_selector);
         m_selectBoxState.setValue(CSS.selectBoxClosed());
 
@@ -339,6 +340,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_handlerManager.addHandler(ValueChangeEvent.getType(), handler);
         return new HandlerRegistration() {
 
+            /**
+             * @see com.google.gwt.event.shared.HandlerRegistration#removeHandler()
+             */
             public void removeHandler() {
 
                 m_handlerManager.removeHandler(ValueChangeEvent.getType(), handler);
@@ -429,6 +433,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
     /**
      * Handle clicks on the opener.<p>
+     * 
      * @param e the click event
      */
     @UiHandler("m_opener")
