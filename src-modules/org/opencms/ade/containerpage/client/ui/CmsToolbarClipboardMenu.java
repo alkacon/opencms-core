@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/13 14:29:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,34 +32,52 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
+import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
+import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * The clip-board tool-bar menu.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
+
+    private CmsDragTargetMenu m_dropZone;
+
+    /** The button name. */
+    public static final String BUTTON_NAME = "clipboard";
 
     /**
      * Constructor.<p>
      */
     public CmsToolbarClipboardMenu() {
 
-        super(CmsToolbarButton.ButtonData.CLIPBOARD, "clipboard", true);
+        super(CmsToolbarButton.ButtonData.CLIPBOARD, BUTTON_NAME, true);
 
         //TODO: replace the following with the real menu content
-        Label menuContent = new Label("Menu content");
-        menuContent.getElement().getStyle().setHeight(100, Unit.PX);
-        menuContent.getElement().getStyle().setWidth(650, Unit.PX);
-        setMenuWidget(menuContent);
+        FlowPanel content = new FlowPanel();
+        content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
+        //        CmsTabbedPanel tabs=new CmsTabbedPanel();
+        //        content.add(tabs);
+
+        m_dropZone = new CmsDragTargetMenu();
+        m_dropZone.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuDropzone());
+
+        // overriding overflow hidden set by AbsolutePanel
+        m_dropZone.getElement().getStyle().clearOverflow();
+
+        content.add(m_dropZone);
+        //        Label menuContent = new Label("Menu content");
+        //        menuContent.getElement().getStyle().setHeight(100, Unit.PX);
+        //        menuContent.getElement().getStyle().setWidth(650, Unit.PX);
+        setMenuWidget(content);
     }
 
     /**
@@ -96,6 +114,16 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
 
         // TODO: Auto-generated method stub
 
+    }
+
+    /**
+     * Returns the tool-bar drop-zone.<p>
+     *
+     * @return the drop-zone
+     */
+    public CmsDragTargetMenu getDropZone() {
+
+        return m_dropZone;
     }
 
 }

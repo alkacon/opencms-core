@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/13 14:29:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,13 +32,13 @@
 package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
+import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.client.draganddrop.A_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
-import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.ArrayList;
@@ -47,9 +47,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
@@ -60,12 +57,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
 @SuppressWarnings("unchecked")
-public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, I_CmsDragTargetContainer> {
+public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragContainerElement, I_CmsDragTargetContainer> {
 
     /**
      * Bean holding info about draggable elements.<p>
@@ -73,7 +70,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
     protected class DragInfo {
 
         /** The draggable element. */
-        private I_CmsDragElement m_draggable;
+        private I_CmsDragContainerElement m_draggable;
 
         /** The cursor offset left. */
         private int m_offsetLeft;
@@ -92,7 +89,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
          * @param offsetLeft the cursor offset left
          * @param offsetTop the cursor offset top
          */
-        public DragInfo(I_CmsDragElement draggable, Widget placeholder, int offsetLeft, int offsetTop) {
+        public DragInfo(I_CmsDragContainerElement draggable, Widget placeholder, int offsetLeft, int offsetTop) {
 
             m_draggable = draggable;
             m_placeholder1 = placeholder;
@@ -105,7 +102,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
          *
          * @return the draggable element
          */
-        public I_CmsDragElement getDraggable() {
+        public I_CmsDragContainerElement getDraggable() {
 
             return m_draggable;
         }
@@ -150,6 +147,8 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
     /** The element info of the start element. */
     private DragInfo m_startInfo;
 
+    private DragInfo m_dropZoneInfo;
+
     /** Map of element info's. */
     private Map<I_CmsDragTargetContainer, DragInfo> m_targetInfos;
 
@@ -185,7 +184,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getDragElement()
      */
-    public I_CmsDragElement getDragElement() {
+    public I_CmsDragContainerElement getDragElement() {
 
         return m_dragElement;
     }
@@ -206,9 +205,10 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
     @Override
     protected void elementDropAction() {
 
-        if ((m_current != m_startInfo)
-            || (Math.abs(m_currentTarget.getWidgetIndex((Widget)m_current.getDraggable())
-                - m_currentTarget.getWidgetIndex(m_current.getPlaceholder())) > 1)) {
+        if (((m_current != m_startInfo) || (Math.abs(m_currentTarget.getWidgetIndex((Widget)m_current.getDraggable())
+            - m_currentTarget.getWidgetIndex(m_current.getPlaceholder())) > 1))
+            && (m_current != m_dropZoneInfo)) {
+            CmsContainerpageDataProvider.get().addToRecentList(m_dragElement.getClientId());
             CmsContainerpageDataProvider.get().setPageChanged();
         }
         m_currentTarget.insert(
@@ -310,7 +310,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         m_targets.add(m_currentTarget);
         m_currentTarget.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
         m_currentTarget.highlightContainer();
-        String clientId = ((CmsDragContainerElement)m_dragElement).getClientId();
+        String clientId = m_dragElement.getClientId();
         CmsContainerpageDataProvider.get().getElement(clientId, new I_CmsSimpleCallback<CmsContainerElement>() {
 
             /**
@@ -324,6 +324,22 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
             public void execute(CmsContainerElement arg) {
 
                 if ((arg != null) && isDragging()) {
+
+                    // preparing the tool-bar menu drop-zone
+                    CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().openMenu();
+                    I_CmsDragTargetContainer dropZone = CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().getDropZone();
+                    CmsMenuListItem menuItem = new CmsMenuListItem(arg, dropZone);
+                    dropZone.add(menuItem);
+                    DragInfo infoMenu = new DragInfo(
+                        menuItem,
+                        createPlaceholder(menuItem),
+                        menuItem.getOffsetWidth() - 20,
+                        20);
+                    addTargetInfo(dropZone, infoMenu);
+                    prepareElement(infoMenu, dropZone, true);
+                    setDropZoneInfo(infoMenu);
+                    getTargets().add(0, dropZone);
+
                     Iterator<Entry<String, CmsDragTargetContainer>> it = CmsContainerpageDataProvider.get().getContainerTargets().entrySet().iterator();
                     while (it.hasNext()) {
                         Entry<String, CmsDragTargetContainer> entry = it.next();
@@ -375,24 +391,18 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
     @Override
     protected void restoreElementAfterDrag() {
 
+        CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().closeMenu();
+        if (m_current.equals(getDropZoneInfo())) {
+            CmsDebugLog.getInstance().printLine("Droped to menu");
+            CmsContainerpageDataProvider.get().addToFavoriteList(m_dragElement.getClientId());
+            m_current = m_startInfo;
+        }
         Iterator<Entry<I_CmsDragTargetContainer, DragInfo>> it = m_targetInfos.entrySet().iterator();
         while (it.hasNext()) {
             Entry<I_CmsDragTargetContainer, DragInfo> entry = it.next();
             if (entry.getValue().equals(m_current)) {
-                Element element = entry.getValue().getDraggable().getElement();
-                Style style = element.getStyle();
-                style.clearPosition();
-                style.clearWidth();
-                style.clearTop();
-                style.clearLeft();
-                style.clearZIndex();
-                style.clearMargin();
+                entry.getValue().getDraggable().clearDrag();
                 entry.getValue().getPlaceholder().removeFromParent();
-                element.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
-                element.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
-                element.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-                ((CmsDragContainerElement)entry.getValue().getDraggable()).getElementOptionBar().removeStyleName(
-                    I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
             } else {
                 entry.getValue().getPlaceholder().removeFromParent();
                 ((Widget)entry.getValue().getDraggable()).removeFromParent();
@@ -404,7 +414,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
         m_targetInfos = null;
         m_current = null;
         m_startInfo = null;
-
+        m_dropZoneInfo = null;
     }
 
     /**
@@ -470,28 +480,32 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElement, 
      */
     void prepareElement(DragInfo elementInfo, I_CmsDragTargetContainer target, boolean setHidden) {
 
-        Element element = elementInfo.getDraggable().getElement();
-        String width = CmsDomUtil.getCurrentStyle(element, CmsDomUtil.Style.width);
         target.insert(elementInfo.getPlaceholder(), target.getWidgetIndex((Widget)elementInfo.getDraggable()));
-        Style style = element.getStyle();
-        style.setPosition(Position.ABSOLUTE);
-        style.setMargin(0, Unit.PX);
-        style.setProperty(CmsDomUtil.Style.width.name(), width);
-        style.setZIndex(100);
-        element.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-        if (!CmsDomUtil.hasBackground(element)) {
-            element.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
-        }
-
-        if (!CmsDomUtil.hasBorder(element)) {
-            element.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
-        }
+        elementInfo.getDraggable().prepareDrag();
         if (setHidden) {
             elementInfo.getPlaceholder().setVisible(false);
             elementInfo.getDraggable().setVisible(false);
-            ((CmsDragContainerElement)elementInfo.getDraggable()).getElementOptionBar().addStyleName(
-                I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
         }
+    }
+
+    /**
+     * Sets the dropZoneInfo.<p>
+     *
+     * @param dropZoneInfo the dropZoneInfo to set
+     */
+    public void setDropZoneInfo(DragInfo dropZoneInfo) {
+
+        m_dropZoneInfo = dropZoneInfo;
+    }
+
+    /**
+     * Returns the dropZoneInfo.<p>
+     *
+     * @return the dropZoneInfo
+     */
+    public DragInfo getDropZoneInfo() {
+
+        return m_dropZoneInfo;
     }
 
 }
