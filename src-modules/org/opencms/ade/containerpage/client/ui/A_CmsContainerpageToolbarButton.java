@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsContainerpageToolbarButton.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/13 06:26:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.dom.client.Document;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -144,16 +144,10 @@ implements I_CmsContainerpageToolbarButton {
         setDown(m_isActive);
 
         if (active) {
-            //            if (CmsContainerpageEditor.INSTANCE.getCurrentButton() != null) {
-            //                CmsContainerpageEditor.INSTANCE.getCurrentButton().setActive(false);
-            //            }
             onToolbarActivate();
-            //           CmsContainerpageEditor.INSTANCE.setCurrentButton(this);
         } else {
             onToolbarDeactivate();
-            //            CmsContainerpageEditor.INSTANCE.setCurrentButton(null);
         }
-        //        setDown(active);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarPublishButton.java,v $
- * Date   : $Date: 2010/04/07 12:06:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/13 06:26:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,16 +32,22 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
+import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The publish button holding all publish related methods.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -87,7 +93,20 @@ public class CmsToolbarPublishButton extends A_CmsContainerpageToolbarButton {
      */
     public void onToolbarActivate() {
 
-        // TODO: Auto-generated method stub
+        // triggering a mouse-out event, as it won't be fired once the dialog has opened (event capturing...)
+        NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        getElement().dispatchEvent(nativeEvent);
+        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+
+            /**
+             * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
+             */
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                setActive(false);
+
+            }
+        });
 
     }
 
