@@ -357,6 +357,8 @@
 									  maxmemory="512m">
 						            <arg value="-localWorkers" />
 						            <arg value="2" />
+						            <arg value="-logLevel" />
+						            <arg value="INFO" />
 						            <arg value="-war" />
 						            <arg file="${module.input.res}/system/modules/${module.name}" />
 						            <arg value="${module.gwt}" />
@@ -511,14 +513,24 @@
 	<target name="jar" depends="compile" description="Generates the .jar file for module ${module.name}">
 
 		<if>
-			<not>
-				<equals arg1="${src.mode}" arg2="none" />
-			</not>
+			<equals arg1="${src.mode}" arg2="multishared" />
 			<then>
 				<mkdir dir="${module.output.jar}" />
-				<jar jarfile="${module.output.jar}/${module.name}.jar" 
-					basedir="${module.output.classes}" 
-					includes="${module.package}/**" />
+		    	<delete dir="${module.output.jar}/${module.name}.jar" failonerror="false" />
+				<for list="${module.packages}" param="mpackage" trim="true">
+					<sequential>
+						<var name="package.dir" value="" />
+						<for list="@{mpackage}" param="package" delimiter="." trim="true">
+							<sequential>
+								<var name="package.dir" value="${package.dir}@{package}/" />
+							</sequential>
+						</for>
+						<jar jarfile="${module.output.jar}/${module.name}.jar" 
+							basedir="${module.output.classes}" 
+							update="true"
+							includes="${package.dir}/**" />
+					</sequential>
+				</for>
 
 				<for list="${module.dependencies}" param="dependency" trim="true">
 					<sequential>
@@ -533,6 +545,32 @@
 					</sequential>
 				</for>
 			</then>
+			<else>
+				<if>
+					<not>
+						<equals arg1="${src.mode}" arg2="none" />
+					</not>
+					<then>
+						<mkdir dir="${module.output.jar}" />
+						<jar jarfile="${module.output.jar}/${module.name}.jar" 
+							basedir="${module.output.classes}" 
+							includes="${module.package}/**" />
+		
+						<for list="${module.dependencies}" param="dependency" trim="true">
+							<sequential>
+								<if>
+									<available file="${@{dependency}.output.jar}" />
+									<then>
+										<copy todir="${module.output.jar}">
+											<fileset dir="${@{dependency}.output.jar}" includes="*.jar" />
+										</copy>
+									</then>
+								</if>
+							</sequential>
+						</for>
+					</then>
+				</if>
+			</else>
 		</if>
 	</target>
 
