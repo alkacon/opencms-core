@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetMenu.java,v $
- * Date   : $Date: 2010/04/13 14:29:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/14 14:33:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -53,6 +53,9 @@ public class CmsDragTargetMenu extends AbsolutePanel implements I_CmsDragTargetC
     public CmsDragTargetMenu() {
 
         super();
+
+        // overriding overflow hidden set by AbsolutePanel
+        getElement().getStyle().clearOverflow();
     }
 
     /**
@@ -64,11 +67,20 @@ public class CmsDragTargetMenu extends AbsolutePanel implements I_CmsDragTargetC
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#highlightContainer()
+     */
+    public void highlightContainer() {
+
+        // the menu drop-zone will not be highlighted, so there is nothing to do here
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#onDragEnter(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
      */
     public void onDragEnter(I_CmsDragHandler<?, ?> handler) {
 
-        // TODO: Auto-generated method stub
+        // nothing to do here
 
     }
 
@@ -77,7 +89,7 @@ public class CmsDragTargetMenu extends AbsolutePanel implements I_CmsDragTargetC
      */
     public void onDragInside(I_CmsDragHandler<?, ?> handler) {
 
-        // TODO: Auto-generated method stub
+        // nothing to do here
 
     }
 
@@ -86,7 +98,7 @@ public class CmsDragTargetMenu extends AbsolutePanel implements I_CmsDragTargetC
      */
     public void onDragLeave(I_CmsDragHandler<?, ?> handler) {
 
-        // TODO: Auto-generated method stub
+        // nothing to do here
 
     }
 
@@ -95,16 +107,7 @@ public class CmsDragTargetMenu extends AbsolutePanel implements I_CmsDragTargetC
      */
     public void onDrop(I_CmsDragHandler<?, ?> handler) {
 
-        // TODO: Auto-generated method stub
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#highlightContainer()
-     */
-    public void highlightContainer() {
-
-        // the menu drop-zone will not be highlighted, so there is nothing to do here
+        // nothing to do here
 
     }
 

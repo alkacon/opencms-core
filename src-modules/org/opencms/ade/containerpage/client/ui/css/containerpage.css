@@ -11,7 +11,9 @@
 .showDropzone .clipboardTabs{
 	display: none;
 }
-
+.clipboardTabs{
+	height: 400px;
+}
 .showDropzone .clipboardDropzone{
 	display: block;
 }

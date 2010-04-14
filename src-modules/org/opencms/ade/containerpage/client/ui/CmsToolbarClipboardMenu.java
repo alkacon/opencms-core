@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/14 06:45:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/14 14:33:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,20 +31,26 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
+import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.gwt.client.ui.CmsDraggableListItemWidget;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The clip-board tool-bar menu.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -58,6 +64,12 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
 
     /** The favorite list drop-zone. */
     private CmsDragTargetMenu m_dropzone;
+
+    /** The favorite list widget. */
+    private FlowPanel m_favorites;
+
+    /** The recent list widget. */
+    private FlowPanel m_recent;
 
     /** The favorite and recent list tabs. */
     private CmsTabbedPanel m_tabs;
@@ -73,20 +85,71 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         m_content = new FlowPanel();
         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
         m_tabs = new CmsTabbedPanel();
-        m_tabs.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().clipboardTabs());
-        m_content.add(m_tabs);
+        m_favorites = new FlowPanel();
+        m_recent = new FlowPanel();
+
+        // TODO: add localization
+        m_tabs.add(m_favorites, "Favorites");
+        m_tabs.add(m_recent, "Recent");
+        SimplePanel tabsContainer = new SimplePanel();
+        tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().clipboardTabs());
+        tabsContainer.add(m_tabs);
+        m_content.add(tabsContainer);
 
         m_dropzone = new CmsDragTargetMenu();
         m_dropzone.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().clipboardDropzone());
 
-        // overriding overflow hidden set by AbsolutePanel
-        m_dropzone.getElement().getStyle().clearOverflow();
-
         m_content.add(m_dropzone);
-        //        Label menuContent = new Label("Menu content");
-        //        menuContent.getElement().getStyle().setHeight(100, Unit.PX);
-        //        menuContent.getElement().getStyle().setWidth(650, Unit.PX);
+
         setMenuWidget(m_content);
+    }
+
+    /**
+     * Adds an element to the favorite list widget.<p>
+     * 
+     * @param element the element data
+     */
+    public void addToFavorites(CmsContainerElement element) {
+
+        CmsDraggableListItemWidget listItem = new CmsDraggableListItemWidget(new CmsListInfoBean(
+            element.getTitle(),
+            element.getFile(),
+            null), true);
+        listItem.setClientId(element.getClientId());
+        CmsContainerDragHandler.get().registerMouseHandler(listItem);
+        m_favorites.add(listItem);
+    }
+
+    /**
+     * Adds an element to the recent list widget.<p>
+     * 
+     * @param element the element data
+     */
+    public void addToRecent(CmsContainerElement element) {
+
+        CmsDraggableListItemWidget listItem = new CmsDraggableListItemWidget(new CmsListInfoBean(
+            element.getTitle(),
+            element.getFile(),
+            null), true);
+        listItem.setClientId(element.getClientId());
+        CmsContainerDragHandler.get().registerMouseHandler(listItem);
+        m_recent.add(listItem);
+    }
+
+    /**
+     * Clears the contents of the favorite list widget.<p>
+     */
+    public void clearFavorites() {
+
+        m_favorites.clear();
+    }
+
+    /**
+     * Clears the contents of the recent list widget.<p>
+     */
+    public void clearRecent() {
+
+        m_recent.clear();
     }
 
     /**
@@ -104,8 +167,17 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public boolean hasPermissions(CmsDragContainerElement element) {
 
-        // TODO: Auto-generated method stub
-        return true;
+        // no element option available
+        return false;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsMenuButton#hideMenu()
+     */
+    @Override
+    public void hideMenu() {
+
+        super.hideMenu();
     }
 
     /**
@@ -113,7 +185,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void init() {
 
-        // TODO: Auto-generated method stub
+        // nothing to do here
 
     }
 
@@ -122,8 +194,8 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void onToolbarActivate() {
 
-        // TODO: Auto-generated method stub
-
+        CmsContainerpageDataProvider.get().loadFavorites();
+        CmsContainerpageDataProvider.get().loadRecent();
     }
 
     /**
@@ -131,7 +203,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void onToolbarDeactivate() {
 
-        // TODO: Auto-generated method stub
+        // nothing to do here
 
     }
 

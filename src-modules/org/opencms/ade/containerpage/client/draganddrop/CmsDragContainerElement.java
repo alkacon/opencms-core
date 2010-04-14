@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/04/13 14:29:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/14 14:33:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
+import org.opencms.gwt.client.draganddrop.I_CmsDragElementExt;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
@@ -72,11 +73,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragContainerElement, HasClickHandlers {
+public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragElementExt, HasClickHandlers {
 
     private static final String MOVE_HANDLE_CLASS = CmsToolbarButton.ButtonData.MOVE.getIconClass();
 
@@ -200,6 +201,26 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragC
     public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
 
         return addDomHandler(handler, MouseWheelEvent.getType());
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElementExt#clearDrag()
+     */
+    public void clearDrag() {
+
+        Style style = getElement().getStyle();
+        style.clearPosition();
+        style.clearWidth();
+        style.clearTop();
+        style.clearLeft();
+        style.clearZIndex();
+        style.clearMargin();
+        style.clearDisplay();
+        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
+        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
+        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        getElementOptionBar().removeStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
+
     }
 
     /**
@@ -332,15 +353,28 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragC
         // nothing to do here, everything is done by the drag handler
     }
 
-    //    /**
-    //     * Sets the client id.<p>
-    //     *
-    //     * @param clientId the client id to set
-    //     */
-    //    public void setClientId(String clientId) {
-    //
-    //        m_clientId = clientId;
-    //    }
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElementExt#prepareDrag()
+     */
+    public void prepareDrag() {
+
+        String width = CmsDomUtil.getCurrentStyle(getElement(), CmsDomUtil.Style.width);
+        Style style = getElement().getStyle();
+        style.setPosition(Position.ABSOLUTE);
+        style.setMargin(0, Unit.PX);
+        style.setProperty(CmsDomUtil.Style.width.name(), width);
+        style.setZIndex(100);
+        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        if (!CmsDomUtil.hasBackground(getElement())) {
+            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
+        }
+
+        if (!CmsDomUtil.hasBorder(getElement())) {
+            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
+        }
+        getElementOptionBar().addStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
+
+    }
 
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#setDragParent(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
@@ -377,48 +411,5 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragC
         } else {
             throw new UnsupportedOperationException("The drag handle has to be a child of the draggable element.");
         }
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#clearDrag()
-     */
-    public void clearDrag() {
-
-        Style style = getElement().getStyle();
-        style.clearPosition();
-        style.clearWidth();
-        style.clearTop();
-        style.clearLeft();
-        style.clearZIndex();
-        style.clearMargin();
-        style.clearDisplay();
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-        getElementOptionBar().removeStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#prepareDrag()
-     */
-    public void prepareDrag() {
-
-        String width = CmsDomUtil.getCurrentStyle(getElement(), CmsDomUtil.Style.width);
-        Style style = getElement().getStyle();
-        style.setPosition(Position.ABSOLUTE);
-        style.setMargin(0, Unit.PX);
-        style.setProperty(CmsDomUtil.Style.width.name(), width);
-        style.setZIndex(100);
-        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-        if (!CmsDomUtil.hasBackground(getElement())) {
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
-        }
-
-        if (!CmsDomUtil.hasBorder(getElement())) {
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
-        }
-        getElementOptionBar().addStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
-
     }
 }

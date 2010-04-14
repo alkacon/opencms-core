@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDataProvider.java,v $
- * Date   : $Date: 2010/04/13 14:27:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/14 14:33:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +59,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -266,12 +267,13 @@ public final class CmsContainerpageDataProvider {
     /** The container-page RPC service. */
     private I_CmsContainerpageServiceAsync m_containerpageService;
 
-    /**  */
+    /** The container-page util instance. */
     private CmsContainerpageUtil m_containerpageUtil;
 
     /** The container data. */
     private Map<String, CmsContainerJso> m_containers;
 
+    /** Flag if the container-page has changed. */
     private boolean m_pageChanged;
 
     /** The drag targets within this page. */
@@ -527,6 +529,78 @@ public final class CmsContainerpageDataProvider {
     public boolean hasPageChanged() {
 
         return m_pageChanged;
+    }
+
+    /**
+     * Loads the favorite list and adds the elements to the favorite list widget of the tool-bar menu.<p>
+     */
+    public void loadFavorites() {
+
+        CmsRpcAction<LinkedHashMap<String, CmsContainerElement>> action = new CmsRpcAction<LinkedHashMap<String, CmsContainerElement>>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().getFavoriteList(getCurrentUri(), m_containerTypes, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(LinkedHashMap<String, CmsContainerElement> result) {
+
+                getContainerpageUtil().getClipboard().clearFavorites();
+                if (result != null) {
+                    Iterator<CmsContainerElement> it = result.values().iterator();
+                    while (it.hasNext()) {
+                        getContainerpageUtil().getClipboard().addToFavorites(it.next());
+                    }
+                }
+
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Loads the recent list and adds the elements to the recent list widget of the tool-bar menu.<p>
+     */
+    public void loadRecent() {
+
+        CmsRpcAction<LinkedHashMap<String, CmsContainerElement>> action = new CmsRpcAction<LinkedHashMap<String, CmsContainerElement>>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().getRecentList(getCurrentUri(), m_containerTypes, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(LinkedHashMap<String, CmsContainerElement> result) {
+
+                getContainerpageUtil().getClipboard().clearRecent();
+                if (result != null) {
+                    Iterator<CmsContainerElement> it = result.values().iterator();
+                    while (it.hasNext()) {
+                        getContainerpageUtil().getClipboard().addToRecent(it.next());
+                    }
+                }
+
+            }
+        };
+        action.execute();
     }
 
     /**
