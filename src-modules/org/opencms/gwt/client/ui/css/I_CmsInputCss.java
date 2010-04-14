@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/04/13 13:45:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/14 14:16:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -46,144 +46,175 @@ public interface I_CmsInputCss extends CssResource {
 
     /** 
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String checkBox();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
-    String checkBoxImage();
+    String checkBoxImageChecked();
 
     /**
      * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String checkBoxImageUnchecked();
+
+    /**
+     * Css class reader.<p>
+     * 
      * @return the css class
      */
     String checkBoxLabel();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String error();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String inlineBlock();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String labelTruncated();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String multiCheckBox();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String radioButtonGroup();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String selectBoxCell();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String selectBoxClosed();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String selectBoxOpen();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String selectBoxOpener();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String selectBoxRoot();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String selectBoxSelected();
 
     /** 
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String selectBoxSelector();
 
     /**
      * Css class reader.<p>
-     * @return the css class
-     */
-    String selectIcon();
-
-    /**
-     * Css class reader.<p>
+     * 
      * @return the css class
      */
     String selectHover();
 
     /**
      * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String selectIcon();
+
+    /**
+     * Css class reader.<p>
+     * 
      * @return the css class
      */
     String selectorPopup();
 
     /** 
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String textArea();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String textAreaContainer();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String textAreaWidget();
 
     /**
      * Css class reader. <p>
+     * 
      * @return the css class
      */
     String textBox();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String textBoxPanel();
 
     /**
      * Css class reader.<p>
+     * 
      * @return the css class
      */
     String textBoxWidget();

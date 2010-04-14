@@ -1,7 +1,4 @@
-
-/* for debugging purposes */
-/* external multiCheckBox, textBox, textBoxWidget, textAreaWidget, textArea, checkBox, checkBoxLabel, checkBoxImage, error, selectBoxSelected, selectBoxSelector, selectBoxOpen,  selectBoxCell, selectHover, selectClosedIcon, selectOpenIcon, selectBoxOpen, selectBoxClosed,  selectBoxRoot, selectBoxOpener, textBoxPanel; */ 
-@external gwt-ToggleButton;
+@external gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 /* inner text box of the text box widget */
 .textBox {
@@ -62,8 +59,66 @@
 	margin-left: 5px;
 }
 
-.checkBoxImage {
+@sprite .cmsState-up-disabled .checkBoxImageChecked, .cmsState-down-disabled .checkBoxImageChecked{
+	gwt-image: "images.checkboxChecked";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+    background-position: 50% 50%;
+    height: 12px;
+    width: 12px;
+}
+@sprite .cmsState-up .checkBoxImageChecked{
+	gwt-image: "images.checkboxChecked";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+    background-position: 50% 50%;
+    height: 12px;
+    width: 12px;
+}
+@sprite .cmsState-up-hovering .checkBoxImageChecked, .cmsState-down-hovering .checkBoxImageChecked, .cmsState-down .checkBoxImageChecked{
+    gwt-image: "images.checkboxChecked";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+    background-position: 50% 50%;
+    height: 12px;
+    width: 12px;
+}
 
+@sprite .cmsState-up-disabled .checkBoxImageUnchecked, .cmsState-down-disabled .checkBoxImageUnchecked{
+	gwt-image: "images.checkboxUnchecked";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: wait;
+    margin-top: 1px;
+    background-position: 50% 50%;
+    height: 12px;
+    width: 12px;
+}
+@sprite .cmsState-up .checkBoxImageUnchecked{
+	gwt-image: "images.checkboxUnchecked";
+	display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+    background-position: 50% 50%;
+    height: 12px;
+    width: 12px;
+}
+@sprite .cmsState-up-hovering .checkBoxImageUnchecked, .cmsState-down-hovering .checkBoxImageUnchecked, .cmsState-down .checkBoxImageUnchecked{
+    gwt-image: "images.checkboxUnchecked";
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 1px;
+    background-position: 50% 50%;
+    height: 12px;
+    width: 12px;
 }
 
 .radioButtonGroup *, .multiCheckBox *, .selectBoxRoot *, .selectBoxSelector *, .textBoxPanel *, .textAreaWidget * {
