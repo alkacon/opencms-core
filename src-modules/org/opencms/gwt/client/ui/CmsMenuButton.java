@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/04/13 14:08:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/14 14:31:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -107,21 +107,22 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
     @UiField
     CmsTextButton m_button;
 
+    /** The menu content. */
+    CmsMenuContent m_content;
+
     /** DIV element connecting the button and the menu pop-up. */
     @UiField
     DivElement m_menuConnect;
+
+    /** Registration of the window resize handler. */
+    HandlerRegistration m_resizeRegistration;
 
     /** The menu CSS. */
     @UiField
     I_MenuButtonCss m_style;
 
-    /** The menu content. */
-    CmsMenuContent m_content;
-
+    /** Flag if the menu is open. */
     private boolean m_isOpen;
-
-    /** Registration of the window resize handler. */
-    HandlerRegistration m_resizeRegistration;
 
     /**
      * Constructor.<p>
@@ -175,16 +176,6 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
 
         });
 
-    }
-
-    /**
-     * This will set the menu content widget.<p>
-     * 
-     * @param widget the widget to set as content 
-     */
-    public void setMenuWidget(Widget widget) {
-
-        m_content.setWidget(widget);
     }
 
     /**
@@ -276,6 +267,16 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
 
     }
 
+    /**
+     * This will set the menu content widget.<p>
+     * 
+     * @param widget the widget to set as content 
+     */
+    public void setMenuWidget(Widget widget) {
+
+        m_content.setWidget(widget);
+    }
+
     /** 
      * Toggles the menu state.<p>
      */
@@ -285,6 +286,19 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
             openMenu();
         } else {
             closeMenu();
+        }
+    }
+
+    /**
+     * Hides the menu content without altering the button state.<p>
+     */
+    protected void hideMenu() {
+
+        m_content.hide();
+        m_menuConnect.addClassName(m_style.hidden());
+        if (m_resizeRegistration != null) {
+            m_resizeRegistration.removeHandler();
+            m_resizeRegistration = null;
         }
     }
 
