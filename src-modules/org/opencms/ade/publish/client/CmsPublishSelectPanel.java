@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/13 09:17:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/14 10:43:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -71,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -108,11 +109,16 @@ public class CmsPublishSelectPanel extends Composite {
     @UiField
     protected Label m_noResources;
 
-    /** The label which shows a message telling the user the number of problems. */
+    /** The panel which shows a message telling the user the number of problems. */
     @UiField
-    protected FlowPanel m_problemsPanel;
+    protected Panel m_problemsPanel;
+
+    /** The panel with checkboxes. */
+    @UiField
+    protected Panel m_checkboxPanel;
 
     /** The project select box. */
+    @UiField
     protected CmsSelectBox m_projectSelector;
 
     /** The button for publishing. */
@@ -182,9 +188,6 @@ public class CmsPublishSelectPanel extends Composite {
         m_publishOptions = publishOptions;
 
         initWidget(UI_BINDER.createAndBindUi(this));
-        setStyleName(CSS.selectPanel());
-        m_groupPanel.setStyleName(CSS.groupPanel());
-        m_topBar.setStyleName(CSS.topBar());
 
         List<CmsPair<String, String>> items = new ArrayList<CmsPair<String, String>>();
         items.add(new CmsPair<String, String>(CmsUUID.getNullUUID().toString(), Messages.get().key(
@@ -192,10 +195,8 @@ public class CmsPublishSelectPanel extends Composite {
         for (CmsProjectBean project : projects) {
             items.add(new CmsPair<String, String>(project.getId().toString(), project.getName()));
         }
-        m_projectSelector = new CmsSelectBox(items);
+        m_projectSelector.setItems(items);
         m_projectSelector.addStyleName(CSS.selector());
-        m_selectorPanel.add(m_projectSelector);
-        m_scrollPanel.setStyleName(CSS.scrollPanel());
 
         m_publishDialog = publishDialog;
         m_checkboxRelated.setChecked(publishOptions.isIncludeRelated());
@@ -271,8 +272,8 @@ public class CmsPublishSelectPanel extends Composite {
             }
         });
 
-        m_siblingsLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
-        m_relatedLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
+        m_siblingsLabel.setText(" " + Messages.get().key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
+        m_relatedLabel.setText(" " + Messages.get().key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
         m_relatedLabel.addStyleName(CSS.clear());
         m_siblingsLabel.addStyleName(CSS.clear());
         m_selectLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
@@ -349,17 +350,17 @@ public class CmsPublishSelectPanel extends Composite {
      */
     public void setGroups(List<CmsPublishGroup> groups) {
 
-        m_scrollPanel.setVisible(true);
+        m_numProblems = 0;
+        m_problemsPanel.clear();
+        m_problemsPanel.setVisible(false);
+        m_groups.clear();
+        m_groupPanel.clear();
+
         int numGroups = groups.size();
         setResourcesVisible(numGroups > 0);
         if (numGroups == 0) {
             return;
         }
-
-        m_numProblems = 0;
-
-        m_groups.clear();
-        m_groupPanel.clear();
 
         for (CmsPublishGroup group : groups) {
             String header = group.getName();
@@ -401,15 +402,10 @@ public class CmsPublishSelectPanel extends Composite {
      */
     private void setResourcesVisible(boolean visible) {
 
-        Widget first = m_scrollPanel;
-        Widget second = m_noResources;
-        if (!visible) {
-            Widget temp = first;
-            first = second;
-            second = temp;
-        }
-        first.setVisible(true);
-        second.setVisible(false);
+        m_noResources.setVisible(!visible);
+        m_scrollPanel.setVisible(visible);
+        m_topBar.getElement().getStyle().setVisibility(visible ? Visibility.VISIBLE : Visibility.HIDDEN);
+        m_checkboxPanel.setVisible(visible);
     }
 
     /**
@@ -421,7 +417,7 @@ public class CmsPublishSelectPanel extends Composite {
         if (m_numProblems > 0) {
             String message = Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + m_numProblems);
             m_problemsPanel.add(new InlineLabel(message));
+            m_problemsPanel.setVisible(true);
         }
     }
-
 }

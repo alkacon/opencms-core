@@ -1,4 +1,4 @@
-@external relatedItem, groupHeader, publishRow, indentedPublishRow, publishListItem, selector, scrollPanel, selectPanel;
+@external relatedItem, groupHeader, publishRow, indentedPublishRow, publishListItem, selector, scrollPanel, selectPanel, selectorPanel;
 
 .relatedItem {
 	margin-left: 60px;
@@ -8,6 +8,7 @@
 .groupHeader {
 	font-weight: bold;
 	font-size: 12px;
+    padding-top: 5px;
 }
 
 .publishRow {
@@ -41,6 +42,12 @@
 
 }
 
+.problemPanel {
+	font-weight: bold;
+	padding: 5px;
+	text-align: center;
+}
+
 .stateChanged {
 	color: #ff0000;
 }
@@ -53,13 +60,31 @@
 	zoom: 1;
 }
 
+.checkboxes {
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+.label {
+	margin-left:10px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+.spacer {
+	height: 10px;
+	width: 10px;
+}
+
+.selectorPanel {
+	float: right;
+}
+
 .scrollPanel {
 	max-height: 400px;
 	-moz-border-radius: 4px;
 	border: 1px solid value("constants.borderColor");
-	margin-left: 10px;
-	margin-right: 10px;
-	padding-left: 3px;
+	padding: 3px;
 	zoom: 1;
 }
 
@@ -80,24 +105,33 @@
 .selectButtons {
 	float: right;
 }
+.selectButtons > div {
+	margin-left: 3px;
+}
 
 .clear {
 	clear: both;
 }
 
 .selectPanel {
-	margin: 10px;
+	margin: 0px;
+}
+.selectPanel * {
+	zoom: 1;
 }
 
 .topBar {
-	margin-left: 10px;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
+	margin-left: 5px;
 }
 
+.topBar > div {
+	margin-left: 4px;
+}
+	
 .selector {
 	display: inline-block;
-	width: 200px !important;
+	width: 200px;
 	vertical-align: middle;
 }
 

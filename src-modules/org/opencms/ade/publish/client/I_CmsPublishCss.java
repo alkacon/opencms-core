@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/I_CmsPublishCss.java,v $
- * Date   : $Date: 2010/04/13 09:12:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/14 10:43:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,136 +39,189 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsPublishCss extends CssResource {
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
+     * 
+     * @return the CSS class name
+     */
+    String checkboxes();
+
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String clear();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
-
     String groupHeader();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String groupPanel();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String indentedPublishRow();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String itemToKeep();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String itemToRemove();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
+     * 
+     * @return the CSS class name
+     */
+    String label();
+
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String noResources();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String noState();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
+     * 
+     * @return the CSS class name
+     */
+    String problemPanel();
+
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String publishListItem();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
-
     String publishRow();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
-
     String relatedItem();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String scrollPanel();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String selectButtons();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String selector();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
+     * 
+     * @return the CSS class name
+     */
+    String selectorPanel();
+
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String selectPanel();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
+     * 
+     * @return the CSS class name
+     */
+    String spacer();
+
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String stateChanged();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String stateDeleted();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String stateNew();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String text();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
     String topBar();
 
-    /** Access method.<p>
+    /** 
+     * Access method.<p>
      * 
      * @return the CSS class name
      */
