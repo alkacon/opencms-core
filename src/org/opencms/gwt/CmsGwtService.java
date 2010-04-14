@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2010/03/08 14:43:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/14 14:20:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -256,6 +256,16 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
         }
 
         return getSerializationPolicy();
+    }
+
+    /**
+     * @see com.google.gwt.user.server.rpc.AbstractRemoteServiceServlet#doUnexpectedFailure(java.lang.Throwable)
+     */
+    @Override
+    protected void doUnexpectedFailure(Throwable e) {
+
+        LOG.error(String.valueOf(System.currentTimeMillis()), e);
+        super.doUnexpectedFailure(e);
     }
 
     /**
