@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/14 14:16:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,11 @@
 package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.shared.CmsPublishResource;
-import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsTextButton;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -80,13 +80,13 @@ public class CmsPublishGroupPanel extends Composite {
     private Panel m_panel = new CmsList();
 
     /** The button for selecting all resources in the group. */
-    private CmsButton m_selectAll;
+    private CmsTextButton m_selectAll;
 
     /** The list of item selection controllers for this group. */
     private List<CmsPublishItemSelectionController> m_selectionControllers = new ArrayList<CmsPublishItemSelectionController>();
 
     /** The button for deselecting all resources in the group. */
-    private CmsButton m_selectNone;
+    private CmsTextButton m_selectNone;
 
     /**
      * Constructs a new instance.<p>
@@ -141,23 +141,6 @@ public class CmsPublishGroupPanel extends Composite {
         icon.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         itemWidget.setIcon(icon);
         return itemWidget;
-    }
-
-    /**
-     * Creates a small button.<p>
-     * 
-     * @param text the text on the button
-     * 
-     * @return the newly created button
-     */
-    private static CmsButton createSmallButton(String text) {
-
-        CmsTextButton button = new CmsTextButton();
-        button.setButtonStyle(CmsTextButton.BUTTON_STYLE.cmsButtonSmall);
-        button.setText(text);
-        button.useMinWidth(true);
-        return button;
-
     }
 
     /** 
@@ -303,8 +286,11 @@ public class CmsPublishGroupPanel extends Composite {
      */
     private void initSelectButtons() {
 
-        m_selectAll = createSmallButton(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
-        m_selectNone = createSmallButton(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
+        m_selectAll = new CmsTextButton(
+            Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0),
+            I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked(),
+            CmsTextButton.ButtonStyle.cmsButtonSmall);
+        m_selectAll.useMinWidth(true);
         m_selectAll.addClickHandler(new ClickHandler() {
 
             /**
@@ -315,6 +301,12 @@ public class CmsPublishGroupPanel extends Composite {
                 setAllSelected(true);
             }
         });
+
+        m_selectNone = new CmsTextButton(
+            Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0),
+            I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked(),
+            CmsTextButton.ButtonStyle.cmsButtonSmall);
+        m_selectNone.useMinWidth(true);
         m_selectNone.addClickHandler(new ClickHandler() {
 
             /**
@@ -323,9 +315,9 @@ public class CmsPublishGroupPanel extends Composite {
             public void onClick(ClickEvent event) {
 
                 setAllSelected(false);
-
             }
         });
+
         FlowPanel selectButtons = new FlowPanel();
         selectButtons.add(m_selectAll);
         selectButtons.add(m_selectNone);

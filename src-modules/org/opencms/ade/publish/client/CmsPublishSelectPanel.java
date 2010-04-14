@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/14 10:43:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/14 14:16:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsTextButton;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsPair;
@@ -72,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -244,9 +245,14 @@ public class CmsPublishSelectPanel extends Composite {
         m_cancelButton.setUpFace(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0), null);
         m_cancelButton.useMinWidth(true);
 
-        m_selectAll.setUpFace(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0), null);
+        m_selectAll.setUpFace(
+            Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0),
+            I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
         m_selectAll.useMinWidth(true);
-        m_selectNone.setUpFace(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0), null);
+
+        m_selectNone.setUpFace(
+            Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0),
+            I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
         m_selectNone.useMinWidth(true);
 
         m_noResources.setText(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
