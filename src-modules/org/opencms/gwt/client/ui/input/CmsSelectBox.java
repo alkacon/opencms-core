@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/04/13 13:45:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/04/14 10:42:13 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,12 +63,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Widget for selecting one of multiple items from a drop-down list which opens
@@ -76,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  * 
@@ -86,7 +84,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     /**
      * The UI Binder interface for this widget.<p>
      */
-    protected interface I_CmsSelectBoxUiBinder extends UiBinder<Widget, CmsSelectBox> {
+    protected interface I_CmsSelectBoxUiBinder extends UiBinder<Panel, CmsSelectBox> {
         // binder interface
     }
 
@@ -179,7 +177,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
     /**  Container for the opener and error widget. */
     @UiField
-    protected Panel m_panel = new FlowPanel();
+    protected Panel m_panel;
 
     /** The popup panel inside which the selector will be shown.<p> */
     protected PopupPanel m_popup = new PopupPanel(true);
@@ -189,9 +187,6 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
     /** Flag indicating whether this widget is enabled. */
     private boolean m_enabled = true;
-
-    /** Internal flag used to keep track of which select option was added first. */
-    private boolean m_first = true;
 
     /** The value of the first select option. */
     private String m_firstValue;
@@ -210,7 +205,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      */
     public CmsSelectBox() {
 
-        initWidget(uiBinder.createAndBindUi(this));
+        m_panel = uiBinder.createAndBindUi(this);
+        initWidget(m_panel);
         m_openerLabel.addStyleName(CSS.selectBoxOpener());
         m_selectBoxState = new CmsStyleVariable(m_opener, m_selector);
         m_selectBoxState.setValue(CSS.selectBoxClosed());
@@ -260,9 +256,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     public CmsSelectBox(List<CmsPair<String, String>> items) {
 
         this();
-        for (CmsPair<String, String> item : items) {
-            addOption(item.getFirst(), item.getSecond());
-        }
+        setItems(items);
     }
 
     /**
@@ -297,14 +291,13 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     public void addOption(String value, String text) {
 
         CmsSelectCell cell = new CmsSelectCell(value, text);
+        boolean first = m_valueLabels.isEmpty();
         m_valueLabels.put(value, text);
         m_selector.add(cell);
-        if (m_first) {
+        if (first) {
             selectValue(value);
             m_firstValue = value;
         }
-        m_first = false;
-
     }
 
     /**
@@ -403,6 +396,23 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         if (value instanceof String) {
             String strValue = (String)value;
             this.onValueSelect(strValue);
+        }
+    }
+
+    /**
+     * Sets the items as key-value pairs.<p>
+     * 
+     * The first component of each pair is the option value, the second is the text to be displayed for the option value.<p>
+     * 
+     * @param items the items
+     */
+    public void setItems(List<CmsPair<String, String>> items) {
+
+        m_valueLabels.clear();
+        m_selector.clear();
+        m_selectedValue = null;
+        for (CmsPair<String, String> item : items) {
+            addOption(item.getFirst(), item.getSecond());
         }
     }
 

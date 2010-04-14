@@ -77,13 +77,11 @@
 }
 
 @sprite .selectBoxSelected {
-	width: 100%; 
+	width: auto; 
 	min-height: 0px;
 	border: 1px solid value("constants.borderColor");
-	
 	gwt-image: "images.backgroundLight";
 	background-position: 50% 50%;
-	margin-right: 40px;
 	outline: none;
 }
 
@@ -149,9 +147,7 @@
 }
 
 .selectBoxOpener {
-	margin-top: 3px;
-	margin-bottom: 3px;
-	margin-left: 5px;
+	margin: 3px 12px 3px 5px;
 }
 
 .textBoxPanel {
