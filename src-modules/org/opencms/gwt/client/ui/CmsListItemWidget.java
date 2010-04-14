@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/13 13:42:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/14 14:16:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -233,7 +233,7 @@ public class CmsListItemWidget extends Composite {
         m_title.setText(infoBean.getTitle());
         m_subTitle.setText(infoBean.getSubTitle());
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
-            m_openClose = new CmsImageButton(CmsImageButton.ICON.triangle_1_e, CmsImageButton.ICON.triangle_1_s, false);
+            m_openClose = new CmsImageButton(CmsImageButton.Icon.triangle_1_e, CmsImageButton.Icon.triangle_1_s, false);
             m_titleRow.insert(m_openClose, 0);
             m_openClose.addClickHandler(new ClickHandler() {
 

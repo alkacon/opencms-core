@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTabInnerPanel.java,v $
- * Date   : $Date: 2010/04/13 09:17:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/14 14:16:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsImageButton.ICON;
+import org.opencms.gwt.client.ui.CmsImageButton.Icon;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStringUtil;
 
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -187,7 +187,7 @@ public class CmsTabInnerPanel extends Composite {
                 m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_types.add(typesParams);
                 typesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                CmsImageButton button = new CmsImageButton(ICON.close, false);
+                CmsImageButton button = new CmsImageButton(Icon.close, false);
                 m_types.add(button);
 
                 // otherwise remove border
@@ -205,7 +205,7 @@ public class CmsTabInnerPanel extends Composite {
                 m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_galleries.add(galleriesParams);
                 galleriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                CmsImageButton button = new CmsImageButton(ICON.close, false);
+                CmsImageButton button = new CmsImageButton(Icon.close, false);
                 m_galleries.add(button);
                 // otherwise remove border
             } else {
@@ -222,7 +222,7 @@ public class CmsTabInnerPanel extends Composite {
                 m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_categories.add(categoriesParams);
                 categoriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                CmsImageButton button = new CmsImageButton(ICON.close, false);
+                CmsImageButton button = new CmsImageButton(Icon.close, false);
                 m_categories.add(button);
                 // otherwise remove border
             } else {

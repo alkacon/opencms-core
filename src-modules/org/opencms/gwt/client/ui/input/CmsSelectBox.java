@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/04/14 10:42:13 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/04/14 14:16:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  * 
@@ -212,7 +212,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_selectBoxState.setValue(CSS.selectBoxClosed());
 
         m_opener.addStyleName(CSS.selectBoxSelected());
-        m_openClose = new CmsImageButton(CmsImageButton.ICON.triangle_1_e, CmsImageButton.ICON.triangle_1_s, false);
+        m_openClose = new CmsImageButton(CmsImageButton.Icon.triangle_1_e, CmsImageButton.Icon.triangle_1_s, false);
         m_openClose.addStyleName(CSS.selectIcon());
         m_panel.add(m_openClose);
         m_openClose.addClickHandler(new ClickHandler() {

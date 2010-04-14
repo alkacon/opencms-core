@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsImageButton.java,v $
- * Date   : $Date: 2010/04/13 09:17:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/14 14:16:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -47,7 +47,7 @@ public class CmsImageButton extends CmsButton {
     /**
      *  Enumeration of available icons.<p>
      */
-    public static enum ICON {
+    public static enum Icon {
         /**  Icon name. */
         alert,
         /**  Icon name. */
@@ -402,7 +402,7 @@ public class CmsImageButton extends CmsButton {
      * @param upIcon up-face icon
      * @param hasBorder set <code>true</code> to show border and background
      */
-    public CmsImageButton(ICON upIcon, boolean hasBorder) {
+    public CmsImageButton(Icon upIcon, boolean hasBorder) {
 
         this(I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + upIcon.name(), hasBorder);
     }
@@ -414,7 +414,7 @@ public class CmsImageButton extends CmsButton {
      * @param downIcon down-face icon
      * @param hasBorder set <code>true</code> to show border and background
      */
-    public CmsImageButton(ICON upIcon, ICON downIcon, boolean hasBorder) {
+    public CmsImageButton(Icon upIcon, Icon downIcon, boolean hasBorder) {
 
         this(
             I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + upIcon.name(),
@@ -432,13 +432,12 @@ public class CmsImageButton extends CmsButton {
 
         super();
         if (hasBorder) {
-            this.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton());
+            addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton());
         } else {
-            this.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButtonTransparent());
+            addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButtonTransparent());
         }
         String upFaceHtml = "<div class='" + upImageClass + "'></div>";
-        this.getUpFace().setHTML(upFaceHtml);
-
+        getUpFace().setHTML(upFaceHtml);
     }
 
     /**

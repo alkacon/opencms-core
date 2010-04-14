@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTextButton.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/14 14:16:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,14 +40,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public class CmsTextButton extends CmsButton {
 
     /** CSS style variants. */
-    public static enum BUTTON_STYLE {
+    public static enum ButtonStyle {
 
         /** Big button style. */
         cmsButtonBig(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonBig()),
@@ -66,7 +66,7 @@ public class CmsTextButton extends CmsButton {
          * 
          * @param cssClassName the CSS class name
          */
-        BUTTON_STYLE(String cssClassName) {
+        ButtonStyle(String cssClassName) {
 
             m_cssClassName = cssClassName;
         }
@@ -83,7 +83,7 @@ public class CmsTextButton extends CmsButton {
     }
 
     /** The style of this button. */
-    private BUTTON_STYLE m_buttonStyle;
+    private ButtonStyle m_buttonStyle;
 
     /**
      * The constructor.<p>
@@ -92,7 +92,7 @@ public class CmsTextButton extends CmsButton {
 
         super();
         addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton());
-        m_buttonStyle = BUTTON_STYLE.cmsButtonMedium;
+        m_buttonStyle = ButtonStyle.cmsButtonMedium;
 
     }
 
@@ -131,7 +131,7 @@ public class CmsTextButton extends CmsButton {
      * @param imageClass the up face image class to use, set to <code>null</code> to not show any
      * @param style the style for this button
      */
-    public CmsTextButton(String text, String imageClass, BUTTON_STYLE style) {
+    public CmsTextButton(String text, String imageClass, ButtonStyle style) {
 
         this(text, imageClass);
         setButtonStyle(style);
@@ -146,7 +146,7 @@ public class CmsTextButton extends CmsButton {
      * @param handler the click handler
      * @param style the style for this button
      */
-    public CmsTextButton(String text, String imageClass, ClickHandler handler, BUTTON_STYLE style) {
+    public CmsTextButton(String text, String imageClass, ClickHandler handler, ButtonStyle style) {
 
         this(text, imageClass, handler);
         setButtonStyle(style);
@@ -159,7 +159,7 @@ public class CmsTextButton extends CmsButton {
      */
     public void setButtonStyle(String style) {
 
-        setButtonStyle(BUTTON_STYLE.valueOf(style));
+        setButtonStyle(ButtonStyle.valueOf(style));
     }
 
     /**
@@ -167,7 +167,7 @@ public class CmsTextButton extends CmsButton {
      * 
      * @param style the style
      */
-    public void setButtonStyle(BUTTON_STYLE style) {
+    public void setButtonStyle(ButtonStyle style) {
 
         if (style != m_buttonStyle) {
             removeStyleName(m_buttonStyle.getCssClassName());
@@ -184,9 +184,9 @@ public class CmsTextButton extends CmsButton {
     public void useMinWidth(boolean hasMinWidth) {
 
         if (hasMinWidth) {
-            this.addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMinWidth());
+            addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMinWidth());
         } else {
-            this.removeStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMinWidth());
+            removeStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsMinWidth());
         }
     }
 }
