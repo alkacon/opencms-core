@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/04/13 09:12:11 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/04/14 07:37:45 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.DOM;
 
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.DOM;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -363,6 +364,19 @@ public final class CmsDomUtil {
     public static String enclose(Tag tag, String text) {
 
         return open(tag) + text + close(tag);
+    }
+
+    /**
+     * Triggers a mouse-out event for the given element.<p>
+     * 
+     * Useful in case something is capturing all events.<p>
+     * 
+     * @param element the element to use
+     */
+    public static void ensureMouseOut(Element element) {
+
+        NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        element.dispatchEvent(nativeEvent);
     }
 
     /**
