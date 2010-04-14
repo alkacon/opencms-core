@@ -8,8 +8,10 @@
 			<div class="{resources.listItemWidgetCss.itemContent}">
 				<g:FlowPanel ui:field="m_buttonPanel" styleName="{resources.listItemWidgetCss.buttonPanel}"></g:FlowPanel>
 				<g:SimplePanel styleName="{resources.listItemWidgetCss.itemIcon}" ui:field="m_iconPanel"></g:SimplePanel>
-		    	<g:FlowPanel ui:field="m_titleRow"><cmsInput:CmsLabel ui:field="m_title" styleName="{resources.listItemWidgetCss.itemTitle}"></cmsInput:CmsLabel></g:FlowPanel>
-				<cmsInput:CmsLabel ui:field="m_subTitle"></cmsInput:CmsLabel>
+		    	<g:FlowPanel ui:field="m_titleRow" styleName="{resources.listItemWidgetCss.titleRow}" >
+		    	  <cmsInput:CmsLabel ui:field="m_title" styleName="{resources.listItemWidgetCss.itemTitle}"/>
+		    	  <cmsInput:CmsLabel ui:field="m_subTitle" />
+		    	</g:FlowPanel>
 			</div>
 			<cms:CmsSimplePanel styleName="{resources.listItemWidgetCss.itemAdditional}" ui:field="m_additionalInfo"></cms:CmsSimplePanel>
 	</cms:CmsHTMLHoverPanel>

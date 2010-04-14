@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/04/06 14:23:10 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/04/14 13:01:31 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -53,43 +53,50 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Button CSS. */
     interface I_CmsButtonCss extends CssResource, I_CmsStateCss {
 
-        /** Access method.<p>
+        /**
+         *  Access method.<p>
          * 
          * @return the CSS class name
          */
         String cmsButtonBig();
 
-        /** Access method.<p>
+        /**
+         *  Access method.<p>
          * 
          * @return the CSS class name
          */
         String cmsButtonMedium();
 
-        /** Access method.<p>
+        /**
+         *  Access method.<p>
          * 
          * @return the CSS class name
          */
         String cmsButtonSmall();
 
-        /** Access method.<p>
+        /**
+         *  Access method.<p>
          * 
          * @return the CSS class name
          */
         String cmsImageButton();
 
-        /** Access method.<p>
+        /**
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String cmsImageButtonTransparent();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String cmsMinWidth();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -99,73 +106,85 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Constants CSS. */
     interface I_CmsConstantsCss extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String backgroundColorBar();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String backgroundColorLight();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String borderColor();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String borderColorActive();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String borderColorInactive();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String color();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String colorDisabled();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String fontFamily();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String fontSize();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String fontSizeBig();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String fontSizeSmall();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -176,49 +195,57 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     interface I_CmsDialogCss extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String menuPopup();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String popup();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String popupButtonPanel();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String popupContent();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String popupHead();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String popupMainContent();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String popupOverlay();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -228,37 +255,43 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Header CSS. */
     interface I_CmsHeaderCss extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String h1();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String h2();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String h3();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String h4();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String h5();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -268,43 +301,50 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Highlighting CSS, used within the {@link org.opencms.gwt.client.ui.CmsHighlightingBorder} widget. */
     interface I_CmsHighlightCss extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String borderBottom();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String borderLeft();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String borderRight();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String borderTop();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String colorBlue();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String colorRed();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -314,7 +354,8 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Icons CSS, making available a fixed set of icons. */
     interface I_CmsIconsCss extends CssResource, I_CmsStateCss {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -326,144 +367,174 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** List item CSS. */
     interface I_CmsListItemWidgetCss extends I_CmsStateCss {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String buttonPanel();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String disabledItem();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String itemAdditional();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String itemAdditionalTitle();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String itemAdditionalValue();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String itemContainer();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String itemContent();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String itemIcon();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String itemTitle();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listItem();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String open();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String permaVisible();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String titleRow();
 
     }
 
     /** ListTree CSS. */
     interface I_CmsListTreeCss extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String list();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listScrollable();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listTreeItem();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listTreeItemChildren();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listTreeItemClosed();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listTreeItemContent();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listTreeItemHandler();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listTreeItemInternal();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listTreeItemLeaf();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String listTreeItemNoOpeners();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -473,7 +544,8 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Page CSS. */
     interface I_CmsPageCss extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -484,54 +556,62 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     interface I_CmsStateCss extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String cmsHovering();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String cmsState();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("cmsState-down")
         String cmsStateDown();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("cmsState-down-disabled")
         String cmsStateDownDisabled();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("cmsState-down-hovering")
         String cmsStateDownHovering();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("cmsState-up")
         String cmsStateup();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("cmsState-up-disabled")
         String cmsStateUpDisabled();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -543,56 +623,64 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Tabbed panel css. */
     interface I_CmsTabbedPanelCss extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("internal-tabbed")
         String cmsInternalTab();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanel")
         String cmsTabLayoutPanel();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelContent")
         String cmsTabLayoutPanelContent();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTab")
         String cmsTabLayoutPanelTab();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTabBar")
         String cmsTabLayoutPanelTabBar();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTabs")
         String cmsTabLayoutPanelTabs();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTab-selected")
         String cmsTabLayoutPanelTabSelected();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
@@ -603,55 +691,64 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Toolbar CSS. */
     interface I_CmsToolbarCss extends CssResource {
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String toolbar();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String toolbarBackground();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String toolbarButtonsLeft();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String toolbarButtonsRight();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String toolbarContent();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String toolbarHide();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String toolbarPlaceholder();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */
         String toolbarShadow();
 
-        /** Access method.<p>
+        /** 
+         * Access method.<p>
          * 
          * @return the CSS class name
          */

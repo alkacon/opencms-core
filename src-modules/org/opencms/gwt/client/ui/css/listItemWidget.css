@@ -30,6 +30,7 @@
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;	
+	position: relative;
 }
 
 .disabledItem .itemContent {
@@ -48,13 +49,17 @@
 	font-weight: bold;
     display: inline;
 }
+.titleRow{
+	float: left;
+}
 .cmsHovering .buttonPanel{
 	display: block;
 }
 
 .buttonPanel{
-	float: right;
-	margin: 7px 5px 0px 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
 	width: 60px;
 	height: 20px;
 	overflow: visible;
