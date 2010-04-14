@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEditor.java,v $
- * Date   : $Date: 2010/04/07 13:37:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/14 07:37:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,15 @@ import org.opencms.gwt.client.ui.CmsToolbarButton;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -59,7 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -90,7 +94,7 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
         toolBar.addLeft(new CmsToolbarButton(CmsToolbarButton.ButtonData.ADD));
         toolBar.addLeft(new CmsToolbarButton(CmsToolbarButton.ButtonData.NEW));
         toolBar.addLeft(new CmsToolbarButton(CmsToolbarButton.ButtonData.CLIPBOARD));
-        CmsToolbarButton publishButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.PUBLISH);
+        final CmsToolbarButton publishButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.PUBLISH);
         publishButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -98,7 +102,18 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
              */
             public void onClick(ClickEvent event) {
 
-                CmsPublishDialog.showPublishDialog();
+                // triggering a mouse-out event, as it won't be fired once the dialog has opened (the dialog will capture all events)
+                CmsDomUtil.ensureMouseOut(publishButton.getElement());
+                CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+
+                    /**
+                     * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
+                     */
+                    public void onClose(CloseEvent<PopupPanel> event2) {
+
+                        publishButton.setDown(false);
+                    }
+                });
             }
         });
         toolBar.addRight(publishButton);
