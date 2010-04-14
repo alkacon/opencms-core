@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADESessionCache.java,v $
- * Date   : $Date: 2010/04/08 07:29:15 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADESessionCache.java,v $
+ * Date   : $Date: 2010/04/14 07:34:28 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,14 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.editors.ade;
+package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
-import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.workplace.editors.ade.CmsSearchOptions;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 7.9.2
  */

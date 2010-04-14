@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/02/18 09:47:39 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2010/04/14 07:34:28 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.workplace.A_CmsAjaxServer;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.editors.ade.CmsElementUtil.JsonElement;
 import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -91,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 7.6
  */
