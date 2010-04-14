@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/04/13 14:29:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/14 06:45:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -144,10 +144,10 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragContainer
     /** The current element info. */
     private DragInfo m_current;
 
+    private DragInfo m_dropZoneInfo;
+
     /** The element info of the start element. */
     private DragInfo m_startInfo;
-
-    private DragInfo m_dropZoneInfo;
 
     /** Map of element info's. */
     private Map<I_CmsDragTargetContainer, DragInfo> m_targetInfos;
@@ -187,6 +187,26 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragContainer
     public I_CmsDragContainerElement getDragElement() {
 
         return m_dragElement;
+    }
+
+    /**
+     * Returns the dropZoneInfo.<p>
+     *
+     * @return the dropZoneInfo
+     */
+    public DragInfo getDropZoneInfo() {
+
+        return m_dropZoneInfo;
+    }
+
+    /**
+     * Sets the dropZoneInfo.<p>
+     *
+     * @param dropZoneInfo the dropZoneInfo to set
+     */
+    public void setDropZoneInfo(DragInfo dropZoneInfo) {
+
+        m_dropZoneInfo = dropZoneInfo;
     }
 
     /**
@@ -326,8 +346,8 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragContainer
                 if ((arg != null) && isDragging()) {
 
                     // preparing the tool-bar menu drop-zone
-                    CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().openMenu();
-                    I_CmsDragTargetContainer dropZone = CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().getDropZone();
+                    CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().showDropzone(true);
+                    I_CmsDragTargetContainer dropZone = CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().getDropzone();
                     CmsMenuListItem menuItem = new CmsMenuListItem(arg, dropZone);
                     dropZone.add(menuItem);
                     DragInfo infoMenu = new DragInfo(
@@ -391,7 +411,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragContainer
     @Override
     protected void restoreElementAfterDrag() {
 
-        CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().closeMenu();
+        CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().showDropzone(false);
         if (m_current.equals(getDropZoneInfo())) {
             CmsDebugLog.getInstance().printLine("Droped to menu");
             CmsContainerpageDataProvider.get().addToFavoriteList(m_dragElement.getClientId());
@@ -486,26 +506,6 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragContainer
             elementInfo.getPlaceholder().setVisible(false);
             elementInfo.getDraggable().setVisible(false);
         }
-    }
-
-    /**
-     * Sets the dropZoneInfo.<p>
-     *
-     * @param dropZoneInfo the dropZoneInfo to set
-     */
-    public void setDropZoneInfo(DragInfo dropZoneInfo) {
-
-        m_dropZoneInfo = dropZoneInfo;
-    }
-
-    /**
-     * Returns the dropZoneInfo.<p>
-     *
-     * @return the dropZoneInfo
-     */
-    public DragInfo getDropZoneInfo() {
-
-        return m_dropZoneInfo;
     }
 
 }

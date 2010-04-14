@@ -8,7 +8,16 @@
 	padding: 5px 0px;
 }
 
-.menuDropzone{
+.showDropzone .clipboardTabs{
+	display: none;
+}
+
+.showDropzone .clipboardDropzone{
+	display: block;
+}
+
+.clipboardDropzone{
+	display: none;
 	margin: 0px 5px;
 	-moz-border-radius: 4px;
 	border: 1px solid #aaaaaa; 
