@@ -16,7 +16,6 @@
 }
 
 .itemContainer{
-	margin: 2px;
 	border: 1px solid value("constantsCss.borderColor");
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
