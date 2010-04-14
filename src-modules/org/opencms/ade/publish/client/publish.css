@@ -1,5 +1,3 @@
-@external relatedItem, groupHeader, publishRow, indentedPublishRow, publishListItem, selector, scrollPanel, selectPanel, selectorPanel;
-
 .relatedItem {
 	margin-left: 60px;
 	width: 390px;

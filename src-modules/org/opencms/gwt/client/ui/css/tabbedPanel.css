@@ -1,4 +1,4 @@
-@external gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanelTabs, gwt-TabLayoutPanelContent, gwt-TabLayoutPanelTab-selected, gwt-TabLayoutPanelTabInner, internal-tabbed,tabLeftMargin; 
+@external gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanelTabs, gwt-TabLayoutPanelContent, gwt-TabLayoutPanelTab-selected, gwt-TabLayoutPanelTabInner; 
 
 .gwt-TabLayoutPanel {	
 	display:block;
