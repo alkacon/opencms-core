@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapChange.java,v $
- * Date   : $Date: 2010/04/06 12:22:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/15 08:13:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -49,13 +49,13 @@ public class CmsClientSitemapChange implements IsSerializable {
      */
     public static enum ChangeType {
 
-        /** Delete entry. */
+        /** Deleted entry. */
         DELETE,
 
-        /** Name, VFS, Properties change. */
+        /** Title, VFS, Properties changed. */
         EDIT,
 
-        /** Path change. */
+        /** Path changed. */
         MOVE,
 
         /** New entry. */
