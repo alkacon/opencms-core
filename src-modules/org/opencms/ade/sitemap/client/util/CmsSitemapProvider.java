@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/util/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/04/15 08:12:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/15 10:05:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -59,7 +59,7 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
     private static CmsSitemapProvider INSTANCE;
 
     /** The sitemap service instance. */
-    private I_CmsSitemapServiceAsync m_sitemapSvc;
+    private static I_CmsSitemapServiceAsync SERVICE;
 
     /**
      * Prevent instantiation.<p> 
@@ -80,6 +80,19 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
             INSTANCE = init();
         }
         return INSTANCE;
+    }
+
+    /**
+     * Returns the sitemap service instance.<p>
+     * 
+     * @return the sitemap service instance
+     */
+    public static I_CmsSitemapServiceAsync getService() {
+
+        if (SERVICE == null) {
+            SERVICE = GWT.create(I_CmsSitemapService.class);
+        }
+        return SERVICE;
     }
 
     /**
@@ -118,19 +131,6 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
     public native String getNoEditReason() /*-{
         return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_EDIT];
     }-*/;
-
-    /**
-     * Returns the sitemap service instance.<p>
-     * 
-     * @return the sitemap service instance
-     */
-    public I_CmsSitemapServiceAsync getSitemapService() {
-
-        if (m_sitemapSvc == null) {
-            m_sitemapSvc = GWT.create(I_CmsSitemapService.class);
-        }
-        return m_sitemapSvc;
-    }
 
     /**
      * Returns the current sitemap uri.<p>

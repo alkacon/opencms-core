@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEditor.java,v $
- * Date   : $Date: 2010/04/15 08:12:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/15 10:08:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -137,7 +137,7 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
 
                 // Make the call to the sitemap service
                 start(500);
-                CmsSitemapProvider.get().getSitemapService().getRoot(CmsSitemapProvider.get().getUri(), this);
+                CmsSitemapProvider.getService().getRoot(CmsSitemapProvider.get().getUri(), this);
             }
 
             /**
@@ -166,9 +166,7 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
 
                                     // Make the call to the sitemap service
                                     start(1000);
-                                    CmsSitemapProvider.get().getSitemapService().getChildren(
-                                        target.getEntry().getSitePath(),
-                                        this);
+                                    CmsSitemapProvider.getService().getChildren(target.getEntry().getSitePath(), this);
                                 }
 
                                 /**

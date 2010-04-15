@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/15 08:12:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/15 10:07:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  * 
@@ -91,11 +91,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
             start(0);
             List<CmsUUID> resourcesToPublish = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToPublish());
             List<CmsUUID> resourcesToRemove = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToRemove());
-            CmsPublishProvider.get().getPublishService().publishResources(
-                resourcesToPublish,
-                resourcesToRemove,
-                m_force,
-                this);
+            CmsPublishProvider.getService().publishResources(resourcesToPublish, resourcesToRemove, m_force, this);
         }
 
         /**
@@ -134,7 +130,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
         public void execute() {
 
             start(500);
-            CmsPublishProvider.get().getPublishService().getPublishGroups(m_options, this);
+            CmsPublishProvider.getService().getPublishGroups(m_options, this);
         }
 
         /**
@@ -212,7 +208,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
             public void execute() {
 
                 start(200);
-                CmsPublishProvider.get().getPublishService().getInitData(this);
+                CmsPublishProvider.getService().getInitData(this);
             }
 
             /**

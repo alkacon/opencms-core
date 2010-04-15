@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/04/15 08:11:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/15 10:05:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -61,7 +61,7 @@ public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCore
     private static CmsCoreProvider INSTANCE;
 
     /** The core service instance. */
-    private I_CmsCoreServiceAsync m_coreSvc;
+    private static I_CmsCoreServiceAsync SERVICE;
 
     /**
      * Prevent instantiation.<p> 
@@ -82,6 +82,19 @@ public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCore
             INSTANCE = init();
         }
         return INSTANCE;
+    }
+
+    /**
+     * Returns the core service instance.<p>
+     * 
+     * @return the core service instance
+     */
+    public static I_CmsCoreServiceAsync getCoreService() {
+
+        if (SERVICE == null) {
+            SERVICE = GWT.create(I_CmsCoreService.class);
+        }
+        return SERVICE;
     }
 
     /**
@@ -158,19 +171,6 @@ public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCore
     public native String getContext() /*-{
         return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_CONTEXT];
     }-*/;
-
-    /**
-     * Returns the core service instance.<p>
-     * 
-     * @return the core service instance
-     */
-    public I_CmsCoreServiceAsync getCoreService() {
-
-        if (m_coreSvc == null) {
-            m_coreSvc = GWT.create(I_CmsCoreService.class);
-        }
-        return m_coreSvc;
-    }
 
     /**
      * Returns the current locale.<p>
