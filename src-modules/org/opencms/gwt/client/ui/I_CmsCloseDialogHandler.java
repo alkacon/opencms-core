@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsConfirmDialogHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsCloseDialogHandler.java,v $
  * Date   : $Date: 2010/04/15 10:06:31 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,18 +32,18 @@
 package org.opencms.gwt.client.ui;
 
 /**
- * Handles the clicks on the 'OK' and 'Cancel' buttons of the dialog.<p> 
+ * Handles the clicks buttons of the dialog.<p>
  * 
- * @author Tobias Herrmann
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsConfirmDialogHandler extends I_CmsCloseDialogHandler {
+public interface I_CmsCloseDialogHandler {
 
     /**
-     * Function to be called on click on the 'OK' button of the dialog. The dialog will be closed afterwards.<p>
+     * Function to be called on close. The dialog will be closed afterwards.<p>
      */
-    void onOk();
+    void onClose();
 }

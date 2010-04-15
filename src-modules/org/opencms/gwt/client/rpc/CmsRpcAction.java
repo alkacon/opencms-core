@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/04/06 08:29:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/15 10:06:31 $
+ * Version: $Revision: 1.8 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0
  */
@@ -110,9 +110,9 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
             }
 
             /**
-             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onCancel()
+             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
              */
-            public void onCancel() {
+            public void onClose() {
 
                 // do nothing
             }
