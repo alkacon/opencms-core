@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/15 06:36:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -336,14 +336,14 @@ public class CmsPublish {
         pubResources.getRelatedResources().removeAll(permissions.getRelatedResources());
         pubResources.getRelatedResources().removeAll(locked.getRelatedResources());
 
-        // sort the list
-        List<CmsResource> sortedResources = new ArrayList<CmsResource>(getPublishResources().getResources());
-        Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
-
-        if (sortedResources.isEmpty()) {
+        if (getPublishResources().getResources().isEmpty()) {
             // nothing to do
             return new ArrayList<CmsPublishGroup>();
         }
+
+        // sort the list
+        List<CmsResource> sortedResources = new ArrayList<CmsResource>(getPublishResources().getResources());
+        Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
 
         // the resources the user can really publish
         Set<CmsResource> allPubRes = new HashSet<CmsResource>(pubResources.getRelatedResources());
