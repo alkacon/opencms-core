@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEditor.java,v $
- * Date   : $Date: 2010/04/14 07:37:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/15 08:12:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,8 +37,6 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.ade.sitemap.client.util.CmsSitemapProvider;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
-import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsHeader;
@@ -49,7 +47,6 @@ import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -63,14 +60,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapEditor extends A_CmsEntryPoint {
-
-    /** The sitemap service instance. */
-    private I_CmsSitemapServiceAsync m_sitemapSvc;
 
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
@@ -143,7 +137,7 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
 
                 // Make the call to the sitemap service
                 start(500);
-                getSitemapService().getRoot(CmsSitemapProvider.get().getUri(), this);
+                CmsSitemapProvider.get().getSitemapService().getRoot(CmsSitemapProvider.get().getUri(), this);
             }
 
             /**
@@ -152,7 +146,6 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
             @Override
             public void onResponse(CmsClientSitemapEntry root) {
 
-                // root.setName("demo_t3");
                 page.remove(loadingLabel);
 
                 CmsLazyTree<CmsSitemapTreeItem> tree = new CmsLazyTree<CmsSitemapTreeItem>(
@@ -173,7 +166,9 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
 
                                     // Make the call to the sitemap service
                                     start(1000);
-                                    getSitemapService().getChildren(target.getEntry().getSitePath(), this);
+                                    CmsSitemapProvider.get().getSitemapService().getChildren(
+                                        target.getEntry().getSitePath(),
+                                        this);
                                 }
 
                                 /**
@@ -201,18 +196,5 @@ public class CmsSitemapEditor extends A_CmsEntryPoint {
 
         };
         getRootAction.execute();
-    }
-
-    /**
-     * Returns the sitemap service instance.<p>
-     * 
-     * @return the sitemap service instance
-     */
-    protected I_CmsSitemapServiceAsync getSitemapService() {
-
-        if (m_sitemapSvc == null) {
-            m_sitemapSvc = GWT.create(I_CmsSitemapService.class);
-        }
-        return m_sitemapSvc;
     }
 }

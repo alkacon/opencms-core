@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/util/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/03/31 12:19:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/15 08:12:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,11 @@
 package org.opencms.ade.sitemap.client.util;
 
 import org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.gwt.client.util.CmsStringUtil;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -41,7 +44,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,6 +57,9 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
 
     /** Internal instance. */
     private static CmsSitemapProvider INSTANCE;
+
+    /** The sitemap service instance. */
+    private I_CmsSitemapServiceAsync m_sitemapSvc;
 
     /**
      * Prevent instantiation.<p> 
@@ -77,13 +83,6 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
     }
 
     /**
-     * Initializes the data from the host page.<p>
-     */
-    private static native CmsSitemapProvider init() /*-{
-        return $wnd[@org.opencms.ade.sitemap.client.util.CmsSitemapProvider::getDictName()()];
-    }-*/;
-
-    /**
      * Returns the json object name.<p>
      * 
      * @return the json object name
@@ -94,6 +93,13 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
 
         return DICT_NAME.replace('.', '_');
     }
+
+    /**
+     * Initializes the data from the host page.<p>
+     */
+    private static native CmsSitemapProvider init() /*-{
+        return $wnd[@org.opencms.ade.sitemap.client.util.CmsSitemapProvider::getDictName()()];
+    }-*/;
 
     /**
      * Returns the cntPageType.<p>
@@ -112,6 +118,19 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
     public native String getNoEditReason() /*-{
         return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_EDIT];
     }-*/;
+
+    /**
+     * Returns the sitemap service instance.<p>
+     * 
+     * @return the sitemap service instance
+     */
+    public I_CmsSitemapServiceAsync getSitemapService() {
+
+        if (m_sitemapSvc == null) {
+            m_sitemapSvc = GWT.create(I_CmsSitemapService.class);
+        }
+        return m_sitemapSvc;
+    }
 
     /**
      * Returns the current sitemap uri.<p>
