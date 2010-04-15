@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextArea.java,v $
- * Date   : $Date: 2010/04/13 09:17:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -44,7 +45,7 @@ import com.google.gwt.user.client.ui.TextArea;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -80,6 +81,7 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
         m_panel.add(m_error);
         m_textArea.addStyleName(CSS.textArea());
         m_textAreaContainer.addStyleName(CSS.textAreaContainer());
+        m_textAreaContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
     }
 
     /**

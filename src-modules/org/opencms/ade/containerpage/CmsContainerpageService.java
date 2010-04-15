@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/14 07:34:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -105,8 +105,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             list.remove(list.indexOf(element));
         }
         list.add(0, element);
-        getSessionCache().setCacheRecentList(list);
-
     }
 
     /**

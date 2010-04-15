@@ -3,6 +3,9 @@
 <module rename-to="resources">
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="org.opencms.ade.publish.Dialog" />
+	
+	<set-configuration-property name="CssResource.style" value="pretty" /> 
+	
 	<source path="client" />
 	<source path="shared" />
 	<entry-point

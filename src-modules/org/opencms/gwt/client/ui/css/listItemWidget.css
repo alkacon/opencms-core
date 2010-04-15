@@ -1,10 +1,7 @@
 .listItem{
-	list-style: none;
 	display: block;
 	color: value("constantsCss.color");
 	line-height: 16px;
-	font-size: value("constantsCss.fontSize");
-	font-family: value("constantsCss.fontFamily");
 }
 
 .listItem .itemAdditional{
@@ -17,9 +14,6 @@
 
 .itemContainer{
 	border: 1px solid value("constantsCss.borderColor");
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	border-radius: 4px;
 	background: #ffffff;
 }
 
@@ -27,9 +21,6 @@
     gwt-image: "backgroundDefault";
     background-position: 50% 50%;
     height: auto;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	border-radius: 4px;	
 	position: relative;
 }
 

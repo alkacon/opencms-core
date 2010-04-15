@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuContent.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
@@ -66,8 +66,12 @@ public class CmsMenuContent extends PopupPanel {
         setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
         addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
         Element shadowDiv = DOM.createDiv();
-        shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow());
-        m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
+        shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+        m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         getElement().insertFirst(shadowDiv);
     }
 

@@ -7,5 +7,5 @@
 
 .root {
 	background-color: #E1E1E1;
-	font-family: Helvetica,Arial,sans-serif;
+	font-family: value("constantsCss.fontFamily");
 }

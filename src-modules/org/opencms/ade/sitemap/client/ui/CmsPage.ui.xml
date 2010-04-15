@@ -3,6 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="resources" type="org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle" />
-	<g:HTMLPanel ui:field="m_panel" styleName="{resources.pageCss.page} {resources.rootCss.pageCenter}">
+	<g:HTMLPanel ui:field="m_panel" styleName="{resources.pageCss.page} {resources.rootCss.pageCenter} {resources.generalCss.cornerAll}">
 	</g:HTMLPanel>
 </ui:UiBinder> 

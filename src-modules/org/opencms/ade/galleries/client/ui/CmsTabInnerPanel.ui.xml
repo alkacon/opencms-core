@@ -7,13 +7,13 @@
 	
 	<g:HTMLPanel ui:field="m_tab" styleName="{galleryResources.galleryDialogCss.tabPanel}">
 		<cms:CmsFlowPanel ui:field="m_params" tag="div">
-		    <cms:CmsFlowPanel ui:field="m_types" tag="span"></cms:CmsFlowPanel>	
-			<cms:CmsFlowPanel ui:field="m_galleries" tag="span"></cms:CmsFlowPanel>
-			<cms:CmsFlowPanel ui:field="m_categories" tag="span"></cms:CmsFlowPanel>			
+		    <cms:CmsFlowPanel ui:field="m_types" tag="span" addStyleNames="{resources.generalCss.cornerAll}"></cms:CmsFlowPanel>	
+			<cms:CmsFlowPanel ui:field="m_galleries" tag="span" addStyleNames="{resources.generalCss.cornerAll}"></cms:CmsFlowPanel>
+			<cms:CmsFlowPanel ui:field="m_categories" tag="span" addStyleNames="{resources.generalCss.cornerAll}"></cms:CmsFlowPanel>			
 		</cms:CmsFlowPanel>
 		<cms:CmsFlowPanel ui:field="m_options" tag="div" addStyleNames="{galleryResources.galleryDialogCss.marginBottom}">			
 		</cms:CmsFlowPanel>
-		<cms:CmsFlowPanel ui:field="m_list" tag="div" styleName="{galleryResources.galleryDialogCss.criteriaList}">
+		<cms:CmsFlowPanel ui:field="m_list" tag="div" styleName="{galleryResources.galleryDialogCss.criteriaList}"  addStyleNames="{resources.generalCss.cornerAll}">
 			<cms:CmsList ui:field="m_scrollList" addStyleNames="{resources.listTreeCss.listScrollable}">
 			</cms:CmsList>
 		</cms:CmsFlowPanel>			

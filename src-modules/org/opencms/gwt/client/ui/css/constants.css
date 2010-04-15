@@ -9,6 +9,8 @@
 @def borderColor #999999;
 @def borderColorInactive #aaaaaa;
 @def borderColorActive #888888;
+@def borderRadius 4px;
+
 
 @def backgroundColorBar #aaaaaa;
 @def backgroundColorLight #F9F9F9;

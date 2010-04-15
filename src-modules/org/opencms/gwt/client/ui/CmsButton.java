@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsButton.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -105,7 +105,7 @@ public class CmsButton extends PushButton {
      */
     public void setDownFace(String text, String imageClass) {
 
-        this.getDownFace().setHTML(getFaceHtml(text, imageClass));
+        getDownFace().setHTML(getFaceHtml(text, imageClass));
     }
 
     /**
@@ -145,7 +145,7 @@ public class CmsButton extends PushButton {
      */
     public void setUpFace(String text, String imageClass) {
 
-        this.getUpFace().setHTML(getFaceHtml(text, imageClass));
+        getUpFace().setHTML(getFaceHtml(text, imageClass));
     }
 
     /**

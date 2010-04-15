@@ -4,15 +4,15 @@
 	display:block;
     background:value("constantsCss.backgroundColorLight") none repeat scroll 0 0;   
     border:1px solid value("constantsCss.borderColor");
-    -moz-border-radius-topleft:4px;
+ /*   -moz-border-radius-topleft:4px;
 	-moz-border-radius-topright:4px;	
 	-moz-border-radius-bottomleft:4px;
-	-moz-border-radius-bottomright:4px;
+	-moz-border-radius-bottomright:4px; */
 	height: 100%;
 	margin:0;
 	padding:0;
-	font-size:value("constantsCss.fontSize");
-	font-family: value("constantsCss.fontFamily");   	
+/*	font-size:value("constantsCss.fontSize");
+	font-family: value("constantsCss.fontFamily"); */   	
 }
 
 .internal-tabbed {
@@ -48,13 +48,38 @@
 	height: auto;
 	margin:0 0 -1px 2px;
 	padding:0;		
-	-moz-border-radius-topleft:4px;
-	-moz-border-radius-topright:4px;	
 	border:1px solid value("constantsCss.borderColor");	
 	color:value("constantsCss.color");
 	position:relative;
 	cursor:pointer;
 }
+
+/** browser specific styles **/
+@if user.agent gecko1_8 gecko{
+	/** firefox **/
+	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab{
+		-moz-border-radius-topleft: value("constantsCss.borderRadius");
+		-moz-border-radius-topright: value("constantsCss.borderRadius");
+	}
+
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab{
+		-webkit-border-top-left-radius: value("constantsCss.borderRadius");
+		-webkit-border-top-right-radius: value("constantsCss.borderRadius");
+	}
+
+} @else {
+	/** ie7, ie8, opera and the rest, add new @elif block if necessary **/
+	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab{
+		border-top-left-radius: value("constantsCss.borderRadius");
+		border-top-right-radius: value("constantsCss.borderRadius");
+	}
+
+}
+
+
+
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
 	gwt-image: "backgroundDefault";

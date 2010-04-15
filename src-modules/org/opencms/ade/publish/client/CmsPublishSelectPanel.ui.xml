@@ -5,6 +5,7 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui"  >
 	
 	<ui:with field="res" type="org.opencms.ade.publish.client.I_CmsPublishLayoutBundle" />
+	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel styleName="{res.publishCss.selectPanel}">
 		<g:FlowPanel ui:field="m_selectorPanel" styleName="{res.publishCss.selectorPanel}">
 			<g:InlineLabel ui:field="m_selectorLabel" />
@@ -12,25 +13,25 @@
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="m_topBar" styleName="{res.publishCss.topBar}">
 			<g:InlineLabel ui:field = "m_selectLabel" />
-		    <cms:CmsTextButton ui:field="m_selectAll" />
-		    <cms:CmsTextButton ui:field="m_selectNone" />
+		    <cms:CmsTextButton ui:field="m_selectAll"  buttonStyle="cmsButtonMedium"/>
+		    <cms:CmsTextButton ui:field="m_selectNone"  buttonStyle="cmsButtonMedium"/>
 		</g:FlowPanel>
 		<g:Label ui:field="m_noResources"  styleName="{res.publishCss.noResources}"/>
-		<g:ScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}">
+		<g:ScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
 			<g:FlowPanel ui:field="m_groupPanel" styleName="{res.publishCss.groupPanel}"></g:FlowPanel>
 		</g:ScrollPanel>
 		<g:FlowPanel ui:field="m_checkboxPanel" styleName="{res.publishCss.checkboxes}">
 			<g:FlowPanel>
 				<cmsi:CmsCheckBox ui:field="m_checkboxRelated"></cmsi:CmsCheckBox>
-				<g:InlineLabel styleName="{res.publishCss.text}" ui:field="m_relatedLabel"></g:InlineLabel>
+				<g:InlineLabel styleName="{res.publishCss.text}" addStyleNames="{main.generalCss.textMedium}" ui:field="m_relatedLabel"></g:InlineLabel>
 			</g:FlowPanel>
 			<g:FlowPanel>
 				<cmsi:CmsCheckBox ui:field="m_checkboxSiblings"></cmsi:CmsCheckBox>
-				<g:InlineLabel styleName="{res.publishCss.text}" ui:field="m_siblingsLabel"></g:InlineLabel>
+				<g:InlineLabel styleName="{res.publishCss.text}" addStyleNames="{main.generalCss.textMedium}" ui:field="m_siblingsLabel"></g:InlineLabel>
 			</g:FlowPanel>
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="m_problemsPanel" styleName="{res.publishCss.problemPanel}" />
-		<cms:CmsTextButton ui:field="m_publishButton"></cms:CmsTextButton>
-		<cms:CmsTextButton ui:field="m_cancelButton"></cms:CmsTextButton> 
+		<cms:CmsTextButton ui:field="m_publishButton"  buttonStyle="cmsButtonMedium"></cms:CmsTextButton>
+		<cms:CmsTextButton ui:field="m_cancelButton"  buttonStyle="cmsButtonMedium"></cms:CmsTextButton> 
 	</g:FlowPanel>
 </ui:UiBinder> 

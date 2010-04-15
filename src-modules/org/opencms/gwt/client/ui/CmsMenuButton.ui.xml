@@ -22,12 +22,6 @@
 		    }
 		}
 		.menu .connect{
-			border-radius-topleft: 4px;
-			border-radius-topright: 4px;
-			-moz-border-radius-topleft: 4px;
-			-moz-border-radius-topright: 4px;
-			-webkit-border-radius-topleft: 4px;
-			-webkit-border-radius-topright: 4px;
 			background: #CFCFCF;
 			border: 1px solid #AAAAAA;
 			position: absolute;
@@ -44,8 +38,9 @@
 			position: relative;
 		}
 	</ui:style>
+	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{m_style.menu}">
-		<div ui:field="m_menuConnect" class="{m_style.connect} {m_style.hidden}"></div>
+		<div ui:field="m_menuConnect" class="{m_style.connect} {m_style.hidden} {main.generalCss.cornerTop}"></div>
 		<cms:CmsTextButton ui:field="m_button" buttonStyle="cmsButtonBig" addStyleNames="{m_style.button}"></cms:CmsTextButton>
 	</g:HTMLPanel>
 </ui:UiBinder> 

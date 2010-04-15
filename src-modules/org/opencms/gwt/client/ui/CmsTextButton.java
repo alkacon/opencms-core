@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTextButton.java,v $
- * Date   : $Date: 2010/04/14 14:16:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,13 +34,14 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiConstructor;
 
 /**
  * Provides a text button.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -50,13 +51,19 @@ public class CmsTextButton extends CmsButton {
     public static enum ButtonStyle {
 
         /** Big button style. */
-        cmsButtonBig(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonBig()),
+        cmsButtonBig(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonBig()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textBig()),
 
         /** Medium button style. */
-        cmsButtonMedium(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonMedium()),
+        cmsButtonMedium(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonMedium()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium()),
 
         /** Small button style. */
-        cmsButtonSmall(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonSmall());
+        cmsButtonSmall(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonSmall()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textSmall());
 
         /** The CSS class name. */
         private String m_cssClassName;
@@ -83,17 +90,38 @@ public class CmsTextButton extends CmsButton {
     }
 
     /** The style of this button. */
-    private ButtonStyle m_buttonStyle;
+    private static final ButtonStyle DEFAULT_BUTTON_STYLE = ButtonStyle.cmsButtonMedium;
 
     /**
      * The constructor.<p>
      */
     public CmsTextButton() {
 
+        this(DEFAULT_BUTTON_STYLE);
+    }
+
+    /**
+     * The constructor.<p>
+     * 
+     * @param style the style for this button
+     */
+    public CmsTextButton(ButtonStyle style) {
+
         super();
         addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTextButton());
-        m_buttonStyle = ButtonStyle.cmsButtonMedium;
+        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        addStyleName(style.getCssClassName());
+    }
 
+    /**
+     * The constructor.
+     * 
+     * @param buttonStyle the style name for this button
+     */
+    @UiConstructor
+    public CmsTextButton(String buttonStyle) {
+
+        this(ButtonStyle.valueOf(buttonStyle));
     }
 
     /**
@@ -105,8 +133,7 @@ public class CmsTextButton extends CmsButton {
      */
     public CmsTextButton(String text, String imageClass) {
 
-        this();
-        setUpFace(text, imageClass);
+        this(text, imageClass, DEFAULT_BUTTON_STYLE);
     }
 
     /**
@@ -119,8 +146,7 @@ public class CmsTextButton extends CmsButton {
      */
     public CmsTextButton(String text, String imageClass, ClickHandler handler) {
 
-        this(text, imageClass);
-        this.addClickHandler(handler);
+        this(text, imageClass, handler, DEFAULT_BUTTON_STYLE);
     }
 
     /**
@@ -133,8 +159,8 @@ public class CmsTextButton extends CmsButton {
      */
     public CmsTextButton(String text, String imageClass, ButtonStyle style) {
 
-        this(text, imageClass);
-        setButtonStyle(style);
+        this(style);
+        setUpFace(text, imageClass);
     }
 
     /**
@@ -148,32 +174,8 @@ public class CmsTextButton extends CmsButton {
      */
     public CmsTextButton(String text, String imageClass, ClickHandler handler, ButtonStyle style) {
 
-        this(text, imageClass, handler);
-        setButtonStyle(style);
-    }
-
-    /**
-     * Sets the button style.<p>
-     * 
-     * @param style the style name
-     */
-    public void setButtonStyle(String style) {
-
-        setButtonStyle(ButtonStyle.valueOf(style));
-    }
-
-    /**
-     * Sets the button style.<p>
-     * 
-     * @param style the style
-     */
-    public void setButtonStyle(ButtonStyle style) {
-
-        if (style != m_buttonStyle) {
-            removeStyleName(m_buttonStyle.getCssClassName());
-            m_buttonStyle = style;
-            addStyleName(style.getCssClassName());
-        }
+        this(text, imageClass, style);
+        addClickHandler(handler);
     }
 
     /**

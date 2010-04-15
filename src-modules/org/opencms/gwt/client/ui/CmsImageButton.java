@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsImageButton.java,v $
- * Date   : $Date: 2010/04/14 14:16:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -433,6 +433,7 @@ public class CmsImageButton extends CmsButton {
         super();
         if (hasBorder) {
             addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton());
+            addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         } else {
             addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButtonTransparent());
         }

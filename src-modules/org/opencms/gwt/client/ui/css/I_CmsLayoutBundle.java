@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/04/14 13:01:31 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -140,6 +140,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String borderColorInactive();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String borderRadius();
 
         /** 
          * Access method.<p>
@@ -250,6 +257,53 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String popupShadow();
+    }
+
+    /** General CSS, used for general re-occurring styles. */
+    @Shared
+    interface I_CmsGeneralCss extends I_CmsStateCss {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cornerAll();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cornerBottom();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cornerTop();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String textBig();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String textMedium();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String textSmall();
     }
 
     /** Header CSS. */
@@ -825,6 +879,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("floatDecoratedPanel.css")
     I_CmsFloatDecoratedPanelCss floatDecoratedPanelCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the general CSS
+     */
+    @Source("general.css")
+    I_CmsGeneralCss generalCss();
 
     /**
      * Access method.<p>

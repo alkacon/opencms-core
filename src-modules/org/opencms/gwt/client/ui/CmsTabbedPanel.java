@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/04/13 14:07:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  * 
@@ -129,6 +129,10 @@ public class CmsTabbedPanel extends Composite {
         }
 
         m_tabPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
+        m_tabPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
+
     }
 
     /**

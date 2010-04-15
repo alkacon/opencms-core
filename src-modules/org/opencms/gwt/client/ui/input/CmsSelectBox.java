@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/04/14 14:16:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui.input;
 import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
@@ -74,7 +75,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  * 
@@ -208,8 +209,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_panel = uiBinder.createAndBindUi(this);
         initWidget(m_panel);
         m_openerLabel.addStyleName(CSS.selectBoxOpener());
-        m_selectBoxState = new CmsStyleVariable(m_opener, m_selector);
-        m_selectBoxState.setValue(CSS.selectBoxClosed());
+        m_selectBoxState = new CmsStyleVariable(m_opener/*, m_selector*/);
+        m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        //    m_selectBoxState.setValue(CSS.selectBoxClosed());
 
         m_opener.addStyleName(CSS.selectBoxSelected());
         m_openClose = new CmsImageButton(CmsImageButton.Icon.triangle_1_e, CmsImageButton.Icon.triangle_1_s, false);
@@ -234,6 +236,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_popup.addStyleName(CSS.selectorPopup());
 
         m_selector.setStyleName(CSS.selectBoxSelector());
+        m_selector.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+        m_selector.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             /**
@@ -426,7 +430,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         }
         m_openClose.setDown(false);
         m_popup.hide();
-        m_selectBoxState.setValue(CSS.selectBoxClosed());
+        m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        //    m_selectBoxState.setValue(CSS.selectBoxClosed());
     }
 
     /**
@@ -463,7 +468,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_popup.setWidth(2 /* left/right border */+ m_opener.getElement().getClientWidth() + "px");
         m_popup.show();
         positionElement(m_popup.getElement(), m_panel.getElement(), 0, m_opener.getElement().getClientHeight());
-        m_selectBoxState.setValue(CSS.selectBoxOpen());
+        m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+        // m_selectBoxState.setValue(CSS.selectBoxOpen());
     }
 
     /**

@@ -7,9 +7,6 @@
     margin: 3px;
     position: relative;
     background: #ffffff;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
     border: solid 1px value("constantsCss.borderColor");
     font-family: value("constantsCss.fontFamily");
 }
@@ -25,9 +22,6 @@
     top: 0px;
     left: 0px;
     background: #aaaaaa;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
 }
 
 .popupMainContent{
@@ -40,12 +34,6 @@
     font-weight: bold;
     cursor: move;
     padding:5px;
-    -moz-border-radius-topleft: 4px;
-    -moz-border-radius-topright: 4px;
-    -webkit-border-radius-topleft: 4px;
-    -webkit-border-radius-topright: 4px;
-    border-radius-topleft: 4px;
-    border-radius-topright: 4px;
     gwt-image: "backgroundDefault"; 
     background-position: 50% 50%; 
     height: auto; 
@@ -58,20 +46,11 @@
 	margin-left: 4px;
 }
 
-.popup.menuPopup .popupShadow{
-    -moz-border-radius-topleft: 0px;
-    -moz-border-radius-topright: 0px;
-    -webkit-border-radius-topleft: 0px;
-    -webkit-border-radius-topright: 0px;
-    border-radius-topleft: 0px;
-    border-radius-topright: 0px;
-}
-
 .popup.menuPopup .popupContent{
     margin-top: 0px;
+    /** removing rounded corner top-left **/
     -moz-border-radius-topleft: 0px;
     -webkit-border-radius-topleft: 0px;
-    -webkit-border-radius-topright: 0px;
     border-radius-topright: 0px;
     background: #CFCFCF;
     border-top: none;

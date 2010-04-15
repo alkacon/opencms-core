@@ -9,10 +9,6 @@
 }
 
 .criteriaList {
-	-moz-border-radius-bottomleft:4px;
-	-moz-border-radius-bottomright:4px;
-	-moz-border-radius-topleft:4px;
-	-moz-border-radius-topright:4px;
 	border:1px solid #999999;
 	height:405px;
 	
@@ -41,11 +37,6 @@
 	margin-right:1px;
 	margin-bottom:1px;
 	padding:2px;
-	-moz-border-radius-bottomleft:4px;
-	-moz-border-radius-bottomright:4px;
-	-moz-border-radius-topleft:4px;
-	-moz-border-radius-topright:4px;
-	
 }
 
 .paramsText {

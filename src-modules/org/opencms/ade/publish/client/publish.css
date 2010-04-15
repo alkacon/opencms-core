@@ -80,7 +80,6 @@
 
 .scrollPanel {
 	max-height: 400px;
-	-moz-border-radius: 4px;
 	border: 1px solid value("constants.borderColor");
 	padding: 3px;
 	zoom: 1;
@@ -93,8 +92,6 @@
 }
 
 .text {
-	font-size: value("constants.fontSize");
-	font-family: value("constants.fontFamily");
 	vertical-align: top;
 }
 

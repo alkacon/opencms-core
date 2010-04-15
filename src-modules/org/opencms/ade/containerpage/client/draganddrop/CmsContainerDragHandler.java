@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/04/14 14:33:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
@@ -63,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -345,6 +347,9 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
 
             CmsDragTargetMenu dragParent = new CmsDragTargetMenu();
             dragParent.setWidth(m_dragElement.getElement().getOffsetWidth() + "px");
+            dragParent.getElement().getStyle().setPosition(Position.ABSOLUTE);
+            dragParent.getElement().getStyle().setTop(0, Unit.PX);
+            dragParent.getElement().getStyle().setLeft(0, Unit.PX);
             RootPanel.get().add(dragParent);
             m_currentTarget = dragParent;
             m_dragElement.setDragParent(dragParent);

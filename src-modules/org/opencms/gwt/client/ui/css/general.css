@@ -1,0 +1,68 @@
+@external cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
+
+.cmsState{
+	border-color: value("constantsCss.borderColor");
+	color: value("constantsCss.color");
+}
+
+.textSmall{
+	font-family: value("constantsCss.fontFamily");
+	font-size: value("constantsCss.fontSizeSmall");
+}
+.textMedium{
+	font-family: value("constantsCss.fontFamily");
+	font-size: value("constantsCss.fontSize");
+}
+.textBig{
+	font-family: value("constantsCss.fontFamily");
+	font-size: value("constantsCss.fontSizeBig");
+}
+
+
+
+.cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering, .cmsState-down-disabled, .cmsHovering{};
+
+/** browser specific styles **/
+@if user.agent gecko1_8 gecko{
+	/** firefox **/
+	.cornerAll{
+		-moz-border-radius: value("constantsCss.borderRadius");
+	}
+	.cornerBottom{
+		-moz-border-radius-bottomleft: value("constantsCss.borderRadius");
+		-moz-border-radius-bottomright: value("constantsCss.borderRadius");
+	}
+	.cornerTop{
+		-moz-border-radius-topleft: value("constantsCss.borderRadius");
+		-moz-border-radius-topright: value("constantsCss.borderRadius");
+	}
+
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	.cornerAll{
+		-webkit-border-radius: value("constantsCss.borderRadius");
+	}
+	.cornerBottom{
+		-webkit-border-bottom-left-radius: value("constantsCss.borderRadius");
+		-webkit-border-bottom-right-radius: value("constantsCss.borderRadius");
+	}
+	.cornerTop{
+		-webkit-border-top-left-radius: value("constantsCss.borderRadius");
+		-webkit-border-top-right-radius: value("constantsCss.borderRadius");
+	}
+
+} @else {
+	/** ie7, ie8, opera and the rest, add new @elif block if necessary **/
+	.cornerAll{
+		border-radius: value("constantsCss.borderRadius");
+	}
+	.cornerBottom{
+		border-bottom-left-radius: value("constantsCss.borderRadius");
+		border-bottom-right-radius: value("constantsCss.borderRadius");
+	}
+	.cornerTop{
+		border-top-left-radius: value("constantsCss.borderRadius");
+		border-top-right-radius: value("constantsCss.borderRadius");
+	}
+
+}

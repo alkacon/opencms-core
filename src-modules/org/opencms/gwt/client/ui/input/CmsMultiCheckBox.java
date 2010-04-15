@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsMultiCheckBox.java,v $
- * Date   : $Date: 2010/04/13 09:17:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPair;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  *  
@@ -84,6 +85,7 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
         m_panel.add(m_error);
         initWidget(m_panel);
         m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().multiCheckBox());
+        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         int i = 0;
         for (CmsPair<String, String> pair : items) {
             String value = pair.getSecond();

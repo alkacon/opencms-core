@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/14 14:16:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -227,6 +227,7 @@ public class CmsListItemWidget extends Composite {
         m_rootId = HTMLPanel.createUniqueId();
         panel.getElement().setId(m_rootId);
         panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().listItem());
+        panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         CmsHTMLHoverPanel itemContent = uiBinder.createAndBindUi(this);
         panel.add(itemContent, m_rootId);
         initWidget(panel);

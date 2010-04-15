@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarButton.java,v $
- * Date   : $Date: 2010/04/07 13:36:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/15 13:53:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -163,6 +163,7 @@ public class CmsToolbarButton extends ToggleButton {
         super();
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
         addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         setTitle(title);
         String upFaceHtml = "<div class='" + iconClass + "'></div>";
         this.getUpFace().setHTML(upFaceHtml);

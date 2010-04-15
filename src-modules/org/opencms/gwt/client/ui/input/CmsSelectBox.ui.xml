@@ -3,8 +3,8 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
 	xmlns:cmsInput="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="layout" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
-
-	<g:FlowPanel ui:field="m_panel" styleName="{layout.inputCss.selectBoxRoot}">
+	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<g:FlowPanel ui:field="m_panel" styleName="{layout.inputCss.selectBoxRoot}" addStyleNames="{main.generalCss.textMedium}">
 		<g:FocusPanel ui:field="m_opener" styleName="{layout.inputCss.selectBoxSelected}">
 			<cmsInput:CmsLabel ui:field="m_openerLabel"/>
 		</g:FocusPanel>

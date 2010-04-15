@@ -4,8 +4,8 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui" 
 	xmlns:cmsInput="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<cms:CmsHTMLHoverPanel styleName="{resources.listItemWidgetCss.itemContainer}">
-			<div class="{resources.listItemWidgetCss.itemContent}">
+	<cms:CmsHTMLHoverPanel styleName="{resources.listItemWidgetCss.itemContainer}" addStyleNames="{resources.generalCss.cornerAll}">
+			<div class="{resources.listItemWidgetCss.itemContent} {resources.generalCss.cornerAll}">
 				<g:FlowPanel ui:field="m_buttonPanel" styleName="{resources.listItemWidgetCss.buttonPanel}"></g:FlowPanel>
 				<g:SimplePanel styleName="{resources.listItemWidgetCss.itemIcon}" ui:field="m_iconPanel"></g:SimplePanel>
 		    	<g:FlowPanel ui:field="m_titleRow" styleName="{resources.listItemWidgetCss.titleRow}" >
