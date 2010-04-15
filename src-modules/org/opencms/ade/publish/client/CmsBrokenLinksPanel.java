@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsBrokenLinksPanel.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/15 10:06:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -138,9 +138,9 @@ public class CmsBrokenLinksPanel extends Composite {
     public List<CmsButton> getButtons() {
 
         List<CmsButton> result = new ArrayList<CmsButton>();
-        result.add(m_publishButton);
-        result.add(m_cancelButton);
         result.add(m_backButton);
+        result.add(m_cancelButton);
+        result.add(m_publishButton);
         return result;
     }
 
