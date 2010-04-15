@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/14 14:16:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/15 10:07:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -94,6 +94,10 @@ public class CmsPublishSelectPanel extends Composite {
     @UiField
     protected CmsTextButton m_cancelButton;
 
+    /** The panel with checkboxes. */
+    @UiField
+    protected Panel m_checkboxPanel;
+
     /** The checkbox for including related resources. */
     @UiField
     protected CmsCheckBox m_checkboxRelated;
@@ -113,10 +117,6 @@ public class CmsPublishSelectPanel extends Composite {
     /** The panel which shows a message telling the user the number of problems. */
     @UiField
     protected Panel m_problemsPanel;
-
-    /** The panel with checkboxes. */
-    @UiField
-    protected Panel m_checkboxPanel;
 
     /** The project select box. */
     @UiField
@@ -170,9 +170,6 @@ public class CmsPublishSelectPanel extends Composite {
 
     /** The list of group panels for each publish list group. */
     private List<CmsPublishGroupPanel> m_groups = new ArrayList<CmsPublishGroupPanel>();
-
-    /** The number of resources with publish problems. */
-    private int m_numProblems;
 
     /**
      * Creates a new instance.<p>
@@ -284,7 +281,6 @@ public class CmsPublishSelectPanel extends Composite {
         m_siblingsLabel.addStyleName(CSS.clear());
         m_selectLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
         m_selectorLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
-        m_numProblems = 0;
     }
 
     /**
@@ -294,8 +290,8 @@ public class CmsPublishSelectPanel extends Composite {
     public List<CmsButton> getButtons() {
 
         List<CmsButton> result = new ArrayList<CmsButton>();
-        result.add(m_publishButton);
         result.add(m_cancelButton);
+        result.add(m_publishButton);
         return result;
     }
 
@@ -356,11 +352,11 @@ public class CmsPublishSelectPanel extends Composite {
      */
     public void setGroups(List<CmsPublishGroup> groups) {
 
-        m_numProblems = 0;
         m_problemsPanel.clear();
         m_problemsPanel.setVisible(false);
         m_groups.clear();
         m_groupPanel.clear();
+        m_publishButton.setEnabled(false);
 
         int numGroups = groups.size();
         setResourcesVisible(numGroups > 0);
@@ -368,15 +364,19 @@ public class CmsPublishSelectPanel extends Composite {
             return;
         }
 
+        // TODO: display only the first page and use on-the-fly paging
+        int numProblems = 0;
         for (CmsPublishGroup group : groups) {
             String header = group.getName();
             List<CmsPublishResource> resourceBeans = group.getResources();
             CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(header, resourceBeans);
-            m_numProblems += groupPanel.countProblems();
+            numProblems += groupPanel.countProblems();
             m_groups.add(groupPanel);
             m_groupPanel.add(groupPanel);
         }
-        showProblemCount();
+        // TODO: enable the publish button only if there is something selected to publish
+        m_publishButton.setEnabled(true);
+        showProblemCount(numProblems);
     }
 
     /**
@@ -416,12 +416,14 @@ public class CmsPublishSelectPanel extends Composite {
 
     /**
      * Shows the problem count in the panel.<p>
+     * 
+     * @param numProblems the number of resources with publish problems
      */
-    private void showProblemCount() {
+    private void showProblemCount(int numProblems) {
 
         m_problemsPanel.clear();
-        if (m_numProblems > 0) {
-            String message = Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + m_numProblems);
+        if (numProblems > 0) {
+            String message = Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + numProblems);
             m_problemsPanel.add(new InlineLabel(message));
             m_problemsPanel.setVisible(true);
         }

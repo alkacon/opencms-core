@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/04/14 14:16:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/15 10:07:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -286,6 +286,7 @@ public class CmsPublishGroupPanel extends Composite {
      */
     private void initSelectButtons() {
 
+        // TODO: disable/hide these buttons if there is nothing that can be selected (all resources have problems)
         m_selectAll = new CmsTextButton(
             Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0),
             I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked(),
