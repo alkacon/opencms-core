@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/A_CmsClientMessageBundle.java,v $
- * Date   : $Date: 2010/03/11 13:28:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/15 10:03:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 
-import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -54,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -63,15 +62,12 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(A_CmsClientMessageBundle.class);
 
-    /** Additional messages. */
-    private Set<I_CmsClientMessageBundle> m_additionalMessages;
-
     /**
      * Hides the public constructor for this utility class.<p>
      */
     protected A_CmsClientMessageBundle() {
 
-        m_additionalMessages = new HashSet<I_CmsClientMessageBundle>();
+        // empty
     }
 
     /**
@@ -80,13 +76,7 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
     public String export(HttpServletRequest request) {
 
         CmsObject cms = CmsFlexController.getCmsObject(request);
-        Set<I_CmsClientMessageBundle> bundles = new HashSet<I_CmsClientMessageBundle>();
-        collectBundles(bundles);
-        StringBuffer sb = new StringBuffer();
-        for (I_CmsClientMessageBundle bundle : bundles) {
-            sb.append(bundle.export(cms.getRequestContext().getLocale().toString()));
-        }
-        return sb.toString();
+        return export(cms.getRequestContext().getLocale().toString());
     }
 
     /**
@@ -116,14 +106,6 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
     }
 
     /**
-     * @see org.opencms.gwt.I_CmsClientMessageBundle#getAdditionalMessages()
-     */
-    public Set<I_CmsClientMessageBundle> getAdditionalMessages() {
-
-        return m_additionalMessages;
-    }
-
-    /**
      * @see org.opencms.gwt.I_CmsClientMessageBundle#getBundleName()
      */
     public String getBundleName() {
@@ -137,28 +119,5 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
     public Class<?> getClientImpl() throws Exception {
 
         return Class.forName(getClass().getPackage().getName() + ".client.Messages");
-    }
-
-    /**
-     * Adds an additional message to this bundle.<p>
-     * 
-     * @param additionalMessage the message to add
-     */
-    protected void addMessage(I_CmsClientMessageBundle additionalMessage) {
-
-        m_additionalMessages.add(additionalMessage);
-    }
-
-    /**
-     * Collects recursively all additional bundles.<p>
-     * 
-     * @param bundles the collector set
-     */
-    private void collectBundles(Set<I_CmsClientMessageBundle> bundles) {
-
-        bundles.add(this);
-        for (I_CmsClientMessageBundle bundle : this.getAdditionalMessages()) {
-            ((A_CmsClientMessageBundle)bundle).collectBundles(bundles);
-        }
     }
 }
