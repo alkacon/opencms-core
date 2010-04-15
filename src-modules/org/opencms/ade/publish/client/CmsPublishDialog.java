@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/13 09:17:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/15 08:12:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,6 @@ import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
-import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
-import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
@@ -47,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -61,7 +58,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  * 
@@ -94,7 +91,11 @@ public class CmsPublishDialog extends CmsPopupDialog {
             start(0);
             List<CmsUUID> resourcesToPublish = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToPublish());
             List<CmsUUID> resourcesToRemove = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToRemove());
-            m_publishService.publishResources(resourcesToPublish, resourcesToRemove, m_force, this);
+            CmsPublishProvider.get().getPublishService().publishResources(
+                resourcesToPublish,
+                resourcesToRemove,
+                m_force,
+                this);
         }
 
         /**
@@ -133,7 +134,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
         public void execute() {
 
             start(500);
-            m_publishService.getPublishGroups(m_options, this);
+            CmsPublishProvider.get().getPublishService().getPublishGroups(m_options, this);
         }
 
         /**
@@ -159,9 +160,6 @@ public class CmsPublishDialog extends CmsPopupDialog {
     /** The panel for selecting the resources to publish or remove from the publish list. */
     protected CmsPublishSelectPanel m_publishSelectPanel;
 
-    /** The remote publish service used by this dialog. */
-    protected I_CmsPublishServiceAsync m_publishService;
-
     /** The panel for showing the links that would be broken by publishing. */
     private CmsBrokenLinksPanel m_brokenLinksPanel = new CmsBrokenLinksPanel(this);
 
@@ -171,14 +169,10 @@ public class CmsPublishDialog extends CmsPopupDialog {
     /**
      * Constructs a new publish dialog.<p>
      * 
-     * @param publishService the publish service to use 
      * @param projects the projects which should be selectable in the publish dialog
      * @param options the initial publish list options to use 
      */
-    public CmsPublishDialog(
-        I_CmsPublishServiceAsync publishService,
-        List<CmsProjectBean> projects,
-        CmsPublishOptions options) {
+    public CmsPublishDialog(List<CmsProjectBean> projects, CmsPublishOptions options) {
 
         super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
         initCss();
@@ -192,8 +186,6 @@ public class CmsPublishDialog extends CmsPopupDialog {
         m_panel.add(m_publishSelectPanel);
         m_panel.add(m_brokenLinksPanel);
         setPanel(PANEL_SELECT);
-
-        m_publishService = publishService;
     }
 
     /**
@@ -211,7 +203,6 @@ public class CmsPublishDialog extends CmsPopupDialog {
      */
     public static void showPublishDialog(final CloseHandler<PopupPanel> handler) {
 
-        final I_CmsPublishServiceAsync publishService = GWT.create(I_CmsPublishService.class);
         (new CmsRpcAction<CmsPublishData>() {
 
             /**
@@ -221,7 +212,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
             public void execute() {
 
                 start(200);
-                publishService.getInitData(this);
+                CmsPublishProvider.get().getPublishService().getInitData(this);
             }
 
             /**
@@ -230,10 +221,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
             @Override
             protected void onResponse(final CmsPublishData result) {
 
-                CmsPublishDialog publishDialog = new CmsPublishDialog(
-                    publishService,
-                    result.getProjects(),
-                    result.getOptions());
+                CmsPublishDialog publishDialog = new CmsPublishDialog(result.getProjects(), result.getOptions());
                 publishDialog.onReceivePublishList(result.getGroups());
                 if (handler != null) {
                     publishDialog.addCloseHandler(handler);

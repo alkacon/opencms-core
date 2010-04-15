@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishProvider.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/15 08:12:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,17 @@
 
 package org.opencms.ade.publish.client;
 
+import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
+import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
+
+import com.google.gwt.core.client.GWT;
+
 /**
  * The provider class for the publish module.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -50,6 +55,9 @@ public final class CmsPublishProvider {
 
     /** Internal instance. */
     private static CmsPublishProvider INSTANCE;
+
+    /** The publish service instance. */
+    private I_CmsPublishServiceAsync m_publishSvc;
 
     /**
      * Prevent instantiation.<p> 
@@ -72,4 +80,16 @@ public final class CmsPublishProvider {
         return INSTANCE;
     }
 
+    /**
+     * Returns the publish service instance.<p>
+     * 
+     * @return the publish service instance
+     */
+    public I_CmsPublishServiceAsync getPublishService() {
+
+        if (m_publishSvc == null) {
+            m_publishSvc = GWT.create(I_CmsPublishService.class);
+        }
+        return m_publishSvc;
+    }
 }
