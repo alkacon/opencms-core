@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/04/06 12:21:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/15 08:11:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,7 +54,7 @@ public interface I_CmsCoreServiceAsync {
      * @param uri the sitemap URI 
      * @param callback the async callback
      */
-    void lock(String uri, AsyncCallback<Void> callback);
+    void lock(String uri, AsyncCallback<String> callback);
 
     /**
     * Unlocks the given sitemap.<p>
@@ -62,5 +62,5 @@ public interface I_CmsCoreServiceAsync {
     * @param uri the sitemap URI 
     * @param callback the async callback
     */
-    void unlock(String uri, AsyncCallback<Void> callback);
+    void unlock(String uri, AsyncCallback<String> callback);
 }

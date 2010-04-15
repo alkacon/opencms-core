@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/04/06 12:21:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/15 08:11:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -55,16 +55,20 @@ public interface I_CmsCoreService extends RemoteService {
      * 
      * @param uri the sitemap URI 
      * 
+     * @return <code>null</code> if successful, an error message if not 
+     * 
      * @throws CmsRpcException if something goes wrong 
      */
-    void lock(String uri) throws CmsRpcException;
+    String lock(String uri) throws CmsRpcException;
 
     /**
      * Unlocks the given sitemap.<p>
      * 
      * @param uri the sitemap URI 
      * 
+     * @return <code>null</code> if successful, an error message if not 
+     * 
      * @throws CmsRpcException if something goes wrong 
      */
-    void unlock(String uri) throws CmsRpcException;
+    String unlock(String uri) throws CmsRpcException;
 }

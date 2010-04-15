@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/04/06 12:21:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/15 08:11:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,12 @@
 
 package org.opencms.gwt;
 
+import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
 import org.apache.commons.logging.Log;
 
@@ -43,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -62,26 +64,34 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lock(java.lang.String)
      */
-    public void lock(String uri) throws CmsRpcException {
+    public String lock(String uri) throws CmsRpcException {
 
+        CmsObject cms = getCmsObject();
         try {
-            getCmsObject().lockResource(uri);
+            cms.lockResource(uri);
         } catch (CmsException e) {
+            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+        } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             throw new CmsRpcException(e.getLocalizedMessage());
         }
+        return null;
     }
 
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#unlock(java.lang.String)
      */
-    public void unlock(String uri) throws CmsRpcException {
+    public String unlock(String uri) throws CmsRpcException {
 
+        CmsObject cms = getCmsObject();
         try {
-            getCmsObject().unlockResource(uri);
+            cms.unlockResource(uri);
         } catch (CmsException e) {
+            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+        } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             throw new CmsRpcException(e.getLocalizedMessage());
         }
+        return null;
     }
 }
