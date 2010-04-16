@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/04/16 13:54:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -163,9 +162,6 @@ public class CmsListItemWidget extends Composite {
     @UiField
     protected FlowPanel m_titleRow;
 
-    /** The root id. */
-    private String m_rootId;
-
     /**
      * Constructor. Using a 'li'-tag as default root element.<p>
      * 
@@ -223,14 +219,8 @@ public class CmsListItemWidget extends Composite {
      */
     protected void init(CmsListInfoBean infoBean) {
 
-        HTMLPanel panel = new HTMLPanel(CmsDomUtil.Tag.div.name(), "");
-        m_rootId = HTMLPanel.createUniqueId();
-        panel.getElement().setId(m_rootId);
-        panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().listItem());
-        panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         CmsHTMLHoverPanel itemContent = uiBinder.createAndBindUi(this);
-        panel.add(itemContent, m_rootId);
-        initWidget(panel);
+        initWidget(itemContent);
         m_title.setText(infoBean.getTitle());
         m_subTitle.setText(infoBean.getSubTitle());
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {

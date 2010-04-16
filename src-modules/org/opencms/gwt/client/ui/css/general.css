@@ -36,6 +36,10 @@
 		-moz-border-radius-topleft: value("constantsCss.borderRadius");
 		-moz-border-radius-topright: value("constantsCss.borderRadius");
 	}
+	
+	.shadow{
+		-moz-box-shadow: 2px 2px 6px #666666;
+	}
 
 } @elif user.agent safari {
 	/** chrome, safari etc. **/
@@ -50,9 +54,13 @@
 		-webkit-border-top-left-radius: value("constantsCss.borderRadius");
 		-webkit-border-top-right-radius: value("constantsCss.borderRadius");
 	}
+	
+	.shadow{
+		-webkit-box-shadow: 2px 2px 6px #666666;
+	}
 
-} @else {
-	/** ie7, ie8, opera and the rest, add new @elif block if necessary **/
+} @elif user.agent opera {
+	/** opera */
 	.cornerAll{
 		border-radius: value("constantsCss.borderRadius");
 	}
@@ -63,6 +71,28 @@
 	.cornerTop{
 		border-top-left-radius: value("constantsCss.borderRadius");
 		border-top-right-radius: value("constantsCss.borderRadius");
+	}
+	
+	.shadow{
+		box-shadow: 2px 2px 6px #666666;
+	}
+} @else {
+	/** ie7, ie8 and the rest, add new @elif block if necessary **/
+	
+	.cornerAll{
+		border-radius: value("constantsCss.borderRadius");
+	}
+	.cornerBottom{
+		border-bottom-left-radius: value("constantsCss.borderRadius");
+		border-bottom-right-radius: value("constantsCss.borderRadius");
+	}
+	.cornerTop{
+		border-top-left-radius: value("constantsCss.borderRadius");
+		border-top-right-radius: value("constantsCss.borderRadius");
+	}
+	
+	.shadow{
+		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)");
 	}
 
 }

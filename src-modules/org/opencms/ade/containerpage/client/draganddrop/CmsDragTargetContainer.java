@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/16 13:54:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -324,7 +325,9 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             Widget w = it.next();
-            if (w.isVisible() && !w.getElement().getStyle().getPosition().equals(CmsDomUtil.StyleValue.absolute.name())) {
+            String positioning = w.getElement().getStyle().getPosition();
+            if (w.isVisible()
+                && !(positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))) {
                 if (first) {
                     first = false;
                     top = w.getAbsoluteTop();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/04/13 14:10:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/16 13:54:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.draganddrop;
 
+import org.opencms.gwt.client.util.CmsScrollTimer;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -47,6 +49,8 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -57,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -91,6 +95,15 @@ implements I_CmsDragHandler<E, T> {
 
     /** The list of all registered targets. */
     protected List<T> m_targets;
+
+    /** Flag if automatic scrolling is enabled. */
+    protected boolean m_isScrollEnabled;
+
+    /** Scroll timer. */
+    protected Timer m_scrollTimer;
+
+    /** Current scroll direction. */
+    protected CmsScrollTimer.Direction m_scrollDirection;
 
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#addDragTarget(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
@@ -186,6 +199,8 @@ implements I_CmsDragHandler<E, T> {
             positionElement();
             event.preventDefault();
             event.stopPropagation();
+
+            scrollAction();
         }
 
     }
@@ -373,7 +388,8 @@ implements I_CmsDragHandler<E, T> {
             Element element = child.getElement();
 
             // only take visible and not 'position:absolute' elements into account, also ignore the place-holder
-            if (!element.getStyle().getPosition().equals(Position.ABSOLUTE.getCssName())
+            String positioning = element.getStyle().getPosition();
+            if (!(positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))
                 && child.isVisible()
                 && (m_placeholder != child)) {
 
@@ -404,6 +420,27 @@ implements I_CmsDragHandler<E, T> {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Handles automated scrolling.<p>
+     */
+    protected void scrollAction() {
+
+        if (m_isScrollEnabled) {
+
+            CmsScrollTimer.Direction direction = CmsScrollTimer.getScrollDirection(m_currentEvent, 100);
+            if ((m_scrollTimer != null) && (m_scrollDirection != direction)) {
+                m_scrollTimer.cancel();
+                m_scrollTimer = null;
+            }
+            if ((direction != null) && (m_scrollTimer == null)) {
+                m_scrollTimer = new CmsScrollTimer(RootPanel.getBodyElement(), 10, direction);
+                m_scrollTimer.scheduleRepeating(10);
+            }
+
+            m_scrollDirection = direction;
         }
     }
 

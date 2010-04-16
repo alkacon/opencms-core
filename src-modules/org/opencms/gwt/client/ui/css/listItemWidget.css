@@ -1,20 +1,21 @@
-.listItem{
-	display: block;
-	color: value("constantsCss.color");
-	line-height: 16px;
-}
-
-.listItem .itemAdditional{
+.itemContainer .itemAdditional{
 	display: none;
 }
 
-.listItem.open .itemAdditional{
+.itemContainer.open .itemAdditional{
 	display: block;
 }
 
 .itemContainer{
 	border: 1px solid value("constantsCss.borderColor");
 	background: #ffffff;
+	line-height: 16px;
+	color: value("constantsCss.color");
+}
+
+.itemContainer *{
+	font-size: inherit;
+	font-family: inherit;
 }
 
 @sprite .itemContent{

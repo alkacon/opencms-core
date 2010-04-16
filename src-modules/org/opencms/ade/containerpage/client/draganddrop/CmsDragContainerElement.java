@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/04/14 14:33:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/16 13:54:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -219,6 +219,7 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        getElement().removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
         getElementOptionBar().removeStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
 
     }
@@ -361,10 +362,12 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
         String width = CmsDomUtil.getCurrentStyle(getElement(), CmsDomUtil.Style.width);
         Style style = getElement().getStyle();
         style.setPosition(Position.ABSOLUTE);
+        //style.setPosition(Position.FIXED);
         style.setMargin(0, Unit.PX);
         style.setProperty(CmsDomUtil.Style.width.name(), width);
         style.setZIndex(100);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        getElement().addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
         if (!CmsDomUtil.hasBackground(getElement())) {
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
         }

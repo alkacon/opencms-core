@@ -5,8 +5,7 @@
 	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{resources.toolbarCss.toolbar}">
-		<div class="{resources.toolbarCss.toolbarShadow}"></div>
-		<div class="{resources.toolbarCss.toolbarBackground}">
+		<div class="{resources.toolbarCss.toolbarBackground} {resources.generalCss.shadow}">
 			<g:HorizontalPanel styleName="{resources.toolbarCss.toolbarContent}" >
 				<g:cell horizontalAlignment="ALIGN_LEFT" verticalAlignment="ALIGN_MIDDLE">
 					<g:FlowPanel ui:field="m_buttonPanelLeft" styleName="{resources.toolbarCss.toolbarButtonsLeft}"></g:FlowPanel>

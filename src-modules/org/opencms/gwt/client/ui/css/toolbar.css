@@ -19,22 +19,6 @@ body.toolbarShow{
 	font-size: 12px;
 }
 
-/**
-@if (org.opencms.gwt.client.ui.CmsToolbar.useQuirksCss()) {
-		div.toolbar{
-			position: absolute;
-		}
-	
-} **/
-.toolbarShadow{
-	height:39px;
-	margin:0;
-	padding:0;
-	position:absolute;
-	width:100%;
-	background:#AAAAAA;
-	opacity:0.3;	
-}
 @sprite .toolbarBackground{
 	gwt-image: "backgroundSoft";
 	background-position: 50% 50%;
