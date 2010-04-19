@@ -15,7 +15,7 @@
 	gwt-image: "toolbarSelectionSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarSelection{
@@ -39,7 +39,7 @@
 	gwt-image: "toolbarEditSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarEdit{
@@ -61,7 +61,7 @@
 	gwt-image: "toolbarAddSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarAdd{
@@ -83,7 +83,7 @@
 	gwt-image: "toolbarClipboardSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarClipboard{
@@ -105,7 +105,7 @@
 	gwt-image: "toolbarExitSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarExit{
@@ -127,7 +127,7 @@
 	gwt-image: "toolbarResetSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarReset{
@@ -149,7 +149,7 @@
 	gwt-image: "toolbarMoveSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarMove{
@@ -171,7 +171,7 @@
 	gwt-image: "toolbarNewSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarNew{
@@ -193,7 +193,7 @@
 	gwt-image: "toolbarPropertiesSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarProperties{
@@ -215,7 +215,7 @@
 	gwt-image: "toolbarPublishSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarPublish{
@@ -237,7 +237,7 @@
 	gwt-image: "toolbarRecentSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarRecent{
@@ -259,7 +259,7 @@
 	gwt-image: "toolbarRemoveSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarRemove{
@@ -281,7 +281,7 @@
 	gwt-image: "toolbarSaveSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarSave{
@@ -303,7 +303,7 @@
 	gwt-image: "toolbarSitemapSW";
 	display: inline-block;
     vertical-align: middle;
-    cursor: wait;
+    cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarSitemap{
