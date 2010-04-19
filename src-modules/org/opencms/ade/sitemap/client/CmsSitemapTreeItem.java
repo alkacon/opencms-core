@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/03/31 12:19:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/19 11:48:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,12 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
-import org.opencms.gwt.client.util.CmsCoreProvider;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -59,18 +59,19 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
-    /** Internal entry reference. */
-    private CmsClientSitemapEntry m_entry;
+    /** The whole site path. */
+    private String m_sitePath;
 
     /**
      * Default constructor.<p>
      * 
      * @param entry the sitemap entry to use
      */
-    public CmsSitemapTreeItem(final CmsClientSitemapEntry entry) {
+    public CmsSitemapTreeItem(CmsClientSitemapEntry entry) {
 
         super(createWidget(entry));
-        m_entry = entry;
+        setId(entry.getName());
+        m_sitePath = entry.getSitePath();
     }
 
     /**
@@ -80,11 +81,13 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      *  
      * @return the widget for the given entry
      */
-    private static CmsListItemWidget createWidget(final CmsClientSitemapEntry entry) {
+    private static CmsListItemWidget createWidget(CmsClientSitemapEntry entry) {
+
+        final String sitePath = entry.getSitePath();
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
-        infoBean.setSubTitle(entry.getSitePath());
+        infoBean.setSubTitle(sitePath);
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
@@ -100,7 +103,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
              */
             public void onClick(ClickEvent event) {
 
-                Window.Location.replace(CmsCoreProvider.get().link(entry.getSitePath()));
+                Window.Location.replace(CmsCoreProvider.get().link(sitePath));
             }
         });
         itemWidget.addButton(linkIcon);
@@ -118,12 +121,25 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * Returns the entry.<p>
+     * Returns the site path.<p>
      *
-     * @return the entry
+     * @return the site path
      */
-    public CmsClientSitemapEntry getEntry() {
+    public String getSitePath() {
 
-        return m_entry;
+        return m_sitePath;
+    }
+
+    /**
+     * Refresh the displayed data from the given sitemap entry.<p>
+     * 
+     * @param entry the sitemap entry to display
+     */
+    public void setEntry(CmsClientSitemapEntry entry) {
+
+        CmsListItemWidget widget = (CmsListItemWidget)getWidget();
+        widget.setTitleLabel(entry.getTitle());
+        widget.setAdditionalInfoLabel(0, entry.getName());
+        widget.setAdditionalInfoLabel(1, entry.getVfsPath());
     }
 }

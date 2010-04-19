@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/06 12:22:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/19 11:48:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -43,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -85,7 +87,7 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsClientSitemapEntry[] getChildren(String root) throws CmsRpcException;
+    List<CmsClientSitemapEntry> getChildren(String root) throws CmsRpcException;
 
     /**
      * Saves the changes to the given sitemap.<p>
@@ -95,7 +97,7 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    void save(String sitemapUri, CmsClientSitemapChange[] changes) throws CmsRpcException;
+    void save(String sitemapUri, List<CmsClientSitemapChange> changes) throws CmsRpcException;
 
     /**
      * Creates a new sub-sitemap resource from the given sitemap and path.<p>

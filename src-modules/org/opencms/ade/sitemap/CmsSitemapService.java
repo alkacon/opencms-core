@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/12 10:24:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/19 11:48:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -88,7 +88,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getChildren(java.lang.String)
      */
-    public CmsClientSitemapEntry[] getChildren(String root) throws CmsRpcException {
+    public List<CmsClientSitemapEntry> getChildren(String root) throws CmsRpcException {
 
         try {
             CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root);
@@ -96,7 +96,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             for (CmsSitemapEntry child : entry.getSubEntries()) {
                 children.add(toGwtEntry(child));
             }
-            return children.toArray(new CmsClientSitemapEntry[0]);
+            return children;
         } catch (Throwable e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -127,9 +127,9 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, org.opencms.ade.sitemap.shared.CmsClientSitemapChange[])
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, List)
      */
-    public void save(String sitemapUri, CmsClientSitemapChange[] changes) {
+    public void save(String sitemapUri, List<CmsClientSitemapChange> changes) {
 
         // TODO:
     }

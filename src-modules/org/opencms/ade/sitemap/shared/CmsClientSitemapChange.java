@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapChange.java,v $
- * Date   : $Date: 2010/04/15 08:13:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/19 11:48:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -68,6 +68,9 @@ public class CmsClientSitemapChange implements IsSerializable {
     /** Before change entry. */
     private CmsClientSitemapEntry m_old;
 
+    /** The new position between its siblings, only used when moving. */
+    private int m_position;
+
     /** Change type. */
     private ChangeType m_type;
 
@@ -80,9 +83,27 @@ public class CmsClientSitemapChange implements IsSerializable {
      */
     public CmsClientSitemapChange(CmsClientSitemapEntry oldEntry, CmsClientSitemapEntry newEntry, ChangeType changeType) {
 
+        this(oldEntry, newEntry, changeType, 0);
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param oldEntry the old sitemap entry, can be <code>null</code> for new entries
+     * @param newEntry the new sitemap entry, can be <code>null</code> for deletion
+     * @param changeType the change type
+     * @param position the new position between its siblings, only used when moving
+     */
+    public CmsClientSitemapChange(
+        CmsClientSitemapEntry oldEntry,
+        CmsClientSitemapEntry newEntry,
+        ChangeType changeType,
+        int position) {
+
         m_old = oldEntry;
         m_new = newEntry;
         m_type = changeType;
+        m_position = position;
     }
 
     /**
@@ -111,6 +132,16 @@ public class CmsClientSitemapChange implements IsSerializable {
     public CmsClientSitemapEntry getOld() {
 
         return m_old;
+    }
+
+    /**
+     * Returns the new position between its siblings, only used when moving.<p>
+     *
+     * @return the position
+     */
+    public int getPosition() {
+
+        return m_position;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/04/06 12:22:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/19 11:48:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.ade.sitemap.shared.rpc;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -41,7 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -66,7 +68,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param root the site relative root
      * @param callback the async callback
      */
-    void getChildren(String root, AsyncCallback<CmsClientSitemapEntry[]> callback);
+    void getChildren(String root, AsyncCallback<List<CmsClientSitemapEntry>> callback);
 
     /**
      * Returns the sitemap entry for the given path.<p>
@@ -100,5 +102,5 @@ public interface I_CmsSitemapServiceAsync {
      * @param changes the changes to save
      * @param callback the async callback
      */
-    void save(String sitemapUri, CmsClientSitemapChange[] changes, AsyncCallback<Void> callback);
+    void save(String sitemapUri, List<CmsClientSitemapChange> changes, AsyncCallback<Void> callback);
 }

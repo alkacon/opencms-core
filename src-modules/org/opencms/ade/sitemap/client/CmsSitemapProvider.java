@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/04/19 06:39:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/19 11:48:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.ade.sitemap.client;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
-import org.opencms.gwt.client.util.CmsStringUtil;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -44,7 +44,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/04/12 10:24:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/19 11:48:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -67,6 +68,23 @@ public class CmsClientSitemapEntry implements IsSerializable {
     private String m_vfsPath;
 
     /**
+     * Creates a copy of the current entry.<p>
+     * 
+     * @return a copy of the current entry
+     */
+    public CmsClientSitemapEntry cloneEntry() {
+
+        CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
+        entry.setId(getId());
+        entry.setName(getName());
+        entry.setProperties(getProperties());
+        entry.setSitePath(getSitePath());
+        entry.setTitle(getTitle());
+        entry.setVfsPath(getVfsPath());
+        return entry;
+    }
+
+    /**
      * Returns the id.<p>
      *
      * @return the id
@@ -83,6 +101,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public Map<String, String> getInheritedProperties() {
 
+        // TODO: inherited properties?
         return m_properties;
     }
 
@@ -103,6 +122,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public Map<String, String> getProperties() {
 
+        // TODO: inherited properties?
         return m_properties;
     }
 
@@ -163,6 +183,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public void setProperties(Map<String, String> properties) {
 
+        // TODO: inherited properties?
         m_properties = properties;
     }
 
@@ -174,6 +195,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setSitePath(String sitePath) {
 
         m_sitePath = sitePath;
+        m_name = CmsResource.getName(m_sitePath);
     }
 
     /**
