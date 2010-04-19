@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/util/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/04/15 10:05:51 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapProvider.java,v $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.util;
+package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -44,7 +44,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  * 
@@ -111,7 +111,7 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
      * Initializes the data from the host page.<p>
      */
     private static native CmsSitemapProvider init() /*-{
-        return $wnd[@org.opencms.ade.sitemap.client.util.CmsSitemapProvider::getDictName()()];
+        return $wnd[@org.opencms.ade.sitemap.client.CmsSitemapProvider::getDictName()()];
     }-*/;
 
     /**

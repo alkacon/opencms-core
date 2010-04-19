@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDataProvider.java,v $
- * Date   : $Date: 2010/04/14 14:33:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,8 +37,8 @@ import org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.util.CmsCoreProvider;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
@@ -59,7 +59,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */

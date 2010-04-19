@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/I_CmsCoreProviderConstants.java,v $
- * Date   : $Date: 2010/03/15 09:07:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,16 +32,16 @@
 package org.opencms.gwt.shared;
 
 /**
- * Constant interface for {@link org.opencms.gwt.CmsCoreProvider} and {@link org.opencms.gwt.client.util.CmsCoreProvider}.<p>
+ * Constant interface for {@link org.opencms.gwt.CmsCoreProvider} and {@link org.opencms.gwt.client.CmsCoreProvider}.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.CmsCoreProvider
- * @see org.opencms.gwt.client.util.CmsCoreProvider
+ * @see org.opencms.gwt.client.CmsCoreProvider
  */
 public interface I_CmsCoreProviderConstants {
 

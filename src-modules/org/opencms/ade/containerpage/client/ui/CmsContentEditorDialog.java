@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2010/04/13 14:28:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,9 @@ import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.client.util.CmsContainerpageProvider;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsIFrame;
 import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.util.CmsCoreProvider;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -47,7 +47,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */

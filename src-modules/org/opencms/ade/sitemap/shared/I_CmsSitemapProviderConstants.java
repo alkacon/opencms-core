@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/I_CmsSitemapProviderConstants.java,v $
- * Date   : $Date: 2010/03/15 15:12:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,16 +32,16 @@
 package org.opencms.ade.sitemap.shared;
 
 /**
- * Constant interface for {@link org.opencms.ade.sitemap.CmsSitemapProvider} and {@link org.opencms.ade.sitemap.client.util.CmsSitemapProvider}.<p>
+ * Constant interface for {@link org.opencms.ade.sitemap.CmsSitemapProvider} and {@link org.opencms.ade.sitemap.client.CmsSitemapProvider}.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.ade.sitemap.CmsSitemapProvider
- * @see org.opencms.ade.sitemap.client.util.CmsSitemapProvider
+ * @see org.opencms.ade.sitemap.client.CmsSitemapProvider
  */
 public interface I_CmsSitemapProviderConstants {
 

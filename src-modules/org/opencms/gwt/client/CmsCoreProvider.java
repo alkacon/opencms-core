@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/04/15 10:05:51 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.util;
+package org.opencms.gwt.client;
 
 import org.opencms.gwt.shared.I_CmsCoreProviderConstants;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
@@ -43,7 +43,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  * 
@@ -113,7 +113,7 @@ public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCore
      * Initializes the data from the host page.<p>
      */
     private static native CmsCoreProvider init() /*-{
-        return $wnd[@org.opencms.gwt.client.util.CmsCoreProvider::getDictName()()];
+        return $wnd[@org.opencms.gwt.client.CmsCoreProvider::getDictName()()];
     }-*/;
 
     /**

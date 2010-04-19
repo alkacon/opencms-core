@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,12 +36,12 @@ package org.opencms.ade.galleries.shared;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.ade.sitemap.CmsSitemapProvider
- * @see org.opencms.ade.sitemap.client.util.CmsSitemapProvider
+ * @see org.opencms.ade.sitemap.client.CmsSitemapProvider
  */
 public interface I_CmsGalleryProviderConstants {
 

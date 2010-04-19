@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/04/12 14:00:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,11 +55,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.ade.sitemap.client.util.CmsSitemapProvider
+ * @see org.opencms.ade.sitemap.client.CmsSitemapProvider
  */
 public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants, I_CmsCoreProvider {
 

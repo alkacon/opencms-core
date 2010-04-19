@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/I_CmsCoreProvider.java,v $
- * Date   : $Date: 2010/04/12 14:00:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,11 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.gwt.client.util.CmsCoreProvider
+ * @see org.opencms.gwt.client.CmsCoreProvider
  */
 public interface I_CmsCoreProvider {
 

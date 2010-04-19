@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/04/12 14:00:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/19 06:39:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,11 +48,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.gwt.client.util.CmsCoreProvider
+ * @see org.opencms.gwt.client.CmsCoreProvider
  */
 public final class CmsCoreProvider implements I_CmsCoreProviderConstants, I_CmsCoreProvider {
 
