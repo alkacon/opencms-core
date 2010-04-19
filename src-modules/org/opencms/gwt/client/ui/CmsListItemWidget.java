@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/16 13:54:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/04/19 06:39:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -139,6 +139,8 @@ public class CmsListItemWidget extends Composite {
     @UiField
     protected CmsSimplePanel m_additionalInfo;
 
+    // TODO: would not it be better to create this panel on-the-fly if needed
+    // it would be 'slower' on mouseover, but the whole user experience could be better specially if a page has *many* of these
     /** Panel to hold buttons.*/
     @UiField
     protected FlowPanel m_buttonPanel;
