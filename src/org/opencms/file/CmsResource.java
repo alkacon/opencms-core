@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/19 08:09:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -838,7 +838,7 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the id of the {@link CmsProject} where this resource has been last modified
+     * Returns the id of the {@link CmsProject} where this resource has been last modified.<p>
      *
      * @return the id of the {@link CmsProject} where this resource has been last modified, or <code>null</code>
      */
