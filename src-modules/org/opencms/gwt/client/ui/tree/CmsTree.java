@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
- * Date   : $Date: 2010/03/31 12:15:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/19 11:48:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,11 +48,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsTree<I extends CmsTreeItem> extends CmsList implements HasOpenHandlers<I> {
+public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpenHandlers<I> {
 
     /** The event handlers for the tree. */
     protected HandlerManager m_handlers = new HandlerManager(null);

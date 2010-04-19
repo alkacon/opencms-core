@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsLazyTreeItem.java,v $
- * Date   : $Date: 2010/03/31 12:15:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/19 11:48:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.user.client.ui.Image;
@@ -45,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -67,7 +66,7 @@ public class CmsLazyTreeItem extends CmsTreeItem {
     /**
      * Helper tree item which displays a "loading" message.<p>
      */
-    protected class LoadingItem extends CmsListItem {
+    protected class LoadingItem extends CmsTreeItem {
 
         /**
          * Constructs a new instance.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/04/14 10:42:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/19 11:48:19 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -57,6 +57,9 @@ public class CmsListItem extends Composite {
 
     /** The ui-binder instance for this class. */
     private static I_CmsListItemUiBinder uiBinder = GWT.create(I_CmsListItemUiBinder.class);
+
+    /** The logical id, it is not the HTML id. */
+    protected String m_id;
 
     /** The underlying panel. */
     protected Panel m_panel;
@@ -88,6 +91,26 @@ public class CmsListItem extends Composite {
     public void add(Widget w) {
 
         m_panel.add(w);
+    }
+
+    /**
+     * Returns the logical id, it is not the HTML id.<p>
+     *
+     * @return the id
+     */
+    public String getId() {
+
+        return m_id;
+    }
+
+    /**
+     * Sets the logical id, it is not the HTML id.<p>
+     *
+     * @param id the id to set
+     */
+    public void setId(String id) {
+
+        m_id = id;
     }
 
     /**

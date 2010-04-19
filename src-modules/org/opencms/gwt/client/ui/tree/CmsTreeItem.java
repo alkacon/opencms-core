@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/04/13 09:17:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/19 11:48:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -74,7 +74,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
 
     /** The children list. */
-    protected CmsList m_children;
+    protected CmsList<CmsTreeItem> m_children;
 
     /** The element showing the open/close icon. */
     protected ToggleButton m_opener;
@@ -130,23 +130,80 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * Adds a child list item.<p>
      * 
      * @param item the child to add
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#addItem(CmsListItem)
      */
-    public void addChild(CmsListItem item) {
+    public void addChild(CmsTreeItem item) {
 
         m_children.addItem(item);
-        if (item instanceof CmsTreeItem) {
-            ((CmsTreeItem)item).setTree(m_tree);
-        }
+        item.setTree(m_tree);
         onChangeChildren();
     }
 
     /**
      * Removes all children.<p>
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#clearList()
      */
     public void clearChildren() {
 
         m_children.clearList();
         onChangeChildren();
+    }
+
+    /**
+     * Inserts the given item at the given position.<p>
+     * 
+     * @param item the item to insert
+     * @param position the position
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#insertItem(CmsListItem, int)
+     */
+    public void insertChild(CmsTreeItem item, int position) {
+
+        m_children.insert(item, position);
+        item.setTree(m_tree);
+        onChangeChildren();
+    }
+
+    /**
+     * Returns the child tree item at the given position.<p>
+     * 
+     * @param index the position
+     * 
+     * @return the tree item
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#getItem(int)
+     */
+    public CmsTreeItem getChild(int index) {
+
+        return m_children.getItem(index);
+    }
+
+    /**
+     * Returns the tree item with the given id.<p>
+     * 
+     * @param itemId the id of the item to retrieve
+     * 
+     * @return the tree item
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#getItem(String)
+     */
+    public CmsTreeItem getChild(String itemId) {
+
+        return m_children.getItem(itemId);
+    }
+
+    /**
+     * Helper method which gets the number of children.<p>
+     * 
+     * @return the number of children
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#getWidgetCount()
+     */
+    public int getChildCount() {
+
+        return m_children.getWidgetCount();
     }
 
     /**
@@ -171,11 +228,29 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * Removes an item from the list.<p>
      * 
      * @param item the item to remove
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#removeItem(CmsListItem)
      */
-    public void removeChild(CmsListItem item) {
+    public void removeChild(CmsTreeItem item) {
 
         m_children.removeItem(item);
         onChangeChildren();
+    }
+
+    /**
+     * Removes an item from the list.<p>
+     * 
+     * @param itemId the id of the item to remove
+     * 
+     * @return the removed item
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#removeItem(String)
+     */
+    public CmsTreeItem removeChild(String itemId) {
+
+        CmsTreeItem removeItem = m_children.removeItem(itemId);
+        onChangeChildren();
+        return removeItem;
     }
 
     /**
@@ -267,7 +342,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
         m_leafStyleVar = new CmsStyleVariable(this);
         m_opener = createOpener();
         m_content.addToFloat(m_opener);
-        m_children = new CmsList();
+        m_children = new CmsList<CmsTreeItem>();
         m_children.setStyleName(CSS.listTreeItemChildren());
         m_panel.add(m_children);
         onChangeChildren();
@@ -282,16 +357,6 @@ public class CmsTreeItem extends CmsSimpleListItem {
         if (m_tree != null) {
             m_tree.fireOpen(this);
         }
-    }
-
-    /**
-     * Helper method which gets the number of children.<p>
-     * 
-     * @return the number of children
-     */
-    private int getChildCount() {
-
-        return m_children.getWidgetCount();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/19 11:48:19 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,9 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,16 +45,21 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A very basic list implementation to hold {@link CmsListItemWidget}.<p>
  * 
+ * @param <I> the specific list item implementation 
+ * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
-public class CmsList extends ComplexPanel {
+public class CmsList<I extends CmsListItem> extends ComplexPanel {
 
     /** The css bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
+
+    /** The map of items. */
+    private Map<String, I> m_items;
 
     /**
      * Constructor.<p>
@@ -60,24 +68,32 @@ public class CmsList extends ComplexPanel {
 
         setElement(DOM.createElement(CmsDomUtil.Tag.ul.name()));
         setStyleName(CSS.list());
+        m_items = new HashMap<String, I>();
     }
 
     /**
      * @see com.google.gwt.user.client.ui.Panel#add(com.google.gwt.user.client.ui.Widget)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void add(Widget widget) {
 
         assert widget instanceof CmsListItem;
-        super.add(widget, this.getElement());
+        add(widget, getElement());
+        CmsListItem item = (CmsListItem)widget;
+        if (item.getId() != null) {
+            m_items.put(item.getId(), (I)item);
+        }
     }
 
     /**
      * Adds an item to the list.<p>
      * 
      * @param item the item to add
+     * 
+     * @see #add(Widget)
      */
-    public void addItem(CmsListItem item) {
+    public void addItem(I item) {
 
         add(item);
     }
@@ -87,17 +103,96 @@ public class CmsList extends ComplexPanel {
      */
     public void clearList() {
 
-        this.clear();
+        clear();
+        m_items.clear();
+    }
+
+    /**
+     * Returns the list item at the given position.<p>
+     * 
+     * @param index the position
+     * 
+     * @return the list item
+     * 
+     * @see #getWidget(int)
+     */
+    @SuppressWarnings("unchecked")
+    public I getItem(int index) {
+
+        return (I)getWidget(index);
+    }
+
+    /**
+     * Returns the list item with the given id.<p>
+     * 
+     * @param itemId the id of the item to retrieve
+     * 
+     * @return the list item
+     * 
+     * @see #getWidget(int)
+     */
+    public I getItem(String itemId) {
+
+        return m_items.get(itemId);
+    }
+
+    /**
+     * Inserts the given widget at the given position.<p>
+     * 
+     * @param widget the widget to insert
+     * @param position the position
+     */
+    @SuppressWarnings("unchecked")
+    public void insert(Widget widget, int position) {
+
+        assert widget instanceof CmsListItem;
+        insert(widget, getElement(), position, true);
+        CmsListItem item = (CmsListItem)widget;
+        if (item.getId() != null) {
+            m_items.put(item.getId(), (I)item);
+        }
+    }
+
+    /**
+     * Inserts the given item at the given position.<p>
+     * 
+     * @param item the item to insert
+     * @param position the position
+     */
+    public void insertItem(I item, int position) {
+
+        insert(item, position);
     }
 
     /**
      * Removes an item from the list.<p>
      * 
      * @param item the item to remove
+     * 
+     * @see #remove(Widget)
      */
-    public void removeItem(CmsListItem item) {
+    public void removeItem(I item) {
 
-        this.remove(item);
+        remove(item);
+        if (item.getId() != null) {
+            m_items.remove(item.getId());
+        }
+    }
+
+    /**
+     * Removes an item from the list.<p>
+     * 
+     * @param itemId the id of the item to remove
+     * 
+     * @return the removed item
+     * 
+     * @see #remove(Widget)
+     */
+    public I removeItem(String itemId) {
+
+        I item = m_items.get(itemId);
+        remove(item);
+        return item;
     }
 
     /**

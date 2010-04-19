@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleListItem.java,v $
- * Date   : $Date: 2010/04/13 09:17:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/19 11:48:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -54,7 +54,7 @@ public class CmsSimpleListItem extends CmsListItem {
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    interface I_CmsSimpleListItemUiBinder extends UiBinder<Panel, CmsSimpleListItem> {
+    protected interface I_CmsSimpleListItemUiBinder extends UiBinder<Panel, CmsSimpleListItem> {
         // GWT interface, nothing to do here
     }
 
