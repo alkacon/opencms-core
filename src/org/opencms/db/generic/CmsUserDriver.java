@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/01/18 10:03:59 $
- * Version: $Revision: 1.135 $
+ * Date   : $Date: 2010/04/19 15:19:35 $
+ * Version: $Revision: 1.136 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsEvent;
@@ -77,8 +76,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -102,14 +99,17 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.135 $
+ * @version $Revision: 1.136 $
  * 
- * @since 6.0.0 
+ * @since 6.0.0  
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** The root path for organizational units. */
     public static final String ORGUNIT_BASE_FOLDER = "/system/orgunits/";
+
+    /** The internal request attribute to indicate that the password has not to be digested. */
+    public static final String REQ_ATTR_DONT_DIGEST_PASSWORD = "DONT_DIGEST_PASSWORD";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsUserDriver.class);
@@ -122,18 +122,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** Property for the organizational unit default project id. */
     private static final String ORGUNIT_PROPERTY_PROJECTID = CmsPropertyDefinition.PROPERTY_KEYWORDS;
-
-    /** The internal request attribute to indicate that the password has not to be digested. */
-    public static final String REQ_ATTR_DONT_DIGEST_PASSWORD = "DONT_DIGEST_PASSWORD";
-
-    /** A digest to encrypt the passwords. */
-    protected MessageDigest m_digest;
-
-    /** The algorithm used to encode passwords. */
-    protected String m_digestAlgorithm;
-
-    /** The file.encoding to code passwords after encryption with digest. */
-    protected String m_digestFileEncoding;
 
     /** The driver manager. */
     protected CmsDriverManager m_driverManager;
@@ -178,14 +166,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // add the new resource
             CmsRelation relation = new CmsRelation(ouResource, resource, CmsRelationType.OU_RESOURCE);
-            m_driverManager.getVfsDriver().createRelation(dbc, dbc.currentProject().getUuid(), relation);
-            m_driverManager.getVfsDriver().createRelation(dbc, CmsProject.ONLINE_PROJECT_ID, relation);
+            m_driverManager.getVfsDriver(dbc).createRelation(dbc, dbc.currentProject().getUuid(), relation);
+            m_driverManager.getVfsDriver(dbc).createRelation(dbc, CmsProject.ONLINE_PROJECT_ID, relation);
 
             try {
                 // be sure the project was not deleted
                 CmsProject project = m_driverManager.readProject(dbc, orgUnit.getProjectId());
                 // maintain the default project synchronized
-                m_driverManager.getProjectDriver().createProjectResource(
+                m_driverManager.getProjectDriver(dbc).createProjectResource(
                     dbc,
                     orgUnit.getProjectId(),
                     resource.getRootPath());
@@ -946,34 +934,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
-        m_digestAlgorithm = config.getString(CmsDriverManager.CONFIGURATION_DB + ".user.digest.type", "MD5");
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DIGEST_ALGORITHM_1, m_digestAlgorithm));
-        }
-
-        m_digestFileEncoding = config.getString(
-            CmsDriverManager.CONFIGURATION_DB + ".user.digest.encoding",
-            CmsEncoder.ENCODING_UTF_8);
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DIGEST_ENCODING_1, m_digestFileEncoding));
-        }
-
-        // create the digest
-        try {
-            m_digest = MessageDigest.getInstance(m_digestAlgorithm);
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_DIGEST_ENC_3,
-                    m_digest.getAlgorithm(),
-                    m_digest.getProvider().getName(),
-                    String.valueOf(m_digest.getProvider().getVersion())));
-            }
-        } catch (NoSuchAlgorithmException e) {
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SET_DIGEST_ERROR_0), e);
-            }
-        }
-
         if ((successiveDrivers != null) && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(
@@ -1001,35 +961,21 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         CmsUUID offlineId,
         CmsUUID onlineId) throws CmsDataAccessException {
 
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-
         // at first, we remove all access contries of this resource in the online project
-        m_driverManager.getUserDriver().removeAccessControlEntries(dbc, onlineProject, onlineId);
+        m_driverManager.getUserDriver(dbc).removeAccessControlEntries(dbc, onlineProject, onlineId);
 
         // then, we copy the access control entries from the offline project into the online project
-        try {
-            CmsUUID dbcProjectId = dbc.getProjectId();
-            dbc.setProjectId(CmsUUID.getNullUUID());
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES_1");
+        CmsUUID dbcProjectId = dbc.getProjectId();
+        dbc.setProjectId(CmsUUID.getNullUUID());
+        List<CmsAccessControlEntry> aces = m_driverManager.getUserDriver(dbc).readAccessControlEntries(
+            dbc,
+            offlineProject,
+            offlineId,
+            false);
+        dbc.setProjectId(dbcProjectId);
 
-            stmt.setString(1, offlineId.toString());
-
-            res = stmt.executeQuery();
-            dbc.setProjectId(dbcProjectId);
-
-            while (res.next()) {
-                CmsAccessControlEntry ace = internalCreateAce(res, onlineId);
-                m_driverManager.getUserDriver().writeAccessControlEntry(dbc, onlineProject, ace);
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        for (CmsAccessControlEntry ace : aces) {
+            m_driverManager.getUserDriver(dbc).writeAccessControlEntry(dbc, onlineProject, ace);
         }
     }
 
@@ -1134,7 +1080,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
         try {
             // get parent group
-            CmsGroup parent = m_driverManager.getUserDriver().readGroup(dbc, parentGroupFqn);
+            CmsGroup parent = m_driverManager.getUserDriver(dbc).readGroup(dbc, parentGroupFqn);
             // parent group exists, so get all children
             if (parent != null) {
                 // create statement
@@ -1673,14 +1619,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // remove the resource
             CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterPath(resource.getRootPath());
-            m_driverManager.getVfsDriver().deleteRelations(dbc, dbc.currentProject().getUuid(), ouResource, filter);
-            m_driverManager.getVfsDriver().deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
+            m_driverManager.getVfsDriver(dbc).deleteRelations(dbc, dbc.currentProject().getUuid(), ouResource, filter);
+            m_driverManager.getVfsDriver(dbc).deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
 
             try {
                 // be sure the project was not deleted
                 CmsProject project = m_driverManager.readProject(dbc, orgUnit.getProjectId());
                 // maintain the default project synchronized
-                m_driverManager.getProjectDriver().deleteProjectResource(
+                m_driverManager.getProjectDriver(dbc).deleteProjectResource(
                     dbc,
                     orgUnit.getProjectId(),
                     resource.getRootPath());
@@ -1699,6 +1645,26 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
+    }
+
+    /**
+     * Sets the driver manager for this driver.<p>
+     * 
+     * @param driverManager the new driver manager
+     */
+    public void setDriverManager(CmsDriverManager driverManager) {
+
+        m_driverManager = driverManager;
+    }
+
+    /**
+     * Sets the SQL manager for this driver.<p>
+     * 
+     * @param sqlManager the new SQL manager
+     */
+    public void setSqlManager(CmsSqlManager sqlManager) {
+
+        m_sqlManager = sqlManager;
     }
 
     /**
@@ -1750,7 +1716,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             res = stmt.executeQuery();
             if (!res.next()) {
-                m_driverManager.getUserDriver().createAccessControlEntry(
+                m_driverManager.getUserDriver(dbc).createAccessControlEntry(
                     dbc,
                     project,
                     acEntry.getResource(),
@@ -1834,7 +1800,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             resource.setFlags(organizationalUnit.getFlags() | CmsResource.FLAG_INTERNAL);
             m_driverManager.writeResource(dbc, resource);
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver().writeResource(
+            m_driverManager.getVfsDriver(dbc).writeResource(
                 dbc,
                 dbc.currentProject().getUuid(),
                 resource,
@@ -1844,7 +1810,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // online persistence
                 CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
                 resource.setState(CmsResource.STATE_UNCHANGED);
-                m_driverManager.getVfsDriver().writeResource(
+                m_driverManager.getVfsDriver(dbc).writeResource(
                     dbc,
                     onlineProject.getUuid(),
                     resource,
@@ -2299,14 +2265,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         CmsUUID projectId = dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid() : dbc.getProjectId();
 
-        m_driverManager.getVfsDriver().createResource(dbc, projectId, resource, null);
+        m_driverManager.getVfsDriver(dbc).createResource(dbc, projectId, resource, null);
         resource.setState(CmsResource.STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
+        m_driverManager.getVfsDriver(dbc).writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
 
         if (!dbc.currentProject().isOnlineProject() && dbc.getProjectId().isNullUUID()) {
             // online persistence
             CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
-            m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), resource, null);
+            m_driverManager.getVfsDriver(dbc).createResource(dbc, onlineProject.getUuid(), resource, null);
         }
 
         // clear the internal caches
@@ -2377,23 +2343,23 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             try {
                 // delete properties
-                m_driverManager.getVfsDriver().deletePropertyObjects(
+                m_driverManager.getVfsDriver(dbc).deletePropertyObjects(
                     dbc,
                     CmsProject.ONLINE_PROJECT_ID,
                     resource,
                     CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
                 // remove the online folder only if it is really deleted offline
-                m_driverManager.getVfsDriver().removeFolder(dbc, dbc.currentProject(), resource);
+                m_driverManager.getVfsDriver(dbc).removeFolder(dbc, dbc.currentProject(), resource);
 
                 // remove ACL
-                m_driverManager.getUserDriver().removeAccessControlEntries(
+                m_driverManager.getUserDriver(dbc).removeAccessControlEntries(
                     dbc,
                     dbc.currentProject(),
                     resource.getResourceId());
 
                 // delete relations
-                m_driverManager.getVfsDriver().deleteRelations(
+                m_driverManager.getVfsDriver(dbc).deleteRelations(
                     dbc,
                     dbc.getRequestContext().currentProject().getUuid(),
                     resource,
@@ -2403,20 +2369,23 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         }
         // delete properties
-        m_driverManager.getVfsDriver().deletePropertyObjects(
+        m_driverManager.getVfsDriver(dbc).deletePropertyObjects(
             dbc,
             CmsProject.ONLINE_PROJECT_ID,
             resource,
             CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
         // remove the online folder only if it is really deleted offline
-        m_driverManager.getVfsDriver().removeFolder(dbc, dbc.currentProject(), resource);
+        m_driverManager.getVfsDriver(dbc).removeFolder(dbc, dbc.currentProject(), resource);
 
         // remove ACL
-        m_driverManager.getUserDriver().removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
+        m_driverManager.getUserDriver(dbc).removeAccessControlEntries(
+            dbc,
+            dbc.currentProject(),
+            resource.getResourceId());
 
         // delete relations
-        m_driverManager.getVfsDriver().deleteRelations(
+        m_driverManager.getVfsDriver(dbc).deleteRelations(
             dbc,
             dbc.getRequestContext().currentProject().getUuid(),
             resource,
@@ -2620,7 +2589,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         // write the property
         m_driverManager.writePropertyObject(dbc, resource, property);
         resource.setState(CmsResource.STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeResource(
+        m_driverManager.getVfsDriver(dbc).writeResource(
             dbc,
             dbc.currentProject().getUuid(),
             resource,
@@ -2632,7 +2601,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             m_driverManager.writePropertyObject(dbc, resource, property); // assume the resource is identical in both projects
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver().writeResource(
+            m_driverManager.getVfsDriver(dbc).writeResource(
                 dbc,
                 dbc.currentProject().getUuid(),
                 resource,

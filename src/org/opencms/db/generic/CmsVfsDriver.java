@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/01/18 10:04:00 $
- * Version: $Revision: 1.290 $
+ * Date   : $Date: 2010/04/19 15:19:35 $
+ * Version: $Revision: 1.291 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsVfsOnlineResourceAlreadyExistsException;
 import org.opencms.db.I_CmsDriver;
+import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
@@ -89,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.290 $
+ * @version $Revision: 1.291 $
  * 
  * @since 6.0.0 
  */
@@ -359,13 +360,22 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
+            boolean dbcHasProjectId = (dbc.getProjectId() != null) && !dbc.getProjectId().isNullUUID();
 
-            if (needToUpdateContent) {
-                // put the online content in the history, only if explicit requested 
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
-                stmt.setString(1, resourceId.toString());
-                stmt.executeUpdate();
-                m_sqlManager.closeAll(dbc, null, stmt, null);
+            if (needToUpdateContent || dbcHasProjectId) {
+                if (dbcHasProjectId || !OpenCms.getSystemInfo().isHistoryEnabled()) {
+                    // remove the online content for this resource id
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_DELETE");
+                    stmt.setString(1, resourceId.toString());
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                } else {
+                    // put the online content in the history, only if explicit requested
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
+                    stmt.setString(1, resourceId.toString());
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                }
 
                 // create new online content
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_WRITE");
@@ -491,7 +501,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // check if the parent folder of the resource exists and if is not deleted
         if (!resource.getRootPath().equals("/")) {
             String parentFolderName = CmsResource.getParentFolder(resource.getRootPath());
-            CmsFolder parentFolder = m_driverManager.getVfsDriver().readFolder(dbc, projectId, parentFolderName);
+            CmsFolder parentFolder = m_driverManager.getVfsDriver(dbc).readFolder(dbc, projectId, parentFolderName);
             if (parentFolder.getState().isDeleted()) {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_PARENT_FOLDER_DELETED_1,
@@ -527,7 +537,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         newStructureId = resource.getStructureId();
 
         try {
-            CmsResource existingResource = m_driverManager.getVfsDriver().readResource(
+            CmsResource existingResource = m_driverManager.getVfsDriver(dbc).readResource(
                 dbc,
                 dbc.getProjectId().isNullUUID() ? projectId : dbc.getProjectId(),
                 resourcePath,
@@ -539,7 +549,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 newState = CmsResource.STATE_CHANGED;
 
                 // remove the existing file and it's properties
-                List modifiedResources = m_driverManager.getVfsDriver().readSiblings(
+                List modifiedResources = m_driverManager.getVfsDriver(dbc).readSiblings(
                     dbc,
                     projectId,
                     existingResource,
@@ -571,11 +581,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             String parentId = internalReadParentId(dbc, projectId, resourcePath);
 
             // use consistent version numbers if the file is being restored
-            int lastVersion = m_driverManager.getHistoryDriver().readLastVersion(dbc, newStructureId);
+            int lastVersion = m_driverManager.getHistoryDriver(dbc).readLastVersion(dbc, newStructureId);
             int newStrVersion = 0;
             int newResVersion = 0;
             if (lastVersion > 0) {
-                I_CmsHistoryResource histRes = m_driverManager.getHistoryDriver().readResource(
+                I_CmsHistoryResource histRes = m_driverManager.getHistoryDriver(dbc).readResource(
                     dbc,
                     newStructureId,
                     lastVersion);
@@ -798,10 +808,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // write a new structure referring to the resource
         try {
             // use consistent version numbers if the file is being restored
-            int lastVersion = m_driverManager.getHistoryDriver().readLastVersion(dbc, newStructureId);
+            int lastVersion = m_driverManager.getHistoryDriver(dbc).readLastVersion(dbc, newStructureId);
             int newStrVersion = 0;
             if (lastVersion > 0) {
-                I_CmsHistoryResource histRes = m_driverManager.getHistoryDriver().readResource(
+                I_CmsHistoryResource histRes = m_driverManager.getHistoryDriver(dbc).readResource(
                     dbc,
                     newStructureId,
                     lastVersion);
@@ -1091,7 +1101,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
             // check online resource
             try {
-                CmsResource onlineResource = m_driverManager.getVfsDriver().readResource(
+                CmsResource onlineResource = m_driverManager.getVfsDriver(dbc).readResource(
                     dbc,
                     CmsProject.ONLINE_PROJECT_ID,
                     destinationPath,
@@ -1157,14 +1167,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID) && (dbc.getRequestContext() != null)) {
             String deletedResourceRootPath = source.getRootPath();
             dbc.getRequestContext().setAttribute(CmsProjectDriver.DBC_ATTR_READ_PROJECT_FOR_RESOURCE, Boolean.TRUE);
-            Iterator itProjects = m_driverManager.getProjectDriver().readProjects(dbc, deletedResourceRootPath).iterator();
+            I_CmsProjectDriver projectDriver = m_driverManager.getProjectDriver(dbc);
+            Iterator itProjects = projectDriver.readProjects(dbc, deletedResourceRootPath).iterator();
             while (itProjects.hasNext()) {
                 CmsProject project = (CmsProject)itProjects.next();
-                m_driverManager.getProjectDriver().deleteProjectResource(
-                    dbc,
-                    project.getUuid(),
-                    deletedResourceRootPath);
-                m_driverManager.getProjectDriver().createProjectResource(dbc, project.getUuid(), destinationPath);
+                projectDriver.deleteProjectResource(dbc, project.getUuid(), deletedResourceRootPath);
+                projectDriver.createProjectResource(dbc, project.getUuid(), destinationPath);
             }
         }
     }
@@ -2352,19 +2360,24 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 m_sqlManager.closeAll(dbc, null, stmt, null);
 
+                boolean dbcHasProjectId = (dbc.getProjectId() != null) && !dbc.getProjectId().isNullUUID();
+
                 // if online we have to keep historical content
-                if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID)
-                    || ((dbc.getProjectId() != null) && !dbc.getProjectId().isNullUUID())) {
-                    // delete content records with this resource id
-                    stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_OFFLINE_FILE_CONTENT_DELETE");
-                    stmt.setString(1, resource.getResourceId().toString());
-                    stmt.executeUpdate();
-                } else {
+                if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
                     // put the online content in the history 
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
                     stmt.setString(1, resource.getResourceId().toString());
                     stmt.executeUpdate();
-                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                } else if (dbcHasProjectId) {
+                    // remove current online version
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_DELETE");
+                    stmt.setString(1, resource.getResourceId().toString());
+                    stmt.executeUpdate();
+                } else {
+                    // delete content records with this resource id
+                    stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_OFFLINE_FILE_CONTENT_DELETE");
+                    stmt.setString(1, resource.getResourceId().toString());
+                    stmt.executeUpdate();
                 }
             }
         } catch (SQLException e) {
@@ -2398,6 +2411,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // collect the names of the resources inside the folder, excluding the moved resources
+        I_CmsVfsDriver vfsDriver = m_driverManager.getVfsDriver(dbc);
         StringBuffer errorResNames = new StringBuffer(128);
         while (childResources.hasNext()) {
             CmsResource errorRes = (CmsResource)childResources.next();
@@ -2407,11 +2421,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             boolean error = !currentProject.isOnlineProject();
             if (!error) {
                 try {
-                    String originalPath = m_driverManager.getVfsDriver().readResource(
-                        dbc,
-                        projectId,
-                        errorRes.getRootPath(),
-                        true).getRootPath();
+                    String originalPath = vfsDriver.readResource(dbc, projectId, errorRes.getRootPath(), true).getRootPath();
                     error = originalPath.equals(errorRes.getRootPath())
                         || originalPath.startsWith(resource.getRootPath());
                 } catch (CmsVfsResourceNotFoundException e) {
@@ -2440,10 +2450,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         String deletedResourceRootPath = resource.getRootPath();
         if (dbc.getRequestContext() != null) {
             dbc.getRequestContext().setAttribute(CmsProjectDriver.DBC_ATTR_READ_PROJECT_FOR_RESOURCE, Boolean.TRUE);
-            Iterator itProjects = m_driverManager.getProjectDriver().readProjects(dbc, deletedResourceRootPath).iterator();
+            I_CmsProjectDriver projectDriver = m_driverManager.getProjectDriver(dbc);
+            Iterator itProjects = projectDriver.readProjects(dbc, deletedResourceRootPath).iterator();
             while (itProjects.hasNext()) {
                 CmsProject project = (CmsProject)itProjects.next();
-                m_driverManager.getProjectDriver().deleteProjectResource(
+                projectDriver.deleteProjectResource(
                     dbc,
                     project.getUuid(),
                     deletedResourceRootPath);
@@ -2483,6 +2494,26 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
+    }
+
+    /**
+     * Sets the driver manager for this driver.<p>
+     * 
+     * @param driverManager the new driver manager
+     */
+    public void setDriverManager(CmsDriverManager driverManager) {
+
+        m_driverManager = driverManager;
+    }
+
+    /**
+     * Sets the SQL manager of this driver.<p>
+     * 
+     * @param sqlManager the new SQL manager 
+     */
+    public void setSqlManager(CmsSqlManager sqlManager) {
+
+        m_sqlManager = sqlManager;
     }
 
     /**
@@ -2527,11 +2558,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     throws CmsDataAccessException {
 
         // delete online relations
-        m_driverManager.getVfsDriver().deleteRelations(
-            dbc,
-            onlineProject.getUuid(),
-            offlineResource,
-            CmsRelationFilter.TARGETS);
+        I_CmsVfsDriver vfsDriver = m_driverManager.getVfsDriver(dbc);
+        vfsDriver.deleteRelations(dbc, onlineProject.getUuid(), offlineResource, CmsRelationFilter.TARGETS);
 
         CmsUUID projectId;
         if (!dbc.getProjectId().isNullUUID()) {
@@ -2543,14 +2571,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // copy offline to online relations
         CmsUUID dbcProjectId = dbc.getProjectId();
         dbc.setProjectId(CmsUUID.getNullUUID());
-        Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
-            dbc,
-            projectId,
-            offlineResource,
-            CmsRelationFilter.TARGETS).iterator();
+        Iterator itRelations = vfsDriver.readRelations(dbc, projectId, offlineResource, CmsRelationFilter.TARGETS).iterator();
         dbc.setProjectId(dbcProjectId);
         while (itRelations.hasNext()) {
-            m_driverManager.getVfsDriver().createRelation(dbc, onlineProject.getUuid(), (CmsRelation)itRelations.next());
+            vfsDriver.createRelation(dbc, onlineProject.getUuid(), (CmsRelation)itRelations.next());
         }
     }
 
@@ -2701,9 +2725,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         CmsPropertyDefinition.TYPE_NORMAL);
                 }
                 try {
-                    m_driverManager.getHistoryDriver().readPropertyDefinition(dbc, property.getName());
+                    m_driverManager.getHistoryDriver(dbc).readPropertyDefinition(dbc, property.getName());
                 } catch (CmsDataAccessException e1) {
-                    m_driverManager.getHistoryDriver().createPropertyDefinition(
+                    m_driverManager.getHistoryDriver(dbc).createPropertyDefinition(
                         dbc,
                         property.getName(),
                         CmsPropertyDefinition.TYPE_NORMAL);
@@ -3935,4 +3959,5 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
+
 }

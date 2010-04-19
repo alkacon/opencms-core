@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2010/01/18 10:01:23 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/04/19 15:19:35 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0
  */
@@ -126,6 +126,30 @@ public class CmsDbContext {
     }
 
     /**
+     * Gets the history driver associated with this database context.<p>
+     * 
+     * @param projectId the project id for which the history driver should be retrieved
+     * 
+     * @return the history driver 
+     */
+    public I_CmsHistoryDriver getHistoryDriver(CmsUUID projectId) {
+
+        return null;
+    }
+
+    /**
+     * Gets the project driver associated with this database context.<p>
+     * 
+     * @param projectId the project id for which the project driver should be retrieved
+     * 
+     * @return the project driver 
+     */
+    public I_CmsProjectDriver getProjectDriver(CmsUUID projectId) {
+
+        return null;
+    }
+
+    /**
      * Returns the project id of the context.<p>
      *
      * @return the project
@@ -143,6 +167,30 @@ public class CmsDbContext {
     public CmsRequestContext getRequestContext() {
 
         return m_requestContext;
+    }
+
+    /**
+     * Gets the user driver associated with this database context.<p> 
+     * 
+     * @param projectId the project id for which the user driver should be retrieved 
+     * 
+     * @return the user driver 
+     */
+    public I_CmsUserDriver getUserDriver(CmsUUID projectId) {
+
+        return null;
+    }
+
+    /**
+     * Gets the VFS driver associated with this database context.<p> 
+     * 
+     * @param projectId the project id for which the VFS driver should be retrieved
+     *  
+     * @return the VFS driver 
+     */
+    public I_CmsVfsDriver getVfsDriver(CmsUUID projectId) {
+
+        return null;
     }
 
     /**

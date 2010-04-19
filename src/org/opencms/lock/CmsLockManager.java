@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2010/01/18 10:03:43 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2010/04/19 15:19:35 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 6.0.0 
  * 
@@ -359,7 +359,7 @@ public final class CmsLockManager {
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // read the locks only if the wizard is not enabled
             Map lockCache = new HashMap();
-            List locks = m_driverManager.getProjectDriver().readLocks(dbc);
+            List locks = m_driverManager.getProjectDriver(dbc).readLocks(dbc);
             Iterator itLocks = locks.iterator();
             while (itLocks.hasNext()) {
                 CmsLock lock = (CmsLock)itLocks.next();
@@ -380,7 +380,7 @@ public final class CmsLockManager {
     public void removeDeletedResource(CmsDbContext dbc, String resourceName) throws CmsException {
 
         try {
-            m_driverManager.getVfsDriver().readResource(dbc, dbc.currentProject().getUuid(), resourceName, false);
+            m_driverManager.getVfsDriver(dbc).readResource(dbc, dbc.currentProject().getUuid(), resourceName, false);
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_REMOVING_UNDELETED_RESOURCE_1,
                 dbc.getRequestContext().removeSiteRoot(resourceName)));
@@ -577,7 +577,7 @@ public final class CmsLockManager {
             && OpenCms.getMemoryMonitor().requiresPersistency()) { // only if persistency is required
 
             List locks = OpenCms.getMemoryMonitor().getAllCachedLocks();
-            m_driverManager.getProjectDriver().writeLocks(dbc, locks);
+            m_driverManager.getProjectDriver(dbc).writeLocks(dbc, locks);
             m_isDirty = false;
         }
     }
@@ -771,7 +771,11 @@ public final class CmsLockManager {
 
         // reading siblings using the DriverManager methods while the lock state is checked would
         // result in an infinite loop, therefore we must access the VFS driver directly
-        List siblings = m_driverManager.getVfsDriver().readSiblings(dbc, dbc.currentProject().getUuid(), resource, true);
+        List siblings = m_driverManager.getVfsDriver(dbc).readSiblings(
+            dbc,
+            dbc.currentProject().getUuid(),
+            resource,
+            true);
         siblings.remove(resource);
         return siblings;
     }

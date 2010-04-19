@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsHistoryDriver.java,v $
- * Date   : $Date: 2010/01/18 10:03:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/19 15:19:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.db.mysql;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.I_CmsHistoryDriver;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
 
@@ -49,7 +50,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.9.1
  */
@@ -76,15 +77,14 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
         Connection conn = null;
 
         try {
+            I_CmsHistoryDriver historyDriver = m_driverManager.getHistoryDriver(dbc);
             // create the statement
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_READ_ALL");
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                List resources = m_driverManager.getHistoryDriver().readProjectResources(
-                    dbc,
-                    res.getInt("PUBLISH_TAG"));
+                List resources = historyDriver.readProjectResources(dbc, res.getInt("PUBLISH_TAG"));
                 projects.add(internalCreateProject(res, resources));
             }
         } catch (SQLException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2010/04/08 16:04:20 $
- * Version: $Revision: 1.127 $
+ * Date   : $Date: 2010/04/19 15:19:36 $
+ * Version: $Revision: 1.128 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1406,7 +1406,7 @@ public final class CmsSecurityManager {
             if (resource.isFolder()) {
                 dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_CHECK_PERMISSIONS, Boolean.TRUE);
                 try {
-                    m_driverManager.getVfsDriver().removeFolder(dbc, dbc.currentProject(), resource);
+                    m_driverManager.getVfsDriver(dbc).removeFolder(dbc, dbc.currentProject(), resource);
                 } catch (CmsDataAccessException e) {
                     // unwrap the permission violation exception
                     if (e.getCause() instanceof CmsPermissionViolationException) {
@@ -3008,7 +3008,7 @@ public final class CmsSecurityManager {
             if (source.isFolder()) {
                 dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_CHECK_PERMISSIONS, Boolean.TRUE);
                 try {
-                    m_driverManager.getVfsDriver().moveResource(
+                    m_driverManager.getVfsDriver(dbc).moveResource(
                         dbc,
                         dbc.currentProject().getUuid(),
                         source,
@@ -4573,7 +4573,7 @@ public final class CmsSecurityManager {
         String result = null;
         try {
             checkOfflineProject(dbc);
-            result = m_driverManager.getVfsDriver().readResource(
+            result = m_driverManager.getVfsDriver(dbc).readResource(
                 dbc,
                 CmsProject.ONLINE_PROJECT_ID,
                 resource.getStructureId(),

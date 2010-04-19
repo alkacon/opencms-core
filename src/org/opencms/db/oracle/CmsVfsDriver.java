@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/01/18 10:03:20 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2010/04/19 15:19:34 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProject;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -56,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 6.0.0 
  */
@@ -110,13 +111,21 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-
-            if (needToUpdateContent) {
-                // put the online content in the history
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
-                stmt.setString(1, resourceId.toString());
-                stmt.executeUpdate();
-                m_sqlManager.closeAll(dbc, null, stmt, null);
+            boolean dbcHasProjectId = (dbc.getProjectId() != null) && !dbc.getProjectId().isNullUUID();
+            if (needToUpdateContent || dbcHasProjectId) {
+                if (dbcHasProjectId || !OpenCms.getSystemInfo().isHistoryEnabled()) {
+                    // remove the online content for this resource id
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_DELETE");
+                    stmt.setString(1, resourceId.toString());
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                } else {
+                    // put the online content in the history
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
+                    stmt.setString(1, resourceId.toString());
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                }
 
                 // create new empty online content entry
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_ONLINE_CONTENTS_WRITE");

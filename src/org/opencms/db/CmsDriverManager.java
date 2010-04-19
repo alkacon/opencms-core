@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/04/08 16:04:20 $
- * Version: $Revision: 1.648 $
+ * Date   : $Date: 2010/04/19 15:19:35 $
+ * Version: $Revision: 1.649 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -299,6 +299,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The lock manager. */
     private CmsLockManager m_lockManager;
 
+    /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singelton. */
+    private CmsMemoryMonitor m_monitor;
+
     /** The project driver. */
     private I_CmsProjectDriver m_projectDriver;
 
@@ -319,9 +322,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** The VFS driver. */
     private I_CmsVfsDriver m_vfsDriver;
-
-    /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singelton. */
-    private CmsMemoryMonitor m_monitor;
 
     /**
      * Private constructor, initializes some required member variables.<p> 
@@ -534,7 +534,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 type.getLocalizedName(dbc.getRequestContext().getLocale())));
         }
         CmsRelation relation = new CmsRelation(resource, target, type);
-        m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
+        getVfsDriver(dbc).createRelation(dbc, dbc.currentProject().getUuid(), relation);
         if (!importCase) {
             setDateLastModified(dbc, resource, System.currentTimeMillis());
         }
@@ -557,7 +557,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE);
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.ROLE_LIST);
-        m_userDriver.addResourceToOrganizationalUnit(dbc, orgUnit, resource);
+        getUserDriver(dbc).addResourceToOrganizationalUnit(dbc, orgUnit, resource);
     }
 
     /**
@@ -650,7 +650,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         //add this user to the group
-        m_userDriver.createUserInGroup(dbc, user.getId(), group.getId());
+        getUserDriver(dbc).createUserInGroup(dbc, user.getId(), group.getId());
 
         // flush the cache
         if (readRoles) {
@@ -936,19 +936,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean updateLastModifiedInfo) throws CmsException {
 
         // get the entries to copy
-        ListIterator aceList = m_userDriver.readAccessControlEntries(
+        ListIterator aceList = getUserDriver(dbc).readAccessControlEntries(
             dbc,
             dbc.currentProject(),
             source.getResourceId(),
             false).listIterator();
 
         // remove the current entries from the destination
-        m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), destination.getResourceId());
+        getUserDriver(dbc).removeAccessControlEntries(dbc, dbc.currentProject(), destination.getResourceId());
 
         // now write the new entries
         while (aceList.hasNext()) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
-            m_userDriver.createAccessControlEntry(
+            getUserDriver(dbc).createAccessControlEntry(
                 dbc,
                 dbc.currentProject(),
                 destination.getResourceId(),
@@ -1044,7 +1044,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             if ((content == null) || (content.length < 1)) {
                 // no known content yet - read from database
-                content = m_vfsDriver.readContent(dbc, dbc.currentProject().getUuid(), source.getResourceId());
+                content = getVfsDriver(dbc).readContent(dbc, dbc.currentProject().getUuid(), source.getResourceId());
             }
         }
 
@@ -1141,17 +1141,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (!isInsideCurrentProject(dbc, resource.getRootPath())) {
             // check if there are already any subfolders of this resource
             if (resource.isFolder()) {
-                List projectResources = m_projectDriver.readProjectResources(dbc, dbc.currentProject());
+                List projectResources = getProjectDriver(dbc).readProjectResources(dbc, dbc.currentProject());
                 for (int i = 0; i < projectResources.size(); i++) {
                     String resname = (String)projectResources.get(i);
                     if (resname.startsWith(resource.getRootPath())) {
                         // delete the existing project resource first
-                        m_projectDriver.deleteProjectResource(dbc, dbc.currentProject().getUuid(), resname);
+                        getProjectDriver(dbc).deleteProjectResource(dbc, dbc.currentProject().getUuid(), resname);
                     }
                 }
             }
             try {
-                m_projectDriver.createProjectResource(dbc, dbc.currentProject().getUuid(), resource.getRootPath());
+                getProjectDriver(dbc).createProjectResource(dbc, dbc.currentProject().getUuid(), resource.getRootPath());
             } catch (CmsException exc) {
                 // if the subfolder exists already - all is ok
             } finally {
@@ -1220,7 +1220,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // create the group
-        CmsGroup group = m_userDriver.createGroup(dbc, id, name, description, flags, parent);
+        CmsGroup group = getUserDriver(dbc).createGroup(dbc, id, name, description, flags, parent);
 
         // if the group is in fact a role, initialize it
         if (group.isVirtual()) {
@@ -1290,7 +1290,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // create the organizational unit
-        CmsOrganizationalUnit orgUnit = m_userDriver.createOrganizationalUnit(
+        CmsOrganizationalUnit orgUnit = getUserDriver(dbc).createOrganizationalUnit(
             dbc,
             name,
             description,
@@ -1310,7 +1310,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsPublishList pl = new CmsPublishList(ouRes, false);
         pl.add(ouRes, false);
 
-        getProjectDriver().writePublishHistory(
+        getProjectDriver(dbc).writePublishHistory(
             dbc,
             pl.getPublishHistoryId(),
             new CmsPublishedResource(ouRes, -1, CmsResourceState.STATE_NEW));
@@ -1376,7 +1376,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsGroup group = readGroup(dbc, groupname);
         CmsGroup managergroup = readGroup(dbc, managergroupname);
 
-        return m_projectDriver.createProject(
+        return getProjectDriver(dbc).createProject(
             dbc,
             new CmsUUID(),
             dbc.currentUser(),
@@ -1410,9 +1410,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // TODO: make the type a parameter
         try {
             try {
-                propertyDefinition = m_vfsDriver.readPropertyDefinition(dbc, name, dbc.currentProject().getUuid());
+                propertyDefinition = getVfsDriver(dbc).readPropertyDefinition(dbc, name, dbc.currentProject().getUuid());
             } catch (CmsException e) {
-                propertyDefinition = m_vfsDriver.createPropertyDefinition(
+                propertyDefinition = getVfsDriver(dbc).createPropertyDefinition(
                     dbc,
                     dbc.currentProject().getUuid(),
                     name,
@@ -1420,9 +1420,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             try {
-                m_vfsDriver.readPropertyDefinition(dbc, name, CmsProject.ONLINE_PROJECT_ID);
+                getVfsDriver(dbc).readPropertyDefinition(dbc, name, CmsProject.ONLINE_PROJECT_ID);
             } catch (CmsException e) {
-                m_vfsDriver.createPropertyDefinition(
+                getVfsDriver(dbc).createPropertyDefinition(
                     dbc,
                     CmsProject.ONLINE_PROJECT_ID,
                     name,
@@ -1430,9 +1430,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             try {
-                m_historyDriver.readPropertyDefinition(dbc, name);
+                getHistoryDriver(dbc).readPropertyDefinition(dbc, name);
             } catch (CmsException e) {
-                m_historyDriver.createPropertyDefinition(dbc, name, CmsPropertyDefinition.TYPE_NORMAL);
+                getHistoryDriver(dbc).createPropertyDefinition(dbc, name, CmsPropertyDefinition.TYPE_NORMAL);
             }
         } finally {
 
@@ -1456,7 +1456,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void createPublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsException {
 
-        m_projectDriver.createPublishJob(dbc, publishJob);
+        getProjectDriver(dbc).createPublishJob(dbc, publishJob);
     }
 
     /**
@@ -1660,14 +1660,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             try {
                 // check online resource
-                CmsResource onlineResource = m_vfsDriver.readResource(
+                CmsResource onlineResource = getVfsDriver(dbc).readResource(
                     dbc,
                     CmsProject.ONLINE_PROJECT_ID,
                     resourcePath,
                     true);
                 // only allow to overwrite with different id if importing (createResource will set the right id)
                 try {
-                    CmsResource offlineResource = m_vfsDriver.readResource(
+                    CmsResource offlineResource = getVfsDriver(dbc).readResource(
                         dbc,
                         dbc.currentProject().getUuid(),
                         onlineResource.getStructureId(),
@@ -1730,14 +1730,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             // delete all relations for the resource, before writing the content
-            m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), newResource, CmsRelationFilter.TARGETS);
+            getVfsDriver(dbc).deleteRelations(
+                dbc,
+                dbc.currentProject().getUuid(),
+                newResource,
+                CmsRelationFilter.TARGETS);
             if (overwrittenResource == null) {
                 CmsLock lock = getLock(dbc, newResource);
                 if (lock.getEditionLock().isExclusive()) {
                     unlockResource(dbc, newResource, true, false);
                 }
                 // resource does not exist.
-                newResource = m_vfsDriver.createResource(dbc, dbc.currentProject().getUuid(), newResource, content);
+                newResource = getVfsDriver(dbc).createResource(
+                    dbc,
+                    dbc.currentProject().getUuid(),
+                    newResource,
+                    content);
             } else {
                 // resource already exists. 
                 // probably the resource is a merged page file that gets overwritten during import, or it gets 
@@ -1745,11 +1753,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 int updateStates = (overwrittenResource.getState().isNew()
                 ? CmsDriverManager.NOTHING_CHANGED
                 : CmsDriverManager.UPDATE_ALL);
-                m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), newResource, updateStates);
+                getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), newResource, updateStates);
 
                 if ((content != null) && resource.isFile()) {
                     // also update file content if required                    
-                    m_vfsDriver.writeContent(dbc, newResource.getResourceId(), content);
+                    getVfsDriver(dbc).writeContent(dbc, newResource.getResourceId(), content);
                 }
             }
 
@@ -1946,7 +1954,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsGroup projectUserGroup = readGroup(dbc, dbc.currentProject().getGroupId());
         CmsGroup projectManagerGroup = readGroup(dbc, dbc.currentProject().getManagerGroupId());
 
-        CmsProject tempProject = m_projectDriver.createProject(
+        CmsProject tempProject = getProjectDriver(dbc).createProject(
             dbc,
             new CmsUUID(),
             dbc.currentUser(),
@@ -1957,7 +1965,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 Messages.GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0),
             CmsProject.PROJECT_FLAG_HIDDEN,
             CmsProject.PROJECT_TYPE_NORMAL);
-        m_projectDriver.createProjectResource(dbc, tempProject.getUuid(), "/");
+        getProjectDriver(dbc).createProjectResource(dbc, tempProject.getUuid(), "/");
 
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
             "project",
@@ -2009,7 +2017,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (ou.hasFlagWebuser()) {
             flags += I_CmsPrincipal.FLAG_USER_WEBUSER;
         }
-        CmsUser user = m_userDriver.createUser(
+        CmsUser user = getUserDriver(dbc).createUser(
             dbc,
             new CmsUUID(),
             name,
@@ -2063,7 +2071,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // delete the property values
             if (resource.getSiblingCount() > 1) {
                 // the resource has siblings- delete only the (structure) properties of this sibling
-                m_vfsDriver.deletePropertyObjects(
+                getVfsDriver(dbc).deletePropertyObjects(
                     dbc,
                     dbc.currentProject().getUuid(),
                     resource,
@@ -2072,7 +2080,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             } else {
                 // the resource has no other siblings- delete all (structure+resource) properties
-                m_vfsDriver.deletePropertyObjects(
+                getVfsDriver(dbc).deletePropertyObjects(
                     dbc,
                     dbc.currentProject().getUuid(),
                     resource,
@@ -2101,7 +2109,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void deleteAllStaticExportPublishedResources(CmsDbContext dbc, int linkType) throws CmsException {
 
-        m_projectDriver.deleteAllStaticExportPublishedResources(dbc, linkType);
+        getProjectDriver(dbc).deleteAllStaticExportPublishedResources(dbc, linkType);
     }
 
     /**
@@ -2169,10 +2177,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
             transferPrincipalResources(dbc, onlineProject, group.getId(), replacementId, true);
         }
         // remove the group
-        m_userDriver.removeAccessControlEntriesForPrincipal(dbc, dbc.currentProject(), onlineProject, group.getId());
-        m_userDriver.deleteGroup(dbc, group.getName());
+        getUserDriver(dbc).removeAccessControlEntriesForPrincipal(
+            dbc,
+            dbc.currentProject(),
+            onlineProject,
+            group.getId());
+        getUserDriver(dbc).deleteGroup(dbc, group.getName());
         // backup the group
-        m_historyDriver.writePrincipal(dbc, group);
+        getHistoryDriver(dbc).writePrincipal(dbc, group);
 
         // clear the relevant caches
         m_monitor.uncacheGroup(group);
@@ -2213,7 +2225,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 Messages.RPT_START_DELETE_ACT_VERSIONS_1,
                 new Integer(versionsToKeep)), I_CmsReport.FORMAT_HEADLINE);
 
-            List resources = m_historyDriver.getAllNotDeletedEntries(dbc);
+            List resources = getHistoryDriver(dbc).getAllNotDeletedEntries(dbc);
             if (resources.isEmpty()) {
                 report.println(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.FORMAT_OK);
             }
@@ -2233,7 +2245,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
-                    int deleted = m_historyDriver.deleteEntries(dbc, histResource, versionsToKeep, -1);
+                    int deleted = getHistoryDriver(dbc).deleteEntries(dbc, histResource, versionsToKeep, -1);
 
                     report.print(
                         Messages.get().container(Messages.RPT_VERSION_DELETING_1, new Integer(deleted)),
@@ -2270,7 +2282,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     Messages.RPT_START_DELETE_DEL_VERSIONS_1,
                     new Integer(versionsDeleted)), I_CmsReport.FORMAT_HEADLINE);
             }
-            List resources = m_historyDriver.getAllDeletedEntries(dbc);
+            List resources = getHistoryDriver(dbc).getAllDeletedEntries(dbc);
             if (resources.isEmpty()) {
                 report.println(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.FORMAT_OK);
             }
@@ -2290,7 +2302,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
-                    int deleted = m_historyDriver.deleteEntries(dbc, histResource, versionsDeleted, timeDeleted);
+                    int deleted = getHistoryDriver(dbc).deleteEntries(dbc, histResource, versionsDeleted, timeDeleted);
 
                     report.print(
                         Messages.get().container(Messages.RPT_VERSION_DELETING_1, new Integer(deleted)),
@@ -2382,7 +2394,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // delete projects
-        Iterator itProjects = m_projectDriver.readProjects(dbc, organizationalUnit.getName()).iterator();
+        Iterator itProjects = getProjectDriver(dbc).readProjects(dbc, organizationalUnit.getName()).iterator();
         while (itProjects.hasNext()) {
             CmsProject project = (CmsProject)itProjects.next();
             deleteProject(dbc, project);
@@ -2401,13 +2413,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         pl.add(resource, false);
 
         // remove the organizational unit itself
-        m_userDriver.deleteOrganizationalUnit(dbc, organizationalUnit);
+        getUserDriver(dbc).deleteOrganizationalUnit(dbc, organizationalUnit);
 
         // write the publish history entry
-        m_projectDriver.writePublishHistory(dbc, pl.getPublishHistoryId(), new CmsPublishedResource(
-            resource,
-            -1,
-            CmsResourceState.STATE_DELETED));
+        getProjectDriver(dbc).writePublishHistory(
+            dbc,
+            pl.getPublishHistoryId(),
+            new CmsPublishedResource(resource, -1, CmsResourceState.STATE_DELETED));
 
         // flush relevant caches
         m_monitor.clearPrincipalsCache();
@@ -2467,15 +2479,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     changeLock(dbc, currentFile, CmsLockType.EXCLUSIVE);
                 }
                 // delete the properties
-                m_vfsDriver.deletePropertyObjects(
+                getVfsDriver(dbc).deletePropertyObjects(
                     dbc,
                     projectId,
                     currentFile,
                     CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                 // delete the file
-                m_vfsDriver.removeFile(dbc, dbc.currentProject().getUuid(), currentFile);
+                getVfsDriver(dbc).removeFile(dbc, dbc.currentProject().getUuid(), currentFile);
                 // remove the access control entries
-                m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), currentFile.getResourceId());
+                getUserDriver(dbc).removeAccessControlEntries(dbc, dbc.currentProject(), currentFile.getResourceId());
                 // fire the corresponding event
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
@@ -2488,15 +2500,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource currentFolder = (CmsResource)modifiedFolders.get(i);
             if (currentFolder.getState().isNew()) {
                 // delete the properties
-                m_vfsDriver.deletePropertyObjects(
+                getVfsDriver(dbc).deletePropertyObjects(
                     dbc,
                     projectId,
                     currentFolder,
                     CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                 // delete the folder
-                m_vfsDriver.removeFolder(dbc, dbc.currentProject(), currentFolder);
+                getVfsDriver(dbc).removeFolder(dbc, dbc.currentProject(), currentFolder);
                 // remove the access control entries
-                m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), currentFolder.getResourceId());
+                getUserDriver(dbc).removeAccessControlEntries(dbc, dbc.currentProject(), currentFolder.getResourceId());
                 // fire the corresponding event
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
@@ -2557,7 +2569,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // delete the project itself
-        m_projectDriver.deleteProject(dbc, deleteProject);
+        getProjectDriver(dbc).deleteProject(dbc, deleteProject);
         m_monitor.uncacheProject(deleteProject);
 
         // fire the corresponding event
@@ -2582,8 +2594,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         try {
             // first read and then delete the metadefinition.            
             propertyDefinition = readPropertyDefinition(dbc, name);
-            m_vfsDriver.deletePropertyDefinition(dbc, propertyDefinition);
-            m_historyDriver.deletePropertyDefinition(dbc, propertyDefinition);
+            getVfsDriver(dbc).deletePropertyDefinition(dbc, propertyDefinition);
+            getHistoryDriver(dbc).deletePropertyDefinition(dbc, propertyDefinition);
         } finally {
 
             // fire an event that a property of a resource has been deleted
@@ -2603,7 +2615,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void deletePublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
 
-        m_projectDriver.deletePublishJob(dbc, publishHistoryId);
+        getProjectDriver(dbc).deletePublishJob(dbc, publishHistoryId);
     }
 
     /**
@@ -2615,7 +2627,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void deletePublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
 
-        m_projectDriver.deletePublishList(dbc, publishHistoryId);
+        getProjectDriver(dbc).deletePublishList(dbc, publishHistoryId);
     }
 
     /**
@@ -2638,7 +2650,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc.removeSiteRoot(resource.getRootPath()),
                 filter.getTypes()));
         }
-        m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), resource, filter);
+        getVfsDriver(dbc).deleteRelations(dbc, dbc.currentProject().getUuid(), resource, filter);
         setDateLastModified(dbc, resource, System.currentTimeMillis());
     }
 
@@ -2721,7 +2733,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         if (resource.isFolder()) {
             // check if the folder has any resources in it
-            Iterator childResources = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, true, true).iterator();
+            Iterator childResources = getVfsDriver(dbc).readChildResources(
+                dbc,
+                dbc.currentProject(),
+                resource,
+                true,
+                true).iterator();
 
             CmsUUID projectId = CmsProject.ONLINE_PROJECT_ID;
             if (dbc.currentProject().isOnlineProject()) {
@@ -2741,7 +2758,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 boolean error = !dbc.currentProject().isOnlineProject();
                 if (!error) {
                     try {
-                        String originalPath = m_vfsDriver.readResource(dbc, projectId, errorRes.getRootPath(), true).getRootPath();
+                        String originalPath = getVfsDriver(dbc).readResource(
+                            dbc,
+                            projectId,
+                            errorRes.getRootPath(),
+                            true).getRootPath();
                         error = originalPath.equals(errorRes.getRootPath())
                             || originalPath.startsWith(resource.getRootPath());
                     } catch (CmsVfsResourceNotFoundException e) {
@@ -2784,7 +2805,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 allSiblingsRemoved = false;
             } else {
                 // write access to sibling granted                 
-                boolean existsOnline = (m_vfsDriver.validateStructureIdExists(
+                boolean existsOnline = (getVfsDriver(dbc).validateStructureIdExists(
                     dbc,
                     CmsProject.ONLINE_PROJECT_ID,
                     currentResource.getStructureId()) || !(currentResource.getState().equals(CmsResource.STATE_NEW)));
@@ -2796,7 +2817,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     deleteAllProperties(dbc, currentResource.getRootPath());
 
                     if (currentResource.isFolder()) {
-                        m_vfsDriver.removeFolder(dbc, dbc.currentProject(), currentResource);
+                        getVfsDriver(dbc).removeFolder(dbc, dbc.currentProject(), currentResource);
                     } else {
                         // check labels
                         if (currentResource.isLabeled() && !labelResource(dbc, currentResource, null, 2)) {
@@ -2805,7 +2826,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             flags &= ~CmsResource.FLAG_LABELED;
                             currentResource.setFlags(flags);
                         }
-                        m_vfsDriver.removeFile(dbc, dbc.currentProject().getUuid(), currentResource);
+                        getVfsDriver(dbc).removeFile(dbc, dbc.currentProject().getUuid(), currentResource);
                     }
 
                     // ensure an exclusive lock is removed in the lock manager for a deleted new resource,
@@ -2813,7 +2834,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // a file with the same name (issue with temp files in editor)
                     m_lockManager.removeDeletedResource(dbc, currentResource.getRootPath());
                     // delete relations
-                    m_vfsDriver.deleteRelations(
+                    getVfsDriver(dbc).deleteRelations(
                         dbc,
                         dbc.currentProject().getUuid(),
                         currentResource,
@@ -2826,10 +2847,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                     // set resource state to deleted
                     currentResource.setState(CmsResource.STATE_DELETED);
-                    m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), currentResource, UPDATE_STRUCTURE, false);
+                    getVfsDriver(dbc).writeResourceState(
+                        dbc,
+                        dbc.currentProject(),
+                        currentResource,
+                        UPDATE_STRUCTURE,
+                        false);
 
                     // update the project ID
-                    m_vfsDriver.writeLastModifiedProjectId(
+                    getVfsDriver(dbc).writeLastModifiedProjectId(
                         dbc,
                         dbc.currentProject(),
                         dbc.currentProject().getUuid(),
@@ -2841,7 +2867,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if ((resource.getSiblingCount() <= 1) || allSiblingsRemoved) {
             if (removeAce) {
                 // remove the access control entries
-                m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
+                getUserDriver(dbc).removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
             }
         }
 
@@ -2872,7 +2898,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         int linkType,
         String linkParameter) throws CmsException {
 
-        m_projectDriver.deleteStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter);
+        getProjectDriver(dbc).deleteStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter);
     }
 
     /**
@@ -2939,9 +2965,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         // online
         transferPrincipalResources(dbc, onlineProject, user.getId(), replacementUser.getId(), withACEs);
-        m_userDriver.removeAccessControlEntriesForPrincipal(dbc, project, onlineProject, user.getId());
-        m_historyDriver.writePrincipal(dbc, user);
-        m_userDriver.deleteUser(dbc, username);
+        getUserDriver(dbc).removeAccessControlEntriesForPrincipal(dbc, project, onlineProject, user.getId());
+        getHistoryDriver(dbc).writePrincipal(dbc, user);
+        getUserDriver(dbc).deleteUser(dbc, username);
         // delete user from cache
         m_monitor.clearUserCache(user);
 
@@ -3036,7 +3062,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public boolean existsResourceId(CmsDbContext dbc, CmsUUID resourceId) throws CmsException {
 
-        return m_vfsDriver.validateResourceIdExists(dbc, dbc.currentProject().getUuid(), resourceId);
+        return getVfsDriver(dbc).validateResourceIdExists(dbc, dbc.currentProject().getUuid(), resourceId);
     }
 
     /**
@@ -3059,7 +3085,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (!publishList.isDirectPublish()) {
             // when publishing a project
             // all modified resources with the last change done in the current project are candidates if unlocked
-            List folderList = m_vfsDriver.readResourceTree(
+            List folderList = getVfsDriver(dbc).readResourceTree(
                 dbc,
                 dbc.currentProject().getUuid(),
                 CmsDriverManager.READ_IGNORE_PARENT,
@@ -3078,7 +3104,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             publishList.addAll(filterResources(dbc, null, folderList), true);
 
-            List fileList = m_vfsDriver.readResourceTree(
+            List fileList = getVfsDriver(dbc).readResourceTree(
                 dbc,
                 dbc.currentProject().getUuid(),
                 CmsDriverManager.READ_IGNORE_PARENT,
@@ -3130,7 +3156,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         }
 
                         // add all sub resources of the folder
-                        List folderList = m_vfsDriver.readResourceTree(
+                        List folderList = getVfsDriver(dbc).readResourceTree(
                             dbc,
                             dbc.currentProject().getUuid(),
                             directPublishResource.getRootPath(),
@@ -3146,7 +3172,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                         publishList.addAll(filterResources(dbc, publishList, folderList), true);
 
-                        List fileList = m_vfsDriver.readResourceTree(
+                        List fileList = getVfsDriver(dbc).readResourceTree(
                             dbc,
                             dbc.currentProject().getUuid(),
                             directPublishResource.getRootPath(),
@@ -3218,7 +3244,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         // get the ACE of the resource itself
-        List ace = m_userDriver.readAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId(), false);
+        List ace = getUserDriver(dbc).readAccessControlEntries(
+            dbc,
+            dbc.currentProject(),
+            resource.getResourceId(),
+            false);
 
         // sort and check if we got the 'overwrite all' ace to stop looking up
         boolean overwriteAll = sortAceList(ace);
@@ -3230,8 +3260,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         int d = (resource.isFolder()) ? 1 : 0;
 
         while (!overwriteAll && getInherited && (parentPath != null)) {
-            resource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getUuid(), parentPath);
-            List entries = m_userDriver.readAccessControlEntries(
+            resource = getVfsDriver(dbc).readFolder(dbc, dbc.currentProject().getUuid(), parentPath);
+            List entries = getUserDriver(dbc).readAccessControlEntries(
                 dbc,
                 dbc.currentProject(),
                 resource.getResourceId(),
@@ -3345,7 +3375,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // TODO: this could be optimize if this method would have an additional parameter 'includeSubOus'
         // get all projects that might come in question
-        projects.addAll(m_projectDriver.readProjects(dbc, orgUnit.getName()));
+        projects.addAll(getProjectDriver(dbc).readProjects(dbc, orgUnit.getName()));
 
         // filter hidden and not accessible projects
         Iterator itProjects = projects.iterator();
@@ -3429,7 +3459,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // user is allowed to access all existing projects for the ous he has the project_manager role
         Set manOus = new HashSet(getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER, true));
 
-        List projects = m_historyDriver.readProjects(dbc);
+        List projects = getHistoryDriver(dbc).readProjects(dbc);
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
             CmsHistoryProject project = (CmsHistoryProject)itProjects.next();
@@ -3500,7 +3530,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // TODO: this could be optimize if this method would have an additional parameter 'includeSubOus'
         // get all projects that might come in question
-        projects.addAll(m_projectDriver.readProjects(dbc, orgUnit.getName()));
+        projects.addAll(getProjectDriver(dbc).readProjects(dbc, orgUnit.getName()));
 
         // filter hidden and not manageable projects
         Iterator itProjects = projects.iterator();
@@ -3576,11 +3606,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List getChildren(CmsDbContext dbc, CmsGroup group, boolean includeSubChildren) throws CmsException {
 
         if (!includeSubChildren) {
-            return m_userDriver.readChildGroups(dbc, group.getName());
+            return getUserDriver(dbc).readChildGroups(dbc, group.getName());
         }
         Set allChildren = new TreeSet();
         // iterate all child groups
-        Iterator it = m_userDriver.readChildGroups(dbc, group.getName()).iterator();
+        Iterator it = getUserDriver(dbc).readChildGroups(dbc, group.getName()).iterator();
         while (it.hasNext()) {
             CmsGroup child = (CmsGroup)it.next();
             // add the group itself
@@ -3609,7 +3639,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List getGroups(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean includeSubOus, boolean readRoles)
     throws CmsException {
 
-        return m_userDriver.getGroups(dbc, orgUnit, includeSubOus, readRoles);
+        return getUserDriver(dbc).getGroups(dbc, orgUnit, includeSubOus, readRoles);
     }
 
     /**
@@ -3658,9 +3688,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List groups = m_monitor.getCachedUserGroups(cacheKey);
         if (groups == null) {
             // get all groups of the user
-            List directGroups = m_userDriver.readGroupsOfUser(dbc, user.getId(), readRoles ? "" : ouFqn, readRoles
-            ? true
-            : includeChildOus, remoteAddress, readRoles);
+            List directGroups = getUserDriver(dbc).readGroupsOfUser(
+                dbc,
+                user.getId(),
+                readRoles ? "" : ouFqn,
+                readRoles ? true : includeChildOus,
+                remoteAddress,
+                readRoles);
             Set allGroups = new HashSet();
             if (!readRoles) {
                 allGroups.addAll(directGroups);
@@ -3748,13 +3782,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the history driver.<p>
+     * Returns the history driver for a given database context.<p>
      * 
-     * @return the history driver
+     * @param dbc the database context 
+     * @return the history driver for the database context
      */
-    public I_CmsHistoryDriver getHistoryDriver() {
+    public I_CmsHistoryDriver getHistoryDriver(CmsDbContext dbc) {
 
-        return m_historyDriver;
+        if ((dbc == null) || (dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID()) {
+            return m_historyDriver;
+        }
+        I_CmsHistoryDriver driver = dbc.getHistoryDriver(dbc.getProjectId());
+        return driver != null ? driver : m_historyDriver;
+
     }
 
     /** 
@@ -3829,7 +3869,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public int getNextPublishTag(CmsDbContext dbc) {
 
-        return m_historyDriver.readNextPublishTag(dbc);
+        return getHistoryDriver(dbc).readNextPublishTag(dbc);
     }
 
     /**
@@ -3852,7 +3892,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (parent == null) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PARENT_ORGUNIT_NULL_0));
         }
-        return m_userDriver.getOrganizationalUnits(dbc, parent, includeChildren);
+        return getUserDriver(dbc).getOrganizationalUnits(dbc, parent, includeChildren);
     }
 
     /**
@@ -3910,7 +3950,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // try to read from cache
         CmsGroup parent = m_monitor.getCachedGroup(group.getParentId().toString());
         if (parent == null) {
-            parent = m_userDriver.readGroup(dbc, group.getParentId());
+            parent = getUserDriver(dbc).readGroup(dbc, group.getParentId());
             m_monitor.cacheGroup(parent);
         }
         return parent;
@@ -3935,13 +3975,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the project driver.<p>
-     *
-     * @return the project driver
+     * Returns the project driver for a given DB context.<p>
+     * 
+     * @param dbc the database context
+     * 
+     * @return the project driver for the database context 
      */
-    public I_CmsProjectDriver getProjectDriver() {
+    public I_CmsProjectDriver getProjectDriver(CmsDbContext dbc) {
 
-        return m_projectDriver;
+        if ((dbc == null) || (dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID()) {
+            return m_projectDriver;
+        }
+        I_CmsProjectDriver driver = dbc.getProjectDriver(dbc.getProjectId());
+        return driver != null ? driver : m_projectDriver;
     }
 
     /**
@@ -4058,7 +4104,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                         relations.put(target.getRootPath(), target);
                         // now check the folder structure
-                        CmsResource parent = m_vfsDriver.readParentFolder(
+                        CmsResource parent = getVfsDriver(dbc).readParentFolder(
                             dbc,
                             dbc.currentProject().getUuid(),
                             target.getStructureId());
@@ -4069,7 +4115,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                                 relations.put(parent.getRootPath(), parent);
                             }
-                            parent = m_vfsDriver.readParentFolder(
+                            parent = getVfsDriver(dbc).readParentFolder(
                                 dbc,
                                 dbc.currentProject().getUuid(),
                                 parent.getStructureId());
@@ -4107,7 +4153,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         CmsUUID projectId = getProjectIdForContext(dbc);
-        return m_vfsDriver.readRelations(dbc, projectId, resource, filter);
+        return getVfsDriver(dbc).readRelations(dbc, projectId, resource, filter);
     }
 
     /**
@@ -4124,7 +4170,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         try {
             dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_RESOURCE_OUS, Boolean.TRUE);
-            return m_vfsDriver.readRelations(
+            return getVfsDriver(dbc).readRelations(
                 dbc,
                 dbc.currentProject().getUuid(),
                 resource,
@@ -4150,7 +4196,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getResourcesForOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit) throws CmsException {
 
-        return m_userDriver.getResourcesForOrganizationalUnit(dbc, orgUnit);
+        return getUserDriver(dbc).getResourcesForOrganizationalUnit(dbc, orgUnit);
     }
 
     /**
@@ -4181,7 +4227,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsPermissionSet permissions,
         boolean includeAttr) throws CmsException {
 
-        Set resources = new HashSet(m_vfsDriver.readResourcesForPrincipalACE(dbc, project, principalId));
+        Set resources = new HashSet(getVfsDriver(dbc).readResourcesForPrincipalACE(dbc, project, principalId));
         if (permissions != null) {
             Iterator itRes = resources.iterator();
             while (itRes.hasNext()) {
@@ -4193,7 +4239,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         if (includeAttr) {
-            resources.addAll(m_vfsDriver.readResourcesForPrincipalAttr(dbc, project, principalId));
+            resources.addAll(getVfsDriver(dbc).readResourcesForPrincipalAttr(dbc, project, principalId));
         }
         return resources;
     }
@@ -4326,13 +4372,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the user driver.<p>
+     * Returns the user driver for a given database context.<p>
      * 
-     * @return the user driver
+     * @param dbc the database context
+     * 
+     * @return the user driver for the database context 
      */
-    public I_CmsUserDriver getUserDriver() {
+    public I_CmsUserDriver getUserDriver(CmsDbContext dbc) {
 
-        return m_userDriver;
+        if ((dbc == null) || (dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID()) {
+            return m_userDriver;
+        }
+        I_CmsUserDriver driver = dbc.getUserDriver(dbc.getProjectId());
+        return driver != null ? driver : m_userDriver;
+
     }
 
     /**
@@ -4351,7 +4404,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive) throws CmsException {
 
-        return m_userDriver.getUsers(dbc, orgUnit, recursive);
+        return getUserDriver(dbc).getUsers(dbc, orgUnit, recursive);
     }
 
     /**
@@ -4386,13 +4439,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the VFS driver.<p>
+     * Returns the VFS driver for the given database context.<p>
      * 
-     * @return the VFS driver
+     * @param dbc the database context
+     *  
+     * @return a VFS driver  
      */
-    public I_CmsVfsDriver getVfsDriver() {
+    public I_CmsVfsDriver getVfsDriver(CmsDbContext dbc) {
 
-        return m_vfsDriver;
+        if ((dbc == null) || (dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID()) {
+            return m_vfsDriver;
+        }
+        I_CmsVfsDriver driver = dbc.getVfsDriver(dbc.getProjectId());
+        return driver != null ? driver : m_vfsDriver;
+
     }
 
     /**
@@ -4412,11 +4472,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void importAccessControlEntries(CmsDbContext dbc, CmsResource resource, List acEntries) throws CmsException {
 
-        m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
-
+        I_CmsUserDriver userDriver = getUserDriver(dbc);
+        userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
         Iterator i = acEntries.iterator();
         while (i.hasNext()) {
-            m_userDriver.writeAccessControlEntry(dbc, dbc.currentProject(), (CmsAccessControlEntry)i.next());
+            userDriver.writeAccessControlEntry(dbc, dbc.currentProject(), (CmsAccessControlEntry)i.next());
         }
         m_monitor.clearAccessControlListCache();
     }
@@ -4468,7 +4528,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (ou.hasFlagWebuser() && ((flags & I_CmsPrincipal.FLAG_USER_WEBUSER) == 0)) {
             flags += I_CmsPrincipal.FLAG_USER_WEBUSER;
         }
-        CmsUser newUser = m_userDriver.createUser(
+        CmsUser newUser = getUserDriver(dbc).createUser(
             dbc,
             new CmsUUID(id),
             name,
@@ -4628,7 +4688,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             boolean isInside = false;
             boolean isOutside = false;
             // check if one of the other vfs links lies in a labeled site folder
-            List siblings = m_vfsDriver.readSiblings(dbc, dbc.currentProject().getUuid(), resource, false);
+            List siblings = getVfsDriver(dbc).readSiblings(dbc, dbc.currentProject().getUuid(), resource, false);
             updateContextDates(dbc, siblings);
             Iterator i = siblings.iterator();
             while (i.hasNext() && (!isInside || !isOutside)) {
@@ -4723,7 +4783,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         if (!resource.getState().isUnchanged() && !resource.getState().isKeep()) {
             // update the project flag of a modified resource as "last modified inside the current project"
-            m_vfsDriver.writeLastModifiedProjectId(dbc, project, project.getUuid(), resource);
+            getVfsDriver(dbc).writeLastModifiedProjectId(dbc, project, project.getUuid(), resource);
         }
 
         // we must also clear the permission cache
@@ -4759,7 +4819,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsUser newUser;
         try {
             // read the user from the driver to avoid the cache
-            newUser = m_userDriver.readUser(dbc, userName, password, remoteAddress);
+            newUser = getUserDriver(dbc).readUser(dbc, userName, password, remoteAddress);
         } catch (CmsDbEntryNotFoundException e) {
             // this indicates that the username / password combination does not exist
             // any other exception indicates database issues, these are not catched here
@@ -4830,7 +4890,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         newUser.setLastlogin(System.currentTimeMillis());
 
         // write the changed user object back to the user driver
-        m_userDriver.writeUser(dbc, newUser);
+        getUserDriver(dbc).writeUser(dbc, newUser);
 
         // update cache
         m_monitor.cacheUser(newUser);
@@ -4858,7 +4918,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public I_CmsPrincipal lookupPrincipal(CmsDbContext dbc, CmsUUID principalId) {
 
         try {
-            CmsGroup group = m_userDriver.readGroup(dbc, principalId);
+            CmsGroup group = getUserDriver(dbc).readGroup(dbc, principalId);
             if (group != null) {
                 return group;
             }
@@ -4889,7 +4949,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public I_CmsPrincipal lookupPrincipal(CmsDbContext dbc, String principalName) {
 
         try {
-            CmsGroup group = m_userDriver.readGroup(dbc, principalName);
+            CmsGroup group = getUserDriver(dbc).readGroup(dbc, principalName);
             if (group != null) {
                 return group;
             }
@@ -4948,7 +5008,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE);
             m_monitor.flushCache(CmsMemoryMonitor.CacheType.ROLE_LIST);
         }
-        m_vfsDriver.moveResource(dbc, dbc.getRequestContext().currentProject().getUuid(), source, destination);
+        getVfsDriver(dbc).moveResource(dbc, dbc.getRequestContext().currentProject().getUuid(), source, destination);
 
         if (!internal) {
             CmsResourceState newState = CmsResource.STATE_CHANGED;
@@ -4959,7 +5019,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             source.setState(newState);
             // safe since this operation always uses the ids instead of the resource path
-            m_vfsDriver.writeResourceState(
+            getVfsDriver(dbc).writeResourceState(
                 dbc,
                 dbc.currentProject(),
                 source,
@@ -5149,56 +5209,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Method to create a new instance of a driver.<p>
-     * 
-     * @param configuration the configurations from the propertyfile
-     * @param driverName the class name of the driver
-     * @param driverPoolUrl the pool url for the driver
-     * @return an initialized instance of the driver
-     * @throws CmsException if something goes wrong
-     */
-    public Object newDriverInstance(ExtendedProperties configuration, String driverName, String driverPoolUrl)
-    throws CmsException {
-
-        Class[] initParamClasses = {ExtendedProperties.class, String.class, CmsDriverManager.class};
-        Object[] initParams = {configuration, driverPoolUrl, this};
-
-        Class driverClass = null;
-        Object driver = null;
-
-        try {
-            // try to get the class
-            driverClass = Class.forName(driverName);
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_START_1, driverName));
-            }
-
-            // try to create a instance
-            driver = driverClass.newInstance();
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
-            }
-
-            // invoke the init-method of this access class
-            driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INIT_FINISHED_1, driverPoolUrl));
-            }
-
-        } catch (Exception exc) {
-
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_INIT_DRIVER_MANAGER_1);
-            if (LOG.isFatalEnabled()) {
-                LOG.fatal(message.key(), exc);
-            }
-            throw new CmsDbException(message, exc);
-
-        }
-
-        return driver;
-    }
-
-    /**
      * Method to create a new instance of a pool.<p>
      * 
      * @param configuration the configurations from the propertyfile
@@ -5280,7 +5290,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             m_monitor.clearCache();
 
             int publishTag = getNextPublishTag(dbc);
-            getProjectDriver().publishProject(dbc, report, onlineProject, publishList, publishTag);
+            getProjectDriver(dbc).publishProject(dbc, report, onlineProject, publishList, publishTag);
 
             // iterate the initialized module action instances
             Iterator i = OpenCms.getModuleManager().getModuleNames().iterator();
@@ -5296,7 +5306,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // it will be deleted if the project_flag is PROJECT_TYPE_TEMPORARY
             if ((temporaryProject) && (!publishList.isDirectPublish())) {
                 try {
-                    getProjectDriver().deleteProject(dbc, dbc.currentProject());
+                    getProjectDriver(dbc).deleteProject(dbc, dbc.currentProject());
                 } catch (CmsException e) {
                     LOG.error(Messages.get().getBundle().key(
                         Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1,
@@ -5429,7 +5439,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsAccessControlEntry readAccessControlEntry(CmsDbContext dbc, CmsResource resource, CmsUUID principal)
     throws CmsException {
 
-        return m_userDriver.readAccessControlEntry(dbc, dbc.currentProject(), resource.getResourceId(), principal);
+        return getUserDriver(dbc).readAccessControlEntry(dbc, dbc.currentProject(), resource.getResourceId(), principal);
     }
 
     /**
@@ -5450,7 +5460,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List readAllAvailableVersions(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         // read the historical resources
-        List versions = m_historyDriver.readAllAvailableVersions(dbc, resource.getStructureId());
+        List versions = getHistoryDriver(dbc).readAllAvailableVersions(dbc, resource.getStructureId());
         if ((versions.size() > OpenCms.getSystemInfo().getHistoryVersions())
             && (OpenCms.getSystemInfo().getHistoryVersions() > -1)) {
             return versions.subList(0, OpenCms.getSystemInfo().getHistoryVersions());
@@ -5469,7 +5479,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readAllPropertyDefinitions(CmsDbContext dbc) throws CmsException {
 
-        List returnValue = m_vfsDriver.readPropertyDefinitions(dbc, dbc.currentProject().getUuid());
+        List returnValue = getVfsDriver(dbc).readPropertyDefinitions(dbc, dbc.currentProject().getUuid());
         Collections.sort(returnValue);
         return returnValue;
     }
@@ -5528,7 +5538,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         if ((resourceList == null) || !dbc.getProjectId().isNullUUID()) {
             // read the result form the database
-            resourceList = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, getFolders, getFiles);
+            resourceList = getVfsDriver(dbc).readChildResources(
+                dbc,
+                dbc.currentProject(),
+                resource,
+                getFolders,
+                getFiles);
 
             if (checkPermissions) {
                 // apply the permission filter
@@ -5639,23 +5654,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List deletedResources;
         dbc.getRequestContext().setAttribute("ATTR_RESOURCE_NAME", resource.getRootPath());
         try {
-            deletedResources = m_historyDriver.readDeletedResources(dbc, resource.getStructureId(), isVfsManager
-            ? null
-            : dbc.currentUser().getId());
+            deletedResources = getHistoryDriver(dbc).readDeletedResources(
+                dbc,
+                resource.getStructureId(),
+                isVfsManager ? null : dbc.currentUser().getId());
         } finally {
             dbc.getRequestContext().removeAttribute("ATTR_RESOURCE_NAME");
         }
         result.addAll(deletedResources);
         Set newResult = new HashSet(result.size());
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
         Iterator it = result.iterator();
         while (it.hasNext()) {
             I_CmsHistoryResource histRes = (I_CmsHistoryResource)it.next();
             // adjust the paths
             try {
-                if (getVfsDriver().validateStructureIdExists(
-                    dbc,
-                    dbc.currentProject().getUuid(),
-                    histRes.getStructureId())) {
+                if (vfsDriver.validateStructureIdExists(dbc, dbc.currentProject().getUuid(), histRes.getStructureId())) {
                     newResult.add(histRes);
                     continue;
                 }
@@ -5790,13 +5804,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsFile file = null;
         if (resource instanceof I_CmsHistoryResource) {
             file = new CmsHistoryFile((I_CmsHistoryResource)resource);
-            file.setContents(m_historyDriver.readContent(
+            file.setContents(getHistoryDriver(dbc).readContent(
                 dbc,
                 resource.getResourceId(),
                 ((I_CmsHistoryResource)resource).getPublishTag()));
         } else {
             file = new CmsFile(resource);
-            file.setContents(m_vfsDriver.readContent(dbc, projectId, resource.getResourceId()));
+            file.setContents(getVfsDriver(dbc).readContent(dbc, projectId, resource.getResourceId()));
         }
         return file;
     }
@@ -5863,7 +5877,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // try to read group from cache
         group = m_monitor.getCachedGroup(groupId.toString());
         if (group == null) {
-            group = m_userDriver.readGroup(dbc, groupId);
+            group = getUserDriver(dbc).readGroup(dbc, groupId);
             m_monitor.cacheGroup(group);
         }
         return group;
@@ -5885,7 +5899,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // try to read group from cache
         group = m_monitor.getCachedGroup(groupname);
         if (group == null) {
-            group = m_userDriver.readGroup(dbc, groupname);
+            group = getUserDriver(dbc).readGroup(dbc, groupname);
             m_monitor.cacheGroup(group);
         }
         return group;
@@ -5907,7 +5921,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsHistoryPrincipal readHistoricalPrincipal(CmsDbContext dbc, CmsUUID principalId) throws CmsException {
 
-        return m_historyDriver.readPrincipal(dbc, principalId);
+        return getHistoryDriver(dbc).readPrincipal(dbc, principalId);
     }
 
     /**
@@ -5922,7 +5936,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsHistoryProject readHistoryProject(CmsDbContext dbc, CmsUUID projectId) throws CmsException {
 
-        return m_historyDriver.readProject(dbc, projectId);
+        return getHistoryDriver(dbc).readProject(dbc, projectId);
     }
 
     /**
@@ -5937,7 +5951,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsHistoryProject readHistoryProject(CmsDbContext dbc, int publishTag) throws CmsException {
 
-        return m_historyDriver.readProject(dbc, publishTag);
+        return getHistoryDriver(dbc).readProject(dbc, publishTag);
     }
 
     /**
@@ -5952,7 +5966,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readHistoryPropertyObjects(CmsDbContext dbc, I_CmsHistoryResource historyResource) throws CmsException {
 
-        return m_historyDriver.readProperties(dbc, historyResource);
+        return getHistoryDriver(dbc).readProperties(dbc, historyResource);
     }
 
     /**
@@ -6006,7 +6020,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // try to read organizational unit from cache
         organizationalUnit = m_monitor.getCachedOrgUnit(ouFqn);
         if (organizationalUnit == null) {
-            organizationalUnit = m_userDriver.readOrganizationalUnit(dbc, ouFqn);
+            organizationalUnit = getUserDriver(dbc).readOrganizationalUnit(dbc, ouFqn);
             m_monitor.cacheOrgUnit(organizationalUnit);
         }
         return organizationalUnit;
@@ -6069,7 +6083,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // the current resource
         CmsResource currentResource = m_monitor.getCachedResource(cacheKey);
         if ((currentResource == null) || !dbc.getProjectId().isNullUUID()) {
-            currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
+            currentResource = getVfsDriver(dbc).readFolder(dbc, projectId, cp);
             if (dbc.getProjectId().isNullUUID()) {
                 m_monitor.cacheResource(cacheKey, currentResource);
             }
@@ -6095,7 +6109,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             cacheKey = getCacheKey(null, false, projectId, cp);
             currentResource = m_monitor.getCachedResource(cacheKey);
             if ((currentResource == null) || !dbc.getProjectId().isNullUUID()) {
-                currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
+                currentResource = getVfsDriver(dbc).readFolder(dbc, projectId, cp);
                 if (dbc.getProjectId().isNullUUID()) {
                     m_monitor.cacheResource(cacheKey, currentResource);
                 }
@@ -6122,7 +6136,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             cacheKey = getCacheKey(null, false, projectId, cp);
             currentResource = m_monitor.getCachedResource(cacheKey);
             if ((currentResource == null) || !dbc.getProjectId().isNullUUID()) {
-                currentResource = m_vfsDriver.readResource(dbc, projectId, cp, filter.includeDeleted());
+                currentResource = getVfsDriver(dbc).readResource(dbc, projectId, cp, filter.includeDeleted());
                 if (dbc.getProjectId().isNullUUID()) {
                     m_monitor.cacheResource(cacheKey, currentResource);
                 }
@@ -6149,7 +6163,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsProject project = null;
         project = m_monitor.getCachedProject(id.toString());
         if (project == null) {
-            project = m_projectDriver.readProject(dbc, id);
+            project = getProjectDriver(dbc).readProject(dbc, id);
             m_monitor.cacheProject(project);
         }
         return project;
@@ -6175,7 +6189,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsProject project = null;
         project = m_monitor.getCachedProject(name);
         if (project == null) {
-            project = m_projectDriver.readProject(dbc, name);
+            project = getProjectDriver(dbc).readProject(dbc, name);
             m_monitor.cacheProject(project);
         }
         return project;
@@ -6194,7 +6208,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsException {
 
-        return m_projectDriver.readProjectResources(dbc, project);
+        return getProjectDriver(dbc).readProjectResources(dbc, project);
     }
 
     /**
@@ -6223,10 +6237,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List resources;
         if (state.isNew() || state.isChanged() || state.isDeleted()) {
             // get all resources form the database that match the selected state
-            resources = m_vfsDriver.readResources(dbc, projectId, state, CmsDriverManager.READMODE_MATCHSTATE);
+            resources = getVfsDriver(dbc).readResources(dbc, projectId, state, CmsDriverManager.READMODE_MATCHSTATE);
         } else {
             // get all resources form the database that are somehow changed (i.e. not unchanged)
-            resources = m_vfsDriver.readResources(
+            resources = getVfsDriver(dbc).readResources(
                 dbc,
                 projectId,
                 CmsResource.STATE_UNCHANGED,
@@ -6256,7 +6270,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsPropertyDefinition readPropertyDefinition(CmsDbContext dbc, String name) throws CmsException {
 
-        return m_vfsDriver.readPropertyDefinition(dbc, name, dbc.currentProject().getUuid());
+        return getVfsDriver(dbc).readPropertyDefinition(dbc, name, dbc.currentProject().getUuid());
     }
 
     /**
@@ -6351,7 +6365,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     }
                 } while (cont);
             } else {
-                properties = m_vfsDriver.readPropertyObjects(dbc, dbc.currentProject(), resource);
+                properties = getVfsDriver(dbc).readPropertyObjects(dbc, dbc.currentProject(), resource);
             }
 
             // set all properties in the result list as frozen
@@ -6380,7 +6394,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String cacheKey = publishHistoryId.toString();
         List resourceList = m_monitor.getCachedPublishedResources(cacheKey);
         if ((resourceList == null) || !dbc.getProjectId().isNullUUID()) {
-            resourceList = m_projectDriver.readPublishedResources(dbc, publishHistoryId);
+            resourceList = getProjectDriver(dbc).readPublishedResources(dbc, publishHistoryId);
             // store the result in the cache
             if (dbc.getProjectId().isNullUUID()) {
                 m_monitor.cachePublishedResources(cacheKey, resourceList);
@@ -6400,7 +6414,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
 
-        return m_projectDriver.readPublishJob(dbc, publishHistoryId);
+        return getProjectDriver(dbc).readPublishJob(dbc, publishHistoryId);
     }
 
     /**
@@ -6415,7 +6429,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) throws CmsException {
 
-        return m_projectDriver.readPublishJobs(dbc, startTime, endTime);
+        return getProjectDriver(dbc).readPublishJobs(dbc, startTime, endTime);
     }
 
     /**
@@ -6428,7 +6442,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsPublishList readPublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
 
-        return m_projectDriver.readPublishList(dbc, publishHistoryId);
+        return getProjectDriver(dbc).readPublishList(dbc, publishHistoryId);
     }
 
     /**
@@ -6441,7 +6455,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
 
-        return m_projectDriver.readPublishReportContents(dbc, publishHistoryId);
+        return getProjectDriver(dbc).readPublishReportContents(dbc, publishHistoryId);
     }
 
     /**
@@ -6460,7 +6474,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public I_CmsHistoryResource readResource(CmsDbContext dbc, CmsResource resource, int version) throws CmsException {
 
-        Iterator itVersions = m_historyDriver.readAllAvailableVersions(dbc, resource.getStructureId()).iterator();
+        Iterator itVersions = getHistoryDriver(dbc).readAllAvailableVersions(dbc, resource.getStructureId()).iterator();
         while (itVersions.hasNext()) {
             I_CmsHistoryResource histRes = (I_CmsHistoryResource)itVersions.next();
             if (histRes.getVersion() == version) {
@@ -6491,7 +6505,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsUUID projectId = getProjectIdForContext(dbc);
         // please note: the filter will be applied in the security manager later
-        CmsResource resource = m_vfsDriver.readResource(dbc, projectId, structureID, filter.includeDeleted());
+        CmsResource resource = getVfsDriver(dbc).readResource(dbc, projectId, structureID, filter.includeDeleted());
 
         // context dates need to be updated
         updateContextDates(dbc, resource);
@@ -6520,7 +6534,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsUUID projectId = getProjectIdForContext(dbc);
         // please note: the filter will be applied in the security manager later
-        CmsResource resource = m_vfsDriver.readResource(dbc, projectId, resourcePath, filter.includeDeleted());
+        CmsResource resource = getVfsDriver(dbc).readResource(dbc, projectId, resourcePath, filter.includeDeleted());
 
         // context dates need to be updated 
         updateContextDates(dbc, resource);
@@ -6550,7 +6564,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public I_CmsHistoryResource readResourceForPublishTag(CmsDbContext dbc, CmsResource resource, int publishTag)
     throws CmsException {
 
-        return m_historyDriver.readFile(dbc, resource.getStructureId(), publishTag);
+        return getHistoryDriver(dbc).readFile(dbc, resource.getStructureId(), publishTag);
     }
 
     /**
@@ -6581,7 +6595,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List resourceList = m_monitor.getCachedResourceList(cacheKey);
         if ((resourceList == null) || !dbc.getProjectId().isNullUUID()) {
             // read the result from the database
-            resourceList = m_vfsDriver.readResourceTree(
+            resourceList = getVfsDriver(dbc).readResourceTree(
                 dbc,
                 dbc.currentProject().getUuid(),
                 (readTree ? parent.getRootPath() : parent.getStructureId().toString()),
@@ -6661,7 +6675,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // first read the property definition
             CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);
             // now read the list of resources that have a value set for the property definition
-            resourceList = m_vfsDriver.readResourcesWithProperty(
+            resourceList = getVfsDriver(dbc).readResourcesWithProperty(
                 dbc,
                 dbc.currentProject().getUuid(),
                 propDef.getId(),
@@ -6753,7 +6767,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readSiblings(CmsDbContext dbc, CmsResource resource, CmsResourceFilter filter) throws CmsException {
 
-        List siblings = m_vfsDriver.readSiblings(dbc, dbc.currentProject().getUuid(), resource, filter.includeDeleted());
+        List siblings = getVfsDriver(dbc).readSiblings(
+            dbc,
+            dbc.currentProject().getUuid(),
+            resource,
+            filter.includeDeleted());
 
         // important: there is no permission check done on the returned list of siblings
         // this is because of possible issues with the "publish all siblings" option,
@@ -6774,7 +6792,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public String readStaticExportPublishedResourceParameters(CmsDbContext dbc, String rfsName) throws CmsException {
 
-        return m_projectDriver.readStaticExportPublishedResourceParameters(dbc, rfsName);
+        return getProjectDriver(dbc).readStaticExportPublishedResourceParameters(dbc, rfsName);
     }
 
     /**
@@ -6790,7 +6808,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp) throws CmsException {
 
-        return m_projectDriver.readStaticExportResources(dbc, parameterResources, timestamp);
+        return getProjectDriver(dbc).readStaticExportResources(dbc, parameterResources, timestamp);
     }
 
     /**
@@ -6807,7 +6825,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsUser user = m_monitor.getCachedUser(id.toString());
         if (user == null) {
-            user = m_userDriver.readUser(dbc, id);
+            user = getUserDriver(dbc).readUser(dbc, id);
             m_monitor.cacheUser(user);
         }
         return user;
@@ -6827,7 +6845,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsUser user = m_monitor.getCachedUser(username);
         if (user == null) {
-            user = m_userDriver.readUser(dbc, username);
+            user = getUserDriver(dbc).readUser(dbc, username);
             m_monitor.cacheUser(user);
         }
         return user;
@@ -6849,7 +6867,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsUser readUser(CmsDbContext dbc, String username, String password) throws CmsException {
 
         // don't read user from cache here because password may have changed
-        CmsUser user = m_userDriver.readUser(dbc, username, password, null);
+        CmsUser user = getUserDriver(dbc).readUser(dbc, username, password, null);
         m_monitor.cacheUser(user);
         return user;
     }
@@ -6866,7 +6884,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void removeAccessControlEntry(CmsDbContext dbc, CmsResource resource, CmsUUID principal) throws CmsException {
 
         // remove the ace
-        m_userDriver.removeAccessControlEntry(dbc, dbc.currentProject(), resource.getResourceId(), principal);
+        getUserDriver(dbc).removeAccessControlEntry(dbc, dbc.currentProject(), resource.getResourceId(), principal);
 
         // update the "last modified" information
         setDateLastModified(dbc, resource, resource.getDateLastModified());
@@ -6898,7 +6916,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE);
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.ROLE_LIST);
-        m_userDriver.removeResourceFromOrganizationalUnit(dbc, orgUnit, resource);
+        getUserDriver(dbc).removeResourceFromOrganizationalUnit(dbc, orgUnit, resource);
     }
 
     /**
@@ -6917,18 +6935,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // remove the resource to the project only if the resource is already in the project
         if (isInsideCurrentProject(dbc, resource.getRootPath())) {
             // check if there are already any subfolders of this resource
+            I_CmsProjectDriver projectDriver = getProjectDriver(dbc);
             if (resource.isFolder()) {
-                List projectResources = m_projectDriver.readProjectResources(dbc, dbc.currentProject());
+                List projectResources = projectDriver.readProjectResources(dbc, dbc.currentProject());
                 for (int i = 0; i < projectResources.size(); i++) {
                     String resname = (String)projectResources.get(i);
                     if (resname.startsWith(resource.getRootPath())) {
                         // delete the existing project resource first
-                        m_projectDriver.deleteProjectResource(dbc, dbc.currentProject().getUuid(), resname);
+                        projectDriver.deleteProjectResource(dbc, dbc.currentProject().getUuid(), resname);
                     }
                 }
             }
             try {
-                m_projectDriver.deleteProjectResource(dbc, dbc.currentProject().getUuid(), resource.getRootPath());
+                projectDriver.deleteProjectResource(dbc, dbc.currentProject().getUuid(), resource.getRootPath());
             } catch (CmsException exc) {
                 // if the subfolder exists already - all is ok
             } finally {
@@ -7022,7 +7041,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
         }
-        m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId());
+        getUserDriver(dbc).deleteUserInGroup(dbc, user.getId(), group.getId());
 
         // flush relevant caches
         if (readRoles) {
@@ -7079,11 +7098,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         // replace the existing with the new file content
-        m_vfsDriver.replaceResource(dbc, resource, content, type);
+        getVfsDriver(dbc).replaceResource(dbc, resource, content, type);
 
         if ((properties != null) && (properties != Collections.EMPTY_LIST)) {
             // write the properties
-            m_vfsDriver.writePropertyObjects(dbc, dbc.currentProject(), resource, properties);
+            getVfsDriver(dbc).writePropertyObjects(dbc, dbc.currentProject(), resource, properties);
             m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY);
             m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY_LIST);
         }
@@ -7096,7 +7115,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         setDateLastModified(dbc, resource, System.currentTimeMillis());
 
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
+        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
 
         deleteRelationsWithSiblings(dbc, resource);
 
@@ -7131,7 +7150,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // read the user as a system user to verify that the specified old password is correct
             try {
-                user = m_userDriver.readUser(dbc, username, oldPassword, null);
+                user = getUserDriver(dbc).readUser(dbc, username, oldPassword, null);
             } catch (CmsDbEntryNotFoundException e) {
                 throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);
             }
@@ -7140,7 +7159,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username));
             }
 
-            m_userDriver.writePassword(dbc, username, oldPassword, newPassword);
+            getUserDriver(dbc).writePassword(dbc, username, oldPassword, newPassword);
 
             if (!dbc.getProjectId().isNullUUID()) {
                 // user modified event is not needed
@@ -7174,20 +7193,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void restoreDeletedResource(CmsDbContext dbc, CmsUUID structureId) throws CmsException {
 
         // get the last version, which should be the deleted one
-        int version = m_historyDriver.readLastVersion(dbc, structureId);
+        int version = getHistoryDriver(dbc).readLastVersion(dbc, structureId);
         // get that version
-        I_CmsHistoryResource histRes = m_historyDriver.readResource(dbc, structureId, version);
+        I_CmsHistoryResource histRes = getHistoryDriver(dbc).readResource(dbc, structureId, version);
 
         // check the parent path
         CmsResource parent;
         try {
             // try to read the parent resource by id
-            parent = m_vfsDriver.readResource(dbc, dbc.currentProject().getUuid(), histRes.getParentId(), true);
+            parent = getVfsDriver(dbc).readResource(dbc, dbc.currentProject().getUuid(), histRes.getParentId(), true);
         } catch (CmsVfsResourceNotFoundException e) {
             // if not found try to read the parent resource by name
             try {
                 // try to read the parent resource by id
-                parent = m_vfsDriver.readResource(
+                parent = getVfsDriver(dbc).readResource(
                     dbc,
                     dbc.currentProject().getUuid(),
                     CmsResource.getParentFolder(histRes.getRootPath()),
@@ -7229,7 +7248,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // check structure id
         CmsUUID id = structureId;
-        if (m_vfsDriver.validateStructureIdExists(dbc, dbc.currentProject().getUuid(), structureId)) {
+        if (getVfsDriver(dbc).validateStructureIdExists(dbc, dbc.currentProject().getUuid(), structureId)) {
             // should never happen, but if already exists create a new one
             id = new CmsUUID();
         }
@@ -7241,13 +7260,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (histRes instanceof CmsFile) {
             contents = ((CmsFile)histRes).getContents();
             if ((contents == null) || (contents.length == 0)) {
-                contents = m_historyDriver.readContent(dbc, histRes.getResourceId(), histRes.getPublishTag());
+                contents = getHistoryDriver(dbc).readContent(dbc, histRes.getResourceId(), histRes.getPublishTag());
             }
             isFolder = false;
         }
 
         // now read the historical properties
-        List properties = m_historyDriver.readProperties(dbc, histRes);
+        List properties = getHistoryDriver(dbc).readProperties(dbc, histRes);
 
         // create the object to create
         CmsResource newResource = new CmsResource(
@@ -7276,7 +7295,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResource resource = createResource(dbc, path + resName, newResource, contents, properties, true);
         // set resource state to changed
         newResource.setState(CmsResource.STATE_CHANGED);
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), newResource, UPDATE_RESOURCE_STATE, false);
+        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), newResource, UPDATE_RESOURCE_STATE, false);
         newResource.setState(CmsResource.STATE_NEW);
         // fire the event
         HashMap data = new HashMap(2);
@@ -7360,7 +7379,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         if (newResource != null) {
             // now read the historical properties
-            List historyProperties = m_historyDriver.readProperties(dbc, historyResource);
+            List historyProperties = getHistoryDriver(dbc).readProperties(dbc, historyResource);
             // remove all properties
             deleteAllProperties(dbc, newResource.getRootPath());
             // write them to the restored resource
@@ -7393,10 +7412,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (resource.getState().isUnchanged()) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
+        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
 
         // modify the last modified project reference
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
+        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7432,7 +7451,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resource.setState(CmsResource.STATE_CHANGED);
         }
         resource.setUserLastModified(dbc.currentUser().getId());
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
+        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7464,10 +7483,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (resource.getState().isUnchanged()) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
+        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
 
         // modify the last modified project reference
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
+        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
 
         // clear the cache
         m_monitor.clearResourceCache();
@@ -7524,9 +7543,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         validatePassword(newPassword);
 
         // read the user as a system user to verify that the specified old password is correct
-        m_userDriver.readUser(dbc, username);
+        getUserDriver(dbc).readUser(dbc, username);
         // only continue if not found and read user from web might succeed
-        m_userDriver.writePassword(dbc, username, null, newPassword);
+        getUserDriver(dbc).writePassword(dbc, username, null, newPassword);
     }
 
     /**
@@ -7551,7 +7570,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // move the principal
-        m_userDriver.setUsersOrganizationalUnit(dbc, orgUnit, user);
+        getUserDriver(dbc).setUsersOrganizationalUnit(dbc, orgUnit, user);
         // remove the principal from cache
         m_monitor.clearUserCache(user);
 
@@ -7622,7 +7641,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // we need this for later use
         CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
         // read the resource from the online project
-        CmsResource onlineResource = m_vfsDriver.readResource(
+        CmsResource onlineResource = getVfsDriver(dbc).readResource(
             dbc,
             CmsProject.ONLINE_PROJECT_ID,
             resource.getStructureId(),
@@ -7631,7 +7650,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResource onlineResourceByPath = null;
         try {
             // this is needed to figure out if a moved resource overwrote a deleted one
-            onlineResourceByPath = m_vfsDriver.readResource(
+            onlineResourceByPath = getVfsDriver(dbc).readResource(
                 dbc,
                 CmsProject.ONLINE_PROJECT_ID,
                 resource.getRootPath(),
@@ -7736,6 +7755,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // the export point hash table contains RFS export paths keyed by their internal VFS paths
             Iterator i = exportPointDriver.getExportPointPaths().iterator();
+            I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
             while (i.hasNext()) {
                 String currentExportPoint = (String)i.next();
 
@@ -7746,7 +7766,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                 try {
                     CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
-                    List resources = m_vfsDriver.readResourceTree(
+                    List resources = vfsDriver.readResourceTree(
                         dbc,
                         CmsProject.ONLINE_PROJECT_ID,
                         currentExportPoint,
@@ -7772,7 +7792,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         } else {
                             // try to create the exportpoint folder
                             exportPointDriver.createFolder(currentExportPoint, currentExportPoint);
-                            byte[] onlineContent = getVfsDriver().readContent(
+                            byte[] onlineContent = vfsDriver.readContent(
                                 dbc,
                                 CmsProject.ONLINE_PROJECT_ID,
                                 currentResource.getResourceId());
@@ -7823,6 +7843,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Set writtenRelations = new HashSet();
 
         // create new relation information
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
         Iterator itLinks = links.iterator();
         while (itLinks.hasNext()) {
             CmsLink link = (CmsLink)itLinks.next();
@@ -7861,7 +7882,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         originalRelation.getTargetId(),
                         originalRelation.getTargetPath(),
                         link.getType());
-                    m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
+                    vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
                 }
             }
         }
@@ -7940,7 +7961,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         // write the new ace
-        m_userDriver.writeAccessControlEntry(dbc, dbc.currentProject(), ace);
+        getUserDriver(dbc).writeAccessControlEntry(dbc, dbc.currentProject(), ace);
 
         // update the "last modified" information
         setDateLastModified(dbc, resource, resource.getDateLastModified());
@@ -7969,7 +7990,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List publishedResources = null;
         try {
             // read the "published resources" for the specified publish history ID
-            publishedResources = m_projectDriver.readPublishedResources(dbc, publishHistoryId);
+            publishedResources = getProjectDriver(dbc).readPublishedResources(dbc, publishHistoryId);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
@@ -8008,6 +8029,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // iterate over all published resources to export them
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
         Iterator i = publishedResources.iterator();
         while (i.hasNext()) {
             CmsPublishedResource currentPublishedResource = (CmsPublishedResource)i.next();
@@ -8049,7 +8071,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             exportPointDriver.deleteResource(currentPublishedResource.getRootPath(), currentExportPoint);
                         } else {
                             // read the file content online
-                            byte[] onlineContent = getVfsDriver().readContent(
+                            byte[] onlineContent = vfsDriver.readContent(
                                 dbc,
                                 CmsProject.ONLINE_PROJECT_ID,
                                 currentPublishedResource.getResourceId());
@@ -8105,10 +8127,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resource.setUserLastModified(dbc.currentUser().getId());
         resource.setContents(resource.getContents()); // to be sure the content date is updated
 
-        m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
+        getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
 
         byte[] contents = resource.getContents();
-        m_vfsDriver.writeContent(dbc, resource.getResourceId(), contents);
+        getVfsDriver(dbc).writeContent(dbc, resource.getResourceId(), contents);
 
         // read the file back from db
         resource = new CmsFile(readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL));
@@ -8144,7 +8166,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsGroup oldGroup = readGroup(dbc, group.getName());
         m_monitor.uncacheGroup(oldGroup);
-        m_userDriver.writeGroup(dbc, group);
+        getUserDriver(dbc).writeGroup(dbc, group);
         m_monitor.cacheGroup(group);
 
         if (!dbc.getProjectId().isNullUUID()) {
@@ -8170,7 +8192,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeHistoryProject(CmsDbContext dbc, int publishTag, long publishDate) throws CmsDataAccessException {
 
-        m_historyDriver.writeProject(dbc, publishTag, publishDate);
+        getHistoryDriver(dbc).writeProject(dbc, publishTag, publishDate);
     }
 
     /**
@@ -8206,14 +8228,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit) throws CmsException {
 
         m_monitor.uncacheOrgUnit(organizationalUnit);
-        m_userDriver.writeOrganizationalUnit(dbc, organizationalUnit);
+        getUserDriver(dbc).writeOrganizationalUnit(dbc, organizationalUnit);
 
         // create a publish list for the 'virtual' publish event
         CmsResource ouRes = readResource(dbc, organizationalUnit.getId(), CmsResourceFilter.DEFAULT);
         CmsPublishList pl = new CmsPublishList(ouRes, false);
         pl.add(ouRes, false);
 
-        getProjectDriver().writePublishHistory(
+        getProjectDriver(dbc).writePublishHistory(
             dbc,
             pl.getPublishHistoryId(),
             new CmsPublishedResource(ouRes, -1, CmsResourceState.STATE_NEW));
@@ -8245,7 +8267,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeProject(CmsDbContext dbc, CmsProject project) throws CmsException {
 
         m_monitor.uncacheProject(project);
-        m_projectDriver.writeProject(dbc, project);
+        getProjectDriver(dbc).writeProject(dbc, project);
         m_monitor.cacheProject(project);
     }
 
@@ -8274,7 +8296,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             int updateState = getUpdateState(dbc, resource, Collections.singletonList(property));
 
             // write the property
-            m_vfsDriver.writePropertyObject(dbc, dbc.currentProject(), resource, property);
+            getVfsDriver(dbc).writePropertyObject(dbc, dbc.currentProject(), resource, property);
 
             if (updateState > 0) {
                 updateState(dbc, resource, updateState == 2);
@@ -8319,7 +8341,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         try {
-
             // the specified list must not contain two or more equal property objects
             for (int i = 0, n = properties.size(); i < n; i++) {
                 Set keyValidationSet = new HashSet();
@@ -8340,10 +8361,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 updateStateValue = getUpdateState(dbc, resource, properties);
             }
 
+            I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
             for (int i = 0; i < properties.size(); i++) {
                 // write the property
                 CmsProperty property = (CmsProperty)properties.get(i);
-                m_vfsDriver.writePropertyObject(dbc, dbc.currentProject(), resource, property);
+                vfsDriver.writePropertyObject(dbc, dbc.currentProject(), resource, property);
             }
 
             if (updateStateValue > 0) {
@@ -8372,7 +8394,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writePublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsException {
 
-        m_projectDriver.writePublishJob(dbc, publishJob);
+        getProjectDriver(dbc).writePublishJob(dbc, publishJob);
     }
 
     /**
@@ -8387,7 +8409,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsPublishReport report = (CmsPublishReport)publishJob.removePublishReport();
 
         if (report != null) {
-            m_projectDriver.writePublishReport(dbc, publishJob.getPublishHistoryId(), report.getContents());
+            getProjectDriver(dbc).writePublishReport(dbc, publishJob.getPublishHistoryId(), report.getContents());
         }
     }
 
@@ -8404,7 +8426,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // access was granted - write the resource
         resource.setUserLastModified(dbc.currentUser().getId());
 
-        m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
+        getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
 
         // make sure the written resource has the state correctly set
         if (resource.getState().isUnchanged()) {
@@ -8444,7 +8466,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String linkParameter,
         long timestamp) throws CmsException {
 
-        m_projectDriver.writeStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter, timestamp);
+        getProjectDriver(dbc).writeStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter, timestamp);
     }
 
     /**
@@ -8464,7 +8486,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsUser oldUser = readUser(dbc, user.getId());
         m_monitor.clearUserCache(oldUser);
-        m_userDriver.writeUser(dbc, user);
+        getUserDriver(dbc).writeUser(dbc, user);
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS);
 
         // fire user modified event
@@ -8513,11 +8535,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             siblings.add(resource);
         }
         // clean the relations in content for all siblings 
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
         Iterator it = siblings.iterator();
         while (it.hasNext()) {
             CmsResource sibling = (CmsResource)it.next();
             // clean the relation information for this sibling
-            m_vfsDriver.deleteRelations(
+            vfsDriver.deleteRelations(
                 dbc,
                 dbc.currentProject().getUuid(),
                 sibling,
@@ -8604,11 +8627,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             parentFolderNames = CmsFileUtil.removeRedundancies(parentFolderNames);
             String parentFolderName = null;
             try {
+                I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
                 // now check all folders if they exist in the online project
                 Iterator parentIt = parentFolderNames.iterator();
                 while (parentIt.hasNext()) {
                     parentFolderName = (String)parentIt.next();
-                    getVfsDriver().readFolder(dbc, CmsProject.ONLINE_PROJECT_ID, parentFolderName);
+                    vfsDriver.readFolder(dbc, CmsProject.ONLINE_PROJECT_ID, parentFolderName);
                 }
             } catch (CmsException e) {
                 throw new CmsVfsException(Messages.get().container(
@@ -8888,7 +8912,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return acl;
         }
 
-        List aces = m_userDriver.readAccessControlEntries(
+        List aces = getUserDriver(dbc).readAccessControlEntries(
             dbc,
             dbc.currentProject(),
             resource.getResourceId(),
@@ -8903,7 +8927,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource parentResource = null;
             try {
                 // try to recurse over the id
-                parentResource = m_vfsDriver.readParentFolder(
+                parentResource = getVfsDriver(dbc).readParentFolder(
                     dbc,
                     dbc.currentProject().getUuid(),
                     resource.getStructureId());
@@ -8911,7 +8935,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // should never happen, but try with the path
                 String parentPath = CmsResource.getParentFolder(resource.getRootPath());
                 if (parentPath != null) {
-                    parentResource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getUuid(), parentPath);
+                    parentResource = getVfsDriver(dbc).readFolder(dbc, dbc.currentProject().getUuid(), parentPath);
                 }
             }
             if (parentResource != null) {
@@ -9001,6 +9025,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the history driver.<p>
+     * 
+     * @return the history driver
+     */
+    private I_CmsHistoryDriver getHistoryDriver() {
+
+        return m_historyDriver;
+    }
+
+    /**
+     * Returns the project driver.<p>
+     *
+     * @return the project driver
+     */
+    private I_CmsProjectDriver getProjectDriver() {
+
+        return m_projectDriver;
+    }
+
+    /**
      * Returns the correct project id.<p>
      * 
      * @param dbc the database context
@@ -9030,12 +9074,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private int getUpdateState(CmsDbContext dbc, CmsResource resource, List properties) throws CmsDataAccessException {
 
         int updateState = 0;
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
         Iterator it = properties.iterator();
         while (it.hasNext() && (updateState < 2)) {
             CmsProperty property = (CmsProperty)it.next();
 
             // read existing property
-            CmsProperty existingProperty = m_vfsDriver.readPropertyObject(
+            CmsProperty existingProperty = vfsDriver.readPropertyObject(
                 dbc,
                 property.getName(),
                 dbc.currentProject(),
@@ -9077,6 +9122,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         return updateState;
+    }
+
+    /**
+     * Returns the user driver.<p>
+     *
+     * @return the user driver 
+     */
+    private I_CmsUserDriver getUserDriver() {
+
+        return m_userDriver;
+    }
+
+    /**
+     * Returns the VFS driver.<p>
+     * 
+     * @return the VFS driver
+     */
+    private I_CmsVfsDriver getVfsDriver() {
+
+        return m_vfsDriver;
     }
 
     /**
@@ -9147,7 +9212,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             String cacheKey = m_keyGenerator.getCacheKeyForGroupUsers(prefix, dbc, group);
             List allUsers = m_monitor.getCachedUserGroups(cacheKey);
             if (allUsers == null) {
-                Set users = new HashSet(m_userDriver.readUsersOfGroup(dbc, groupname, includeOtherOuUsers));
+                Set users = new HashSet(getUserDriver(dbc).readUsersOfGroup(dbc, groupname, includeOtherOuUsers));
                 if (readRoles && !directUsersOnly) {
                     CmsRole role = CmsRole.valueOf(group);
                     if (role.getParentRole() != null) {
@@ -9340,6 +9405,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean withACEs) throws CmsException {
 
         // get all resources for the given user including resources associated by ACEs or attributes
+        I_CmsUserDriver userDriver = getUserDriver(dbc);
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
         Set resources = getResourcesForPrincipal(dbc, project, principalId, null, true);
         Iterator it = resources.iterator();
         while (it.hasNext()) {
@@ -9357,14 +9424,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 attrModified = true;
             }
             if (attrModified) {
-                m_vfsDriver.transferResource(dbc, project, resource, createdUser, lastModUser);
+                vfsDriver.transferResource(dbc, project, resource, createdUser, lastModUser);
                 // clear the cache
                 m_monitor.clearResourceCache();
             }
             boolean aceModified = false;
             // check aces
             if (withACEs) {
-                Iterator itAces = m_userDriver.readAccessControlEntries(dbc, project, resource.getResourceId(), false).iterator();
+                Iterator itAces = userDriver.readAccessControlEntries(dbc, project, resource.getResourceId(), false).iterator();
                 while (itAces.hasNext()) {
                     CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
                     if (ace.getPrincipal().equals(principalId)) {
@@ -9375,7 +9442,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             ace.getDeniedPermissions(),
                             ace.getFlags());
                         // write the new ace
-                        m_userDriver.writeAccessControlEntry(dbc, project, newAce);
+                        userDriver.writeAccessControlEntry(dbc, project, newAce);
                         aceModified = true;
                     }
                 }
@@ -9420,6 +9487,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         : offlineResource.getRootPath());
 
         // change folder or file?
+        I_CmsUserDriver userDriver = getUserDriver(dbc);
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
         if (onlineResource.isFolder()) {
             CmsFolder restoredFolder = new CmsFolder(
                 onlineResource.getStructureId(),
@@ -9442,21 +9511,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
             restoredFolder.setDateLastModified(onlineResource.getDateLastModified());
 
             // write the folder
-            m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), restoredFolder, NOTHING_CHANGED);
+            vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), restoredFolder, NOTHING_CHANGED);
 
             // restore the properties from the online project
-            m_vfsDriver.deletePropertyObjects(
+            vfsDriver.deletePropertyObjects(
                 dbc,
                 dbc.currentProject().getUuid(),
                 restoredFolder,
                 CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
-            List propertyInfos = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
-            m_vfsDriver.writePropertyObjects(dbc, dbc.currentProject(), restoredFolder, propertyInfos);
+            List propertyInfos = vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
+            vfsDriver.writePropertyObjects(dbc, dbc.currentProject(), restoredFolder, propertyInfos);
 
             // restore the access control entries from the online project
-            m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), onlineResource.getResourceId());
-            ListIterator aceList = m_userDriver.readAccessControlEntries(
+            userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), onlineResource.getResourceId());
+            ListIterator aceList = userDriver.readAccessControlEntries(
                 dbc,
                 onlineProject,
                 onlineResource.getResourceId(),
@@ -9464,7 +9533,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             while (aceList.hasNext()) {
                 CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
-                m_userDriver.createAccessControlEntry(
+                userDriver.createAccessControlEntry(
                     dbc,
                     dbc.currentProject(),
                     onlineResource.getResourceId(),
@@ -9474,7 +9543,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     ace.getFlags());
             }
         } else {
-            byte[] onlineContent = m_vfsDriver.readContent(
+            byte[] onlineContent = vfsDriver.readContent(
                 dbc,
                 CmsProject.ONLINE_PROJECT_ID,
                 onlineResource.getResourceId());
@@ -9504,12 +9573,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             restoredFile.setDateLastModified(onlineResource.getDateLastModified());
 
             // collect the old properties
-            List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
+            List properties = vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
 
             if (offlineResource != null) {
                 // bug fix 1020: delete all properties (included shared), 
                 // shared properties will be recreated by the next call of #createResource(...)
-                m_vfsDriver.deletePropertyObjects(
+                vfsDriver.deletePropertyObjects(
                     dbc,
                     dbc.currentProject().getUuid(),
                     onlineResource,
@@ -9535,9 +9604,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // copy the access control entries from the online project
             if (offlineResource != null) {
-                m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), onlineResource.getResourceId());
+                userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), onlineResource.getResourceId());
             }
-            ListIterator aceList = m_userDriver.readAccessControlEntries(
+            ListIterator aceList = userDriver.readAccessControlEntries(
                 dbc,
                 onlineProject,
                 onlineResource.getResourceId(),
@@ -9545,7 +9614,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             while (aceList.hasNext()) {
                 CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
-                m_userDriver.createAccessControlEntry(
+                userDriver.createAccessControlEntry(
                     dbc,
                     dbc.currentProject(),
                     res.getResourceId(),
@@ -9557,13 +9626,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // restore the state to unchanged 
             res.setState(newState);
-            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL, false);
+            vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL, false);
         }
 
         // delete all offline relations
-        m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), offlineResource, CmsRelationFilter.TARGETS);
+        vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), offlineResource, CmsRelationFilter.TARGETS);
         // get online relations
-        List relations = m_vfsDriver.readRelations(
+        List relations = vfsDriver.readRelations(
             dbc,
             CmsProject.ONLINE_PROJECT_ID,
             onlineResource,
@@ -9572,7 +9641,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Iterator itRelations = relations.iterator();
         while (itRelations.hasNext()) {
             CmsRelation relation = (CmsRelation)itRelations.next();
-            m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
+            vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
         }
 
         // update the cache
@@ -9696,10 +9765,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resource.setUserLastModified(dbc.currentUser().getId());
         if (resourceState) {
             // update the whole resource state
-            m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
+            getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
         } else {
             // update the structure state
-            m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_STRUCTURE_STATE);
+            getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_STRUCTURE_STATE);
         }
     }
 }
