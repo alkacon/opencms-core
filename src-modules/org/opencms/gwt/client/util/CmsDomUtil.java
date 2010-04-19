@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/04/16 13:54:15 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/04/19 11:47:45 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.DOM;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -409,7 +409,7 @@ public final class CmsDomUtil {
     public static int getCurrentStyleInt(Element element, Style style) {
 
         String currentStyle = getCurrentStyle(element, style);
-        return CmsStringUtil.parseInt(currentStyle);
+        return CmsClientStringUtil.parseInt(currentStyle);
     }
 
     /**

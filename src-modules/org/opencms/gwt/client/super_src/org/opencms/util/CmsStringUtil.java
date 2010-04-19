@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsStringUtil.java,v $
- * Date   : $Date: 2010/03/31 11:24:55 $
- * Version: $Revision: 1.7 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/util/Attic/CmsStringUtil.java,v $
+ * Date   : $Date: 2010/04/19 11:47:45 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,14 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.util;
+package org.opencms.util;
 
 /**
  * Client side implementation for {@link org.opencms.util.CmsStringUtil}.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  * 
@@ -108,43 +108,6 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Returns the exception message.<p>
-     * 
-     * @param t the exception to get the message for
-     * 
-     * @return the exception message
-     */
-    public static String getMessage(Throwable t) {
-
-        String message = t.getLocalizedMessage();
-        if (message == null) {
-            message = t.getMessage();
-        }
-        if (message == null) {
-            message = t.getClass().getName();
-        }
-        return message;
-    }
-
-    /**
-     * Returns the stack trace of the Throwable as a string.<p>
-     * 
-     * @param t the Throwable for which the stack trace should be returned
-     * @param separator the separator between the lines of the stack trace 
-     * 
-     * @return a string representing a stack trace 
-     */
-    public static String getStackTrace(Throwable t, String separator) {
-
-        String result = "";
-        for (StackTraceElement elem : t.getStackTrace()) {
-            result += elem.toString();
-            result += separator;
-        }
-        return result;
-    }
-
-    /**
      * Returns <code>true</code> if the provided String is either <code>null</code>
      * or the empty String <code>""</code>.<p> 
      * 
@@ -171,22 +134,31 @@ public final class CmsStringUtil {
     }
 
     /**
-     * The parseInt() function parses a string and returns an integer.<p>
+     * Returns <code>true</code> if the provided String is neither <code>null</code>
+     * nor the empty String <code>""</code>.<p> 
      * 
-     * Only the first number in the string is returned. Leading and trailing spaces are allowed.
-     * If the first character cannot be converted to a number, parseInt() returns zero.<p>
+     * @param value the value to check
      * 
-     * @param str the string to be parsed
-     * 
-     * @return the parsed number
+     * @return true, if the provided value is not null and not the empty String, false otherwise
      */
-    public static native int parseInt(String str) /*-{
-        var ret = parseInt(str, 10);
-        if (isNaN(ret)) {
-        return 0;
-        } 
-        return ret;
-    }-*/;
+    public static boolean isNotEmpty(String value) {
+
+        return (value != null) && (value.length() != 0);
+    }
+
+    /**
+     * Returns <code>true</code> if the provided String is neither <code>null</code>
+     * nor contains only white spaces.<p> 
+     * 
+     * @param value the value to check
+     * 
+     * @return <code>true</code>, if the provided value is <code>null</code> 
+     *          or contains only white spaces, <code>false</code> otherwise
+     */
+    public static boolean isNotEmptyOrWhitespaceOnly(String value) {
+
+        return (value != null) && (value.trim().length() > 0);
+    }
 
     /**
      * Same as {@link org.opencms.util.CmsStringUtil#splitAsArray(String, String)}.<p>

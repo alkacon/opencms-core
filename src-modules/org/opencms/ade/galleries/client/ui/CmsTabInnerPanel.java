@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTabInnerPanel.java,v $
- * Date   : $Date: 2010/04/14 14:16:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/19 11:47:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,8 +42,9 @@ import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsImageButton.Icon;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsStringUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -64,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -249,14 +250,14 @@ public class CmsTabInnerPanel extends Composite {
         int marginValueParams = 0;
         String marginBottomPrams = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomPrams)) {
-            marginValueParams = CmsStringUtil.parseInt(marginBottomPrams);
+            marginValueParams = CmsClientStringUtil.parseInt(marginBottomPrams);
         }
         int paramsHeight = m_params.getOffsetHeight() + marginValueParams;
 
         int marginValueOptions = 0;
         String marginBottomOptions = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomOptions)) {
-            marginValueOptions = CmsStringUtil.parseInt(marginBottomOptions);
+            marginValueOptions = CmsClientStringUtil.parseInt(marginBottomOptions);
         }
         int optionsHeight = m_options.getOffsetHeight() + marginValueOptions;
 

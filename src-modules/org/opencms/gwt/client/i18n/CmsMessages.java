@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/i18n/Attic/CmsMessages.java,v $
- * Date   : $Date: 2010/04/07 13:35:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/19 11:47:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.gwt.client.i18n;
 
 import org.opencms.gwt.client.util.CmsDateTimeUtil;
-import org.opencms.gwt.client.util.CmsStringUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ import com.google.gwt.i18n.client.Dictionary;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 

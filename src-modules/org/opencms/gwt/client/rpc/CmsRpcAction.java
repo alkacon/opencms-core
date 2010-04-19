@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/04/15 10:06:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/19 11:47:45 $
+ * Version: $Revision: 1.9 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsStringUtil;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0
  */
@@ -76,8 +76,8 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
     public void onFailure(Throwable t) {
 
         // send the ticket to the server
-        String message = CmsStringUtil.getMessage(t);
-        String ticket = CmsLog.log(message + "\n" + CmsStringUtil.getStackTrace(t, "\n"));
+        String message = CmsClientStringUtil.getMessage(t);
+        String ticket = CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTrace(t, "\n"));
 
         // remove the nice overlay
         stop();
