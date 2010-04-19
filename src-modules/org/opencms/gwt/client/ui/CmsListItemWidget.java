@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/19 06:39:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/04/19 11:45:01 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -154,7 +154,7 @@ public class CmsListItemWidget extends Composite {
 
     /** Sub title label. */
     @UiField
-    protected CmsLabel m_subTitle;
+    protected CmsLabel m_subtitle;
 
     /** Title label. */
     @UiField
@@ -195,6 +195,17 @@ public class CmsListItemWidget extends Composite {
     }
 
     /**
+     * Sets the additional info value label at the given position.<p>
+     * 
+     * @param index the additional info index
+     * @param label the new value to set
+     */
+    public void setAdditionalInfoLabel(int index, String label) {
+
+        ((AdditionalInfoItem)m_additionalInfo.getWidget(index)).getValueElem().setText(label);
+    }
+
+    /**
      * Removes a widget from the button panel.<p>
      * 
      * @param w the widget to remove
@@ -215,6 +226,26 @@ public class CmsListItemWidget extends Composite {
     }
 
     /**
+     * Sets the subtitle label text.<p>
+     * 
+     * @param label the new subtitle to set
+     */
+    public void setSubtitleLabel(String label) {
+
+        m_subtitle.setText(label);
+    }
+
+    /**
+     * Sets the title label text.<p>
+     * 
+     * @param label the new title to set
+     */
+    public void setTitleLabel(String label) {
+
+        m_title.setText(label);
+    }
+
+    /**
      * Constructor.<p>
      * 
      * @param infoBean bean holding the item information
@@ -224,7 +255,7 @@ public class CmsListItemWidget extends Composite {
         CmsHTMLHoverPanel itemContent = uiBinder.createAndBindUi(this);
         initWidget(itemContent);
         m_title.setText(infoBean.getTitle());
-        m_subTitle.setText(infoBean.getSubTitle());
+        m_subtitle.setText(infoBean.getSubTitle());
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
             m_openClose = new CmsImageButton(CmsImageButton.Icon.triangle_1_e, CmsImageButton.Icon.triangle_1_s, false);
             m_titleRow.insert(m_openClose, 0);

@@ -10,7 +10,7 @@
 				<g:SimplePanel styleName="{resources.listItemWidgetCss.itemIcon}" ui:field="m_iconPanel"></g:SimplePanel>
 		    	<g:FlowPanel ui:field="m_titleRow" styleName="{resources.listItemWidgetCss.titleRow}" >
 		    	  <cmsInput:CmsLabel ui:field="m_title" styleName="{resources.listItemWidgetCss.itemTitle}"/>
-		    	  <cmsInput:CmsLabel ui:field="m_subTitle" />
+		    	  <cmsInput:CmsLabel ui:field="m_subtitle" />
 		    	</g:FlowPanel>
 			</div>
 			<cms:CmsSimplePanel styleName="{resources.listItemWidgetCss.itemAdditional}" ui:field="m_additionalInfo"></cms:CmsSimplePanel>
