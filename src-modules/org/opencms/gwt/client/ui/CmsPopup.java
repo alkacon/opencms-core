@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/04/16 13:54:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/20 05:53:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -82,11 +83,14 @@ public class CmsPopup {
             setWidget(m_main);
             m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent()
                 + " "
-                + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
-                + " "
-                + I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
+                + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
             setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
             ((UIObject)getCaption()).getElement().addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+            Element shadowDiv = DOM.createDiv();
+            shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow()
+                + " "
+                + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+            getElement().insertFirst(shadowDiv);
         }
 
         /**

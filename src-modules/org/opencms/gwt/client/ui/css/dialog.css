@@ -4,6 +4,7 @@
 }
 
 .popup .popupContent{
+    margin: 3px;
     position: relative;
     background: #ffffff;
     border: solid 1px value("constantsCss.borderColor");
@@ -12,6 +13,14 @@
 .popupOverlay{
     background: #dddddd;
     z-index: 19000;
+}
+.popupShadow{
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+    top: 0px;
+    left: 0px;
+    background: #aaaaaa;
 }
 
 .popupMainContent{
@@ -47,12 +56,24 @@
 }
 
 @if user.agent ie6 {
-    .popupOverlay{
+    .popupShadow, .popupOverlay{
         filter: literal("alpha(opacity = 30)");
     }
+    .popupShadow{
+        height: literal("expression(this.parentNode.offsetHeight)");
+    }
+} @elif user.agent ie8 {
+	.popupShadow, .popupOverlay{
+		-ms-filter: "alpha(opacity = 30)";
+	}
+	.popupShadow{
+		height: 100%;
+	}
 } @else {
-    .popupOverlay{
+    .popupShadow, .popupOverlay{
         opacity: 0.3;
     }
-
+    .popupShadow{
+        height: 100%;
+    }
 }

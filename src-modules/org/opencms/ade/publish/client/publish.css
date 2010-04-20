@@ -125,11 +125,18 @@
 }
 	
 .selector {
-	display: inline-block;
 	width: 200px;
 	vertical-align: middle;
 }
-
+@if user.agent ie6 {
+	.selector{
+		display: inline;
+	}
+} @else {
+	.selector{
+		display: inline-block;
+	}
+}
 .noState {}
 
 

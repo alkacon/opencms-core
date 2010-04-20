@@ -40,6 +40,10 @@
 	.shadow{
 		-moz-box-shadow: 2px 2px 6px #666666;
 	}
+	
+	.background{
+		background: -moz-linear-gradient(top,  #eeeeee,  #999999);
+	}
 
 } @elif user.agent safari {
 	/** chrome, safari etc. **/
@@ -58,7 +62,9 @@
 	.shadow{
 		-webkit-box-shadow: 2px 2px 6px #666666;
 	}
-
+	.background{
+		background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#999999));
+	}
 } @elif user.agent opera {
 	/** opera */
 	.cornerAll{
@@ -76,7 +82,22 @@
 	.shadow{
 		box-shadow: 2px 2px 6px #666666;
 	}
-} @else {
+	.background{}
+} @elif user.agent ie6 {
+
+	.shadow{
+		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)");
+	}
+	
+	.background{
+	/*	filter: literal("progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#999999') !important"); */
+	}
+	
+	
+	
+	.cornerAll, .cornerBottom, .cornerTop{} 
+
+} @elif user.agent ie8 {
 	/** ie7, ie8 and the rest, add new @elif block if necessary **/
 	
 	.cornerAll{
@@ -92,7 +113,14 @@
 	}
 	
 	.shadow{
-		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)");
+		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)"; 
 	}
+	
+	.background{
+	/*	-ms-filter: "progid:DXImageTransform.Microsoft.Gradient(startColorstr='#eeeeee', endColorstr='#999999')"; */
+	}
+} @else {
+	.background, .cornerAll, .cornerBottom, .cornerTop, .shadow{}
+}
 
 }
