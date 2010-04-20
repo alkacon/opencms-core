@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/20 08:27:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -59,7 +59,7 @@ public class CmsSitemapController {
     private List<CmsClientSitemapChange> m_changes;
 
     /** The current available sitemap data. */
-    private CmsSitemapEntryTree m_data;
+    private CmsSitemapTreeEntry m_data;
 
     /** The toolbar. */
     private CmsSitemapToolbar m_toolbar;
@@ -90,7 +90,7 @@ public class CmsSitemapController {
      */
     public void addData(String entryPath, List<CmsClientSitemapEntry> data) {
 
-        CmsSitemapEntryTree parent = getTreeEntry(entryPath);
+        CmsSitemapTreeEntry parent = getTreeEntry(entryPath);
         parent.addChildren(data);
     }
 
@@ -368,7 +368,7 @@ public class CmsSitemapController {
      */
     public void setRoot(CmsClientSitemapEntry root) {
 
-        m_data = new CmsSitemapEntryTree(root);
+        m_data = new CmsSitemapTreeEntry(root);
     }
 
     /**
@@ -444,21 +444,21 @@ public class CmsSitemapController {
         // update data
         switch (changeType) {
             case DELETE:
-                CmsSitemapEntryTree deleteParent = getTreeEntry(CmsResource.getParentFolder(oldEntry.getSitePath()));
+                CmsSitemapTreeEntry deleteParent = getTreeEntry(CmsResource.getParentFolder(oldEntry.getSitePath()));
                 deleteParent.removeChild(oldEntry.getName());
                 break;
             case EDIT:
-                CmsSitemapEntryTree editEntry = getTreeEntry(oldEntry.getSitePath());
+                CmsSitemapTreeEntry editEntry = getTreeEntry(oldEntry.getSitePath());
                 editEntry.setEntry(newEntry);
                 break;
             case MOVE:
-                CmsSitemapEntryTree sourceParent = getTreeEntry(CmsResource.getParentFolder(oldEntry.getSitePath()));
-                CmsSitemapEntryTree moved = sourceParent.removeChild(oldEntry.getName());
-                CmsSitemapEntryTree destParent = getTreeEntry(CmsResource.getParentFolder(newEntry.getSitePath()));
+                CmsSitemapTreeEntry sourceParent = getTreeEntry(CmsResource.getParentFolder(oldEntry.getSitePath()));
+                CmsSitemapTreeEntry moved = sourceParent.removeChild(oldEntry.getName());
+                CmsSitemapTreeEntry destParent = getTreeEntry(CmsResource.getParentFolder(newEntry.getSitePath()));
                 destParent.insertChild(moved, position);
                 break;
             case NEW:
-                CmsSitemapEntryTree newParent = getTreeEntry(CmsResource.getParentFolder(newEntry.getSitePath()));
+                CmsSitemapTreeEntry newParent = getTreeEntry(CmsResource.getParentFolder(newEntry.getSitePath()));
                 newParent.addChild(newEntry);
                 break;
             default:
@@ -475,20 +475,20 @@ public class CmsSitemapController {
      * 
      * @return the tree entry with the given path, or <code>null</code> if not found
      */
-    private CmsSitemapEntryTree getTreeEntry(String entryPath) {
+    private CmsSitemapTreeEntry getTreeEntry(String entryPath) {
 
         if (!entryPath.startsWith(m_data.getEntry().getSitePath())) {
             return null;
         }
         String path = entryPath.substring(m_data.getEntry().getSitePath().length());
         String[] names = CmsStringUtil.splitAsArray(path, "/");
-        CmsSitemapEntryTree result = m_data;
+        CmsSitemapTreeEntry result = m_data;
         for (String name : names) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
                 // in case of leading slash
                 continue;
             }
-            result = result.getChild(name);
+            result = result.getChild(name + "/");
             if (result == null) {
                 // not found
                 break;

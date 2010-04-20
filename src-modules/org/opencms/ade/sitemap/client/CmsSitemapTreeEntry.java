@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryTree.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeEntry.java,v $
+ * Date   : $Date: 2010/04/20 08:27:48 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Sitemap entry tree.<p>
+ * Sitemap tree entry.<p>
  * 
  * @author Michael Moossen
  * 
@@ -50,27 +50,27 @@ import java.util.Map;
  * 
  * @see org.opencms.ade.sitemap.shared.CmsClientSitemapEntry
  */
-public class CmsSitemapEntryTree {
+public class CmsSitemapTreeEntry {
 
     /** The entry's children. */
-    private List<CmsSitemapEntryTree> m_children;
+    private List<CmsSitemapTreeEntry> m_children;
 
     /** The entry. */
     private CmsClientSitemapEntry m_entry;
 
     /** The entry's children lookup table. */
-    private Map<String, CmsSitemapEntryTree> m_lookup;
+    private Map<String, CmsSitemapTreeEntry> m_lookup;
 
     /**
      * Constructor.<p>
      * 
      * @param entry the entry
      */
-    public CmsSitemapEntryTree(CmsClientSitemapEntry entry) {
+    public CmsSitemapTreeEntry(CmsClientSitemapEntry entry) {
 
         m_entry = entry;
-        m_children = new ArrayList<CmsSitemapEntryTree>();
-        m_lookup = new HashMap<String, CmsSitemapEntryTree>();
+        m_children = new ArrayList<CmsSitemapTreeEntry>();
+        m_lookup = new HashMap<String, CmsSitemapTreeEntry>();
     }
 
     /**
@@ -80,7 +80,7 @@ public class CmsSitemapEntryTree {
      */
     public void addChild(CmsClientSitemapEntry child) {
 
-        CmsSitemapEntryTree childElem = new CmsSitemapEntryTree(child);
+        CmsSitemapTreeEntry childElem = new CmsSitemapTreeEntry(child);
         m_children.add(childElem);
         m_lookup.put(child.getName(), childElem);
     }
@@ -104,7 +104,7 @@ public class CmsSitemapEntryTree {
      * 
      * @return the child with the given name
      */
-    public CmsSitemapEntryTree getChild(String name) {
+    public CmsSitemapTreeEntry getChild(String name) {
 
         return m_lookup.get(name);
     }
@@ -114,7 +114,7 @@ public class CmsSitemapEntryTree {
      *
      * @return the children
      */
-    public List<CmsSitemapEntryTree> getChildren() {
+    public List<CmsSitemapTreeEntry> getChildren() {
 
         return m_children;
     }
@@ -137,7 +137,7 @@ public class CmsSitemapEntryTree {
      */
     public void insertChild(CmsClientSitemapEntry child, int position) {
 
-        CmsSitemapEntryTree childEntry = new CmsSitemapEntryTree(child);
+        CmsSitemapTreeEntry childEntry = new CmsSitemapTreeEntry(child);
         m_children.add(position, childEntry);
         m_lookup.put(child.getName(), childEntry);
     }
@@ -145,10 +145,10 @@ public class CmsSitemapEntryTree {
     /**
      * Inserts a new child at the given position.<p>
      * 
-     * @param child the entry tree to insert
+     * @param child the tree entry to insert
      * @param position the position to be inserted
      */
-    public void insertChild(CmsSitemapEntryTree child, int position) {
+    public void insertChild(CmsSitemapTreeEntry child, int position) {
 
         m_children.add(position, child);
         m_lookup.put(child.getEntry().getName(), child);
@@ -162,15 +162,15 @@ public class CmsSitemapEntryTree {
      * 
      * @return the removed child
      */
-    public CmsSitemapEntryTree removeChild(String name) {
+    public CmsSitemapTreeEntry removeChild(String name) {
 
-        CmsSitemapEntryTree childToRemove = m_lookup.remove(name);
+        CmsSitemapTreeEntry childToRemove = m_lookup.remove(name);
         if (childToRemove == null) {
             return childToRemove;
         }
-        Iterator<CmsSitemapEntryTree> it = m_children.iterator();
+        Iterator<CmsSitemapTreeEntry> it = m_children.iterator();
         while (it.hasNext()) {
-            CmsSitemapEntryTree child = it.next();
+            CmsSitemapTreeEntry child = it.next();
             if (child == childToRemove) {
                 it.remove();
                 break;
@@ -201,7 +201,7 @@ public class CmsSitemapEntryTree {
             return;
         }
         m_entry.setSitePath(newPath);
-        for (CmsSitemapEntryTree child : m_children) {
+        for (CmsSitemapTreeEntry child : m_children) {
             child.updatePath(newPath);
         }
     }
