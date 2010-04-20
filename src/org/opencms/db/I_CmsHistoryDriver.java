@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2009/09/09 14:26:33 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2010/04/20 13:44:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.9.1
  */
@@ -342,6 +342,20 @@ public interface I_CmsHistoryDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     I_CmsHistoryResource readResource(CmsDbContext dbc, CmsUUID structureId, int version) throws CmsDataAccessException;
+
+    /**
+     * Sets the driver manager for this driver if possible.<p>
+     * 
+     * @param driverManager the new driver manager
+     */
+    void setDriverManager(CmsDriverManager driverManager);
+
+    /**
+     * Sets the SQL manager for this driver if possible.<p>
+     * 
+     * @param sqlManager the new SQL manager
+     */
+    void setSqlManager(CmsSqlManager sqlManager);
 
     /**
      * Writes an historical entry for the given principal.<p>

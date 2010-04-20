@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2009/10/29 11:28:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/20 13:44:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.3.0 
  */
@@ -329,8 +329,9 @@ public class CmsRelationSystemValidator {
                 if (!resource.getState().isDeleted()) {
                     // search the target of link in the online project
                     try {
-                        link = m_driverManager.getVfsDriver().readResource(
-                            new CmsDbContext(),
+                        CmsDbContext newDbc = new CmsDbContext();
+                        link = m_driverManager.getVfsDriver(newDbc).readResource(
+                            newDbc,
                             project.getUuid(),
                             relation.getTargetId(),
                             true).getRootPath();
@@ -341,8 +342,9 @@ public class CmsRelationSystemValidator {
                                 relation.getTargetId().toString(),
                                 project.getName()), e);
                         }
-                        m_driverManager.getVfsDriver().readResource(
-                            new CmsDbContext(),
+                        CmsDbContext newDbc = new CmsDbContext();
+                        m_driverManager.getVfsDriver(newDbc).readResource(
+                            newDbc,
                             project.getUuid(),
                             relation.getTargetPath(),
                             true);

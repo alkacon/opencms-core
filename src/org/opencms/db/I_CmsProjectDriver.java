@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2009/12/21 10:33:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/20 13:44:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -610,6 +610,20 @@ public interface I_CmsProjectDriver {
      */
     List<String> readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
     throws CmsDataAccessException;
+
+    /**
+     * Sets the driver manager for this driver if possible.<p>
+     * 
+     * @param driverManager the new driver manager
+     */
+    void setDriverManager(CmsDriverManager driverManager);
+
+    /**
+     * Sets the SQL manager for this driver if possible.<p>
+     * 
+     * @param sqlManager the new SQL manager
+     */
+    void setSqlManager(CmsSqlManager sqlManager);
 
     /**
      * Removes the project id from all resources within a project.<p>

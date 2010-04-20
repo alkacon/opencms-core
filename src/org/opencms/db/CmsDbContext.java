@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2009/12/16 15:04:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/20 13:44:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,8 +30,7 @@
  */
 
 package org.opencms.db;
-
-import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
@@ -46,12 +45,13 @@ import org.opencms.util.CmsUUID;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Wraps context information to access the OpenCms database.<p> 
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -147,6 +147,30 @@ public class CmsDbContext {
     }
 
     /**
+     * Gets the history driver associated with this database context.<p>
+     * 
+     * @param projectId the project id for which the history driver should be retrieved
+     * 
+     * @return the history driver 
+     */
+    public I_CmsHistoryDriver getHistoryDriver(CmsUUID projectId) {
+
+        return null;
+    }
+
+    /**
+     * Gets the project driver associated with this database context.<p>
+     * 
+     * @param projectId the project id for which the project driver should be retrieved
+     * 
+     * @return the project driver 
+     */
+    public I_CmsProjectDriver getProjectDriver(CmsUUID projectId) {
+
+        return null;
+    }
+
+    /**
      * Returns the project id of the context.<p>
      *
      * @return the project
@@ -164,6 +188,30 @@ public class CmsDbContext {
     public CmsRequestContext getRequestContext() {
 
         return m_requestContext;
+    }
+
+    /**
+     * Gets the user driver associated with this database context.<p> 
+     * 
+     * @param projectId the project id for which the user driver should be retrieved 
+     * 
+     * @return the user driver 
+     */
+    public I_CmsUserDriver getUserDriver(CmsUUID projectId) {
+
+        return null;
+    }
+
+    /**
+     * Gets the VFS driver associated with this database context.<p> 
+     * 
+     * @param projectId the project id for which the VFS driver should be retrieved
+     *  
+     * @return the VFS driver 
+     */
+    public I_CmsVfsDriver getVfsDriver(CmsUUID projectId) {
+
+        return null;
     }
 
     /**

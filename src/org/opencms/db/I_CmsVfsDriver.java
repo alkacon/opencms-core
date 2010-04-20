@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2010/04/08 15:34:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/20 13:44:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsUUID;
 
 import java.sql.ResultSet;
@@ -54,7 +55,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -272,6 +273,20 @@ public interface I_CmsVfsDriver {
      * @throws Throwable if something goes wrong
      */
     void destroy() throws Throwable;
+
+    /**
+     * Returns all organizational units for the given resource.<p>
+     * 
+     * @param dbc the database context
+     * @param projectId the id of the project
+     * @param resource the resource
+     * 
+     * @return a list of {@link org.opencms.security.CmsOrganizationalUnit} objects
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List<CmsOrganizationalUnit> getResourceOus(CmsDbContext dbc, CmsUUID projectId, CmsResource resource)
+    throws CmsDataAccessException;
 
     /**
      * Returns the SqlManager of this driver.<p>
@@ -701,6 +716,20 @@ public interface I_CmsVfsDriver {
      */
     void replaceResource(CmsDbContext dbc, CmsResource newResource, byte[] newResourceContent, int newResourceType)
     throws CmsDataAccessException;
+
+    /**
+     * Sets the driver manager for this driver if possible.<p>
+     * 
+     * @param driverManager the new driver manager
+     */
+    void setDriverManager(CmsDriverManager driverManager);
+
+    /**
+     * Sets the SQL manager for this driver if possible.<p>
+     * 
+     * @param sqlManager the new SQL manager
+     */
+    void setSqlManager(CmsSqlManager sqlManager);
 
     /**
      * Transfers the attributes of a resource from to the given users.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2009/09/09 14:26:33 $
- * Version: $Revision: 1.63.2.1 $
+ * Date   : $Date: 2010/04/20 13:44:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.63.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -607,6 +607,20 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     void removeResourceFromOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsDataAccessException;
+
+    /**
+     * Sets the driver manager for this driver if possible.<p>
+     * 
+     * @param driverManager the new driver manager
+     */
+    void setDriverManager(CmsDriverManager driverManager);
+
+    /**
+     * Sets the SQL manager for this driver if possible.<p>
+     * 
+     * @param sqlManager the new SQL manager
+     */
+    void setSqlManager(CmsSqlManager sqlManager);
 
     /**
      * Moves an user to the given organizational unit.<p>

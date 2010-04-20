@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mssql/CmsHistoryDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/20 13:44:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.db.mssql;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.I_CmsHistoryDriver;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
 
@@ -48,7 +49,7 @@ import java.util.List;
  *
  * @author Andras Balogh 
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.3 $
  *
  * @since 6.9.1
  */
@@ -73,12 +74,13 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
         Connection conn = null;
 
         try {
+            I_CmsHistoryDriver historyDriver = m_driverManager.getHistoryDriver(dbc);
             // create the statement
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_MSSQL_PROJECTS_READLAST_HISTORY");
             res = stmt.executeQuery();
             while (res.next()) {
-                List resources = m_driverManager.getHistoryDriver().readProjectResources(dbc, res.getInt("PUBLISH_TAG"));
+                List resources = historyDriver.readProjectResources(dbc, res.getInt("PUBLISH_TAG"));
                 projects.add(internalCreateProject(res, resources));
             }
         } catch (SQLException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/04/07 06:29:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/20 13:44:57 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */
@@ -111,14 +111,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /** The root path for organizational units. */
     public static final String ORGUNIT_BASE_FOLDER = "/system/orgunits/";
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsUserDriver.class);
-
-    /** The name of the offline project. */
-    private static final String OFFLINE_PROJECT_NAME = "Offline";
-
-    /** Property for the organizational unit description. */
-    private static final String ORGUNIT_PROPERTY_DESCRIPTION = CmsPropertyDefinition.PROPERTY_DESCRIPTION;
+    /** The internal request attribute to indicate that the password has not to be digested. */
+    public static final String REQ_ATTR_DONT_DIGEST_PASSWORD = "DONT_DIGEST_PASSWORD";
 
     // TODO: remove all these constants
     /** Attribute WRITE USER_ADDINFO. */
@@ -133,11 +127,17 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /** Attribute WRITE USER_ADDINFO value update. */
     private static final String ATTRIBUTE_USERADDINFO_VALUE_UPDATE = "update";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsUserDriver.class);
+
+    /** The name of the offline project. */
+    private static final String OFFLINE_PROJECT_NAME = "Offline";
+
+    /** Property for the organizational unit description. */
+    private static final String ORGUNIT_PROPERTY_DESCRIPTION = CmsPropertyDefinition.PROPERTY_DESCRIPTION;
+
     /** Property for the organizational unit default project id. */
     private static final String ORGUNIT_PROPERTY_PROJECTID = CmsPropertyDefinition.PROPERTY_KEYWORDS;
-
-    /** The internal request attribute to indicate that the password has not to be digested. */
-    public static final String REQ_ATTR_DONT_DIGEST_PASSWORD = "DONT_DIGEST_PASSWORD";
 
     /** A digest to encrypt the passwords. */
     protected MessageDigest m_digest;
@@ -191,14 +191,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // add the new resource
             CmsRelation relation = new CmsRelation(ouResource, resource, CmsRelationType.OU_RESOURCE);
-            m_driverManager.getVfsDriver().createRelation(dbc, dbc.currentProject().getUuid(), relation);
-            m_driverManager.getVfsDriver().createRelation(dbc, CmsProject.ONLINE_PROJECT_ID, relation);
+            m_driverManager.getVfsDriver(dbc).createRelation(dbc, dbc.currentProject().getUuid(), relation);
+            m_driverManager.getVfsDriver(dbc).createRelation(dbc, CmsProject.ONLINE_PROJECT_ID, relation);
 
             try {
                 // be sure the project was not deleted
                 CmsProject project = m_driverManager.readProject(dbc, orgUnit.getProjectId());
                 // maintain the default project synchronized
-                m_driverManager.getProjectDriver().createProjectResource(
+                m_driverManager.getProjectDriver(dbc).createProjectResource(
                     dbc,
                     orgUnit.getProjectId(),
                     resource.getRootPath());
@@ -1014,35 +1014,21 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         CmsUUID offlineId,
         CmsUUID onlineId) throws CmsDataAccessException {
 
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-
         // at first, we remove all access contries of this resource in the online project
-        m_driverManager.getUserDriver().removeAccessControlEntries(dbc, onlineProject, onlineId);
+        m_driverManager.getUserDriver(dbc).removeAccessControlEntries(dbc, onlineProject, onlineId);
 
         // then, we copy the access control entries from the offline project into the online project
-        try {
-            CmsUUID dbcProjectId = dbc.getProjectId();
-            dbc.setProjectId(CmsUUID.getNullUUID());
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES_1");
+        CmsUUID dbcProjectId = dbc.getProjectId();
+        dbc.setProjectId(CmsUUID.getNullUUID());
+        List<CmsAccessControlEntry> aces = m_driverManager.getUserDriver(dbc).readAccessControlEntries(
+            dbc,
+            offlineProject,
+            offlineId,
+            false);
+        dbc.setProjectId(dbcProjectId);
 
-            stmt.setString(1, offlineId.toString());
-
-            res = stmt.executeQuery();
-            dbc.setProjectId(dbcProjectId);
-
-            while (res.next()) {
-                CmsAccessControlEntry ace = internalCreateAce(res, onlineId);
-                m_driverManager.getUserDriver().writeAccessControlEntry(dbc, onlineProject, ace);
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        for (CmsAccessControlEntry ace : aces) {
+            m_driverManager.getUserDriver(dbc).writeAccessControlEntry(dbc, onlineProject, ace);
         }
     }
 
@@ -1147,7 +1133,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
         try {
             // get parent group
-            CmsGroup parent = m_driverManager.getUserDriver().readGroup(dbc, parentGroupFqn);
+            CmsGroup parent = m_driverManager.getUserDriver(dbc).readGroup(dbc, parentGroupFqn);
             // parent group exists, so get all children
             if (parent != null) {
                 // create statement
@@ -1687,14 +1673,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // remove the resource
             CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterPath(resource.getRootPath());
-            m_driverManager.getVfsDriver().deleteRelations(dbc, dbc.currentProject().getUuid(), ouResource, filter);
-            m_driverManager.getVfsDriver().deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
+            m_driverManager.getVfsDriver(dbc).deleteRelations(dbc, dbc.currentProject().getUuid(), ouResource, filter);
+            m_driverManager.getVfsDriver(dbc).deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
 
             try {
                 // be sure the project was not deleted
                 CmsProject project = m_driverManager.readProject(dbc, orgUnit.getProjectId());
                 // maintain the default project synchronized
-                m_driverManager.getProjectDriver().deleteProjectResource(
+                m_driverManager.getProjectDriver(dbc).deleteProjectResource(
                     dbc,
                     orgUnit.getProjectId(),
                     resource.getRootPath());
@@ -1713,6 +1699,22 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#setDriverManager(org.opencms.db.CmsDriverManager)
+     */
+    public void setDriverManager(CmsDriverManager driverManager) {
+
+        m_driverManager = driverManager;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#setSqlManager(org.opencms.db.generic.CmsSqlManager)
+     */
+    public void setSqlManager(CmsSqlManager sqlManager) {
+
+        m_sqlManager = sqlManager;
     }
 
     /**
@@ -1764,7 +1766,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             res = stmt.executeQuery();
             if (!res.next()) {
-                m_driverManager.getUserDriver().createAccessControlEntry(
+                m_driverManager.getUserDriver(dbc).createAccessControlEntry(
                     dbc,
                     project,
                     acEntry.getResource(),
@@ -1848,7 +1850,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             resource.setFlags(organizationalUnit.getFlags() | CmsResource.FLAG_INTERNAL);
             m_driverManager.writeResource(dbc, resource);
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver().writeResource(
+            m_driverManager.getVfsDriver(dbc).writeResource(
                 dbc,
                 dbc.currentProject().getUuid(),
                 resource,
@@ -1858,7 +1860,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // online persistence
                 CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
                 resource.setState(CmsResource.STATE_UNCHANGED);
-                m_driverManager.getVfsDriver().writeResource(
+                m_driverManager.getVfsDriver(dbc).writeResource(
                     dbc,
                     onlineProject.getUuid(),
                     resource,
@@ -2331,14 +2333,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         CmsUUID projectId = dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid() : dbc.getProjectId();
 
-        m_driverManager.getVfsDriver().createResource(dbc, projectId, resource, null);
+        m_driverManager.getVfsDriver(dbc).createResource(dbc, projectId, resource, null);
         resource.setState(CmsResource.STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
+        m_driverManager.getVfsDriver(dbc).writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
 
         if (!dbc.currentProject().isOnlineProject() && dbc.getProjectId().isNullUUID()) {
             // online persistence
             CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
-            m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), resource, null);
+            m_driverManager.getVfsDriver(dbc).createResource(dbc, onlineProject.getUuid(), resource, null);
         }
 
         // clear the internal caches
@@ -2409,23 +2411,23 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             try {
                 // delete properties
-                m_driverManager.getVfsDriver().deletePropertyObjects(
+                m_driverManager.getVfsDriver(dbc).deletePropertyObjects(
                     dbc,
                     CmsProject.ONLINE_PROJECT_ID,
                     resource,
                     CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
                 // remove the online folder only if it is really deleted offline
-                m_driverManager.getVfsDriver().removeFolder(dbc, dbc.currentProject(), resource);
+                m_driverManager.getVfsDriver(dbc).removeFolder(dbc, dbc.currentProject(), resource);
 
                 // remove ACL
-                m_driverManager.getUserDriver().removeAccessControlEntries(
+                m_driverManager.getUserDriver(dbc).removeAccessControlEntries(
                     dbc,
                     dbc.currentProject(),
                     resource.getResourceId());
 
                 // delete relations
-                m_driverManager.getVfsDriver().deleteRelations(
+                m_driverManager.getVfsDriver(dbc).deleteRelations(
                     dbc,
                     dbc.getRequestContext().currentProject().getUuid(),
                     resource,
@@ -2435,20 +2437,23 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         }
         // delete properties
-        m_driverManager.getVfsDriver().deletePropertyObjects(
+        m_driverManager.getVfsDriver(dbc).deletePropertyObjects(
             dbc,
             CmsProject.ONLINE_PROJECT_ID,
             resource,
             CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
         // remove the online folder only if it is really deleted offline
-        m_driverManager.getVfsDriver().removeFolder(dbc, dbc.currentProject(), resource);
+        m_driverManager.getVfsDriver(dbc).removeFolder(dbc, dbc.currentProject(), resource);
 
         // remove ACL
-        m_driverManager.getUserDriver().removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
+        m_driverManager.getUserDriver(dbc).removeAccessControlEntries(
+            dbc,
+            dbc.currentProject(),
+            resource.getResourceId());
 
         // delete relations
-        m_driverManager.getVfsDriver().deleteRelations(
+        m_driverManager.getVfsDriver(dbc).deleteRelations(
             dbc,
             dbc.getRequestContext().currentProject().getUuid(),
             resource,
@@ -2469,6 +2474,34 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         OpenCms.fireCmsEvent(new CmsEvent(
             I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
             Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, resource)));
+    }
+
+    /**
+     * Deletes an additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user to delete additional info from
+     * @param key the additional info to delete 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalDeleteUserInfo(CmsDbContext dbc, CmsUUID userId, String key) throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = getSqlManager().getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_DELETE_2");
+            // write data to database
+            stmt.setString(1, userId.toString());
+            stmt.setString(2, key);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
     }
 
     /**
@@ -2566,6 +2599,40 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
+     * Updates additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user id to add the user info for
+     * @param key the name of the additional user info
+     * @param value the value of the additional user info
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalUpdateUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = getSqlManager().getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_UPDATE_4");
+            // write data to database
+            m_sqlManager.setBytes(stmt, 1, CmsDataTypeUtil.dataSerialize(value));
+            stmt.setString(2, value.getClass().getName());
+            stmt.setString(3, userId.toString());
+            stmt.setString(4, key);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } catch (IOException e) {
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
      * Validates the given root path to be in the scope of the resources of the given organizational unit.<p>
      * 
      * @param dbc the current db context
@@ -2657,7 +2724,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         // write the property
         m_driverManager.writePropertyObject(dbc, resource, property);
         resource.setState(CmsResource.STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeResource(
+        m_driverManager.getVfsDriver(dbc).writeResource(
             dbc,
             dbc.currentProject().getUuid(),
             resource,
@@ -2669,7 +2736,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             m_driverManager.writePropertyObject(dbc, resource, property); // assume the resource is identical in both projects
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver().writeResource(
+            m_driverManager.getVfsDriver(dbc).writeResource(
                 dbc,
                 dbc.currentProject().getUuid(),
                 resource,
@@ -2760,68 +2827,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     writeUserInfo(dbc, userId, (String)entry.getKey(), entry.getValue());
                 }
             }
-        }
-    }
-
-    /**
-     * Updates additional user info.<p>
-     * @param dbc the current dbc
-     * @param userId the user id to add the user info for
-     * @param key the name of the additional user info
-     * @param value the value of the additional user info
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void internalUpdateUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = getSqlManager().getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_UPDATE_4");
-            // write data to database
-            m_sqlManager.setBytes(stmt, 1, CmsDataTypeUtil.dataSerialize(value));
-            stmt.setString(2, value.getClass().getName());
-            stmt.setString(3, userId.toString());
-            stmt.setString(4, key);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
-     * Deletes an additional user info.<p>
-     * @param dbc the current dbc
-     * @param userId the user to delete additional info from
-     * @param key the additional info to delete 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void internalDeleteUserInfo(CmsDbContext dbc, CmsUUID userId, String key) throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = getSqlManager().getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_DELETE_2");
-            // write data to database
-            stmt.setString(1, userId.toString());
-            stmt.setString(2, key);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
 }
