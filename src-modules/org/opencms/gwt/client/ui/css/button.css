@@ -29,22 +29,30 @@
 }
 
 @if user.agent ie6 {
-    .cmsTextButton, .cmsTextButton div.html-face, .cmsImageButton, .cmsImageButton div.html-face, .cmsImageButtonTransparent, .cmsImageButtonTransparent div.html-face{
+    .cmsTextButton, .cmsImageButton, .cmsImageButtonTransparent{
         white-space: nowrap;
         display: inline;
+        vertical-align: middle;
     }
     .cmsMinWidth{
         width: 6em;
         overflow: visible !important;
     }
 } @else {
-    .cmsTextButton div.html-face, .cmsImageButton, .cmsImageButton div.html-face{
+    .cmsTextButton, .cmsTextButton div, .cmsImageButton, .cmsImageButton div, .cmsImageButtonTransparent, .cmsImageButtonTransparent div{
         display: inline-block;
         white-space: nowrap;
+        vertical-align: middle;
     }
     .cmsMinWidth{
         min-width: 6em;
     }
+}
+
+.html-face span{
+	display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
 }
 
 .cmsTextButton.cmsButtonBig{
@@ -52,7 +60,7 @@
 }
 
 .cmsTextButton.cmsButtonSmall{
-    padding: 1px 2px;
+    padding: 2px 2px;
 }
 
 .cmsButtonMedium{}
