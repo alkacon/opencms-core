@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/20 08:26:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -55,6 +55,29 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("org.opencms.ade.sitemap.CmsSitemapService.gwt")
 public interface I_CmsSitemapService extends RemoteService {
+
+    /**
+     * Creates a new sub-sitemap resource from the given sitemap and path.<p>
+     * 
+     * @param sitemapUri the super sitemap URI
+     * @param path the starting path
+     * 
+     * @return the new created sub-sitemap URI
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    String createSubsitemap(String sitemapUri, String path) throws CmsRpcException;
+
+    /**
+     * Returns the sitemap children for the given path.<p>
+     * 
+     * @param root the site relative root
+     *  
+     * @return the sitemap children
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    List<CmsClientSitemapEntry> getChildren(String root) throws CmsRpcException;
 
     /**
      * Returns the sitemap entry for the given path.<p>
@@ -79,15 +102,14 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsClientSitemapEntry getRoot(String sitemapUri) throws CmsRpcException;
 
     /**
-     * Returns the sitemap children for the given path.<p>
+     * Merges the given super sitemap with the sub-sitemap at the given path.<p>
      * 
-     * @param root the site relative root
-     *  
-     * @return the sitemap children
+     * @param sitemapUri the super sitemap URI
+     * @param path the starting path
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    List<CmsClientSitemapEntry> getChildren(String root) throws CmsRpcException;
+    void mergeSubsitemap(String sitemapUri, String path) throws CmsRpcException;
 
     /**
      * Saves the changes to the given sitemap.<p>
@@ -98,26 +120,4 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     void save(String sitemapUri, List<CmsClientSitemapChange> changes) throws CmsRpcException;
-
-    /**
-     * Creates a new sub-sitemap resource from the given sitemap and path.<p>
-     * 
-     * @param sitemapUri the super sitemap URI
-     * @param path the starting path
-     * 
-     * @return the new created sub-sitemap URI
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    String createSubsitemap(String sitemapUri, String path) throws CmsRpcException;
-
-    /**
-     * Merges the given super sitemap with the sub-sitemap at the given path.<p>
-     * 
-     * @param sitemapUri the super sitemap URI
-     * @param path the starting path
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    void mergeSubsitemap(String sitemapUri, String path) throws CmsRpcException;
 }
