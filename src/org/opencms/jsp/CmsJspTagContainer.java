@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/02/03 15:10:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/04/20 13:04:04 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,9 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -64,6 +66,7 @@ import java.util.Locale;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -75,11 +78,20 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 7.6 
  */
 public class CmsJspTagContainer extends TagSupport {
+
+    /** Key used to write container data into the javascript window object. */
+    public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
+
+    /** HTML class used to identify container elements. */
+    public static final String CLASS_CONTAINER_ELEMENTS = "cms_ade_element";
+
+    /** HTML class used to identify sub container elements. */
+    public static final String CLASS_SUB_CONTAINER_ELEMENTS = "cms_ade_subcontainer";
 
     /** Json property name constants for containers. */
     public enum JsonContainer {
@@ -103,10 +115,10 @@ public class CmsJspTagContainer extends TagSupport {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagContainer.class);
 
-    /** Serial version UID required for safe serialization. */
+    /** Serial version UID required for safe serialisation. */
     private static final long serialVersionUID = -1228397990961282556L;
 
-    /** The detailview attribute value. */
+    /** The detail-view attribute value. */
     private boolean m_detailView;
 
     /** The maxElements attribute value. */
@@ -151,6 +163,8 @@ public class CmsJspTagContainer extends TagSupport {
         boolean detailView,
         ServletRequest req,
         ServletResponse res) throws CmsException, JspException, IOException {
+
+        // TODO: remove old ADE functions
 
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
@@ -278,6 +292,19 @@ public class CmsJspTagContainer extends TagSupport {
                 // should never happen
                 throw new JspException(e);
             }
+
+            // writing elements to the session cache to improve performance of the container-page editor
+            CmsADESessionCache sessionCache = (CmsADESessionCache)((HttpServletRequest)req).getSession().getAttribute(
+                CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
+            if (sessionCache == null) {
+                sessionCache = new CmsADESessionCache(cms);
+                ((HttpServletRequest)req).getSession().setAttribute(
+                    CmsADESessionCache.SESSION_ATTR_ADE_CACHE,
+                    sessionCache);
+            }
+            for (CmsContainerElementBean element : allElems) {
+                sessionCache.setCacheContainerElement(element.getClientId(), element);
+            }
         }
 
         // get the actual number of elements to render
@@ -308,6 +335,10 @@ public class CmsJspTagContainer extends TagSupport {
                         OpenCms.getResourceManager().getResourceType(resUri).getTypeName(),
                         containerType));
                 }
+                if (!isOnline) {
+                    // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
+                    pageContext.getOut().print(getElementWrapperTagStart(cms, resUri, element, true));
+                }
                 for (CmsContainerElementBean subelement : subContainer.getElements()) {
                     CmsResource subelementRes = cms.readResource(subelement.getElementId());
                     String subelementUri = cms.getSitePath(subelementRes);
@@ -337,11 +368,18 @@ public class CmsJspTagContainer extends TagSupport {
                         req,
                         res);
                 }
+                if (!isOnline) {
+                    pageContext.getOut().print(getElementWrapperTagEnd());
+                }
 
             } else {
                 String elementFormatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
 
                 element.setSitePath(cms.getSitePath(resUri));
+                if (!isOnline) {
+                    // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
+                    pageContext.getOut().print(getElementWrapperTagStart(cms, resUri, element, false));
+                }
                 // execute the formatter jsp for the given element uri
                 CmsJspTagInclude.includeTagAction(
                     pageContext,
@@ -352,6 +390,9 @@ public class CmsJspTagContainer extends TagSupport {
                     Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)element),
                     req,
                     res);
+                if (!isOnline) {
+                    pageContext.getOut().print(getElementWrapperTagEnd());
+                }
             }
         }
         // close tag for container
@@ -382,7 +423,61 @@ public class CmsJspTagContainer extends TagSupport {
             jsonElements.put(element.getClientId());
         }
         jsonContainer.put(JsonContainer.elements.name(), jsonElements);
-        return new StringBuffer("<div class='cms-ade-cnt-data ").append(jsonContainer.toString()).append("' ></div>").toString();
+        // the container meta data is added to the javascript window object by the following tag, used within the container-page editor 
+        String gwtContainerData = "<script  type=\"text/javascript\">if ("
+            + KEY_CONTAINER_DATA
+            + "!=null)  "
+            + KEY_CONTAINER_DATA
+            + ".push("
+            + jsonContainer.toString()
+            + ");</script>";
+        return gwtContainerData;
+        /* new StringBuffer("<div class='cms-ade-cnt-data ").append(jsonContainer.toString()).append("' ></div>").append(
+            gwtContainerData).toString(); */
+    }
+
+    /**
+     * Returns the opening wrapper tag for elements in the offline project. The wrapper tag is needed by the container-page editor
+     * to identify elements within a container.<p>
+     * 
+     * @param cms the cms object
+     * @param resource the element resource
+     * @param elementBean the element
+     * @param isSubcontainer <code>true</code> if element is a sub-container
+     * 
+     * @return the opening tag
+     * 
+     * @throws CmsException if something goes wrong reading permissions and lock state
+     */
+    protected static String getElementWrapperTagStart(
+        CmsObject cms,
+        CmsResource resource,
+        CmsContainerElementBean elementBean,
+        boolean isSubcontainer) throws CmsException {
+
+        StringBuffer result = new StringBuffer("<div class='");
+        if (isSubcontainer) {
+            result.append(CLASS_SUB_CONTAINER_ELEMENTS);
+        } else {
+            result.append(CLASS_CONTAINER_ELEMENTS);
+        }
+        String noEditReason = new CmsResourceUtil(cms, resource).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+            cms));
+        result.append("' title='").append(elementBean.getClientId()).append("' alt='").append(elementBean.getSitePath()).append(
+            "' rel='").append(CmsStringUtil.escapeHtml(noEditReason)).append("'>");
+        return result.toString();
+    }
+
+    /**
+     * Returns the closing wrapper tag for a container element.<p>
+     * 
+     * @return the closing tag
+     * 
+     * @see org.opencms.jsp.CmsJspTagContainer#getElementWrapperTagStart(CmsObject, CmsResource, CmsContainerElementBean, boolean)
+     */
+    protected static String getElementWrapperTagEnd() {
+
+        return "</div>";
     }
 
     /**
@@ -581,4 +676,5 @@ public class CmsJspTagContainer extends TagSupport {
 
         m_type = type;
     }
+
 }

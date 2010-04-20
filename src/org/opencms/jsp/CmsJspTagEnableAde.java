@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/02/26 12:43:34 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/04/20 13:04:05 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,6 @@ import org.opencms.workplace.galleries.CmsGallerySearchServer;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -76,11 +75,13 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 7.6 
  */
 public class CmsJspTagEnableAde extends BodyTagSupport {
+
+    private static final String INCLUDE_JSP_URI = "/system/modules/org.opencms.ade.containerpage/containerpage_include.jsp";
 
     /** Macro name constants. */
     protected enum Macro {
@@ -190,13 +191,16 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             return;
         }
 
-        // insert ade header HTML
-        String code = getAdeIncludes(cms, req);
-        try {
-            context.getOut().print(code);
-        } catch (IOException e) {
-            throw new JspException(e);
-        }
+        // TODO: remove old ADE functions
+        CmsJspTagInclude.includeTagAction(context, INCLUDE_JSP_URI, null, false, null, null, req, context.getResponse());
+
+        //        // insert ade header HTML
+        //        String code = getAdeIncludes(cms, req);
+        //        try {
+        //            context.getOut().print(code);
+        //        } catch (IOException e) {
+        //            throw new JspException(e);
+        //        }
     }
 
     /**
