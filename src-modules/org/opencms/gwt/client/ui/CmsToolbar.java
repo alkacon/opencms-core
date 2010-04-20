@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbar.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/20 08:55:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  * 
@@ -57,7 +57,7 @@ public class CmsToolbar extends Composite {
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    interface I_CmsToolbarUiBinder extends UiBinder<Widget, CmsToolbar> {
+    protected interface I_CmsToolbarUiBinder extends UiBinder<Widget, CmsToolbar> {
         // GWT interface, nothing to do here
     }
 
@@ -66,17 +66,11 @@ public class CmsToolbar extends Composite {
 
     /** DIV to hold left-side buttons associated with the tool-bar. */
     @UiField
-    FlowPanel m_buttonPanelLeft;
+    protected FlowPanel m_buttonPanelLeft;
 
     /** DIV to hold right-side buttons associated with the tool-bar. */
     @UiField
-    FlowPanel m_buttonPanelRight;
-
-    /** A confirm dialog. */
-    CmsConfirmDialog m_confirm;
-
-    /** A pop up dialog. */
-    CmsPopupDialog m_popup;
+    protected FlowPanel m_buttonPanelRight;
 
     /**
      * Constructor.<p>
