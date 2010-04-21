@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/04/21 07:38:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/21 14:29:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -246,6 +246,19 @@ public class CmsTreeItem extends CmsSimpleListItem {
     public void removeChild(CmsTreeItem item) {
 
         m_children.removeItem(item);
+        onChangeChildren();
+    }
+
+    /**
+     * Removes the item identified by the given index from the list.<p>
+     * 
+     * @param index the index of the item to remove
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#remove(int)
+     */
+    public void removeChild(int index) {
+
+        m_children.remove(index);
         onChangeChildren();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsLazyTreeItem.java,v $
- * Date   : $Date: 2010/04/19 11:48:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/21 14:29:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -73,8 +73,7 @@ public class CmsLazyTreeItem extends CmsTreeItem {
          */
         public LoadingItem() {
 
-            super();
-            add(new Label(Messages.get().key(Messages.GUI_LOADING_0)));
+            super(true, new Label(Messages.get().key(Messages.GUI_LOADING_0)));
         }
     }
 

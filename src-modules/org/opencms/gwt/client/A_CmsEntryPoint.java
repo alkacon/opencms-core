@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2010/04/19 11:47:45 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/21 14:29:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -108,6 +108,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
              */
             public void onUncaughtException(Throwable t) {
 
+                // TODO: show dialog to user
                 CmsLog.log(CmsClientStringUtil.getMessage(t) + "\n" + CmsClientStringUtil.getStackTrace(t, "\n"));
             }
         });
