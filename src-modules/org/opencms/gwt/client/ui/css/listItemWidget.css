@@ -51,9 +51,7 @@
 .buttonPanel{
 	position: absolute;
 	right: 5px;
-	top: 7px;
-	width: 60px;
-	height: 20px;
+	top: 5px;
 	overflow: visible;
 }
 
