@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/04/19 11:48:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/21 07:38:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -110,7 +110,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
             for (int i = 0; i < content.length - 1; i++) {
                 m_content.addToFloat(content[i]);
             }
-            m_content.add(content[content.length - 1]);
+            add(content[content.length - 1]);
         }
         if (!showOpeners) {
             hideOpeners();
@@ -124,6 +124,18 @@ public class CmsTreeItem extends CmsSimpleListItem {
     public void add(Widget w) {
 
         m_content.add(w);
+    }
+
+    /**
+     * Returns the widget at the given position.<p>
+     * 
+     * @param index the position
+     * 
+     * @return  the widget at the given position
+     */
+    public Widget getWidget(int index) {
+
+        return m_content.getWidget(index);
     }
 
     /**
