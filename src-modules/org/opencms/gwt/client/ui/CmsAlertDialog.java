@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2010/04/15 10:06:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/21 14:28:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -73,7 +73,7 @@ public class CmsAlertDialog extends CmsPopupDialog {
      */
     public CmsAlertDialog(String title, String content) {
 
-        this("", "", Messages.get().key(Messages.GUI_CLOSE_0));
+        this(title, content, Messages.get().key(Messages.GUI_CLOSE_0));
     }
 
     /**
@@ -85,7 +85,7 @@ public class CmsAlertDialog extends CmsPopupDialog {
      */
     public CmsAlertDialog(String title, String content, String buttonText) {
 
-        this("", "", buttonText, null);
+        this(title, content, buttonText, null);
     }
 
     /**
