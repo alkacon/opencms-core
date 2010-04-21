@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsBurstEventManager.java,v $
- * Date   : $Date: 2010/04/21 12:26:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/21 12:31:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,11 +56,10 @@ import com.google.gwt.user.client.Timer;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.util.CmsStringUtil
  * @see <a href="http://ui-programming.blogspot.com/2010/02/gwt-how-to-implement-delayedtask-in.html">Original implementation</a>
  */
 public final class CmsBurstEventManager {
